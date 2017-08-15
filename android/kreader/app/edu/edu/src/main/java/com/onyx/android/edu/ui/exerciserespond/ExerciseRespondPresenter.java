@@ -3,7 +3,6 @@ package com.onyx.android.edu.ui.exerciserespond;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.Toast;
-
 import com.onyx.android.edu.EduApp;
 import com.onyx.android.edu.base.BaseQuestionView;
 import com.onyx.android.edu.bean.PaperResult;
