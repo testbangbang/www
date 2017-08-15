@@ -68,7 +68,7 @@ public class ExaminationResultFragment extends BaseFragment implements RespondRe
         }
         correctRate.setText(count * 100f / result.size() + "%");
         score.setText(String.valueOf(paperResult.getScore()));
-        String format = String.format("用时%d秒", EduApp.instance().getUseTime());
+        String format = String.format("用时%d秒", EduApp.instance().getUseTimeInSecond());
         timeUsed.setText(format);
         bookName.setText(EduApp.instance().getBookName());
         mPresenter.updateExaminationPaper(paperResult.getScore(), count, result.size() - count);

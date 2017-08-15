@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.edu.EduApp;
 import com.onyx.android.edu.R;
@@ -163,6 +164,12 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         mPaperPager.setPagingEnabled(false);
 
         updatePaperIndex();
+    }
+
+    @Override
+    public void showToast() {
+        Toast.makeText(EduApp.instance(), "Do not having examination paper", Toast.LENGTH_SHORT).show();
+        getActivity().finish();
     }
 
     private ChoiceQuestionView generateChoiceQuestion(Question question, boolean showAnswer){

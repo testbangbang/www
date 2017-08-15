@@ -25,7 +25,7 @@ public class EduApp extends Application{
         this.endTime = endTime;
     }
 
-    public long getUseTime() {
+    public long getUseTimeInSecond() {
         return (endTime - startTime) / 1000;
     }
 

@@ -2,6 +2,7 @@ package com.onyx.android.edu.ui.exerciserespond;
 
 import android.support.annotation.NonNull;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.onyx.android.edu.EduApp;
 import com.onyx.android.edu.base.BaseQuestionView;
@@ -52,7 +53,11 @@ public class ExerciseRespondPresenter implements ExerciseRespondContract.Exercis
             @Override
             public void done(BaseRequest request, Throwable e) {
                 questions = rq.getQuestions();
-                exerciseRespondView.showQuestions(questions, chooseQuestionVariable, showAnswer);
+                if(questions != null && questions.size() > 0) {
+                    exerciseRespondView.showQuestions(questions, chooseQuestionVariable, showAnswer);
+                } else {
+                    exerciseRespondView.showToast();
+                }
             }
         });
     }
