@@ -1172,6 +1172,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private boolean isValidFilePath(String path) {
+        if (StringUtils.isNullOrEmpty(path)) {
+            return false;
+        }
         File file = new File(path);
         return file.exists() && file.isFile();
     }
