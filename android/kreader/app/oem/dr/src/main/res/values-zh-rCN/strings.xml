@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">dr</string>
     <string name="account_un_login">未登录</string>
     <string name="menu_graded_books">分级读物</string>
@@ -327,4 +327,24 @@
     <string name="start_lecture">开始演讲</string>
     <string name="record_playback">录音回放</string>
     <string name="dictionary">词典</string>
+    <string name="speech_recording_stop">stop</string>
+    <string name="record">录音</string>
+    <string name="abandon">放弃</string>
+    <string name="complete">保存</string>
+    <string name="button_ok">confirm</string>
+    <string name="error_app_internal">内部应用程序错误</string>
+    <string name="error_sdcard_access">无法访问USB存储设备</string>
+    <string name="audio_db_artist_name">您的录音</string>
+    <string name="audio_db_album_name">录音</string>
+    <string name="error_mediadb_new_record">无法保存录制的音频</string>
+    <string name="audio_db_playlist_name">我的录音</string>
+    <string name="insert_sd_card">请装载USB存储设备</string>
+    <string name="storage_is_full">存储空间已满</string>
+    <string name="max_length_reached">已达到长度上限</string>
+    <string name="min_available" msgid="5493947690062988925">"还剩 <xliff:g id="MINUTES">%d</xliff:g> 分钟"</string>
+    <string name="sec_available" msgid="2297020788861694399">"还剩 <xliff:g id="SECONDS">%d</xliff:g> 秒"</string>
+    <string name="timer_format" translatable="false"><xliff:g id="format">%02d:%02d</xliff:g></string>
+    <string name="audio_db_title_format"><xliff:g id="format">yyyy-MM-dd HH:mm:ss</xliff:g></string>
+    <string name="query_returns_null">请求返回为空</string>
+    <string name="Invalid_output_file_type_requested">此文件类型输出无效</string>
 </resources>

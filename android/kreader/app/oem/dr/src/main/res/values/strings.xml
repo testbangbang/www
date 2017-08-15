@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">dr</string>
     <string name="account_un_login">account un login</string>
     <string name="menu_graded_books">graded books</string>
@@ -330,6 +330,27 @@
     <string name="no_title">No title</string>
     <string name="Call_the_modified_file">Call the modified file</string>
     <string name="start_lecture">start lecture</string>
-    <string name="record_playback">start lecture</string>
+    <string name="record_playback">playback</string>
     <string name="dictionary">dictionary</string>
+    <string name="speech_recording_stop">stop</string>
+    <string name="record">record</string>
+    <string name="abandon">discard</string>
+    <string name="complete">save</string>
+    <string name="button_ok">confirm</string>
+    <string name="error_app_internal">error app internal</string>
+    <string name="error_sdcard_access">error sdcard access</string>
+    <string name="audio_db_artist_name">audio db artist name</string>
+    <string name="audio_db_album_name">audio db album name</string>
+    <string name="error_mediadb_new_record">error mediadb new record</string>
+    <string name="audio_db_playlist_name">My recordings</string>
+    <string name="insert_sd_card">Please mount USB storage</string>
+    <string name="storage_is_full">Storage is full</string>
+    <string name="timer_format" translatable="false"><xliff:g id="format">%02d:%02d</xliff:g></string>
+    <string name="max_length_reached">Maximum length reached</string>
+    <string name="sec_available"><xliff:g id="seconds">%d</xliff:g>s available</string>
+    <string name="audio_db_title_format"><xliff:g id="format">yyyy-MM-dd HH:mm:ss</xliff:g></string>
+    <string name="min_available"><xliff:g id="minutes">%d</xliff:g> min available</string>
+    <string name="recording_stopped">Recording stopped</string>
+    <string name="query_returns_null">query returns null</string>
+    <string name="Invalid_output_file_type_requested">Invalid output file type requested</string>
 </resources>

@@ -127,4 +127,10 @@
     <dimen name="activity_after_reading_padding">10dp</dimen>
     <dimen name="edit_after_reading_padding">5dp</dimen>
     <dimen name="edit_after_reading_top">10dp</dimen>
+    <dimen name="record_time_activity_bottom_height">120dp</dimen>
+    <dimen name="activity_record_container_margin_bottom">10dp</dimen>
+    <dimen name="activity_exit_buttons_margin">10dp</dimen>
+    <dimen name="record_time_activity_record_height">80dp</dimen>
+    <dimen name="activity_state_two_margin_left">5dp</dimen>
+    <dimen name="record_time_activity_progressbar_margin_left">20dp</dimen>
 </resources>
