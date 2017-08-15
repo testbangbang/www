@@ -7,10 +7,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Layout;
-import android.text.SpannableStringBuilder;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -28,37 +24,29 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListRecei
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByGroupIdRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeSelectionRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
-import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.scribble.view.LinedEditText;
-import com.onyx.android.sdk.utils.StringUtils;
 
-import org.apache.commons.collections4.MapUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by solskjaer49 on 2017/2/11 18:44.
@@ -72,12 +60,17 @@ public class NoteManager {
     private RendererHelper rendererHelper;
     private DocumentHelper documentHelper;
     private SpanHelper spanHelper;
+    private ViewHelper viewHelper;
+    private TouchHelper touchHelper;
     private PenManager penManager;
 
     private static NoteManager instance;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
     private TouchPoint mErasePoint = null;
+    private DeviceConfig deviceConfig;
+    private MappingConfig mappingConfig;
+    private List<Shape> dirtyStash = new ArrayList<>();
     private @ScribbleMode.ScribbleModeDef
     int mCurrentScribbleMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
 
@@ -90,11 +83,11 @@ public class NoteManager {
 
     public void setCurrentScribbleMode(int currentScribbleMode) {
         mCurrentScribbleMode = currentScribbleMode;
-        setLineLayoutMode(mCurrentScribbleMode == ScribbleMode.MODE_SPAN_SCRIBBLE);
     }
 
     private NoteManager(Context context) {
         appContext = context.getApplicationContext();
+        initRawResource(appContext);
         if (noteViewHelper == null) {
             noteViewHelper = new AsyncNoteViewHelper();
         }
@@ -105,6 +98,19 @@ public class NoteManager {
             instance = new NoteManager(context);
         }
         return instance;
+    }
+
+    private void initRawResource(final Context context) {
+        deviceConfig = DeviceConfig.sharedInstance(context, "note");
+        mappingConfig = MappingConfig.sharedInstance(context, "note");
+    }
+
+    public DeviceConfig getDeviceConfig() {
+        return deviceConfig;
+    }
+
+    public MappingConfig getMappingConfig() {
+        return mappingConfig;
     }
 
     public Context getAppContext() {
@@ -130,6 +136,20 @@ public class NoteManager {
             spanHelper = new SpanHelper(this);
         }
         return spanHelper;
+    }
+
+    public ViewHelper getViewHelper() {
+        if (viewHelper == null) {
+            viewHelper = new ViewHelper(this);
+        }
+        return viewHelper;
+    }
+
+    public TouchHelper getTouchHelper() {
+        if (touchHelper == null) {
+            touchHelper = new TouchHelper(this);
+        }
+        return touchHelper;
     }
 
     public AsyncNoteViewHelper getNoteViewHelper() {
@@ -188,7 +208,7 @@ public class NoteManager {
                                  boolean resume,
                                  final BaseCallback callback) {
         final List<Shape> stash = detachStash();
-        if (isLineLayoutMode()) {
+        if (inSpanScribbleMode()) {
             stash.clear();
         }
         PageFlushRequest flushRequest = new PageFlushRequest(stash, render, resume, shapeDataInfo.getDrawingArgs());
@@ -272,7 +292,7 @@ public class NoteManager {
     @Subscribe
     public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
         Log.e(TAG, "onRawTouchPointListReceivedEvent");
-        if (isLineLayoutMode()) {
+        if (inSpanScribbleMode()) {
             buildSpan();
         }
         EventBus.getDefault().post(new RawDataReceivedEvent());
@@ -318,7 +338,7 @@ public class NoteManager {
         if (!event.getShape().supportDFB()) {
             drawCurrentPage();
         }
-        if (isLineLayoutMode()) {
+        if (inSpanScribbleMode()) {
             buildSpan();
         }
     }
@@ -357,15 +377,22 @@ public class NoteManager {
 
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.
 
-    public void reset(View view) {
-        noteViewHelper.reset(view);
+    public void reset() {
+        getViewHelper().resetView();
     }
 
     public SurfaceView getView() {
         return noteViewHelper.getView();
     }
 
+    public View getHostView() {
+        return getViewHelper().getHostView();
+    }
+
     public void setView(Context context, SurfaceView surfaceView) {
+        getPenManager().setHostView(surfaceView);
+        getViewHelper().setHostView(surfaceView);
+        getTouchHelper().onTouch(surfaceView);
         EventBus.getDefault().register(this);
         noteViewHelper.setView(context, surfaceView);
     }
@@ -447,16 +474,27 @@ public class NoteManager {
         noteViewHelper.quit();
     }
 
-    public void setLineLayoutMode(boolean isLineLayoutMode) {
-        getSpanHelper().setLineLayoutMode(isLineLayoutMode);
+    public boolean inSpanScribbleMode() {
+        return mCurrentScribbleMode == ScribbleMode.MODE_SPAN_SCRIBBLE;
     }
 
-    public boolean isLineLayoutMode() {
-        return getSpanHelper().isLineLayoutMode();
+    public void drawSpanLayoutBackground(final RenderContext renderContext) {
+        getSpanHelper().drawLineLayoutBackground(renderContext, getHostView());
+    }
+
+    public Shape getSpanCursorShape() {
+        return getSpanHelper().getCursorShape();
     }
 
     public List<Shape> detachStash() {
-        return noteViewHelper.detachStash();
+        final List<Shape> temp = new ArrayList<>();
+        temp.addAll(dirtyStash);
+        dirtyStash = new ArrayList<>();
+        return temp;
+    }
+
+    public void onNewShape(Shape shape) {
+        dirtyStash.add(shape);
     }
 
     public void clearSurfaceView(SurfaceView surfaceView) {

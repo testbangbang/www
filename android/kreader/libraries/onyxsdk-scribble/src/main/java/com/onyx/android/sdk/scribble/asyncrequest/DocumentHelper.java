@@ -75,6 +75,10 @@ public class DocumentHelper {
         EpdController.setStrokeWidth(width);
     }
 
+    public NoteDrawingArgs getNoteDrawingArgs() {
+        return getNoteDocument().getNoteDrawingArgs();
+    }
+
     public float getStrokeWidth() {
         return getNoteDocument().getStrokeWidth();
     }
