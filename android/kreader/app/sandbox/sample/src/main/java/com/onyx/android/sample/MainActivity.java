@@ -42,6 +42,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonRectUpdate;
     @Bind(R.id.button_image_diff)
     Button buttonImageDiff;
+    @Bind(R.id.button_text_update)
+    Button buttonTextUpdate;
 
 
 
@@ -65,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonTextSelect.setOnClickListener(this);
         buttonRectUpdate.setOnClickListener(this);
         buttonImageDiff.setOnClickListener(this);
+        buttonTextUpdate.setOnClickListener(this);
         final View view = findViewById(android.R.id.content);
         EpdController.enablePost(view, 1);
     }
@@ -104,6 +107,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, RectangleUpdateTest.class));
         } else if (v.equals(buttonImageDiff)) {
             startActivity(new Intent(this, ImageDiffActivity.class));
+        } else if (v.equals(buttonTextUpdate)) {
+            startActivity(new Intent(this, TextUpdateActivity.class));
         }
     }
 

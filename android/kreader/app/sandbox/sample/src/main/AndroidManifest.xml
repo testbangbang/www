@@ -40,6 +40,7 @@
         <activity android:name=".TextSelectionActivity" />
         <activity android:name=".RectangleUpdateTest" />
         <activity android:name=".ImageDiffActivity"></activity>
+        <activity android:name=".TextUpdateActivity" />
     </application>
 
 </manifest>
