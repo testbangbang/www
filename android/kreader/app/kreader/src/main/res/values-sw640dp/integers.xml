@@ -7,6 +7,6 @@
     <integer name="quick_view_default_grid_type">1</integer>
     <integer name="search_chinese_content_length">45</integer>
     <integer name="search_alpha_content_length">80</integer>
-    <integer name="statistics_recently_book_count">10</integer>
+    <integer name="statistics_recently_book_count">8</integer>
 
 </resources>
