@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -77,4 +79,25 @@ public class ViewHelper {
 
     }
 
+    public Rect getViewportSize() {
+        if (hostView != null) {
+            return new Rect(0, 0, hostView.getWidth(), hostView.getHeight());
+        }
+        return null;
+    }
+
+    public RectF getViewportSizeF() {
+        if (hostView != null) {
+            return new RectF(0, 0, hostView.getWidth(), hostView.getHeight());
+        }
+        return null;
+    }
+
+    public void quit() {
+        if (globalLayoutListener == null) {
+            return;
+        }
+        hostView.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+        globalLayoutListener = null;
+    }
 }

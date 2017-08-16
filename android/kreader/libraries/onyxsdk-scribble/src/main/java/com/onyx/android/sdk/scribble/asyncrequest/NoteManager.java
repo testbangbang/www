@@ -56,7 +56,6 @@ public class NoteManager {
 
     private static final String TAG = NoteManager.class.getSimpleName();
 
-    private AsyncNoteViewHelper noteViewHelper;
     private RendererHelper rendererHelper;
     private DocumentHelper documentHelper;
     private SpanHelper spanHelper;
@@ -67,10 +66,12 @@ public class NoteManager {
     private static NoteManager instance;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
+    private RequestManager requestManager = new RequestManager();
     private TouchPoint mErasePoint = null;
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
     private List<Shape> dirtyStash = new ArrayList<>();
+    private boolean drawing = false;
     private @ScribbleMode.ScribbleModeDef
     int mCurrentScribbleMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
 
@@ -85,12 +86,13 @@ public class NoteManager {
         mCurrentScribbleMode = currentScribbleMode;
     }
 
+    public void resetScribbleMode() {
+        setCurrentScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
+    }
+
     private NoteManager(Context context) {
         appContext = context.getApplicationContext();
         initRawResource(appContext);
-        if (noteViewHelper == null) {
-            noteViewHelper = new AsyncNoteViewHelper();
-        }
     }
 
     static public NoteManager sharedInstance(Context context) {
@@ -126,7 +128,7 @@ public class NoteManager {
 
     public DocumentHelper getDocumentHelper() {
         if (documentHelper == null) {
-            documentHelper = new DocumentHelper();
+            documentHelper = new DocumentHelper(this);
         }
         return documentHelper;
     }
@@ -150,10 +152,6 @@ public class NoteManager {
             touchHelper = new TouchHelper(this);
         }
         return touchHelper;
-    }
-
-    public AsyncNoteViewHelper getNoteViewHelper() {
-        return noteViewHelper;
     }
 
     public PenManager getPenManager() {
@@ -359,30 +357,11 @@ public class NoteManager {
         view.getHolder().unlockCanvasAndPost(canvas);
     }
 
-    private void drawShapeSelectIndicator(final SurfaceView view, final Paint paint) {
-        if (mShapeSelectStartPoint == null || mShapeSelectStartPoint.getX() <= 0 || mShapeSelectStartPoint.getY() <= 0) {
-            return;
-        }
-
-        RectF selectRect = new RectF(mShapeSelectStartPoint.getX(), mShapeSelectStartPoint.getY(),
-                mShapeSelectPoint.getX(), mShapeSelectPoint.getY());
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2.0f);
-        paint.setPathEffect(noteViewHelper.selectedDashPathEffect);
-        Canvas canvas = view.getHolder().lockCanvas();
-        canvas.drawRect(selectRect, paint);
-        view.getHolder().unlockCanvasAndPost(canvas);
-    }
 
     //TODO:avoid direct obtain note view helper,because we plan to remove this class.
 
     public void reset() {
         getViewHelper().resetView();
-    }
-
-    public SurfaceView getView() {
-        return noteViewHelper.getView();
     }
 
     public View getHostView() {
@@ -394,7 +373,6 @@ public class NoteManager {
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().onTouch(surfaceView);
         EventBus.getDefault().register(this);
-        noteViewHelper.setView(context, surfaceView);
     }
 
     protected void onBeginErasing() {
@@ -471,7 +449,9 @@ public class NoteManager {
 
     public void quit() {
         EventBus.getDefault().unregister(this);
-        noteViewHelper.quit();
+        getTouchHelper().quit();
+        getViewHelper().quit();
+        resetScribbleMode();
     }
 
     public boolean inSpanScribbleMode() {
@@ -502,67 +482,67 @@ public class NoteManager {
     }
 
     public void setDrawing(boolean drawing) {
-        noteViewHelper.setDrawing(drawing);
+        this.drawing = drawing;
     }
 
     public boolean isDrawing() {
-        return noteViewHelper.isDrawing();
+        return drawing;
     }
 
     public boolean inUserErasing() {
-        return noteViewHelper.inUserErasing();
+        return getDocumentHelper().inUserErasing();
     }
 
     public NoteDocument getNoteDocument() {
-        return noteViewHelper.getNoteDocument();
+        return getDocumentHelper().getNoteDocument();
     }
 
-    public void pauseDrawing() {
-        noteViewHelper.pauseDrawing();
+    public void pauseRawDrawing() {
+        getTouchHelper().pauseRawDrawing();
     }
 
-    public void resumeDrawing() {
-        noteViewHelper.resumeDrawing();
+    public void resumeRawDrawing() {
+        getTouchHelper().resumeRawDrawing();
     }
 
     public Bitmap getRenderBitmap() {
-        return noteViewHelper.getRenderBitmap();
+        return getRendererHelper().getRenderBitmap();
     }
 
-    public List<Shape> getDirtyShape() {
-        return noteViewHelper.getDirtyStash();
+    public List<Shape> getDirtyStash() {
+        return dirtyStash;
     }
 
     public void clearPageUndoRedo(Context context) {
-        noteViewHelper.clearPageUndoRedo(context);
+        getDocumentHelper().clearPageUndoRedo(context);
     }
 
     public RequestManager getRequestManager() {
-        return noteViewHelper.getRequestManager();
+        return requestManager;
     }
 
     public void enableScreenPost(boolean enable) {
-        noteViewHelper.enableScreenPost(enable);
+        getPenManager().enableScreenPost(enable);
     }
 
     public void renderToSurfaceView() {
-        noteViewHelper.renderToSurfaceView();
-    }
-
-    public Bitmap updateRenderBitmap() {
-        return noteViewHelper.updateRenderBitmap(getViewportSize());
+        View hostView = getHostView();
+        if (hostView instanceof SurfaceView) {
+            SurfaceView view = (SurfaceView) hostView;
+            getRendererHelper().renderToSurfaceView(this, view);
+        }
     }
 
     public Rect getViewportSize() {
-        return noteViewHelper.getViewportSize();
+        return getViewHelper().getViewportSize();
     }
 
     public RectF getViewportSizeF() {
-        return noteViewHelper.getViewportSizeF();
+        return getViewHelper().getViewportSizeF();
     }
 
     public void updateShapeDataInfo(final Context context, final ShapeDataInfo shapeDataInfo) {
-        noteViewHelper.updateShapeDataInfo(context, shapeDataInfo);
+        getDocumentHelper().updateShapeDataInfo(context, shapeDataInfo);
     }
 
     public void renderCurrentPageInBitmap(final AsyncBaseNoteRequest request) {
@@ -578,7 +558,7 @@ public class NoteManager {
     }
 
     public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
-        noteViewHelper.updateDrawingArgs(drawingArgs);
+        getDocumentHelper().updateDrawingArgs(drawingArgs);
     }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {

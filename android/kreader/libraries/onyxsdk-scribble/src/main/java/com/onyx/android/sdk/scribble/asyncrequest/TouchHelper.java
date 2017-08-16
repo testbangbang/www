@@ -42,4 +42,20 @@ public class TouchHelper {
         return rawInputReader;
     }
 
+    public void pauseRawDrawing() {
+        getRawInputReader().pauseRawDrawing();
+    }
+
+    public void resumeRawDrawing() {
+        getRawInputReader().resumeRawDrawing();
+    }
+
+    public void quitRawDrawing() {
+        getRawInputReader().quitRawDrawing();
+    }
+
+    public void quit() {
+        pauseRawDrawing();
+        quitRawDrawing();
+    }
 }
