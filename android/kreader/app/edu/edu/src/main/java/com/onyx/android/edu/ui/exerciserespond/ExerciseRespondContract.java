@@ -19,9 +19,11 @@ public interface ExerciseRespondContract {
 
     interface ExerciseRespondView extends BaseView<ExerciseRespondPresenter> {
         void showQuestions(List<Question> questions, ChooseQuestionVariable variable, boolean showAnswer);
+        void showToast();
     }
 
     interface ExerciseRespondPresenter extends BasePresenter {
         PaperResult getPaperResult(List<BaseQuestionView> selectViewList);
+        void insertAnswerAndScore(long questionId, String answer,String score);
     }
 }

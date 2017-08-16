@@ -224,8 +224,6 @@ public class SampleCode {
         // move viewportInPage
         viewportRect.offset(100, 0);
         renderer.draw(position,  -1, readerBitmap);
-
         document.close();
     }
-
 }

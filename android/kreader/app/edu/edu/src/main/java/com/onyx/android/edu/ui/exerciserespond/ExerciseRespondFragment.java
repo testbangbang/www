@@ -3,13 +3,17 @@ package com.onyx.android.edu.ui.exerciserespond;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.onyx.android.edu.EduApp;
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.adapter.QuestionsPagerAdapter;
 import com.onyx.android.edu.base.BaseFragment;
@@ -19,6 +23,7 @@ import com.onyx.android.edu.db.model.Chapter;
 import com.onyx.android.edu.ui.respondresult.RespondResultActivity;
 import com.onyx.android.edu.utils.JsonUtils;
 import com.onyx.android.edu.view.ChoiceQuestionView;
+import com.onyx.android.edu.view.ChooseCallback;
 import com.onyx.android.edu.view.CustomViewPager;
 import com.onyx.android.edu.view.SubjectiveQuestionView;
 import com.onyx.libedu.model.ChooseQuestionVariable;
@@ -108,7 +113,12 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
                         showToast(getString(R.string.ask_select_answer));
                     }
                 }else {
-                    enterResultActivity();
+                    BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
+                    if(selectView.hasAnswers() || selectView.isShowAnswer()) {
+                        enterResultActivity();
+                    }else {
+                        showToast(getString(R.string.ask_select_answer));
+                    }
                 }
             }
             break;
@@ -131,6 +141,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
     }
 
     private void enterResultActivity(){
+        EduApp.instance().setEndTime(System.currentTimeMillis());
         PaperResult paperResult = mExerciseRespondPresenter.getPaperResult(mQuestionsPagerAdapter.getViewList());
         getActivity().finish();
         Intent intent = new Intent(getActivity(), RespondResultActivity.class);
@@ -155,13 +166,27 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         updatePaperIndex();
     }
 
+    @Override
+    public void showToast() {
+        Toast.makeText(EduApp.instance(), "Do not having examination paper", Toast.LENGTH_SHORT).show();
+        getActivity().finish();
+    }
+
     private ChoiceQuestionView generateChoiceQuestion(Question question, boolean showAnswer){
         ChoiceQuestionView choiceQuestionView = new ChoiceQuestionView(getActivity(),
                 showAnswer,
                 question.getQuestionOptions(),
                 question.getQuestionAnalytical().getAnswer(),
                 question.getStem(),
-                question.getQuestionAnalytical().getQuestionAnalyze());
+                question.getQuestionAnalytical().getQuestionAnalyze(),
+                question.getId());
+
+        choiceQuestionView.setOnChooseAnswerCallBack(new ChooseCallback() {
+            @Override
+            public void insertAnswer(long id, String answer, String score) {
+                mExerciseRespondPresenter.insertAnswerAndScore(id, answer, score);
+            }
+        });
         return choiceQuestionView;
     }
 

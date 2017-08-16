@@ -25,6 +25,8 @@ import java.util.List;
  */
 public class KReaderApp extends ReaderBaseApp {
     private static KReaderApp instance;
+    private String bookId;
+    private String bookName;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -70,4 +72,19 @@ public class KReaderApp extends ReaderBaseApp {
         AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
- }
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+}

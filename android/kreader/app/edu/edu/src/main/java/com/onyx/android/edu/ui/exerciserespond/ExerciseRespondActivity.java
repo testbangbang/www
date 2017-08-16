@@ -2,8 +2,10 @@ package com.onyx.android.edu.ui.exerciserespond;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.onyx.android.edu.EduApp;
 import com.onyx.android.edu.R;
 import com.onyx.android.edu.base.BaseActivity;
 import com.onyx.android.edu.base.Constant;
@@ -54,13 +57,18 @@ public class ExerciseRespondActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        long startTime = System.currentTimeMillis();
+        EduApp.instance().setStartTime(startTime);
         Intent intent = getIntent();
         boolean showAnswer = intent.getBooleanExtra(SHOW_ANSWER, false);
-        String questions = intent.getStringExtra(Constant.QUESTION);
-        String variable = intent.getStringExtra(Constant.CHOOSE_QUESTION_VARIABLE);
-        List<Question> questionList = JSON.parseObject(questions, new TypeReference<List<Question>>(){});
-        ChooseQuestionVariable chooseQuestionVariable = JSON.parseObject(variable, ChooseQuestionVariable.class);
-
+        //String questions = intent.getStringExtra(Constant.QUESTION);
+        //String variable = intent.getStringExtra(Constant.CHOOSE_QUESTION_VARIABLE);
+        //List<Question> questionList = JSON.parseObject(questions, new TypeReference<List<Question>>(){});
+        //ChooseQuestionVariable chooseQuestionVariable = JSON.parseObject(variable, ChooseQuestionVariable.class);
+        String bookName = intent.getStringExtra(Constant.BOOK_NAME);
+        String bookId = intent.getStringExtra(Constant.BOOK_ID);
+        EduApp.instance().setBookName(bookName);
+        EduApp.instance().setBookId(bookId);
         ExerciseRespondFragment exerciseRespondFragment = (ExerciseRespondFragment) getFragmentManager()
                 .findFragmentById(R.id.contentFrame);
         if (exerciseRespondFragment == null) {
@@ -70,13 +78,11 @@ public class ExerciseRespondActivity extends BaseActivity {
         }
 
 
-        new ExerciseRespondPresenter(exerciseRespondFragment, showAnswer, questionList, chooseQuestionVariable);
+        new ExerciseRespondPresenter(exerciseRespondFragment, bookId);
 
         mToolbarTitle.setVisibility(View.GONE);
         mRightTitle.setVisibility(View.GONE);
-        String text = String.format("科目：%s 分册 %s 共有%d道习题", chooseQuestionVariable.getSubject().getSubjectName(),
-                chooseQuestionVariable.getTextbook().getBookName(),
-                questionList.size());
+        String text = String.format("科目：%s", bookName);
         mLeftTitle.setText(text);
 
         mBack.setOnClickListener(new View.OnClickListener() {

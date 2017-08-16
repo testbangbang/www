@@ -291,6 +291,7 @@ public class FileUtils {
         byte[] digest_buffer = getDigestBuffer(file);
         MessageDigest md = MessageDigest.getInstance("MD5");
         md.update(digest_buffer);
+        md.update(file.getAbsolutePath().getBytes());
         byte[] out = md.digest();
 
         final char hex_digits[] = {

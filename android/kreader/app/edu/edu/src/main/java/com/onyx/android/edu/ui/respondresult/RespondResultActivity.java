@@ -64,10 +64,10 @@ public class RespondResultActivity extends BaseActivity {
         if (true) {
             PaperResult paperResult = JsonUtils.toBean(message, PaperResult.class);
 
-            RespondResultFragment respondResultFragment = (RespondResultFragment) getFragmentManager()
+            ExaminationResultFragment respondResultFragment = (ExaminationResultFragment) getFragmentManager()
                     .findFragmentById(R.id.contentFrame);
             if (respondResultFragment == null) {
-                respondResultFragment = RespondResultFragment.newInstance();
+                respondResultFragment = ExaminationResultFragment.newInstance();
                 ActivityUtils.addFragmentToActivity(getFragmentManager(),
                         respondResultFragment, R.id.contentFrame);
             }
