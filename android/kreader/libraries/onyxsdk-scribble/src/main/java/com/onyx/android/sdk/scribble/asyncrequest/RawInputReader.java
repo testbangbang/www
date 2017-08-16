@@ -52,7 +52,7 @@ public class RawInputReader {
 
             @Override
             public void onEraseTouchPointListReceived(final TouchPointList pointList) {
-                onEraseTouchPointsReceived(pointList);
+                EventBus.getDefault().post(new ErasingEvent(null, false));
             }
 
             @Override
@@ -65,16 +65,6 @@ public class RawInputReader {
             }
         });
         startRawDrawing();
-    }
-
-    private void onEraseTouchPointsReceived(final TouchPointList pointList) {
-        erasePoints = pointList;
-        if (erasePoints == null || erasePoints.size() == 0) {
-            return;
-        }
-        int size = erasePoints.size();
-        TouchPoint lastPoint = erasePoints.get(size - 1);
-        EventBus.getDefault().post(new ErasingEvent(lastPoint, false));
     }
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
