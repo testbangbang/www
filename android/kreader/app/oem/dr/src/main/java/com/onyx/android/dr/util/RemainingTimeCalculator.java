@@ -14,18 +14,18 @@ public class RemainingTimeCalculator {
     public static final int DISK_SPACE_LIMIT = 2;
     public static final int TIME_DIVIDEND = 1000;
     public static final int BITRATE_DIVIDEND = 8;
-    private int mCurrentLowerLimit = UNKNOWN_LIMIT;
-    private File mSDCardDirectory;
-    private File mRecordingFile;
-    private long mMaxBytes;
-    private int mBytesPerSecond;
-    private long mBlocksChangedTime;
-    private long mLastBlocks;
-    private long mFileSizeChangedTime;
-    private long mLastFileSize;
+    private int currentLowerLimit = UNKNOWN_LIMIT;
+    private File sdCardDirectory;
+    private File recordingFile;
+    private long maxBytes;
+    private int bytesPerSecond;
+    private long blocksChangedTime;
+    private long lastBlocks;
+    private long fileSizeChangedTime;
+    private long lastFileSize;
 
     public RemainingTimeCalculator() {
-        mSDCardDirectory = Environment.getExternalStorageDirectory();
+        sdCardDirectory = Environment.getExternalStorageDirectory();
     }
 
     /**
@@ -37,17 +37,17 @@ public class RemainingTimeCalculator {
      * @param maxBytes the limit
      */
     public void setFileSizeLimit(File file, long maxBytes) {
-        mRecordingFile = file;
-        mMaxBytes = maxBytes;
+        recordingFile = file;
+        this.maxBytes = maxBytes;
     }
 
     /**
      * Resets the interpolation.
      */
     public void reset() {
-        mCurrentLowerLimit = UNKNOWN_LIMIT;
-        mBlocksChangedTime = -1;
-        mFileSizeChangedTime = -1;
+        currentLowerLimit = UNKNOWN_LIMIT;
+        blocksChangedTime = -1;
+        fileSizeChangedTime = -1;
     }
 
     /**
@@ -55,35 +55,35 @@ public class RemainingTimeCalculator {
      */
     public long timeRemaining() {
         // Calculate how long we can record based on free disk space
-        StatFs fs = new StatFs(mSDCardDirectory.getAbsolutePath());
+        StatFs fs = new StatFs(sdCardDirectory.getAbsolutePath());
         long blocks = fs.getAvailableBlocks();
         long blockSize = fs.getBlockSize();
         long now = System.currentTimeMillis();
-        if (mBlocksChangedTime == -1 || blocks != mLastBlocks) {
-            mBlocksChangedTime = now;
-            mLastBlocks = blocks;
+        if (blocksChangedTime == -1 || blocks != lastBlocks) {
+            blocksChangedTime = now;
+            lastBlocks = blocks;
         }
-        // at mBlocksChangedTime we had this much time
-        long result = mLastBlocks * blockSize / mBytesPerSecond;
+        // at blocksChangedTime we had this much time
+        long result = lastBlocks * blockSize / bytesPerSecond;
         // so now we have this much time
-        result -= (now - mBlocksChangedTime) / TIME_DIVIDEND;
-        if (mRecordingFile == null) {
-            mCurrentLowerLimit = DISK_SPACE_LIMIT;
+        result -= (now - blocksChangedTime) / TIME_DIVIDEND;
+        if (recordingFile == null) {
+            currentLowerLimit = DISK_SPACE_LIMIT;
             return result;
         }
         // If we have a recording file set, we calculate a second estimate
-        // based on how long it will take us to reach mMaxBytes.
-        mRecordingFile = new File(mRecordingFile.getAbsolutePath());
-        long fileSize = mRecordingFile.length();
-        if (mFileSizeChangedTime == -1 || fileSize != mLastFileSize) {
-            mFileSizeChangedTime = now;
-            mLastFileSize = fileSize;
+        // based on how long it will take us to reach maxBytes.
+        recordingFile = new File(recordingFile.getAbsolutePath());
+        long fileSize = recordingFile.length();
+        if (fileSizeChangedTime == -1 || fileSize != lastFileSize) {
+            fileSizeChangedTime = now;
+            lastFileSize = fileSize;
         }
         // just for safety
-        long result2 = (mMaxBytes - fileSize) / mBytesPerSecond;
-        result2 -= (now - mFileSizeChangedTime) / TIME_DIVIDEND;
+        long result2 = (maxBytes - fileSize) / bytesPerSecond;
+        result2 -= (now - fileSizeChangedTime) / TIME_DIVIDEND;
         result2 -= 1;
-        mCurrentLowerLimit = result < result2
+        currentLowerLimit = result < result2
                 ? DISK_SPACE_LIMIT : FILE_SIZE_LIMIT;
         return Math.min(result, result2);
     }
@@ -94,14 +94,14 @@ public class RemainingTimeCalculator {
      * display the correct message to the user when we hit one of the limits.
      */
     public int currentLowerLimit() {
-        return mCurrentLowerLimit;
+        return currentLowerLimit;
     }
 
     /**
      * Is there any point of trying to start recording?
      */
     public boolean diskSpaceAvailable() {
-        StatFs fs = new StatFs(mSDCardDirectory.getAbsolutePath());
+        StatFs fs = new StatFs(sdCardDirectory.getAbsolutePath());
         // keep one free block
         return fs.getAvailableBlocks() > 1;
     }
@@ -112,6 +112,6 @@ public class RemainingTimeCalculator {
      * @param bitRate the bit rate to set in bits/sect.
      */
     public void setBitRate(int bitRate) {
-        mBytesPerSecond = bitRate / BITRATE_DIVIDEND;
+        bytesPerSecond = bitRate / BITRATE_DIVIDEND;
     }
 }

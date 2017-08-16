@@ -259,8 +259,9 @@ public class SpeechRecordingActivity extends BaseActivity
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             switch (recorder.state()) {
                 case Recorder.IDLE_STATE:
-                    if (recorder.sampleLength() > 0)
+                    if (recorder.sampleLength() > 0) {
                         saveSample();
+                    }
                     finish();
                     break;
                 case Recorder.PLAYING_STATE:
@@ -282,8 +283,9 @@ public class SpeechRecordingActivity extends BaseActivity
      * and sets the result to the sample's URI.
      */
     private void saveSample() {
-        if (recorder.sampleLength() == 0)
+        if (recorder.sampleLength() == 0) {
             return;
+        }
         Uri uri = null;
         try {
             uri = this.addToMediaDB(recorder.sampleFile());
@@ -461,8 +463,9 @@ public class SpeechRecordingActivity extends BaseActivity
         } else if (state == Recorder.RECORDING_STATE) {
             updateTimeRemaining();
         }
-        if (ongoing)
+        if (ongoing) {
             handler.postDelayed(updateTimer, millisecond);
+        }
     }
 
     /**
@@ -571,8 +574,9 @@ public class SpeechRecordingActivity extends BaseActivity
             // we don't want to go to sleep while recording or playing
             wakeLock.acquire();
         } else {
-            if (wakeLock.isHeld())
+            if (wakeLock.isHeld()) {
                 wakeLock.release();
+            }
         }
         updateUi();
     }
