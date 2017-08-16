@@ -31,6 +31,8 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
+import java.util.List;
+
 /**
  * Created by john on 12/8/2017.
  */
@@ -274,8 +276,11 @@ public class RendererHelper {
         renderVisiblePagesInBitmap(noteManager, request);
     }
 
-    public void renderToSurfaceView(NoteManager noteManager, SurfaceView surfaceView) {
-        Rect rect = checkSurfaceView(noteManager, surfaceView);
+    public void renderToSurfaceView(List<Shape> shapes, SurfaceView surfaceView) {
+        if (shapes == null) {
+            return;
+        }
+        Rect rect = checkSurfaceView(surfaceView);
         if (rect == null) {
             return;
         }
@@ -290,18 +295,18 @@ public class RendererHelper {
         clearBackground(canvas, paint, rect);
         canvas.drawBitmap(getRenderBitmap(), 0, 0, paint);
         RenderContext renderContext = RenderContext.create(canvas, paint, null);
-        for (Shape shape : noteManager.getDirtyStash()) {
+        for (Shape shape : shapes) {
             shape.render(renderContext);
         }
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
     }
 
-    private Rect checkSurfaceView(NoteManager noteManager, SurfaceView surfaceView) {
+    private Rect checkSurfaceView(SurfaceView surfaceView) {
         if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
             Log.e(TAG, "surfaceView is not valid");
             return null;
         }
-        return noteManager.getViewportSize();
+        return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
     }
 
 

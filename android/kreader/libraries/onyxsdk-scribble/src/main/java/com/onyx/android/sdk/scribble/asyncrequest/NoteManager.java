@@ -526,7 +526,7 @@ public class NoteManager {
     }
 
     public void renderToSurfaceView() {
-        getRendererHelper().renderToSurfaceView(this, getHostView());
+        getRendererHelper().renderToSurfaceView(getDirtyStash(), getHostView());
     }
 
     public Rect getViewportSize() {
