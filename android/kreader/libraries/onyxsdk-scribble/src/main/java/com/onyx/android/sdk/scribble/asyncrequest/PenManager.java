@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -12,7 +13,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 public class PenManager {
 
     private boolean useRawInput = false;
-    private View hostView = null;
+    private SurfaceView hostView = null;
 
     public static final int PEN_STOP = 0;
     public static final int PEN_START = 1;
@@ -24,7 +25,7 @@ public class PenManager {
         return useRawInput;
     }
 
-    public PenManager setHostView(final View view) {
+    public PenManager setHostView(final SurfaceView view) {
         hostView = view;
         return this;
     }

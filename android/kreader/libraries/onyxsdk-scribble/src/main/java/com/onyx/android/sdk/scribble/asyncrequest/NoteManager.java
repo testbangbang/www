@@ -364,7 +364,7 @@ public class NoteManager {
         getViewHelper().resetView();
     }
 
-    public View getHostView() {
+    public SurfaceView getHostView() {
         return getViewHelper().getHostView();
     }
 
@@ -526,11 +526,7 @@ public class NoteManager {
     }
 
     public void renderToSurfaceView() {
-        View hostView = getHostView();
-        if (hostView instanceof SurfaceView) {
-            SurfaceView view = (SurfaceView) hostView;
-            getRendererHelper().renderToSurfaceView(this, view);
-        }
+        getRendererHelper().renderToSurfaceView(this, getHostView());
     }
 
     public Rect getViewportSize() {
