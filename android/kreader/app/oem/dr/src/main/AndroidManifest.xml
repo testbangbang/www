@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.onyx.android.dr">
+    package="com.onyx.android.dr"
+    android:installLocation="preferExternal">
 
     <uses-permission android:name="android.permission.GET_TASKS" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -116,7 +117,19 @@
 
         <activity
             android:name=".activity.SpeechRecordingActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.provider.MediaStore.RECORD_SOUND" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <receiver android:name=".receiver.RecorderReceiver"
+            android:theme="@style/Theme.SoundRecorder">
+            <intent-filter>
+                <action android:name="com.onyx.android.dr.CLEAR_FILE" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"

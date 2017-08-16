@@ -1,7 +1,8 @@
-<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <include
         android:id="@+id/title_bar"
@@ -11,48 +12,136 @@
 
     <TextView
         android:id="@+id/speech_recording_activity_content"
-        android:layout_below="@+id/title_bar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/title_bar"
         android:layout_gravity="center_horizontal"
         android:layout_margin="@dimen/record_time_activity_hint_margin_top"
         android:text="@string/set_speech_time"
         android:textColor="@android:color/black"
         android:textSize="@dimen/level_one_font_size" />
 
-    <RelativeLayout
-        android:id="@+id/record_time_activity_bottom"
+    <LinearLayout
+        android:id="@+id/activity_record_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:background="@android:drawable/title_bar"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/record_time_activity_next_step"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:text="@string/next_step" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_record_container_margin_bottom"
+            android:layout_marginTop="@dimen/activity_record_container_margin_bottom"
+            android:orientation="horizontal">
 
-    </RelativeLayout>
+            <ImageButton
+                android:id="@+id/speech_recording_activity_start_lecture"
+                style="@style/media_button"
+                android:layout_height="match_parent"
+                android:src="@drawable/record" />
 
-    <RelativeLayout
+            <ImageButton
+                android:id="@+id/speech_recording_activity_record_playback"
+                style="@style/media_button"
+                android:layout_height="match_parent"
+                android:src="@drawable/play" />
+
+            <ImageButton
+                android:id="@+id/speech_recording_activity_stop"
+                style="@style/media_button"
+                android:layout_height="match_parent"
+                android:src="@drawable/stop" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/speech_recording_activity_exit_buttons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/record_time_activity_bottom"
+        android:layout_margin="@dimen/activity_exit_buttons_margin"
+        android:layout_gravity="center_vertical"
+        android:layout_above="@id/activity_record_container"
+        android:gravity="center_vertical"
         android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/speech_recording_activity_start_lecture"
-            style="@style/new_word_notebook_textview_style"
-            android:clickable="true"
-            android:text="@string/start_lecture" />
+        <Button
+            android:id="@+id/record_time_activity_discard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/abandon" />
+
+        <Button
+            android:id="@+id/record_time_activity_accept"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/complete" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/record_time_activity_record_height"
+        android:layout_above="@id/speech_recording_activity_exit_buttons"
+        android:background="@drawable/gradient_bg">
 
         <TextView
-            android:id="@+id/speech_recording_activity_record_playback"
-            style="@style/new_word_notebook_textview_style"
-            android:clickable="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/record_playback" />
+            android:id="@+id/record_time_activity_timer_view"
+            style="@android:style/TextAppearance.Large"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_font_size" />
 
+        <LinearLayout
+            android:id="@+id/state_message_two_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/record_time_activity_timer_view"
+            android:layout_centerHorizontal="true"
+            android:baselineAligned="false"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/speech_recording_activity_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical" />
+
+            <TextView
+                android:id="@+id/record_time_activity_state_two"
+                style="@android:style/TextAppearance.Medium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/level_three_font_size"
+                android:layout_marginLeft="@dimen/activity_state_two_margin_left"
+                android:text="@string/record" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/record_time_activity_state_one"
+            style="@android:style/TextAppearance.Small"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/state_message_two_layout"
+            android:layout_centerHorizontal="true" />
+
+        <ProgressBar
+            android:id="@+id/record_time_activity_progressbar"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/record_time_activity_timer_view"
+            android:layout_marginLeft="@dimen/record_time_activity_progressbar_margin_left"
+            android:layout_marginRight="@dimen/record_time_activity_progressbar_margin_left"
+            android:max="100"
+            android:orientation="horizontal"
+            android:progress="0" />
     </RelativeLayout>
 </RelativeLayout>
