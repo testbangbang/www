@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
@@ -103,6 +104,14 @@ public class RawInputReader {
 
         getRawInputProcessor().pause();
         noteManager.getPenManager().pauseDrawing();
+    }
+
+    public void quitRawDrawing() {
+        if (!useRawInput()) {
+            return;
+        }
+        getRawInputProcessor().quit();
+        noteManager.getPenManager().quitDrawing();
     }
 
     private DeviceConfig getDeviceConfig() {

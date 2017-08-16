@@ -8,6 +8,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 
 /**
@@ -15,7 +16,13 @@ import com.onyx.android.sdk.scribble.utils.InkUtils;
  */
 
 public class DocumentHelper {
+
     private NoteDocument noteDocument = new NoteDocument();
+    private NoteManager parent;
+
+    public DocumentHelper(NoteManager parent) {
+        this.parent = parent;
+    }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
         getNoteDocument().open(context, documentUniqueId, parentUniqueId);
@@ -28,20 +35,20 @@ public class DocumentHelper {
     }
 
     private void onDocumentOpened() {
-        renderBitmapWrapper.clear();
-        NoteModel.setDefaultEraserRadius(deviceConfig.getEraserRadius());
-        getNoteDocument().getNoteDrawingArgs().setEraserRadius(deviceConfig.getEraserRadius());
-        InkUtils.setPressureEntries(mappingConfig.getPressureList());
+        parent.getRendererHelper().clearRenderBitmap();
+        NoteModel.setDefaultEraserRadius(parent.getDeviceConfig().getEraserRadius());
+        getNoteDocument().getNoteDrawingArgs().setEraserRadius(parent.getDeviceConfig().getEraserRadius());
+        InkUtils.setPressureEntries(parent.getMappingConfig().getPressureList());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }
 
     public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo(isLineLayoutMode());
+        getNoteDocument().getCurrentPage(context).undo(parent.inSpanScribbleMode());
     }
 
     public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo(isLineLayoutMode());
+        getNoteDocument().getCurrentPage(context).redo(parent.inSpanScribbleMode());
     }
 
     public void clearPageUndoRedo(final Context context) {
@@ -134,10 +141,6 @@ public class DocumentHelper {
         return getPenState() == NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING;
     }
 
-    public boolean inErasing() {
-        return (shortcutErasing || getPenState() == NoteDrawingArgs.PenState.PEN_USER_ERASING);
-    }
-
     public boolean inUserErasing() {
         return getPenState() == NoteDrawingArgs.PenState.PEN_USER_ERASING;
     }
@@ -149,6 +152,25 @@ public class DocumentHelper {
     public void setCurrentShapeType(int currentShapeType) {
         getNoteDocument().getNoteDrawingArgs().setCurrentShapeType(currentShapeType);
         updatePenStateByCurrentShapeType();
+    }
+
+    public void updatePenStateByCurrentShapeType() {
+        int type = getCurrentShapeType();
+        if (ShapeFactory.isDFBShape(type)) {
+            setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
+            return;
+        }
+        switch (type) {
+            case ShapeFactory.SHAPE_ERASER:
+                setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
+                break;
+            case ShapeFactory.SHAPE_SELECTOR:
+                setPenState(NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING);
+                break;
+            default:
+                setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
+                break;
+        }
     }
 
 }

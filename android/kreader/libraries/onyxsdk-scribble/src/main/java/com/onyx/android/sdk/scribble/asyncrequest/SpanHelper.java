@@ -125,7 +125,7 @@ public class SpanHelper {
         }
         for (Shape shape : shapes) {
             TouchPointList pointList = shape.getPoints();
-            if (!noteManager.getNoteViewHelper().checkTouchPointList(pointList)) {
+            if (!noteManager.getTouchHelper().getTouchReader().checkTouchPointList(pointList)) {
                 return true;
             }
         }

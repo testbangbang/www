@@ -13,8 +13,12 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.SurfaceView;
+import android.view.View;
 
 import com.hanvon.core.Algorithm;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.R;
@@ -27,11 +31,15 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
+import java.util.List;
+
 /**
  * Created by john on 12/8/2017.
  */
 
 public class RendererHelper {
+
+    private static final String TAG = "RendererHelper";
 
     private boolean useExternal = false;
     private boolean debugPathBenchmark = false;
@@ -42,8 +50,21 @@ public class RendererHelper {
         renderBitmapWrapper.clear();
     }
 
+    public Bitmap updateRenderBitmap(final Rect viewportSize) {
+        renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
+        return renderBitmapWrapper.getBitmap();
+    }
+
+    public Bitmap getRenderBitmap() {
+        return renderBitmapWrapper.getBitmap();
+    }
+
+    public void clearRenderBitmap() {
+        renderBitmapWrapper.clear();
+    }
+
     public void renderVisiblePagesInBitmap(final NoteManager parent, final AsyncBaseNoteRequest request) {
-        Bitmap bitmap = parent.updateRenderBitmap();
+        Bitmap bitmap = updateRenderBitmap(parent.getViewportSize());
         bitmap.eraseColor(Color.WHITE);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
@@ -86,7 +107,7 @@ public class RendererHelper {
     }
 
     public void renderSelectionRectangle(final NoteManager parent, final TouchPoint start, final TouchPoint end) {
-        Bitmap bitmap = parent.updateRenderBitmap();
+        Bitmap bitmap = updateRenderBitmap(parent.getViewportSize());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
         paint.setPathEffect(selectedDashPathEffect);
@@ -95,7 +116,7 @@ public class RendererHelper {
     }
 
     public void renderShapeMovingRectangle(final NoteManager parent, final TouchPoint start, final TouchPoint end) {
-        Bitmap bitmap = parent.updateRenderBitmap();
+        Bitmap bitmap = updateRenderBitmap(parent.getViewportSize());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
         paint.setPathEffect(selectedDashPathEffect);
@@ -255,13 +276,16 @@ public class RendererHelper {
         renderVisiblePagesInBitmap(noteManager, request);
     }
 
-    public void renderToSurfaceView() {
-        Rect rect = checkSurfaceView();
+    public void renderToSurfaceView(List<Shape> shapes, SurfaceView surfaceView) {
+        if (shapes == null) {
+            return;
+        }
+        Rect rect = checkSurfaceView(surfaceView);
         if (rect == null) {
             return;
         }
 
-        applyUpdateMode();
+        applyUpdateMode(surfaceView);
         Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
         if (canvas == null) {
             return;
@@ -271,17 +295,32 @@ public class RendererHelper {
         clearBackground(canvas, paint, rect);
         canvas.drawBitmap(getRenderBitmap(), 0, 0, paint);
         RenderContext renderContext = RenderContext.create(canvas, paint, null);
-        for (Shape shape : getDirtyStash()) {
+        for (Shape shape : shapes) {
             shape.render(renderContext);
         }
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
     }
 
-    private Rect checkSurfaceView() {
+    private Rect checkSurfaceView(SurfaceView surfaceView) {
         if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
             Log.e(TAG, "surfaceView is not valid");
             return null;
         }
-        return getViewportSize();
+        return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
+    }
+
+
+    private void clearBackground(final Canvas canvas, final Paint paint, final Rect rect) {
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(rect, paint);
+    }
+
+    private void applyUpdateMode(View view) {
+        if (false) {
+            EpdController.setViewDefaultUpdateMode(view, UpdateMode.GC);
+        } else {
+            EpdController.resetUpdateMode(view);
+        }
     }
 }

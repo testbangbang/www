@@ -1,30 +1,10 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.Rect;
-import android.graphics.RectF;
-import android.text.TextUtils;
-
-import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.R;
-import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.data.NotePage;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.shape.RenderContext;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
-import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -116,7 +96,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
     public void beforeExecute(final NoteManager noteManager) {
         noteManager.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseInputProcessor()) {
-            noteManager.pauseDrawing();
+            noteManager.pauseRawDrawing();
         }
         benchmarkStart();
         invokeStartCallback(noteManager.getRequestManager());
@@ -163,7 +143,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
                     getCallback().done(AsyncBaseNoteRequest.this, getException());
                 }
                 if (isResumeInputProcessor()) {
-                    noteManager.resumeDrawing();
+                    noteManager.resumeRawDrawing();
                 }
                 noteManager.getRequestManager().releaseWakeLock();
             }};

@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
@@ -30,7 +33,7 @@ import java.util.List;
 
 public class ViewHelper {
 
-    private View hostView;
+    private SurfaceView hostView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private NoteManager parent;
 
@@ -38,12 +41,12 @@ public class ViewHelper {
         parent = noteManager;
     }
 
-    public void setHostView(View hostView) {
+    public void setHostView(SurfaceView hostView) {
         this.hostView = hostView;
         initView(hostView);
     }
 
-    public View getHostView() {
+    public SurfaceView getHostView() {
         return hostView;
     }
 
@@ -77,4 +80,25 @@ public class ViewHelper {
 
     }
 
+    public Rect getViewportSize() {
+        if (hostView != null) {
+            return new Rect(0, 0, hostView.getWidth(), hostView.getHeight());
+        }
+        return null;
+    }
+
+    public RectF getViewportSizeF() {
+        if (hostView != null) {
+            return new RectF(0, 0, hostView.getWidth(), hostView.getHeight());
+        }
+        return null;
+    }
+
+    public void quit() {
+        if (globalLayoutListener == null) {
+            return;
+        }
+        hostView.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+        globalLayoutListener = null;
+    }
 }
