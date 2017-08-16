@@ -3,8 +3,11 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -21,6 +24,7 @@ public class RawInputReader {
 
     private RawInputProcessor rawInputProcessor = null;
     private NoteManager noteManager;
+    private TouchPointList erasePoints;
 
     public RawInputReader(NoteManager noteManager) {
         this.noteManager = noteManager;
@@ -48,6 +52,7 @@ public class RawInputReader {
 
             @Override
             public void onEraseTouchPointListReceived(final TouchPointList pointList) {
+                onEraseTouchPointsReceived(pointList);
             }
 
             @Override
@@ -56,9 +61,20 @@ public class RawInputReader {
 
             @Override
             public void onEndErasing() {
+                EventBus.getDefault().post(new EraseTouchPointListReceivedEvent(erasePoints));
             }
         });
         startRawDrawing();
+    }
+
+    private void onEraseTouchPointsReceived(final TouchPointList pointList) {
+        erasePoints = pointList;
+        if (erasePoints == null || erasePoints.size() == 0) {
+            return;
+        }
+        int size = erasePoints.size();
+        TouchPoint lastPoint = erasePoints.get(size - 1);
+        EventBus.getDefault().post(new ErasingEvent(lastPoint, false));
     }
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {

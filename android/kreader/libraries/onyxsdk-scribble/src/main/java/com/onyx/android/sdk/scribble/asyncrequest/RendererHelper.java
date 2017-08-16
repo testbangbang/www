@@ -323,4 +323,20 @@ public class RendererHelper {
             EpdController.resetUpdateMode(view);
         }
     }
+
+    public void drawErasingIndicator(final SurfaceView view, final Paint paint, final TouchPoint erasePoint, float drawRadius) {
+        if (erasePoint == null || erasePoint.getX() <= 0 || erasePoint.getY() <= 0) {
+            return;
+        }
+
+        float x = erasePoint.getX();
+        float y = erasePoint.getY();
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setAntiAlias(true);
+        paint.setStrokeWidth(2.0f);
+        Canvas canvas = view.getHolder().lockCanvas();
+        canvas.drawCircle(x, y, drawRadius, paint);
+        view.getHolder().unlockCanvasAndPost(canvas);
+    }
 }
