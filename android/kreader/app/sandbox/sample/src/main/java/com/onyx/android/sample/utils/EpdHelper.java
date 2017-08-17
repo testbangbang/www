@@ -34,7 +34,7 @@ public class EpdHelper {
     private Bitmap mcu;
     private int maxFrame = 30;
     private int currentFrame = 0;
-    private int frameStep = 15;
+    private int frameStep = 13;
 
     public void init(final List<String> pathList) {
         for(String path : pathList) {
@@ -83,10 +83,13 @@ public class EpdHelper {
     public void dump(final Bitmap originUpd, final Bitmap originWb, final Bitmap mergedUpd, final Bitmap mergedWb, int index) {
         String path;
 
-        path = String.format("/mnt/sdcard/merged-upd-frame-" + currentFrame + "-update-buffer-" + index + ".png");
-        FileUtils.deleteFile(path);
-        BitmapUtils.saveBitmap(mergedUpd, path);
-        Log.e(TAG, "save upd buffer: " + path);
+        boolean dumpUpd = false;
+        if (dumpUpd) {
+            path = String.format("/mnt/sdcard/merged-upd-frame-" + currentFrame + "-update-buffer-" + index + ".png");
+            FileUtils.deleteFile(path);
+            BitmapUtils.saveBitmap(mergedUpd, path);
+            Log.e(TAG, "save upd buffer: " + path);
+        }
 
         path = String.format("/mnt/sdcard/result-frame-" + currentFrame + "-update-buffer-index-" + index + ".png");
         FileUtils.deleteFile(path);

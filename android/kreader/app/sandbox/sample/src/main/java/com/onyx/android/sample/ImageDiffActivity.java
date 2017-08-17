@@ -30,6 +30,31 @@ public class ImageDiffActivity extends AppCompatActivity {
         calculateUpdWorkingBuffer();
     }
 
+    private void transparentImage() {
+        String path = new String("/mnt/sdcard/scp-0.png");
+        final Bitmap bitmap = ImageUtils.loadBitmapFromFile(path);
+        for(int y = 0; y < bitmap.getHeight() / 4; ++y) {
+            for(int x = 0; x < bitmap.getWidth() / 4; ++x) {
+                bitmap.setPixel(x, y, Color.TRANSPARENT);
+            }
+        }
+        path = new String("/mnt/sdcard/scp-0-trans.png");
+        BitmapUtils.saveBitmap(bitmap, path);
+
+
+        final Bitmap result = ImageUtils.loadBitmapFromFile(path);
+        for(int y = 0; y < result.getHeight() / 4; ++y) {
+            for(int x = 0; x < result.getWidth() / 4; ++x) {
+                int value = result.getPixel(x, y);
+                if (value != Color.TRANSPARENT) {
+                    Log.e(TAG, "incorrect value");
+                }
+            }
+        }
+
+        Log.e(TAG, "transparent done");
+    }
+
     private void calculateDiff() {
         ImageUtils imageUtils = new ImageUtils();
         List<String> list = new ArrayList<>();

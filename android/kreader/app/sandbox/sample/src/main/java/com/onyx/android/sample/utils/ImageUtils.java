@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 
@@ -36,6 +37,7 @@ public class ImageUtils {
                     continue;
                 }
                 if (v1 == v2) {
+                    upd.setPixel(x, y, Color.TRANSPARENT);
                     continue;
                 }
                 int state = (mcu.getPixel(x, y) & 0xff);
@@ -59,6 +61,7 @@ public class ImageUtils {
         int width = originUpd.getWidth();
         int height = originUpd.getHeight();
         Bitmap result = Bitmap.createBitmap(width * 4, originUpd.getHeight(), originUpd.getConfig());
+        result.setHasAlpha(true);
         Canvas canvas = new Canvas(result);
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.STROKE);
@@ -154,11 +157,14 @@ public class ImageUtils {
         options.inPreferredConfig = Bitmap.Config.ARGB_8888;
         options.inMutable = true;
         Bitmap bitmap = BitmapFactory.decodeFile(path, options);
+        bitmap.setHasAlpha(true);
         return bitmap;
     }
 
     public static Bitmap create(final Bitmap origin) {
-        return origin.copy(origin.getConfig(), true);
+        Bitmap result = origin.copy(origin.getConfig(), true);
+        result.setHasAlpha(true);
+        return result;
     }
 
 }
