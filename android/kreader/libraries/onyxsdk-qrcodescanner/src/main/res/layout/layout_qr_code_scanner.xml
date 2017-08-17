@@ -5,8 +5,8 @@
                 android:layout_centerHorizontal="true">
     <FrameLayout
         android:id="@+id/qr_code_fl_scanner"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
+        android:layout_width="218dp"
+        android:layout_height="218dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="80dp">
     </FrameLayout>
