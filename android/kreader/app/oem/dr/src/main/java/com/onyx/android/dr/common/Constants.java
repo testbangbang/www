@@ -38,6 +38,7 @@ public class Constants {
     public static final String OTHER_DICTIONARY = "/dicts/other_dictionary";
     public static final String EDITQUERY = "editQuery";
     public static final String DICTTYPE = "dictType";
+    public static final String FRAGMENT_TYPE = "fragment_type";
     public static final String MINUTE_POSITION = "minutePosition";
     public static final String HOUR_POSITION = "hourPosition";
     public static final String SPEECH_TIME = "speechTime";
@@ -88,4 +89,21 @@ public class Constants {
     public static final String ENGLISH = "英文";
     public static final String SMALL_LANGUAGE = "小语种";
     public static final int RECORD_TIME = 5;
+    public static final int VALUE_ZERO = 0;
+    public static final int VALUE_NEGATIVE_ONE = -1;
+    public static String STANDBY_PIC_DIRECTORY = "/data/local/assets/images/";
+    public static final String APK_NAME = "dr.apk";
+    public static final String APK_DOWNLOAD_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + Constants.APK_NAME;
+    public static final long RESET_PRESS_TIMEOUT = 1000;
+    public static final int SYSTEM_SETTING_PRESS_COUNT = 6;
+
+    static final public String RK_PREFIX = "rk";
+    static final public String IMX6_BASED_CONFIG_NAME = "onyx_imx6";
+    static final public String RK3026_BASED_CONFIG_NAME = "onyx_rk3026";
+    static final public String DEBUG_CONFIG_NAME = "debug";
+    static final public String NON_MANUFACTURE_BASED_CONFIG_NAME = "onyx";
+    public static final String UPDATE_URL = "update_url";
+    public static final String UPDATE_ZIP = "update.zip";
+
+    public static final int DEVICE_SETTING_FRAGMENT = 0;
 }

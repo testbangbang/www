@@ -1,8 +1,7 @@
 package com.onyx.android.dr.event;
 
 /**
- * Created by hehai on 17-7-13.
+ * Created by yangzhongping on 17-5-5.
  */
-
 public class BackToBookshelfEvent {
 }
