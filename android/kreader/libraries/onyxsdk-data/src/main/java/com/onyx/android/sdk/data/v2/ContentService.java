@@ -2,11 +2,11 @@ package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
-import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.v2.AdminApplyModel;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.Course;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
+import com.onyx.android.sdk.data.model.v2.DeviceBindContainer;
 import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
 import com.onyx.android.sdk.data.model.v2.IndexService;
@@ -17,14 +17,17 @@ import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.v2.InstallationIdBinding;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.utils.ResultCode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
@@ -102,6 +105,14 @@ public interface ContentService {
     @PUT("users/{id}/unbindDevice")
     Call<ResponseBody> unbindUserByDevice(@Path(Constant.ID_TAG) final String userId,
                                             @Body final DeviceBind deviceBind);
+
+    @POST("users/createByDevice")
+    Call<NeoAccountBase> createUserByDevice(@Body final DeviceBindContainer container);
+
+    @FormUrlEncoded
+    @HTTP(method = "DELETE", path = "users/{id}/leaveGroups", hasBody = true)
+    Call<ResponseBody> deleteGroupsFromUser(@Path(Constant.ID_TAG) final String userId,
+                                           @Field("groups") ArrayList<String> groups);
 
     @GET("adapplys/phoneVerify")
     Call<ResponseBody> applyPhoneVerify(@Query(Constant.PHONE_TAG) final String phone);

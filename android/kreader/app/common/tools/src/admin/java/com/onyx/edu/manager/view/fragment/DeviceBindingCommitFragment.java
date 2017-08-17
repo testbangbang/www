@@ -1,6 +1,7 @@
 package com.onyx.edu.manager.view.fragment;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,10 +22,11 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.AccountCommon;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
+import com.onyx.android.sdk.data.model.v2.DeviceBindContainer;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.request.cloud.v2.AccountBindByDeviceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountCreateByDeviceRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.AccountDeleteGroupsRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountUnBindByDeviceRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
@@ -35,10 +37,12 @@ import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.DeviceUserInfoSwitchEvent;
 import com.onyx.edu.manager.manager.ContentManager;
+import com.onyx.edu.manager.view.activity.GroupListSelectActivity;
 import com.onyx.edu.manager.view.dialog.DialogHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -49,9 +53,12 @@ import butterknife.OnClick;
  * Created by suicheng on 2017/7/7.
  */
 public class DeviceBindingCommitFragment extends Fragment {
+    private static final int REQUEST_CODE_GROUP_SELECT = 1000;
 
     @Bind(R.id.layout_user_info)
     LinearLayout userInfoLayout;
+    @Bind(R.id.groups_layout)
+    LinearLayout groupsLayout;
     @Bind(R.id.btn_unbind)
     Button unbindBtn;
     @Bind(R.id.btn_bind)
@@ -65,6 +72,8 @@ public class DeviceBindingCommitFragment extends Fragment {
 
     private boolean fromGroupSelect = false;
     private GroupUserInfo groupUserInfo;
+
+    private int oldGroupsCount = 0;
 
     public static Fragment newInstance(GroupUserInfo groupUserInfo, boolean fromGroupSelect) {
         Bundle bundle = new Bundle();
@@ -169,12 +178,17 @@ public class DeviceBindingCommitFragment extends Fragment {
             return;
         }
         for (CloudGroup group : groupList) {
-            userInfoLayout.addView(getGroupView(layoutInflater, group));
+            groupsLayout.addView(getGroupView(layoutInflater, group));
         }
     }
 
+    private void updateGroupsInfo(CloudGroup group) {
+        groupsLayout.addView(getGroupView(LayoutInflater.from(getContext()), group));
+    }
+
     private View getGroupView(LayoutInflater layoutInflater, CloudGroup group) {
-        View view = layoutInflater.inflate(R.layout.layout_user_edit_info, null);
+        View view = layoutInflater.inflate(R.layout.layout_swipe_user_edit_info, null);
+        bindSwipeLayoutDeleteView(view, group);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, (int) ScreenUtils.getDimenPixelSize(getContext(), 50));
         view.setLayoutParams(layoutParams);
@@ -182,6 +196,72 @@ public class DeviceBindingCommitFragment extends Fragment {
         editText.setEnabled(false);
         editText.setText(group.name);
         return view;
+    }
+
+    private void bindSwipeLayoutDeleteView(View viewGroup, final CloudGroup group) {
+        View view = viewGroup.findViewById(R.id.item_delete);
+        view.setTag(group);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showGroupRemoveConfirmDialog(group);
+            }
+        });
+    }
+
+    private void showGroupRemoveConfirmDialog(final CloudGroup group) {
+        DialogHolder.showAlertDialog(getContext(), null, getString(R.string.group_delete_alert_message),
+                new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        processRemoveGroup(group);
+                    }
+                });
+    }
+
+    private void processRemoveGroup(CloudGroup group) {
+        int index = -1;
+        List<CloudGroup> groupList = getCommitEntity().groups;
+        for (int i = 0; i < groupList.size(); i++) {
+            CloudGroup compareGroup = groupList.get(i);
+            if (compareGroup._id.equals(group._id)) {
+                index = i;
+            }
+        }
+        if (index < 0) {
+            return;
+        }
+        if (index >= oldGroupsCount) {
+            removeGroup(index);
+        } else {
+            postRemoveGroupRequest(index);
+        }
+    }
+
+    private void postRemoveGroupRequest(final int index) {
+        final MaterialDialog dialog = DialogHolder.showProgressDialog(getContext(), getString(R.string.loading));
+        List<String> list = new ArrayList<>();
+        list.add(getCommitEntity().groups.get(index)._id);
+        final AccountDeleteGroupsRequest deleteRequest = new AccountDeleteGroupsRequest(getNeoAccount(), list);
+        AdminApplication.getCloudManager().submitRequest(getContext().getApplicationContext(), deleteRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialog.dismiss();
+                boolean success = deleteRequest.isSuccessful();
+                ToastUtils.showToast(getContext().getApplicationContext(), success ? R.string.delete_success :
+                        R.string.delete_fail);
+                if (!success) {
+                    return;
+                }
+                removeGroup(index);
+                oldGroupsCount--;
+            }
+        });
+    }
+
+    private void removeGroup(int index) {
+        getCommitEntity().groups.remove(index);
+        groupsLayout.removeViewAt(index);
     }
 
     private void updateMacAddressView(final DeviceBind deviceBind) {
@@ -215,12 +295,11 @@ public class DeviceBindingCommitFragment extends Fragment {
             ToastUtils.showToast(getContext().getApplicationContext(), R.string.required_fields_is_empty);
             return;
         }
-
-        if (getCommitEntity().user == null) {
-            startAccountCreateByDevice(getCommitEntity().groups, deviceBind);
-        } else {
-            startAccountBindByDevice();
+        if (CollectionUtils.isNullOrEmpty(getCommitEntity().groups)) {
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.group_has_no_selection);
+            return;
         }
+        createAccountByDevice(deviceBind);
     }
 
     @OnClick(R.id.btn_unbind)
@@ -228,13 +307,24 @@ public class DeviceBindingCommitFragment extends Fragment {
         showAccountUnbindDialog();
     }
 
-    private void startAccountCreateByDevice(List<CloudGroup> groupList, DeviceBind deviceBind) {
-        final AccountCreateByDeviceRequest bindByDeviceRequest = new AccountCreateByDeviceRequest(groupList,
-                deviceBind);
-        AdminApplication.getCloudManager().submitRequest(getContext(), bindByDeviceRequest, new BaseCallback() {
+    @OnClick(R.id.group_add)
+    public void onGroupAddClick() {
+        startActivityForResult(new Intent(getContext(), GroupListSelectActivity.class), REQUEST_CODE_GROUP_SELECT);
+    }
+
+    private void createAccountByDevice(DeviceBind deviceBind) {
+        NeoAccountBase account = getNeoAccount();
+        if (account == null) {
+            account = new NeoAccountBase();
+        }
+        DeviceBindContainer bindContainer = new DeviceBindContainer();
+        bindContainer.deviceBind = deviceBind;
+        bindGroupsToContainerUser(bindContainer, account);
+        final AccountCreateByDeviceRequest createByDeviceRequest = new AccountCreateByDeviceRequest(bindContainer);
+        AdminApplication.getCloudManager().submitRequest(getContext(), createByDeviceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null || (bindByDeviceRequest.getAccount()) == null) {
+                if (e != null || (createByDeviceRequest.getAccount()) == null) {
                     ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.device_bind_fail);
                     return;
                 }
@@ -243,19 +333,18 @@ public class DeviceBindingCommitFragment extends Fragment {
         });
     }
 
-    private void startAccountBindByDevice() {
-        final AccountBindByDeviceRequest bindByDeviceRequest = new AccountBindByDeviceRequest(getNeoAccount(),
-                getDeviceBind());
-        AdminApplication.getCloudManager().submitRequest(getContext(), bindByDeviceRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null || !bindByDeviceRequest.isSuccessResult()) {
-                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.device_bind_success);
-                    return;
-                }
-                processBindSuccess();
-            }
-        });
+    private void bindGroupsToContainerUser(DeviceBindContainer bindContainer, NeoAccountBase account) {
+        bindContainer.user = account;
+        List<CloudGroup> groupList = getCommitEntity().groups;
+        if (CollectionUtils.isNullOrEmpty(groupList)) {
+            return;
+        }
+        if (bindContainer.user.groups == null) {
+            bindContainer.user.groups = new ArrayList<>();
+        }
+        for (CloudGroup cloudGroup : groupList) {
+            bindContainer.user.groups.add(cloudGroup._id);
+        }
     }
 
     private void showAccountUnbindDialog() {
@@ -332,6 +421,7 @@ public class DeviceBindingCommitFragment extends Fragment {
         if (groupUserInfo == null) {
             groupUserInfo = new GroupUserInfo();
         }
+        oldGroupsCount = CollectionUtils.getSize(groupUserInfo.groups);
         return groupUserInfo;
     }
 
@@ -347,5 +437,17 @@ public class DeviceBindingCommitFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_CODE_GROUP_SELECT && resultCode == Activity.RESULT_OK) {
+            CloudGroup group = JSONObjectParseUtils.parseObject(data.getStringExtra(ContentManager.KEY_GROUP_SELECT),
+                    CloudGroup.class);
+            if (group != null) {
+                getCommitEntity().groups.add(group);
+                updateGroupsInfo(group);
+            }
+        }
     }
 }
