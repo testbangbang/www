@@ -18,6 +18,7 @@ public class ContentManager extends PreferenceManager {
     public static final String KEY_GROUP_USER_INFO = "key_group_user_info";
     public static final String KEY_GROUP_USER_INFO_FROM = "key_group_user_info_from";
     public static final String KEY_APP_UPDATE_CHECK_TIME = "key_app_update_check_time";
+    public static final String KEY_GROUP_SELECT = "key_group_select";
 
     public static void saveAccount(Context context, NeoAccountBase accountInfo) {
         if (accountInfo != null) {

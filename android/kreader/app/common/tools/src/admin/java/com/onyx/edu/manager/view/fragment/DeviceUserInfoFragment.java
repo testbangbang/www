@@ -210,8 +210,7 @@ public class DeviceUserInfoFragment extends Fragment {
 
     private void initContentPageView() {
         contactRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<ContactEntity>(getContext(),
-                deviceBindEntityList) {
+        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<ContactEntity>(deviceBindEntityList) {
             @Override
             public String getMacAddress(ContactEntity entity) {
                 return isUserDeviceBound(entity) ? getString(R.string.has_bound) : getString(R.string.has_no_bind);
@@ -235,7 +234,15 @@ public class DeviceUserInfoFragment extends Fragment {
                     ToastUtils.showToast(getContext().getApplicationContext(), R.string.mac_address_invalid_for_bind);
                     return;
                 }
-                startCommitDeviceBind(contactAdapter.getItem(position).accountInfo);
+                ContactEntity contactEntity = contactAdapter.getItem(position);
+                if (contactEntity == null) {
+                    return;
+                }
+                if (isUserDeviceBound(contactEntity)) {
+                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.user_has_bound_tip);
+                    return;
+                }
+                startCommitDeviceBind(contactEntity.accountInfo);
             }
 
             @Override

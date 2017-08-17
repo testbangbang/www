@@ -54,6 +54,7 @@
     <string name="user_device_bind">Bind the user</string>
     <string name="user_device_un_bind">User unbundled</string>
     <string name="user_device_unbind_confirm_content">Do you want to bind this user?</string>
+    <string name="user_has_bound_tip">The user has been bound, please re-select the unbound or add a new one</string>
     <string name="device_bind">Bind</string>
     <string name="device_bind_fail">Device binding failed</string>
     <string name="device_bind_success">Device binding is successful</string>
@@ -62,6 +63,9 @@
     <string name="device_unbind_fail">Unbind failed</string>
     <string name="device_unbind_success">Unbind success</string>
 
+    <string name="group_be_in">The groups</string>
+    <string name="group_add">Add group</string>
+    <string name="group_delete_alert_message">Make sure you want to delete this group？</string>
     <string name="group_has_no_selection">Select at least one group</string>
     <string name="group_has_no_users">There are no users in this group</string>
     <string name="operation_not_support">Not yet supported</string>
@@ -94,4 +98,8 @@
     <string name="verify_code_error">Verification code is incorrect and can not pass</string>
     <string name="waiting_for_verify_code">Wait for the phone operator to send the SMS verification code</string>
     <string name="phone_verify_apply_error">SMS verification application failed, re-initiated application</string>
+
+    <string name="delete">Delete</string>
+    <string name="delete_success">Delete successfully</string>
+    <string name="delete_fail">Delete failed</string>
 </resources>
