@@ -28,7 +28,7 @@ public class ChangeSelectedShapePositionAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         ChangeSelectedShapePositionRequest request;
-        if ((targetDx == Float.MIN_VALUE || targetDy == Float.MIN_VALUE) && (touchPoint != null)) {
+        if ((Float.compare(targetDx, Float.MIN_VALUE) == 0 || Float.compare(targetDy, Float.MIN_VALUE) == 0) && (touchPoint != null)) {
             request = new ChangeSelectedShapePositionRequest(touchPoint);
         } else {
             request = new ChangeSelectedShapePositionRequest(targetDx, targetDy);

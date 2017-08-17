@@ -86,6 +86,8 @@ public interface Shape {
 
     void onTranslate(final float dx, final float dy);
 
+    void onScale(final float scale);
+
     void updatePoints();
 
     void addPoints(final TouchPointList points);
