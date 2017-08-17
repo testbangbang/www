@@ -53,6 +53,7 @@
     <string name="user_device_bind">绑定用户</string>
     <string name="user_device_un_bind">解绑用户</string>
     <string name="user_device_unbind_confirm_content">确定解绑此用户吗？</string>
+    <string name="user_has_bound_tip">该用户已绑定过，请重新选择未绑定的或者新添加一个</string>
     <string name="device_bind_fail">设备绑定失败</string>
     <string name="device_bind_success">设备绑定成功</string>
     <string name="device_bind_info_edit_title">信息填写</string>
@@ -61,6 +62,9 @@
     <string name="device_unbind_fail">解绑失败</string>
     <string name="device_unbind_success">解绑成功</string>
 
+    <string name="group_be_in">所在组</string>
+    <string name="group_add">添加组</string>
+    <string name="group_delete_alert_message">确定要删除这个组？</string>
     <string name="group_has_no_selection">至少选择一个组</string>
     <string name="group_has_no_users">该组里无用户</string>
     <string name="operation_not_support">暂未支持</string>
@@ -94,4 +98,8 @@
     <string name="verify_code_error">验证码不对，无法通过</string>
     <string name="waiting_for_verify_code">稍等手机运营商发送短信验证码</string>
     <string name="phone_verify_apply_error">短信验证申请失败，重新发起申请</string>
+
+    <string name="delete">删除</string>
+    <string name="delete_success">删除成功</string>
+    <string name="delete_fail">删除失败</string>
 </resources>

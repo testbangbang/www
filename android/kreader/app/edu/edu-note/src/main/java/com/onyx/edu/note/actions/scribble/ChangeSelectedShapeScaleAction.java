@@ -2,7 +2,7 @@ package com.onyx.edu.note.actions.scribble;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.ChangedSelectedShapeScaleRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.ChangeSelectedShapeScaleRequest;
 import com.onyx.edu.note.actions.BaseNoteAction;
 
 /**
@@ -19,7 +19,7 @@ public class ChangeSelectedShapeScaleAction extends BaseNoteAction {
 
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
-        ChangedSelectedShapeScaleRequest request = new ChangedSelectedShapeScaleRequest(scaleSize);
+        ChangeSelectedShapeScaleRequest request = new ChangeSelectedShapeScaleRequest(scaleSize);
         noteManager.submitRequest(request, callback);
     }
 }

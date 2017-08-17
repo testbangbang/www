@@ -26,7 +26,6 @@ import butterknife.ButterKnife;
 public abstract class ContactAdapter<T extends BaseEntity> extends BaseAdapter<T, ContactAdapter.ContactChildViewHolder>
         implements StickyRecyclerHeadersAdapter<RecyclerView.ViewHolder> {
 
-    private Context context;
     private boolean swipeAble = true;
     private List<T> contactEntityList;
 
@@ -42,8 +41,7 @@ public abstract class ContactAdapter<T extends BaseEntity> extends BaseAdapter<T
         this.itemUnbundledClickListener = listener;
     }
 
-    public ContactAdapter(Context context, List<T> list) {
-        this.context = context;
+    public ContactAdapter(List<T> list) {
         this.contactEntityList = list;
     }
 
@@ -63,6 +61,9 @@ public abstract class ContactAdapter<T extends BaseEntity> extends BaseAdapter<T
 
     @Override
     public T getItem(int position) {
+        if (position >= CollectionUtils.getSize(contactEntityList)) {
+            return null;
+        }
         return contactEntityList.get(position);
     }
 

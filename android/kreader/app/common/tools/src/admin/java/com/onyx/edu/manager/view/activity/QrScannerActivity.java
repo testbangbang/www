@@ -67,12 +67,13 @@ public class QrScannerActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode != RESULT_OK) {
-            finish();
-            return;
-        }
+        super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
             case REQUEST_QR_CODE:
+                if (resultCode != RESULT_OK) {
+                    finish();
+                    return;
+                }
                 processRequestQrCode(intent);
                 break;
         }
@@ -163,16 +164,5 @@ public class QrScannerActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceUserInfoSwitchEvent(DeviceUserInfoSwitchEvent event) {
         processUnboundUserInfo(scannedDeviceBind);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGroupSelectEvent(GroupSelectEvent event) {
-        groupSelected = event.group;
-        processUnboundUserInfo(scannedDeviceBind);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGroupReSelectEvent(GroupReSelectEvent event) {
-        showFragment(GroupListFragment.newInstance());
     }
 }

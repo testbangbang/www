@@ -10,6 +10,7 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -234,6 +235,12 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         Paint paint = preparePaint(parent);
         paint.setPathEffect(parent.selectedDashPathEffect);
         RectF rect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect();
+        Log.e("AsyncBaseNoteRequest", "end.getX():" + end.getX());
+        Log.e("AsyncBaseNoteRequest", "rect.centerX():" + rect.centerX());
+        Log.e("AsyncBaseNoteRequest", "end.getY():" + end.getY());
+        Log.e("AsyncBaseNoteRequest", "rect.centerY():" + rect.centerY());
+        Log.e("AsyncBaseNoteRequest", "(end.getX() - rect.centerX()):" + (end.getX() - rect.centerX()));
+        Log.e("AsyncBaseNoteRequest", "(end.getY() - rect.centerY()):" + (end.getY() - rect.centerY()));
         rect.offset(end.getX() - rect.centerX(), end.getY() - rect.centerY());
         canvas.drawRect(rect, paint);
     }

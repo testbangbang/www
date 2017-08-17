@@ -504,6 +504,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 ScribbleMode.MODE_SPAN_SCRIBBLE ? View.VISIBLE : View.GONE);
         mNoteManager.setCurrentScribbleMode(event.getTargetScribbleMode());
         mNoteManager.clearPageUndoRedo(ScribbleActivity.this);
+        mNoteManager.clearShapeSelectRecord();
         if (mNoteManager.isLineLayoutMode()) {
             mBinding.spanTextView.post(new Runnable() {
                 @Override
