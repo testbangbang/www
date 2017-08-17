@@ -290,6 +290,8 @@
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
+    <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
     <string name="article_repeat_after">文章跟读</string>
     <string name="speech_recording">演讲录音</string>
     <string name="pronounce_evaluation">发音测评</string>

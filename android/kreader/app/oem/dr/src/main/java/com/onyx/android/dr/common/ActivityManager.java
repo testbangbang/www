@@ -22,6 +22,7 @@ import com.onyx.android.dr.activity.MemorandumActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
 import com.onyx.android.dr.activity.NewWordNotebookActivity;
 import com.onyx.android.dr.activity.NewWordQueryActivity;
+import com.onyx.android.dr.activity.NewWordQueryDialogActivity;
 import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.OTAUpdateActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
@@ -123,6 +124,15 @@ public class ActivityManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.EDITQUERY, editQuery);
         intent.setClass(context, NewWordQueryActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startNewWordQueryDialogActivity(Context context, String editQuery, boolean tag) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.EDITQUERY, editQuery);
+        intent.putExtra(Constants.LOCATION, tag);
+        intent.setClass(context, NewWordQueryDialogActivity.class);
         context.startActivity(intent);
     }
 

@@ -225,4 +225,5 @@
     <dimen name="system_update_check_margin_bottom">10dp</dimen>
     <dimen name="download_dialog_progressbar_width">500dp</dimen>
     <dimen name="download_dialog_progress_padding">10dp</dimen>
+    <dimen name="playqueue_dialog_marginbottom">20dp</dimen>
 </resources>

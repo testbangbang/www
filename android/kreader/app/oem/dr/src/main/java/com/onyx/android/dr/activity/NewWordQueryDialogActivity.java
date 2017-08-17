@@ -1,10 +1,13 @@
 package com.onyx.android.dr.activity;
 
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -42,11 +45,10 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 
-
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class NewWordQueryActivity extends BaseActivity implements QueryRecordView {
+public class NewWordQueryDialogActivity extends BaseActivity implements QueryRecordView {
     @Bind(R.id.new_word_query_activity_view)
     AutoPagedWebView resultView;
     @Bind(R.id.new_word_query_activity_button_previous)
@@ -61,12 +63,8 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     TextView incomeNewWordNote;
     @Bind(R.id.new_word_query_activity_baidubaike)
     TextView baiduBaike;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
-    @Bind(R.id.title_bar_title)
-    TextView title;
-    @Bind(R.id.image)
-    ImageView image;
+    @Bind(R.id.title_bar_container)
+    LinearLayout titleBarContainer;
     private List<String> searchResultList = new ArrayList<String>();
     private DictionaryManager dictionaryManager;
     private QueryWordRequest queryWordRequest;
@@ -80,6 +78,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private QueryRecordPresenter queryRecordPresenter;
     private String editQuery = "";
     private List<String> pathList;
+    private boolean tag;
 
     @Override
     protected Integer getLayoutId() {
@@ -100,17 +99,38 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(this);
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
-        initTitleData();
-        getIntentDatas();
+        titleBarContainer.setVisibility(View.GONE);
+        getIntentData();
+        setHeightAndWidth();
         initEvent();
     }
 
-    private void initTitleData() {
-        image.setImageResource(R.drawable.new_word_query);
-        title.setText(getString(R.string.new_word_query));
+    @Override
+    public void onAttachedToWindow() {
+        tag = getIntent().getBooleanExtra(Constants.LOCATION, false);
+        View view = getWindow().getDecorView();
+        WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) view
+                .getLayoutParams();
+        if (tag) {
+            layoutParams.gravity = Gravity.BOTTOM;
+            layoutParams.y = getResources().getDimensionPixelSize(
+                    R.dimen.playqueue_dialog_marginbottom);
+        } else {
+            layoutParams.gravity = Gravity.TOP;
+        }
+        getWindowManager().updateViewLayout(view, layoutParams);
     }
 
-    private void getIntentDatas() {
+    private void setHeightAndWidth() {
+        WindowManager.LayoutParams attributes = getWindow().getAttributes();
+        Float heightProportion = Float.valueOf(getString(R.string.new_word_query_activity_dialog_height));
+        Float widthProportion = Float.valueOf(getString(R.string.new_word_query_activity_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
+        getWindow().setAttributes(attributes);
+    }
+
+    private void getIntentData() {
         editQuery = getIntent().getStringExtra(Constants.EDITQUERY);
         loadDictionary();
     }
@@ -164,7 +184,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         resultView.setPageChangedListener(new AutoPagedWebView.PageChangedListener() {
             @Override
             public void onPageChanged(int totalPage, int curPage) {
-                NewWordQueryActivity.this.onPageChanged(totalPage, curPage);
+                NewWordQueryDialogActivity.this.onPageChanged(totalPage, curPage);
             }
         });
         resultView.setUpdateDictionaryListCallback(new AutoPagedWebView.UpdateDictionaryListCallback() {
@@ -316,13 +336,9 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         testWordDictQuery();
     }
 
-    @OnClick({R.id.image_view_back,
-            R.id.new_word_query_activity_baidubaike})
+    @OnClick({R.id.new_word_query_activity_baidubaike})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
-                finish();
-                break;
             case R.id.new_word_query_activity_baidubaike:
                 Utils.openBaiduBaiKe(this, editQuery);
                 break;

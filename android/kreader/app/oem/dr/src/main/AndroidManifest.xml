@@ -96,6 +96,10 @@
         <activity
             android:name=".activity.NewWordQueryActivity"
             android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".activity.NewWordQueryDialogActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/dialog" />
         <activity
             android:name=".activity.InformalEssayActivity"
@@ -142,9 +146,7 @@
             android:name=".activity.SettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
-        <receiver
-            android:name=".receiver.RecorderReceiver"
-            android:theme="@style/Theme.SoundRecorder">
+        <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>
                 <action android:name="com.onyx.android.dr.CLEAR_FILE" />
             </intent-filter>

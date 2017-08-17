@@ -37,6 +37,7 @@ public class Constants {
     public static final String ENGLISH_DICTIONARY = "/dicts/English_dictionary";
     public static final String OTHER_DICTIONARY = "/dicts/other_dictionary";
     public static final String EDITQUERY = "editQuery";
+    public static final String LOCATION = "location";
     public static final String DICTTYPE = "dictType";
     public static final String FRAGMENT_TYPE = "fragment_type";
     public static final String MINUTE_POSITION = "minutePosition";
