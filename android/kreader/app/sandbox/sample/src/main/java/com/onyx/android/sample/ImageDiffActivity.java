@@ -47,8 +47,7 @@ public class ImageDiffActivity extends AppCompatActivity {
     private void calculateUpdWorkingBuffer() {
         // load upd list
         List<String> pathList = new ArrayList<>();
-        pathList.add("/mnt/sdcard/scp.png");
-        for(int i = 0; i < 6; ++i) {
+        for(int i = 0; i < 7; ++i) {
             pathList.add("/mnt/sdcard/scp-" + i + ".png");
         }
 

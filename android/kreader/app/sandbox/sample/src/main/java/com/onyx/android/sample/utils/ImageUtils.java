@@ -28,7 +28,6 @@ public class ImageUtils {
     // return full processed for upd.
     static public int merge(final Bitmap upd, final Bitmap workingBuffer, final Bitmap mcu, int maxFrame) {
         int updState = NOTHING_TO_MERGE;
-
         for(int y = 0; y < upd.getHeight(); ++y) {
             for(int x = 0; x < upd.getWidth(); ++x) {
                 int v1 = upd.getPixel(x, y);
@@ -85,18 +84,6 @@ public class ImageUtils {
                 }
             }
         }
-    }
-
-    static public boolean isFinished(final Bitmap upd) {
-        for(int y = 0; y < upd.getHeight(); ++y) {
-            for(int x = 0; x < upd.getWidth(); ++x) {
-                int v1 = upd.getPixel(x, y);
-                if (v1 != Color.TRANSPARENT) {
-                    return false;
-                }
-            }
-        }
-        return true;
     }
 
     public void diff(final String first, final String second) {
@@ -171,10 +158,7 @@ public class ImageUtils {
     }
 
     public static Bitmap create(final Bitmap origin) {
-        Bitmap result = Bitmap.createBitmap(origin.getWidth(), origin.getHeight(), origin.getConfig());
-        Canvas canvas = new Canvas(result);
-        canvas.drawBitmap(origin, 0f, 0f, null);
-        return result;
+        return origin.copy(origin.getConfig(), true);
     }
 
 }

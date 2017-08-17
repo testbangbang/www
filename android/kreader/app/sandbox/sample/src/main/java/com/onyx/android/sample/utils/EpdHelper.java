@@ -19,7 +19,16 @@ public class EpdHelper {
 
     private static final String TAG = EpdHelper.class.getSimpleName();
 
-    private List<Bitmap> updBufferList = new ArrayList<>();
+    static private class UpdateEntry {
+        public Bitmap updBuffer;
+        public boolean fullMerged = false;
+        public UpdateEntry(final Bitmap bitmap) {
+            updBuffer = bitmap;
+            fullMerged = false;
+        }
+    }
+
+    private List<UpdateEntry> updBufferList = new ArrayList<>();
     private List<Bitmap> mergedUpdBufferLst = new ArrayList<>();
     private Bitmap workingBuffer;
     private Bitmap mcu;
@@ -29,7 +38,7 @@ public class EpdHelper {
 
     public void init(final List<String> pathList) {
         for(String path : pathList) {
-            updBufferList.add(ImageUtils.loadBitmapFromFile(path));
+            updBufferList.add(new UpdateEntry(ImageUtils.loadBitmapFromFile(path)));
         }
 
         workingBuffer = ImageUtils.loadBitmapFromFile(pathList.get(0));
@@ -38,37 +47,48 @@ public class EpdHelper {
     }
 
     public void merge() {
-        ListIterator<Bitmap> it = updBufferList.listIterator();
+        ListIterator<UpdateEntry> it = updBufferList.listIterator();
         while (it.hasNext()) {
             int index = it.nextIndex();
-            Bitmap upd = it.next();
+            UpdateEntry updateEntry = it.next();
+            if (updateEntry.fullMerged) {
+                continue;
+            }
+            Bitmap upd = updateEntry.updBuffer;
             Bitmap originUpd = ImageUtils.create(upd);
             Bitmap originWb = ImageUtils.create(workingBuffer);
             int state = ImageUtils.merge(upd, workingBuffer, mcu, maxFrame);
             Log.e(TAG, "merge state: " + state + " update buffer index: " + index);
             if ((state & ImageUtils.SOMETHING_MERGED) > 0) {
-                dump(originUpd, originWb, upd, workingBuffer);
+                dump(originUpd, originWb, upd, workingBuffer, index);
                 break;
             }
             if (state == ImageUtils.NOTHING_TO_MERGE) {
                 mergedUpdBufferLst.add(upd);
-                it.remove();
+                updateEntry.fullMerged = true;
                 Log.e(TAG, "removed upd buffer: " + index);
             }
         }
     }
 
     public boolean isFinished() {
-        return updBufferList.isEmpty();
+        for(UpdateEntry updateEntry : updBufferList) {
+            if (!updateEntry.fullMerged) {
+                return false;
+            }
+        }
+        return true;
     }
 
-    public void dump(final Bitmap originUpd, final Bitmap originWb, final Bitmap mergedUpd, final Bitmap mergedWb) {
-//        String path = String.format("/mnt/sdcard/upd-frame-" + currentFrame + "-update-buffer-" + updIndex + ".png");
-//        FileUtils.deleteFile(path);
-//        BitmapUtils.saveBitmap(upd, path);
-//        Log.e(TAG, "save upd buffer: " + path);
+    public void dump(final Bitmap originUpd, final Bitmap originWb, final Bitmap mergedUpd, final Bitmap mergedWb, int index) {
+        String path;
 
-        String path = String.format("/mnt/sdcard/result-frame-" + currentFrame + ".png");
+        path = String.format("/mnt/sdcard/merged-upd-frame-" + currentFrame + "-update-buffer-" + index + ".png");
+        FileUtils.deleteFile(path);
+        BitmapUtils.saveBitmap(mergedUpd, path);
+        Log.e(TAG, "save upd buffer: " + path);
+
+        path = String.format("/mnt/sdcard/result-frame-" + currentFrame + "-update-buffer-index-" + index + ".png");
         FileUtils.deleteFile(path);
         Bitmap result = ImageUtils.merge(originUpd, originWb, mergedUpd, mergedWb);
         BitmapUtils.saveBitmap(result, path);
