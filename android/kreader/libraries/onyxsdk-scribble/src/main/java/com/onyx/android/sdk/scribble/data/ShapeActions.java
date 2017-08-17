@@ -14,33 +14,43 @@ public class ShapeActions {
     public static final String ACTION_REMOVE_SHAPE = "removeShape";
     public static final String ACTION_REMOVE_SHAPE_LIST = "removeShapeList";
     public static final String ACTION_ADD_SHAPE_LIST = "addShapeList";
+    public static final String ACTION_TRANSFORM_SHAPE = "transformShape";
+    public static final String ACTION_TRANSFORM_SHAPE_LIST = "transformShapeList";
 
     public static UndoRedoManager.Action<List<Shape>> addShapeAction(final Shape shape) {
         List<Shape>list = new ArrayList<>();
         list.add(shape);
-        final UndoRedoManager.Action<List<Shape>> action = new UndoRedoManager.Action<>(ACTION_ADD_SHAPE, list);
-        return action;
+        return new UndoRedoManager.Action<>(ACTION_ADD_SHAPE, list);
     }
 
     public static UndoRedoManager.Action<List<Shape>> removeShapeAction(final Shape shape) {
         List<Shape>list = new ArrayList<>();
         list.add(shape);
-        final UndoRedoManager.Action<List<Shape>> action = new UndoRedoManager.Action<>(ACTION_REMOVE_SHAPE, list);
-        return action;
+        return new UndoRedoManager.Action<>(ACTION_REMOVE_SHAPE, list);
     }
 
     public static UndoRedoManager.Action<List<Shape>> addShapeListAction(final List<Shape> shapeList) {
         List<Shape>list = new ArrayList<>();
         list.addAll(shapeList);
-        final UndoRedoManager.Action<List<Shape>> action = new UndoRedoManager.Action<>(ACTION_ADD_SHAPE_LIST, list);
-        return action;
+        return new UndoRedoManager.Action<>(ACTION_ADD_SHAPE_LIST, list);
     }
 
     public static UndoRedoManager.Action<List<Shape>> removeShapeListAction(final List<Shape> shapeList) {
         List<Shape>list = new ArrayList<>();
         list.addAll(shapeList);
-        final UndoRedoManager.Action<List<Shape>> action = new UndoRedoManager.Action<>(ACTION_REMOVE_SHAPE_LIST, list);
-        return action;
+        return new UndoRedoManager.Action<>(ACTION_REMOVE_SHAPE_LIST, list);
+    }
+
+    public static UndoRedoManager.Action<List<Shape>> transformShapeAction(final Shape shape) {
+        List<Shape> list = new ArrayList<>();
+        list.add(shape);
+        return new UndoRedoManager.Action<>(ACTION_TRANSFORM_SHAPE, list);
+    }
+
+    public static UndoRedoManager.Action<List<Shape>> transformShapeListAction(final List<Shape> shapeList) {
+        List<Shape> list = new ArrayList<>();
+        list.addAll(shapeList);
+        return new UndoRedoManager.Action<>(ACTION_TRANSFORM_SHAPE, list);
     }
 
 }

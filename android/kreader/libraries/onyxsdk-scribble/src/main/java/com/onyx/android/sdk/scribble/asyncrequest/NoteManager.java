@@ -641,6 +641,10 @@ public class NoteManager {
         noteViewHelper.clearPageUndoRedo(context);
     }
 
+    public void clearShapeSelectRecord(){
+        noteViewHelper.clearPageSelectRecord();
+    }
+
     public RequestManager getRequestManager() {
         return noteViewHelper.getRequestManager();
     }
