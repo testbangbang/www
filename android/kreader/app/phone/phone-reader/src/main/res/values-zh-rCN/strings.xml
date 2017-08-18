@@ -22,8 +22,15 @@
     <string name="loading">加载中&#8230;</string>
     <string name="cancel">取消</string>
     <string name="ok">确认</string>
+    <string name="update">更新</string>
 
     <string name="wifi_dialog_title">WiFi连接</string>
     <string name="wifi_dialog_content">无网络连接，是否打开WiFi？</string>
     <string name="share_file_warning_as_wifi_disconnect">您当前没有使用wifi流量，确定还要分享吗？</string>
+
+    <string name="app_update_change_log_empty_content">更新内容:未写</string>
+    <string name="app_update_new_version_detect">检测到新版本</string>
+    <string name="downloading">正在下载中&#8230;</string>
+    <string name="download_failed">下载失败了</string>
+    <string name="install_failed">安装出了问题</string>
 </resources>

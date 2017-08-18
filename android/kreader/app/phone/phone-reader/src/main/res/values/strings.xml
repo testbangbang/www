@@ -21,11 +21,17 @@
     <string name="generate_epub_file_failed">Generate epub file failed</string>
 
     <string name="loading">loading</string>
-    <string name="cancel">cancel</string>
-    <string name="ok">ok</string>
+    <string name="cancel">@android:string/cancel</string>
+    <string name="ok">@android:string/ok</string>
+    <string name="update">Update</string>
 
     <string name="wifi_dialog_title">Wifi connection</string>
     <string name="wifi_dialog_content">WiFi connection is needed. Turn on WiFi?</string>
     <string name="share_file_warning_as_wifi_disconnect">You are not currently using WiFi traffic, are you sure you want to share it?</string>
 
+    <string name="app_update_change_log_empty_content">Update Content: not written</string>
+    <string name="app_update_new_version_detect">New version detected</string>
+    <string name="downloading">Downloading&#8230;</string>
+    <string name="download_failed">The download failed</string>
+    <string name="install_failed">There is a problem with the installation</string>
 </resources>
