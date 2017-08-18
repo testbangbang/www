@@ -34,12 +34,14 @@ public class EpdHelper {
     private Bitmap mcu;
     private int maxFrame = 30;
     private int currentFrame = 0;
-    private int frameStep = 13;
+    private int frameStep = 1;
+    private String finalPath;
 
     public void init(final List<String> pathList) {
         for(String path : pathList) {
             updBufferList.add(new UpdateEntry(ImageUtils.loadBitmapFromFile(path)));
         }
+        finalPath = pathList.get(pathList.size() - 1);
 
         workingBuffer = ImageUtils.loadBitmapFromFile(pathList.get(0));
         mcu = ImageUtils.loadBitmapFromFile(pathList.get(0));
@@ -58,7 +60,7 @@ public class EpdHelper {
             Bitmap originUpd = ImageUtils.create(upd);
             Bitmap originWb = ImageUtils.create(workingBuffer);
             int state = ImageUtils.merge(upd, workingBuffer, mcu, maxFrame);
-            Log.e(TAG, "merge state: " + state + " update buffer index: " + index);
+            Log.e(TAG, "Frame index: " + currentFrame +  " merge state: " + state + " update buffer index: " + index);
             if ((state & ImageUtils.SOMETHING_MERGED) > 0) {
                 dump(originUpd, originWb, upd, workingBuffer, index);
                 break;
@@ -78,6 +80,27 @@ public class EpdHelper {
             }
         }
         return true;
+    }
+
+    public int verify() {
+        final Bitmap src = ImageUtils.loadBitmapFromFile(finalPath);
+        final Bitmap dst = workingBuffer;
+
+        if (src.getWidth() != dst.getWidth() || src.getHeight() != dst.getHeight()) {
+            return Integer.MAX_VALUE;
+        }
+
+        int diff = 0;
+        for(int y = 0; y < src.getHeight(); ++y) {
+            for (int x = 0; x < src.getWidth(); ++x) {
+                int v1 = src.getPixel(x, y);
+                int v2 = dst.getPixel(x, y);
+                if (v1 != v2) {
+                    ++diff;
+                }
+            }
+        }
+        return diff;
     }
 
     public void dump(final Bitmap originUpd, final Bitmap originWb, final Bitmap mergedUpd, final Bitmap mergedWb, int index) {

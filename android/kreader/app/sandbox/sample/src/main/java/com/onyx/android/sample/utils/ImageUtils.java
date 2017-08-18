@@ -89,6 +89,44 @@ public class ImageUtils {
         }
     }
 
+    // second - first;
+    static public Bitmap diffImage(final String first, final String second) {
+        final Bitmap firstBitmap = loadBitmapFromFile(first);
+        final Bitmap secondBitmap = loadBitmapFromFile(second);
+        final Bitmap result = ImageUtils.create(secondBitmap);
+        result.setHasAlpha(true);
+        for(int y = 0; y < firstBitmap.getHeight(); ++y) {
+            for(int x = 0; x < firstBitmap.getWidth(); ++x) {
+                int v1 = firstBitmap.getPixel(x, y);
+                int v2 = secondBitmap.getPixel(x, y);
+                if (v1 == v2) {
+                    result.setPixel(x, y, Color.TRANSPARENT);
+                    continue;
+                }
+                result.setPixel(x, y , v2);
+            }
+        }
+        return result;
+    }
+
+    // src + patch
+    static public Bitmap applyDiffImage(final Bitmap firstBitmap, final Bitmap patchBitmap) {
+        final Bitmap result = ImageUtils.create(patchBitmap);
+        result.setHasAlpha(true);
+        for(int y = 0; y < firstBitmap.getHeight(); ++y) {
+            for(int x = 0; x < firstBitmap.getWidth(); ++x) {
+                int v1 = firstBitmap.getPixel(x, y);
+                int v2 = patchBitmap.getPixel(x, y);
+                if (v2 != Color.TRANSPARENT) {
+                    result.setPixel(x, y, v2);
+                } else {
+                    result.setPixel(x, y , v1);
+                }
+            }
+        }
+        return result;
+    }
+
     public void diff(final String first, final String second) {
         list.clear();
         final Bitmap firstBitmap = loadBitmapFromFile(first);
