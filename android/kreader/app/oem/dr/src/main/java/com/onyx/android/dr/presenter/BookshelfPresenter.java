@@ -50,7 +50,6 @@ public class BookshelfPresenter {
             public void done(BaseRequest request, Throwable e) {
                 Map<String, List<Metadata>> map = bookshelfData.getLanguageCategoryMap();
                 bookshelfView.setLanguageCategory(map);
-                Log.e("", "done: ========================================");
             }
         });
     }
