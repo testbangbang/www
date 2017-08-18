@@ -108,7 +108,11 @@ public class QrScannerActivity extends AppCompatActivity {
                     processNetWorkException();
                     return;
                 }
-                processBoundUserInfo(userInfoByMacRequest.getGroupUserInfo());
+                GroupUserInfo groupUserInfo = userInfoByMacRequest.getGroupUserInfo();
+                if (groupUserInfo != null) {
+                    groupUserInfo.device = deviceBind;
+                }
+                processBoundUserInfo(groupUserInfo);
             }
         });
     }

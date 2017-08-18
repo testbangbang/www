@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Edu-manager</string>
 
-    <string name="mac_address_format">Mac:   %s</string>
+    <string name="mac_address_format" translatable="false">Mac:   %s</string>
     <string name="username_do">姓名:</string>
     <string name="phone_do">电话:</string>
     <string name="grade_class_do">班级:</string>

@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.v2;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.v2.AdminApplyModel;
+import com.onyx.android.sdk.data.model.v2.BindServer;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.Course;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
@@ -43,6 +44,9 @@ public interface ContentService {
     @GET("devices/findByMac")
     Call<IndexService> getIndexService(@Query(Constant.MAC_TAG) final String macAddress,
                                        @Query(Constant.INSTALLATIONId_TAG) final String installationId);
+
+    @POST("servers/bindServer")
+    Call<ResponseBody> deviceBindToIndexService(@Body final BindServer bindServer);
 
     @POST("auth/local")
     Call<AuthToken> getAccountToken(@Body final BaseAuthAccount account);
