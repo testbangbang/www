@@ -68,14 +68,18 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableRegal = null;
 
     private static Method sMethodMoveTo = null;
+    private static Method sMethodMoveToView = null;
     private static Method sMethodSetStrokeColor = null;
     private static Method sMethodSetStrokeStyle = null;
     private static Method sMethodSetStrokeWidth = null;
     private static Method sMethodSetPainterStyle = null;
     private static Method sMethodLineTo = null;
+    private static Method sMethodLineToView = null;
     private static Method sMethodQuadTo = null;
+    private static Method sMethodQuadToView = null;
     private static Method sMethodGetTouchWidth = null;
     private static Method sMethodGetTouchHeight = null;
+    private static Method sMethodMapToView = null;
     private static Method sMethodEnablePost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
@@ -382,6 +386,14 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void moveTo(View view, float x, float y, float width) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMoveToView, null, view, x, y, width);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean supportDFB() {
         return (sMethodLineTo != null);
     }
@@ -411,10 +423,28 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void lineTo(View view, float x, float y, UpdateMode mode) {
+        int value = getUpdateMode(mode);
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodLineToView, null, view, x, y, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void quadTo(float x, float y, UpdateMode mode) {
         int value = getUpdateMode(mode);
         try {
             ReflectUtil.invokeMethodSafely(sMethodQuadTo, null, x, y, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void quadTo(View view, float x, float y, UpdateMode mode) {
+        int value = getUpdateMode(mode);
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodQuadToView, null, view, x, y, value);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -438,6 +468,15 @@ public class IMX6Device extends BaseDevice {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    @Override
+    public void mapToView(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapToView, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
@@ -637,8 +676,12 @@ public class IMX6Device extends BaseDevice {
             sMethodMoveTo = ReflectUtil.getMethodSafely(cls, "moveTo", float.class, float.class, float.class);
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);
             sMethodQuadTo = ReflectUtil.getMethodSafely(cls, "quadTo", float.class, float.class, int.class);
+            sMethodMoveToView = ReflectUtil.getMethodSafely(cls, "moveTo", View.class, float.class, float.class, float.class);
+            sMethodLineToView = ReflectUtil.getMethodSafely(cls, "lineTo", View.class, float.class, float.class, int.class);
+            sMethodQuadToView = ReflectUtil.getMethodSafely(cls, "quadTo", View.class, float.class, float.class, int.class);
             sMethodGetTouchWidth = ReflectUtil.getMethodSafely(cls, "getTouchWidth");
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
+            sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int[].class);

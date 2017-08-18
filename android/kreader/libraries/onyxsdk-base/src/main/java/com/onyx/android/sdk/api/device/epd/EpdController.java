@@ -190,12 +190,24 @@ public abstract class EpdController
         Device.currentDevice().moveTo(x, y, width);
     }
 
+    public static void moveTo(View view, float x, float y, float width) {
+        Device.currentDevice().moveTo(view, x, y, width);
+    }
+
     public static void lineTo(float x, float y, UpdateMode mode) {
         Device.currentDevice().lineTo(x, y, mode);
     }
 
+    public static void lineTo(View view, float x, float y, UpdateMode mode) {
+        Device.currentDevice().lineTo(view, x, y, mode);
+    }
+
     public static void quadTo(float x, float y, UpdateMode mode) {
         Device.currentDevice().quadTo(x, y, mode);
+    }
+
+    public static void quadTo(View view, float x, float y, UpdateMode mode) {
+        Device.currentDevice().quadTo(view, x, y, mode);
     }
 
     public static void disableA2ForSpecificView(View view) {
