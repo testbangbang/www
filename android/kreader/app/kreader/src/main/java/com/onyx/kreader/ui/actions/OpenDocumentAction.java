@@ -192,12 +192,17 @@ public class OpenDocumentAction extends BaseAction {
         final RestoreRequest restoreRequest = new RestoreRequest(options);
         readerDataHolder.submitRenderRequest(restoreRequest, new BaseCallback() {
             @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                super.beforeDone(request, e);
+                hideLoadingDialog();
+            }
+
+            @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || canceled) {
                     cleanup(readerDataHolder);
                     return;
                 }
-                hideLoadingDialog();
                 readerDataHolder.submitNonRenderRequest(new SaveDocumentOptionsRequest());
                 readerDataHolder.onDocumentInitRendered();
             }

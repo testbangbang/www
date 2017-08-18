@@ -9,8 +9,16 @@ extern "C" {
 #endif
 /*
  * Class:     com_hanvon_core_Algorithm
+ * Method:    distance
+ * Signature: (FFFFFF)F
+ */
+JNIEXPORT jfloat JNICALL Java_com_hanvon_core_Algorithm_distance
+  (JNIEnv *, jclass, jfloat, jfloat, jfloat, jfloat, jfloat, jfloat);
+
+/*
+ * Class:     com_hanvon_core_Algorithm
  * Method:    initializeEx
- * Signature: (II[I)Z
+ * Signature: (IILandroid/graphics/Bitmap;)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_hanvon_core_Algorithm_initializeEx
   (JNIEnv *, jclass, jint, jint, jobject);

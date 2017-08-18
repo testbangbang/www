@@ -21,6 +21,7 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogSlideshowStatistic;
 import com.onyx.kreader.ui.events.UpdateSlideshowEvent;
 import com.onyx.kreader.ui.view.SlideshowStatusBar;
@@ -211,10 +212,14 @@ public class SlideshowHandler extends BaseHandler {
 
     @Subscribe
     public void updateSlideshowStatusBar(UpdateSlideshowEvent event) {
-        int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
-        getSlideshowStatusBar().updateValue(maxPageCount, pageCount + 1,
-                startBatteryPercent, battery);
-        getSlideshowStatusBar().setVisibility(View.VISIBLE);
+        if (!SingletonSharedPreference.isReaderStatusBarEnabled(readerDataHolder.getContext())) {
+            int battery = DeviceUtils.getBatteryPecentLevel(readerDataHolder.getContext());
+            getSlideshowStatusBar().updateValue(maxPageCount, pageCount + 1,
+                    startBatteryPercent, battery);
+            getSlideshowStatusBar().setVisibility(View.VISIBLE);
+        } else {
+            hideSlideshowStatusBar();
+        }
     }
 
     private void setAlarm() {

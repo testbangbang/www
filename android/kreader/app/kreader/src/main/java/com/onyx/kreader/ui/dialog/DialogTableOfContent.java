@@ -24,6 +24,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
@@ -362,6 +363,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
         documentInfoChain.execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                EpdController.disableRegal();
                 initViewPager(documentInfoChain.getTableOfContent(),
                         documentInfoChain.getBookmarks(),
                         documentInfoChain.getAnnotations(),
