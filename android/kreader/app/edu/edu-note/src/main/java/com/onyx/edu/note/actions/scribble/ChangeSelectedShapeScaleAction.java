@@ -11,25 +11,28 @@ import com.onyx.edu.note.actions.BaseNoteAction;
  */
 
 public class ChangeSelectedShapeScaleAction extends BaseNoteAction {
-
-    public ChangeSelectedShapeScaleAction(float scale) {
-        this.scaleSize = scale;
-    }
-
-    public ChangeSelectedShapeScaleAction(TouchPoint touchPoint) {
-        this.touchPoint = touchPoint;
-    }
-
     private volatile TouchPoint touchPoint = null;
     private volatile float scaleSize = Float.MIN_VALUE;
 
+    public ChangeSelectedShapeScaleAction(TouchPoint touchPoint, boolean isAddToHistory) {
+        this.touchPoint = touchPoint;
+        this.isAddToHistory = isAddToHistory;
+    }
+
+    public ChangeSelectedShapeScaleAction(float scaleSize, boolean isAddToHistory) {
+        this.scaleSize = scaleSize;
+        this.isAddToHistory = isAddToHistory;
+    }
+
+    private volatile boolean isAddToHistory = false;
+
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
-        ChangeSelectedShapeScaleRequest request ;
+        ChangeSelectedShapeScaleRequest request;
         if (Float.compare(scaleSize, Float.MIN_VALUE) == 0 && (touchPoint != null)) {
-            request = new ChangeSelectedShapeScaleRequest(touchPoint);
+            request = new ChangeSelectedShapeScaleRequest(touchPoint, isAddToHistory);
         } else {
-            request = new ChangeSelectedShapeScaleRequest(scaleSize);
+            request = new ChangeSelectedShapeScaleRequest(scaleSize, isAddToHistory);
         }
         noteManager.submitRequest(request, callback);
     }

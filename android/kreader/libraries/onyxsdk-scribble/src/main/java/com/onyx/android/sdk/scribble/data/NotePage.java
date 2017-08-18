@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.EPDShape;
@@ -35,11 +36,22 @@ public class NotePage {
     private List<Shape> removedShapeList = new ArrayList<>();
     private List<Shape> selectedShapeList = new ArrayList<>();
     private List<Shape> dirtyShapeList = new ArrayList<>();
+    private List<Shape> preTransformShapeList = new ArrayList<>();
 
     private int currentShapeType;
     private Shape currentShape;
     private boolean loaded = false;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
+
+    public void saveCurrentSelectShape() {
+        Log.e("TAG", "saveCurrentSelectShape: ");
+        if (preTransformShapeList.size() == 0) {
+            Log.e("TAG", "saveCurrentSelectShape: actual Add");
+            for (Shape shape : selectedShapeList) {
+                preTransformShapeList.add(ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape)));
+            }
+        }
+    }
 
 
     public static abstract class RenderCallback {
@@ -158,6 +170,7 @@ public class NotePage {
         updateShape(shape);
         removedShapeList.add(shape);
         newAddedShapeList.remove(shape);
+        dirtyShapeList.remove(shape);
         shapeList.remove(shape);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.removeShapeAction(shape), false);
@@ -357,8 +370,7 @@ public class NotePage {
 
     public static final NotePage createPage(final Context context, final String docUniqueId,
                                             final String pageName, final String subPageName) {
-        final NotePage page = new NotePage(docUniqueId, pageName, subPageName);
-        return page;
+        return new NotePage(docUniqueId, pageName, subPageName);
     }
 
     public List<ShapeModel> getNewAddedShapeModeList() {
@@ -431,23 +443,46 @@ public class NotePage {
 
     }
 
-    public void setScaleToSelectShapeList(float scale) {
+    public void setScaleToSelectShapeList(float scale, boolean addToActionHistory) {
+        Log.e("TAG", "setScaleToSelectShapeList: " );
         if (selectedShapeList.size() <= 0) {
             return;
         }
         for (Shape shape : selectedShapeList) {
             shape.onScale(scale);
         }
+        dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            Log.e("NotePage", "preTransformShapeList.get(0).getPoints().getPoints().get(0).getX():" +
+                    preTransformShapeList.get(0).getPoints().getPoints().get(0).getX());
+            Log.e("NotePage", "dirtyShapeList.get(0).getPoints().getPoints().get(0).getX():" +
+                    dirtyShapeList.get(0).getPoints().getPoints().get(0).getX());
+            preTransformShapeList.clear();
+        }
     }
 
-    public void setTranslateToSelectShapeList(float dX, float dY) {
+    public void setTranslateToSelectShapeList(float dX, float dY, boolean addToActionHistory) {
+        Log.e("TAG", "setTranslateToSelectShapeList: " );
+
         if (selectedShapeList.size() <= 0) {
             return;
         }
         for (Shape shape : selectedShapeList) {
             shape.onTranslate(dX, dY);
         }
+        dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            Log.e("NotePage", "preTransformShapeList.get(0).getPoints().getPoints().get(0).getX():" +
+                    preTransformShapeList.get(0).getPoints().getPoints().get(0).getX());
+            Log.e("NotePage", "dirtyShapeList.get(0).getPoints().getPoints().get(0).getX():" +
+                    dirtyShapeList.get(0).getPoints().getPoints().get(0).getX());
+            preTransformShapeList.clear();
+        }
     }
 }

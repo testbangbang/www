@@ -15,13 +15,15 @@ import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRe
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
+import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
 import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
 import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
 import com.onyx.edu.note.actions.scribble.ShapeSelectionAction;
+import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
@@ -161,6 +163,26 @@ public class ShapeTransformHandler extends BaseHandler {
         EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
     }
 
+    private void reDo() {
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                RedoAction reDoAction = new RedoAction();
+                reDoAction.execute(mNoteManager, actionDoneCallback);
+            }
+        });
+    }
+
+    private void unDo() {
+        mNoteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                UndoAction unDoAction = new UndoAction();
+                unDoAction.execute(mNoteManager, actionDoneCallback);
+            }
+        });
+    }
+
     @Override
     public void handleSubMenuFunction(int subMenuID) {
 
@@ -168,7 +190,15 @@ public class ShapeTransformHandler extends BaseHandler {
 
     @Override
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
-
+        Log.e(TAG, "handleToolBarMenuFunction: " );
+        switch (toolBarMenuID) {
+            case ScribbleToolBarMenuID.UNDO:
+                unDo();
+                break;
+            case ScribbleToolBarMenuID.REDO:
+                reDo();
+                break;
+        }
     }
 
     @Override
@@ -256,8 +286,8 @@ public class ShapeTransformHandler extends BaseHandler {
                 new ShapeSelectionAction(mShapeSelectStartPoint, mShapeSelectPoint).execute(mNoteManager, null);
                 break;
             case OperatingMode:
-                new ChangeSelectedShapeScaleAction(mShapeSelectPoint).execute(mNoteManager,null);
-//                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
+//                new ChangeSelectedShapeScaleAction(mShapeSelectPoint, false).execute(mNoteManager, null);
+                new ChangeSelectedShapePositionAction(mShapeSelectPoint,false).execute(mNoteManager, null);
                 break;
         }
     }
@@ -278,8 +308,8 @@ public class ShapeTransformHandler extends BaseHandler {
                 });
                 break;
             case OperatingMode:
-                new ChangeSelectedShapeScaleAction(mShapeSelectPoint).execute(mNoteManager,null);
-//                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
+//                new ChangeSelectedShapeScaleAction(mShapeSelectPoint, true).execute(mNoteManager, null);
+                new ChangeSelectedShapePositionAction(mShapeSelectPoint,true).execute(mNoteManager, null);
                 break;
         }
     }
