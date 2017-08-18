@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="@dimen/search_history_text_margin"
+    android:background="@android:color/white"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/search_et_input"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle_stroke"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:padding="@dimen/search_edit_text_padding"
+            android:textSize="@dimen/level_one_font_size" />
+
+
+        <ImageView
+            android:id="@+id/search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:background="@drawable/menu_item_background"
+            android:padding="@dimen/search_button_padding"
+            android:src="@drawable/ic_dialog_reader_menu_search" />
+
+        <ImageView
+            android:id="@+id/search_iv_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right|center_vertical"
+            android:background="@drawable/menu_item_background"
+            android:padding="@dimen/search_button_padding"
+            android:src="@drawable/ic_close" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/list_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/search_history_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/search_history_text_margin"
+            android:text="@string/search_history"
+            android:textSize="@dimen/book_name_text_size"
+            android:visibility="gone" />
+
+        <com.onyx.android.dr.reader.view.PageRecyclerView
+            android:id="@+id/search_lv_tips"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/height_search_hint_list" />
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/clear_history"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@drawable/dialog_button_background_selector"
+            android:padding="@dimen/search_history_text_margin"
+            android:text="@string/clear_history"
+            android:textSize="@dimen/book_name_text_size"
+            android:visibility="gone" />
+    </LinearLayout>
+</LinearLayout>

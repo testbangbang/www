@@ -53,9 +53,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustPan" />
-        <activity
-            android:name=".reader.activity.ReaderActivity"
-            android:theme="@android:style/Theme.Light.NoTitleBar.Fullscreen" />
+        <activity android:name=".reader.activity.ReaderActivity" />
         <activity
             android:name=".activity.ApplicationsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
@@ -130,7 +128,11 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
-        <activity android:name=".reader.activity.AfterReadingActivity" />
+
+        <activity
+            android:name=".reader.activity.AfterReadingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity
             android:name=".activity.SpeechRecordingActivity"
             android:screenOrientation="portrait">
@@ -151,6 +153,11 @@
                 <action android:name="com.onyx.android.dr.CLEAR_FILE" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".activity.SearchBookActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"

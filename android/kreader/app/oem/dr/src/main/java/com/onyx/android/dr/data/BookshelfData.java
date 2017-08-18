@@ -1,5 +1,7 @@
 package com.onyx.android.dr.data;
 
+import android.util.Log;
+
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.holder.LibraryDataHolder;
@@ -48,7 +50,6 @@ public class BookshelfData {
         for (final Library library : libraryList) {
             QueryArgs queryArgs = holder.getCloudViewInfo().buildLibraryQuery(library.getIdString());
             queryArgs.conditionGroup.and(CloudMetadata_Table.language.eq(language)).and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
-            queryArgs.libraryUniqueId = library.getIdString();
             queryArgs.fetchPolicy = FetchPolicy.DB_ONLY;
             final CloudContentListRequest req = new CloudContentListRequest(queryArgs);
             DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {

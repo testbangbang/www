@@ -29,14 +29,12 @@ public class ReaderDialogManage {
     }
 
     public static void onShowSettingMenu(ReaderPresenter readerPresenter) {
-        EventBus.getDefault().post(new DisplayStatusBarEvent(false));
         ReaderMainMenuDialog readerMainMenuDialog = new ReaderMainMenuDialog(readerPresenter,
                 readerPresenter.getReaderView().getViewContext(), -1, null);
         readerMainMenuDialog.show();
     }
 
     public static void onShowAfterReadingMenu(ReaderPresenter readerPresenter){
-        EventBus.getDefault().post(new DisplayStatusBarEvent(false));
         AfterReadingDialog readerMainMenuDialog = new AfterReadingDialog(readerPresenter, readerPresenter.getReaderView().getViewContext());
         readerMainMenuDialog.show();
     }

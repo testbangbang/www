@@ -355,6 +355,8 @@
     <string name="recording_stopped">Recording stopped</string>
     <string name="query_returns_null">query returns null</string>
     <string name="Invalid_output_file_type_requested">Invalid output file type requested</string>
+    <string name="search_history">search history</string>
+    <string name="clear_history">clear history</string>
     <string name="device_setting_page_refreshes">The page refreshes</string>
     <string name="device_setting_lock_screen_time">Lock screen time</string>
     <string name="device_setting_automatic_shut_down">Automatic shutdown</string>

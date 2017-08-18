@@ -349,6 +349,8 @@
     <string name="audio_db_title_format"><xliff:g id="format">yyyy-MM-dd HH:mm:ss</xliff:g></string>
     <string name="query_returns_null">请求返回为空</string>
     <string name="Invalid_output_file_type_requested">此文件类型输出无效</string>
+    <string name="search_history">搜索历史</string>
+    <string name="clear_history">清除搜索历史</string>
     <string name="device_setting_page_refreshes">页面刷新</string>
     <string name="device_setting_lock_screen_time">锁屏时间</string>
     <string name="device_setting_automatic_shut_down">自动关机</string>

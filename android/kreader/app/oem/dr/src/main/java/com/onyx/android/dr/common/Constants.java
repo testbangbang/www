@@ -90,6 +90,9 @@ public class Constants {
     public static final String ENGLISH = "英文";
     public static final String SMALL_LANGUAGE = "小语种";
     public static final int RECORD_TIME = 5;
+    public static final String SEARCH_TYPE = "search_type";
+    public static final String NAME_SEARCH = "name";
+    public static final String AUTHOR_SEARCH = "author";
     public static final int VALUE_ZERO = 0;
     public static final int VALUE_NEGATIVE_ONE = -1;
     public static String STANDBY_PIC_DIRECTORY = "/data/local/assets/images/";

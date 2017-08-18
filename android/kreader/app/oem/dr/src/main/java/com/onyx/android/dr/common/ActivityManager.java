@@ -28,6 +28,7 @@ import com.onyx.android.dr.activity.OTAUpdateActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
+import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
@@ -44,6 +45,7 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+
 
 /**
  * Created by hehai on 17-6-29.
@@ -269,6 +271,12 @@ public class ActivityManager {
     public static void startAfterReadingActivity(Context context, String documentMd5) {
         Intent intent = new Intent(context, AfterReadingActivity.class);
         intent.putExtra(ReaderConstants.AFTER_READING_ID, documentMd5);
+        context.startActivity(intent);
+    }
+
+    public static void startSearchBookActivity(Context context, String type) {
+        Intent intent = new Intent(context, SearchBookActivity.class);
+        intent.putExtra(Constants.SEARCH_TYPE, type);
         context.startActivity(intent);
     }
 

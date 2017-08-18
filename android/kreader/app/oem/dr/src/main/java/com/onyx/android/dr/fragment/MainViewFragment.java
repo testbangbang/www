@@ -101,6 +101,19 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
                 EventBus.getDefault().post(new BookshelfEvent(Constants.SMALL_LANGUAGE));
             }
         });
+
+        bookNameSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search(Constants.NAME_SEARCH);
+            }
+        });
+        authorSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                search(Constants.AUTHOR_SEARCH);
+            }
+        });
     }
 
     @Override
@@ -133,19 +146,19 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
         return false;
     }
 
-    @OnClick({R.id.now_reading_book_cover, R.id.book_name_search, R.id.author_search, R.id.image_next})
+    @OnClick({R.id.now_reading_book_cover, R.id.image_next})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.now_reading_book_cover:
                 openCloudFile(nowReadingMetadata);
                 break;
-            case R.id.book_name_search:
-                break;
-            case R.id.author_search:
-                break;
             case R.id.image_next:
                 break;
         }
+    }
+
+    private void search(String type) {
+        ActivityManager.startSearchBookActivity(getActivity(), type);
     }
 
     private void openCloudFile(final Metadata book) {

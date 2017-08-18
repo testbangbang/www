@@ -13,21 +13,26 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookListAdapter;
 import com.onyx.android.dr.adapter.BookshelfGroupAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BackToMainViewEvent;
 import com.onyx.android.dr.event.EBookListEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.BookshelfView;
 import com.onyx.android.dr.presenter.BookshelfPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.sdk.data.CloudQueryBuilder;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -169,13 +174,19 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
                 back();
                 break;
             case R.id.bookshelf_book_search:
+                search(Constants.NAME_SEARCH);
                 break;
             case R.id.bookshelf_author_search:
+                search(Constants.AUTHOR_SEARCH);
                 break;
             case R.id.enter_bookstore:
                 enterToBookstore();
                 break;
         }
+    }
+
+    private void search(String type) {
+        ActivityManager.startSearchBookActivity(getActivity(), type);
     }
 
     private void enterToBookstore() {
