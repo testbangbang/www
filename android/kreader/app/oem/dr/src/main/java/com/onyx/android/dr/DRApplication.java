@@ -37,6 +37,7 @@ public class DRApplication extends MultiDexApplication {
     private static CloudStore cloudStore;
     private static LibraryDataHolder libraryDataHolder;
     private DictionaryManager dictionaryManager;
+    private int apkDownloadReference;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -132,7 +133,11 @@ public class DRApplication extends MultiDexApplication {
         List<String> allFolderPathList = getAllFolderPathList();
         DictDatasInit dictDatasInit = new DictDatasInit(DRApplication.getInstance(), allFolderPathList);
         dictionaryManager = dictDatasInit.dictionaryManager;
-}
+    }
+
+    public void setApkDownloadReference(int apkDownloadReference) {
+        this.apkDownloadReference = apkDownloadReference;
+    }
 
     public DictionaryManager getDictionaryManager() {
         return dictionaryManager;

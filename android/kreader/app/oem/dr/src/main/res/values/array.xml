@@ -73,6 +73,7 @@
         <item>4</item>
         <item>5</item>
     </integer-array>
+
     <string-array name="speech_time_name">
         <item>@string/one_minute</item>
         <item>@string/two_minute</item>
@@ -80,4 +81,49 @@
         <item>@string/four_minute</item>
         <item>@string/five_minute</item>
     </string-array>
+
+    <string-array translatable="false" name="special_locale_codes">
+        <item>zh_CN</item>
+        <item>zh_TW</item>
+    </string-array>
+
+    <string-array translatable="false" name="special_locale_names">
+        <item>中文 (简体)</item>
+        <item>中文 (繁體)</item>
+    </string-array>
+
+    <string-array name="device_setting_title">
+        <item>@string/device_setting_page_refreshes</item>
+        <item>@string/device_setting_lock_screen_time</item>
+        <item>@string/device_setting_automatic_shut_down</item>
+        <item>@string/device_setting_language_settings</item>
+        <item>@string/device_setting_device_information</item>
+    </string-array>
+
+    <string-array name="device_setting_page_refreshes">
+        <item>@string/device_setting_one_page</item>
+        <item>@string/device_setting_ten_pages</item>
+        <item>@string/device_setting_twenty_pages</item>
+        <item>@string/device_setting_forty_pages</item>
+        <item>@string/device_setting_eighty_pages</item>
+    </string-array>
+
+    <string-array name="device_setting_automatic_shutdown_time_explain">
+        <item>@string/device_setting_save_electricity_30</item>
+        <item>@string/device_setting_save_electricity_20</item>
+        <item></item>
+    </string-array>
+
+    <string-array name="device_setting_language">
+        <item>@string/device_setting_language_traditional_chinese</item>
+        <item>@string/device_setting_language_simplified_chinese</item>
+        <item>@string/device_setting_language_english</item>
+    </string-array>
+
+    <string-array name="device_setting_locale">
+        <item>@string/device_setting_language_locale_zh_TW</item>
+        <item>@string/device_setting_language_locale_zh_CN</item>
+        <item>@string/device_setting_language_locale_en_GB</item>
+    </string-array>
+
 </resources>

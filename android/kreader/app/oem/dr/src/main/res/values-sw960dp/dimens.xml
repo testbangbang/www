@@ -133,4 +133,17 @@
     <dimen name="record_time_activity_record_height">80dp</dimen>
     <dimen name="activity_state_two_margin_left">5dp</dimen>
     <dimen name="record_time_activity_progressbar_margin_left">20dp</dimen>
+    <dimen name="device_setting_padding_top">15dp</dimen>
+    <dimen name="device_setting_device_information">5dp</dimen>
+    <dimen name="device_setting_page_margin_left">25dp</dimen>
+    <dimen name="device_information_view_padding_bottom">2dp</dimen>
+    <dimen name="page_refresh_item_padding_top">30dp</dimen>
+    <dimen name="device_setting_automatic_shutdown_item_height">100dp</dimen>
+    <dimen name="custom_dialog_padding">20dp</dimen>
+    <dimen name="custom_dialog_padding_top">10dp</dimen>
+    <dimen name="system_update_check_padding_left">20dp</dimen>
+    <dimen name="system_update_check_margin_bottom">10dp</dimen>
+    <dimen name="download_dialog_progress_padding">10dp</dimen>
+    <dimen name="download_dialog_progressbar_width">500dp</dimen>
+    <dimen name="playqueue_dialog_marginbottom">20dp</dimen>
 </resources>

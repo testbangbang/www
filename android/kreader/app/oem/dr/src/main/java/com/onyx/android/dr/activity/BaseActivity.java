@@ -2,10 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import com.onyx.android.dr.event.BackToMainViewEvent;
-import com.onyx.android.dr.fragment.ChildViewID;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 

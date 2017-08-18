@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.onyx.android.dr.view.PageRecyclerView
+        android:id="@+id/setting_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/line_height"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:background="@color/black" />
+</LinearLayout>

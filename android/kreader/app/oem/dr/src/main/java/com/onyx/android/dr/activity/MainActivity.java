@@ -15,6 +15,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.TabMenuAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.dr.event.AccountAvailableEvent;
 import com.onyx.android.dr.event.ApplicationEvent;
@@ -189,7 +190,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingsMenuEvent(SettingsMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_settings));
+        ActivityManager.startSettingActivity(this, Constants.DEVICE_SETTING_FRAGMENT);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
