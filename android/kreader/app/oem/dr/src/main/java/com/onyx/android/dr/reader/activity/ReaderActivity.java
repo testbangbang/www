@@ -185,7 +185,6 @@ public class ReaderActivity extends Activity implements ReaderView {
         bookName = (TextView) findViewById(R.id.text_view_book_name);
         progressLoading = (BookProgressbar) findViewById(R.id.progress_bar);
         initSurfaceView();
-//        EventBus.getDefault().post(new DisplayStatusBarEvent(true));
     }
 
     private void initSurfaceView() {

@@ -143,12 +143,12 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
 
     private class EditChangedListener implements TextWatcher {
         @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
 
         }
 
         @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+        public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
             if (listener != null && !isSetText) {
                 listener.onRefreshAutoComplete(charSequence + "");
             }
@@ -209,7 +209,7 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
         listLayout.setVisibility(flag ? VISIBLE : GONE);
     }
 
-    public void setEditTextHint(CharSequence charSequence){
+    public void setEditTextHint(CharSequence charSequence) {
         etInput.setHint(charSequence);
     }
 }

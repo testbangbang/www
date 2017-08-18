@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-
         <EditText
             android:id="@+id/search_et_input"
             android:layout_width="0dp"
@@ -52,7 +51,7 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/title"
+            android:id="@+id/search_history_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/search_history_text_margin"
