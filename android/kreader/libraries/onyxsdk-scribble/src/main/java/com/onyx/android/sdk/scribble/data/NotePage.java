@@ -436,7 +436,7 @@ public class NotePage {
             return;
         }
         for (Shape shape : selectedShapeList) {
-            shape.setScale(scale);
+            shape.onScale(scale);
         }
         dirtyShapeList.addAll(selectedShapeList);
     }

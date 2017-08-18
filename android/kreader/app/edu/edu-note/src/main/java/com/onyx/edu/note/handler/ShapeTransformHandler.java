@@ -15,7 +15,7 @@ import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRe
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
+import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
 import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
@@ -242,7 +242,7 @@ public class ShapeTransformHandler extends BaseHandler {
     public void onShapeSelectingEvent(ShapeSelectingEvent event) {
         Log.e(TAG, "onShapeSelectingEvent: ");
         MotionEvent motionEvent = event.getMotionEvent();
-        if (mShapeSelectStartPoint == null) {
+        if (mShapeSelectStartPoint == null || mShapeSelectPoint == null) {
             return;
         }
         if (mShapeSelectStartPoint.x == 0 && mShapeSelectStartPoint.y == 0) {
@@ -256,13 +256,15 @@ public class ShapeTransformHandler extends BaseHandler {
                 new ShapeSelectionAction(mShapeSelectStartPoint, mShapeSelectPoint).execute(mNoteManager, null);
                 break;
             case OperatingMode:
-                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
+                new ChangeSelectedShapeScaleAction(mShapeSelectPoint).execute(mNoteManager,null);
+//                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
                 break;
         }
     }
 
     @Subscribe
     public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event) {
+        Log.e(TAG, "onShapeSelectTouchPointListReceived: ");
         switch (currentControlMode) {
             case SelectMode:
                 new SelectShapeByPointListAction(event.getTouchPointList()).execute(mNoteManager, new BaseCallback() {
@@ -276,11 +278,10 @@ public class ShapeTransformHandler extends BaseHandler {
                 });
                 break;
             case OperatingMode:
-                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
+                new ChangeSelectedShapeScaleAction(mShapeSelectPoint).execute(mNoteManager,null);
+//                new ChangeSelectedShapePositionAction(mShapeSelectPoint).execute(mNoteManager, null);
                 break;
         }
-        mShapeSelectStartPoint = null;
-        mShapeSelectPoint = null;
     }
 
     private List<Integer> buildSubMenuThicknessIDList() {
