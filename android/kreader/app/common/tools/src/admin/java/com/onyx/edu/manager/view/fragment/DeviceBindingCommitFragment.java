@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,15 +20,21 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.AccountCommon;
+import com.onyx.android.sdk.data.model.v2.BindServer;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.DeviceBindContainer;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountCreateByDeviceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountDeleteGroupsRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountUnBindByDeviceRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.AdministratorIndexServiceRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.DeviceBindToIndexServiceRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
@@ -299,7 +306,7 @@ public class DeviceBindingCommitFragment extends Fragment {
             ToastUtils.showToast(getContext().getApplicationContext(), R.string.group_has_no_selection);
             return;
         }
-        createAccountByDevice(deviceBind);
+        processDeviceBinding(deviceBind);
     }
 
     @OnClick(R.id.btn_unbind)
@@ -312,7 +319,43 @@ public class DeviceBindingCommitFragment extends Fragment {
         startActivityForResult(new Intent(getContext(), GroupListSelectActivity.class), REQUEST_CODE_GROUP_SELECT);
     }
 
-    private void createAccountByDevice(DeviceBind deviceBind) {
+    private void processDeviceBinding(DeviceBind deviceBind) {
+        CloudRequestChain requestChain = new CloudRequestChain();
+        MaterialDialog dialog = DialogHolder.showProgressDialog(getContext(), getString(R.string.loading));
+        addDeviceBindToIndexServiceRequest(requestChain, deviceBind, dialog);
+        addAccountCreateByDeviceBindingRequest(requestChain, deviceBind, dialog);
+        requestChain.execute(getContext(), AdminApplication.getCloudManager());
+    }
+
+    private void addDeviceBindToIndexServiceRequest(final CloudRequestChain chain, final DeviceBind deviceBind,
+                                                    final MaterialDialog dialog) {
+        final AdministratorIndexServiceRequest indexServiceRequest = new AdministratorIndexServiceRequest(
+                Constant.CLOUD_MAIN_INDEX_SERVER_API, IndexService.createIndexService(getContext()));
+        indexServiceRequest.setOnlyLoadFromLocal(true);
+        final DeviceBindToIndexServiceRequest bindRequest = new DeviceBindToIndexServiceRequest(
+                Constant.CLOUD_MAIN_INDEX_SERVER_API, null);
+        chain.addRequest(indexServiceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                IndexService indexService = indexServiceRequest.getResultIndexService();
+                if (IndexService.hasValidServer(indexService)) {
+                    bindRequest.setBindServer(new BindServer(indexService.server, deviceBind));
+                }
+            }
+        });
+        chain.addRequest(bindRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    dialog.dismiss();
+                    ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.device_bind_fail);
+                }
+            }
+        });
+    }
+
+    private void addAccountCreateByDeviceBindingRequest(CloudRequestChain chain, final DeviceBind deviceBind,
+                                                        final MaterialDialog dialog) {
         NeoAccountBase account = getNeoAccount();
         if (account == null) {
             account = new NeoAccountBase();
@@ -321,9 +364,10 @@ public class DeviceBindingCommitFragment extends Fragment {
         bindContainer.deviceBind = deviceBind;
         bindGroupsToContainerUser(bindContainer, account);
         final AccountCreateByDeviceRequest createByDeviceRequest = new AccountCreateByDeviceRequest(bindContainer);
-        AdminApplication.getCloudManager().submitRequest(getContext(), createByDeviceRequest, new BaseCallback() {
+        chain.addRequest(createByDeviceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dialog.dismiss();
                 if (e != null || (createByDeviceRequest.getAccount()) == null) {
                     ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.device_bind_fail);
                     return;
