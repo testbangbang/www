@@ -468,7 +468,7 @@ public class DialogSearch extends OnyxBaseDialog{
             String rightText = StringUtils.deleteNewlineSymbol(StringUtils.rightTrim(selection.getRightText()));
             leftText = removeUselessLetters(search, leftText, true);
             rightText = removeUselessLetters(search, rightText, false);
-            String content = leftText + search + rightText;
+            String content = leftText + selection.getText() + rightText;
             SpannableStringBuilder style = new SpannableStringBuilder(content);
             int start = leftText.length();
             if (start < 0){

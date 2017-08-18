@@ -3,7 +3,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/dialog_border"
-    android:gravity="center_vertical"
     android:orientation="vertical"
     android:padding="5dp">
 
@@ -37,7 +36,6 @@
             style="@style/LightSettingsRatingBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/dialog_brightness_ratingbar_margin_right"
             android:numStars="@integer/start_amount"
             android:progressDrawable="@drawable/light_bar_big_step"
@@ -89,7 +87,6 @@
             style="@style/LightSettingsRatingBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/dialog_brightness_ratingbar_margin_right"
             android:numStars="@integer/start_amount"
             android:progressDrawable="@drawable/light_bar_big_step"
@@ -114,18 +111,23 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dialog_brightness_padding"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <Button
             android:id="@+id/button_option1"
             android:layout_weight="1"
+            android:layout_marginLeft="@dimen/dialog_brightness_button_margin_left"
             android:layout_width="0dp"
+            android:gravity="center"
             android:layout_height="@dimen/dialog_brightness_button_width"
             android:text="@string/natural_light_option1"/>
 
         <Button
             android:id="@+id/button_option2"
+            android:layout_marginLeft="@dimen/dialog_brightness_button_margin_left"
+            android:gravity="center"
             android:layout_weight="1"
             android:layout_width="0dp"
             android:layout_height="@dimen/dialog_brightness_button_width"
@@ -135,6 +137,9 @@
             android:id="@+id/button_option3"
             android:layout_weight="1"
             android:layout_width="0dp"
+            android:layout_marginLeft="@dimen/dialog_brightness_button_margin_left"
+            android:layout_marginRight="@dimen/dialog_brightness_button_margin_right"
+            android:gravity="center"
             android:layout_height="@dimen/dialog_brightness_button_width"
             android:text="@string/natural_light_option3"/>
 

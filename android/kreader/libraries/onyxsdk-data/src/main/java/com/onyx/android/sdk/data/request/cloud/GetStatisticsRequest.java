@@ -27,7 +27,7 @@ import retrofit2.Response;
 
 public class GetStatisticsRequest extends BaseCloudRequest {
 
-    public final static int RECENT_BOOK_MAX_COUNT = 5;
+    public final static int RECENT_BOOK_MAX_COUNT = 10;
 
     private Context context;
     private StatisticsResult statisticsResult;

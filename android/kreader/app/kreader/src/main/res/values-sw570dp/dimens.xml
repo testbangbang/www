@@ -38,7 +38,7 @@
     <dimen name="dialog_table_of_content_list_item_padding_top">12dp</dimen>
     <dimen name="dialog_quick_preview_padding">12dp</dimen>
     <dimen name="reflow_checkbox_height">13dp</dimen>
-    <dimen name="reflow_checkbox_width">75dp</dimen>
+    <dimen name="reflow_checkbox_width">60dp</dimen>
     <dimen name="reflow_checkbox_big_width">100dp</dimen>
     <dimen name="dialog_reflow_checkbox_layout_width">300dp</dimen>
     <dimen name="dialog_reflow_text_view_width">140dp</dimen>

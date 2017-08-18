@@ -19,7 +19,6 @@ import android.widget.Toast;
 import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.utils.IntentFilterFactory;
-import com.onyx.android.sdk.utils.PreferenceManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,7 +76,6 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnLongC
     public DialogNaturalLightBrightness(Context context) {
         super(context,R.style.CustomDialog);
         mContext = context;
-        PreferenceManager.init(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         mLightSteps = FrontLightController.getNaturalLightValueList(getContext());
         int targetLayoutID = R.layout.dialog_natural_brightness_step;
@@ -196,32 +194,32 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnLongC
         mOption3.setOnClickListener(this);
     }
 
-    private void saveNaturalLightProgress(Context context, String OptionWarm, String OptionCold) {
-        int OptionWarmLight = mRatingBarWarmLightSettings.getProgress();
-        int OptionColdLight = mRatingBarColdLightSettings.getProgress();
-        PreferenceManager.setIntValue(context, OptionWarm, OptionWarmLight);
-        PreferenceManager.setIntValue(context, OptionCold, OptionColdLight);
+    private void saveNaturalLightProgress(Context context, String optionWarm, String optionCold) {
+        int optionWarmLight = mRatingBarWarmLightSettings.getProgress();
+        int optionColdLight = mRatingBarColdLightSettings.getProgress();
+        putSettingsSystemInt(context, optionWarm, optionWarmLight);
+        putSettingsSystemInt(context, optionCold, optionColdLight);
         Toast.makeText(context, R.string.save_success, Toast.LENGTH_LONG).show();
     }
 
-    private void changeNaturalLightProgress(Context context, String OptionWarm, String OptionCold) {
-        if (OPTION_1_WARM_LIGHT.equals(OptionWarm) && OPTION_1_COLD_LIGHT.equals(OptionCold)) {
-            setNaturalLightProgress(context, OptionWarm, OptionCold, 0, 0);
+    private void changeNaturalLightProgress(Context context, String optionWarm, String optionCold) {
+        if (OPTION_1_WARM_LIGHT.equals(optionWarm) && OPTION_1_COLD_LIGHT.equals(optionCold)) {
+            setNaturalLightProgress(context, optionWarm, optionCold, 0, 0);
         }
-        if (OPTION_2_WARM_LIGHT.equals(OptionWarm) && OPTION_2_COLD_LIGHT.equals(OptionCold)) {
-            setNaturalLightProgress(context, OptionWarm, OptionCold, mRatingBarWarmLightSettings.getMax()/2,
+        if (OPTION_2_WARM_LIGHT.equals(optionWarm) && OPTION_2_COLD_LIGHT.equals(optionCold)) {
+            setNaturalLightProgress(context, optionWarm, optionCold, mRatingBarWarmLightSettings.getMax()/2,
                     mRatingBarColdLightSettings.getMax()/2);
         }
-        if (OPTION_3_WARM_LIGHT.equals(OptionWarm) && OPTION_3_COLD_LIGHT.equals(OptionCold)) {
-            setNaturalLightProgress(context, OptionWarm, OptionCold, mRatingBarWarmLightSettings.getMax(),
+        if (OPTION_3_WARM_LIGHT.equals(optionWarm) && OPTION_3_COLD_LIGHT.equals(optionCold)) {
+            setNaturalLightProgress(context, optionWarm, optionCold, mRatingBarWarmLightSettings.getMax(),
                     mRatingBarColdLightSettings.getMax());
         }
     }
 
-    private void setNaturalLightProgress(Context context, String OptionWarm, String OptionCold,
-                                         int WarmLightDefaultValue, int ColdLightDefaultValue) {
-        mRatingBarWarmLightSettings.setProgress(PreferenceManager.getIntValue(context, OptionWarm, WarmLightDefaultValue));
-        mRatingBarColdLightSettings.setProgress(PreferenceManager.getIntValue(context, OptionCold, ColdLightDefaultValue));
+    private void setNaturalLightProgress(Context context, String optionWarm, String optionCold,
+                                         int warmLightDefaultValue, int coldLightDefaultValue) {
+        mRatingBarWarmLightSettings.setProgress(getSettingsSystemInt(context, optionWarm, warmLightDefaultValue));
+        mRatingBarColdLightSettings.setProgress(getSettingsSystemInt(context, optionCold, coldLightDefaultValue));
     }
 
     private void changeLightState() {
@@ -231,9 +229,9 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnLongC
     }
 
     private void setLightRatingBarDefaultProgress() {
-        int coldValue = Settings.System.getInt(getContext().getContentResolver(), COLD_LIGHT_VALUE,0);
+        int coldValue = getSettingsSystemInt(getContext(), COLD_LIGHT_VALUE, 0);
         mRatingBarColdLightSettings.setProgress(getIndex(coldValue));
-        int warmValue = Settings.System.getInt(getContext().getContentResolver(),WARM_LIGHT_VALUE,0);
+        int warmValue = getSettingsSystemInt(getContext(), WARM_LIGHT_VALUE, 0);
         mRatingBarWarmLightSettings.setProgress(getIndex(warmValue));
     }
 
@@ -244,10 +242,10 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnLongC
         int value = 0;
         if (isWarmLightChange) {
             value = mLightSteps.get(mRatingBarWarmLightSettings.getProgress());
-            Settings.System.putInt(this.getContext().getContentResolver(),WARM_LIGHT_VALUE,value);
+            putSettingsSystemInt(getContext(), WARM_LIGHT_VALUE, value);
         } else {
             value = mLightSteps.get(mRatingBarColdLightSettings.getProgress());
-            Settings.System.putInt(this.getContext().getContentResolver(), COLD_LIGHT_VALUE,value);
+            putSettingsSystemInt(getContext(), COLD_LIGHT_VALUE, value);
         }
         FrontLightController.setNaturalBrightness(this.getContext(), value);
     }
@@ -272,6 +270,14 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnLongC
             }
         }
         return index;
+    }
+
+    public int getSettingsSystemInt(Context context, String lightKey, int defaultValue) {
+        return Settings.System.getInt(context.getContentResolver(), lightKey, defaultValue);
+    }
+
+    public void putSettingsSystemInt(Context context, String lightKey, int lightValue) {
+        Settings.System.putInt(context.getContentResolver(), lightKey, lightValue);
     }
 
     @Override
