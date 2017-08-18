@@ -46,6 +46,10 @@ public class RawInputProcessor {
 
     private static final int PEN_SIZE = 0;
 
+    private static final int ON_PRESS = 0;
+    private static final int ON_MOVE = 1;
+    private static final int ON_RELEASE = 2;
+
     public static abstract class RawInputCallback {
 
         // when received pen down or stylus button
@@ -86,6 +90,8 @@ public class RawInputProcessor {
     private volatile RectF limitRect = new RectF();
     private volatile DataInputStream dataInputStream;
 
+    private native void nativeRawReader();
+    private native void nativeRawClose();
     /**
      * matrix used to map point from input device to screen display.
      * @param sm
@@ -225,6 +231,17 @@ public class RawInputProcessor {
                 erasing = true;
                 lastErasing = true;
             }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public void onTouchPointReceived(int x, int y, int pressure, long ts, boolean erasing, int state) {
+        if (state == ON_PRESS) {
+            pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+        }else if (state == ON_MOVE) {
+            moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+        }else if (state == ON_RELEASE) {
+            releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
         }
     }
 
