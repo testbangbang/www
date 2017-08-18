@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/system_update_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:paddingBottom="@dimen/page_refresh_item_padding_top"
+        android:paddingTop="@dimen/page_refresh_item_padding_top"
+        android:text="@string/device_setting_system_update"
+        android:textSize="@dimen/level_one_heading_font"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:background="@android:color/black" />
+
+    <com.onyx.android.dr.view.PageRecyclerView
+        android:id="@+id/system_update_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:background="@android:color/black" />
+
+    <View
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <Button
+        android:id="@+id/system_update_check"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/system_update_check_margin_bottom"
+        android:background="@drawable/text_view_background"
+        android:paddingLeft="@dimen/system_update_check_padding_left"
+        android:paddingRight="@dimen/system_update_check_padding_left"
+        android:visibility="gone"
+        android:text="@string/system_update_check"
+        android:textSize="@dimen/level_one_heading_font" />
+</LinearLayout>

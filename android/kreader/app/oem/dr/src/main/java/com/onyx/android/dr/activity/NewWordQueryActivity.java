@@ -41,7 +41,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-import static com.onyx.android.dr.R.id.image_view_back;
 
 
 /**
@@ -62,7 +61,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     TextView incomeNewWordNote;
     @Bind(R.id.new_word_query_activity_baidubaike)
     TextView baiduBaike;
-    @Bind(image_view_back)
+    @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.title_bar_title)
     TextView title;
@@ -321,7 +320,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
             R.id.new_word_query_activity_baidubaike})
     public void onClick(View view) {
         switch (view.getId()) {
-            case image_view_back:
+            case R.id.image_view_back:
                 finish();
                 break;
             case R.id.new_word_query_activity_baidubaike:

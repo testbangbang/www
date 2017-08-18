@@ -5,6 +5,8 @@
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
+    <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
     <string name="wheel_view_paint_color">#83cde6</string>
     <string name="wheel_view_itemview_color_one">#0288ce</string>
     <string name="wheel_view_itemview_color_two">#bbbbbb</string>

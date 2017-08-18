@@ -297,6 +297,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
+                    if (queryWordRequest.queryResult == null) {
+                        return;
+                    }
                     resultView.loadResultAsHtml(queryWordRequest.queryResult);
                     getSoundData(queryWordRequest.queryResult);
                     addSearchResult(queryWordRequest.queryResult);
@@ -484,7 +487,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewWordQueryEvent(NewWordQueryEvent event) {
-        ActivityManager.startNewWordQueryActivity(this, copyText);
+        ActivityManager.startNewWordQueryDialogActivity(this, copyText, true);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

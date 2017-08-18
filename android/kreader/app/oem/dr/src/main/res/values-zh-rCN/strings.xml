@@ -290,6 +290,8 @@
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
+    <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
     <string name="article_repeat_after">文章跟读</string>
     <string name="speech_recording">演讲录音</string>
     <string name="pronounce_evaluation">发音测评</string>
@@ -349,4 +351,68 @@
     <string name="Invalid_output_file_type_requested">此文件类型输出无效</string>
     <string name="search_history">搜索历史</string>
     <string name="clear_history">清除搜索历史</string>
+    <string name="device_setting_page_refreshes">页面刷新</string>
+    <string name="device_setting_lock_screen_time">锁屏时间</string>
+    <string name="device_setting_automatic_shut_down">自动关机</string>
+    <string name="device_setting_language_settings">语言设置</string>
+    <string name="device_setting_device_information">设备信息</string>
+    <string name="device_setting_one_page">1 页</string>
+    <string name="device_setting_ten_pages">10 页</string>
+    <string name="device_setting_twenty_pages">20 页</string>
+    <string name="device_setting_forty_pages">40 页</string>
+    <string name="device_setting_eighty_pages">80 页</string>
+    <string name="device_setting_save_electricity_30">可节省30%电量</string>
+    <string name="device_setting_save_electricity_20">可节省20%电量</string>
+    <string name="reset">恢复出厂设置</string>
+    <string name="device_setting_stores_information">存储信息：</string>
+    <string name="device_setting_system_update">在线更新</string>
+    <string name="device_setting_version_update_record">版本更新记录</string>
+    <string name="device_setting_model">设备型号：</string>
+    <string name="device_setting_version_number">系统版本号：</string>
+    <string name="device_setting_serial_number">序列号：</string>
+    <string name="device_setting_wifi_mac_address">WIFI MAC地址</string>
+    <string name="device_setting_view_current_storage">查看目前存储空间使用情况</string>
+    <string name="device_setting_check_update">检查新版本/查看更新记录</string>
+    <string name="device_setting_local_storage">本机存储空间</string>
+    <string name="storage_gb">GB</string>
+    <string name="device_setting_available_storage">本机可用存储空间</string>
+    <string name="device_setting_no_tf_card_detected">未检测到TF卡</string>
+    <string name="device_setting_no">无</string>
+    <string name="device_setting_tf_card_detected">检测到TF卡</string>
+    <string name="device_setting_tf_memory_card">TF存储卡</string>
+    <string name="device_setting_tf_memory_card_storage">TF存储卡存储空间</string>
+    <string name="device_setting_tf_available_memory_card_storage">TF存储卡可用存储空间</string>
+    <string name="device_setting_current_version">目前版本号</string>
+    <string name="device_setting_check_system_update">检查更新</string>
+    <string name="system_update">系统更新</string>
+    <string name="update_the_system_firmware">更新系统固件</string>
+    <string name="bookstore_update">书城更新</string>
+    <string name="update_bookstore_application">更新书城应用</string>
+    <string name="device_setting_page_refreshes_value">每%1$s刷新一次屏幕</string>
+    <string name="device_setting_page_refresh_rate">页面刷新频率</string>
+    <string name="close_screen_prompt">在无操作关闭屏幕</string>
+    <string name="close_device_prompt">在无操作时关闭设备</string>
+    <string name="device_setting_device_information_value">查看设备使用状态和系统版本</string>
+    <string name="without_new_version">已是最新版本</string>
+    <string name="device_setting_language_traditional_chinese">中文 (繁體)</string>
+    <string name="device_setting_language_simplified_chinese">中文 (简体)</string>
+    <string name="device_setting_language_english">English (United Kingdom)</string>
+    <string name="find_a_new_version">发现新版本</string>
+    <string name="start_updating">开始更新</string>
+    <string name="cancel_updating">取消更新</string>
+    <string name="device_setting_page_refresh_explain">开启后大幅提高翻页速度，但残影较明显</string>
+    <string name="device_setting_language_settings_title">设置系统语言</string>
+    <string name="change_system_language">是否将系统语言更换为</string>
+    <string name="no">否</string>
+    <string name="yes">是</string>
+    <string name="download_url">download url: </string>
+    <string name="saved_successfully">保存成功</string>
+    <string name="save_failed">保存失败</string>
+    <string name="confirm">确定</string>
+    <string name="device_setting_lock_screen_time_title">锁屏时间</string>
+    <string name="system_update_check">检查更新</string>
+    <string name="menu_wifi_setting">WIFI 设置</string>
+    <string name="minute">%1$d 分钟</string>
+    <string name="never_sleep">永不</string>
+    <string name="downloading">下载中...</string>
 </resources>

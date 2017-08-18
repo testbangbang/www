@@ -6,16 +6,19 @@
     android:orientation="vertical">
 
     <include
-        android:id="@+id/title_bar"
+        android:id="@+id/title_bar_container"
         layout="@layout/title_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <RelativeLayout
         android:id="@+id/new_word_query_activity_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/title_bar"
+        android:layout_below="@+id/title_bar_container"
         android:layout_gravity="center_vertical">
 
         <ImageView

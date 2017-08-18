@@ -2,8 +2,9 @@ package com.onyx.android.dr.common;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.widget.TabHost;
+import android.net.Uri;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
@@ -21,20 +22,30 @@ import com.onyx.android.dr.activity.MemorandumActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
 import com.onyx.android.dr.activity.NewWordNotebookActivity;
 import com.onyx.android.dr.activity.NewWordQueryActivity;
+import com.onyx.android.dr.activity.NewWordQueryDialogActivity;
 import com.onyx.android.dr.activity.NewWordTypeActivity;
+import com.onyx.android.dr.activity.OTAUpdateActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
 import com.onyx.android.dr.activity.SearchBookActivity;
+import com.onyx.android.dr.activity.SettingActivity;
+import com.onyx.android.dr.activity.SpeechRecordingActivity;
+import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
+import com.onyx.android.dr.event.MenuWifiSettingEvent;
 import com.onyx.android.dr.reader.activity.AfterReadingActivity;
 import com.onyx.android.dr.reader.common.ReaderConstants;
-import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
+import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
+
 
 /**
  * Created by hehai on 17-6-29.
@@ -118,6 +129,15 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
+    public static void startNewWordQueryDialogActivity(Context context, String editQuery, boolean tag) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.EDITQUERY, editQuery);
+        intent.putExtra(Constants.LOCATION, tag);
+        intent.setClass(context, NewWordQueryDialogActivity.class);
+        context.startActivity(intent);
+    }
+
     public static void startInformalEssayActivity(Context context, int jumpSource) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -165,6 +185,14 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, RecordTimeSettingActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startSettingActivity(Context context, int tag) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.FRAGMENT_TYPE, tag);
+        intent.setClass(context, SettingActivity.class);
         context.startActivity(intent);
     }
 
@@ -250,5 +278,51 @@ public class ActivityManager {
         Intent intent = new Intent(context, SearchBookActivity.class);
         intent.putExtra(Constants.SEARCH_TYPE, type);
         context.startActivity(intent);
+    }
+
+    public static void showWifiDialog(final Context context) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(context);
+        builder.setTitle(context.getString(R.string.wifi_dialog_title))
+                .setMessage(context.getString(R.string.wifi_dialog_content))
+                .setPositiveButton(context.getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        EventBus.getDefault().post(new MenuWifiSettingEvent(context.getString(R.string.menu_wifi_setting)));
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton(context.getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create().show();
+    }
+
+    public static void startResetDeviceActivity(Context context) {
+        Intent intent = new Intent("android.settings.PRIVACY_SETTINGS");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClassName("com.android.settings", "com.android.settings.PrivacySettings");
+        context.startActivity(intent);
+    }
+
+    public static void startSystemUpdateHistoryActivity(final Context context) {
+        Intent intent = new Intent(context, SystemUpdateHistoryActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startOtaUpdateActivity(Context context, String url) {
+        Intent intent = new Intent(context, OTAUpdateActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.UPDATE_URL, url);
+        context.startActivity(intent);
+    }
+
+    public static void startInstallAPKActivity(Context context, File apkFile) {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(Uri.parse("file://" + apkFile.toString()),
+                "application/vnd.android.package-archive");
+        context.startActivity(intent);
+        android.os.Process.killProcess(android.os.Process.myPid());
     }
 }
