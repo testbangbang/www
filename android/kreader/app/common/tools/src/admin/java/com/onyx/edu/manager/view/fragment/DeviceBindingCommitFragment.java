@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,7 @@ import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountCreateByDeviceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountDeleteGroupsRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.AccountUnBindByDeviceRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.AdministratorIndexServiceRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.GetAdminInfoFromIndexServiceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.DeviceBindToIndexServiceRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
@@ -329,7 +328,7 @@ public class DeviceBindingCommitFragment extends Fragment {
 
     private void addDeviceBindToIndexServiceRequest(final CloudRequestChain chain, final DeviceBind deviceBind,
                                                     final MaterialDialog dialog) {
-        final AdministratorIndexServiceRequest indexServiceRequest = new AdministratorIndexServiceRequest(
+        final GetAdminInfoFromIndexServiceRequest indexServiceRequest = new GetAdminInfoFromIndexServiceRequest(
                 Constant.CLOUD_MAIN_INDEX_SERVER_API, IndexService.createIndexService(getContext()));
         indexServiceRequest.setOnlyLoadFromLocal(true);
         final DeviceBindToIndexServiceRequest bindRequest = new DeviceBindToIndexServiceRequest(

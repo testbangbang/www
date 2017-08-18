@@ -21,7 +21,7 @@ import static com.onyx.android.sdk.data.provider.SystemConfigProvider.KEY_CONTEN
 /**
  * Created by suicheng on 2017/7/6.
  */
-public class AdministratorIndexServiceRequest extends BaseCloudRequest {
+public class GetAdminInfoFromIndexServiceRequest extends BaseCloudRequest {
 
     private volatile String apiBase;
     private IndexService requestService;
@@ -31,7 +31,7 @@ public class AdministratorIndexServiceRequest extends BaseCloudRequest {
 
     private boolean indexServiceHasChanged = false;
 
-    public AdministratorIndexServiceRequest(final String base, IndexService service) {
+    public GetAdminInfoFromIndexServiceRequest(final String base, IndexService service) {
         requestService = service;
         apiBase = base;
     }
