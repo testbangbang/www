@@ -13,6 +13,7 @@ public class MaterialDialogProgress implements DialogLoading {
     public MaterialDialogProgress(Context context, int resId, boolean indeterminate) {
         dialog = new MaterialDialog.Builder(context)
                 .content(resId)
+                .canceledOnTouchOutside(false)
                 .progress(indeterminate, 100, false)
                 .build();
     }
