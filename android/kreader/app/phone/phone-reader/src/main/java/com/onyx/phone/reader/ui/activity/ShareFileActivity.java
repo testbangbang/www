@@ -1,5 +1,6 @@
 package com.onyx.phone.reader.ui.activity;
 
+import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -39,6 +40,7 @@ import com.onyx.phone.reader.R;
 import com.onyx.phone.reader.ReaderApplication;
 import com.onyx.phone.reader.ui.dialog.DialogProgressHolder;
 import com.onyx.phone.reader.manager.PermissionManager;
+import com.onyx.phone.reader.utils.IntentUtils;
 import com.onyx.phone.reader.utils.TextUtils;
 import com.onyx.phone.reader.utils.ToastUtils;
 import com.onyx.phone.reader.utils.NetworkUtils;
@@ -59,6 +61,11 @@ import pub.devrel.easypermissions.EasyPermissions;
  */
 public class ShareFileActivity extends AppCompatActivity implements EasyPermissions.PermissionCallbacks {
     private static final String PUSH_TYPE = "digital_content";
+
+    private static final int STORAGE_PHONE_PERMS_REQUEST_CODE = 1;
+    private static final String[] STORAGE_PHONE_PERMS = new String[]{
+            Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_PHONE_STATE};
 
     @Bind(R.id.message_textView)
     TextView messageTextView;
@@ -82,7 +89,7 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
 
     private void initData() {
         if (NetworkUtils.isWifiConnected(this)) {
-
+            requestPermission();
         } else {
             showWifiDisconnectedDialog();
         }
@@ -96,7 +103,7 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-
+                        requestPermission();
                     }
                 })
                 .show();
@@ -146,21 +153,9 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
     private String getIntentInfo() {
         if (BuildConfig.DEBUG) {
             return TextUtils.NEW_LINE_DOUBLE + getIntent().toString() +
-                    TextUtils.NEW_LINE_DOUBLE + getBundleData(getIntent().getExtras());
+                    TextUtils.NEW_LINE_DOUBLE + IntentUtils.getBundleInfo(getIntent());
         }
         return "";
-    }
-
-    private String getBundleData(Bundle bundle) {
-        if (bundle == null) {
-            return null;
-        }
-        StringBuilder sb = new StringBuilder("Bundle{\r\n");
-        for (String key : bundle.keySet()) {
-            sb.append(key).append(" => ").append(bundle.get(key)).append(";\r\n");
-        }
-        sb.append(" }Bundle");
-        return sb.toString();
     }
 
     private void processFileShared(Uri uri) {
@@ -201,19 +196,9 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
         progressDialogHolder.showIndeterminateProgressDialog(this, parseEpubRequest, R.string.generating_epub_file);
     }
 
-    private File getTextFile(String content) {
-        String fileName;
-        if (content.length() < 20) {
-            fileName = content;
-        } else {
-            fileName = content.substring(0, 20);
-        }
-        return new File(getExternalCacheDir(), FileUtils.fixNotAllowFileName(fileName) + ".txt");
-    }
-
     private void processTextShared(String text) {
         showSharedMessage(text);
-        File file = getTextFile(text);
+        File file = TextUtils.getTextFile(getApplicationContext(), text);
         boolean success = TextUtils.writeTextToFile(file, text);
         if (success) {
             startToUploadFile(uploadFilePath = file.getAbsolutePath());
@@ -242,7 +227,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 WeChatOauthResp resp;
                 if (e != null || (resp = ((WeChatOauthRequest) request).getResp()) == null) {
                     processOAuthErrorResult(R.string.get_wx_token_failed);
-                    printException(e);
                     return;
                 }
                 processWeChatUserInfo(resp);
@@ -260,7 +244,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                         WeChatUserInfo userInfo = userInfoRequest.getUserInfo();
                         if (e != null || userInfo == null) {
                             processOAuthErrorResult(R.string.get_wx_user_info_failed);
-                            printException(e);
                             return;
                         }
                         requestOnyxOauthCode(userInfo);
@@ -275,7 +258,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 String code = ((AccountGetOAuthCodeRequest) request).getOauthCode();
                 if (e != null || StringUtils.isNullOrEmpty(code)) {
                     processOAuthErrorResult(R.string.get_onyx_account_oauth_failed);
-                    printException(e);
                     return;
                 }
                 requestOnyxAccount(code);
@@ -292,7 +274,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 OnyxAccount account = oAuthRequest.getOnyxAccount();
                 if (e != null || account == null) {
                     processOAuthErrorResult(R.string.get_onyx_account_bound_failed);
-                    printException(e);
                     return;
                 }
                 OnyxAccount.saveAccount(ShareFileActivity.this, account);
@@ -304,6 +285,17 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
     private void processOAuthErrorResult(int errorResId) {
         ToastUtils.showLongToast(this, errorResId);
         progressDialogHolder.dismissProgressDialog(weChatOauthObject);
+    }
+
+    @AfterPermissionGranted(STORAGE_PHONE_PERMS_REQUEST_CODE)
+    private void requestPermission() {
+        String[] perms = STORAGE_PHONE_PERMS;
+        if (EasyPermissions.hasPermissions(this, perms)) {
+            afterPermissionGranted();
+        } else {
+            EasyPermissions.requestPermissions(this, getString(R.string.request_permission_rationale),
+                    STORAGE_PHONE_PERMS_REQUEST_CODE, perms);
+        }
     }
 
     private void afterPermissionGranted() {
@@ -336,7 +328,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 String uploadResult = getString(R.string.upload_file) + (success ? getString(R.string.success) : getString(R.string.failed));
                 ToastUtils.showShortToast(ShareFileActivity.this, uploadResult);
                 if (!success) {
-                    e.printStackTrace();
                     return;
                 }
 
@@ -357,9 +348,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
                 boolean success = e == null;
                 String pushResult = getString(R.string.push_to_device) + (success ? getString(R.string.success) : getString(R.string.failed));
                 ToastUtils.showShortToast(ShareFileActivity.this, pushResult);
-                if (!success) {
-                    e.printStackTrace();
-                }
             }
         });
     }
@@ -385,12 +373,6 @@ public class ShareFileActivity extends AppCompatActivity implements EasyPermissi
 
     private WeChatManager getWeChatManager() {
         return WeChatManager.sharedInstance(this, ReaderApplication.WX_APP_ID, ReaderApplication.WX_APP_SECRETE);
-    }
-
-    private void printException(Throwable e) {
-        if (e != null) {
-            e.printStackTrace();
-        }
     }
 
     @Override
