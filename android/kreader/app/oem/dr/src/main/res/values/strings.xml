@@ -353,4 +353,6 @@
     <string name="recording_stopped">Recording stopped</string>
     <string name="query_returns_null">query returns null</string>
     <string name="Invalid_output_file_type_requested">Invalid output file type requested</string>
+    <string name="search_history">search history</string>
+    <string name="clear_history">clear history</string>
 </resources>

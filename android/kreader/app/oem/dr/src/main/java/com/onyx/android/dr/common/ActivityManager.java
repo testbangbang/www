@@ -3,6 +3,7 @@ package com.onyx.android.dr.common;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.widget.TabHost;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
@@ -24,12 +25,14 @@ import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
+import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.reader.activity.AfterReadingActivity;
 import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
 
@@ -240,6 +243,12 @@ public class ActivityManager {
     public static void startAfterReadingActivity(Context context, String documentMd5) {
         Intent intent = new Intent(context, AfterReadingActivity.class);
         intent.putExtra(ReaderConstants.AFTER_READING_ID, documentMd5);
+        context.startActivity(intent);
+    }
+
+    public static void startSearchBookActivity(Context context, String type) {
+        Intent intent = new Intent(context, SearchBookActivity.class);
+        intent.putExtra(Constants.SEARCH_TYPE, type);
         context.startActivity(intent);
     }
 }

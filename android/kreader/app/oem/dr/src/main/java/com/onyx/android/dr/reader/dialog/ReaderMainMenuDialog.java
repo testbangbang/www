@@ -566,7 +566,7 @@ public class ReaderMainMenuDialog extends Dialog implements View.OnClickListener
         readSettingMenuMarginBig.setOnClickListener(this);
 
         //set default value
-        int id = R.id.reader_read_setting_menu_margin_small;
+        int id = R.id.reader_read_setting_menu_margin_mid;
         int value = ReadSettingMarginConfig.getReadSettingMargin(readerPresenter.getReaderView().getViewContext());
         switch (value) {
             case ReadSettingMarginConfig.READ_SETTING_MARGIN_SMALL:

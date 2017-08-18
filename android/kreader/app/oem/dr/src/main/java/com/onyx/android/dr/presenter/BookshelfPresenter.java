@@ -1,6 +1,9 @@
 package com.onyx.android.dr.presenter;
 
+import android.util.Log;
+
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.action.CloudLibraryListLoadAction;
 import com.onyx.android.dr.data.BookshelfData;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.BookshelfView;
@@ -47,6 +50,7 @@ public class BookshelfPresenter {
             public void done(BaseRequest request, Throwable e) {
                 Map<String, List<Metadata>> map = bookshelfData.getLanguageCategoryMap();
                 bookshelfView.setLanguageCategory(map);
+                Log.e("", "done: ========================================");
             }
         });
     }

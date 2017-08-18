@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_bar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
+            android:id="@+id/search_book_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="@dimen/search_result_content_margin_top" />
+
+        <com.onyx.android.dr.view.CustomSearchView
+            android:id="@+id/custom_search_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</LinearLayout>
