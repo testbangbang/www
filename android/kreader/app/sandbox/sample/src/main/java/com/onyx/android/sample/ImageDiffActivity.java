@@ -27,8 +27,8 @@ public class ImageDiffActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        calculateAllDiffList();
-        //calculateUpdWorkingBuffer();
+//        calculateAllDiffList();
+        calculateUpdWorkingBuffer();
     }
 
     private void transparentImage() {
@@ -96,7 +96,7 @@ public class ImageDiffActivity extends AppCompatActivity {
     private void calculateUpdWorkingBuffer() {
         // load upd list
         List<String> pathList = new ArrayList<>();
-        for(int i = 0; i < 7; ++i) {
+        for(int i = 0; i < 6; ++i) {
             pathList.add("/mnt/sdcard/scp-" + i + ".png");
         }
 
@@ -107,6 +107,9 @@ public class ImageDiffActivity extends AppCompatActivity {
             epdHelper.merge();
             epdHelper.nextFrame();
         }
+
+        final Bitmap finalBitmap = ImageUtils.loadBitmapFromFile("/mnt/sdcard/scp-6.png");
+        epdHelper.flush(finalBitmap);
         Log.e(TAG, "all finished with verify result: " + epdHelper.verify());
     }
 

@@ -34,7 +34,7 @@ public class EpdHelper {
     private Bitmap mcu;
     private int maxFrame = 30;
     private int currentFrame = 0;
-    private int frameStep = 1;
+    private int frameStep = 5;
     private String finalPath;
 
     public void init(final List<String> pathList) {
@@ -70,6 +70,17 @@ public class EpdHelper {
                 updateEntry.fullMerged = true;
                 Log.e(TAG, "removed upd buffer: " + index);
             }
+        }
+    }
+
+    public void flush(final Bitmap finalUpdateBitmap) {
+        while (!ImageUtils.isFinished(finalUpdateBitmap)) {
+            int state = ImageUtils.merge(finalUpdateBitmap, workingBuffer, mcu, maxFrame);
+            Log.e(TAG, "Flush frame index: " + currentFrame + " merge state: " + state + " update buffer last");
+            if ((state & ImageUtils.SOMETHING_MERGED) > 0) {
+                dump(finalUpdateBitmap, workingBuffer, finalUpdateBitmap, workingBuffer, 1000);
+            }
+            nextFrame();
         }
     }
 

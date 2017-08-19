@@ -89,6 +89,18 @@ public class ImageUtils {
         }
     }
 
+    static public boolean isFinished(final Bitmap bitmap) {
+        for(int y = 0; y < bitmap.getHeight(); ++y) {
+            for(int x = 0; x < bitmap.getWidth(); ++x) {
+                int v1 = bitmap.getPixel(x, y);
+                if (v1 != Color.TRANSPARENT) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     // second - first;
     static public Bitmap diffImage(final String first, final String second) {
         final Bitmap firstBitmap = loadBitmapFromFile(first);
