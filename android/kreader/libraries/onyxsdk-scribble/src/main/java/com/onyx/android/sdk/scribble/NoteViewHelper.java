@@ -256,13 +256,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
-        final Matrix screenMatrix = new Matrix();
-        screenMatrix.postRotate(deviceConfig.getEpdPostOrientation());
-        screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
-        screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
-                deviceConfig.getEpdHeight() / getTouchHeight());
-        getRawInputProcessor().setScreenMatrix(screenMatrix);
+        getRawInputProcessor().setHostView(surfaceView);
     }
 
     // consider view offset to screen.
@@ -271,10 +265,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
-        final Matrix viewMatrix = new Matrix();
-        viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
-        getRawInputProcessor().setViewMatrix(viewMatrix);
+        getRawInputProcessor().setHostView(surfaceView);
     }
 
     private OnyxMatrix initViewToEpdMatrix() {
