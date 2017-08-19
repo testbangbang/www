@@ -92,6 +92,8 @@ public class RawInputProcessor {
 
     private native void nativeRawReader();
     private native void nativeRawClose();
+    private native void nativeSetStrokeWidth(float strokeWidth);
+    private native void nativeSetLimitRegion(int[] limitRegion);
     /**
      * matrix used to map point from input device to screen display.
      * @param sm

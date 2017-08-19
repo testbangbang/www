@@ -23,6 +23,22 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcesso
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawClose
   (JNIEnv *, jobject);
 
+/*
+ * Class:     com_onyx_android_sdk_scribble_touch_RawInputProcessor
+ * Method:    nativeSetStrokeWidth
+ * Signature: (F)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetStrokeWidth
+  (JNIEnv *, jobject, jfloat);
+
+/*
+ * Class:     com_onyx_android_sdk_scribble_touch_RawInputProcessor
+ * Method:    nativeSetLimitRegion
+ * Signature: ([I)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetLimitRegion
+  (JNIEnv *, jobject, jintArray);
+
 #ifdef __cplusplus
 }
 #endif

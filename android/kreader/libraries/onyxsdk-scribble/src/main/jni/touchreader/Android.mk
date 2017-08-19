@@ -12,10 +12,12 @@ LOCAL_STATIC_LIBRARIES := libutils
 
 LOCAL_SRC_FILES := \
     touch_reader.cpp \
+    touch_reader_jni.cpp
 
 LOCAL_LDLIBS := -llog -lz -ljnigraphics
 LOCAL_C_INCLUDES := \
      com_onyx_android_sdk_scribble_touch_RawInputProcessor.h \
+     touch_reader.h \
      log.h \
      $(LOCAL_PATH)/../utils
 

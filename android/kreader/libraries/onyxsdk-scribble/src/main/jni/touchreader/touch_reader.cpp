@@ -1,6 +1,7 @@
 #include "com_onyx_android_sdk_scribble_touch_RawInputProcessor.h"
 #include "log.h"
 #include "JNIUtils.h"
+#include "touch_reader.h"
 
 #include <jni.h>
 #include <iostream>
@@ -18,32 +19,23 @@
 #include <linux/input.h>
 #include <errno.h>
 
-static int ON_PRESS = 0;
-static int ON_MOVE = 1;
-static int ON_RELEASE = 2;
+TouchReader::TouchReader() {
 
-static const char * rawTouchClassName = "com/onyx/android/sdk/scribble/touch/RawInputProcessor";
+}
 
-namespace {
+TouchReader::~TouchReader() {
+    closeDevice();
+    if (limitArray) {
+        free(limitArray);
+        limitArray = NULL;
+    }
+}
 
-bool debug = true;
-
-int fd;
-int px, py, pressure;
-bool volatile running;
-bool volatile drawing;
-bool pressed;
-bool lastPressed;
-bool volatile erasing;
-int *limitArray;
-int limitArrayLength;
-float strokeWidth;
-
-static void setStrokeWidth(float width) {
+void TouchReader::setStrokeWidth(float width) {
     strokeWidth = width;
 }
 
-static bool inLimitRegion(float x, float y) {
+bool TouchReader::inLimitRegion(float x, float y) {
     if (!limitArray) {
         return true;
     }
@@ -66,7 +58,7 @@ static bool inLimitRegion(float x, float y) {
     return false;
 }
 
-static int openDevice(const std::string& devicePath, std::string& deviceName) {
+int TouchReader::openDevice(const std::string& devicePath, std::string& deviceName) {
     int version;
     char name[80] = {0};
     char location[80] = {0};
@@ -104,13 +96,7 @@ static int openDevice(const std::string& devicePath, std::string& deviceName) {
     return fd;
 }
 
-static void reportTouchPoint(JNIEnv *env, jobject thiz, int px, int py, int pressure, long ts, bool erasing, int state) {
-    JNIUtils utils(env);
-    utils.findMethod(rawTouchClassName, "onTouchPointReceived", "(IIIJZI)V");
-    env->CallVoidMethod(thiz, utils.getMethodId(), px, py, pressure, ts, erasing, state);
-}
-
-static void processEvent(JNIEnv *env, jobject thiz, int type, int code, int value, long ts) {
+void TouchReader::processEvent(onTouchPointReceived callback, int type, int code, int value, long ts) {
     if (type == EV_ABS) {
         if (code == ABS_X) {
             px = value;
@@ -135,7 +121,7 @@ static void processEvent(JNIEnv *env, jobject thiz, int type, int code, int valu
         } else {
             state = ON_RELEASE;
         }
-        reportTouchPoint(env, thiz, px, py, pressure, ts, erasing, state);
+        callback(px, py, pressure, ts, erasing, state);
     } else if (type == EV_KEY) {
         if (code ==  BTN_TOUCH) {
             erasing = false;
@@ -150,7 +136,7 @@ static void processEvent(JNIEnv *env, jobject thiz, int type, int code, int valu
     }
 }
 
-static void readTouch(JNIEnv *env, jobject thiz){
+void TouchReader::readTouchEventLoop(onTouchPointReceived callback){
     running = true;
     struct input_event event;
     while (running && fd > 0) {
@@ -158,11 +144,11 @@ static void readTouch(JNIEnv *env, jobject thiz){
         if (res < (int)sizeof(event)) {
             continue;
         }
-        processEvent(env, thiz, event.type, event.code, event.value, event.time.tv_usec);
+        processEvent(callback, event.type, event.code, event.value, event.time.tv_usec);
     }
 }
 
-static std::string findDevice() {
+std::string TouchReader::findDevice() {
     for(int i = 0; i < 3; ++i) {
         std::string path = "/dev/input/event" + i;
         std::string deviceName;
@@ -178,7 +164,7 @@ static std::string findDevice() {
     return "/dev/input/event1";
 }
 
-static void closeDevice(){
+void TouchReader::closeDevice(){
     if (fd > 0) {
         close(fd);
         fd = 0;
@@ -186,7 +172,7 @@ static void closeDevice(){
     running = false;
 }
 
-static void setLimitRegion(int *array, int len) {
+void TouchReader::setLimitRegion(int *array, int len) {
     if (limitArray) {
         free(limitArray);
     }
@@ -211,18 +197,4 @@ static void setLimitRegion(int *array, int len) {
     }
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawReader
-  (JNIEnv *env, jobject thiz) {
-    std::string path = findDevice();
-    std::string deviceName;
-    openDevice(path, deviceName);
-    readTouch(env, thiz);
-}
-
-JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawClose
-  (JNIEnv *env, jobject) {
-    closeDevice();
-}
-
-}
 
