@@ -13,6 +13,8 @@
     <string name="home_item_syllabus">课程表</string>
     <string name="home_item_library">本地书库</string>
     <string name="home_item_archives">档案室</string>
+    <string name="home_item_note">手写</string>
+    <string name="home_item_reading_room">阅览室</string>
 
     <string name="page">页码：</string>
     <string name="no_more_items">没有更多内容了</string>

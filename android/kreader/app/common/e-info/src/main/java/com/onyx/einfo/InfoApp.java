@@ -13,6 +13,7 @@ import com.onyx.android.sdk.im.IMManager;
 import com.onyx.android.sdk.im.event.MessageEvent;
 import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.einfo.action.ContentImportAction;
 import com.onyx.einfo.action.FileSystemScanAction;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.DataRefreshEvent;
@@ -28,6 +29,7 @@ import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.einfo.manager.EventManager;
 import com.onyx.einfo.manager.PushManager;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -43,12 +45,14 @@ import java.util.Map;
  * Created by zhuzeng on 14/11/2016.
  */
 public class InfoApp extends MultiDexApplication {
+    public static boolean checkedOnBootComplete = false;
     static private final String MMC_STORAGE_ID = "flash";
 
     static private InfoApp sInstance = null;
     static private CloudStore cloudStore;
     static private LibraryDataHolder libraryDataHolder;
     private PushManager messageManager;
+    private EventManager eventManager;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
@@ -56,6 +60,7 @@ public class InfoApp extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         initConfig();
+        afterConfig();
         LeakCanary.install(this);
     }
 
@@ -70,7 +75,13 @@ public class InfoApp extends MultiDexApplication {
         terminateCloudStore();
         deviceReceiver.enable(this, false);
         IMManager.getInstance().getEventBus().unregister(this);
+        EventBus.getDefault().unregister(eventManager);
         super.onTerminate();
+    }
+
+    private void afterConfig() {
+        EventBus.getDefault().register(eventManager = new EventManager(this));
+        cloudContentImportFirstBoot();
     }
 
     private void initConfig() {
@@ -96,8 +107,9 @@ public class InfoApp extends MultiDexApplication {
     }
 
     private void initDeviceConfig() {
-        AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
-        DeviceConfig.sharedInstance(this);
+        boolean supportColor = DeviceConfig.sharedInstance(this).isDeviceSupportColor();
+        AppCompatUtils.setColorSupport(supportColor);
+        AppCompatImageViewCollection.setAlignView(supportColor);
     }
 
     private void initEventListener() {
@@ -152,7 +164,7 @@ public class InfoApp extends MultiDexApplication {
 
     private void initIMManager(String appId, String clientKey) {
         final IMConfig imInitArgs = new IMConfig(appId, clientKey);
-        IMManager.getInstance().init(imInitArgs);
+        IMManager.getInstance().init(imInitArgs).startPushService(getApplicationContext());
         IMManager.getInstance().getEventBus().register(this);
     }
 
@@ -221,5 +233,13 @@ public class InfoApp extends MultiDexApplication {
     public void onPushMessageEvent(MessageEvent messageEvent) {
         Debug.d(InfoApp.class, String.valueOf(JSONObjectParseUtils.toJson(messageEvent)));
         getPushMessageManager().processMessage(messageEvent.message);
+    }
+
+    private void cloudContentImportFirstBoot() {
+        if (checkedOnBootComplete) {
+            return;
+        }
+        ContentImportAction importAction = new ContentImportAction();
+        importAction.execute(InfoApp.getLibraryDataHolder(), null);
     }
 }

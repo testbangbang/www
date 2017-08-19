@@ -12,14 +12,14 @@
         layout="@layout/home_main_item"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/home_library_item"
+        app:layout_constraintBottom_toTopOf="@+id/home_note_item"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_weight="9" />
 
     <include
-        android:id="@+id/home_library_item"
+        android:id="@+id/home_note_item"
         layout="@layout/home_normal_land_item"
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -39,7 +39,7 @@
         android:layout_marginLeft="@dimen/home_item_divider"
         android:layout_marginStart="@dimen/home_item_divider"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@+id/home_library_item"
+        app:layout_constraintLeft_toRightOf="@+id/home_note_item"
         app:layout_constraintRight_toLeftOf="@+id/home_setting_item"
         app:layout_constraintTop_toBottomOf="@+id/home_main_item"
         app:layout_constraintVertical_weight="4" />
