@@ -5,6 +5,7 @@ import android.text.Spanned;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 
@@ -31,7 +32,7 @@ public class SpannableRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper helper) throws Exception {
+    public void execute(final NoteManager noteManager) throws Exception {
         StringBuilder builder = new StringBuilder();
         for(int i = 0; i < subPageSpanTextShapeMap.size(); ++i) {
             builder.append(SPAN_BUILDER_SYMBOL);
