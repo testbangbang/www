@@ -74,6 +74,7 @@ import com.onyx.edu.reader.ui.actions.form.ShowFormInteractiveMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormMeetingMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormSignMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormUserHomeWorkMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormVoteMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderCropArgs;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
@@ -857,6 +858,9 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case HandlerManager.FORM_SIGNATURE_PROVIDER:
                 formMenuActon = new ShowFormSignMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_USERHOMEWORK_PROVIDER:
+                formMenuActon = new ShowFormUserHomeWorkMenuAction(readerMenuViewData, actionCallback);
                 break;
             default:
                 formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
