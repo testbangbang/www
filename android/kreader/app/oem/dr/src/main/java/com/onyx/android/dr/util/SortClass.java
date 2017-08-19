@@ -8,11 +8,12 @@ import java.util.Comparator;
  * Created by zhouzhiming on 2017/8/19.
  */
 public class SortClass implements Comparator {
+
     public int compare(Object arg0, Object arg1) {
-        NewWordNoteBookEntity user0 = (NewWordNoteBookEntity) arg0;
-        NewWordNoteBookEntity user1 = (NewWordNoteBookEntity) arg1;
-        String s1 = String.valueOf(user0.currentTime);
-        int flag = String.valueOf(user1.currentTime).compareTo(s1);
+        NewWordNoteBookEntity firstBean = (NewWordNoteBookEntity) arg0;
+        NewWordNoteBookEntity secondBean = (NewWordNoteBookEntity) arg1;
+        String firstCurrentTime = String.valueOf(firstBean.currentTime);
+        int flag = String.valueOf(secondBean.currentTime).compareTo(firstCurrentTime);
         return flag;
     }
 }

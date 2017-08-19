@@ -14,7 +14,6 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.presenter.NewWordPresenter;
-import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -108,11 +107,6 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         listCheck = checkList;
         newWordAdapter.setDataList(newWordList, listCheck);
         newWordRecyclerView.setAdapter(newWordAdapter);
-
-        for (int i = 0; i < newWordList.size(); i++) {
-            NewWordNoteBookEntity temp = newWordList.get(i);
-            System.out.println("@@@时间:" + TimeUtils.getTime(temp.currentTime));
-        }
     }
 
     public void initEvent() {
