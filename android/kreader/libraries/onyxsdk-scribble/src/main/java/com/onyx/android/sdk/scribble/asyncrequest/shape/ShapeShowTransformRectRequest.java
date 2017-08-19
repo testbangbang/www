@@ -33,6 +33,6 @@ public class ShapeShowTransformRectRequest extends AsyncBaseNoteRequest {
         benchmarkStart();
         setRender(true);
         renderCurrentPageInBitmap(noteManager);
-        renderShapeMovingRectangle(noteManager, start, end);
+        //renderShapeMovingRectangle(noteManager, start, end);
     }
 }

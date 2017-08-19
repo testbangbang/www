@@ -19,7 +19,7 @@ public class PenWidthChangeRequest extends AsyncBaseNoteRequest {
 
     @Override
     public void execute(final NoteManager noteManager) throws Exception {
-        noteManager.setStrokeWidth(penWidth);
+        noteManager.setStrokeWidth(penWidth, null);
         renderCurrentPageInBitmap(noteManager);
         updateShapeDataInfo(noteManager);
     }

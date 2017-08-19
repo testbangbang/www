@@ -33,6 +33,6 @@ public class ShapeSelectionRequest extends AsyncBaseNoteRequest {
         benchmarkStart();
         setRender(true);
         renderCurrentPageInBitmap(noteManager);
-        renderSelectionRectangle(noteManager, start, end);
+        //renderSelectionRectangle(noteManager, start, end);
     }
 }

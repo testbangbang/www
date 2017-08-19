@@ -433,7 +433,7 @@ public class AsyncNoteViewHelper {
     }
 
     private boolean onErasing(final MotionEvent motionEvent) {
-        EventBus.getDefault().post(new ErasingEvent(motionEvent, false));
+        EventBus.getDefault().post(new ErasingEvent(null, false));
         if (erasePoints != null) {
             int n = motionEvent.getHistorySize();
             for(int i = 0; i < n; ++i) {
@@ -507,7 +507,25 @@ public class AsyncNoteViewHelper {
         }
     }
 
+    private int getCurrentShapeType() {
+        return 0;
+    }
 
+    private void setPenState(NoteDrawingArgs.PenState state) {
+
+    }
+
+    private boolean inUserErasing() {
+        return false;
+    }
+
+    private boolean inErasing(){
+        return false;
+    }
+
+    private boolean inShapeSelecting(){
+        return false;
+    }
 
     private boolean useRawInput() {
         return deviceConfig != null && deviceConfig.useRawInput();

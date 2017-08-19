@@ -28,6 +28,7 @@ import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeSelectionRequest;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
@@ -495,4 +496,33 @@ public class NoteManager {
         getRendererHelper().init();
     }
 
+    public void setStrokeColor(int color) {
+        getDocumentHelper().setStrokeColor(color);
+    }
+
+    public void setBackground(int type) {
+        getDocumentHelper().setBackground(NoteBackgroundType.FILE);
+    }
+
+    public void setBackgroundFilePath(final String path) {
+        getDocumentHelper().setBackgroundFilePath(path);
+    }
+
+    public void setLineLayoutBackground(int type) {
+        getDocumentHelper().setLineLayoutBackground(type);
+    }
+
+    public void setCurrentShapeType(int type) {
+        getDocumentHelper().setCurrentShapeType(type);
+    }
+
+    public void save(final Context context, final String title , boolean closeAfterSave) {
+        getDocumentHelper().save(context, title, closeAfterSave);
+    }
+
+    public void undo(final Context context) {
+    }
+
+    public void redo(final Context context) {
+    }
 }
