@@ -72,6 +72,7 @@ public class SystemConfigProvider {
                 result = parseLong(uri.getLastPathSegment());
             }
         } else {
+            item.setId(findItem.getId());
             result = ContentUtils.update(OnyxSystemConfigProvider.CONTENT_URI, item);
         }
         if (result > 0) {
