@@ -14,7 +14,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.request.cloud.v2.AdministratorIndexServiceRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.GetAdminInfoFromIndexServiceRequest;
 import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.event.LoginSuccessEvent;
@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void loadIndexService() {
         final MaterialDialog dialog = DialogHolder.showProgressDialog(this, getString(R.string.preparing));
-        final AdministratorIndexServiceRequest indexServiceRequest = new AdministratorIndexServiceRequest(
+        final GetAdminInfoFromIndexServiceRequest indexServiceRequest = new GetAdminInfoFromIndexServiceRequest(
                 Constant.CLOUD_MAIN_INDEX_SERVER_API,
                 IndexService.createIndexService(this));
         AdminApplication.getCloudManager().submitRequest(this, indexServiceRequest,
