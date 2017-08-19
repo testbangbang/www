@@ -5,20 +5,20 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
 
-import com.onyx.einfo.R;
-import com.onyx.einfo.InfoApp;
-import com.onyx.einfo.action.AuthTokenAction;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.einfo.InfoApp;
+import com.onyx.einfo.R;
+import com.onyx.einfo.action.AuthTokenAction;
 import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.einfo.utils.UniversalViewUtils;
 
 /**
- * Created by suicheng on 2016/11/15.
+ * Created by suicheng on 2017/8/18.
  */
-public class HomeActivity extends BaseActivity {
+public class MeetingActivity extends BaseActivity {
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -39,11 +39,7 @@ public class HomeActivity extends BaseActivity {
 
     @Override
     protected Integer getLayoutId() {
-        return getLayoutIdByConfig();
-    }
-
-    private int getLayoutIdByConfig() {
-        return R.layout.activity_home_for_display;
+        return R.layout.activity_home_for_meeting;
     }
 
     @Override
@@ -81,14 +77,14 @@ public class HomeActivity extends BaseActivity {
     }
 
     private void initNormalItem() {
-        initNormalView(R.id.home_main_item, R.string.app_name, R.drawable.home_eschool,
+        initNormalView(R.id.home_main_item, R.string.home_item_reading_room, R.drawable.home_main_meeting,
                 new Intent(this, MainActivity.class));
         initNormalView(R.id.home_application_item, R.string.home_item_application_text, R.drawable.home_applicaiton,
                 new Intent(this, ApplicationsActivity.class));
         initNormalView(R.id.home_setting_item, R.string.home_item_setting_text, R.drawable.home_setting,
                 getSettingIntent());
-        initNormalView(R.id.home_library_item, R.string.home_item_library, R.drawable.home_syllabus,
-                new Intent(this, LibraryActivity.class));
+        initNormalView(R.id.home_note_item, R.string.home_item_note, R.drawable.home_note,
+                getNoteIntent());
     }
 
     private void initNormalView(int layoutResId, int textResId, int imageResId, final Intent intent) {
@@ -97,5 +93,9 @@ public class HomeActivity extends BaseActivity {
 
     private Intent getSettingIntent() {
         return ConfigPreferenceManager.getSettingsIntent();
+    }
+
+    private Intent getNoteIntent() {
+        return getPackageManager().getLaunchIntentForPackage("com.onyx.android.note");
     }
 }
