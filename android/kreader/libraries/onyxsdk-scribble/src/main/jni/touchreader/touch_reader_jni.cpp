@@ -5,9 +5,8 @@
 
 static const char * rawTouchClassName = "com/onyx/android/sdk/scribble/touch/RawInputProcessor";
 
-TouchReader* touchReader = new TouchReader();
-JNIEnv *readerEnv;
-jobject readerObject;
+TouchReader touchReader;
+static jobject readerObject;
 
 static void reportTouchPoint(JNIEnv *env, jobject thiz, int px, int py, int pressure, long ts, bool erasing, int state) {
     JNIUtils utils(env);
@@ -15,30 +14,30 @@ static void reportTouchPoint(JNIEnv *env, jobject thiz, int px, int py, int pres
     env->CallVoidMethod(thiz, utils.getMethodId(), px, py, pressure, ts, erasing, state);
 }
 
-static void onTouchPointReceived(int px, int py, int pressure, long ts, bool erasing, int state) {
+static void onTouchPointReceived(void * userData, int px, int py, int pressure, long ts, bool erasing, int state) {
     LOGI("onTouchPointReceived x y %d, %d\n", px, py);
+    JNIEnv *readerEnv = (JNIEnv *)userData;
     reportTouchPoint(readerEnv, readerObject, px, py, pressure, ts, erasing, state);
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawReader
   (JNIEnv *env, jobject thiz) {
-    readerEnv = env;
     readerObject = thiz;
-    std::string path = touchReader->findDevice();
+    std::string path = touchReader.findDevice();
     std::string deviceName;
-    touchReader->openDevice(path, deviceName);
+    touchReader.openDevice(path, deviceName);
     TouchReader::onTouchPointReceived callback = onTouchPointReceived;
-    touchReader->readTouchEventLoop(callback);
+    touchReader.readTouchEventLoop(env, callback);
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawClose
   (JNIEnv *env, jobject) {
-    touchReader->closeDevice();
+    touchReader.closeDevice();
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetStrokeWidth
   (JNIEnv *env, jobject, jfloat strokeWidth) {
-    touchReader->setStrokeWidth(strokeWidth);
+    touchReader.setStrokeWidth(strokeWidth);
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetLimitRegion
@@ -46,5 +45,5 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcesso
     int len = env->GetArrayLength(limitRegion);
     jboolean isCopy = false;
     jint *array = env->GetIntArrayElements(limitRegion, &isCopy);
-    touchReader->setLimitRegion(array, len);
+    touchReader.setLimitRegion(array, len);
 }

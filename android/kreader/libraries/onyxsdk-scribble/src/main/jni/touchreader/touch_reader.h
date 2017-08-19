@@ -13,18 +13,20 @@ public:
     ~TouchReader();
 
 public:
-    typedef void(*onTouchPointReceived)(int,int,int,long,bool,int);
+    typedef void(*onTouchPointReceived)(void * userData, int, int, int, long, bool, int);
 
 public:
-    void setStrokeWidth(float width);
-    bool inLimitRegion(float x, float y);
     int openDevice(const std::string& devicePath, std::string& deviceName);
-    void processEvent(onTouchPointReceived callback, int type, int code, int value, long ts);
     std::string findDevice();
     void closeDevice();
+    void setStrokeWidth(float width);
     void setLimitRegion(int *array, int len);
-    void readTouchEventLoop(onTouchPointReceived callback);
+    void readTouchEventLoop(void *userData, onTouchPointReceived callback);
 
+private:
+    void processEvent(void *userData, onTouchPointReceived callback, int type, int code, int value, long ts);
+    bool inLimitRegion(float x, float y);
+    void clearLimitArray();
 
 private:
     bool debug = true;

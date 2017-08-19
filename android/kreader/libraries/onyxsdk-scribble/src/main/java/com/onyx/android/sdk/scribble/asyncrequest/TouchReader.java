@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.graphics.Rect;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
@@ -31,6 +32,7 @@ public class TouchReader {
     private Shape currentShape = null;
     private TouchPointList shapeSelectPoints;
     private TouchPointList erasePoints;
+    private Rect softwareLimitRect = new Rect();
 
     public TouchReader(NoteManager noteManager) {
         this.noteManager = noteManager;
@@ -63,7 +65,6 @@ public class TouchReader {
     private boolean renderByFramework() {
         return ShapeFactory.isDFBShape(noteManager.getDocumentHelper().getCurrentShapeType());
     }
-
 
     public boolean processTouchEvent(final MotionEvent motionEvent) {
         if (motionEvent.getPointerCount() > 1) {
@@ -195,7 +196,9 @@ public class TouchReader {
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
-        return viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
+        // TODO
+        //return viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
+        return normalized;
     }
 
     private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {

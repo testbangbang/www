@@ -25,6 +25,10 @@ TouchReader::TouchReader() {
 
 TouchReader::~TouchReader() {
     closeDevice();
+    clearLimitArray();
+}
+
+void TouchReader::clearLimitArray() {
     if (limitArray) {
         free(limitArray);
         limitArray = NULL;
@@ -96,7 +100,7 @@ int TouchReader::openDevice(const std::string& devicePath, std::string& deviceNa
     return fd;
 }
 
-void TouchReader::processEvent(onTouchPointReceived callback, int type, int code, int value, long ts) {
+void TouchReader::processEvent(void *userData, onTouchPointReceived callback, int type, int code, int value, long ts) {
     if (type == EV_ABS) {
         if (code == ABS_X) {
             px = value;
@@ -121,7 +125,7 @@ void TouchReader::processEvent(onTouchPointReceived callback, int type, int code
         } else {
             state = ON_RELEASE;
         }
-        callback(px, py, pressure, ts, erasing, state);
+        callback(userData, px, py, pressure, ts, erasing, state);
     } else if (type == EV_KEY) {
         if (code ==  BTN_TOUCH) {
             erasing = false;
@@ -136,7 +140,7 @@ void TouchReader::processEvent(onTouchPointReceived callback, int type, int code
     }
 }
 
-void TouchReader::readTouchEventLoop(onTouchPointReceived callback){
+void TouchReader::readTouchEventLoop(void *userData, onTouchPointReceived callback){
     running = true;
     struct input_event event;
     while (running && fd > 0) {
@@ -144,7 +148,7 @@ void TouchReader::readTouchEventLoop(onTouchPointReceived callback){
         if (res < (int)sizeof(event)) {
             continue;
         }
-        processEvent(callback, event.type, event.code, event.value, event.time.tv_usec);
+        processEvent(userData, callback, event.type, event.code, event.value, event.time.tv_usec);
     }
 }
 
@@ -173,9 +177,7 @@ void TouchReader::closeDevice(){
 }
 
 void TouchReader::setLimitRegion(int *array, int len) {
-    if (limitArray) {
-        free(limitArray);
-    }
+    clearLimitArray();
     limitArray = array;
     limitArrayLength = len;
 

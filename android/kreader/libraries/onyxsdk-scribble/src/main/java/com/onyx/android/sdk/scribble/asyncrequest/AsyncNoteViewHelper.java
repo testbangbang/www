@@ -139,10 +139,6 @@ public class AsyncNoteViewHelper {
         onNewTouchPointListReceived(touchPointList);
     }
 
-
-
-
-
     private void initRawResource(final Context context) {
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
@@ -300,7 +296,6 @@ public class AsyncNoteViewHelper {
     }
 
     public void resumeDrawing() {
-        setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
         if (!useRawInput()) {
             return;
         }
@@ -428,13 +423,17 @@ public class AsyncNoteViewHelper {
         return shape;
     }
 
+    private NoteDocument getNoteDocument() {
+        return null;
+    }
+
     private void onBeginErasing() {
         erasePoints = new TouchPointList();
         EventBus.getDefault().post(new BeginErasingEvent());
     }
 
     private boolean onErasing(final MotionEvent motionEvent) {
-        EventBus.getDefault().post(new ErasingEvent(motionEvent));
+        EventBus.getDefault().post(new ErasingEvent(motionEvent, false));
         if (erasePoints != null) {
             int n = motionEvent.getHistorySize();
             for(int i = 0; i < n; ++i) {
