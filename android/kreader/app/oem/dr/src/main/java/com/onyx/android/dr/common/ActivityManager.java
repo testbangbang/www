@@ -32,6 +32,7 @@ import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
+import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.event.MenuWifiSettingEvent;
 import com.onyx.android.dr.reader.activity.AfterReadingActivity;
 import com.onyx.android.dr.reader.common.ReaderConstants;
@@ -129,11 +130,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startNewWordQueryDialogActivity(Context context, String editQuery, boolean tag) {
+    public static void startNewWordQueryDialogActivity(Context context, NewWordBean bean) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.EDITQUERY, editQuery);
-        intent.putExtra(Constants.LOCATION, tag);
+        intent.putExtra(Constants.NEW_WORD_BEAN, bean);
         intent.setClass(context, NewWordQueryDialogActivity.class);
         context.startActivity(intent);
     }

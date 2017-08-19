@@ -487,7 +487,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewWordQueryEvent(NewWordQueryEvent event) {
-        ActivityManager.startNewWordQueryDialogActivity(this, copyText, true);
+        ActivityManager.startNewWordQueryActivity(this, copyText);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

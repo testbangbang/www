@@ -39,6 +39,7 @@ public class Constants {
     public static final String EDITQUERY = "editQuery";
     public static final String LOCATION = "location";
     public static final String DICTTYPE = "dictType";
+    public static final String NEW_WORD_BEAN = "New_Word_Bean";
     public static final String FRAGMENT_TYPE = "fragment_type";
     public static final String MINUTE_POSITION = "minutePosition";
     public static final String HOUR_POSITION = "hourPosition";

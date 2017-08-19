@@ -63,6 +63,7 @@ public class OperatingDataManager {
         bean.dictionaryLookup = newWordBean.getDictionaryLookup();
         bean.readingMatter = newWordBean.getReadingMatter();
         bean.newWordType = newWordBean.getNewWordType();
+        bean.pageNumber = newWordBean.getPageNumber();
         final NewWordInsert req = new NewWordInsert(bean);
         if (req.whetherInsert()) {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.new_word_notebook_already_exist));

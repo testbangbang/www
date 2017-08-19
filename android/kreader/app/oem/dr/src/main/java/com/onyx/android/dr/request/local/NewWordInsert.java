@@ -31,6 +31,7 @@ public class NewWordInsert extends BaseDataRequest {
         } else {
             newWordEntity.currentTime = newWordsInfo.currentTime;
             newWordEntity.newWordType = newWordsInfo.newWordType;
+            newWordEntity.pageNumber = newWordsInfo.pageNumber;
             newWordEntity.update();
         }
     }
