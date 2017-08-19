@@ -1,11 +1,13 @@
 package com.onyx.android.dr.request.local;
 
+import com.onyx.android.dr.util.SortClass;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,6 +24,8 @@ public class PencilSketchQueryAll extends BaseDataRequest {
     }
 
     public List<NoteModel> getAllData() {
+        SortClass sort = new SortClass();
+        Collections.sort(pencilSketchList, sort);
         return pencilSketchList;
     }
 

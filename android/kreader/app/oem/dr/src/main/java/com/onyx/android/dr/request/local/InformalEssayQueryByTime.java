@@ -1,13 +1,13 @@
 package com.onyx.android.dr.request.local;
 
-import android.util.Log;
-
 import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.util.SortClass;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,6 +30,8 @@ public class InformalEssayQueryByTime extends BaseDataRequest {
     }
 
     public List<InformalEssayEntity> getData() {
+        SortClass sort = new SortClass();
+        Collections.sort(informalEssayList, sort);
         return informalEssayList;
     }
 

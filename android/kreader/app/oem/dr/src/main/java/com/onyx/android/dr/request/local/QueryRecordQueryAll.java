@@ -1,10 +1,12 @@
 package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.QueryRecordEntity;
+import com.onyx.android.dr.util.SortClass;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,6 +22,8 @@ public class QueryRecordQueryAll extends BaseDataRequest {
     }
 
     public List<QueryRecordEntity> getList() {
+        SortClass sort = new SortClass();
+        Collections.sort(queryRecordList, sort);
         return queryRecordList;
     }
 

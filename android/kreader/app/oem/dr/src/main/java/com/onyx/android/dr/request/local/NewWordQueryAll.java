@@ -1,11 +1,13 @@
 package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.util.SortClass;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -22,6 +24,8 @@ public class NewWordQueryAll extends BaseDataRequest {
     }
 
     public List<NewWordNoteBookEntity> getNewWordList() {
+        SortClass sort = new SortClass();
+        Collections.sort(newWordList, sort);
         return newWordList;
     }
 
