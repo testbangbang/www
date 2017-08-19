@@ -1,14 +1,18 @@
 package com.onyx.android.dr.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by zhouzhiming on 17-6-28.
  */
 
-public class NewWordBean {
+public class NewWordBean implements Serializable {
     private String newWord;
     private String dictionaryLookup;
     private String readingMatter;
+    private String pageNumber;
     private int newWordType;
+    private boolean tag;
 
     public String getDictionaryLookup() {
         return dictionaryLookup;
@@ -40,5 +44,21 @@ public class NewWordBean {
 
     public void setNewWordType(int newWordType) {
         this.newWordType = newWordType;
+    }
+
+    public String getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(String pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+    public boolean isTag() {
+        return tag;
+    }
+
+    public void setTag(boolean tag) {
+        this.tag = tag;
     }
 }

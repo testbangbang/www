@@ -16,6 +16,8 @@ public class GoodSentenceNoteEntity extends BaseModel {
     @Column
     public String details;
     @Column
+    public String dictionaryLookup;
+    @Column
     public String readingMatter;
     @Column
     public String pageNumber;

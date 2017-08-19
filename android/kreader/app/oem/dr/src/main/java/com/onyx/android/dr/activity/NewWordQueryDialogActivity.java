@@ -1,6 +1,7 @@
 package com.onyx.android.dr.activity;
 
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -70,7 +71,6 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
     private QueryWordRequest queryWordRequest;
     public volatile Map<String, DictionaryQueryResult> queryResult;
     private int customFontSize = 10;
-    private String newWord = "";
     private String dictionaryLookup = "";
     private String readingMatter = "";
     private long millisecond = 2000;
@@ -79,6 +79,8 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
     private String editQuery = "";
     private List<String> pathList;
     private boolean tag;
+    private NewWordBean intentBean;
+    private String pageNumber;
 
     @Override
     protected Integer getLayoutId() {
@@ -107,7 +109,7 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
 
     @Override
     public void onAttachedToWindow() {
-        tag = getIntent().getBooleanExtra(Constants.LOCATION, false);
+        tag = intentBean.isTag();
         View view = getWindow().getDecorView();
         WindowManager.LayoutParams layoutParams = (WindowManager.LayoutParams) view
                 .getLayoutParams();
@@ -131,7 +133,9 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
     }
 
     private void getIntentData() {
-        editQuery = getIntent().getStringExtra(Constants.EDITQUERY);
+        intentBean = (NewWordBean) getIntent().getSerializableExtra(Constants.NEW_WORD_BEAN);
+        editQuery = intentBean.getNewWord();
+        pageNumber = intentBean.getPageNumber();
         loadDictionary();
     }
 
@@ -218,9 +222,10 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
             @Override
             public void onClick(View view) {
                 NewWordBean bean = new NewWordBean();
-                bean.setNewWord(newWord);
+                bean.setNewWord(editQuery);
                 bean.setDictionaryLookup(dictionaryLookup);
                 bean.setReadingMatter(readingMatter);
+                bean.setPageNumber(pageNumber);
                 OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });
@@ -296,7 +301,6 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
             } else {
                 prevPageButton.setVisibility(View.INVISIBLE);
             }
-
             if (curPage < totalPage) {
                 nextPageButton.setVisibility(View.VISIBLE);
             } else {

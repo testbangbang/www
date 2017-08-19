@@ -20,6 +20,8 @@ public class NewWordNoteBookEntity extends BaseModel {
     @Column
     public String readingMatter;
     @Column
+    public String pageNumber;
+    @Column
     public long currentTime;
     @Column
     public int newWordType;
