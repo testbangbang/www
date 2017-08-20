@@ -150,6 +150,10 @@ public abstract class EpdController
         Device.currentDevice().setScreenHandWritingRegionLimit(view, left, top, right, bottom);
     }
 
+    public static void setScreenHandWritingRegionLimit(View view) {
+        Device.currentDevice().setScreenHandWritingRegionLimit(view);
+    }
+
     public static void setScreenHandWritingRegionLimit(View view, int[] array) {
         Device.currentDevice().setScreenHandWritingRegionLimit(view, array);
     }

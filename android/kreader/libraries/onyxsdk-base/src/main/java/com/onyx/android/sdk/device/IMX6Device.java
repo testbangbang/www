@@ -545,6 +545,15 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void setScreenHandWritingRegionLimit(View view) {
+        if (view == null) {
+            return;
+        }
+        Rect rect = new Rect();
+        view.getLocalVisibleRect(rect);
+        setScreenHandWritingRegionLimit(view, rect.left, rect.top, rect.right, rect.bottom);
+    }
+
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
         setScreenHandWritingRegionLimit(view, new int[] { left, top, right, bottom });
     }
@@ -552,7 +561,7 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void setScreenHandWritingRegionLimit(View view, int[] array) {
         try {
-            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, array);
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, view, array);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -684,7 +693,7 @@ public class IMX6Device extends BaseDevice {
             sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
-            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int[].class);
+            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);

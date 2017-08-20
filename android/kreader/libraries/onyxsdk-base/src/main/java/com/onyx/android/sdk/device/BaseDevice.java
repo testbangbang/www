@@ -263,6 +263,9 @@ public class BaseDevice {
     public void setScreenHandWritingPenState(View view, int penState) {
     }
 
+    public void setScreenHandWritingRegionLimit(View view) {
+    }
+
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
     }
 
