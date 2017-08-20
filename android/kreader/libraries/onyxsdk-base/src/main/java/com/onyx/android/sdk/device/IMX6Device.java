@@ -559,9 +559,7 @@ public class IMX6Device extends BaseDevice {
         if (view == null) {
             return;
         }
-        Rect rect = new Rect();
-        view.getLocalVisibleRect(rect);
-        setScreenHandWritingRegionLimit(view, rect.left, rect.top, rect.right, rect.bottom);
+        setScreenHandWritingRegionLimit(view, 0, 0, view.getRight(), view.getBottom());
     }
 
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {

@@ -109,8 +109,9 @@ public class NoteViewHelper {
     private Shape currentShape = null;
     private Shape cursorShape = null;
     private boolean shortcutErasing = false;
-    private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
+    private float src[] = {0, 0};
+    private float dst[] = {0, 0};
     private boolean supportBigPen = false;
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
@@ -126,7 +127,6 @@ public class NoteViewHelper {
         setCallback(c);
         initRawResource(context);
         initBigPenState(context);
-        initViewToEpdMatrix();
         initWithSurfaceView(view);
         initRawInputProcessor();
         updateScreenMatrix();
@@ -268,18 +268,6 @@ public class NoteViewHelper {
         getRawInputProcessor().setHostView(surfaceView);
     }
 
-    private OnyxMatrix initViewToEpdMatrix() {
-        viewToEpdMatrix = new OnyxMatrix();
-        viewToEpdMatrix.postRotate(deviceConfig.getViewPostOrientation());
-        viewToEpdMatrix.postTranslate(deviceConfig.getViewPostTx(), deviceConfig.getViewPostTy());
-        return viewToEpdMatrix;
-    }
-
-    // matrix from android view to epd.
-    private OnyxMatrix matrixFromViewToEpd() {
-        return viewToEpdMatrix;
-    }
-
     public void setCustomLimitRect(Rect targetRect){
         customLimitRect = targetRect;
         updateLimitRect();
@@ -287,57 +275,6 @@ public class NoteViewHelper {
 
     private void resetRawInputProcessor() {
         rawInputProcessor = null;
-    }
-
-    private void updateLimitRect2() {
-        Rect dfbLimitRect = new Rect();
-        softwareLimitRect = new Rect();
-        int xAxisOffset = 0, yAxisOffset = 0;
-
-
-        if (customLimitRect == null) {
-            //for software render limit rect
-            surfaceView.getLocalVisibleRect(softwareLimitRect);
-            //for dfb render limit rect
-            surfaceView.getGlobalVisibleRect(dfbLimitRect);
-        } else {
-            Rect surfaceLocalVisibleRect = new Rect();
-
-            surfaceView.getLocalVisibleRect(surfaceLocalVisibleRect);
-            softwareLimitRect = customLimitRect;
-
-            //a little tricky here,we assume target rect is always smaller than visible rect.
-            xAxisOffset = customLimitRect.left - surfaceLocalVisibleRect.left;
-            yAxisOffset = surfaceLocalVisibleRect.bottom - customLimitRect.bottom;
-
-            surfaceView.getGlobalVisibleRect(dfbLimitRect);
-
-            //do the transform here.
-            dfbLimitRect.set(dfbLimitRect.left + xAxisOffset,
-                    dfbLimitRect.top + yAxisOffset,
-                    dfbLimitRect.right - xAxisOffset,
-                    dfbLimitRect.bottom - yAxisOffset);
-        }
-
-        dfbLimitRect.offsetTo(0, 0);
-        getRawInputProcessor().setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
-
-        int viewPosition[] = {0, 0};
-        surfaceView.getLocationOnScreen(viewPosition);
-        if (DeviceConfig.sharedInstance(surfaceView.getContext()).getEpdPostOrientation() == 270) {
-            int reverseTop = ((Activity) surfaceView.getContext()).getWindow().getDecorView().getBottom() - surfaceView.getHeight() - viewPosition[1];
-            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, reverseTop + yAxisOffset);
-        }else {
-            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
-        }
-
-        final OnyxMatrix matrix = matrixFromViewToEpd();
-        matrix.mapInPlace(dfbLimitRect);
-        EpdController.setScreenHandWritingRegionLimit(surfaceView,
-                Math.min(dfbLimitRect.left, dfbLimitRect.right),
-                Math.min(dfbLimitRect.top, dfbLimitRect.bottom),
-                Math.max(dfbLimitRect.left, dfbLimitRect.right),
-                Math.max(dfbLimitRect.top, dfbLimitRect.bottom));
     }
 
     private void updateLimitRect() {
@@ -860,7 +797,11 @@ public class NoteViewHelper {
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
-        return viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
+        src[0] = normalized.getX();
+        src[1] = normalized.getY();
+        EpdController.mapToEpd(surfaceView, src, dst);
+        TouchPoint result = new TouchPoint(dst[0], dst[1], normalized.getPressure(), normalized.getSize(), normalized.getTimestamp());
+        return result;
     }
 
     private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
