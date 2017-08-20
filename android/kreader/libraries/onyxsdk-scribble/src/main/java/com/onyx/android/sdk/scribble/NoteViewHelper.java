@@ -289,7 +289,7 @@ public class NoteViewHelper {
         rawInputProcessor = null;
     }
 
-    private void updateLimitRect() {
+    private void updateLimitRect2() {
         Rect dfbLimitRect = new Rect();
         softwareLimitRect = new Rect();
         int xAxisOffset = 0, yAxisOffset = 0;
@@ -338,6 +338,14 @@ public class NoteViewHelper {
                 Math.min(dfbLimitRect.top, dfbLimitRect.bottom),
                 Math.max(dfbLimitRect.left, dfbLimitRect.right),
                 Math.max(dfbLimitRect.top, dfbLimitRect.bottom));
+    }
+
+    private void updateLimitRect() {
+        softwareLimitRect = new Rect();
+        surfaceView.getLocalVisibleRect(softwareLimitRect);
+        getRawInputProcessor().setHostView(surfaceView);
+        getRawInputProcessor().setLimitRect(softwareLimitRect);
+        EpdController.setScreenHandWritingRegionLimit(surfaceView);
     }
 
     private void startDrawing() {
