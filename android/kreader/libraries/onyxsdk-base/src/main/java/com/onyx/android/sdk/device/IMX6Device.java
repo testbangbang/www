@@ -80,6 +80,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodGetTouchWidth = null;
     private static Method sMethodGetTouchHeight = null;
     private static Method sMethodMapToView = null;
+    private static Method sMethodMapToEpd = null;
     private static Method sMethodEnablePost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
@@ -479,6 +480,15 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void mapToEpd(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapToEpd, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
         try {
             Float value = (Float) ReflectUtil.invokeMethodSafely(sMethodStartStroke, null, baseWidth, x, y, pressure, size, time);
@@ -691,6 +701,7 @@ public class IMX6Device extends BaseDevice {
             sMethodGetTouchWidth = ReflectUtil.getMethodSafely(cls, "getTouchWidth");
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
             sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
+            sMethodMapToEpd = ReflectUtil.getMethodSafely(cls, "mapToEpd", View.class, float[].class, float[].class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
