@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.method.Touch;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -87,14 +88,14 @@ public class RawInputProcessor {
     private ExecutorService singleThreadPool = null;
     private volatile RectF limitRect = new RectF();
     private volatile DataInputStream dataInputStream;
-    private volatile SurfaceView surfaceView;
+    private volatile View hostView;
 
     public void setRawInputCallback(final RawInputCallback callback) {
         rawInputCallback = callback;
     }
 
-    public void setHostView(final SurfaceView hostView) {
-        surfaceView = hostView;
+    public void setHostView(final View view) {
+        hostView = view;
     }
 
     public void start() {
@@ -223,7 +224,7 @@ public class RawInputProcessor {
         srcPoint[0] = touchPoint.x;
         srcPoint[1] = touchPoint.y;
 
-        EpdController.mapToView(surfaceView, srcPoint, dstPoint);
+        EpdController.mapToView(hostView, srcPoint, dstPoint);
         touchPoint.x = dstPoint[0];
         touchPoint.y = dstPoint[1];
         return touchPoint;

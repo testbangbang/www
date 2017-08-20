@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -35,14 +36,14 @@ public class PenReader {
     private DeviceConfig deviceConfig;
     private PenReaderCallback penReaderCallback;
 
-    public PenReader(final Context context, final SurfaceView surfaceView) {
-        init(context, surfaceView);
+    public PenReader(final Context context, final View view) {
+        init(context, view);
     }
 
-    private void init(final Context context, final SurfaceView surfaceView) {
+    private void init(final Context context, final View view) {
         rawInputProcessor.setMoveFeedback(true);
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        rawInputProcessor.setHostView(surfaceView);
+        rawInputProcessor.setHostView(view);
         rawInputProcessor.setLimitRect(new Rect(0, 0, (int) getTouchHeight(), (int) getTouchWidth()));
     }
 
