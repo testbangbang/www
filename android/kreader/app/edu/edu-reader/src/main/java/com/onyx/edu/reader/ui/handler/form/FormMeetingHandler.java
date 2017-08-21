@@ -18,6 +18,7 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.LoadFormShapesAction;
 import com.onyx.edu.reader.note.data.ReaderShapeFactory;
@@ -113,7 +114,9 @@ public class FormMeetingHandler extends FormBaseHandler {
         if (shapeModels == null || shapeModels.size() == 0) {
             return;
         }
-        getReaderDataHolder().emitIMMessage(Message.create(Constant.EVENT_MEETING, Constant.ACTION_SUBMIT_VOTE, JSONObjectParseUtils.toJson(shapeModels), Constant.EVENT_MEETING));
+        Message message = Message.create(Constant.EVENT_MEETING, Constant.ACTION_SUBMIT_VOTE, JSONObjectParseUtils.toJson(shapeModels), Constant.EVENT_MEETING);
+        message.setMac(NetworkUtil.getMacAddress(getContext()));
+        getReaderDataHolder().emitIMMessage(message);
         setLockVoteFormView(true);
         lockVoteFormView();
     }

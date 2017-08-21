@@ -27,6 +27,7 @@ public class ImageDiffActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+//        calculateAllDiffList();
         calculateUpdWorkingBuffer();
     }
 
@@ -55,6 +56,29 @@ public class ImageDiffActivity extends AppCompatActivity {
         Log.e(TAG, "transparent done");
     }
 
+    private void calculateAllDiffList() {
+        int max = 7;
+        for(int i = 1; i < max; ++i) {
+            String first = new String("/mnt/sdcard/scp-" + (i - 1) + ".png");
+            String second = new String("/mnt/sdcard/scp-" + i + ".png");
+            String result = new String("/mnt/sdcard/diff-" + i + "-result.png");
+            final Bitmap bitmap = ImageUtils.diffImage(first, second);
+            BitmapUtils.saveBitmap(bitmap, result);
+        }
+
+        // then apply these diffs to origin image to get the final image.
+        String first = new String("/mnt/sdcard/scp-0.png");
+        Bitmap origin = ImageUtils.loadBitmapFromFile(first);
+        for(int i = 1; i < max; ++i) {
+            String patchPath = new String("/mnt/sdcard/diff-" + i + "-result.png");
+            final Bitmap patch = ImageUtils.loadBitmapFromFile(patchPath);
+            origin = ImageUtils.applyDiffImage(origin, patch);
+        }
+        String finalResult = new String("/mnt/sdcard/final-result-with-patch.png");
+        BitmapUtils.saveBitmap(origin, finalResult);
+        Log.e(TAG, "apply all patch finished.");
+    }
+
     private void calculateDiff() {
         ImageUtils imageUtils = new ImageUtils();
         List<String> list = new ArrayList<>();
@@ -72,7 +96,7 @@ public class ImageDiffActivity extends AppCompatActivity {
     private void calculateUpdWorkingBuffer() {
         // load upd list
         List<String> pathList = new ArrayList<>();
-        for(int i = 0; i < 7; ++i) {
+        for(int i = 0; i < 6; ++i) {
             pathList.add("/mnt/sdcard/scp-" + i + ".png");
         }
 
@@ -84,7 +108,9 @@ public class ImageDiffActivity extends AppCompatActivity {
             epdHelper.nextFrame();
         }
 
-        Log.e(TAG, "all finished");
+        final Bitmap finalBitmap = ImageUtils.loadBitmapFromFile("/mnt/sdcard/scp-6.png");
+        epdHelper.flush(finalBitmap);
+        Log.e(TAG, "all finished with verify result: " + epdHelper.verify());
     }
 
 

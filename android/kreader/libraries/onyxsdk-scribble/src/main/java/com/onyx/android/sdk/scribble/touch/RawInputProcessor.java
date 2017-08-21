@@ -5,9 +5,14 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
+import android.text.method.Touch;
+import android.view.SurfaceView;
+import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.EPDShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.DetectInputDeviceUtil;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -75,8 +80,6 @@ public class RawInputProcessor {
     private volatile boolean reportData = false;
     private volatile boolean moveFeedback = false;
     private String systemPath = "/dev/input/event1";
-    private volatile Matrix screenMatrix;
-    private volatile Matrix viewMatrix;
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[2];
     private volatile TouchPointList touchPointList;
@@ -85,25 +88,14 @@ public class RawInputProcessor {
     private ExecutorService singleThreadPool = null;
     private volatile RectF limitRect = new RectF();
     private volatile DataInputStream dataInputStream;
-
-    /**
-     * matrix used to map point from input device to screen display.
-     * @param sm
-     */
-    public void setScreenMatrix(final Matrix sm) {
-        screenMatrix = sm;
-    }
-
-    /**
-     * Matrix used to map point from screen to view with normalized.
-     * @param vm
-     */
-    public void setViewMatrix(final Matrix vm) {
-        viewMatrix = vm;
-    }
+    private volatile View hostView;
 
     public void setRawInputCallback(final RawInputCallback callback) {
         rawInputCallback = callback;
+    }
+
+    public void setHostView(final View view) {
+        hostView = view;
     }
 
     public void start() {
@@ -228,44 +220,16 @@ public class RawInputProcessor {
         }
     }
 
-    /**
-     * Use screen matrix to map from touch device to screen with correct orientation.
-     * Use view matrix to map from screen to view.
-     * finally we get points inside view. we may need the page matrix
-     * to map points from view to page.
-     * @param touchPoint
-     * @return
-     */
-    private TouchPoint mapInputToScreenPoint(final TouchPoint touchPoint) {
-        dstPoint[0] = touchPoint.x;
-        dstPoint[1] = touchPoint.y;
-        if (screenMatrix != null) {
-            srcPoint[0] = touchPoint.x;
-            srcPoint[1] = touchPoint.y;
-            screenMatrix.mapPoints(dstPoint, srcPoint);
-        }
+    private TouchPoint mapToView(final TouchPoint touchPoint) {
+        srcPoint[0] = touchPoint.x;
+        srcPoint[1] = touchPoint.y;
+
+        EpdController.mapToView(hostView, srcPoint, dstPoint);
         touchPoint.x = dstPoint[0];
         touchPoint.y = dstPoint[1];
         return touchPoint;
     }
 
-    /**
-     * map points from screen to view.
-     * @param touchPoint
-     * @return
-     */
-    private TouchPoint mapScreenPointToPage(final TouchPoint touchPoint) {
-        dstPoint[0] = touchPoint.x;
-        dstPoint[1] = touchPoint.y;
-        if (viewMatrix != null) {
-            srcPoint[0] = touchPoint.x;
-            srcPoint[1] = touchPoint.y;
-            viewMatrix.mapPoints(dstPoint, srcPoint);
-        }
-        touchPoint.x = dstPoint[0];
-        touchPoint.y = dstPoint[1];
-        return touchPoint;
-    }
 
     private boolean addToList(final TouchPoint touchPoint, boolean create) {
         if (touchPointList == null) {
@@ -291,8 +255,7 @@ public class RawInputProcessor {
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        mapInputToScreenPoint(touchPoint);
-        mapScreenPointToPage(touchPoint);
+        mapToView(touchPoint);
         if (addToList(touchPoint, true)) {
             invokeTouchPointListBegin(erasing);
         }
@@ -301,8 +264,7 @@ public class RawInputProcessor {
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        mapInputToScreenPoint(touchPoint);
-        mapScreenPointToPage(touchPoint);
+        mapToView(touchPoint);
         addToList(touchPoint, isMoveFeedback());
         if (isMoveFeedback() && touchPointList != null && touchPointList.size() > 0) {
             invokeTouchPointListReceived(touchPointList, erasing);
