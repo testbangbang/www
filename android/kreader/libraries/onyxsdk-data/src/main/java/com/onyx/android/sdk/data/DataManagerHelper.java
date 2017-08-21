@@ -23,7 +23,9 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.Select;
+import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.io.File;
@@ -401,5 +403,16 @@ public class DataManagerHelper {
 
     public static void clearLibrary(DataProviderBase dataProvider) {
         dataProvider.clearLibrary();
+    }
+
+    public static ConditionGroup getPropertyOrCondition(List<String> valueList, Property<String> property) {
+        if (CollectionUtils.isNullOrEmpty(valueList)) {
+            return null;
+        }
+        ConditionGroup condition = ConditionGroup.clause();
+        for (String value : valueList) {
+            condition.or(property.eq(value));
+        }
+        return condition;
     }
 }
