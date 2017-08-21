@@ -87,51 +87,59 @@ public class OperatingDataManager {
         });
     }
 
-    public List<NewWordNoteBookEntity> getAllNewWordByReadingMatter(String readingMatter) {
+    public void getAllNewWordByReadingMatter(String readingMatter, final BaseCallback callback) {
         NewWordData newWordData = new NewWordData();
         final NewWordQueryByReadingMatter req = new NewWordQueryByReadingMatter(readingMatter);
         newWordData.getAllNewWordByReadingMatter(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 newWordList = req.getNewWordList();
+                invoke(callback, request, e);
             }
         });
-        return newWordList;
     }
 
-    public List<NewWordNoteBookEntity> getAllNewWordByPageNumber(String pageNumber) {
+    public void getAllNewWordByPageNumber(String pageNumber, final BaseCallback callback) {
         NewWordData newWordData = new NewWordData();
         final NewWordQueryByPageNumber req = new NewWordQueryByPageNumber(pageNumber);
         newWordData.getAllNewWordByPageNumber(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 newWordList = req.getNewWordList();
+                invoke(callback, request, e);
             }
         });
-        return newWordList;
     }
 
-    public List<GoodSentenceNoteEntity> getAllGoodSentenceByReadingMatter(String readingMatter) {
+    public void getAllGoodSentenceByReadingMatter(String readingMatter, final BaseCallback callback) {
         GoodSentenceData goodSentenceData = new GoodSentenceData();
         final GoodSentenceQueryByReadingMatter req = new GoodSentenceQueryByReadingMatter(readingMatter);
         goodSentenceData.getGoodSentenceByReadingMatter(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 goodSentenceList = req.getGoodSentenceList();
+                invoke(callback, request, e);
             }
         });
-        return goodSentenceList;
     }
 
-    public List<GoodSentenceNoteEntity> getAllGoodSentenceByPageNumber(String pageNumber) {
+    public void getAllGoodSentenceByPageNumber(String pageNumber, final BaseCallback callback) {
         GoodSentenceData goodSentenceData = new GoodSentenceData();
         final GoodSentenceQueryByPageNumber req = new GoodSentenceQueryByPageNumber(pageNumber);
         goodSentenceData.getGoodSentenceByPageNumber(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 goodSentenceList = req.getGoodSentenceList();
+                invoke(callback, request, e);
             }
         });
+    }
+
+    public List<NewWordNoteBookEntity> getNewWordList() {
+        return newWordList;
+    }
+
+    public List<GoodSentenceNoteEntity> getGoodSentenceList() {
         return goodSentenceList;
     }
 }
