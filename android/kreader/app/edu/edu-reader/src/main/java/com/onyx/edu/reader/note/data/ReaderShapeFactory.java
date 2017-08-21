@@ -18,8 +18,8 @@ public class ReaderShapeFactory {
     static public final int SHAPE_FORM_SINGLE_SELECTION = 0;
     static public final int SHAPE_FORM_MULTIPLE_SELECTION = 1;
     static public final int SHAPE_FORM_FILL = 2;
-    static public final int SHAPE_FORM_CONSTRAINT = 3;
-    static public final int SHAPE_FORM_FREE = 4;
+    static public final int SHAPE_LIMIT_REGION_SCRIBBLE = 3;
+    static public final int SHAPE_FREE_AREA_SCRIBBLE = 4;
 
     public static boolean isUniqueFormShape(int formType) {
         return formType == SHAPE_FORM_SINGLE_SELECTION ||
@@ -28,8 +28,8 @@ public class ReaderShapeFactory {
     }
 
     public static boolean isScribbleFormShape(int formType) {
-        return formType == SHAPE_FORM_CONSTRAINT ||
-                formType == SHAPE_FORM_FREE;
+        return formType == SHAPE_LIMIT_REGION_SCRIBBLE ||
+                formType == SHAPE_FREE_AREA_SCRIBBLE;
     }
 
     public static final Shape shapeFromModel(final ReaderNoteShapeModel shapeModel) {

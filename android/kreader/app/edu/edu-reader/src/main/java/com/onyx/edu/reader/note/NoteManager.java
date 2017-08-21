@@ -583,7 +583,7 @@ public class NoteManager {
         }
         if (!parent.getHandlerManager().isEnableNoteInScribbleForm()) {
             shape.setFormShape(true);
-            shape.setFormType(ReaderShapeFactory.SHAPE_FORM_FREE);
+            shape.setFormType(ReaderShapeFactory.SHAPE_FREE_AREA_SCRIBBLE);
             return;
         }
         ReaderFormField field = getScribbleFormField(pageInfo, origin);
@@ -591,7 +591,7 @@ public class NoteManager {
             shape.setFormShape(true);
             shape.setFormId(field.getName());
             shape.setFormRect(field.getRect());
-            shape.setFormType(ReaderShapeFactory.SHAPE_FORM_CONSTRAINT);
+            shape.setFormType(ReaderShapeFactory.SHAPE_LIMIT_REGION_SCRIBBLE);
         }
     }
 
