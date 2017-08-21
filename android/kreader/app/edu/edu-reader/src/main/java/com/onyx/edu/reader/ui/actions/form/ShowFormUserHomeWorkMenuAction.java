@@ -36,7 +36,7 @@ public class ShowFormUserHomeWorkMenuAction extends ShowFormMenuAction {
 
         boolean showScribbleMenu = getReaderMenuViewData().isShowScribbleMenu();
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_exit, EXIT, R.string.exit));
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_write_black : R.drawable.ic_write_forbidden, ReaderMenuAction.TOGGLE_FORM_SCRIBBLE, showScribbleMenu ? R.string.scribble : R.string.touch));
+        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), showScribbleMenu ? R.drawable.ic_write_forbidden : R.drawable.ic_write_black, ReaderMenuAction.TOGGLE_FORM_SCRIBBLE, showScribbleMenu ? R.string.touch : R.string.scribble));
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_submit, SUBMIT, R.string.submit));
         bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_download, FETCH_REVIEW_DATA, R.string.fetch));
         if (showScribbleMenu) {

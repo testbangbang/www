@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +17,7 @@ import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.ActionChain;
 import com.onyx.android.eschool.action.AuthTokenAction;
+import com.onyx.android.eschool.action.CloudGroupContainerListLoadAction;
 import com.onyx.android.eschool.action.CloudLibraryListLoadAction;
 import com.onyx.android.eschool.custom.NoSwipePager;
 import com.onyx.android.eschool.events.BookLibraryEvent;
@@ -31,7 +31,9 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -88,10 +90,6 @@ public class MainActivity extends BaseActivity {
         EpdController.postInvalidate(getWindow().getDecorView().getRootView(), UpdateMode.GC);
     }
 
-    private String getLibraryParentId() {
-        return StudentPreferenceManager.loadLibraryParentId(this, null);
-    }
-
     @Override
     protected void initData() {
         loadData();
@@ -99,23 +97,35 @@ public class MainActivity extends BaseActivity {
 
     private void loadData() {
         final AuthTokenAction authTokenAction = new AuthTokenAction();
-        final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction(getLibraryParentId());
+        final CloudGroupContainerListLoadAction groupLoadAction = new CloudGroupContainerListLoadAction();
         ActionChain actionChain = new ActionChain();
         actionChain.addAction(authTokenAction);
-        actionChain.addAction(loadAction);
+        actionChain.addAction(groupLoadAction);
         actionChain.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
+                if (e != null || CollectionUtils.isNullOrEmpty(groupLoadAction.getContainerList())) {
+                    ToastUtils.showToast(getApplicationContext(), R.string.online_group_load_error);
                     return;
                 }
-                final List<Library> list = loadAction.getLibraryList();
-                notifyDataChanged(list);
+                loadGroupLibraryList(groupLoadAction.getContainerList());
             }
         });
     }
 
+    private void loadGroupLibraryList(List<GroupContainer> groupContainerList) {
+        List<Library> libraryList = new ArrayList<>();
+        if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            libraryList = groupContainerList.get(0).libraryList;
+        }
+        notifyDataChanged(libraryList);
+    }
+
     private void notifyDataChanged(List<Library> list) {
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            ToastUtils.showToast(getApplicationContext(), R.string.online_library_load_empty);
+            return;
+        }
         for (Library library : list) {
             addToLibraryMap(library);
             EventBus.getDefault().postSticky(new BookLibraryEvent(library));

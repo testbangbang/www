@@ -11,6 +11,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
+import com.onyx.android.eschool.manager.PushManager;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -20,6 +21,7 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.action.ActionContext;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.request.data.db.FilesAddToMetadataRequest;
 import com.onyx.android.sdk.data.request.data.db.FilesDiffFromMetadataRequest;
@@ -27,6 +29,7 @@ import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.request.data.db.FilesRemoveFromMetadataRequest;
 import com.onyx.android.sdk.data.request.data.fs.FileSystemScanRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
@@ -37,6 +40,7 @@ import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -64,6 +68,7 @@ public class SchoolApp extends MultiDexApplication {
     static private LibraryDataHolder libraryDataHolder;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private PushManager messageManager;
 
     @Override
     public void onCreate() {
@@ -323,10 +328,20 @@ public class SchoolApp extends MultiDexApplication {
         return EnvironmentUtil.getRemovableSDCardCid();
     }
 
+    public PushManager getPushMessageManager() {
+        if (messageManager == null) {
+            messageManager = new PushManager(ActionContext.create(getApplicationContext(),
+                    getSchoolCloudStore().getCloudManager(), getDataManager()));
+        }
+        return messageManager;
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushMessageEvent(MessageEvent messageEvent) {
         if (messageEvent.message == null) {
             return;
         }
+        Debug.d(SchoolApp.class, String.valueOf(JSONObjectParseUtils.toJson(messageEvent)));
+        getPushMessageManager().processMessage(messageEvent.message);
     }
 }

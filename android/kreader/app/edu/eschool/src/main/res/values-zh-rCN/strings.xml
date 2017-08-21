@@ -106,4 +106,9 @@
     <string name="cloud_content_import_success">导入成功</string>
     <string name="cloud_content_import_failed">导入失败</string>
 
+    <string name="online_library_id_error">在线书库id异常</string>
+    <string name="online_library_load_error">获取书库异常</string>
+    <string name="online_library_load_empty">在线书库为空</string>
+    <string name="online_group_load_error">获取分组异常</string>
+
 </resources>
