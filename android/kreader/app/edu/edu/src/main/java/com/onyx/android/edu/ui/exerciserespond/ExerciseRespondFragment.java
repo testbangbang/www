@@ -168,7 +168,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
 
     @Override
     public void showToast() {
-        Toast.makeText(EduApp.instance(), "Do not having examination paper", Toast.LENGTH_SHORT).show();
+        Toast.makeText(EduApp.instance(), "试题不存在，请上传试题！", Toast.LENGTH_SHORT).show();
         getActivity().finish();
     }
 
