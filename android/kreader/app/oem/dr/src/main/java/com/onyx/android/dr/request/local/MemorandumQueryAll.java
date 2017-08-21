@@ -1,13 +1,12 @@
 package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.MemorandumEntity;
-import com.onyx.android.dr.util.SortClass;
+import com.onyx.android.dr.data.database.MemorandumEntity_Table;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,8 +23,6 @@ public class MemorandumQueryAll extends BaseDataRequest {
     }
 
     public List<MemorandumEntity> getAllDatas() {
-        SortClass sort = new SortClass();
-        Collections.sort(memorandumList, sort);
         return memorandumList;
     }
 
@@ -38,7 +35,7 @@ public class MemorandumQueryAll extends BaseDataRequest {
     }
 
     public void queryMemorandumList() {
-        List<MemorandumEntity> memorandumList = new Select().from(MemorandumEntity.class).queryList();
+        List<MemorandumEntity> memorandumList = new Select().from(MemorandumEntity.class).orderBy(MemorandumEntity_Table.currentTime, false).queryList();
         if (memorandumList != null && memorandumList.size() > 0) {
             setAllDatas(memorandumList);
             listCheck.clear();

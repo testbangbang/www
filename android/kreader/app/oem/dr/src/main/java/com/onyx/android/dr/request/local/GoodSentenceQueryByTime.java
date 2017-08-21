@@ -1,13 +1,12 @@
 package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
-import com.onyx.android.dr.util.SortClass;
+import com.onyx.android.dr.data.database.GoodSentenceNoteEntity_Table;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,13 +29,11 @@ public class GoodSentenceQueryByTime extends BaseDataRequest {
     }
 
     public List<GoodSentenceNoteEntity> getData() {
-        SortClass sort = new SortClass();
-        Collections.sort(goodSentenceList, sort);
         return goodSentenceList;
     }
 
     public void queryGoodSentenceList() {
-        List<GoodSentenceNoteEntity> essayList = new Select().from(GoodSentenceNoteEntity.class).queryList();
+        List<GoodSentenceNoteEntity> essayList = new Select().from(GoodSentenceNoteEntity.class).orderBy(GoodSentenceNoteEntity_Table.currentTime, false).queryList();
         if (essayList != null && essayList.size() > 0) {
             for (int i = 0; i < essayList.size(); i++) {
                 GoodSentenceNoteEntity bean = essayList.get(i);

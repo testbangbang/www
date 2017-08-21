@@ -1,13 +1,12 @@
 package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
-import com.onyx.android.dr.util.SortClass;
+import com.onyx.android.dr.data.database.NewWordNoteBookEntity_Table;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -30,13 +29,11 @@ public class NewWordQueryByTime extends BaseDataRequest {
     }
 
     public List<NewWordNoteBookEntity> getData() {
-        SortClass sort = new SortClass();
-        Collections.sort(list, sort);
         return list;
     }
 
     public void queryGoodSentenceList() {
-        List<NewWordNoteBookEntity> essayList = new Select().from(NewWordNoteBookEntity.class).queryList();
+        List<NewWordNoteBookEntity> essayList = new Select().from(NewWordNoteBookEntity.class).orderBy(NewWordNoteBookEntity_Table.currentTime, false).queryList();
         if (essayList != null && essayList.size() > 0) {
             for (int i = 0; i < essayList.size(); i++) {
                 NewWordNoteBookEntity bean = essayList.get(i);
