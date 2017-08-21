@@ -35,6 +35,7 @@ import org.greenrobot.eventbus.EventBus;
 public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private static final String TAG = "AuthTokenAction";
     private int localLoadRetryCount = 1;
+    private boolean loadOnlyFromCloud;
 
     @Override
     public void execute(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
@@ -76,6 +77,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private void addLoginRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain, final BaseCallback baseCallback) {
         final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI, EduAccount.class);
         accountLoadRequest.setLocalLoadRetryCount(localLoadRetryCount);
+        accountLoadRequest.setLoadOnlyFromCloud(loadOnlyFromCloud);
         requestChain.addRequest(accountLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -131,6 +133,10 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
     public void setLocalLoadRetryCount(int retryCount) {
         this.localLoadRetryCount = retryCount;
+    }
+
+    public void setLoadOnlyFromCloud(boolean onlyCloud) {
+        this.loadOnlyFromCloud = onlyCloud;
     }
 
     private IndexService createIndexService(Context context) {

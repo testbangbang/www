@@ -1,60 +1,58 @@
 package com.onyx.android.eschool.action;
 
-import android.util.Log;
-
-import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.LibraryDataModel;
-import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudContentRefreshRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.PushNotificationLoadRequest;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by suicheng on 2017/5/24.
+ * Created by suicheng on 2017/8/20.
  */
-public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
+public class CloudContentLoadAction extends BaseAction<LibraryDataHolder> {
 
+    private QueryArgs args;
     private LibraryDataModel libraryDataModel;
+    private boolean loadPushNotification;
+
+    public CloudContentLoadAction(QueryArgs queryArgs, boolean loadNotification) {
+        this.args = queryArgs;
+        this.loadPushNotification = loadNotification;
+    }
+
+    public LibraryDataModel getDataModel() {
+        return libraryDataModel;
+    }
 
     @Override
     public void execute(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
-        LibraryViewInfo libraryViewInfo = dataHolder.getCloudViewInfo();
-        final QueryArgs queryArgs = libraryViewInfo.buildLibraryQuery(libraryViewInfo.getCurrentQueryArgs().libraryUniqueId);
-        queryArgs.resetOffset();
-        queryArgs.useCloudOnlyPolicy();
-        final CloudContentRefreshRequest refreshRequest = new CloudContentRefreshRequest(queryArgs);
-        dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), refreshRequest, new BaseCallback() {
+        final CloudContentListRequest listRequest = new CloudContentListRequest(args);
+        dataHolder.getCloudManager().submitRequestToSingle(dataHolder.getContext(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                hideLoadingDialog();
-                QueryResult<Metadata> result = refreshRequest.getProductResult();
-                if (e != null || result == null || result.hasException()) {
-                    ToastUtils.showToast(request.getContext(), R.string.refresh_fail);
+                if (e != null) {
+                    BaseCallback.invoke(baseCallback, request, e);
                     return;
                 }
-                if (result.isContentEmpty()) {
-                    ToastUtils.showToast(request.getContext(), R.string.refresh_content_empty);
-                }
-                libraryDataModel = LibraryDataModel.create(result, null, refreshRequest.getThumbnailMap());
+                dataHolder.getCloudViewInfo().getCurrentQueryArgs().useMemCloudDbPolicy();
+                libraryDataModel = LibraryDataModel.create(listRequest.getProductResult(), null,
+                        listRequest.getThumbnailMap());
                 if (libraryDataModel == null || CollectionUtils.isNullOrEmpty(libraryDataModel.visibleBookList)) {
                     BaseCallback.invoke(baseCallback, request, null);
                     return;
                 }
-                loadPushNotification(dataHolder, baseCallback);
+                if (loadPushNotification) {
+                    loadPushNotification(dataHolder, baseCallback);
+                }
             }
         });
-        showLoadingDialog(dataHolder, R.string.refreshing);
     }
 
     private void loadPushNotification(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
@@ -72,9 +70,5 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
                 BaseCallback.invoke(baseCallback, request, null);
             }
         });
-    }
-
-    public LibraryDataModel getLibraryDataModel() {
-        return libraryDataModel;
     }
 }

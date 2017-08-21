@@ -7,7 +7,6 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -32,6 +31,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -116,6 +116,10 @@ public class MainActivity extends BaseActivity {
     }
 
     private void notifyDataChanged(List<Library> list) {
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            ToastUtils.showToast(getApplicationContext(), R.string.online_library_load_empty);
+            return;
+        }
         for (Library library : list) {
             addToLibraryMap(library);
             EventBus.getDefault().postSticky(new BookLibraryEvent(library));
