@@ -8,6 +8,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.request.local.NewWordDelete;
 import com.onyx.android.dr.request.local.NewWordExport;
 import com.onyx.android.dr.request.local.NewWordInsert;
+import com.onyx.android.dr.request.local.NewWordQueryByPageNumber;
 import com.onyx.android.dr.request.local.NewWordQueryByReadingMatter;
 import com.onyx.android.dr.request.local.NewWordQueryByTime;
 import com.onyx.android.dr.request.local.NewWordQueryByType;
@@ -33,6 +34,10 @@ public class NewWordData {
     }
 
     public void getAllNewWordByReadingMatter(Context context, NewWordQueryByReadingMatter req, BaseCallback baseCallback) {
+        submitRequest(context, req, baseCallback);
+    }
+
+    public void getAllNewWordByPageNumber(Context context, NewWordQueryByPageNumber req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 

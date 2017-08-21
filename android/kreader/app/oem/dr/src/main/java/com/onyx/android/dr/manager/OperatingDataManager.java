@@ -1,4 +1,4 @@
-package com.onyx.android.dr.util;
+package com.onyx.android.dr.manager;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -10,8 +10,12 @@ import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.request.local.GoodSentenceInsert;
+import com.onyx.android.dr.request.local.GoodSentenceQueryByPageNumber;
+import com.onyx.android.dr.request.local.GoodSentenceQueryByReadingMatter;
 import com.onyx.android.dr.request.local.NewWordInsert;
+import com.onyx.android.dr.request.local.NewWordQueryByPageNumber;
 import com.onyx.android.dr.request.local.NewWordQueryByReadingMatter;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
@@ -24,6 +28,7 @@ import java.util.List;
 public class OperatingDataManager {
     private static OperatingDataManager instance = null;
     private List<NewWordNoteBookEntity> newWordList = new ArrayList<NewWordNoteBookEntity>();
+    private List<GoodSentenceNoteEntity> goodSentenceList = new ArrayList<GoodSentenceNoteEntity>();
 
     private OperatingDataManager() {
     }
@@ -92,5 +97,41 @@ public class OperatingDataManager {
             }
         });
         return newWordList;
+    }
+
+    public List<NewWordNoteBookEntity> getAllNewWordByPageNumber(String pageNumber) {
+        NewWordData newWordData = new NewWordData();
+        final NewWordQueryByPageNumber req = new NewWordQueryByPageNumber(pageNumber);
+        newWordData.getAllNewWordByPageNumber(DRApplication.getInstance(), req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                newWordList = req.getNewWordList();
+            }
+        });
+        return newWordList;
+    }
+
+    public List<GoodSentenceNoteEntity> getAllGoodSentenceByReadingMatter(String readingMatter) {
+        GoodSentenceData goodSentenceData = new GoodSentenceData();
+        final GoodSentenceQueryByReadingMatter req = new GoodSentenceQueryByReadingMatter(readingMatter);
+        goodSentenceData.getGoodSentenceByReadingMatter(DRApplication.getInstance(), req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                goodSentenceList = req.getGoodSentenceList();
+            }
+        });
+        return goodSentenceList;
+    }
+
+    public List<GoodSentenceNoteEntity> getAllGoodSentenceByPageNumber(String pageNumber) {
+        GoodSentenceData goodSentenceData = new GoodSentenceData();
+        final GoodSentenceQueryByPageNumber req = new GoodSentenceQueryByPageNumber(pageNumber);
+        goodSentenceData.getGoodSentenceByPageNumber(DRApplication.getInstance(), req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                goodSentenceList = req.getGoodSentenceList();
+            }
+        });
+        return goodSentenceList;
     }
 }
