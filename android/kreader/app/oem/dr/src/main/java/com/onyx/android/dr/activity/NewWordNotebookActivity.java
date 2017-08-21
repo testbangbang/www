@@ -93,7 +93,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
             title.setText(getString(R.string.english_new_word_notebook));
         } else if (dictType == Constants.CHINESE_TYPE) {
             title.setText(getString(R.string.chinese_new_word_notebook));
-        }else if (dictType == Constants.OTHER_TYPE) {
+        } else if (dictType == Constants.OTHER_TYPE) {
             title.setText(getString(R.string.dict_query_japanese_language));
         }
     }

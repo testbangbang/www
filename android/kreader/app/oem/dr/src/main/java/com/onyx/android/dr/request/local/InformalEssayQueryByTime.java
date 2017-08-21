@@ -1,8 +1,7 @@
 package com.onyx.android.dr.request.local;
 
-import android.util.Log;
-
 import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.data.database.InformalEssayEntity_Table;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -34,7 +33,7 @@ public class InformalEssayQueryByTime extends BaseDataRequest {
     }
 
     public void queryInformalEssayList() {
-        List<InformalEssayEntity> essayList = new Select().from(InformalEssayEntity.class).queryList();
+        List<InformalEssayEntity> essayList = new Select().from(InformalEssayEntity.class).orderBy(InformalEssayEntity_Table.currentTime, false).queryList();
         if (essayList != null && essayList.size() > 0) {
             for (int i = 0; i < essayList.size(); i++) {
                 InformalEssayEntity informalEssayEntity = essayList.get(i);

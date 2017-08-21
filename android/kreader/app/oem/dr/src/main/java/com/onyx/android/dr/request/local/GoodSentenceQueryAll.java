@@ -1,6 +1,7 @@
 package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
+import com.onyx.android.dr.data.database.GoodSentenceNoteEntity_Table;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -28,7 +29,7 @@ public class GoodSentenceQueryAll extends BaseDataRequest {
     }
 
     public void queryGoodSentenceList() {
-        List<GoodSentenceNoteEntity> goodSentenceList = new Select().from(GoodSentenceNoteEntity.class).queryList();
+        List<GoodSentenceNoteEntity> goodSentenceList = new Select().from(GoodSentenceNoteEntity.class).orderBy(GoodSentenceNoteEntity_Table.currentTime, false).queryList();
         if (goodSentenceList != null && goodSentenceList.size() > 0) {
             setGoodSentenceList(goodSentenceList);
         }

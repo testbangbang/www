@@ -31,7 +31,6 @@ import static com.onyx.android.dr.util.Utils.getAllFolderPathList;
 /**
  * Created by hehai on 17-6-26.
  */
-
 public class DRApplication extends MultiDexApplication {
     private static DRApplication sInstance;
     private static CloudStore cloudStore;

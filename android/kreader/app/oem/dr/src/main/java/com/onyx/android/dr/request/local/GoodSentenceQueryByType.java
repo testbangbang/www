@@ -41,7 +41,7 @@ public class GoodSentenceQueryByType extends BaseDataRequest {
 
     public void queryGoodSentenceList() {
         List<GoodSentenceNoteEntity> goodSentenceList = new Select().from(GoodSentenceNoteEntity.class).
-                where(GoodSentenceNoteEntity_Table.goodSentenceType.eq(type)).queryList();
+                where(GoodSentenceNoteEntity_Table.goodSentenceType.eq(type)).orderBy(GoodSentenceNoteEntity_Table.currentTime, false).queryList();
         if (goodSentenceList != null && goodSentenceList.size() > 0) {
             setGoodSentenceList(goodSentenceList);
         }

@@ -1,7 +1,6 @@
 package com.onyx.android.dr.activity;
 
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -80,7 +79,6 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
     private List<String> pathList;
     private boolean tag;
     private NewWordBean intentBean;
-    private String pageNumber;
 
     @Override
     protected Integer getLayoutId() {
@@ -135,7 +133,6 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
     private void getIntentData() {
         intentBean = (NewWordBean) getIntent().getSerializableExtra(Constants.NEW_WORD_BEAN);
         editQuery = intentBean.getNewWord();
-        pageNumber = intentBean.getPageNumber();
         loadDictionary();
     }
 
@@ -225,7 +222,8 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
                 bean.setNewWord(editQuery);
                 bean.setDictionaryLookup(dictionaryLookup);
                 bean.setReadingMatter(readingMatter);
-                bean.setPageNumber(pageNumber);
+                bean.setPageNumber(intentBean.getPageNumber());
+                bean.setNewWordType(intentBean.getNewWordType());
                 OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });

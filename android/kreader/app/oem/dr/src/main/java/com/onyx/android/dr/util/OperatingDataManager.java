@@ -11,14 +11,19 @@ import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.request.local.GoodSentenceInsert;
 import com.onyx.android.dr.request.local.NewWordInsert;
+import com.onyx.android.dr.request.local.NewWordQueryByReadingMatter;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhouzhiming on 2017/8/10.
  */
 public class OperatingDataManager {
     private static OperatingDataManager instance = null;
+    private List<NewWordNoteBookEntity> newWordList = new ArrayList<NewWordNoteBookEntity>();
 
     private OperatingDataManager() {
     }
@@ -75,5 +80,17 @@ public class OperatingDataManager {
             public void done(BaseRequest request, Throwable e) {
             }
         });
+    }
+
+    public List<NewWordNoteBookEntity> getAllNewWordByReadingMatter(String readingMatter) {
+        NewWordData newWordData = new NewWordData();
+        final NewWordQueryByReadingMatter req = new NewWordQueryByReadingMatter(readingMatter);
+        newWordData.getAllNewWordByReadingMatter(DRApplication.getInstance(), req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                newWordList = req.getNewWordList();
+            }
+        });
+        return newWordList;
     }
 }

@@ -1,6 +1,7 @@
 package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.QueryRecordEntity;
+import com.onyx.android.dr.data.database.QueryRecordEntity_Table;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -28,7 +29,7 @@ public class QueryRecordQueryAll extends BaseDataRequest {
     }
 
     public void queryQueryRecordList() {
-        List<QueryRecordEntity> queryRecordList = new Select().from(QueryRecordEntity.class).queryList();
+        List<QueryRecordEntity> queryRecordList = new Select().from(QueryRecordEntity.class).orderBy(QueryRecordEntity_Table.time, false).queryList();
         if (queryRecordList != null && queryRecordList.size() > 0) {
             setList(queryRecordList);
         }
