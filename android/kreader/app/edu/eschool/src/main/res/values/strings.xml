@@ -112,4 +112,7 @@
     <string name="cloud_content_import_success">Import successful</string>
     <string name="cloud_content_import_failed">Import failed</string>
 
+    <string name="online_library_id_error">Online library ID has exception</string>
+    <string name="online_library_load_error">Online library got the exception</string>
+    <string name="online_library_load_empty">Online library got the empty</string>
 </resources>
