@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.scribble.data;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.HashMap;
@@ -21,11 +19,9 @@ public class NotePageUndoRedoManager {
             return;
         }
         if (action.getObject() instanceof List){
-            Log.e(TAG, "undo: action.getObject() instanceof List" );
             normalObject = (List<Shape>) action.getObject();
         }
         if (action.getObject() instanceof HashMap){
-            Log.e(TAG, "undo: action.getObject() instanceof HashMap" );
             transformObject = (HashMap<String,List<Shape>>) action.getObject();
         }
         if (normalObject != null) {
@@ -56,14 +52,14 @@ public class NotePageUndoRedoManager {
                 break;
             case ShapeActions.ACTION_TRANSFORM_SHAPE:
                 if (transformObject != null) {
-                    notePage.removeShape(transformObject.get(ShapeActions.TRANSFORM_FINISHED).get(0), false);
-                    notePage.addShape(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL).get(0), false);
+                    notePage.removeTransformShape(transformObject.get(ShapeActions.TRANSFORM_FINISHED).get(0));
+                    notePage.addTransformShape(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL).get(0));
                 }
                 break;
             case ShapeActions.ACTION_TRANSFORM_SHAPE_LIST:
                 if (transformObject != null) {
-                    notePage.removeShapeList(transformObject.get(ShapeActions.TRANSFORM_FINISHED), false);
-                    notePage.addShapeList(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL), false);
+                    notePage.removeTransformShapeList(transformObject.get(ShapeActions.TRANSFORM_FINISHED));
+                    notePage.addTransformShapeList(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL));
                 }
                 break;
         }
@@ -77,11 +73,9 @@ public class NotePageUndoRedoManager {
             return;
         }
         if (action.getObject() instanceof List){
-            Log.e(TAG, "undo: action.getObject() instanceof List" );
             normalObject = (List<Shape>) action.getObject();
         }
         if (action.getObject() instanceof HashMap){
-            Log.e(TAG, "undo: action.getObject() instanceof HashMap" );
             transformObject = (HashMap<String,List<Shape>>) action.getObject();
         }
         if (normalObject != null) {
@@ -112,14 +106,14 @@ public class NotePageUndoRedoManager {
                 break;
             case ShapeActions.ACTION_TRANSFORM_SHAPE:
                 if (transformObject != null) {
-                    notePage.removeShape(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL).get(0), false);
-                    notePage.addShape(transformObject.get(ShapeActions.TRANSFORM_FINISHED).get(0), false);
+                    notePage.removeTransformShape(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL).get(0));
+                    notePage.addTransformShape(transformObject.get(ShapeActions.TRANSFORM_FINISHED).get(0));
                 }
                 break;
             case ShapeActions.ACTION_TRANSFORM_SHAPE_LIST:
                 if (transformObject != null) {
-                    notePage.removeShapeList(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL), false);
-                    notePage.addShapeList(transformObject.get(ShapeActions.TRANSFORM_FINISHED), false);
+                    notePage.removeTransformShapeList(transformObject.get(ShapeActions.TRANSFORM_ORIGINAL));
+                    notePage.addTransformShapeList(transformObject.get(ShapeActions.TRANSFORM_FINISHED));
                 }
                 break;
         }

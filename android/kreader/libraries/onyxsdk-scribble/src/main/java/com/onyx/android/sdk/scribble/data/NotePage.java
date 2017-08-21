@@ -44,11 +44,19 @@ public class NotePage {
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
 
     public void saveCurrentSelectShape() {
-        Log.e("TAG", "saveCurrentSelectShape: ");
         if (preTransformShapeList.size() == 0) {
-            Log.e("TAG", "saveCurrentSelectShape: actual Add");
             for (Shape shape : selectedShapeList) {
-                preTransformShapeList.add(ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape)));
+                Shape newShape = ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape));
+                //TODO: we need deep copy here.
+                newShape.getPoints().getPoints().clear();
+                for (TouchPoint point:shape.getPoints().getPoints()){
+                    try {
+                        newShape.getPoints().getPoints().add(point.clone());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                preTransformShapeList.add(newShape);
             }
         }
     }
@@ -122,6 +130,33 @@ public class NotePage {
     public void addShapeList(final List<Shape> shapes, boolean addToHistory) {
         for (Shape shape : shapes) {
             addShape(shape, addToHistory);
+        }
+    }
+
+    public void removeTransformShape(final Shape shape) {
+        updateShape(shape);
+        dirtyShapeList.remove(shape);
+        shapeList.remove(shape);
+    }
+
+    public void addTransformShape(final Shape shape) {
+        updateShape(shape);
+        dirtyShapeList.add(shape);
+        shapeList.add(shape);
+        if (removedShapeList.contains(shape)) {
+            removedShapeList.remove(shape);
+        }
+    }
+
+    public void addTransformShapeList(final List<Shape> shapes) {
+        for (Shape shape : shapes) {
+            addTransformShape(shape);
+        }
+    }
+
+    public void removeTransformShapeList(final List<Shape> shapes) {
+        for (Shape shape : shapes) {
+            removeTransformShape(shape);
         }
     }
 
@@ -456,17 +491,11 @@ public class NotePage {
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
-            Log.e("NotePage", "preTransformShapeList.get(0).getPoints().getPoints().get(0).getX():" +
-                    preTransformShapeList.get(0).getPoints().getPoints().get(0).getX());
-            Log.e("NotePage", "dirtyShapeList.get(0).getPoints().getPoints().get(0).getX():" +
-                    dirtyShapeList.get(0).getPoints().getPoints().get(0).getX());
             preTransformShapeList.clear();
         }
     }
 
     public void setTranslateToSelectShapeList(float dX, float dY, boolean addToActionHistory) {
-        Log.e("TAG", "setTranslateToSelectShapeList: " );
-
         if (selectedShapeList.size() <= 0) {
             return;
         }
@@ -476,12 +505,12 @@ public class NotePage {
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
         if (addToActionHistory) {
+            Log.d("NotePage", "dirtyShapeList.get(0).getPoints().getPoints().get(0).getX():" +
+                    dirtyShapeList.get(0).getPoints().getPoints().get(0).getX());
+            Log.d("NotePage", "preTransformShapeList.get(0).getPoints().getPoints().get(0).getX():" +
+                    preTransformShapeList.get(0).getPoints().getPoints().get(0).getX());
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
-            Log.e("NotePage", "preTransformShapeList.get(0).getPoints().getPoints().get(0).getX():" +
-                    preTransformShapeList.get(0).getPoints().getPoints().get(0).getX());
-            Log.e("NotePage", "dirtyShapeList.get(0).getPoints().getPoints().get(0).getX():" +
-                    dirtyShapeList.get(0).getPoints().getPoints().get(0).getX());
             preTransformShapeList.clear();
         }
     }

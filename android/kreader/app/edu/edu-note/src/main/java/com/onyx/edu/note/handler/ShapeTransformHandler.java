@@ -167,7 +167,7 @@ public class ShapeTransformHandler extends BaseHandler {
         mNoteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                RedoAction reDoAction = new RedoAction();
+                RedoAction reDoAction = new RedoAction(false);
                 reDoAction.execute(mNoteManager, actionDoneCallback);
             }
         });
@@ -177,7 +177,7 @@ public class ShapeTransformHandler extends BaseHandler {
         mNoteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                UndoAction unDoAction = new UndoAction();
+                UndoAction unDoAction = new UndoAction(false);
                 unDoAction.execute(mNoteManager, actionDoneCallback);
             }
         });
