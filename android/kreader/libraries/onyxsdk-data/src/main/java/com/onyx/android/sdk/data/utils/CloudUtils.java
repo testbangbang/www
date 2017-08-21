@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 import com.onyx.android.sdk.dataprovider.R;
+import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -23,8 +24,22 @@ import retrofit2.Response;
  * Created by suicheng on 2016/8/12.
  */
 public class CloudUtils {
+    static private String CLOUD_BASE_DIR;
+
     static public final String cloudBaseDir() {
-        return "/mnt/sdcard/cloud";
+        if (CLOUD_BASE_DIR != null) {
+            return CLOUD_BASE_DIR;
+        }
+        File dir = EnvironmentUtil.getExternalStorageDirectory();
+        if (dir == null) {
+            CLOUD_BASE_DIR = "/mnt/sdcard/cloud";
+        } else {
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+            CLOUD_BASE_DIR = new File(dir, "cloud").getAbsolutePath();
+        }
+        return CLOUD_BASE_DIR;
     }
 
     static public File baseDataDir(final Context context, final String id) {

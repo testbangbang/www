@@ -53,4 +53,8 @@ public class QueryResult<T> implements Serializable {
         }
         return true;
     }
+
+    public List<T> getEnsureList() {
+        return list == null ? new ArrayList<T>() : list;
+    }
 }
