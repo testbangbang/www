@@ -36,7 +36,7 @@ import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
 import com.onyx.android.dr.util.DictPreference;
-import com.onyx.android.dr.util.OperatingDataManager;
+import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.conf.AppConfig;
