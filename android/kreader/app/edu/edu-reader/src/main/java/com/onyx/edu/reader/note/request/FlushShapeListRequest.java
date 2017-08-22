@@ -4,6 +4,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.reader.note.NoteManager;
+import com.onyx.edu.reader.note.data.ReaderNoteDocument;
 import com.onyx.edu.reader.note.data.ReaderNotePage;
 
 import org.apache.lucene.analysis.cn.BuildConfig;
@@ -48,7 +49,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
             getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         }
         if (saveDocument) {
-            noteManager.getNoteDocument().save(getContext(), "title");
+            noteManager.getNoteDocument().save(getContext(), ReaderNoteDocument.READER_DOCUMENT_TITLE);
         }
     }
 

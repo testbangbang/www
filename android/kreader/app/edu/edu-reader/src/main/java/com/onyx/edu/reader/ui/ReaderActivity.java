@@ -79,6 +79,7 @@ import com.onyx.edu.reader.ui.data.FormFieldControlFactory;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
+import com.onyx.edu.reader.ui.events.ActiveFormHandlerEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
@@ -1123,6 +1124,11 @@ public class ReaderActivity extends OnyxBaseActivity {
             mainView.removeView(view);
         }
         formFieldControls.clear();
+    }
+
+    @Subscribe
+    public void activeFormHandlerEvent(final ActiveFormHandlerEvent event) {
+        activeFormHandler();
     }
 
     private void addFormFieldControls(Canvas canvas, boolean renderFormField) {

@@ -23,11 +23,15 @@ import java.util.Map;
  */
 public class ReaderNoteDocument {
 
+    public static final String READER_DOCUMENT_TITLE = "title";
+
     private String documentUniqueId;
     private String parentUniqueId;
     private ReaderNotePageNameMap pageIndex = new ReaderNotePageNameMap();
     private LinkedHashMap<String, ReaderNotePage> pageMap = new LinkedHashMap<>();
     private NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
+    private int reviewStatus;
+    private int reviewRevision;
     private boolean isOpen = false;
 
     public void open(final Context context,
@@ -55,6 +59,8 @@ public class ReaderNoteDocument {
     public void close(final Context context) {
         pageIndex.clear();
         pageMap.clear();
+        reviewRevision = 0;
+        reviewStatus = 0;
         documentUniqueId = null;
         parentUniqueId = null;
         resetNoteDrawingArgs();
@@ -86,6 +92,8 @@ public class ReaderNoteDocument {
         noteModel.setStrokeWidth(noteDrawingArgs.strokeWidth);
         noteModel.setBackground(noteDrawingArgs.background);
         noteModel.setStrokeColor(noteDrawingArgs.strokeColor);
+        noteModel.setReviewStatus(reviewStatus);
+        noteModel.setReviewRevision(reviewRevision);
         return noteModel;
     }
 
@@ -153,10 +161,40 @@ public class ReaderNoteDocument {
         final ReaderNoteDocumentModel documentModel = ReaderNoteDataProvider.loadDocument(context, getDocumentUniqueId());
         setupPageIndex(documentModel);
         setupDrawingArgs(documentModel);
+        setupReviewRevision(documentModel);
+        setupReviewStatus(documentModel);
     }
 
     private void setupPageIndex(final ReaderNoteDocumentModel noteModel) {
         pageIndex = loadPageIndex(noteModel);
+    }
+
+    private void setupReviewStatus(final ReaderNoteDocumentModel noteModel) {
+        reviewStatus = noteModel.getReviewStatus();
+    }
+
+    private void setupReviewRevision(final ReaderNoteDocumentModel noteModel) {
+        reviewRevision = noteModel.getReviewRevision();
+    }
+
+    public boolean isLock() {
+        return reviewStatus == ReaderShapeFactory.NOTE_DOCUMENT_LOCK_STATE;
+    }
+
+    public void lockNoteDocument() {
+        reviewStatus = ReaderShapeFactory.NOTE_DOCUMENT_LOCK_STATE;
+    }
+
+    public void unlockNoteDocument() {
+        reviewStatus = ReaderShapeFactory.NOTE_DOCUMENT_UNLOCK_STATE;
+    }
+
+    public int getReviewRevision() {
+        return reviewRevision;
+    }
+
+    public void setReviewRevision(int reviewRevision) {
+        this.reviewRevision = reviewRevision;
     }
 
     private void resetNoteDrawingArgs() {
@@ -243,7 +281,7 @@ public class ReaderNoteDocument {
         return readerNotePage;
     }
 
-    public String clearPage(final Context context, final String pageName, final int subPageIndex) {
+    public String clearPage(final Context context, final String pageName, final int subPageIndex, boolean lockShapeByRevision) {
         final List<String> list = getPageIndex().getPageList(pageName, false);
         if (CollectionUtils.isEmpty(list)) {
             return null;
@@ -256,7 +294,7 @@ public class ReaderNoteDocument {
         if (notePage == null) {
             return null;
         }
-        notePage.clear(true, false);
+        notePage.clear(true, false, lockShapeByRevision, getReviewRevision());
         notePage.savePage(context);
         notePage.setLoaded(false);
         return subPageUniqueId;

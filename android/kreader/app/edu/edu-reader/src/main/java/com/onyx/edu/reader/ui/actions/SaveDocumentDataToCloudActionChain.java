@@ -3,6 +3,8 @@ package com.onyx.edu.reader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.edu.reader.note.actions.LockNoteDocumentAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
 /**
@@ -33,7 +35,20 @@ public class SaveDocumentDataToCloudActionChain extends BaseAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 errorMessage = saveDocumentDataToCloudAction.getErrorMessage();
-                BaseCallback.invoke(baseCallback, request, e);
+                if (StringUtils.isNullOrEmpty(errorMessage)) {
+                    lockNoteDocument(readerDataHolder, baseCallback);
+                }else {
+                    BaseCallback.invoke(baseCallback, request, e);
+                }
+            }
+        });
+    }
+
+    private void lockNoteDocument(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        new LockNoteDocumentAction().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                BaseCallback.invoke(callback, request, e);
             }
         });
     }

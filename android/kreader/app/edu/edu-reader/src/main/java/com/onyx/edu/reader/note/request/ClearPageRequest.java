@@ -16,7 +16,11 @@ public class ClearPageRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        noteManager.getNoteDocument().clearPage(getContext(), pageInfo.getName(), 0);
+        if (noteManager.getParent().getHandlerManager().lockShapeByDocumentStatus() && noteManager.getNoteDocument().isLock()) {
+            return;
+        }
+        boolean lockShapeByRevision = noteManager.getParent().getHandlerManager().lockShapeByRevision();
+        noteManager.getNoteDocument().clearPage(getContext(), pageInfo.getName(), 0, lockShapeByRevision);
         renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(true);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());

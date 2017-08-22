@@ -24,13 +24,18 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
+        if (noteManager.getParent().getHandlerManager().lockShapeByDocumentStatus() && noteManager.getNoteDocument().isLock()) {
+            return;
+        }
         benchmarkStart();
         final PageInfo pageInfo = getVisiblePages().get(0);
         final float radius = noteManager.getNoteDrawingArgs().eraserRadius / pageInfo.getActualScale();
         final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), pageInfo.getName(), 0);
         boolean changed = false;
+        boolean lockShapeByRevision = noteManager.getParent().getHandlerManager().lockShapeByRevision();
+        int documentReviewRevision = noteManager.getNoteDocument().getReviewRevision();
         if (notePage != null) {
-            changed |= notePage.removeShapesByTouchPointList(touchPointList, radius);
+            changed |= notePage.removeShapesByTouchPointList(touchPointList, radius, lockShapeByRevision, documentReviewRevision);
             removedShapeList = notePage.getRemovedShapeIdList();
         }
         changed |= renderVisiblePages(noteManager);
