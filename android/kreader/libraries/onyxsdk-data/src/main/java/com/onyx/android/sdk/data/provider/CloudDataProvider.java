@@ -34,6 +34,7 @@ import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
 import com.raizlabs.android.dbflow.sql.language.Method;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
@@ -73,6 +74,9 @@ public class CloudDataProvider implements DataProviderBase {
     public void saveMetadata(Context context, Metadata metadata) {
         metadata.beforeSave();
         Metadata findMeta = findMetadataByCloudId(metadata.getCloudId());
+        if (findMeta.hasValidId() && StringUtils.isNotBlank(findMeta.getNativeAbsolutePath())) {
+            metadata.setNativeAbsolutePath(findMeta.getNativeAbsolutePath());//for books pre import before
+        }
         metadata.setId(findMeta.getId());
         metadata.save();
     }
