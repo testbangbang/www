@@ -10,17 +10,19 @@ import com.onyx.libedu.db.PaperQuestionAndAnswer;
 
 public class InsertUserAnswerRequest extends BaseEduRequest {
     private long id;
+    private String bookId;
     private String userAnswer;
     private String score;
 
-    public InsertUserAnswerRequest(long id, String userAnswer, String score) {
+    public InsertUserAnswerRequest(String bookId, long id, String userAnswer, String score) {
         this.id = id;
         this.userAnswer = userAnswer;
         this.score = score;
+        this.bookId = bookId;
     }
 
     @Override
     public void execute(EduCloudManager parent) throws Exception {
-        PaperQuestionAndAnswer.updateAnswerById(getContext(), id, userAnswer, score);
+        PaperQuestionAndAnswer.updateAnswerById(getContext(), bookId, id, userAnswer, score);
     }
 }

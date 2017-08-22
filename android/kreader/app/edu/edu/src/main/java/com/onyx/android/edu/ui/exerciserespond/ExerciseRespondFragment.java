@@ -184,7 +184,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         choiceQuestionView.setOnChooseAnswerCallBack(new ChooseCallback() {
             @Override
             public void insertAnswer(long id, String answer, String score) {
-                mExerciseRespondPresenter.insertAnswerAndScore(id, answer, score);
+                mExerciseRespondPresenter.insertAnswerAndScore(EduApp.instance().getBookId(), id, answer, score);
             }
         });
         return choiceQuestionView;
