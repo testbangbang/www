@@ -19,6 +19,7 @@
         android:maxWidth="@dimen/tab_layout_tab_text_max_width"
         android:maxLines="2"
         android:ellipsize="end"
+        android:gravity="center"
         android:paddingBottom="@dimen/tab_item_text_padding_bottom"
         android:paddingRight="@dimen/tab_item_text_padding_right"
         android:text="hello"

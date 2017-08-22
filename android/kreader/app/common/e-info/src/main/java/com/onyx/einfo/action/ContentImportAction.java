@@ -3,13 +3,16 @@ package com.onyx.einfo.action;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentImportFromJsonRequest;
+import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.einfo.R;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.manager.ConfigPreferenceManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +31,11 @@ public class ContentImportAction extends BaseAction<LibraryDataHolder> {
         if (StringUtils.isNullOrEmpty(jsonFilePath)) {
             return;
         }
+        if (!jsonFilePath.startsWith("/")) {
+            File file = new File(EnvironmentUtil.getExternalStorageDirectory(), jsonFilePath);
+            jsonFilePath = file.getAbsolutePath();
+        }
+        FileUtils.ensureFileExists(jsonFilePath);
         List<String> filePathList = new ArrayList<>();
         filePathList.add(jsonFilePath);
         CloudContentImportFromJsonRequest listImportRequest = new CloudContentImportFromJsonRequest(filePathList);

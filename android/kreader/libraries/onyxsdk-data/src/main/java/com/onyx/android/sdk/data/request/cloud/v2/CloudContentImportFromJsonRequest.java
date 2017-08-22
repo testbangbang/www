@@ -8,20 +8,30 @@ import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.data.db.table.EduAccountProvider;
+import com.onyx.android.sdk.data.db.table.OnyxMetadataProvider;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.v2.CloudContentImportList;
+import com.onyx.android.sdk.data.model.v2.CloudGroup;
+import com.onyx.android.sdk.data.model.v2.CloudGroup_Table;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
+import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
+import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TestUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
+import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +66,9 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
                 Log.w(TAG, "detect contentImportList is empty");
                 continue;
             }
+            pingDatabase();
             for (CloudContentImportList contentImport : contentImportList) {
-                if (contentImport == null || CollectionUtils.isNullOrEmpty(contentImport.metadataList)) {
+                if (contentImport == null) {
                     continue;
                 }
                 importToDatabase(getContext(), cloudManager, FileUtils.getParent(path), contentImport);
@@ -65,28 +76,32 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         }
     }
 
-    private void importToDatabase(Context context, CloudManager cloudManager, String parentPath, CloudContentImportList contentImport) {
+    private void importToDatabase(Context context, CloudManager cloudManager, String parentPath,
+                                  CloudContentImportList contentImport) {
+        saveGroup(contentImport.group);
         DataProviderBase dataProvider = cloudManager.getCloudDataProvider();
         DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
         Library library = saveLibrary(context, dataProvider, contentImport.library);
-        for (Metadata metadata : contentImport.metadataList) {
-            String fileName = FileUtils.getFileNameFromUrl(metadata.getLocation());
-            if (StringUtils.isNotBlank(fileName)) {
-                metadata.setNativeAbsolutePath(parentPath + "/" + fileName);
+        if (!CollectionUtils.isNullOrEmpty(contentImport.metadataList)) {
+            for (Metadata metadata : contentImport.metadataList) {
+                String fileName = FileUtils.getFileNameFromUrl(metadata.getLocation());
+                if (StringUtils.isNotBlank(fileName)) {
+                    metadata.setNativeAbsolutePath(parentPath + "/" + fileName);
+                }
+                String thumbnailPath = null;
+                String thumbnailFileName = FileUtils.getFileNameFromUrl(metadata.getCoverUrl());
+                if (StringUtils.isNotBlank(thumbnailFileName)) {
+                    thumbnailPath = parentPath + "/" + thumbnailFileName;
+                }
+                boolean success = saveMetadata(context, dataProvider, metadata);
+                if (!success) {
+                    continue;
+                }
+                saveCloudCollection(context, dataProvider, library, metadata.getAssociationId());
+                saveThumbnail(context, dataProvider, metadata.getAssociationId(),
+                        metadata.getNativeAbsolutePath(), thumbnailPath);
             }
-            String thumbnailPath = null;
-            String thumbnailFileName = FileUtils.getFileNameFromUrl(metadata.getCoverUrl());
-            if (StringUtils.isNotBlank(thumbnailFileName)) {
-                thumbnailPath = parentPath + "/" + thumbnailFileName;
-            }
-            boolean success = saveMetadata(context, dataProvider, metadata);
-            if (!success) {
-                continue;
-            }
-            saveCloudCollection(context, dataProvider, library, metadata.getAssociationId());
-            saveThumbnail(context, dataProvider, metadata.getAssociationId(),
-                    metadata.getNativeAbsolutePath(), thumbnailPath);
         }
         database.setTransactionSuccessful();
         database.endTransaction();
@@ -116,6 +131,17 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         return library;
     }
 
+    private void saveGroup(CloudGroup group) {
+        if (group == null || StringUtils.isNullOrEmpty(group._id)) {
+            return;
+        }
+        CloudGroup findItem = StoreUtils.queryDataSingle(CloudGroup.class, CloudGroup_Table._id.eq(group._id));
+        if (findItem != null && findItem.hasValidId()) {
+            return;
+        }
+        group.save();
+    }
+
     private void saveThumbnail(Context context, DataProviderBase dataProvider, String associationId,
                                String filePath, String thumbnailPath) {
         if (StringUtils.isNullOrEmpty(thumbnailPath) || StringUtils.isNullOrEmpty(associationId)) {
@@ -136,5 +162,19 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
             return;
         }
         DataManagerHelper.saveCloudCollection(context, dataProvider, library.getIdString(), associationId);
+    }
+
+    private void pingDatabase() {
+        for (int i = 0; i < 3; i++) {
+            try {
+                ContentUtils.querySingle(OnyxMetadataProvider.CONTENT_URI,
+                        Metadata.class, ConditionGroup.clause(), null);
+                StoreUtils.queryDataList(CloudGroup.class);
+            } catch (Exception e) {
+                TestUtils.sleep(300);
+                continue;
+            }
+            break;
+        }
     }
 }

@@ -61,6 +61,7 @@ public class DeviceConfig {
 
     static public final String BOOKS_EXCLUDE_DIR_TAG = "books_exclude_dir";
     static public final String DEVICE_SUPPORT_COLOR = "support_color";
+    static public final String CONTENT_TAB_SHOW_ACCOUNT = "content_tab_show_account";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -258,5 +259,9 @@ public class DeviceConfig {
 
     public boolean isDeviceSupportColor() {
         return backend.getBoolean(DEVICE_SUPPORT_COLOR);
+    }
+
+    public boolean supportAccountShowInContentTab() {
+        return backend.getBoolean(CONTENT_TAB_SHOW_ACCOUNT, true);
     }
 }

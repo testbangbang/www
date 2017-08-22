@@ -24,6 +24,7 @@ import com.onyx.einfo.action.AuthTokenAction;
 import com.onyx.einfo.action.CloudGroupContainerListLoadAction;
 import com.onyx.einfo.adapter.ViewPagerAdapter;
 import com.onyx.einfo.custom.NoSwipePager;
+import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.BookLibraryEvent;
 import com.onyx.einfo.events.DataRefreshEvent;
 import com.onyx.einfo.events.TabSwitchEvent;
@@ -132,12 +133,23 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private List<TabLibrary> getExtraCustomTabLibrary() {
-        List<TabLibrary> tabList = new ArrayList<>();
+    private TabLibrary getAccountTabLibrary() {
+        boolean support = DeviceConfig.sharedInstance(getApplicationContext()).supportAccountShowInContentTab();
+        if (!support) {
+            return null;
+        }
         TabLibrary tabLibrary = new TabLibrary(null);
         tabLibrary.action = TabAction.Account;
         tabLibrary.tabTitle = getString(R.string.main_item_user_info_title);
-        tabList.add(tabLibrary);
+        return tabLibrary;
+    }
+
+    private List<TabLibrary> getExtraCustomTabLibrary() {
+        List<TabLibrary> tabList = new ArrayList<>();
+        TabLibrary tabLibrary = getAccountTabLibrary();
+        if (tabLibrary != null) {
+            tabList.add(tabLibrary);
+        }
         return tabList;
     }
 
@@ -211,6 +223,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void addTabList(TabLayout tabLayout, List<TabLibrary> tabLibraryList) {
+        if (tabLayout == null) {
+            return;
+        }
         int position = 0;
         notifyTabLayoutChange(tabLayout, tabLibraryList);
         selectTab(tabLayout, position);
