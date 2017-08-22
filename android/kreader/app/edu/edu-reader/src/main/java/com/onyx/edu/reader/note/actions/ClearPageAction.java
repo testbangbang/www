@@ -22,7 +22,7 @@ public class ClearPageAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final ClearPageRequest clearPageRequest = new ClearPageRequest(pageInfo);
+        final ClearPageRequest clearPageRequest = new ClearPageRequest(pageInfo, readerDataHolder.getHandlerManager().lockShapeByDocumentStatus());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), clearPageRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
