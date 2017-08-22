@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.EPDShape;
@@ -137,12 +136,17 @@ public class NotePage {
         updateShape(shape);
         dirtyShapeList.remove(shape);
         shapeList.remove(shape);
+        if (selectedShapeList.contains(shape)){
+            selectedShapeList.remove(shape);
+        }
     }
 
     public void addTransformShape(final Shape shape) {
+        shape.setSelected(true);
         updateShape(shape);
         dirtyShapeList.add(shape);
         shapeList.add(shape);
+        selectedShapeList.add(shape);
         if (removedShapeList.contains(shape)) {
             removedShapeList.remove(shape);
         }
@@ -344,7 +348,11 @@ public class NotePage {
             if (shape.isSelected()) {
                 RectF selectRect = new RectF();
                 if ((shape instanceof EPDShape)) {
-                    ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                    if (((BaseShape) shape).getOriginDisplayPath() != null) {
+                        ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                    } else {
+                        selectRect = shape.getBoundingRect();
+                    }
                 }
                 selectShapeRectList.add(selectRect);
             }
@@ -442,7 +450,7 @@ public class NotePage {
 
         modelList.clear();
 
-        //TODO: dirtyShape;
+        //TODO: dirtyShape(shape transform);
         for (Shape shape : dirtyShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -479,7 +487,6 @@ public class NotePage {
     }
 
     public void setScaleToSelectShapeList(float scale, boolean addToActionHistory) {
-        Log.e("TAG", "setScaleToSelectShapeList: " );
         if (selectedShapeList.size() <= 0) {
             return;
         }
@@ -505,10 +512,6 @@ public class NotePage {
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
         if (addToActionHistory) {
-            Log.d("NotePage", "dirtyShapeList.get(0).getPoints().getPoints().get(0).getX():" +
-                    dirtyShapeList.get(0).getPoints().getPoints().get(0).getX());
-            Log.d("NotePage", "preTransformShapeList.get(0).getPoints().getPoints().get(0).getX():" +
-                    preTransformShapeList.get(0).getPoints().getPoints().get(0).getX());
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
             preTransformShapeList.clear();

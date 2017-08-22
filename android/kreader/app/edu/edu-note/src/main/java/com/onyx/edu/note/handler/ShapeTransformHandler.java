@@ -254,8 +254,11 @@ public class ShapeTransformHandler extends BaseHandler {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSelectedShapeListRequest req = (GetSelectedShapeListRequest) request;
+                Log.e(TAG, "req.getSelectedShapeList().size():" + req.getSelectedShapeList().size());
                 if (req.getSelectedShapeList().size() > 0) {
                     currentControlMode = ControlMode.OperatingMode;
+                } else {
+                    currentControlMode = ControlMode.SelectMode;
                 }
             }
         });
