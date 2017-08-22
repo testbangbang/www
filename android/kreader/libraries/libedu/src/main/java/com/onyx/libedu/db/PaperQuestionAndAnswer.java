@@ -151,12 +151,13 @@ public class PaperQuestionAndAnswer {
         }
     }
 
-    public static boolean updateAnswerById(Context context, long requestionId,String userAnswer,String score) {
+    public static boolean updateAnswerById(Context context, String bookId, long requestionId, String userAnswer, String score) {
         PaperQuestionAndAnswer paperQuestionAndAnswer = null;
         Cursor c = null;
         try {
-            c = context.getContentResolver().query(CONTENT_URI, null, Column.REQUESTION_ID + "= ?",
-                    new String[]{requestionId + ""}, null);
+            c = context.getContentResolver().query(CONTENT_URI, null, Column.BOOK_ID + " = ? AND " +
+                            Column.REQUESTION_ID + "= ?",
+                    new String[]{bookId, requestionId + ""}, null);
             if(c == null) {
                 Log.d(TAG, "updatePaperQuestionAndAnswerById: query by requestionId failed");
                 return false;
@@ -178,7 +179,8 @@ public class PaperQuestionAndAnswer {
         paperQuestionAndAnswer.userAnswer = userAnswer;
         paperQuestionAndAnswer.getScore = score;
         int count = context.getContentResolver().update(CONTENT_URI, Column.createValuesFromObject(paperQuestionAndAnswer),
-                Column.REQUESTION_ID + "= ?", new String[]{paperQuestionAndAnswer.requestionId});
+                Column.BOOK_ID + "= ? AND " + Column.REQUESTION_ID + " = ?",
+                new String[]{paperQuestionAndAnswer.bookId, paperQuestionAndAnswer.requestionId});
         if (count <= 0) {
             return false;
         }
