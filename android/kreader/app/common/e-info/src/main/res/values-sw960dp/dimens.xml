@@ -19,7 +19,7 @@
     <dimen name="library_item_progress_margin_top">8dp</dimen>
     <dimen name="library_item_progress_padding_left_right">2dp</dimen>
 
-    <dimen name="tab_item_text_size">32sp</dimen>
+    <dimen name="tab_item_text_size">28sp</dimen>
     <dimen name="tab_item_text_padding_right">8dp</dimen>
     <dimen name="tab_item_text_padding_bottom">8dp</dimen>
     <dimen name="book_item_text_size">26sp</dimen>

@@ -14,33 +14,37 @@
         android:scaleType="matrix"
         app:srcCompat="@drawable/home_edu_image" />
 
-    <TextView
-        android:id="@+id/textView_category_text"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_above="@+id/textView_category_sub_text"
-        android:layout_margin="15dp"
+        android:layout_centerInParent="true"
         android:gravity="center"
-        android:text="@string/app_name"
-        android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
-        android:textSize="34sp"
-        android:textStyle="bold" />
+        android:layout_margin="@dimen/home_normal_item_category_margin"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView_category_sub_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="240dp"
-        android:layout_marginEnd="@dimen/home_normal_item_category_margin"
-        android:layout_marginRight="@dimen/home_normal_item_category_margin"
-        android:gravity="center"
-        android:text="    "
-        android:visibility="invisible"
-        android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
-        android:textSize="34sp"
-        android:textStyle="bold" />
+        <TextView
+            android:id="@+id/textView_category_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:gravity="center"
+            android:text="@string/app_name"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+            android:textSize="50sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/textView_category_sub_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/home_normal_item_category_margin"
+            android:layout_marginRight="@dimen/home_normal_item_category_margin"
+            android:gravity="center"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
+            android:textSize="50sp"
+            android:textStyle="bold"
+            android:visibility="gone" />
+
+    </LinearLayout>
 
 </RelativeLayout>
