@@ -157,7 +157,7 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public List<Metadata> findMetadataByQueryArgs(Context context, QueryArgs queryArgs) {
         QueryResult<Metadata> result = findMetadataResultByQueryArgs(context, queryArgs);
-        return result.list;
+        return result.getEnsureList();
     }
 
     @Override
@@ -266,7 +266,7 @@ public class CloudDataProvider implements DataProviderBase {
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         QueryResult<Library> result = fetchAllLibrary(parentId, queryArgs);
-        return result.list;
+        return result.getEnsureList();
     }
 
     public QueryResult<Library> fetchLibraryListFromCloud(String parentId, QueryArgs queryArgs) {

@@ -2,18 +2,13 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.view.View;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
@@ -25,12 +20,11 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeSelectionRequest;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -346,7 +340,7 @@ public class NoteManager {
         return getViewHelper().getHostView();
     }
 
-    public void setView(Context context, SurfaceView surfaceView) {
+    public void setView(SurfaceView surfaceView) {
         getPenManager().setHostView(surfaceView);
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().onTouch(surfaceView);
@@ -444,6 +438,15 @@ public class NoteManager {
 
     public void clearPageUndoRedo(Context context) {
         getDocumentHelper().clearPageUndoRedo(context);
+    }
+
+    public void clearShapeSelectRecord(){
+        for (int i = 0; i < getNoteDocument().getPageCount(); i++) {
+            NotePage page = getNoteDocument().getPageByIndex(i);
+            if (page != null) {
+                page.clearShapeSelectRecord();
+            }
+        }
     }
 
     public RequestManager getRequestManager() {

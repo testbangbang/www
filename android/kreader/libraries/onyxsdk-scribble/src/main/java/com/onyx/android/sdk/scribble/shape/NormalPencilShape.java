@@ -45,6 +45,9 @@ public class NormalPencilShape extends EPDShape {
             path = ShapeUtils.renderShape(renderContext, getNormalizedPoints());
             setOriginDisplayPath(path);
         }
+        if (path == null) {
+            return;
+        }
         renderContext.canvas.drawPath(path, renderContext.paint);
     }
 

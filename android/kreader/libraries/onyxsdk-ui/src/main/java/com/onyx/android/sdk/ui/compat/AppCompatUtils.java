@@ -13,6 +13,7 @@ import java.util.List;
  * Created by suicheng on 2016/12/17.
  */
 public class AppCompatUtils {
+    private static boolean isColorSupport = false;
 
     public static List<ImageView> getChildImageViews(ViewGroup parent) {
         List<ImageView> imageViewList = new ArrayList<>();
@@ -41,7 +42,13 @@ public class AppCompatUtils {
     }
 
     public static boolean isColorDevice(Context context) {
-        return "pl107".equalsIgnoreCase(Build.MODEL) && context.getResources().getConfiguration().smallestScreenWidthDp == 960;
+        return isColorSupport ||
+                ("pl107".equalsIgnoreCase(Build.MODEL) &&
+                        context.getResources().getConfiguration().smallestScreenWidthDp == 960); // Temporarily reserved
+    }
+
+    public static void setColorSupport(boolean support) {
+        isColorSupport = support;
     }
 
     public static float calculateEvenDigital(float value) {

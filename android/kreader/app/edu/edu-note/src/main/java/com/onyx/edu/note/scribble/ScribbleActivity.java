@@ -175,7 +175,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 @Override
                 public void surfaceCreated(SurfaceHolder surfaceHolder) {
                     mNoteManager.clearSurfaceView(mBinding.noteView);
-                    mNoteManager.setView(ScribbleActivity.this, mBinding.noteView);
+                    mNoteManager.setView(mBinding.noteView);
                     handleIntent(getIntent());
                 }
 
@@ -201,6 +201,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (!request.isAbort() && e == null) {
+                            mHandlerManager.quit();
                             ScribbleActivity.super.onBackPressed();
                         }
                     }
@@ -505,6 +506,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mNoteManager.setCurrentScribbleMode(event.getTargetScribbleMode());
         mNoteManager.clearPageUndoRedo(ScribbleActivity.this);
         if (mNoteManager.inSpanScribbleMode()) {
+        mNoteManager.clearShapeSelectRecord();
             mBinding.spanTextView.post(new Runnable() {
                 @Override
                 public void run() {

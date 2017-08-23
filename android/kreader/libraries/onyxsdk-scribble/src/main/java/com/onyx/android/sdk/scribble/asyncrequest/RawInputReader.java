@@ -1,13 +1,11 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;

@@ -9,8 +9,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.zxing.WriterException;
+import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.einfo.device.DeviceConfig;
-import com.onyx.einfo.manager.LeanCloudManager;
 import com.onyx.einfo.utils.QRCodeUtil;
 import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;

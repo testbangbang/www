@@ -5,5 +5,5 @@ package com.onyx.android.sdk.reader.api;
  */
 
 public enum ReaderDocumentCategory {
-    NORMAL, BOOK, HOMEWORK, EXERCISE, EXAMINATION, MEETING, SIGNATURE
+    NORMAL, BOOK, HOMEWORK, EXERCISE, EXAMINATION, MEETING, SIGNATURE, USERHOMEWORK
 }

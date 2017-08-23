@@ -30,6 +30,7 @@ public class AppUpdateManager {
         public int notificationSmallIcon;
         public Bitmap notificationLargeIcon;
         public boolean autoDownload;
+        public String model;
 
         public static AppUpdateConfig create(int smallIcon, boolean autoDownload) {
             AppUpdateConfig config = new AppUpdateConfig();
@@ -61,7 +62,11 @@ public class AppUpdateManager {
     public static void checkUpdate(final Context context, final CloudManager cloudManager,
                                    final AppUpdateConfig config, final BaseCallback customCallBack) {
         List<ApplicationUpdate> queryList = new ArrayList<>();
-        queryList.add(getApplicationUpdate(context));
+        ApplicationUpdate update = getApplicationUpdate(context);
+        if (StringUtils.isNotBlank(config.model)) {
+            update.model = config.model;
+        }
+        queryList.add(update);
         checkUpdate(context, cloudManager, config, queryList, customCallBack);
     }
 

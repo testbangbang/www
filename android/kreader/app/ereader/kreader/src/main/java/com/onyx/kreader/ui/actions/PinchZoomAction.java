@@ -133,7 +133,7 @@ public class PinchZoomAction extends BaseAction {
 //        hideTextZoomingPopupMenu();
 //        handlerManager.setEnable(false);
 
-        ReaderDeviceManager.exitAnimationUpdate(false);
+        ReaderDeviceManager.exitAnimationUpdate(true);
         float newScale = pageInfo.getActualScale() * deltaScale;
         pageInfo.setScale(newScale);
 

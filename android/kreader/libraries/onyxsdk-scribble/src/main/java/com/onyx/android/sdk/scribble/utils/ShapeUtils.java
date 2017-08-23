@@ -80,7 +80,8 @@ public class ShapeUtils {
         lastDst[1] = touchPoint.getY();
         while (iterator.hasNext()) {
             touchPoint = iterator.next();
-            path.quadTo((lastDst[0] + touchPoint.getX()) / 2, (lastDst[1] + touchPoint.getY()) / 2, touchPoint.getX(), touchPoint.getY());
+            path.quadTo((lastDst[0] + touchPoint.getX()) / 2, (lastDst[1] + touchPoint.getY()) / 2,
+                    touchPoint.getX(), touchPoint.getY());
             lastDst[0] = touchPoint.getX();
             lastDst[1] = touchPoint.getY();
         }

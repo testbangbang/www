@@ -14,6 +14,8 @@
     <string name="home_item_syllabus">Syllabus</string>
     <string name="home_item_library">Library</string>
     <string name="home_item_archives">Archives</string>
+    <string name="home_item_note">Note</string>
+    <string name="home_item_reading_room">Reading Room</string>
 
     <string name="page">Page：</string>
     <string name="no_more_items">No more content</string>

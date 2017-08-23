@@ -34,11 +34,31 @@ public class NotePage {
     private List<Shape> newAddedShapeList = new ArrayList<>();
     private List<Shape> removedShapeList = new ArrayList<>();
     private List<Shape> selectedShapeList = new ArrayList<>();
+    private List<Shape> dirtyShapeList = new ArrayList<>();
+    private List<Shape> preTransformShapeList = new ArrayList<>();
 
     private int currentShapeType;
     private Shape currentShape;
     private boolean loaded = false;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
+
+    public void saveCurrentSelectShape() {
+        if (preTransformShapeList.size() == 0) {
+            for (Shape shape : selectedShapeList) {
+                Shape newShape = ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape));
+                //TODO: we need deep copy here.
+                newShape.getPoints().getPoints().clear();
+                for (TouchPoint point:shape.getPoints().getPoints()){
+                    try {
+                        newShape.getPoints().getPoints().add(point.clone());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                preTransformShapeList.add(newShape);
+            }
+        }
+    }
 
 
     public static abstract class RenderCallback {
@@ -112,6 +132,38 @@ public class NotePage {
         }
     }
 
+    public void removeTransformShape(final Shape shape) {
+        updateShape(shape);
+        dirtyShapeList.remove(shape);
+        shapeList.remove(shape);
+        if (selectedShapeList.contains(shape)){
+            selectedShapeList.remove(shape);
+        }
+    }
+
+    public void addTransformShape(final Shape shape) {
+        shape.setSelected(true);
+        updateShape(shape);
+        dirtyShapeList.add(shape);
+        shapeList.add(shape);
+        selectedShapeList.add(shape);
+        if (removedShapeList.contains(shape)) {
+            removedShapeList.remove(shape);
+        }
+    }
+
+    public void addTransformShapeList(final List<Shape> shapes) {
+        for (Shape shape : shapes) {
+            addTransformShape(shape);
+        }
+    }
+
+    public void removeTransformShapeList(final List<Shape> shapes) {
+        for (Shape shape : shapes) {
+            removeTransformShape(shape);
+        }
+    }
+
     public void removeShapeList(final List<Shape> shapes, boolean addToHistory) {
         for (Shape shape : shapes) {
             removeShape(shape, addToHistory);
@@ -138,6 +190,13 @@ public class NotePage {
         undoRedoManager.clear();
     }
 
+    public void clearShapeSelectRecord() {
+        for (Shape shape : selectedShapeList) {
+            shape.setSelected(false);
+        }
+        selectedShapeList.clear();
+    }
+
     private void updateShape(final Shape shape) {
         shape.setDocumentUniqueId(getDocumentUniqueId());
         shape.setPageUniqueId(getPageUniqueId());
@@ -150,6 +209,7 @@ public class NotePage {
         updateShape(shape);
         removedShapeList.add(shape);
         newAddedShapeList.remove(shape);
+        dirtyShapeList.remove(shape);
         shapeList.remove(shape);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.removeShapeAction(shape), false);
@@ -288,7 +348,11 @@ public class NotePage {
             if (shape.isSelected()) {
                 RectF selectRect = new RectF();
                 if ((shape instanceof EPDShape)) {
-                    ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                    if (((BaseShape) shape).getOriginDisplayPath() != null) {
+                        ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                    } else {
+                        selectRect = shape.getBoundingRect();
+                    }
                 }
                 selectShapeRectList.add(selectRect);
             }
@@ -339,20 +403,21 @@ public class NotePage {
     public void loadPage(final Context context) {
         newAddedShapeList.clear();
         removedShapeList.clear();
-        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
+        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context,
+                getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
         for(ShapeModel model : modelList) {
             addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
         setLoaded(true);
     }
 
-    public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
-        final NotePage page = new NotePage(docUniqueId, pageName, subPageName);
-        return page;
+    public static final NotePage createPage(final Context context, final String docUniqueId,
+                                            final String pageName, final String subPageName) {
+        return new NotePage(docUniqueId, pageName, subPageName);
     }
 
     public List<ShapeModel> getNewAddedShapeModeList() {
-        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        List<ShapeModel> modelList = new ArrayList<>(newAddedShapeList.size());
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -373,7 +438,8 @@ public class NotePage {
     }
 
     public boolean savePage(final Context context) {
-        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        List<ShapeModel> modelList = new ArrayList<>(newAddedShapeList.size());
+        //TODO: new shape;
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -382,11 +448,19 @@ public class NotePage {
             ShapeDataProvider.saveShapeList(context, modelList);
         }
 
-        List<String> list = new ArrayList<>();
-        for(Shape shape: removedShapeList) {
-            list.add(shape.getShapeUniqueId());
+        modelList.clear();
+
+        //TODO: dirtyShape(shape transform);
+        for (Shape shape : dirtyShapeList) {
+            final ShapeModel model = ShapeFactory.modelFromShape(shape);
+            modelList.add(model);
         }
-        ShapeDataProvider.removeShapesByIdList(context, list);
+        if (modelList.size() > 0) {
+            ShapeDataProvider.updateShapeList(context, modelList);
+        }
+
+        //TODO: removed Shape;
+        ShapeDataProvider.removeShapesByIdList(context, getRemovedShapeIdList());
         newAddedShapeList.clear();
         removedShapeList.clear();
         return true;
@@ -412,21 +486,35 @@ public class NotePage {
 
     }
 
-    public void setScaleToSelectShapeList(float scale) {
+    public void setScaleToSelectShapeList(float scale, boolean addToActionHistory) {
         if (selectedShapeList.size() <= 0) {
             return;
         }
         for (Shape shape : selectedShapeList) {
-            shape.setScale(scale);
+            shape.onScale(scale);
+        }
+        dirtyShapeList.clear();
+        dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            preTransformShapeList.clear();
         }
     }
 
-    public void setTranslateToSelectShapeList(float dX, float dY) {
+    public void setTranslateToSelectShapeList(float dX, float dY, boolean addToActionHistory) {
         if (selectedShapeList.size() <= 0) {
             return;
         }
         for (Shape shape : selectedShapeList) {
             shape.onTranslate(dX, dY);
+        }
+        dirtyShapeList.clear();
+        dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            preTransformShapeList.clear();
         }
     }
 }

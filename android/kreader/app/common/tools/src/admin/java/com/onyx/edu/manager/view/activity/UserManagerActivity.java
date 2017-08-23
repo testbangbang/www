@@ -51,6 +51,7 @@ import com.onyx.edu.manager.manager.ContentManager;
 import com.onyx.edu.manager.model.ContactEntity;
 import com.onyx.edu.manager.pinyin.CharacterParser;
 import com.onyx.edu.manager.pinyin.PinyinComparator;
+import com.onyx.edu.manager.view.dialog.DialogHolder;
 import com.onyx.edu.manager.view.ui.DividerDecoration;
 import com.onyx.edu.manager.view.ui.SideBar;
 
@@ -224,10 +225,25 @@ public class UserManagerActivity extends AppCompatActivity {
     }
 
     private void loadGroupAndUserList(CloudGroup group, final BaseCallback baseCallback) {
+        final MaterialDialog dialog = DialogHolder.showProgressDialog(this, getString(R.string.loading));
         final String groupId = group != null ? group._id : null;
         CloudRequestChain requestChain = new CloudRequestChain();
-        addCloudGroupListRequest(requestChain, groupId, baseCallback);
-        addCloudGroupUserListRequest(requestChain, groupId, baseCallback);
+        addCloudGroupListRequest(requestChain, groupId, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (StringUtils.isNullOrEmpty(groupId)) {
+                    dialog.dismiss();
+                }
+                BaseCallback.invoke(baseCallback, request, e);
+            }
+        });
+        addCloudGroupUserListRequest(requestChain, groupId, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dialog.dismiss();
+                BaseCallback.invoke(baseCallback, request, e);
+            }
+        });
         requestChain.setAbortException(false);
         requestChain.execute(this, AdminApplication.getCloudManager());
     }
@@ -368,7 +384,7 @@ public class UserManagerActivity extends AppCompatActivity {
 
     private void initContentPageView() {
         contactRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<ContactEntity>(this, contactEntityList) {
+        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<ContactEntity>(contactEntityList) {
             @Override
             public String getMacAddress(ContactEntity entity) {
                 return getContactEntityMac(entity);
@@ -399,7 +415,11 @@ public class UserManagerActivity extends AppCompatActivity {
         contactAdapter.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(int position, View view) {
-                startUserDeviceBindActivity(contactAdapter.getItem(position));
+                ContactEntity entity = contactAdapter.getItem(position);
+                if (entity == null) {
+                    return;
+                }
+                startUserDeviceBindActivity(entity);
             }
 
             @Override

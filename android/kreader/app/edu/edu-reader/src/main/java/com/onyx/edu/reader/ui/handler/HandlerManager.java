@@ -35,6 +35,7 @@ import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.handler.form.FormInteractiveHandler;
 import com.onyx.edu.reader.ui.handler.form.FormMeetingHandler;
 import com.onyx.edu.reader.ui.handler.form.FormSignHandler;
+import com.onyx.edu.reader.ui.handler.form.FormUserHomeWorkHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +63,7 @@ public class HandlerManager {
     public static final String FORM_EXERCISE_PROVIDER = "form_exercise";
     public static final String FORM_MEETING_PROVIDER = "form_meeting";
     public static final String FORM_SIGNATURE_PROVIDER = "form_signature";
+    public static final String FORM_USERHOMEWORK_PROVIDER = "form_user_homework";
 
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
@@ -94,6 +96,7 @@ public class HandlerManager {
         providerMap.put(FORM_EXERCISE_PROVIDER, new FormExerciseHandler(this));
         providerMap.put(FORM_MEETING_PROVIDER, new FormMeetingHandler(this));
         providerMap.put(FORM_SIGNATURE_PROVIDER, new FormSignHandler(this));
+        providerMap.put(FORM_USERHOMEWORK_PROVIDER, new FormUserHomeWorkHandler(this));
         activeProviderName = READING_PROVIDER;
         enable.set(true);
         enableTouch.set(true);
@@ -214,6 +217,8 @@ public class HandlerManager {
                 return FORM_MEETING_PROVIDER;
             case SIGNATURE:
                 return FORM_SIGNATURE_PROVIDER;
+            case USERHOMEWORK:
+                return FORM_USERHOMEWORK_PROVIDER;
             default:
                 return READING_PROVIDER;
         }

@@ -3,6 +3,8 @@ package com.onyx.android.sdk.scribble.api;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.view.SurfaceView;
+import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -34,20 +36,14 @@ public class PenReader {
     private DeviceConfig deviceConfig;
     private PenReaderCallback penReaderCallback;
 
-    public PenReader(final Context context) {
-        init(context);
+    public PenReader(final Context context, final View view) {
+        init(context, view);
     }
 
-    private void init(final Context context) {
+    private void init(final Context context, final View view) {
         rawInputProcessor.setMoveFeedback(true);
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        rawInputProcessor.setViewMatrix(new Matrix());
-        final Matrix screenMatrix = new Matrix();
-        screenMatrix.postRotate(deviceConfig.getEpdPostOrientation());
-        screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
-        screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
-                deviceConfig.getEpdHeight() / getTouchHeight());
-        rawInputProcessor.setScreenMatrix(screenMatrix);
+        rawInputProcessor.setHostView(view);
         rawInputProcessor.setLimitRect(new Rect(0, 0, (int) getTouchHeight(), (int) getTouchWidth()));
     }
 

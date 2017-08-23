@@ -150,6 +150,10 @@ public abstract class EpdController
         Device.currentDevice().setScreenHandWritingRegionLimit(view, left, top, right, bottom);
     }
 
+    public static void setScreenHandWritingRegionLimit(View view) {
+        Device.currentDevice().setScreenHandWritingRegionLimit(view);
+    }
+
     public static void setScreenHandWritingRegionLimit(View view, int[] array) {
         Device.currentDevice().setScreenHandWritingRegionLimit(view, array);
     }
@@ -190,12 +194,24 @@ public abstract class EpdController
         Device.currentDevice().moveTo(x, y, width);
     }
 
+    public static void moveTo(View view, float x, float y, float width) {
+        Device.currentDevice().moveTo(view, x, y, width);
+    }
+
     public static void lineTo(float x, float y, UpdateMode mode) {
         Device.currentDevice().lineTo(x, y, mode);
     }
 
+    public static void lineTo(View view, float x, float y, UpdateMode mode) {
+        Device.currentDevice().lineTo(view, x, y, mode);
+    }
+
     public static void quadTo(float x, float y, UpdateMode mode) {
         Device.currentDevice().quadTo(x, y, mode);
+    }
+
+    public static void quadTo(View view, float x, float y, UpdateMode mode) {
+        Device.currentDevice().quadTo(view, x, y, mode);
     }
 
     public static void disableA2ForSpecificView(View view) {
@@ -204,6 +220,14 @@ public abstract class EpdController
 
     public static void enableA2ForSpecificView(View view) {
         Device.currentDevice().enableA2ForSpecificView(view);
+    }
+
+    public static void mapToView(View view, float[] src, float[] dst) {
+        Device.currentDevice().mapToView(view, src, dst);
+    }
+
+    public static void mapToEpd(View view, float[] src, float[] dst) {
+        Device.currentDevice().mapToEpd(view, src, dst);
     }
 
     public static float getTouchWidth() {

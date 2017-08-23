@@ -11,6 +11,7 @@ public class Message {
     public static final String TYPE_LIBRARY_CLEAR = "library_clear";
     public static final String TYPE_LOGIN = "login";
     public static final String TYPE_SCREEN_SAVER = "screen_saver";
+    public static final String TYPE_NOTIFICATION = "notification";
 
     private String channel;
     private String action;

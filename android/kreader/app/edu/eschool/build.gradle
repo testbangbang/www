@@ -88,6 +88,7 @@ dependencies {
     compile(project(':libraries:onyxsdk-data')) {
         exclude group: 'com.alibaba', module: 'fastjson'
     }
+    compile(project(':libraries:onyxsdk-im'))
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
@@ -104,9 +105,6 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile 'de.halfbit:tinymachine:1.1.+'
     compile "com.android.support:multidex:$multidexVersion"
-    compile "cn.leancloud.android:avoscloud-sdk:$rootProject.avoscloudVersion"
-    compile("cn.leancloud.android:avoscloud-push:$rootProject.avoscloudVersion@aar") { transitive = true }
-    compile "cn.leancloud.android:avoscloud-statistics:$rootProject.avoscloudVersion"
     compile "com.google.zxing:core:$rootProject.zxingVersion"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
