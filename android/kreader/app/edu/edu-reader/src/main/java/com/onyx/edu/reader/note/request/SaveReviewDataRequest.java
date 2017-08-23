@@ -7,7 +7,6 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.data.ReaderNoteDocument;
 import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
-import com.onyx.edu.reader.note.data.ReaderShapeFactory;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
 import com.onyx.edu.reader.note.model.ReaderNoteDocumentModel;
@@ -67,7 +66,7 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
         if (newFormShapeModels.size() == 0) {
             throw ReaderException.noReviewData();
         }
-        noteManager.getNoteDocument().unlockNoteDocument();
+        noteManager.getNoteDocument().resetNoteDocumentState();
         updateDocReviewRevision(noteManager, data);
         ReaderNoteDataProvider.saveFormShapeList(getContext(), newFormShapeModels);
         noteManager.getNoteDocument().addReviewDataPageMap(pageNameMap);

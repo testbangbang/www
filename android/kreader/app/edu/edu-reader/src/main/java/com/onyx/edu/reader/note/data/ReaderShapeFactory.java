@@ -23,7 +23,7 @@ public class ReaderShapeFactory {
     static public final int SHAPE_FREE_AREA_SCRIBBLE = 4;
 
     //document review status
-    static public final int NOTE_DOCUMENT_UNLOCK_STATE = 0;
+    static public final int NOTE_DOCUMENT_NORMAL_STATE = 0;
     static public final int NOTE_DOCUMENT_LOCK_STATE = 1;
 
     public static boolean isUniqueFormShape(int formType) {

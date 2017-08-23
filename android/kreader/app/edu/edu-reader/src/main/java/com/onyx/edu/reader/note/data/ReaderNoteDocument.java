@@ -1,7 +1,6 @@
 package com.onyx.edu.reader.note.data;
 
 import android.content.Context;
-import android.databinding.tool.util.L;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.*;
@@ -185,8 +184,8 @@ public class ReaderNoteDocument {
         reviewStatus = ReaderShapeFactory.NOTE_DOCUMENT_LOCK_STATE;
     }
 
-    public void unlockNoteDocument() {
-        reviewStatus = ReaderShapeFactory.NOTE_DOCUMENT_UNLOCK_STATE;
+    public void resetNoteDocumentState() {
+        reviewStatus = ReaderShapeFactory.NOTE_DOCUMENT_NORMAL_STATE;
     }
 
     public int getReviewRevision() {
