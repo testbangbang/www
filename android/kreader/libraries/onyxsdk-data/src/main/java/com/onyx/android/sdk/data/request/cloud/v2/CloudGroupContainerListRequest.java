@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
+import com.onyx.android.sdk.data.model.v2.CloudLibrary_Table;
 import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.utils.RetrofitUtils;
@@ -14,6 +15,7 @@ import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +82,7 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
         QueryArgs queryArgs = new QueryArgs();
         queryArgs.libraryUniqueId = libraryId;
         queryArgs.fetchPolicy = FetchPolicy.MEM_DB_ONLY;
+        queryArgs.orderByList.add(OrderBy.fromProperty(CloudLibrary_Table.createdAt).ascending());
         return DataManagerHelper.fetchLibraryLibraryList(getContext(), parent.getCloudDataProvider(), queryArgs);
     }
 

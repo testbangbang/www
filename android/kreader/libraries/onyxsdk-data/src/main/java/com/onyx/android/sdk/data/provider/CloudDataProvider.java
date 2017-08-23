@@ -259,7 +259,7 @@ public class CloudDataProvider implements DataProviderBase {
         if (FetchPolicy.isCloudPartPolicy(queryArgs.fetchPolicy)) {
             result = fetchLibraryListFromCloud(queryArgs.libraryUniqueId, queryArgs);
         } else {
-            result = fetchLibraryListFromLocal(queryArgs.libraryUniqueId);
+            result = fetchLibraryListFromLocal(queryArgs.libraryUniqueId, queryArgs);
             if (FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy) && !QueryResult.isValidQueryResult(result)) {
                 result = fetchLibraryListFromCloud(queryArgs.libraryUniqueId, queryArgs);
             }
@@ -287,17 +287,18 @@ public class CloudDataProvider implements DataProviderBase {
             }
         } catch (Exception e) {
             if (!FetchPolicy.isCloudOnlyPolicy(queryArgs.fetchPolicy) && !FetchPolicy.isMemDbCloudPolicy(queryArgs.fetchPolicy)) {
-                result = fetchLibraryListFromLocal(parentId);
+                result = fetchLibraryListFromLocal(parentId, queryArgs);
             }
         }
         return result;
     }
 
-    public QueryResult<Library> fetchLibraryListFromLocal(String parentId) {
+    public QueryResult<Library> fetchLibraryListFromLocal(String parentId, QueryArgs queryArgs) {
         QueryResult<Library> result = new QueryResult<>();
         List<CloudLibrary> cloudLibraryList = new Select().from(CloudLibrary.class)
                 .where()
                 .and(CloudLibrary_Table.parentUniqueId.eq(parentId))
+                .orderByAll(queryArgs.orderByList)
                 .queryList();
         if (CollectionUtils.isNullOrEmpty(cloudLibraryList)) {
             return result;
