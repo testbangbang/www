@@ -428,4 +428,13 @@ public abstract class BaseHandler {
     public void onReceivedIMMessage(Message message) {}
 
     public boolean isEnableNoteInScribbleForm() { return true;}
+
+    protected boolean lockShapeByRevision() {
+        return false;
+    }
+
+    protected boolean lockShapeByDocumentStatus() {
+        return false;
+    }
+
 }

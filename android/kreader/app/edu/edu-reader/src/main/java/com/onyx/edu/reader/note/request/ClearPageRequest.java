@@ -10,13 +10,20 @@ import com.onyx.edu.reader.note.NoteManager;
 public class ClearPageRequest extends ReaderBaseNoteRequest {
 
     private volatile PageInfo pageInfo;
-    public ClearPageRequest(final PageInfo p) {
+    private volatile boolean lockShapeByDocumentStatus;
+
+    public ClearPageRequest(final PageInfo p, boolean lockShapeByDocumentStatus) {
         pageInfo = p;
+        this.lockShapeByDocumentStatus = lockShapeByDocumentStatus;
         setVisiblePage(p);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        noteManager.getNoteDocument().clearPage(getContext(), pageInfo.getName(), 0);
+        if (lockShapeByDocumentStatus && noteManager.getNoteDocument().isLock()) {
+            return;
+        }
+        boolean lockShapeByRevision = noteManager.getParent().getHandlerManager().lockShapeByRevision();
+        noteManager.getNoteDocument().clearPage(getContext(), pageInfo.getName(), 0, lockShapeByRevision);
         renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(true);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());

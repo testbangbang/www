@@ -15,6 +15,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.im.Constant;
 import com.onyx.android.sdk.im.IMConfig;
@@ -26,11 +28,11 @@ import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.FlushFormShapesAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
+import com.onyx.edu.reader.note.actions.LoadFormShapeByIdAction;
 import com.onyx.edu.reader.note.actions.RemoveFormShapesAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.SaveFormShapesAction;
@@ -119,20 +121,35 @@ public class FormBaseHandler extends ReadingHandler {
         }
     }
 
-    private void processFormField(View view) {
+    private void processFormField(final View view) {
         if (view == null) {
             return;
         }
+        final ReaderFormField field = getReaderFormField(view);
+        final LoadFormShapeByIdAction action = new LoadFormShapeByIdAction(field.getName());
+        action.execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ReaderFormShapeModel formShapeModel = action.getFormShapeModel();
+                initFormView(view, formShapeModel, field);
+            }
+        });
+    }
+
+
+    private void initFormView(View view, final ReaderFormShapeModel formShapeModel, final ReaderFormField field) {
         if (view instanceof CheckBox) {
-            processCheckBoxForm((CheckBox) view);
+            processCheckBoxForm((CheckBox) view, formShapeModel, field);
         }else if (view instanceof RelativeRadioGroup) {
-            processRadioGroupForm((RelativeRadioGroup) view);
+            processRadioGroupForm((RelativeRadioGroup) view, formShapeModel, field);
         }else if (view instanceof EditText) {
-            processEditTextForm((EditText) view);
+            processEditTextForm((EditText) view, formShapeModel, field);
         }else if (view instanceof Button) {
             processButtonForm((Button) view);
         }
+        lockFormView(view);
     }
+
 
     private void processButtonForm(Button button) {
         final ReaderFormPushButton field = (ReaderFormPushButton) getReaderFormField(button);
@@ -148,9 +165,29 @@ public class FormBaseHandler extends ReadingHandler {
 
     }
 
-    private void processCheckBoxForm(CheckBox checkBox) {
-        final ReaderFormField field = getReaderFormField(checkBox);
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
+    private void lockFormView(View view) {
+        boolean lock = lockShapeByDocumentStatus() && getReaderDataHolder().getNoteManager().getNoteDocument().isLock();
+        lock |= lockShapeByRevision() && getReaderDataHolder().getNoteManager().getNoteDocument().getReviewRevision() > 0;
+        if (lock) {
+            lockFormViewImpl(view);
+        }
+    }
+
+    private void lockFormViewImpl(View view) {
+        view.setEnabled(false);
+        if (view instanceof RelativeRadioGroup) {
+            lockRadioGroupChildView((RelativeRadioGroup)view);
+        }
+    }
+
+    public void lockRadioGroupChildView(RelativeRadioGroup group) {
+        int childCount = group.getChildCount();
+        for (int i = 0; i < childCount; i++) {
+            group.getChildAt(i).setEnabled(false);
+        }
+    }
+
+    private void processCheckBoxForm(CheckBox checkBox, final ReaderFormShapeModel formShapeModel, final ReaderFormField field) {
         if (formShapeModel != null) {
             FormValue value = formShapeModel.getFormValue();
             checkBox.setChecked(value.isCheck());
@@ -183,9 +220,7 @@ public class FormBaseHandler extends ReadingHandler {
         return (ReaderFormField) view.getTag();
     }
 
-    private void processRadioGroupForm(final RelativeRadioGroup radioGroup) {
-        final ReaderFormField groupField = getReaderFormField(radioGroup);
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), groupField.getName());
+    private void processRadioGroupForm(final RelativeRadioGroup radioGroup, final ReaderFormShapeModel formShapeModel, final ReaderFormField field) {
         if (formShapeModel != null) {
             FormValue value = formShapeModel.getFormValue();
             radioGroup.check(value.getIndex());
@@ -195,15 +230,12 @@ public class FormBaseHandler extends ReadingHandler {
             public void onCheckedChanged(RelativeRadioGroup group, @IdRes int checkedId) {
                 FormValue value = FormValue.create(checkedId);
                 value.setCheck(true);
-                View view = radioGroup.findViewById(checkedId);
-                ReaderFormField field = getReaderFormField(view);
-                flushFormShapes(groupField.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_SINGLE_SELECTION,  value);
+                flushFormShapes(field.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_SINGLE_SELECTION,  value);
             }
         });
     }
 
-    private void processEditTextForm(final EditText editText) {
-        final ReaderFormField field = getReaderFormField(editText);
+    private void processEditTextForm(final EditText editText, final ReaderFormShapeModel formShapeModel, final ReaderFormField field) {
         editText.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -221,7 +253,6 @@ public class FormBaseHandler extends ReadingHandler {
                 flushFormShapes(field.getName(), field.getRect(), ReaderShapeFactory.SHAPE_FORM_FILL,  value);
             }
         });
-        ReaderFormShapeModel formShapeModel = ReaderNoteDataProvider.loadFormShape(getContext(), getDocumentUniqueId(), field.getName());
         if (formShapeModel != null) {
             FormValue value = formShapeModel.getFormValue();
             editText.setText(value.getText());
