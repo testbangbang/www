@@ -92,6 +92,9 @@ public class BaseDevice {
     public void mapToEpd(View view, float[] src, float[] dst) {
     }
 
+    public void mapRawTouchPoint(View view, float[] src, float[] dst) {
+    }
+
     public int getFrontLightBrightnessMinimum(Context context) {
         return 0;
     }

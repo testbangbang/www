@@ -230,6 +230,10 @@ public abstract class EpdController
         Device.currentDevice().mapToEpd(view, src, dst);
     }
 
+    public static void mapRawTouchPoint(View view, float[] src, float[] dst) {
+        Device.currentDevice().mapRawTouchPoint(view, src, dst);
+    }
+
     public static float getTouchWidth() {
         return Device.currentDevice().getTouchWidth();
     }
