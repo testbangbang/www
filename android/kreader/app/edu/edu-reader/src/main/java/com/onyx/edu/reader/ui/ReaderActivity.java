@@ -348,6 +348,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void initReaderMenu(){
         ShowReaderMenuAction.initDisableMenus(getReaderDataHolder());
+        updateFormMenu();
     }
 
     private void initStatusBar() {
@@ -1154,6 +1155,13 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         getHandlerManager().setActiveProvider(getReaderDataHolder().getDefaultProvider(), FormBaseHandler.createInitialState(formFieldControls));
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
+    }
+
+    private void updateFormMenu() {
+        if (!getReaderDataHolder().useFormMode()) {
+            return;
+        }
         ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
     }
 
