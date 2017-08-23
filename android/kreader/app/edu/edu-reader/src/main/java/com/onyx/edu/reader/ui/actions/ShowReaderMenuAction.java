@@ -220,6 +220,10 @@ public class ShowReaderMenuAction extends BaseAction {
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
         }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportSignature()) {
+            disableMenus.add(ReaderMenuAction.SIGNATURE);
+        }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
