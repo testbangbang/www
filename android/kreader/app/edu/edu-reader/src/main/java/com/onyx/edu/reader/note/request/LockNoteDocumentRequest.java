@@ -16,7 +16,7 @@ public class LockNoteDocumentRequest extends ReaderBaseNoteRequest {
     public void execute(NoteManager noteManager) throws Exception {
         super.execute(noteManager);
         noteManager.getNoteDocument().lockNoteDocument();
-        noteManager.getNoteDocument().save(getContext(), ReaderNoteDocument.READER_DOCUMENT_TITLE);
+        noteManager.getNoteDocument().save(getContext());
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
     }
 }

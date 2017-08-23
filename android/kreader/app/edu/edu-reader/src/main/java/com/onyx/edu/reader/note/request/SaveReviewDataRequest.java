@@ -70,7 +70,7 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
         updateDocReviewRevision(noteManager, data);
         ReaderNoteDataProvider.saveFormShapeList(getContext(), newFormShapeModels);
         noteManager.getNoteDocument().addReviewDataPageMap(pageNameMap);
-        noteManager.getNoteDocument().save(getContext(), ReaderNoteDocument.READER_DOCUMENT_TITLE);
+        noteManager.getNoteDocument().save(getContext());
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
     }
 

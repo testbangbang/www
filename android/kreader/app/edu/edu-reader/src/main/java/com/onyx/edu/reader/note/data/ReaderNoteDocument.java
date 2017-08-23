@@ -22,8 +22,6 @@ import java.util.Map;
  */
 public class ReaderNoteDocument {
 
-    public static final String READER_DOCUMENT_TITLE = "title";
-
     private String documentUniqueId;
     private String parentUniqueId;
     private ReaderNotePageNameMap pageIndex = new ReaderNotePageNameMap();
@@ -72,6 +70,14 @@ public class ReaderNoteDocument {
 
     private void markDocumentOpen(boolean open) {
         isOpen = open;
+    }
+
+    public String getReaderDocumentTitle() {
+        return "title";
+    }
+
+    public void save(final Context context) {
+        save(context, getReaderDocumentTitle());
     }
 
     public void save(final Context context, final String title) {

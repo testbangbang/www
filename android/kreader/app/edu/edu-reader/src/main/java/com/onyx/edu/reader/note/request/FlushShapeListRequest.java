@@ -49,7 +49,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
             getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         }
         if (saveDocument) {
-            noteManager.getNoteDocument().save(getContext(), ReaderNoteDocument.READER_DOCUMENT_TITLE);
+            noteManager.getNoteDocument().save(getContext());
         }
     }
 
