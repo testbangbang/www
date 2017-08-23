@@ -42,6 +42,7 @@ public class FormMeetingHandler extends FormBaseHandler {
 
     public FormMeetingHandler(HandlerManager parent) {
         super(parent);
+        setEnableNoteDrawing(true);
     }
 
     @Override
