@@ -2,7 +2,7 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 
 /**
  * Created by solskjaer49 on 2017/8/11 12:08.
@@ -10,20 +10,37 @@ import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 
 public class ChangeSelectedShapePositionRequest extends AsyncBaseNoteRequest {
 
-    public ChangeSelectedShapePositionRequest(float targetDx, float targetDy) {
+    private volatile float targetDx = Float.MIN_VALUE;
+    private volatile float targetDy = Float.MIN_VALUE;
+    private volatile TouchPoint touchPoint = null;
+
+    public ChangeSelectedShapePositionRequest(float targetDx, float targetDy, boolean isAddToHistory) {
         this.targetDx = targetDx;
         this.targetDy = targetDy;
+        this.isAddToHistory = isAddToHistory;
         setPauseInputProcessor(true);
     }
 
-    private volatile float targetDx = 0f;
-    private volatile float targetDy = 0f;
+    public ChangeSelectedShapePositionRequest(TouchPoint touchPoint, boolean isAddToHistory) {
+        this.touchPoint = touchPoint;
+        this.isAddToHistory = isAddToHistory;
+        setPauseInputProcessor(true);
+    }
+
+    private volatile boolean isAddToHistory = false;
 
     @Override
-    public void execute(final NoteManager helper) throws Exception {
+    public void execute(AsyncNoteViewHelper helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
-        helper.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(targetDx, targetDy);
+        helper.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
+        if ((Float.compare(targetDx, Float.MIN_VALUE) == 0 || (Float.compare(targetDy, Float.MIN_VALUE) == 0)) && touchPoint != null) {
+            targetDx = touchPoint.getX() - helper.getNoteDocument().getCurrentPage(
+                    helper.getView().getContext()).getSelectedRect().centerX();
+            targetDy = touchPoint.getY() - helper.getNoteDocument().getCurrentPage(
+                    helper.getView().getContext()).getSelectedRect().centerY();
+        }
+        helper.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(targetDx, targetDy, isAddToHistory);
         renderCurrentPageInBitmap(helper);
         updateShapeDataInfo(helper);
     }

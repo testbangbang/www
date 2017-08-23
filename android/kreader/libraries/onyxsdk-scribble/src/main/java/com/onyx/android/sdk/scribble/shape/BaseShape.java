@@ -226,6 +226,11 @@ public class BaseShape implements Shape {
         updatePoints();
     }
 
+    public void onScale(final float scale) {
+        normalizedPoints.scaleAllPoints(scale);
+        updatePoints();
+    }
+
     @Override
     public void updatePoints() {
         if (normalizedPoints.size() > 0) {

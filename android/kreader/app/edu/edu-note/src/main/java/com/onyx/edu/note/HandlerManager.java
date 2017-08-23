@@ -96,4 +96,8 @@ public class HandlerManager {
         getActiveProvider().saveDocument(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
                 closeAfterSave, callback);
     }
+
+    public void quit(){
+        getActiveProvider().onDeactivate();
+    }
 }

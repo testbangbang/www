@@ -40,7 +40,7 @@
                 android:layout_marginBottom="20dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginTop="39dp"
-                android:text="*以下均为必填项"
+                android:text="@string/fields_following_required"
                 android:textColor="#ed6965"
                 android:textSize="13sp" />
 
@@ -58,50 +58,78 @@
                     android:id="@+id/layout_phone"
                     layout="@layout/layout_user_edit_info" />
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <RelativeLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="12dp"
+                    android:layout_marginBottom="10dp"
                     android:layout_marginLeft="40dp"
-                    android:layout_marginTop="12dp"
-                    android:text="组"
-                    android:textSize="20sp" />
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="40dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:text="@string/group_be_in"
+                        android:textSize="20sp" />
+
+                    <TextView
+                        android:id="@+id/group_add"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:drawableLeft="@drawable/icon_add"
+                        android:drawablePadding="10dp"
+                        android:gravity="center"
+                        android:text="@string/group_add"
+                        android:textSize="20sp" />
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/groups_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
             </LinearLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="35dp"
-                android:padding="20dp">
-
-                <Button
-                    android:id="@+id/btn_unbind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/activity_contact_commit_button_height"
-                    android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
-                    android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
-                    android:background="@drawable/button_background"
-                    android:text="@string/device_unbind"
-                    android:layout_centerVertical="true"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/activity_contact_commit_button_text_size" />
-
-                <Button
-                    android:id="@+id/btn_bind"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/activity_contact_commit_button_height"
-                    android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
-                    android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/button_background"
-                    android:text="@string/device_bind"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/activity_contact_commit_button_text_size" />
-
-            </RelativeLayout>
 
         </LinearLayout>
 
     </ScrollView>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="30dp"
+        android:padding="20dp">
+
+        <Button
+            android:id="@+id/btn_unbind"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/activity_contact_commit_button_height"
+            android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
+            android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
+            android:background="@drawable/button_background"
+            android:text="@string/device_unbind"
+            android:layout_centerVertical="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/activity_contact_commit_button_text_size" />
+
+        <Button
+            android:id="@+id/btn_bind"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/activity_contact_commit_button_height"
+            android:layout_marginLeft="@dimen/activity_contact_commit_button_text_margin_left_right"
+            android:layout_marginRight="@dimen/activity_contact_commit_button_text_margin_left_right"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/button_background"
+            android:text="@string/device_bind"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/activity_contact_commit_button_text_size" />
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -481,7 +481,7 @@ public class RK3026Device extends BaseDevice {
 
     @Override
     public void stopBootAnimation() {
-        this.invokeDeviceControllerMethod(null, sMethodStopBootAnimation, null);
+        this.invokeDeviceControllerMethod(null, sMethodStopBootAnimation, (Object)null);
     }
 
     @Override

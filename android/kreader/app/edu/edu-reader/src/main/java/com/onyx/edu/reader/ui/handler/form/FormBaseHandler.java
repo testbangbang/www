@@ -26,6 +26,7 @@ import com.onyx.android.sdk.scribble.formshape.FormValue;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.RelativeRadioGroup;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.actions.FlushFormShapesAction;

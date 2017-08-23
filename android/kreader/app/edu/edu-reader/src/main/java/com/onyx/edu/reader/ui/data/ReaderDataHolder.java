@@ -92,7 +92,7 @@ public class ReaderDataHolder {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private EventBus eventBus = new EventBus();
     private EventReceiver eventReceiver;
-    private IMAdapter imAdapter = new IMAdapter(this);
+    private IMAdapter imAdapter = null;
     private NeoAccountBase account;
 
     private boolean preRender = true;
@@ -630,11 +630,11 @@ public class ReaderDataHolder {
         clearFormFieldControls();
         resetHandlerManager();
         closeDocument(callback);
-        closeSocketIO(true);
+        closeSocketIO();
     }
 
     public void quit() {
-        closeSocketIO(false);
+        closeSocketIO();
         getEventBus().post(new QuitEvent());
     }
 
@@ -739,6 +739,7 @@ public class ReaderDataHolder {
     }
 
     public void activeIMService() {
+        getImAdapter().registerEventBus();
         AccountLoadFromLocalAction.create().execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -900,6 +901,10 @@ public class ReaderDataHolder {
     }
 
     public IMAdapter getImAdapter() {
+        if (imAdapter == null) {
+            imAdapter = new IMAdapter(this);
+            imAdapter.registerEventBus();
+        }
         return imAdapter;
     }
 
@@ -915,8 +920,8 @@ public class ReaderDataHolder {
         postIMEvent(EmitMessageEvent.create(message));
     }
 
-    public void closeSocketIO(boolean unRegister) {
-        postIMEvent(CloseSocketIOEvent.create(unRegister));
+    public void closeSocketIO() {
+        postIMEvent(new CloseSocketIOEvent());
     }
 
 }

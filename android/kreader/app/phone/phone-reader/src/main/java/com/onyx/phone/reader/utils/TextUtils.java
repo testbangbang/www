@@ -1,5 +1,7 @@
 package com.onyx.phone.reader.utils;
 
+import android.content.Context;
+
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -34,5 +36,19 @@ public class TextUtils {
             FileUtils.closeQuietly(os);
         }
         return result;
+    }
+
+    public static File getTextFile(Context context, String content) {
+        String fileName;
+        if (content.length() < 20) {
+            fileName = content;
+        } else {
+            fileName = content.substring(0, 20);
+        }
+        fileName = FileUtils.fixNotAllowFileName(fileName + ".txt");
+        if (StringUtils.isNullOrEmpty(fileName)) {
+            fileName += ".txt";
+        }
+        return new File(context.getExternalCacheDir(), fileName);
     }
 }

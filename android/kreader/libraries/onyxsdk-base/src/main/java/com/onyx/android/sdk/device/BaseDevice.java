@@ -86,6 +86,12 @@ public class BaseDevice {
         return 0;
     }
 
+    public void mapToView(View view, float[] src, float[] dst) {
+    }
+
+    public void mapToEpd(View view, float[] src, float[] dst) {
+    }
+
     public int getFrontLightBrightnessMinimum(Context context) {
         return 0;
     }
@@ -221,10 +227,19 @@ public class BaseDevice {
     public void moveTo(float x, float y, float width) {
     }
 
+    public void moveTo(View view, float x, float y, float width) {
+    }
+
     public void lineTo(float x, float y, UpdateMode mode) {
     }
 
+    public void lineTo(View view, float x, float y, UpdateMode mode) {
+    }
+
     public void quadTo(float x, float y, UpdateMode mode) {
+    }
+
+    public void quadTo(View view, float x, float y, UpdateMode mode) {
     }
 
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
@@ -249,6 +264,9 @@ public class BaseDevice {
     }
 
     public void setScreenHandWritingPenState(View view, int penState) {
+    }
+
+    public void setScreenHandWritingRegionLimit(View view) {
     }
 
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {

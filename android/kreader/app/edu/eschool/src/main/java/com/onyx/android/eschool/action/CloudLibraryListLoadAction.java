@@ -2,6 +2,7 @@ package com.onyx.android.eschool.action;
 
 import android.content.Context;
 
+import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -38,7 +39,7 @@ public class CloudLibraryListLoadAction extends BaseAction<LibraryDataHolder> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-                    ToastUtils.showToast(dataHolder.getContext(), "获取书库异常");
+                    ToastUtils.showToast(dataHolder.getContext(), R.string.online_library_load_error);
                     return;
                 }
                 libraryList = loadRequest.getLibraryList();

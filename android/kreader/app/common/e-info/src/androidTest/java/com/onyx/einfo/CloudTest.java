@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.test.ApplicationTestCase;
 
-import com.onyx.einfo.manager.LeanCloudManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
@@ -13,6 +12,7 @@ import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
+import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.utils.NetworkUtil;
 
 import java.util.concurrent.CountDownLatch;

@@ -21,16 +21,17 @@ import static com.onyx.android.sdk.data.provider.SystemConfigProvider.KEY_CONTEN
 /**
  * Created by suicheng on 2017/7/6.
  */
-public class AdministratorIndexServiceRequest extends BaseCloudRequest {
+public class GetAdminInfoFromIndexServiceRequest extends BaseCloudRequest {
 
     private volatile String apiBase;
     private IndexService requestService;
     private IndexService resultService;
     private int localRetryCount = 1;
+    private boolean localOnly;
 
     private boolean indexServiceHasChanged = false;
 
-    public AdministratorIndexServiceRequest(final String base, IndexService service) {
+    public GetAdminInfoFromIndexServiceRequest(final String base, IndexService service) {
         requestService = service;
         apiBase = base;
     }
@@ -46,6 +47,9 @@ public class AdministratorIndexServiceRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         resultService = loadContentServiceInfoFromLocal(getContext(), localRetryCount);
+        if (localOnly) {
+            return;
+        }
         IndexService cloudService = loadContentServiceInfoFromCloud(parent);
         if (cloudService != null) {
             if (!cloudService.equals(resultService)) {
@@ -117,5 +121,9 @@ public class AdministratorIndexServiceRequest extends BaseCloudRequest {
             return;
         }
         this.localRetryCount = retryCount;
+    }
+
+    public void setOnlyLoadFromLocal(boolean localOnly) {
+        this.localOnly = localOnly;
     }
 }

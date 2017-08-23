@@ -237,6 +237,13 @@ public class ReaderNotePage {
 
         final List<ReaderFormShapeModel> formShapeModels = ReaderNoteDataProvider.loadFormShapeList(context, getDocumentUniqueId(), getPageUniqueId());
         for(ReaderFormShapeModel model : formShapeModels) {
+            Integer formType = model.getFormType();
+            if (formType == null) {
+                continue;
+            }
+            if (!ReaderShapeFactory.isScribbleFormShape(formType)) {
+                continue;
+            }
             addShapeFromModel(ReaderShapeFactory.shapeFromFormModel(model));
         }
         setLoaded(true);
