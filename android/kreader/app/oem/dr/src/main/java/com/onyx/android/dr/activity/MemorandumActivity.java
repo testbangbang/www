@@ -9,6 +9,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.MemorandumAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.interfaces.MemorandumView;
 import com.onyx.android.dr.presenter.MemorandumPresenter;
@@ -119,7 +120,11 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
                 finish();
                 break;
             case R.id.memorandum_activity_delete:
-                memorandumPresenter.remoteAdapterDatas(listCheck, memorandumAdapter);
+                if (memorandumList.size() > 0) {
+                    memorandumPresenter.remoteAdapterDatas(listCheck, memorandumAdapter);
+                } else {
+                    CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+                }
                 break;
             case R.id.memorandum_activity_new:
                 ActivityManager.startAddMemorandumActivity(this);
