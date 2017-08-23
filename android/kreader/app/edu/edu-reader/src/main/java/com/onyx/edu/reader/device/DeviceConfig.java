@@ -57,6 +57,7 @@ public class DeviceConfig {
     private boolean customFormEnabled = false;
     private boolean enableDictWebSearch = true;
     private boolean showMenuTitle = false;
+    private boolean supportSignature = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -712,6 +713,14 @@ public class DeviceConfig {
 
     public void setSignatureDocumentPath(String signatureDocumentPath) {
         this.signatureDocumentPath = signatureDocumentPath;
+    }
+
+    public boolean isSupportSignature() {
+        return supportSignature;
+    }
+
+    public void setSupportSignature(boolean supportSignature) {
+        this.supportSignature = supportSignature;
     }
 }
 

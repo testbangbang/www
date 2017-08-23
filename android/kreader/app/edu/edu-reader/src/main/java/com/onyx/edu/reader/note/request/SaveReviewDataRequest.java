@@ -5,9 +5,11 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.note.NoteManager;
+import com.onyx.edu.reader.note.data.ReaderNoteDocument;
 import com.onyx.edu.reader.note.data.ReaderNotePageNameMap;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.model.ReaderNoteDataProvider;
+import com.onyx.edu.reader.note.model.ReaderNoteDocumentModel;
 import com.onyx.edu.reader.ui.data.ReviewDocumentData;
 
 import java.util.ArrayList;
@@ -64,9 +66,26 @@ public class SaveReviewDataRequest extends ReaderBaseNoteRequest {
         if (newFormShapeModels.size() == 0) {
             throw ReaderException.noReviewData();
         }
+        noteManager.getNoteDocument().resetNoteDocumentState();
+        updateDocReviewRevision(noteManager, data);
         ReaderNoteDataProvider.saveFormShapeList(getContext(), newFormShapeModels);
         noteManager.getNoteDocument().addReviewDataPageMap(pageNameMap);
-        noteManager.getNoteDocument().save(getContext(), "title");
+        noteManager.getNoteDocument().save(getContext());
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
+    }
+
+    private void updateDocReviewRevision(final NoteManager noteManager, final ReviewDocumentData data) {
+        if (data == null) {
+            return;
+        }
+        List<ReaderNoteDocumentModel> documentModels = data.getReaderNoteDocuments();
+        if (documentModels == null || documentModels.size() == 0) {
+            return;
+        }
+
+        ReaderNoteDocumentModel documentModel = documentModels.get(0);
+        int reviewRevision = documentModel.getReviewRevision();
+        reviewRevision++;
+        noteManager.getNoteDocument().setReviewRevision(reviewRevision);
     }
 }

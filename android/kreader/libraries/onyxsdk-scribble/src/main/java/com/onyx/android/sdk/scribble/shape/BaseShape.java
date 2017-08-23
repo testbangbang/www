@@ -41,6 +41,7 @@ public class BaseShape implements Shape {
     private FormValue formValue;
     private boolean lock;
     private boolean review;
+    private int revision;
 
     private boolean selected = false;
     private float scale = 1.0f;
@@ -467,5 +468,18 @@ public class BaseShape implements Shape {
     @Override
     public boolean inVisibleDrawRectF(RectF rect) {
         return true;
+    }
+
+    public int getRevision() {
+        return revision;
+    }
+
+    public void setRevision(int revision) {
+        this.revision = revision;
+    }
+
+    @Override
+    public boolean canModified(int documentReviewRevision) {
+        return revision >= documentReviewRevision;
     }
 }

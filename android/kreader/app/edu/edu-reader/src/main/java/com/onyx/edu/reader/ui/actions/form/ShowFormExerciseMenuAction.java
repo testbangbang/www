@@ -45,7 +45,6 @@ public class ShowFormExerciseMenuAction extends ShowFormMenuAction {
         if (getReaderMenuViewData().isShowScribbleMenu()) {
             bottomMenuViewHolders.addAll(getScribbleMenuViewHolders(readerDataHolder));
         }
-        bottomMenuViewHolders.add(createImageViewTitleHolder(readerDataHolder.getContext(), R.drawable.ic_timer, TIMER, R.string.timer));
 
         bottomMenuViewHolders.add(ReaderMenuViewHolder.create(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
 

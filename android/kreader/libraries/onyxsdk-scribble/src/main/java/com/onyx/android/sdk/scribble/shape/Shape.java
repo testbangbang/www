@@ -159,4 +159,10 @@ public interface Shape {
     void setSelected(boolean isSelected);
 
     boolean isSelected();
+
+    int getRevision();
+
+    void setRevision(int revision);
+
+    boolean canModified(int documentReviewRevision);
 }
