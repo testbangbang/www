@@ -509,7 +509,7 @@ public class AsyncNoteViewHelper {
     }
 
     private boolean onErasing(final MotionEvent motionEvent) {
-        EventBus.getDefault().post(new ErasingEvent(motionEvent));
+        EventBus.getDefault().post(new ErasingEvent(null,false));
         if (erasePoints != null) {
             int n = motionEvent.getHistorySize();
             for(int i = 0; i < n; ++i) {

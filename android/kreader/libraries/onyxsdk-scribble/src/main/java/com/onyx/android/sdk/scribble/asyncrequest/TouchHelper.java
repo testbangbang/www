@@ -8,7 +8,7 @@ import android.view.View;
  */
 
 public class TouchHelper {
-
+    private static final String TAG = TouchHelper.class.getSimpleName();
     private NoteManager parent;
 
     private TouchReader touchReader;

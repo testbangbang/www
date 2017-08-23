@@ -175,7 +175,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 @Override
                 public void surfaceCreated(SurfaceHolder surfaceHolder) {
                     mNoteManager.clearSurfaceView(mBinding.noteView);
-                    mNoteManager.setView(ScribbleActivity.this, mBinding.noteView);
+                    mNoteManager.setView(mBinding.noteView);
                     handleIntent(getIntent());
                 }
 

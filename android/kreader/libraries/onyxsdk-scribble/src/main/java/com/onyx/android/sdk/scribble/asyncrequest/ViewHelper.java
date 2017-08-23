@@ -2,30 +2,9 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
-
-import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
-
-import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
 
 /**
  * Created by lxm on 2017/8/15.
@@ -99,6 +78,7 @@ public class ViewHelper {
             return;
         }
         hostView.getViewTreeObserver().removeGlobalOnLayoutListener(globalLayoutListener);
+        hostView = null;
         globalLayoutListener = null;
     }
 }
