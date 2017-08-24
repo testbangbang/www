@@ -118,7 +118,6 @@ public class SpanHelper {
         return shape;
     }
 
-
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
         if (shapes == null || shapes.size() == 0) {
             return false;

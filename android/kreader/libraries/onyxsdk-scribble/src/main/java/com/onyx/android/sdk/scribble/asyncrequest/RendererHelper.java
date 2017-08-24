@@ -82,7 +82,7 @@ public class RendererHelper {
             final NotePage notePage = parent.getNoteDocument().getNotePage(parent.getAppContext(), page.getName());
             renderContext.force = notePage.getSelectedRect() != null;
             notePage.render(renderContext, null);
-            //renderSelectedRect(notePage.getSelectedRect(), renderContext);
+            renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
         renderSpanCursorShape(parent, renderContext);
         drawSpanLayoutBackground(parent, renderContext);
@@ -115,14 +115,14 @@ public class RendererHelper {
         canvas.drawRect(rect, paint);
     }
 
-    public void renderShapeMovingRectangle(final NoteManager parent, final TouchPoint start, final TouchPoint end) {
-        Bitmap bitmap = updateRenderBitmap(parent.getViewportSize());
-        Canvas canvas = new Canvas(bitmap);
-        Paint paint = preparePaint(parent);
-        paint.setPathEffect(selectedDashPathEffect);
-        RectF rect = parent.getNoteDocument().getCurrentPage(parent.getAppContext()).getSelectedRect();
-        rect.offset(end.getX() - rect.centerX(), end.getY() - rect.centerY());
-        canvas.drawRect(rect, paint);
+    public void renderSelectedRect(RectF selectedRectF, RenderContext renderContext) {
+        if (selectedRectF.width() < 0 || selectedRectF.height() < 0) {
+            return;
+        }
+        Paint boundingPaint = new Paint(Color.BLACK);
+        boundingPaint.setStyle(Paint.Style.STROKE);
+        boundingPaint.setPathEffect(selectedDashPathEffect);
+        renderContext.canvas.drawRect(selectedRectF, boundingPaint);
     }
 
     private Paint preparePaint(final NoteManager parent) {
