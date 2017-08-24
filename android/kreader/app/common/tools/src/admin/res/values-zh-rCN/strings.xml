@@ -125,6 +125,7 @@
     <string name="db_export_dir">Onyx工厂管理/</string>
     <string name="export_fail">导出失败</string>
     <string name="export_success">导出成功</string>
+    <string name="exporting">导出中&#8230;</string>
 
     <string name="menu_export_db_file">导出db文件</string>
     <string name="menu_clear_db">清空db数据库</string>

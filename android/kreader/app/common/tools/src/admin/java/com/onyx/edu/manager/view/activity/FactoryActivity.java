@@ -444,21 +444,28 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
     }
 
     private void exportDbFileToSdCard(final String exportFilePath) {
+        final MaterialDialog dialog = DialogHolder.showProgressDialog(this, getString(R.string.exporting));
         String currentDBPath = getContentDatabaseFile().getAbsolutePath();
         TransferDBRequest restoreDBRequest = new TransferDBRequest(currentDBPath, exportFilePath, false, false, null, null);
         getDataManager().submit(this, restoreDBRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
+                    dialog.dismiss();
                     ToastUtils.showToast(getApplicationContext(), R.string.export_fail);
                     return;
                 }
-                exportDbFileToCSVFile(exportFilePath);
+                exportDbFileToCSVFile(exportFilePath, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        dialog.dismiss();
+                    }
+                });
             }
         });
     }
 
-    private void exportDbFileToCSVFile(String exportFilePath) {
+    private void exportDbFileToCSVFile(String exportFilePath, final BaseCallback baseCallback) {
         exportFilePath = exportFilePath.replace("db", "csv");
         final DeviceBindExportToCsvRequest exportToCsvRequest = new DeviceBindExportToCsvRequest(exportFilePath);
         getDataManager().submit(getApplicationContext(), exportToCsvRequest, new BaseCallback() {
@@ -467,6 +474,7 @@ public class FactoryActivity extends AppCompatActivity implements EasyPermission
                 boolean result = exportToCsvRequest.isSuccessful();
                 ToastUtils.showToast(request.getContext().getApplicationContext(), result ?
                         R.string.export_success : R.string.export_fail);
+                BaseCallback.invoke(baseCallback, request, e);
             }
         });
     }
