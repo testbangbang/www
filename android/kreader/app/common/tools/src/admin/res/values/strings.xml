@@ -125,6 +125,7 @@
     <string name="db_export_dir">Onyx-export/</string>
     <string name="export_fail">Export failed</string>
     <string name="export_success">Export success</string>
+    <string name="exporting">Exporting&#8230;</string>
 
     <string name="menu_export_db_file">Export database file</string>
     <string name="menu_clear_db">Clear local database</string>
@@ -132,4 +133,5 @@
     <string name="batch_select">Batch Select</string>
     <string name="batch_input_content">Please enter the batch you want to bind now!!</string>
     <string name="batch_input_hint">Such as the specific xx school x grade/class</string>
+
 </resources>

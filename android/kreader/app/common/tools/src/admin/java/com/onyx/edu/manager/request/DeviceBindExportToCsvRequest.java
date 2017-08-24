@@ -8,7 +8,10 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,35 +41,34 @@ public class DeviceBindExportToCsvRequest extends BaseDataRequest {
         if (CollectionUtils.isNullOrEmpty(deviceBindList)) {
             return;
         }
-        StringBuilder sb = new StringBuilder();
-        writeCsv(sb, "model", "mac", "installationId", "tag");
+        FileUtils.ensureFileExists(exportFilePath);
+        File exportFile = new File(exportFilePath);
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(exportFile), "GBK"));
+        writeCsv(writer, "model", "mac", "installationId", "tag");
         Set<String> macSet = new HashSet<>();
         for (DeviceBind deviceBind : deviceBindList) {
             if (macSet.contains(deviceBind.mac)) {
                 continue;
             }
             macSet.add(deviceBind.mac);
-            writeCsv(sb, deviceBind.model, deviceBind.mac, deviceBind.installationId, deviceBind.tag);
+            writeCsv(writer, deviceBind.model, deviceBind.mac, deviceBind.installationId, deviceBind.tag);
         }
-        flushExportResult(sb);
+        writer.flush();
+        FileUtils.closeQuietly(writer);
+        result = true;
     }
 
-    private void writeCsv(StringBuilder sb, String... var) {
+    private void writeCsv(BufferedWriter writer, String... var) throws Exception {
         if (var == null || var.length <= 0) {
             return;
         }
         for (int i = 0; i < var.length; i++) {
-            sb.append(var[i]);
+            writer.write(String.valueOf(var[i]));
             String divider = COMMA;
             if (i == var.length - 1) {
                 divider = "\n";
             }
-            sb.append(divider);
+            writer.write(divider);
         }
-    }
-
-    private void flushExportResult(StringBuilder sb) throws Exception {
-        FileUtils.ensureFileExists(exportFilePath);
-        result = FileUtils.saveContentToFile(sb.toString().getBytes(), new File(exportFilePath));
     }
 }
