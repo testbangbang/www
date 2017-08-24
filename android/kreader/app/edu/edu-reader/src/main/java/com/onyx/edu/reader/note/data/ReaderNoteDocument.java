@@ -175,11 +175,15 @@ public class ReaderNoteDocument {
     }
 
     private void setupReviewStatus(final ReaderNoteDocumentModel noteModel) {
-        reviewStatus = noteModel.getReviewStatus();
+        if (noteModel != null) {
+            reviewStatus = noteModel.getReviewStatus();
+        }
     }
 
     private void setupReviewRevision(final ReaderNoteDocumentModel noteModel) {
-        reviewRevision = noteModel.getReviewRevision();
+        if (noteModel != null) {
+            reviewRevision = noteModel.getReviewRevision();
+        }
     }
 
     public boolean isLock() {
