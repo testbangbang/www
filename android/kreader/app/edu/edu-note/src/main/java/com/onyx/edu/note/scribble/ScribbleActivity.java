@@ -201,6 +201,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (!request.isAbort() && e == null) {
+                            mHandlerManager.quit();
                             ScribbleActivity.super.onBackPressed();
                         }
                     }

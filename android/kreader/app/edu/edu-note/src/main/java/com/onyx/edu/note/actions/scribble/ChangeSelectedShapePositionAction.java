@@ -12,26 +12,29 @@ import com.onyx.edu.note.actions.BaseNoteAction;
 
 public class ChangeSelectedShapePositionAction extends BaseNoteAction {
 
-    public ChangeSelectedShapePositionAction(float dx, float dy) {
-        targetDx = dx;
-        targetDy = dy;
-    }
-
-    public ChangeSelectedShapePositionAction(TouchPoint targetPoint) {
-        touchPoint = targetPoint;
-    }
-
     private float targetDx = Float.MIN_VALUE;
     private float targetDy = Float.MIN_VALUE;
     private TouchPoint touchPoint;
+    private volatile boolean isAddToHistory = false;
+
+    public ChangeSelectedShapePositionAction(float targetDx, float targetDy, boolean isAddToHistory) {
+        this.targetDx = targetDx;
+        this.targetDy = targetDy;
+        this.isAddToHistory = isAddToHistory;
+    }
+
+    public ChangeSelectedShapePositionAction(TouchPoint touchPoint, boolean isAddToHistory) {
+        this.touchPoint = touchPoint;
+        this.isAddToHistory = isAddToHistory;
+    }
 
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         ChangeSelectedShapePositionRequest request;
         if ((Float.compare(targetDx, Float.MIN_VALUE) == 0 || Float.compare(targetDy, Float.MIN_VALUE) == 0) && (touchPoint != null)) {
-            request = new ChangeSelectedShapePositionRequest(touchPoint);
+            request = new ChangeSelectedShapePositionRequest(touchPoint, isAddToHistory);
         } else {
-            request = new ChangeSelectedShapePositionRequest(targetDx, targetDy);
+            request = new ChangeSelectedShapePositionRequest(targetDx, targetDy, isAddToHistory);
         }
         noteManager.submitRequest(request, callback);
     }
