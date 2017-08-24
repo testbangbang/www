@@ -15,6 +15,7 @@
 
     <string name="main_item_func_select">功能选择</string>
     <string name="main_item_scanner">扫一扫</string>
+    <string name="main_item_scanner_batch">批量扫</string>
     <string name="main_item_user_manager">人员管理</string>
     <string name="main_item_account_info">账号信息</string>
 
@@ -102,4 +103,33 @@
     <string name="delete">删除</string>
     <string name="delete_success">删除成功</string>
     <string name="delete_fail">删除失败</string>
+
+    <string name="warning">警告</string>
+    <string name="db_clear_warning">此操作会清除掉数据库里所有的记录，请谨慎操作！！</string>
+    <string name="db_clear_success">已清空数据库！！</string>
+    <string name="db_file_no_exists">数据文件不存在</string>
+    <string name="confirm_clear">确认清空</string>
+    <string name="confirm_clear_tip">请输入\"确认清空\"来防止误操作</string>
+    <string name="confirm_clear_check">输入\"确认清空\"四个字进行校验</string>
+
+    <string name="scan_code_not_match_warning">扫码失败，设备绑定的信息不符合结构！</string>
+    <string name="scan_code_mac_empty_warning">该二维码没有设备的mac地址，建议重新刷机！！</string>
+    <string name="device_info_save_fail">设备信息存储失败</string>
+    <string name="scan_device_binding">扫码绑定</string>
+    <string name="scan_device_success_format">本次扫码成功，已扫了%d台</string>
+    <string name="scan_device_before_format">已扫描过的设备(不含重复)：%d</string>
+
+    <string name="export_db_permission_deny_rationale">db文件导出到sd卡，需要获取读取外部存储卡的权限</string>
+    <string name="export_file_path_do">导出的路径：</string>
+    <string name="storage_has_no_external">没有外部存储</string>
+    <string name="db_export_dir">Onyx工厂管理/</string>
+    <string name="export_fail">导出失败</string>
+    <string name="export_success">导出成功</string>
+
+    <string name="menu_export_db_file">导出db文件</string>
+    <string name="menu_clear_db">清空db数据库</string>
+
+    <string name="batch_select">选择批次</string>
+    <string name="batch_input_content">请输入当前要绑定的批次！！</string>
+    <string name="batch_input_hint">比如具体的xx小学x年级x班</string>
 </resources>

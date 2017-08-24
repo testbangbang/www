@@ -32,6 +32,7 @@ import com.onyx.android.sdk.data.manager.AppUpdateManager.AppUpdateConfig;
 import com.onyx.edu.manager.manager.ContentManager;
 import com.onyx.edu.manager.model.FuncItemEntity;
 import com.onyx.edu.manager.view.activity.AccountInfoActivity;
+import com.onyx.edu.manager.view.activity.FactoryActivity;
 import com.onyx.edu.manager.view.activity.QrScannerActivity;
 import com.onyx.edu.manager.view.activity.UserManagerActivity;
 import com.onyx.edu.manager.view.dialog.DialogHolder;
@@ -120,6 +121,8 @@ public class FuncSelectFragment extends Fragment {
         List<FuncItemEntity> itemEntityList = new ArrayList<>();
         itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_code, getString(R.string.main_item_scanner),
                 new Intent(getContext(), QrScannerActivity.class)));
+        itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_code_more, getString(R.string.main_item_scanner_batch),
+                new Intent(getContext(), FactoryActivity.class)));
         itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_manage, getString(R.string.main_item_user_manager),
                 new Intent(getContext(), UserManagerActivity.class)));
         itemEntityList.add(FuncItemEntity.create(R.mipmap.ic_account, getString(R.string.main_item_account_info),
