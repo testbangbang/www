@@ -19,6 +19,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class RawInputReader {
+    private static final String TAG = RawInputReader.class.getSimpleName();
 
     private RawInputProcessor rawInputProcessor = null;
     private NoteManager noteManager;
@@ -69,7 +70,8 @@ public class RawInputReader {
         if (!useRawInput()) {
             return;
         }
-        Shape shape = createNewShape(noteManager.inSpanScribbleMode(), noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
+        Shape shape = createNewShape(noteManager.inSpanScribbleMode(),
+                noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
         shape.addPoints(pointList);
         noteManager.onNewShape(shape);
         EventBus.getDefault().post(new RawTouchPointListReceivedEvent(shape,pointList));
