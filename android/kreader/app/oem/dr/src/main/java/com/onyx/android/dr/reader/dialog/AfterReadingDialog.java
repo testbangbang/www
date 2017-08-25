@@ -76,13 +76,17 @@ public class AfterReadingDialog extends Dialog implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadingSummaryMenuEvent(ReadingSummaryMenuEvent event) {
         ToastManage.showMessage(getContext(), getContext().getString(R.string.read_summary));
+        String[] strings = new String[2];
+        strings[0] = readerPresenter.getBookInfo().getBookName();
+        strings[1] = String.valueOf(readerPresenter.getPageInformation().getCurrentPage());
+        ActivityManager.startReadSummaryActivity(getContext(), strings);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAfterReadingMenuEvent(AfterReadingMenuEvent event) {
         ToastManage.showMessage(getContext(), getContext().getString(R.string.after_reading));
-        String documentMd5 = readerPresenter.getReader().getDocumentMd5();
-        ActivityManager.startAfterReadingActivity(getContext(), documentMd5);
+        String bookName = readerPresenter.getBookInfo().getBookName();
+        ActivityManager.startAfterReadingActivity(getContext(), bookName);
     }
 
     @Override

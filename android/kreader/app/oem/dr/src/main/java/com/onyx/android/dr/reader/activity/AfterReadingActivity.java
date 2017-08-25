@@ -15,10 +15,13 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.reader.base.AfterReadingView;
 import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.data.AfterReadingEntity;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.presenter.AfterReadingActivityPresenter;
 import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class AfterReadingActivity extends Activity implements AfterReadingView {
 
@@ -29,6 +32,7 @@ public class AfterReadingActivity extends Activity implements AfterReadingView {
     private LinearLayout back;
     private TextView title;
     private TextView modifiedFile;
+    private String bookName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,16 +89,14 @@ public class AfterReadingActivity extends Activity implements AfterReadingView {
         presenter = new AfterReadingActivityPresenter(this);
         Intent intent = getIntent();
         if (intent != null) {
-            String md5 = intent.getStringExtra(ReaderConstants.AFTER_READING_ID);
-            presenter.getAfterReadingEntity(md5);
+            bookName = intent.getStringExtra(ReaderConstants.AFTER_READING_ID);
+            presenter.getAfterReadingEntity(bookName);
         }
     }
 
     @Override
     public void setAfterReading(AfterReadingEntity entity) {
-        if (entity != null) {
-            setNoteDetail(entity);
-        }
+        setNoteDetail(entity);
     }
 
     private void setNoteDetail(AfterReadingEntity entity) {
@@ -151,5 +153,11 @@ public class AfterReadingActivity extends Activity implements AfterReadingView {
         }
         presenter.saveAfterReading(afterReadingEntity);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().post(new RedrawPageEvent());
     }
 }

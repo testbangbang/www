@@ -6,9 +6,9 @@ import android.os.Build;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.devicesetting.data.util.StorageSizeUtil;
 import com.onyx.android.dr.event.DeviceSettingViewBaseEvent;
 import com.onyx.android.dr.util.PowerUtil;
-import com.onyx.android.dr.util.StorageSizeUtil;
 import com.onyx.android.dr.util.SystemLanguage;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.utils.PreferenceManager;

@@ -15,9 +15,12 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.GoodSentenceBean;
+import com.onyx.android.dr.bean.NewWordBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.ReaderMenuBean;
 import com.onyx.android.dr.device.DeviceConfig;
+import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.adapter.ReaderTabMenuAdapter;
 import com.onyx.android.dr.reader.common.ReadSettingTtsConfig;
@@ -40,7 +43,6 @@ import com.onyx.android.dr.reader.event.TtsSpeakingStateEvent;
 import com.onyx.android.dr.reader.event.TtsStopStateEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
-import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -337,7 +339,13 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReaderWordQueryMenuEvent(ReaderWordQueryMenuEvent event) {
-
+        NewWordBean newWordBean = new NewWordBean();
+        newWordBean.setReadingMatter(readerPresenter.getBookInfo().getBookName());
+        newWordBean.setPageNumber(String.valueOf(readerPresenter.getPageInformation().getCurrentPage()));
+        newWordBean.setNewWordType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
+        newWordBean.setTag(true);
+        newWordBean.setNewWord(readerPresenter.getBookOperate().getSelectionText());
+        ActivityManager.startNewWordQueryDialogActivity(getContext(), newWordBean);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -152,4 +152,17 @@
     <dimen name="download_dialog_progress_padding">10dp</dimen>
     <dimen name="download_dialog_progressbar_width">500dp</dimen>
     <dimen name="playqueue_dialog_marginbottom">20dp</dimen>
+    <dimen name="read_summary_layout_margin">5dp</dimen>
+    <dimen name="wifi_dialog_margin_left">10dp</dimen>
+    <dimen name="wifi_dialog_margin_right">10dp</dimen>
+    <dimen name="wifi_dialog_padding">10dp</dimen>
+    <dimen name="wifi_switch_margin_left">10dp</dimen>
+    <dimen name="wifi_recycle_view_margin_top">20dp</dimen>
+    <dimen name="wifi_view_item_padding_top">8dp</dimen>
+    <dimen name="wifi_view_item_margin_left">10dp</dimen>
+    <dimen name="wifi_view_item_margin_top">5dp</dimen>
+    <dimen name="wifi_view_item_margin_right">10dp</dimen>
+    <dimen name="device_setting_title_font_size">20sp</dimen>
+    <dimen name="device_setting_setting_font_size">16sp</dimen>
+    <dimen name="good_sentence_supplements_width">200dp</dimen>
 </resources>

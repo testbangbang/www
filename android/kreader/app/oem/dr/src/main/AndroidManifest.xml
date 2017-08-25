@@ -169,16 +169,39 @@
             android:name=".activity.SettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".activity.SearchBookActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:windowSoftInputMode="stateVisible|adjustPan" />
+
+        <activity android:name=".reader.activity.ReadSummaryActivity" />
+
+        <activity
+            android:name=".activity.WifiActivity"
+            android:theme="@style/WifiDialogStyle"
+            android:exported="true"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustNothing">
+        <intent-filter>
+            <action android:name="android.intent.action.WIFI_ENABLE" />
+            <action android:name="com.android.systemui.CONFIGURE_NEW_WIFI_ACTION" />
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>
+        </activity>
+
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>
                 <action android:name="com.onyx.android.dr.CLEAR_FILE" />
             </intent-filter>
         </receiver>
 
-        <activity
-            android:name=".activity.SearchBookActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="stateVisible|adjustPan" />
+        <receiver android:name=".receiver.NetworkConnectChangedReceiver">
+            <intent-filter>
+                <action android:name="android.net.wifi.STATE_CHANGE" />
+                <action android:name="android.net.wifi.WIFI_STATE_CHANGED" />
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxDataBaseContentProvider_Provider"
