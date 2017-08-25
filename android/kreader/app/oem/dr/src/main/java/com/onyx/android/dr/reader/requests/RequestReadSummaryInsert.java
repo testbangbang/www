@@ -24,6 +24,7 @@ public class RequestReadSummaryInsert extends BaseDataRequest {
             entity.summary = readSummaryEntity.summary;
             entity.newWordList = readSummaryEntity.newWordList;
             entity.goodSentenceList = readSummaryEntity.goodSentenceList;
+            entity.update();
         } else {
             readSummaryEntity.insert();
         }
