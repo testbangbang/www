@@ -118,7 +118,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         this.childIdList = childIdList;
         this.isWorld = isWord;
         this.menuCallback = callback;
-        setCanceledOnTouchOutside(false);
+        setCanceledOnTouchOutside(true);
         if (layoutID != -1) {
             this.layoutID = layoutID;
         }
@@ -341,7 +341,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     public void OnReaderWordQueryMenuEvent(ReaderWordQueryMenuEvent event) {
         NewWordBean newWordBean = new NewWordBean();
         newWordBean.setReadingMatter(readerPresenter.getBookInfo().getBookName());
-        newWordBean.setPageNumber(String.valueOf(readerPresenter.getPageInformation().getCurrentPage()));
+        newWordBean.setPageNumber(String.valueOf(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName()));
         newWordBean.setNewWordType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
         newWordBean.setTag(true);
         newWordBean.setNewWord(readerPresenter.getBookOperate().getSelectionText());
@@ -359,7 +359,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
             GoodSentenceBean bean = new GoodSentenceBean();
             bean.setDetails(selectionText);
             bean.setReadingMatter(readerPresenter.getBookInfo().getBookName());
-            bean.setPageNumber(String.valueOf(readerPresenter.getPageInformation().getCurrentPage()));
+            bean.setPageNumber(String.valueOf(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName()));
             bean.setGoodSentenceType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
             OperatingDataManager.getInstance().insertGoodSentence(bean);
         } else {

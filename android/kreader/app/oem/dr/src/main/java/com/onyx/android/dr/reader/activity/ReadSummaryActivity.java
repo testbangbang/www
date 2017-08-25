@@ -122,6 +122,6 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         String summary = editReadSummary.getText().toString();
         String newWordListJson = newWordsReviewListAdapter.getNewWordListJson();
         String goodSentenceJson = goodSentenceReviewListAdapter.getGoodSentenceJson();
-        readSummaryPresenter.saveReadSummary(summary, newWordListJson, goodSentenceJson);
+        readSummaryPresenter.saveReadSummary(bookName, pageNumber, summary, newWordListJson, goodSentenceJson);
     }
 }
