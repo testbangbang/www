@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -11,7 +12,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.DetectInputDeviceUtil;
-import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.DataInputStream;
@@ -31,21 +32,22 @@ import java.util.concurrent.Executors;
  */
 public class RawInputProcessor {
 
+    static{
+        System.loadLibrary("touch_reader");
+    }
+
     private static final String TAG = RawInputProcessor.class.getSimpleName();
-    private static final int EV_SYN = 0x00;
-    private static final int EV_KEY = 0x01;
-    private static final int EV_ABS = 0x03;
-
-    private static final int ABS_X = 0x00;
-    private static final int ABS_Y = 0x01;
-    private static final int ABS_PRESSURE = 0x18;
-
-    private static final int BTN_TOUCH = 0x14a;
-    private static final int BTN_TOOL_PEN = 0x140;
-    private static final int BTN_TOOL_RUBBER = 0x141;
-    private static final int BTN_TOOL_PENCIL = 0x143;
 
     private static final int PEN_SIZE = 0;
+
+    private static final int ON_PRESS = 0;
+    private static final int ON_MOVE = 1;
+    private static final int ON_RELEASE = 2;
+
+    private native void nativeRawReader();
+    private native void nativeRawClose();
+    private native void nativeSetStrokeWidth(float strokeWidth);
+    private native void nativeSetLimitRegion(float[] limitRegion);
 
     public static abstract class RawInputCallback {
 
@@ -67,23 +69,16 @@ public class RawInputProcessor {
 
     }
 
-    private volatile int px, py, pressure;
     private volatile boolean erasing = false;
-    private volatile boolean lastErasing = false;
-    private volatile boolean pressed = false;
-    private volatile boolean lastPressed = false;
     private volatile boolean stop = false;
     private volatile boolean reportData = false;
     private volatile boolean moveFeedback = false;
-    private String systemPath = "/dev/input/event1";
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[2];
     private volatile TouchPointList touchPointList;
     private RawInputCallback rawInputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
     private ExecutorService singleThreadPool = null;
-    private volatile RectF limitRect = new RectF();
-    private volatile DataInputStream dataInputStream;
     private volatile View hostView;
 
     public void setRawInputCallback(final RawInputCallback callback) {
@@ -95,10 +90,9 @@ public class RawInputProcessor {
     }
 
     public void start() {
-        closeInputDevice();
+        closeRawInput();
         stop = false;
         reportData = false;
-        clearInternalState();
         submitJob();
     }
 
@@ -113,26 +107,37 @@ public class RawInputProcessor {
     public void quit() {
         rawInputCallback = null;
         hostView = null;
-        closeInputDevice();
+        closeRawInput();
         reportData = false;
         stop = true;
-        clearInternalState();
         shutdown();
     }
 
-    private void closeInputDevice() {
-        FileUtils.closeQuietly(dataInputStream);
-        dataInputStream = null;
+    private void closeRawInput() {
+        nativeRawClose();
     }
 
     public void setLimitRect(final Rect rect) {
-        limitRect.set(rect);
+        nativeSetLimitRegion(mapToRawRect(rect));
     }
 
-    private void clearInternalState() {
-        pressed = false;
-        lastErasing = false;
-        lastPressed = false;
+    private float[] mapToRawRect(final Rect rect) {
+        float[] limit = new float[4];
+        float[] leftTop = mapToRawTouchPoint(hostView, rect.left, rect.top);
+        float[] rightBottom = mapToRawTouchPoint(hostView, rect.right, rect.bottom);
+        System.arraycopy(leftTop, 0, limit, 0, leftTop.length);
+        System.arraycopy(rightBottom, 0, limit, leftTop.length, rightBottom.length);
+        return limit;
+    }
+
+    private float[] mapToRawTouchPoint(View view, float x, float y) {
+        float[] src = new float[2];
+        float[] dst = new float[2];
+
+        src[0] = x;
+        src[1] = y;
+        EpdController.mapToRawTouchPoint(view, src, dst);
+        return dst;
     }
 
     private void shutdown() {
@@ -152,68 +157,28 @@ public class RawInputProcessor {
             @Override
             public void run() {
                 try {
-                    detectInputDevicePath();
-                    readLoop();
+                    nativeRawReader();
                 } catch (Exception e) {
                 } finally {
-                    closeInputDevice();
+                    closeRawInput();
                 }
             }
         });
     }
 
-    private void readLoop() throws Exception {
-        dataInputStream = new DataInputStream(new FileInputStream(systemPath));
-        byte[] data = new byte[16];
-        while (!stop) {
-            dataInputStream.readFully(data);
-            ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
-            if (!stop) {
-                processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
-            }
+    @SuppressWarnings("unused")
+    public void onTouchPointReceived(int x, int y, int pressure, boolean erasing, int state, long ts) {
+//        Log.d(TAG, "x:" + x + "y:" + y + "pressure:" +pressure + "ts:" + ts + "erasing:" + erasing + "state:" + state);
+        if (stop) {
+            return;
         }
-    }
-
-    private void detectInputDevicePath() {
-        String index = DetectInputDeviceUtil.detectInputDevicePath();
-        if (StringUtils.isNotBlank(index)) {
-            systemPath = String.format("/dev/input/event%s", index);
-        }
-    }
-
-    private void processInputEvent(long ts, int type, int code, int value) {
-        if (type == EV_ABS) {
-            if (code == ABS_X) {
-                px = value;
-            } else if (code == ABS_Y) {
-                py = value;
-            } else if (code == ABS_PRESSURE) {
-                pressure = value;
-            }
-        } else if (type == EV_SYN) {
-            if (pressed) {
-                if (!lastPressed) {
-                    lastPressed = pressed;
-                    pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
-                } else {
-                    moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
-                }
-            } else {
-                releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
-            }
-        } else if (type == EV_KEY) {
-            if (code ==  BTN_TOUCH)  {
-                erasing = false;
-                lastErasing = false;
-                pressed = value > 0;
-                lastPressed = false;
-            } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
-                erasing = false;
-            } else if (code == BTN_TOOL_RUBBER) {
-                pressed = value > 0;
-                erasing = true;
-                lastErasing = true;
-            }
+        this.erasing = erasing;
+        if (state == ON_PRESS) {
+            pressReceived(x, y, pressure, PEN_SIZE, ts, erasing);
+        }else if (state == ON_MOVE) {
+            moveReceived(x, y, pressure, PEN_SIZE, ts, erasing);
+        }else if (state == ON_RELEASE) {
+            releaseReceived(x, y, pressure, PEN_SIZE, ts, erasing);
         }
     }
 
@@ -234,10 +199,6 @@ public class RawInputProcessor {
                 return false;
             }
             touchPointList = new TouchPointList(600);
-        }
-
-        if (!limitRect.contains(touchPoint.x, touchPoint.y)) {
-            return false;
         }
 
         if (touchPoint != null && touchPointList != null) {

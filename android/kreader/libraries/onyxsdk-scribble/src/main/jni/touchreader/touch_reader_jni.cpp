@@ -7,17 +7,20 @@ static const char * rawTouchClassName = "com/onyx/android/sdk/scribble/touch/Raw
 
 TouchReader touchReader;
 static jobject readerObject;
+static bool debug = false;
 
-static void reportTouchPoint(JNIEnv *env, jobject thiz, int px, int py, int pressure, long ts, bool erasing, int state) {
+static void reportTouchPoint(JNIEnv *env, jobject thiz, int px, int py, int pressure, bool erasing, int state, long ts) {
     JNIUtils utils(env);
-    utils.findMethod(rawTouchClassName, "onTouchPointReceived", "(IIIJZI)V");
-    env->CallVoidMethod(thiz, utils.getMethodId(), px, py, pressure, ts, erasing, state);
+    utils.findMethod(rawTouchClassName, "onTouchPointReceived", "(IIIZIJ)V");
+    env->CallVoidMethod(thiz, utils.getMethodId(), px, py, pressure, erasing, state, ts);
 }
 
 static void onTouchPointReceived(void * userData, int px, int py, int pressure, long ts, bool erasing, int state) {
-    LOGI("onTouchPointReceived x y %d, %d\n", px, py);
+    if(debug) {
+       LOGI("onTouchPointReceived x y pressure ts erasing state %d %d %d %d %d %d \n", px, py, pressure, ts, erasing, state);
+    }
     JNIEnv *readerEnv = (JNIEnv *)userData;
-    reportTouchPoint(readerEnv, readerObject, px, py, pressure, ts, erasing, state);
+    reportTouchPoint(readerEnv, readerObject, px, py, pressure, erasing, state, ts);
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawReader
@@ -41,9 +44,9 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcesso
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetLimitRegion
-  (JNIEnv *env, jobject, jintArray limitRegion) {
+  (JNIEnv *env, jobject, jfloatArray limitRegion) {
     int len = env->GetArrayLength(limitRegion);
     jboolean isCopy = false;
-    jint *array = env->GetIntArrayElements(limitRegion, &isCopy);
+    jfloat *array = env->GetFloatArrayElements(limitRegion, &isCopy);
     touchReader.setLimitRegion(array, len);
 }

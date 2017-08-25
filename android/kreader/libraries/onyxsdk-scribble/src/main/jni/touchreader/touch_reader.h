@@ -20,7 +20,7 @@ public:
     std::string findDevice();
     void closeDevice();
     void setStrokeWidth(float width);
-    void setLimitRegion(int *array, int len);
+    void setLimitRegion(float *array, int len);
     void readTouchEventLoop(void *userData, onTouchPointReceived callback);
 
 private:
@@ -33,12 +33,13 @@ private:
 
     int fd;
     int px, py, pressure;
+    int state, lastState;
     bool volatile running;
     bool volatile drawing;
     bool pressed;
     bool lastPressed;
     bool volatile erasing;
-    int *limitArray;
+    float *limitArray;
     int limitArrayLength;
     float strokeWidth;
 

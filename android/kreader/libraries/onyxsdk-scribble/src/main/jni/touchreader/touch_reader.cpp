@@ -47,10 +47,10 @@ bool TouchReader::inLimitRegion(float x, float y) {
     float detectStorkeWidth = strokeWidth / 2;
 
     for (int i = 0; i < limitArrayLength; i += 4) {
-        int leftLimit = limitArray[i];
-        int topLimit = limitArray[i + 1];
-        int rightLimit = limitArray[i + 2];
-        int bottomLimit = limitArray[i + 3];
+        float leftLimit = limitArray[i];
+        float topLimit = limitArray[i + 1];
+        float rightLimit = limitArray[i + 2];
+        float bottomLimit = limitArray[i + 3];
 
         if (leftLimit <= (x - detectStorkeWidth) &&
             (x + detectStorkeWidth) <= rightLimit &&
@@ -110,22 +110,25 @@ void TouchReader::processEvent(void *userData, onTouchPointReceived callback, in
             pressure = value;
         }
     } else if (type == EV_SYN) {
-        int state;
         if (pressed) {
             if (!lastPressed) {
-                if (inLimitRegion(px, py)) {
-                    lastPressed = true;
-                    state = ON_PRESS;
-                } else {
-                    state = ON_RELEASE;
+                if(!inLimitRegion(px, py)) {
+                    return;
                 }
+                lastPressed = true;
+                state = ON_PRESS;
+                lastState = state;
             } else {
                 state = inLimitRegion(px, py) ? ON_MOVE : ON_RELEASE;
             }
         } else {
             state = ON_RELEASE;
         }
-        callback(userData, px, py, pressure, ts, erasing, state);
+        lastPressed = state != ON_RELEASE;
+        if(lastState != ON_RELEASE) {
+           callback(userData, px, py, pressure, ts, erasing, state);
+        }
+        lastState = state;
     } else if (type == EV_KEY) {
         if (code ==  BTN_TOUCH) {
             erasing = false;
@@ -169,6 +172,7 @@ std::string TouchReader::findDevice() {
 }
 
 void TouchReader::closeDevice(){
+    LOGI("touch reader closeDevice fd %d", fd);
     if (fd > 0) {
         close(fd);
         fd = 0;
@@ -176,21 +180,21 @@ void TouchReader::closeDevice(){
     running = false;
 }
 
-void TouchReader::setLimitRegion(int *array, int len) {
+void TouchReader::setLimitRegion(float *array, int len) {
     clearLimitArray();
     limitArray = array;
     limitArrayLength = len;
 
     for (int i = 0; i < limitArrayLength; i += 4) {
-        int left = limitArray[i];
-        int top = limitArray[i + 1];
-        int right = limitArray[i + 2];
-        int bottom = limitArray[i + 3];
+        float left = limitArray[i];
+        float top = limitArray[i + 1];
+        float right = limitArray[i + 2];
+        float bottom = limitArray[i + 3];
 
-        int leftLimit = left <= right ? left : right;
-        int topLimit = top <= bottom ? top : bottom;
-        int rightLimit = right >= left ? right : left;
-        int bottomLimit = bottom >= top ? bottom : top;
+        float leftLimit = left <= right ? left : right;
+        float topLimit = top <= bottom ? top : bottom;
+        float rightLimit = right >= left ? right : left;
+        float bottomLimit = bottom >= top ? bottom : top;
 
         limitArray[i] = leftLimit;
         limitArray[i + 1] = topLimit;
