@@ -100,15 +100,12 @@ public class BaseDevice {
     public void mapToEpd(View view, float[] src, float[] dst) {
     }
 
-<<<<<<< HEAD
-=======
     public void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
     }
 
     public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
     }
 
->>>>>>> ace2721ab... onyxsdk-base: EpdController.mapToRawTouchPoint()
     public int getFrontLightBrightnessMinimum(Context context) {
         return 0;
     }
