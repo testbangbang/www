@@ -323,7 +323,7 @@
     <string name="record_time_activity_edit_text_hint">时间范围0-15分钟</string>
     <string name="reflection_after_reading">读后反思</string>
     <string name="prompt">提示</string>
-    <string name="is_it_saved">确认删除吗?</string>
+    <string name="is_it_saved">确认保存吗?</string>
     <string name="no_title">无标题</string>
     <string name="Call_the_modified_file">调用批改文件</string>
     <string name="start_lecture">开始演讲</string>
@@ -415,4 +415,12 @@
     <string name="minute">%1$d 分钟</string>
     <string name="never_sleep">永不</string>
     <string name="downloading">下载中...</string>
+    <string name="item_new_word_first_string">.%s词性(</string>
+    <string name="device_setting_wifi_network">WiFi 网络</string>
+    <string name="wifi_band">频率</string>
+    <string name="this_article_or_an_overview_of_this_page">本文或本页概要:</string>
+    <string name="new_words_review">生词复习:</string>
+    <string name="perfect_this_article_or_this_page_good_sentence">完善本文或本页的好句:</string>
+    <string name="wifi_rescan">重新扫描</string>
+    <string name="wifi_connected">连接</string>
 </resources>

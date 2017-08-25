@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/dialog_border"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/wifi_setting_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/wifi_dialog_margin_left"
+        android:layout_marginRight="@dimen/wifi_dialog_margin_right">
+
+        <TextView
+            android:id="@+id/wifi_setting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="@string/device_setting_wifi_network"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/device_setting_title_font_size"
+            android:textStyle="bold" />
+
+        <Switch
+            android:id="@+id/wifi_setting_toggle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/wifi_switch_margin_left"
+            android:layout_toRightOf="@id/wifi_setting_title" />
+
+        <ImageView
+            android:id="@+id/wifi_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/image_button_bg"
+            android:src="@drawable/close" />
+    </RelativeLayout>
+
+    <com.onyx.android.dr.view.PageRecyclerView
+        android:id="@+id/wifi_setting_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/wifi_setting_rescan_top"
+        android:layout_below="@id/wifi_setting_tab"
+        android:layout_marginLeft="@dimen/wifi_dialog_margin_left"
+        android:layout_marginRight="@dimen/wifi_dialog_margin_right"
+        android:layout_marginTop="@dimen/wifi_recycle_view_margin_top" />
+
+    <View
+        android:id="@+id/wifi_setting_rescan_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/wifi_setting_rescan"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/wifi_setting_rescan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:paddingBottom="@dimen/device_setting_padding_top"
+        android:paddingTop="@dimen/device_setting_padding_top"
+        android:text="@string/wifi_rescan"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/device_setting_title_font_size"
+        android:textStyle="bold" />
+
+</RelativeLayout>

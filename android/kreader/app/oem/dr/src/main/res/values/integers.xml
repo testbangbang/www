@@ -64,4 +64,8 @@
     <integer name="search_history_list_row">5</integer>
     <integer name="search_history_list_col">1</integer>
     <integer name="delete_dialog_message_width">500</integer>
+    <integer name="new_word_review_row">5</integer>
+    <integer name="new_word_review_col">1</integer>
+    <integer name="good_sentence_review_row">3</integer>
+    <integer name="good_sentence_review_col">1</integer>
 </resources>
