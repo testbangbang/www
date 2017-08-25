@@ -18,6 +18,5 @@ public class Constant {
     static final public String NON_MANUFACTURE_BASED_CONFIG_NAME = "onyx";
     static final public String IMX6_BASED_CONFIG_NAME = "onyx_imx6";
     static final public String RK3026_BASED_CONFIG_NAME = "onyx_rk3026";
-
 }
 

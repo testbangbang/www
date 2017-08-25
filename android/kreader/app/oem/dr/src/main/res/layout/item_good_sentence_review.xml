@@ -16,7 +16,7 @@
 
     <EditText
         android:id="@+id/good_sentence_supplements"
-        android:layout_width="200dp"
+        android:layout_width="@dimen/good_sentence_supplements_width"
         android:layout_height="wrap_content" />
 
     <TextView

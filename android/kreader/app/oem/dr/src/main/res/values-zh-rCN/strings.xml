@@ -423,4 +423,6 @@
     <string name="perfect_this_article_or_this_page_good_sentence">完善本文或本页的好句:</string>
     <string name="wifi_rescan">重新扫描</string>
     <string name="wifi_connected">连接</string>
+    <string name="word_commonly_used">);常用搭配(</string>
+    <string name="word_interpretation">);本文释义:</string>
 </resources>

@@ -11,8 +11,7 @@
         <TextView
             android:id="@+id/new_word"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1.风雅:词性(" />
+            android:layout_height="wrap_content" />
 
         <EditText
             android:id="@+id/word_property_edit"
@@ -22,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=");常用搭配(" />
+            android:text="@string/word_commonly_used" />
 
         <EditText
             android:id="@+id/word_commonlyUsed_edit"
@@ -32,7 +31,8 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=");本文释义:" />
+            android:text="@string/word_interpretation" />
+
     </LinearLayout>
 
     <EditText

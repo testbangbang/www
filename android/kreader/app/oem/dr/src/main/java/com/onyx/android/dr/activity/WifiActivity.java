@@ -176,7 +176,6 @@ public class WifiActivity extends Activity implements View.OnClickListener {
 
         rescan = (TextView) findViewById(R.id.wifi_setting_rescan);
         rescan.setOnClickListener(this);
-
     }
 
     private void showConnectDialog(final AccessPoint accessPoint) {

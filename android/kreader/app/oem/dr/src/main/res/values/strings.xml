@@ -430,4 +430,6 @@
     <string name="this_article_or_an_overview_of_this_page">This article or an overview of this page:</string>
     <string name="new_words_review">New words review:</string>
     <string name="perfect_this_article_or_this_page_good_sentence">Perfect this article or this page good sentence:</string>
+    <string name="word_commonly_used">);word commonly used(</string>
+    <string name="word_interpretation">);word interpretation:</string>
 </resources>

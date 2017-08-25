@@ -244,4 +244,5 @@
     <dimen name="wifi_view_item_margin_right">10dp</dimen>
     <dimen name="device_setting_title_font_size">20sp</dimen>
     <dimen name="device_setting_setting_font_size">16sp</dimen>
+    <dimen name="good_sentence_supplements_width">200dp</dimen>
 </resources>
