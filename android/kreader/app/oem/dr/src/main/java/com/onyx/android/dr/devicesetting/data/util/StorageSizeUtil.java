@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.onyx.android.dr.util;
+package com.onyx.android.dr.devicesetting.data.util;
 
 import android.os.Build;
 import android.os.Environment;

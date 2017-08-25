@@ -36,6 +36,7 @@ import com.onyx.android.dr.event.RealTimeBooksMenuEvent;
 import com.onyx.android.dr.event.SchoolBasedMaterialsMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
 import com.onyx.android.dr.event.ToBookshelfV2Event;
+import com.onyx.android.dr.event.WifiConnectedEvent;
 import com.onyx.android.dr.fragment.BaseFragment;
 import com.onyx.android.dr.fragment.BookshelfFragment;
 import com.onyx.android.dr.fragment.BookshelfV2Fragment;
@@ -133,6 +134,11 @@ public class MainActivity extends BaseActivity implements MainView {
 
     private String getLibraryParentId() {
         return DRPreferenceManager.loadLibraryParentId(this, null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWifiConnectedEvent(WifiConnectedEvent event) {
+        initData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

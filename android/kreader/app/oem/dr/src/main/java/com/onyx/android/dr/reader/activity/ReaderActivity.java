@@ -50,6 +50,7 @@ import com.onyx.android.dr.reader.event.ReaderMainMenuTopSearchEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopShelfEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopUserEvent;
 import com.onyx.android.dr.reader.event.ReaderMenuMorePressEvent;
+import com.onyx.android.dr.reader.event.GotoPageAndRedrawPageEvent;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.event.ScreenshotsSucceedEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
@@ -367,7 +368,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRedrawPageEvent(RedrawPageEvent event) {
+    public void onGotoPageAndRedrawPageEvent(GotoPageAndRedrawPageEvent event) {
         readerPresenter.getBookOperate().redrawPage();
         readerPresenter.gotoPage(event.getPage());
     }
@@ -497,5 +498,10 @@ public class ReaderActivity extends Activity implements ReaderView {
             }).create();
         }
         dialog.show();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRedrawPageEvent(RedrawPageEvent event){
+        readerPresenter.getBookOperate().redrawPage();
     }
 }

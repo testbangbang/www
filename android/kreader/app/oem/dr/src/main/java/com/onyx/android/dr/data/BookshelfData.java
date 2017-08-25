@@ -1,9 +1,6 @@
 package com.onyx.android.dr.data;
 
-import android.util.Log;
-
 import com.onyx.android.dr.DRApplication;
-import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -16,7 +13,6 @@ import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudChildLibraryListLoadRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

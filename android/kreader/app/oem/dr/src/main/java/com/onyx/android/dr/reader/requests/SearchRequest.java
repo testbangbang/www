@@ -29,7 +29,7 @@ public class SearchRequest extends BaseReaderRequest {
     public void execute(final Reader reader) throws Exception {
         createReaderViewInfo();
         reader.getReaderLayoutManager().getPageManager().collectVisiblePages();
-        reader.getSearchManager().searchInPage(PagePositionUtils.getPageNumber(currentPage),searchOptions,true);
+        reader.getSearchManager().searchInPage(PagePositionUtils.getPageNumber(currentPage), searchOptions, true);
         if (reader.getSearchManager().searchResults().size() > 0) {
             LayoutProviderUtils.updateReaderViewInfo(reader, getReaderViewInfo(), reader.getReaderLayoutManager());
             readerPresenter.getReaderUserDataInfo().saveSearchResults(reader.getSearchManager().searchResults());

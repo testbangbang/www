@@ -18,7 +18,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.reader.data.SingletonSharedPreference;
-import com.onyx.android.dr.reader.event.RedrawPageEvent;
+import com.onyx.android.dr.reader.event.GotoPageAndRedrawPageEvent;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 import com.onyx.android.dr.reader.view.PreviewViewHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -176,7 +176,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
                             DialogQuickPreview.this.dismiss();
-                            RedrawPageEvent event = new RedrawPageEvent(previewViewHolder.getPage(), previewViewHolder.getPagePosition());
+                            GotoPageAndRedrawPageEvent event = new GotoPageAndRedrawPageEvent(previewViewHolder.getPage(), previewViewHolder.getPagePosition());
                             EventBus.getDefault().post(event);
                         }
                     });

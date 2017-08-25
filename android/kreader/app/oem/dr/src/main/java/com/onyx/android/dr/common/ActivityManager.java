@@ -32,9 +32,11 @@ import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
+import com.onyx.android.dr.activity.WifiActivity;
 import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.event.MenuWifiSettingEvent;
 import com.onyx.android.dr.reader.activity.AfterReadingActivity;
+import com.onyx.android.dr.reader.activity.ReadSummaryActivity;
 import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
@@ -46,6 +48,7 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+
 
 
 /**
@@ -268,9 +271,9 @@ public class ActivityManager {
         return false;
     }
 
-    public static void startAfterReadingActivity(Context context, String documentMd5) {
+    public static void startAfterReadingActivity(Context context, String bookName) {
         Intent intent = new Intent(context, AfterReadingActivity.class);
-        intent.putExtra(ReaderConstants.AFTER_READING_ID, documentMd5);
+        intent.putExtra(ReaderConstants.AFTER_READING_ID, bookName);
         context.startActivity(intent);
     }
 
@@ -324,5 +327,18 @@ public class ActivityManager {
                 "application/vnd.android.package-archive");
         context.startActivity(intent);
         android.os.Process.killProcess(android.os.Process.myPid());
+    }
+
+    public static void startReadSummaryActivity(Context context, String[] metadataArray) {
+        Intent intent = new Intent(context, ReadSummaryActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.METADATA_ARRAY, metadataArray);
+        context.startActivity(intent);
+    }
+
+    public static void startWifiActivity(Context context) {
+        Intent intent = new Intent(context, WifiActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
     }
 }

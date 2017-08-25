@@ -35,6 +35,10 @@ public class MainTabMenuConfig {
     private static List<MenuBean> teacherMenuData = new ArrayList<>();
 
     public static void loadMenuInfo(Context context) {
+        highSchoolMenuData.clear();
+        universityMenuData.clear();
+        teacherMenuData.clear();
+
         MenuBean menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_DICT, context.getResources().getString(R.string.menu_dict), R.drawable.ic_dict, new DictMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
