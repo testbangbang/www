@@ -86,13 +86,24 @@ public class BaseDevice {
         return 0;
     }
 
+    public float getEpdWidth() {
+        return 0;
+    }
+
+    public float getEpdHeight() {
+        return 0;
+    }
+
     public void mapToView(View view, float[] src, float[] dst) {
     }
 
     public void mapToEpd(View view, float[] src, float[] dst) {
     }
 
-    public void mapRawTouchPoint(View view, float[] src, float[] dst) {
+    public void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
+    }
+
+    public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
     }
 
     public int getFrontLightBrightnessMinimum(Context context) {
