@@ -29,7 +29,7 @@ public class TouchHelper {
             }
         });
         getRawInputReader().getRawInputProcessor().setHostView(view);
-        setRawInputLimitRect(view);
+        setInputLimitRect(view);
         getRawInputReader().startRawInputProcessor();
     }
 
@@ -64,11 +64,12 @@ public class TouchHelper {
         quitRawDrawing();
     }
 
-    private void setRawInputLimitRect(View view) {
+    private void setInputLimitRect(View view) {
         Rect softwareLimitRect = new Rect();
         //for software render limit rect
         view.getLocalVisibleRect(softwareLimitRect);
         getRawInputReader().getRawInputProcessor().setLimitRect(softwareLimitRect);
+        getTouchReader().setSoftwareLimitRect(softwareLimitRect);
         EpdController.setScreenHandWritingRegionLimit(view,
                 Math.min(softwareLimitRect.left, softwareLimitRect.right),
                 Math.min(softwareLimitRect.top, softwareLimitRect.bottom),

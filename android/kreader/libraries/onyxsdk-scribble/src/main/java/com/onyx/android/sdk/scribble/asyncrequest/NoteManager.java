@@ -229,7 +229,7 @@ public class NoteManager {
     }
 
     public void updateLineLayoutCursor(LinedEditText spanTextView) {
-        getSpanHelper().updateLineLayoutArgs(spanTextView);
+        getSpanHelper().updateLineLayoutCursor(spanTextView);
     }
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {

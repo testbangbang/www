@@ -430,7 +430,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Subscribe
     public void onRawDataReceived(RawDataReceivedEvent event) {
-        new RenderInBackgroundAction().execute(mNoteManager, null);
+        if (!mNoteManager.inSpanScribbleMode()) {
+            new RenderInBackgroundAction().execute(mNoteManager, null);
+        }
     }
 
     @Subscribe

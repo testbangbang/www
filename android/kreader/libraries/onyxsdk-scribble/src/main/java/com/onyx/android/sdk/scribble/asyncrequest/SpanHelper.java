@@ -39,6 +39,7 @@ import java.util.Map;
  */
 
 public class SpanHelper {
+    private static final String TAG = SpanHelper.class.getSimpleName();
 
     // use ascII code to define WHITESPACE.
     private static final String SPACE_TEXT = Character.toString((char) 32);
