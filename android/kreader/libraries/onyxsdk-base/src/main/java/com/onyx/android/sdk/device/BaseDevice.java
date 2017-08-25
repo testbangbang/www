@@ -86,6 +86,14 @@ public class BaseDevice {
         return 0;
     }
 
+    public float getEpdWidth() {
+        return 0;
+    }
+
+    public float getEpdHeight() {
+        return 0;
+    }
+
     public void mapToView(View view, float[] src, float[] dst) {
     }
 

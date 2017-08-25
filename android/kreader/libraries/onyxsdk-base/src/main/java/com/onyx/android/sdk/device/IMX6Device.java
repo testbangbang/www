@@ -79,6 +79,8 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodQuadToView = null;
     private static Method sMethodGetTouchWidth = null;
     private static Method sMethodGetTouchHeight = null;
+    private static Method sMethodGetEpdWidth = null;
+    private static Method sMethodGetEpdHeight = null;
     private static Method sMethodMapToView = null;
     private static Method sMethodMapToEpd = null;
     private static Method sMethodMapFromRawTouchPoint = null;
@@ -473,6 +475,26 @@ public class IMX6Device extends BaseDevice {
         return 0;
     }
 
+    public float getEpdWidth() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetEpdWidth, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public float getEpdHeight() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetEpdHeight, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
     @Override
     public void mapToView(View view, float[] src, float[] dst) {
         try {
@@ -717,6 +739,8 @@ public class IMX6Device extends BaseDevice {
             sMethodQuadToView = ReflectUtil.getMethodSafely(cls, "quadTo", View.class, float.class, float.class, int.class);
             sMethodGetTouchWidth = ReflectUtil.getMethodSafely(cls, "getTouchWidth");
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
+            sMethodGetEpdWidth = ReflectUtil.getMethodSafely(cls, "getEpdWidth");
+            sMethodGetEpdHeight = ReflectUtil.getMethodSafely(cls, "getEpdHeight");
             sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
             sMethodMapToEpd = ReflectUtil.getMethodSafely(cls, "mapToEpd", View.class, float[].class, float[].class);
             sMethodMapFromRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapFromRawTouchPoint", View.class, float[].class, float[].class);

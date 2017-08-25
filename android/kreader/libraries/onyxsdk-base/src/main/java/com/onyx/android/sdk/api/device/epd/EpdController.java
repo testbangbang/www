@@ -246,6 +246,14 @@ public abstract class EpdController
         return Device.currentDevice().getTouchHeight();
     }
 
+    public static float getEpdWidth() {
+        return Device.currentDevice().getEpdWidth();
+    }
+
+    public static float getEpdHeight() {
+        return Device.currentDevice().getEpdHeight();
+    }
+
     public static void enableRegal() {
         Device.currentDevice().enableRegal(true);
     }
