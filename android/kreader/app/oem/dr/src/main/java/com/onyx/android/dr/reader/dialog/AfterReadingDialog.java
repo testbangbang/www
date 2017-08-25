@@ -78,7 +78,7 @@ public class AfterReadingDialog extends Dialog implements View.OnClickListener {
         ToastManage.showMessage(getContext(), getContext().getString(R.string.read_summary));
         String[] strings = new String[2];
         strings[0] = readerPresenter.getBookInfo().getBookName();
-        strings[1] = String.valueOf(readerPresenter.getPageInformation().getCurrentPage());
+        strings[1] = String.valueOf(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName());
         ActivityManager.startReadSummaryActivity(getContext(), strings);
     }
 

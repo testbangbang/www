@@ -58,7 +58,7 @@ public class NewWordsReviewListAdapter extends PageRecyclerView.PageAdapter<NewW
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
         final ReadSummaryNewWordReviewBean entity = list.get(position);
-        holder.newWord.setText(String.format(DRApplication.getInstance().getString(R.string.item_new_word_first_string), entity.word));
+        holder.newWord.setText(position + 1 + String.format(DRApplication.getInstance().getString(R.string.item_new_word_first_string), entity.word));
         holder.wordPropertyEdit.setText(entity.property);
         holder.wordCommonlyUsedEdit.setText(entity.commonlyUsed);
         holder.wordInterpretationEdit.setText(entity.interpretation);

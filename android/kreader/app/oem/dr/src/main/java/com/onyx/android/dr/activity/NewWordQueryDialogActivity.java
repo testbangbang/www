@@ -220,8 +220,8 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
             public void onClick(View view) {
                 NewWordBean bean = new NewWordBean();
                 bean.setNewWord(editQuery);
-                bean.setDictionaryLookup(dictionaryLookup);
-                bean.setReadingMatter(readingMatter);
+                bean.setDictionaryLookup(intentBean.getDictionaryLookup());
+                bean.setReadingMatter(intentBean.getReadingMatter());
                 bean.setPageNumber(intentBean.getPageNumber());
                 bean.setNewWordType(intentBean.getNewWordType());
                 OperatingDataManager.getInstance().insertNewWord(bean);
