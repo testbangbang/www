@@ -36,9 +36,11 @@ public class RequestReadSummaryQuery extends BaseDataRequest {
     }
 
     private void queryReadSummary() {
-        readSummaryEntity = new Select().from(ReadSummaryEntity.class).where(ReadSummaryEntity_Table.bookName.eq(readingMatter)).querySingle();
+        readSummaryEntity = new Select().from(ReadSummaryEntity.class).where(ReadSummaryEntity_Table.bookName.eq(readingMatter)).and(ReadSummaryEntity_Table.pageNumber.eq(pageNumber)).querySingle();
         if (readSummaryEntity == null) {
             readSummaryEntity = new ReadSummaryEntity();
+            readSummaryEntity.bookName = readingMatter;
+            readSummaryEntity.pageNumber = pageNumber;
         }
         if (readSummaryEntity.newWordList == null) {
             readSummaryEntity.newWordList = queryNewWordList();

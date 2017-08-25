@@ -45,4 +45,8 @@ public class ReadSummaryData {
     public void saveReadSummary(RequestReadSummaryInsert req, BaseCallback baseCallback) {
         DRApplication.getDataManager().submit(DRApplication.getInstance(), req, baseCallback);
     }
+
+    public ReadSummaryEntity getReadSummaryEntity() {
+        return readSummaryEntity == null ? new ReadSummaryEntity() : readSummaryEntity;
+    }
 }

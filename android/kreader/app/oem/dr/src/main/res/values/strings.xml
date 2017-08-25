@@ -424,7 +424,7 @@
     <string name="never_sleep">Never</string>
     <string name="device_setting_lock_screen_time_title">Lock screen time</string>
     <string name="downloading">downloading</string>
-    <string name="item_new_word_first_string">.%s property(</string>
+    <string name="item_new_word_first_string">.%s: property(</string>
     <string name="device_setting_wifi_network">WiFi</string>
     <string name="wifi_band">Frequency</string>
     <string name="this_article_or_an_overview_of_this_page">This article or an overview of this page:</string>

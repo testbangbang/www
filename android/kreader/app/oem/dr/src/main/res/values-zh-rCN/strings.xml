@@ -415,7 +415,7 @@
     <string name="minute">%1$d 分钟</string>
     <string name="never_sleep">永不</string>
     <string name="downloading">下载中...</string>
-    <string name="item_new_word_first_string">.%s词性(</string>
+    <string name="item_new_word_first_string">. %s: 词性(</string>
     <string name="device_setting_wifi_network">WiFi 网络</string>
     <string name="wifi_band">频率</string>
     <string name="this_article_or_an_overview_of_this_page">本文或本页概要:</string>
