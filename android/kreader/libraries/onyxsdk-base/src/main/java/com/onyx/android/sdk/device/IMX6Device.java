@@ -81,6 +81,11 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodGetTouchHeight = null;
     private static Method sMethodMapToView = null;
     private static Method sMethodMapToEpd = null;
+<<<<<<< HEAD
+=======
+    private static Method sMethodMapFromRawTouchPoint = null;
+    private static Method sMethodMapToRawTouchPoint = null;
+>>>>>>> ace2721ab... onyxsdk-base: EpdController.mapToRawTouchPoint()
     private static Method sMethodEnablePost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
@@ -488,6 +493,26 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+<<<<<<< HEAD
+=======
+    @Override
+    public void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapFromRawTouchPoint, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapToRawTouchPoint, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+>>>>>>> ace2721ab... onyxsdk-base: EpdController.mapToRawTouchPoint()
 
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
         try {
@@ -700,6 +725,11 @@ public class IMX6Device extends BaseDevice {
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
             sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
             sMethodMapToEpd = ReflectUtil.getMethodSafely(cls, "mapToEpd", View.class, float[].class, float[].class);
+<<<<<<< HEAD
+=======
+            sMethodMapFromRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapFromRawTouchPoint", View.class, float[].class, float[].class);
+            sMethodMapToRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapToRawTouchPoint", View.class, float[].class, float[].class);
+>>>>>>> ace2721ab... onyxsdk-base: EpdController.mapToRawTouchPoint()
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
