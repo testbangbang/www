@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
@@ -50,6 +51,13 @@ public class NoteApplication extends Application {
         installExceptionHandler();
         initCompatColorImageConfig();
         initEventBusIndex();
+        resetEpd();
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        resetEpd();
     }
 
     public static NoteApplication getInstance() {
@@ -69,7 +77,7 @@ public class NoteApplication extends Application {
             @Override
             public void uncaughtException(Thread thread, Throwable e) {
                 e.printStackTrace();
-                getNoteManager().reset();
+                resetEpd();
             }
         });
     }
@@ -80,5 +88,9 @@ public class NoteApplication extends Application {
 
     private void initEventBusIndex(){
         EventBus.builder().addIndex(new OnyxEventBusIndex()).installDefaultEventBus();
+    }
+
+    private void resetEpd() {
+        EpdController.resetEpdPost();
     }
 }
