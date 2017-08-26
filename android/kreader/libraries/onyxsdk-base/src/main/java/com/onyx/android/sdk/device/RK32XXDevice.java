@@ -85,6 +85,7 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodMapFromRawTouchPoint = null;
     private static Method sMethodMapToRawTouchPoint = null;
     private static Method sMethodEnablePost = null;
+    private static Method sMethodResetEpdPost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
     private static Method sMethodApplyGammaCorrection = null;
@@ -552,6 +553,15 @@ public class RK32XXDevice extends BaseDevice {
         }
     }
 
+    @Override
+    public void resetEpdPost() {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodResetEpdPost, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean supportScreenHandWriting() {
         return (sMethodSetScreenHandWritingPenState != null);
     }
@@ -690,6 +700,7 @@ public class RK32XXDevice extends BaseDevice {
             sMethodMapFromRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapFromRawTouchPoint", View.class, float[].class, float[].class);
             sMethodMapToRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapToRawTouchPoint", View.class, float[].class, float[].class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
+            sMethodResetEpdPost = ReflectUtil.getMethodSafely(cls, "resetEpdPost");
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
