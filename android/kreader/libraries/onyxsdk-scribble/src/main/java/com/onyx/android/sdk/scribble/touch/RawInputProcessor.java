@@ -131,13 +131,10 @@ public class RawInputProcessor {
     }
 
     private float[] mapToRawTouchPoint(View view, float x, float y) {
-        float[] src = new float[2];
-        float[] dst = new float[2];
-
-        src[0] = x;
-        src[1] = y;
-        EpdController.mapToRawTouchPoint(view, src, dst);
-        return dst;
+        srcPoint[0] = x;
+        srcPoint[1] = y;
+        EpdController.mapToRawTouchPoint(view, srcPoint, dstPoint);
+        return dstPoint;
     }
 
     private void shutdown() {
