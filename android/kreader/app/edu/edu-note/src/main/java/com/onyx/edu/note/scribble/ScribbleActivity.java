@@ -430,7 +430,9 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Subscribe
     public void onRawDataReceived(RawDataReceivedEvent event) {
-        new RenderInBackgroundAction().execute(mNoteManager, null);
+        if (!mNoteManager.inSpanScribbleMode()) {
+            new RenderInBackgroundAction().execute(mNoteManager, null);
+        }
     }
 
     @Subscribe
@@ -505,8 +507,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 ScribbleMode.MODE_SPAN_SCRIBBLE ? View.VISIBLE : View.GONE);
         mNoteManager.setCurrentScribbleMode(event.getTargetScribbleMode());
         mNoteManager.clearPageUndoRedo(ScribbleActivity.this);
-        if (mNoteManager.inSpanScribbleMode()) {
         mNoteManager.clearShapeSelectRecord();
+        if (mNoteManager.inSpanScribbleMode()) {
             mBinding.spanTextView.post(new Runnable() {
                 @Override
                 public void run() {

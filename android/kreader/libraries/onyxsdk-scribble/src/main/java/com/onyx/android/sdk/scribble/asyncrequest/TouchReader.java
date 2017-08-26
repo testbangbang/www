@@ -32,6 +32,11 @@ public class TouchReader {
     private Shape currentShape = null;
     private TouchPointList shapeSelectPoints;
     private TouchPointList erasePoints;
+
+    public void setSoftwareLimitRect(Rect softwareLimitRect) {
+        this.softwareLimitRect = softwareLimitRect;
+    }
+
     private Rect softwareLimitRect = new Rect();
 
     public TouchReader(NoteManager noteManager) {
