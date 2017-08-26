@@ -3,6 +3,7 @@
 #include "JNIUtils.h"
 #include "touch_reader.h"
 
+#include <cstdlib>
 #include <jni.h>
 #include <iostream>
 #include <fstream>
@@ -44,7 +45,7 @@ bool TouchReader::inLimitRegion(float x, float y) {
         return true;
     }
 
-    float detectStorkeWidth = strokeWidth / 2;
+    float detectStrokeWidth = strokeWidth / 2;
 
     for (int i = 0; i < limitArrayLength; i += 4) {
         float leftLimit = limitArray[i];
@@ -52,10 +53,10 @@ bool TouchReader::inLimitRegion(float x, float y) {
         float rightLimit = limitArray[i + 2];
         float bottomLimit = limitArray[i + 3];
 
-        if (leftLimit <= (x - detectStorkeWidth) &&
-            (x + detectStorkeWidth) <= rightLimit &&
-            topLimit <= (y - detectStorkeWidth) &&
-            (y + detectStorkeWidth) <= bottomLimit) {
+        if (leftLimit <= (x - detectStrokeWidth) &&
+            (x + detectStrokeWidth) <= rightLimit &&
+            topLimit <= (y - detectStrokeWidth) &&
+            (y + detectStrokeWidth) <= bottomLimit) {
             return true;
         }
     }
@@ -156,15 +157,19 @@ void TouchReader::readTouchEventLoop(void *userData, onTouchPointReceived callba
 }
 
 std::string TouchReader::findDevice() {
+    using namespace std;
     for(int i = 0; i < 3; ++i) {
-        std::string path = "/dev/input/event" + i;
-        std::string deviceName;
+        char temp[80] = {0};
+        sprintf(temp, "/dev/input/event%d", i);
+        string path = temp;
+        string deviceName;
         int fd = openDevice(path, deviceName);
         close(fd);
         if (debug) {
             LOGI("try path %s result name %s", path.c_str(), deviceName.c_str());
         }
-        if (deviceName == "hanvon_tp") {
+        if (deviceName.find("hanvon") != string::npos ||
+            deviceName.find("Wacom") != string::npos) {
             return path;
         }
     }
