@@ -168,7 +168,7 @@ public class ShapeTransformHandler extends BaseHandler {
         EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
     }
 
-    private void reDo() {
+    private void redo() {
         mNoteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -178,7 +178,7 @@ public class ShapeTransformHandler extends BaseHandler {
         });
     }
 
-    private void unDo() {
+    private void undo() {
         mNoteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -198,10 +198,10 @@ public class ShapeTransformHandler extends BaseHandler {
         Log.e(TAG, "handleToolBarMenuFunction: ");
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.UNDO:
-                unDo();
+                undo();
                 break;
             case ScribbleToolBarMenuID.REDO:
-                reDo();
+                redo();
                 break;
         }
     }
