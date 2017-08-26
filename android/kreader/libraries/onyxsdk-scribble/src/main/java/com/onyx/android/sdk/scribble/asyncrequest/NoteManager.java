@@ -58,7 +58,6 @@ public class NoteManager {
     private TouchHelper touchHelper;
     private PenManager penManager;
 
-    private static NoteManager instance;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
     private RequestManager requestManager = new RequestManager();
@@ -81,16 +80,9 @@ public class NoteManager {
         setCurrentScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
     }
 
-    private NoteManager(Context context) {
+    public NoteManager(Context context) {
         appContext = context.getApplicationContext();
         initRawResource(appContext);
-    }
-
-    static public NoteManager sharedInstance(Context context) {
-        if (instance == null) {
-            instance = new NoteManager(context);
-        }
-        return instance;
     }
 
     private void initRawResource(final Context context) {

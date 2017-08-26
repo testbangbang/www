@@ -78,7 +78,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         super.onCreate(savedInstanceState);
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
-        mNoteManager = NoteManager.sharedInstance(this);
+        mNoteManager = NoteApplication.getInstance().getNoteManager();
         mViewModel = new ScribbleViewModel(this);
         mViewModel.setNavigator(this);
         // Link View and ViewModel

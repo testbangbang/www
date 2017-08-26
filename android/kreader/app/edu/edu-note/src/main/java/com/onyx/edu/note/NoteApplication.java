@@ -21,14 +21,14 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class NoteApplication extends Application {
-    private static NoteManager sNoteManager;
+    private NoteManager noteManager;
     private static NoteApplication sInstance;
 
-    public static NoteManager getNoteManager() {
-        if (sNoteManager == null) {
-            sNoteManager = NoteManager.sharedInstance(sInstance);
+    public NoteManager getNoteManager() {
+        if (noteManager == null) {
+            noteManager = new NoteManager(sInstance);
         }
-        return sNoteManager;
+        return noteManager;
     }
 
     public static void initWithAppConfig(final Activity activity) {

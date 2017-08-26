@@ -16,6 +16,7 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
 import com.onyx.edu.note.actions.scribble.DocumentEditAction;
 import com.onyx.edu.note.data.ScribbleAction;
@@ -68,7 +69,7 @@ public class ScribbleViewModel extends BaseObservable {
 
     ScribbleViewModel(Context context) {
         // Force use of Application Context.
-        mNoteManager = NoteManager.sharedInstance(context.getApplicationContext());
+        mNoteManager = NoteApplication.getInstance().getNoteManager();
         EventBus.getDefault().register(this);
     }
 
