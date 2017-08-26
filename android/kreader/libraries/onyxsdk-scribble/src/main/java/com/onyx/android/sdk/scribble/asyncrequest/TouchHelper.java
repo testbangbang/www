@@ -16,6 +16,7 @@ public class TouchHelper {
     private static final String TAG = TouchHelper.class.getSimpleName();
     private NoteManager noteManager;
 
+    private EpdPenManager epdPenManager;
     private TouchReader touchReader;
     private RawInputManager rawInputManager;
 
@@ -23,9 +24,22 @@ public class TouchHelper {
         this.noteManager = parent;
     }
 
+    public EpdPenManager getEpdPenManager() {
+        if (epdPenManager == null) {
+            epdPenManager = new EpdPenManager();
+        }
+        return epdPenManager;
+    }
+
     public void setup(View view) {
         setupTouchReader(view);
         setupRawInputManager(view);
+        setupEpdPenManager(view);
+    }
+
+    private void setupEpdPenManager(final View view) {
+        getEpdPenManager().setHostView(view);
+        getEpdPenManager().startDrawing();
     }
 
     private void setupTouchReader(final View view) {
@@ -65,14 +79,17 @@ public class TouchHelper {
 
     public void pauseRawDrawing() {
         getRawInputManager().pauseRawDrawing();
+        getEpdPenManager().pauseDrawing();
     }
 
     public void resumeRawDrawing() {
         getRawInputManager().resumeRawDrawing();
+        getEpdPenManager().resumeDrawing();
     }
 
     public void quitRawDrawing() {
         getRawInputManager().quitRawDrawing();
+        getEpdPenManager().quitDrawing();
     }
 
     public void quit() {

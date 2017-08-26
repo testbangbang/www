@@ -94,7 +94,6 @@ public class RawInputManager {
             return;
         }
         getRawInputProcessor().start();
-        noteManager.getEpdPenManager().startDrawing();
     }
 
     public void resumeRawDrawing() {
@@ -103,7 +102,6 @@ public class RawInputManager {
         }
 
         getRawInputProcessor().resume();
-        noteManager.getEpdPenManager().resumeDrawing();
     }
 
     public void pauseRawDrawing() {
@@ -112,7 +110,6 @@ public class RawInputManager {
         }
 
         getRawInputProcessor().pause();
-        noteManager.getEpdPenManager().pauseDrawing();
     }
 
     public void quitRawDrawing() {
@@ -120,7 +117,6 @@ public class RawInputManager {
             return;
         }
         getRawInputProcessor().quit();
-        noteManager.getEpdPenManager().quitDrawing();
     }
 
     public boolean isUseRawInput() {

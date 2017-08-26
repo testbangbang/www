@@ -8,6 +8,7 @@ import android.graphics.RectF;
 import android.util.Log;
 import android.view.SurfaceView;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
@@ -56,7 +57,6 @@ public class NoteManager {
     private SpanHelper spanHelper;
     private ViewHelper viewHelper;
     private TouchHelper touchHelper;
-    private EpdPenManager epdPenManager;
 
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
@@ -135,13 +135,6 @@ public class NoteManager {
             touchHelper = new TouchHelper(this);
         }
         return touchHelper;
-    }
-
-    public EpdPenManager getEpdPenManager() {
-        if (epdPenManager == null) {
-            epdPenManager = new EpdPenManager();
-        }
-        return epdPenManager;
     }
 
     private Runnable generateRunnable(final AsyncBaseNoteRequest request) {
@@ -329,7 +322,6 @@ public class NoteManager {
     }
 
     public void setView(SurfaceView surfaceView) {
-        getEpdPenManager().setHostView(surfaceView);
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().setup(surfaceView);
         EventBus.getDefault().register(this);
@@ -443,7 +435,9 @@ public class NoteManager {
     }
 
     public void enableScreenPost(boolean enable) {
-        getEpdPenManager().enableScreenPost(enable);
+        if (getHostView() != null) {
+            EpdController.enablePost(getHostView(), enable ? 1 : 0);
+        }
     }
 
     public void renderToSurfaceView() {

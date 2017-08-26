@@ -33,30 +33,15 @@ public class ViewHelper {
         view.getViewTreeObserver().addOnGlobalLayoutListener(getGlobalLayoutListener());
     }
 
-    public void resetView() {
-        parent.getEpdPenManager().pauseDrawing();
-        parent.getEpdPenManager().enableScreenPost(true);
-    }
-
     private ViewTreeObserver.OnGlobalLayoutListener getGlobalLayoutListener() {
         if (globalLayoutListener == null) {
             globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
-                    updateViewMatrix();
-                    updateLimitRect();
                 }
             };
         }
         return globalLayoutListener;
-    }
-
-    private void updateViewMatrix() {
-
-    }
-
-    private void updateLimitRect() {
-
     }
 
     public Rect getViewportSize() {
