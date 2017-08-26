@@ -56,7 +56,7 @@ public class NoteManager {
     private SpanHelper spanHelper;
     private ViewHelper viewHelper;
     private TouchHelper touchHelper;
-    private PenManager penManager;
+    private EpdPenManager epdPenManager;
 
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
@@ -137,11 +137,11 @@ public class NoteManager {
         return touchHelper;
     }
 
-    public PenManager getPenManager() {
-        if (penManager == null) {
-            penManager = new PenManager();
+    public EpdPenManager getEpdPenManager() {
+        if (epdPenManager == null) {
+            epdPenManager = new EpdPenManager();
         }
-        return penManager;
+        return epdPenManager;
     }
 
     private Runnable generateRunnable(final AsyncBaseNoteRequest request) {
@@ -324,16 +324,12 @@ public class NoteManager {
         }
     }
 
-    public void reset() {
-        getViewHelper().resetView();
-    }
-
     public SurfaceView getHostView() {
         return getViewHelper().getHostView();
     }
 
     public void setView(SurfaceView surfaceView) {
-        getPenManager().setHostView(surfaceView);
+        getEpdPenManager().setHostView(surfaceView);
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().setup(surfaceView);
         EventBus.getDefault().register(this);
@@ -447,7 +443,7 @@ public class NoteManager {
     }
 
     public void enableScreenPost(boolean enable) {
-        getPenManager().enableScreenPost(enable);
+        getEpdPenManager().enableScreenPost(enable);
     }
 
     public void renderToSurfaceView() {

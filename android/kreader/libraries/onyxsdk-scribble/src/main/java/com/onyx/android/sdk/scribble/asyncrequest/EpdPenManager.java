@@ -8,8 +8,8 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
  * Created by john on 12/8/2017.
  */
 
-public class PenManager {
-    private static final String TAG = PenManager.class.getSimpleName();
+public class EpdPenManager {
+    private static final String TAG = EpdPenManager.class.getSimpleName();
 
     private SurfaceView hostView = null;
 
@@ -19,7 +19,7 @@ public class PenManager {
     public static final int PEN_PAUSE = 3;
     public static final int PEN_ERASING = 4;
 
-    public PenManager setHostView(final SurfaceView view) {
+    public EpdPenManager setHostView(final SurfaceView view) {
         hostView = view;
         return this;
     }

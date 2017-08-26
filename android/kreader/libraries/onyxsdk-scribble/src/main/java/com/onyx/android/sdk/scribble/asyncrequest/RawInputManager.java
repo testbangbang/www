@@ -14,7 +14,6 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -95,7 +94,7 @@ public class RawInputManager {
             return;
         }
         getRawInputProcessor().start();
-        noteManager.getPenManager().startDrawing();
+        noteManager.getEpdPenManager().startDrawing();
     }
 
     public void resumeRawDrawing() {
@@ -104,7 +103,7 @@ public class RawInputManager {
         }
 
         getRawInputProcessor().resume();
-        noteManager.getPenManager().resumeDrawing();
+        noteManager.getEpdPenManager().resumeDrawing();
     }
 
     public void pauseRawDrawing() {
@@ -113,7 +112,7 @@ public class RawInputManager {
         }
 
         getRawInputProcessor().pause();
-        noteManager.getPenManager().pauseDrawing();
+        noteManager.getEpdPenManager().pauseDrawing();
     }
 
     public void quitRawDrawing() {
@@ -121,7 +120,7 @@ public class RawInputManager {
             return;
         }
         getRawInputProcessor().quit();
-        noteManager.getPenManager().quitDrawing();
+        noteManager.getEpdPenManager().quitDrawing();
     }
 
     public boolean isUseRawInput() {

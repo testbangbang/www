@@ -147,7 +147,7 @@ public class RawInputProcessor {
     @SuppressWarnings("unused")
     public void onTouchPointReceived(int x, int y, int pressure, boolean erasing, int state, long ts) {
 //        Log.d(TAG, "x:" + x + "y:" + y + "pressure:" +pressure + "ts:" + ts + "erasing:" + erasing + "state:" + state);
-        if (stop) {
+        if (!isReportData()) {
             return;
         }
         this.erasing = erasing;

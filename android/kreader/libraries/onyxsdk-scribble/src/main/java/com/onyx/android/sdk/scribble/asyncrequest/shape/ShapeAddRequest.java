@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ShapeManagerOptions;
 

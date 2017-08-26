@@ -34,8 +34,8 @@ public class ViewHelper {
     }
 
     public void resetView() {
-        parent.getPenManager().pauseDrawing();
-        parent.getPenManager().enableScreenPost(true);
+        parent.getEpdPenManager().pauseDrawing();
+        parent.getEpdPenManager().enableScreenPost(true);
     }
 
     private ViewTreeObserver.OnGlobalLayoutListener getGlobalLayoutListener() {

@@ -132,9 +132,9 @@ public class TouchReader {
 
     private void beforeDownMessage(final Shape currentShape) {
         if (ShapeFactory.isDFBShape(currentShape.getType())) {
-            noteManager.getPenManager().enableScreenPost(false);
+            noteManager.enableScreenPost(false);
         } else {
-            noteManager.getPenManager().enableScreenPost(true);
+            noteManager.enableScreenPost(true);
         }
     }
 

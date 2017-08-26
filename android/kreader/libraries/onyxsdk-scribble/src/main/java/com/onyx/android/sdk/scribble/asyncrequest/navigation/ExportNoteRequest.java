@@ -3,7 +3,6 @@ package com.onyx.android.sdk.scribble.asyncrequest.navigation;
 import android.graphics.Bitmap;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.utils.ExportUtils;
 import com.onyx.android.sdk.utils.FileUtils;

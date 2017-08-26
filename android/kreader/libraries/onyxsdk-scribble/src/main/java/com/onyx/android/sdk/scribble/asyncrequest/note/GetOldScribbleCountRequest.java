@@ -6,7 +6,6 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 
 /**
