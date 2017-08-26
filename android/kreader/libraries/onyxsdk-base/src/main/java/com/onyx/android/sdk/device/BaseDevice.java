@@ -277,6 +277,9 @@ public class BaseDevice {
     public void enablePost(View view, int enable) {
     }
 
+    public void resetEpdPost() {
+    }
+
     public void setScreenHandWritingPenState(View view, int penState) {
     }
 
