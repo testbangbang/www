@@ -50,9 +50,16 @@ public class TouchHelper {
             }
         });
 
-        Rect softwareLimitRect = new Rect();
-        view.getLocalVisibleRect(softwareLimitRect);
-        getTouchReader().setLimitRect(softwareLimitRect);
+        Rect limitRect = new Rect();
+        view.getLocalVisibleRect(limitRect);
+
+        final DeviceConfig deviceConfig = getDeviceConfig();
+        getTouchReader()
+                .setLimitRect(limitRect)
+                .useBigPen(deviceConfig.supportBigPen())
+                .useRawInput(deviceConfig.useRawInput())
+                .setSingleTouch(deviceConfig.isSingleTouch())
+                .enableFingerErasing(deviceConfig.isEnableFingerErasing());
     }
 
     private void setupRawInputManager(final View view) {

@@ -16,7 +16,6 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -33,37 +32,58 @@ public class TouchReader {
     private TouchPointList shapeSelectPoints;
     private TouchPointList erasePoints;
     private Rect limitRect = new Rect();
-
-    public void setLimitRect(Rect softwareLimitRect) {
-        this.limitRect = softwareLimitRect;
-    }
+    private boolean singleTouch = false;
+    private boolean bigPen = false;
+    private boolean fingerErasing = false;
+    private boolean rawInput = false;
 
     public TouchReader(NoteManager noteManager) {
         this.noteManager = noteManager;
+    }
+
+    public TouchReader setLimitRect(Rect softwareLimitRect) {
+        this.limitRect = softwareLimitRect;
+        return this;
     }
 
     private boolean isFingerTouch(int toolType) {
         return toolType == MotionEvent.TOOL_TYPE_FINGER;
     }
 
-    private DeviceConfig getDeviceConfig() {
-        return noteManager.getDeviceConfig();
+    private boolean isSingleTouch() {
+        return singleTouch;
     }
 
-    private boolean isSingleTouch() {
-        return getDeviceConfig() != null && getDeviceConfig().isSingleTouch();
+    public TouchReader setSingleTouch(boolean single) {
+        singleTouch = single;
+        return this;
     }
 
     private boolean supportBigPen() {
-        return getDeviceConfig() != null && getDeviceConfig().supportBigPen();
+        return bigPen;
+    }
+
+    public TouchReader useBigPen(boolean use) {
+        bigPen = use;
+        return this;
     }
 
     private boolean isEnableFingerErasing() {
-        return getDeviceConfig() != null && getDeviceConfig().isEnableFingerErasing();
+        return fingerErasing;
     }
 
-    private boolean useRawInput() {
-        return getDeviceConfig() != null && getDeviceConfig().useRawInput();
+    public TouchReader enableFingerErasing(boolean enable) {
+        fingerErasing = enable;
+        return this;
+    }
+
+    private boolean isUseRawInput() {
+        return rawInput;
+    }
+
+    public TouchReader useRawInput(boolean enable) {
+        rawInput = enable;
+        return this;
     }
 
     private boolean renderByFramework() {
@@ -91,7 +111,7 @@ public class TouchReader {
         if (noteManager.getDocumentHelper().inShapeSelecting()){
             return forwardShapeSelecting(motionEvent);
         }
-        if (!(useRawInput() && renderByFramework())) {
+        if (!(isUseRawInput() && renderByFramework())) {
             return forwardDrawing(motionEvent);
         }
         return true;
