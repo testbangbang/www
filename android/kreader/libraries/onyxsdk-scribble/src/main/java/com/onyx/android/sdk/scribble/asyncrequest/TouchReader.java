@@ -32,12 +32,11 @@ public class TouchReader {
     private Shape currentShape = null;
     private TouchPointList shapeSelectPoints;
     private TouchPointList erasePoints;
+    private Rect limitRect = new Rect();
 
-    public void setSoftwareLimitRect(Rect softwareLimitRect) {
-        this.softwareLimitRect = softwareLimitRect;
+    public void setLimitRect(Rect softwareLimitRect) {
+        this.limitRect = softwareLimitRect;
     }
-
-    private Rect softwareLimitRect = new Rect();
 
     public TouchReader(NoteManager noteManager) {
         this.noteManager = noteManager;
@@ -216,7 +215,7 @@ public class TouchReader {
 
 
     private boolean checkTouchPoint(final TouchPoint touchPoint) {
-        return softwareLimitRect.contains((int) touchPoint.x, (int) touchPoint.y);
+        return limitRect.contains((int) touchPoint.x, (int) touchPoint.y);
     }
 
     public boolean checkTouchPointList(final TouchPointList touchPointList) {

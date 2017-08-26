@@ -335,7 +335,7 @@ public class NoteManager {
     public void setView(SurfaceView surfaceView) {
         getPenManager().setHostView(surfaceView);
         getViewHelper().setHostView(surfaceView);
-        getTouchHelper().onTouch(surfaceView);
+        getTouchHelper().setup(surfaceView);
         EventBus.getDefault().register(this);
     }
 
@@ -417,6 +417,7 @@ public class NoteManager {
     }
 
     public void resumeRawDrawing() {
+        getDocumentHelper().setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
         getTouchHelper().resumeRawDrawing();
     }
 

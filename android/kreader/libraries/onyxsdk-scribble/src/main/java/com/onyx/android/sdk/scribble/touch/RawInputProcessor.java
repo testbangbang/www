@@ -117,11 +117,11 @@ public class RawInputProcessor {
         nativeRawClose();
     }
 
-    public void setLimitRect(final Rect rect) {
+    public void setLimitRect(final RectF rect) {
         nativeSetLimitRegion(mapToRawRect(rect));
     }
 
-    private float[] mapToRawRect(final Rect rect) {
+    private float[] mapToRawRect(final RectF rect) {
         float[] limit = new float[4];
         float[] leftTop = mapToRawTouchPoint(hostView, rect.left, rect.top);
         float[] rightBottom = mapToRawTouchPoint(hostView, rect.right, rect.bottom);

@@ -1,11 +1,15 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.view.View;
+
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -18,19 +22,20 @@ import org.greenrobot.eventbus.EventBus;
  * Created by lxm on 2017/8/15.
  */
 
-public class RawInputReader {
-    private static final String TAG = RawInputReader.class.getSimpleName();
+public class RawInputManager {
+    private static final String TAG = RawInputManager.class.getSimpleName();
 
     private RawInputProcessor rawInputProcessor = null;
     private NoteManager noteManager;
+    private boolean useRawInput = true;
     private TouchPointList erasePoints;
 
-    public RawInputReader(NoteManager noteManager) {
+    public RawInputManager(NoteManager noteManager) {
         this.noteManager = noteManager;
     }
 
     public void startRawInputProcessor() {
-        if (!useRawInput()) {
+        if (!isUseRawInput()) {
             return;
         }
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
@@ -67,7 +72,7 @@ public class RawInputReader {
     }
 
     private void onNewTouchPointListReceived(final TouchPointList pointList) {
-        if (!useRawInput()) {
+        if (!isUseRawInput()) {
             return;
         }
         Shape shape = createNewShape(noteManager.inSpanScribbleMode(),
@@ -86,7 +91,7 @@ public class RawInputReader {
     }
 
     private void startRawDrawing() {
-        if (!useRawInput()) {
+        if (!isUseRawInput()) {
             return;
         }
         getRawInputProcessor().start();
@@ -94,8 +99,7 @@ public class RawInputReader {
     }
 
     public void resumeRawDrawing() {
-        noteManager.getDocumentHelper().setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
-        if (!useRawInput()) {
+        if (!isUseRawInput()) {
             return;
         }
 
@@ -104,7 +108,7 @@ public class RawInputReader {
     }
 
     public void pauseRawDrawing() {
-        if (!useRawInput()) {
+        if (!isUseRawInput()) {
             return;
         }
 
@@ -113,7 +117,7 @@ public class RawInputReader {
     }
 
     public void quitRawDrawing() {
-        if (!useRawInput()) {
+        if (!isUseRawInput()) {
             return;
         }
         getRawInputProcessor().quit();
@@ -124,11 +128,29 @@ public class RawInputReader {
         return noteManager.getDeviceConfig();
     }
 
-    private boolean useRawInput() {
-        return getDeviceConfig() != null && getDeviceConfig().useRawInput();
+    public boolean isUseRawInput() {
+        return useRawInput;
     }
 
-    public final RawInputProcessor getRawInputProcessor() {
+    public RawInputManager setUseRawInput(boolean use) {
+        useRawInput = use;
+        return this;
+    }
+
+    public RawInputManager setHostView(final View view) {
+        getRawInputProcessor().setHostView(view);
+        return this;
+    }
+
+    public void setLimitRect(final View view) {
+        Rect limitRect = new Rect();
+        view.getLocalVisibleRect(limitRect);
+        getRawInputProcessor().setLimitRect(new RectF(limitRect));
+        EpdController.setScreenHandWritingRegionLimit(view,
+                limitRect.left, limitRect.top, limitRect.right, limitRect.bottom);
+    }
+
+    private RawInputProcessor getRawInputProcessor() {
         if (rawInputProcessor == null) {
             rawInputProcessor = new RawInputProcessor();
         }

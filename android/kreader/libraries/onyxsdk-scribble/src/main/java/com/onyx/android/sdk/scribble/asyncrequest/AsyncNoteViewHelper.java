@@ -312,7 +312,7 @@ public class AsyncNoteViewHelper {
         }
 
         dfbLimitRect.offsetTo(0, 0);
-        getRawInputProcessor().setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
+        getRawInputProcessor().setLimitRect(new RectF(customLimitRect == null ? dfbLimitRect : customLimitRect));
 
         int viewPosition[] = {0, 0};
         surfaceView.getLocationOnScreen(viewPosition);
