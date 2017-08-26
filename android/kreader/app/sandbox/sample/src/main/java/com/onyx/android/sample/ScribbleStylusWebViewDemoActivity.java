@@ -119,7 +119,7 @@ public class ScribbleStylusWebViewDemoActivity extends AppCompatActivity impleme
 
     public PenReader getPenReader() {
         if (penReader == null) {
-            penReader = new PenReader(this);
+            penReader = new PenReader(this, webView);
         }
         return penReader;
     }
