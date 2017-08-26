@@ -39,6 +39,7 @@ import java.util.Map;
  */
 
 public class SpanHelper {
+    private static final String TAG = SpanHelper.class.getSimpleName();
 
     // use ascII code to define WHITESPACE.
     private static final String SPACE_TEXT = Character.toString((char) 32);
@@ -117,7 +118,6 @@ public class SpanHelper {
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }
-
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
         if (shapes == null || shapes.size() == 0) {

@@ -1,7 +1,10 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
+
+import com.onyx.android.sdk.api.device.epd.EpdController;
 
 /**
  * Created by lxm on 2017/8/15.
@@ -25,6 +28,8 @@ public class TouchHelper {
                 return getTouchReader().processTouchEvent(motionEvent);
             }
         });
+        getRawInputReader().getRawInputProcessor().setHostView(view);
+        setInputLimitRect(view);
         getRawInputReader().startRawInputProcessor();
     }
 
@@ -57,5 +62,18 @@ public class TouchHelper {
     public void quit() {
         pauseRawDrawing();
         quitRawDrawing();
+    }
+
+    private void setInputLimitRect(View view) {
+        Rect softwareLimitRect = new Rect();
+        //for software render limit rect
+        view.getLocalVisibleRect(softwareLimitRect);
+        getRawInputReader().getRawInputProcessor().setLimitRect(softwareLimitRect);
+        getTouchReader().setSoftwareLimitRect(softwareLimitRect);
+        EpdController.setScreenHandWritingRegionLimit(view,
+                Math.min(softwareLimitRect.left, softwareLimitRect.right),
+                Math.min(softwareLimitRect.top, softwareLimitRect.bottom),
+                Math.max(softwareLimitRect.left, softwareLimitRect.right),
+                Math.max(softwareLimitRect.top, softwareLimitRect.bottom));
     }
 }

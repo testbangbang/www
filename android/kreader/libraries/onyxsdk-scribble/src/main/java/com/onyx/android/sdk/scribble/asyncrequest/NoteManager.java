@@ -221,7 +221,7 @@ public class NoteManager {
     }
 
     public void updateLineLayoutCursor(LinedEditText spanTextView) {
-        getSpanHelper().updateLineLayoutArgs(spanTextView);
+        getSpanHelper().updateLineLayoutCursor(spanTextView);
     }
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
@@ -469,6 +469,10 @@ public class NoteManager {
         rendererHelper.renderCurrentPageInBitmap(this, request);
     }
 
+    public void renderSelectionRectangle(final TouchPoint start, final TouchPoint end) {
+        rendererHelper.renderSelectionRectangle(this, start, end);
+    }
+
     public int getCurrentShapeType() {
         return getNoteDocument().getNoteDrawingArgs().getCurrentShapeType();
     }
@@ -516,8 +520,10 @@ public class NoteManager {
     }
 
     public void undo(final Context context) {
+        getNoteDocument().getCurrentPage(context).undo(inSpanScribbleMode());
     }
 
     public void redo(final Context context) {
+        getNoteDocument().getCurrentPage(context).redo(inSpanScribbleMode());
     }
 }
