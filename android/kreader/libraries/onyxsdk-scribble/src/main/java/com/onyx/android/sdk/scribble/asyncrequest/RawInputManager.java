@@ -124,10 +124,6 @@ public class RawInputManager {
         noteManager.getPenManager().quitDrawing();
     }
 
-    private DeviceConfig getDeviceConfig() {
-        return noteManager.getDeviceConfig();
-    }
-
     public boolean isUseRawInput() {
         return useRawInput;
     }
@@ -142,12 +138,13 @@ public class RawInputManager {
         return this;
     }
 
-    public void setLimitRect(final View view) {
+    public RawInputManager setLimitRect(final View view) {
         Rect limitRect = new Rect();
         view.getLocalVisibleRect(limitRect);
         getRawInputProcessor().setLimitRect(new RectF(limitRect));
         EpdController.setScreenHandWritingRegionLimit(view,
                 limitRect.left, limitRect.top, limitRect.right, limitRect.bottom);
+        return this;
     }
 
     private RawInputProcessor getRawInputProcessor() {

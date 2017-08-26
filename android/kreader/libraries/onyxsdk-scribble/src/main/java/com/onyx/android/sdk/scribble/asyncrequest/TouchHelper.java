@@ -42,10 +42,11 @@ public class TouchHelper {
     }
 
     private void setupRawInputManager(final View view) {
-        getRawInputManager().setHostView(view)
-                .setUseRawInput(getDeviceConfig().useRawInput());
-        getRawInputManager().setLimitRect(view);
-        getRawInputManager().startRawInputProcessor();
+        getRawInputManager()
+                .setHostView(view)
+                .setUseRawInput(getDeviceConfig().useRawInput())
+                .setLimitRect(view)
+                .startRawInputProcessor();
     }
 
     public TouchReader getTouchReader() {
@@ -77,10 +78,6 @@ public class TouchHelper {
     public void quit() {
         pauseRawDrawing();
         quitRawDrawing();
-    }
-
-    private void setInputLimitRect(View view) {
-        getRawInputManager().setLimitRect(view);
     }
 
     private DeviceConfig getDeviceConfig() {

@@ -1,24 +1,15 @@
 package com.onyx.android.sdk.scribble.touch;
 
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.DetectInputDeviceUtil;
-import com.onyx.android.sdk.utils.DeviceUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -118,23 +109,13 @@ public class RawInputProcessor {
     }
 
     public void setLimitRect(final RectF rect) {
-        nativeSetLimitRegion(mapToRawRect(rect));
+        nativeSetLimitRegion(mapToRawTouchRect(rect));
     }
 
-    private float[] mapToRawRect(final RectF rect) {
-        float[] limit = new float[4];
-        float[] leftTop = mapToRawTouchPoint(hostView, rect.left, rect.top);
-        float[] rightBottom = mapToRawTouchPoint(hostView, rect.right, rect.bottom);
-        System.arraycopy(leftTop, 0, limit, 0, leftTop.length);
-        System.arraycopy(rightBottom, 0, limit, leftTop.length, rightBottom.length);
+    private float[] mapToRawTouchRect(final RectF rect) {
+        RectF dst = EpdController.mapToRawTouchPoint(hostView, rect);
+        float[] limit = new float[] {dst.left, dst.top, dst.right, dst.bottom};
         return limit;
-    }
-
-    private float[] mapToRawTouchPoint(View view, float x, float y) {
-        srcPoint[0] = x;
-        srcPoint[1] = y;
-        EpdController.mapToRawTouchPoint(view, srcPoint, dstPoint);
-        return dstPoint;
     }
 
     private void shutdown() {
