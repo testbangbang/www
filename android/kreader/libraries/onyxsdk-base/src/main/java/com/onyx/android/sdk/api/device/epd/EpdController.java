@@ -186,6 +186,10 @@ public abstract class EpdController
         Device.currentDevice().enablePost(view, enable);
     }
 
+    public static void resetEpdPost() {
+        Device.currentDevice().resetEpdPost();
+    }
+
     public static void setPainterStyle(boolean antiAlias, Paint.Style strokeStyle, Paint.Join joinStyle, Paint.Cap capStyle) {
         Device.currentDevice().setPainterStyle(antiAlias, strokeStyle, joinStyle, capStyle);
     }
