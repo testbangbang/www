@@ -16,11 +16,14 @@ public class ConfigManager {
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
 
-    static public ConfigManager sharedInstance(Context context) {
+    public static ConfigManager getInstance() {
+        return ourInstance;
+    }
+
+    public static void init(Context context) {
         if (ourInstance == null) {
             ourInstance = new ConfigManager(context);
         }
-        return ourInstance;
     }
 
     private ConfigManager(Context context) {

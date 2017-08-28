@@ -81,6 +81,7 @@ public class NoteManager {
 
     public NoteManager(Context context) {
         appContext = context.getApplicationContext();
+        ConfigManager.init(appContext);
     }
 
     public EventBus getEventBus() {
@@ -100,11 +101,11 @@ public class NoteManager {
     }
 
     public DeviceConfig getDeviceConfig() {
-        return ConfigManager.sharedInstance(appContext).getDeviceConfig();
+        return ConfigManager.getInstance().getDeviceConfig();
     }
 
     public MappingConfig getMappingConfig() {
-        return ConfigManager.sharedInstance(appContext).getMappingConfig();
+        return ConfigManager.getInstance().getMappingConfig();
     }
 
     public Context getAppContext() {

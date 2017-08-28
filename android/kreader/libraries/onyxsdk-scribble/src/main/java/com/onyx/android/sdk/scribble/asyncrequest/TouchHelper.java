@@ -64,7 +64,7 @@ public class TouchHelper {
     private void setupRawInputManager(final View view) {
         getRawInputManager()
                 .setHostView(view)
-                .setUseRawInput(getDeviceConfig(view.getContext()).useRawInput())
+                .setUseRawInput(getDeviceConfig().useRawInput())
                 .setLimitRect(view)
                 .startRawInputProcessor();
     }
@@ -107,7 +107,7 @@ public class TouchHelper {
         quitRawDrawing();
     }
 
-    private DeviceConfig getDeviceConfig(Context context) {
-        return ConfigManager.sharedInstance(context).getDeviceConfig();
+    private DeviceConfig getDeviceConfig() {
+        return ConfigManager.getInstance().getDeviceConfig();
     }
 }

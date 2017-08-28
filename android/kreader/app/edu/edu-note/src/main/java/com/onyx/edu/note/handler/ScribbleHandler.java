@@ -2,24 +2,11 @@ package com.onyx.edu.note.handler;
 
 import android.util.Log;
 import android.util.SparseArray;
-import android.view.MotionEvent;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ViewTouchEvent;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
@@ -39,9 +26,6 @@ import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
