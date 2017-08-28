@@ -1,7 +1,5 @@
 package com.onyx.android.dr.request.cloud;
 
-import android.util.Log;
-
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.bean.SignUpInfo;
 import com.onyx.android.sdk.data.CloudManager;
@@ -41,6 +39,7 @@ public class SignUpRequest extends BaseCloudRequest {
         signUpBean.name = signUpInfo.name;
         signUpBean.email = signUpInfo.email;
         signUpBean.password = signUpInfo.password;
+        signUpBean.groupId = signUpInfo.groupId;
         signUpBean.info = JSON.toJSON(signUpInfo.info).toString();
         Response<AuthToken> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
                 .signUp(signUpBean));
