@@ -32,17 +32,17 @@ import java.util.List;
 
 public abstract class BaseHandler {
     private static final String TAG = BaseHandler.class.getSimpleName();
-    protected NoteManager mNoteManager;
+    protected NoteManager noteManager;
 
-    List<Integer> mFunctionBarMenuFunctionIDList = new ArrayList<>();
-    List<Integer> mToolBarMenuFunctionIDList = new ArrayList<>();
-    SparseArray<List<Integer>> mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
+    List<Integer> functionBarMenuIDList = new ArrayList<>();
+    List<Integer> toolBarMenuIDList = new ArrayList<>();
+    SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
 
     private Shape currentShape = null;
     private TouchPointList erasePoints;
 
-    public BaseHandler(NoteManager mNoteManager) {
-        this.mNoteManager = mNoteManager;
+    public BaseHandler(NoteManager noteManager) {
+        this.noteManager = noteManager;
     }
 
     @CallSuper
@@ -50,7 +50,7 @@ public abstract class BaseHandler {
         buildFunctionBarMenuFunctionList();
         buildToolBarMenuFunctionList();
         buildFunctionBarMenuSubMenuIDListSparseArray();
-        mNoteManager.post(new HandlerActivateEvent(mFunctionBarMenuFunctionIDList, mToolBarMenuFunctionIDList, mFunctionBarMenuSubMenuIDListSparseArray));
+        noteManager.post(new HandlerActivateEvent(functionBarMenuIDList, toolBarMenuIDList, functionBarSubMenuIDMap));
     }
 
     public void onDeactivate() {
@@ -92,17 +92,17 @@ public abstract class BaseHandler {
 
     @Subscribe
     public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
-        Shape shape = createNewShape(mNoteManager.inSpanScribbleMode(),
-                mNoteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
+        Shape shape = createNewShape(noteManager.inSpanScribbleMode(),
+                noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
         shape.addPoints(event.getTouchPointList());
-        mNoteManager.onNewShape(shape);
+        noteManager.onNewShape(shape);
         onRawTouchPointListReceived();
     }
 
     private Shape createNewShape(boolean isSpanTextMode, int type) {
         Shape shape = ShapeFactory.createShape(type);
-        shape.setStrokeWidth(mNoteManager.getDocumentHelper().getStrokeWidth());
-        shape.setColor(mNoteManager.getDocumentHelper().getStrokeColor());
+        shape.setStrokeWidth(noteManager.getDocumentHelper().getStrokeWidth());
+        shape.setColor(noteManager.getDocumentHelper().getStrokeColor());
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }
@@ -118,7 +118,7 @@ public abstract class BaseHandler {
             return;
         }
 
-        if ((supportBigPen() && toolType == MotionEvent.TOOL_TYPE_ERASER) || mNoteManager.inUserErasing()) {
+        if ((supportBigPen() && toolType == MotionEvent.TOOL_TYPE_ERASER) || noteManager.inUserErasing()) {
             if (isFingerTouch(toolType)) {
                 if (isEnableFingerErasing()) {
                     forwardErasing(motionEvent);
@@ -144,16 +144,16 @@ public abstract class BaseHandler {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape(mNoteManager.inSpanScribbleMode(), mNoteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
+        currentShape = createNewShape(noteManager.inSpanScribbleMode(), noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
         beforeDownMessage(currentShape);
-        mNoteManager.onNewShape(currentShape);
+        noteManager.onNewShape(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
-        if (!mNoteManager.getTouchHelper().checkTouchPoint(normalized)) {
+        if (!noteManager.getTouchHelper().checkTouchPoint(normalized)) {
             return;
         }
         currentShape.onDown(normalized, screen);
-        mNoteManager.setDrawing(true);
+        noteManager.setDrawing(true);
         if (!currentShape.supportDFB()) {
             drawCurrentPage();
         }
@@ -168,7 +168,7 @@ public abstract class BaseHandler {
         for(int i = 0; i < n; ++i) {
             final TouchPoint normalized = TouchPoint.fromHistorical(motionEvent, i);
             final TouchPoint screen = touchPointFromNormalized(normalized);
-            if (!mNoteManager.getTouchHelper().checkTouchPoint(normalized)) {
+            if (!noteManager.getTouchHelper().checkTouchPoint(normalized)) {
                 continue;
             }
             currentShape.onMove(normalized, screen);
@@ -176,11 +176,11 @@ public abstract class BaseHandler {
 
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
-        if (!mNoteManager.getTouchHelper().checkTouchPoint(normalized)) {
+        if (!noteManager.getTouchHelper().checkTouchPoint(normalized)) {
             return;
         }
         currentShape.onMove(normalized, screen);
-        mNoteManager.setDrawing(true);
+        noteManager.setDrawing(true);
         if (!currentShape.supportDFB()) {
             drawCurrentPage();
         }
@@ -193,11 +193,11 @@ public abstract class BaseHandler {
         }
         final TouchPoint normalized = new TouchPoint(motionEvent);
         final TouchPoint screen = touchPointFromNormalized(normalized);
-        if (!mNoteManager.getTouchHelper().checkTouchPoint(normalized)) {
+        if (!noteManager.getTouchHelper().checkTouchPoint(normalized)) {
             return;
         }
         currentShape.onUp(normalized, screen);
-        mNoteManager.setDrawing(false);
+        noteManager.setDrawing(false);
         if (!currentShape.supportDFB()) {
             drawCurrentPage();
         }
@@ -206,9 +206,9 @@ public abstract class BaseHandler {
 
     private void beforeDownMessage(final Shape currentShape) {
         if (ShapeFactory.isDFBShape(currentShape.getType())) {
-            mNoteManager.enableScreenPost(false);
+            noteManager.enableScreenPost(false);
         } else {
-            mNoteManager.enableScreenPost(true);
+            noteManager.enableScreenPost(true);
         }
     }
 
@@ -231,11 +231,11 @@ public abstract class BaseHandler {
 
     private void onBeginErasing() {
         erasePoints = new TouchPointList();
-        mNoteManager.post(new BeginErasingEvent());
+        noteManager.post(new BeginErasingEvent());
     }
 
     private boolean onErasing(final MotionEvent motionEvent) {
-        mNoteManager.post(new ErasingEvent(new TouchPoint(motionEvent), false));
+        noteManager.post(new ErasingEvent(new TouchPoint(motionEvent), false));
         if (erasePoints != null) {
             int n = motionEvent.getHistorySize();
             for(int i = 0; i < n; ++i) {
@@ -247,12 +247,12 @@ public abstract class BaseHandler {
     }
 
     private void onFinishErasing() {
-        mNoteManager.post(new EraseTouchPointListReceivedEvent(erasePoints));
+        noteManager.post(new EraseTouchPointListReceivedEvent(erasePoints));
     }
 
     private void drawCurrentPage() {
         AsyncBaseNoteRequest request = new AsyncBaseNoteRequest();
-        mNoteManager.submitRequest(request, null);
+        noteManager.submitRequest(request, null);
     }
 
     private boolean isFingerTouch(int toolType) {
@@ -260,22 +260,22 @@ public abstract class BaseHandler {
     }
 
     private boolean isSingleTouch() {
-        return mNoteManager.getDeviceConfig().isSingleTouch();
+        return noteManager.getDeviceConfig().isSingleTouch();
     }
 
     private boolean supportBigPen() {
-        return mNoteManager.getDeviceConfig().supportBigPen();
+        return noteManager.getDeviceConfig().supportBigPen();
     }
 
     private boolean isEnableFingerErasing() {
-        return mNoteManager.getDeviceConfig().isEnableFingerErasing();
+        return noteManager.getDeviceConfig().isEnableFingerErasing();
     }
 
     private boolean isUseRawInput() {
-        return mNoteManager.getDeviceConfig().useRawInput();
+        return noteManager.getDeviceConfig().useRawInput();
     }
 
     private boolean renderByFramework() {
-        return ShapeFactory.isDFBShape(mNoteManager.getDocumentHelper().getCurrentShapeType());
+        return ShapeFactory.isDFBShape(noteManager.getDocumentHelper().getCurrentShapeType());
     }
 }

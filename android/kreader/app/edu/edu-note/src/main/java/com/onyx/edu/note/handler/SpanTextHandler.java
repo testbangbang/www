@@ -56,9 +56,9 @@ public class SpanTextHandler extends BaseHandler {
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            mNoteManager.post(new RequestInfoUpdateEvent(request, e));
+            noteManager.post(new RequestInfoUpdateEvent(request, e));
             if (reloadPageShape) {
-                mNoteManager.loadPageShapes();
+                noteManager.loadPageShapes();
             }
         }
     }
@@ -70,41 +70,41 @@ public class SpanTextHandler extends BaseHandler {
     @Override
     public void onActivate() {
         super.onActivate();
-        mNoteManager.registerEventBus(this);
-        mNoteManager.openSpanTextFunc();
+        noteManager.registerEventBus(this);
+        noteManager.openSpanTextFunc();
     }
 
     @Override
     public void onDeactivate() {
-        mNoteManager.unregisterEventBus(this);
-        mNoteManager.exitSpanTextFunc();
+        noteManager.unregisterEventBus(this);
+        noteManager.exitSpanTextFunc();
     }
 
     @Override
     public void buildFunctionBarMenuFunctionList() {
-        mFunctionBarMenuFunctionIDList = new ArrayList<>();
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.BG);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.DELETE);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.SPACE);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.ENTER);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.KEYBOARD);
+        functionBarMenuIDList = new ArrayList<>();
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.DELETE);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SPACE);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ENTER);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.KEYBOARD);
     }
 
     @Override
     protected void buildToolBarMenuFunctionList() {
-        mToolBarMenuFunctionIDList = new ArrayList<>();
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.UNDO);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SAVE);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.REDO);
+        toolBarMenuIDList = new ArrayList<>();
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.SAVE);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
     }
 
     @Override
     protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
-        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
-        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
+        functionBarSubMenuIDMap = new SparseArray<>();
+        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
     }
 
     @Override
@@ -112,16 +112,16 @@ public class SpanTextHandler extends BaseHandler {
         Log.e(TAG, "handleFunctionBarMenuFunction: " + functionBarMenuID);
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.DELETE:
-                mNoteManager.deleteSpan(true);
+                noteManager.deleteSpan(true);
                 break;
             case ScribbleFunctionBarMenuID.SPACE:
-                mNoteManager.buildSpaceShape();
+                noteManager.buildSpaceShape();
                 break;
             case ScribbleFunctionBarMenuID.ENTER:
-                mNoteManager.post(new SpanLineBreakerEvent());
+                noteManager.post(new SpanLineBreakerEvent());
                 break;
             case ScribbleFunctionBarMenuID.KEYBOARD:
-                mNoteManager.post(new ShowInputKeyBoardEvent());
+                noteManager.post(new ShowInputKeyBoardEvent());
                 break;
             case ScribbleFunctionBarMenuID.ADD_PAGE:
                 addPage();
@@ -136,7 +136,7 @@ public class SpanTextHandler extends BaseHandler {
                 prevPage();
                 break;
             default:
-                mNoteManager.post(new ShowSubMenuEvent(functionBarMenuID));
+                noteManager.post(new ShowSubMenuEvent(functionBarMenuID));
                 break;
         }
     }
@@ -155,7 +155,7 @@ public class SpanTextHandler extends BaseHandler {
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE:
-                mNoteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
+                noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
                 break;
             case ScribbleToolBarMenuID.SAVE:
                 saveDocument(uniqueID, title, false, null);
@@ -175,49 +175,49 @@ public class SpanTextHandler extends BaseHandler {
     public void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback) {
         DocumentSaveAction documentSaveAction = new DocumentSaveAction(uniqueID,
                 title, closeAfterSave);
-        documentSaveAction.execute(mNoteManager, callback);
+        documentSaveAction.execute(noteManager, callback);
     }
 
     @Override
     public void prevPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
-                prevPageAction.execute(mNoteManager, new SpanBaseCallBack(true));
+                prevPageAction.execute(noteManager, new SpanBaseCallBack(true));
             }
         });
     }
 
     @Override
     public void nextPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GotoNextPageAction nextPageAction = new GotoNextPageAction();
-                nextPageAction.execute(mNoteManager, new SpanBaseCallBack(true));
+                nextPageAction.execute(noteManager, new SpanBaseCallBack(true));
             }
         });
     }
 
     @Override
     public void addPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentAddNewPageAction addNewPageAction = new DocumentAddNewPageAction();
-                addNewPageAction.execute(mNoteManager, new SpanBaseCallBack(false));
+                addNewPageAction.execute(noteManager, new SpanBaseCallBack(false));
             }
         });
     }
 
     @Override
     public void deletePage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentDeletePageAction deletePageAction = new DocumentDeletePageAction();
-                deletePageAction.execute(mNoteManager, new SpanBaseCallBack(true));
+                deletePageAction.execute(noteManager, new SpanBaseCallBack(true));
             }
         });
     }
@@ -244,21 +244,21 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     private void reDo() {
-        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+        noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 RedoAction reDoAction = new RedoAction();
-                reDoAction.execute(mNoteManager, new SpanBaseCallBack(true));
+                reDoAction.execute(noteManager, new SpanBaseCallBack(true));
             }
         });
     }
 
     private void unDo() {
-        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+        noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 UndoAction unDoAction = new UndoAction();
-                unDoAction.execute(mNoteManager, new SpanBaseCallBack(true));
+                unDoAction.execute(noteManager, new SpanBaseCallBack(true));
             }
         });
     }
@@ -266,23 +266,23 @@ public class SpanTextHandler extends BaseHandler {
     private void onBackgroundChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
         int bgType = ScribbleSubMenuID.bgFromMenuID(subMenuID);
         NoteLineLayoutBackgroundChangeAction changeBGAction = new NoteLineLayoutBackgroundChangeAction(bgType, true);
-        changeBGAction.execute(mNoteManager, new SpanBaseCallBack(false));
+        changeBGAction.execute(noteManager, new SpanBaseCallBack(false));
     }
 
     private void onShapeChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
         int shapeType = ScribbleSubMenuID.shapeTypeFromMenuID(subMenuID);
-        mNoteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
-        mNoteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
+        noteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
+        noteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
     }
 
     @Override
     public void onRawTouchPointListReceived() {
-        mNoteManager.getSpanHelper().buildSpan();
+        noteManager.getSpanHelper().buildSpan();
     }
 
     @Override
     public void onDrawingTouchUp() {
-        mNoteManager.getSpanHelper().buildSpan();
+        noteManager.getSpanHelper().buildSpan();
     }
 
 }

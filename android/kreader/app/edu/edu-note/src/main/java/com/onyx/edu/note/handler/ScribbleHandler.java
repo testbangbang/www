@@ -71,7 +71,7 @@ public class ScribbleHandler extends BaseHandler {
     private BaseCallback mActionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            mNoteManager.post(new RequestInfoUpdateEvent(request, e));
+            noteManager.post(new RequestInfoUpdateEvent(request, e));
         }
     };
 
@@ -82,44 +82,44 @@ public class ScribbleHandler extends BaseHandler {
     @Override
     public void onActivate() {
         super.onActivate();
-        mNoteManager.registerEventBus(this);
-        mNoteManager.sync(true, true);
+        noteManager.registerEventBus(this);
+        noteManager.sync(true, true);
     }
 
     @Override
     public void onDeactivate() {
         super.onDeactivate();
-        mNoteManager.unregisterEventBus(this);
+        noteManager.unregisterEventBus(this);
     }
 
     @Override
     public void buildFunctionBarMenuFunctionList() {
-        mFunctionBarMenuFunctionIDList = new ArrayList<>();
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.BG);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.ERASER);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
-        mFunctionBarMenuFunctionIDList.add(ScribbleFunctionBarMenuID.SHAPE_SELECT);
+        functionBarMenuIDList = new ArrayList<>();
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
+        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SHAPE_SELECT);
     }
 
     @Override
     protected void buildToolBarMenuFunctionList() {
-        mToolBarMenuFunctionIDList = new ArrayList<>();
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.UNDO);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SAVE);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.REDO);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.SETTING);
-        mToolBarMenuFunctionIDList.add(ScribbleToolBarMenuID.EXPORT);
+        toolBarMenuIDList = new ArrayList<>();
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.SAVE);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.SETTING);
+        toolBarMenuIDList.add(ScribbleToolBarMenuID.EXPORT);
     }
 
     @Override
     protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
-        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
-        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
-        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
-        mFunctionBarMenuSubMenuIDListSparseArray.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        functionBarSubMenuIDMap = new SparseArray<>();
+        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
+        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
+        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
+        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
     }
 
     @Override
@@ -141,7 +141,7 @@ public class ScribbleHandler extends BaseHandler {
                 onSetShapeSelectModeChanged();
                 break;
             default:
-                mNoteManager.post(new ShowSubMenuEvent(functionBarMenuID));
+                noteManager.post(new ShowSubMenuEvent(functionBarMenuID));
                 break;
         }
     }
@@ -166,7 +166,7 @@ public class ScribbleHandler extends BaseHandler {
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
-                mNoteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
+                noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
                 break;
             case ScribbleToolBarMenuID.EXPORT:
                 break;
@@ -186,64 +186,64 @@ public class ScribbleHandler extends BaseHandler {
 
     @Override
     public void prevPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
-                prevPageAction.execute(mNoteManager, mActionDoneCallback);
+                prevPageAction.execute(noteManager, mActionDoneCallback);
             }
         });
     }
 
     @Override
     public void nextPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GotoNextPageAction nextPageAction = new GotoNextPageAction();
-                nextPageAction.execute(mNoteManager, mActionDoneCallback);
+                nextPageAction.execute(noteManager, mActionDoneCallback);
             }
         });
     }
 
     @Override
     public void addPage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentAddNewPageAction addNewPageAction = new DocumentAddNewPageAction();
-                addNewPageAction.execute(mNoteManager, mActionDoneCallback);
+                addNewPageAction.execute(noteManager, mActionDoneCallback);
             }
         });
     }
 
     @Override
     public void deletePage() {
-        mNoteManager.syncWithCallback(true, true, new BaseCallback() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentDeletePageAction deletePageAction = new DocumentDeletePageAction();
-                deletePageAction.execute(mNoteManager, mActionDoneCallback);
+                deletePageAction.execute(noteManager, mActionDoneCallback);
             }
         });
     }
 
     private void reDo() {
-        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+        noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 RedoAction reDoAction = new RedoAction();
-                reDoAction.execute(mNoteManager, mActionDoneCallback);
+                reDoAction.execute(noteManager, mActionDoneCallback);
             }
         });
     }
 
     private void unDo() {
-        mNoteManager.syncWithCallback(false, true, new BaseCallback() {
+        noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 UndoAction unDoAction = new UndoAction();
-                unDoAction.execute(mNoteManager, mActionDoneCallback);
+                unDoAction.execute(noteManager, mActionDoneCallback);
             }
         });
     }
@@ -252,7 +252,7 @@ public class ScribbleHandler extends BaseHandler {
     public void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback) {
         DocumentSaveAction documentSaveAction = new DocumentSaveAction(uniqueID,
                 title, closeAfterSave);
-        documentSaveAction.execute(mNoteManager, callback);
+        documentSaveAction.execute(noteManager, callback);
     }
 
     private List<Integer> buildSubMenuThicknessIDList() {
@@ -307,29 +307,29 @@ public class ScribbleHandler extends BaseHandler {
 
     private void onBackgroundChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
         int bgType = ScribbleSubMenuID.bgFromMenuID(subMenuID);
-        NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(bgType, !mNoteManager.inUserErasing());
-        changeBGAction.execute(mNoteManager, mActionDoneCallback);
+        NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(bgType, !noteManager.inUserErasing());
+        changeBGAction.execute(noteManager, mActionDoneCallback);
     }
 
     private void onShapeChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
         int shapeType = ScribbleSubMenuID.shapeTypeFromMenuID(subMenuID);
-        mNoteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
-        mNoteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
+        noteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
+        noteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
     }
 
     private void onSetShapeSelectModeChanged(){
         Log.e(TAG, "onSetShapeSelectModeChanged: ");
-        mNoteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SHAPE_TRANSFORM));
+        noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SHAPE_TRANSFORM));
     }
 
     private void onEraserChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
         switch (subMenuID) {
             case ScribbleSubMenuID.Eraser.ERASE_PARTIALLY:
-                mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_ERASER);
-                mNoteManager.sync(true, false);
+                noteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_ERASER);
+                noteManager.sync(true, false);
                 break;
             case ScribbleSubMenuID.Eraser.ERASE_TOTALLY:
-                new ClearAllFreeShapesAction().execute(mNoteManager, mActionDoneCallback);
+                new ClearAllFreeShapesAction().execute(noteManager, mActionDoneCallback);
                 break;
         }
     }
@@ -341,16 +341,16 @@ public class ScribbleHandler extends BaseHandler {
             case ScribbleSubMenuID.Thickness.THICKNESS_NORMAL:
             case ScribbleSubMenuID.Thickness.THICKNESS_BOLD:
             case ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_BOLD:
-                mNoteManager.setStrokeWidth(ScribbleSubMenuID.strokeWidthFromMenuId(subMenuID), mActionDoneCallback);
+                noteManager.setStrokeWidth(ScribbleSubMenuID.strokeWidthFromMenuId(subMenuID), mActionDoneCallback);
                 break;
             case ScribbleSubMenuID.Thickness.THICKNESS_CUSTOM_BOLD:
                 CustomWidthEvent event = new CustomWidthEvent(new DialogCustomLineWidth.Callback() {
                     @Override
                     public void done(int lineWidth) {
-                        mNoteManager.setStrokeWidth(lineWidth, mActionDoneCallback);
+                        noteManager.setStrokeWidth(lineWidth, mActionDoneCallback);
                     }
                 });
-                mNoteManager.post(event);
+                noteManager.post(event);
                 break;
         }
     }
@@ -361,6 +361,6 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     private void renderInBackground() {
-        new RenderInBackgroundAction().execute(mNoteManager, null);
+        new RenderInBackgroundAction().execute(noteManager, null);
     }
 }
