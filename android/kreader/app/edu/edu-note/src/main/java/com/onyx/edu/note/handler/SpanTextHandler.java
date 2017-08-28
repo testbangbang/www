@@ -2,9 +2,11 @@ package com.onyx.edu.note.handler;
 
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
@@ -26,6 +28,7 @@ import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,7 +61,7 @@ public class SpanTextHandler extends BaseHandler {
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            EventBus.getDefault().post(new RequestInfoUpdateEvent(request, e));
+            mNoteManager.post(new RequestInfoUpdateEvent(request, e));
             if (reloadPageShape) {
                 mNoteManager.loadPageShapes();
             }
@@ -72,11 +75,13 @@ public class SpanTextHandler extends BaseHandler {
     @Override
     public void onActivate() {
         super.onActivate();
+        mNoteManager.registerEventBus(this);
         mNoteManager.openSpanTextFunc();
     }
 
     @Override
     public void onDeactivate() {
+        mNoteManager.unregisterEventBus(this);
         mNoteManager.exitSpanTextFunc();
     }
 
@@ -118,10 +123,10 @@ public class SpanTextHandler extends BaseHandler {
                 mNoteManager.buildSpaceShape();
                 break;
             case ScribbleFunctionBarMenuID.ENTER:
-                EventBus.getDefault().post(new SpanLineBreakerEvent());
+                mNoteManager.post(new SpanLineBreakerEvent());
                 break;
             case ScribbleFunctionBarMenuID.KEYBOARD:
-                EventBus.getDefault().post(new ShowInputKeyBoardEvent());
+                mNoteManager.post(new ShowInputKeyBoardEvent());
                 break;
             case ScribbleFunctionBarMenuID.ADD_PAGE:
                 addPage();
@@ -136,7 +141,7 @@ public class SpanTextHandler extends BaseHandler {
                 prevPage();
                 break;
             default:
-                EventBus.getDefault().post(new ShowSubMenuEvent(functionBarMenuID));
+                mNoteManager.post(new ShowSubMenuEvent(functionBarMenuID));
                 break;
         }
     }
@@ -155,7 +160,7 @@ public class SpanTextHandler extends BaseHandler {
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE:
-                EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
+                mNoteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
                 break;
             case ScribbleToolBarMenuID.SAVE:
                 saveDocument(uniqueID, title, false, null);
@@ -274,4 +279,15 @@ public class SpanTextHandler extends BaseHandler {
         mNoteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
         mNoteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
     }
+
+    @Override
+    public void onRawTouchPointListReceived() {
+        mNoteManager.getSpanHelper().buildSpan();
+    }
+
+    @Override
+    public void onDrawingTouchUp() {
+        mNoteManager.getSpanHelper().buildSpan();
+    }
+
 }

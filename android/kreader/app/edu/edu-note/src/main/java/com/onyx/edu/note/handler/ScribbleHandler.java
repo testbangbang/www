@@ -2,11 +2,24 @@ package com.onyx.edu.note.handler;
 
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.MotionEvent;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ViewTouchEvent;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
@@ -17,6 +30,7 @@ import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
 import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
 import com.onyx.edu.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
+import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
@@ -27,6 +41,7 @@ import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +87,7 @@ public class ScribbleHandler extends BaseHandler {
     private BaseCallback mActionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            EventBus.getDefault().post(new RequestInfoUpdateEvent(request, e));
+            mNoteManager.post(new RequestInfoUpdateEvent(request, e));
         }
     };
 
@@ -83,7 +98,14 @@ public class ScribbleHandler extends BaseHandler {
     @Override
     public void onActivate() {
         super.onActivate();
+        mNoteManager.registerEventBus(this);
         mNoteManager.sync(true, true);
+    }
+
+    @Override
+    public void onDeactivate() {
+        super.onDeactivate();
+        mNoteManager.unregisterEventBus(this);
     }
 
     @Override
@@ -135,7 +157,7 @@ public class ScribbleHandler extends BaseHandler {
                 onSetShapeSelectModeChanged();
                 break;
             default:
-                EventBus.getDefault().post(new ShowSubMenuEvent(functionBarMenuID));
+                mNoteManager.post(new ShowSubMenuEvent(functionBarMenuID));
                 break;
         }
     }
@@ -160,7 +182,7 @@ public class ScribbleHandler extends BaseHandler {
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
-                EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
+                mNoteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
                 break;
             case ScribbleToolBarMenuID.EXPORT:
                 break;
@@ -313,7 +335,7 @@ public class ScribbleHandler extends BaseHandler {
 
     private void onSetShapeSelectModeChanged(){
         Log.e(TAG, "onSetShapeSelectModeChanged: ");
-        EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SHAPE_TRANSFORM));
+        mNoteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SHAPE_TRANSFORM));
     }
 
     private void onEraserChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
@@ -344,9 +366,17 @@ public class ScribbleHandler extends BaseHandler {
                         mNoteManager.setStrokeWidth(lineWidth, mActionDoneCallback);
                     }
                 });
-                EventBus.getDefault().post(event);
+                mNoteManager.post(event);
                 break;
         }
     }
 
+    @Override
+    public void onRawTouchPointListReceived() {
+        renderInBackground();
+    }
+
+    private void renderInBackground() {
+        new RenderInBackgroundAction().execute(mNoteManager, null);
+    }
 }

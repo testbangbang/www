@@ -8,13 +8,12 @@ import android.view.MotionEvent;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ViewTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
@@ -81,6 +80,7 @@ public class ShapeTransformHandler extends BaseHandler {
     private TouchPoint mShapeSelectPoint = null;
     private ControlMode currentControlMode = ControlMode.SelectMode;
     private TransformAction transformAction = TransformAction.Zoom;
+    private TouchPointList shapeSelectPoints;
 
     private enum ControlMode {SelectMode, OperatingMode}
 
@@ -89,7 +89,7 @@ public class ShapeTransformHandler extends BaseHandler {
     private BaseCallback actionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            EventBus.getDefault().post(new RequestInfoUpdateEvent(request, e));
+            mNoteManager.post(new RequestInfoUpdateEvent(request, e));
         }
     };
 
@@ -100,7 +100,7 @@ public class ShapeTransformHandler extends BaseHandler {
     @Override
     public void onActivate() {
         super.onActivate();
-        EventBus.getDefault().register(this);
+        mNoteManager.registerEventBus(this);
         currentControlMode = ControlMode.SelectMode;
         mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_SELECTOR);
         mNoteManager.sync(true, false);
@@ -109,7 +109,7 @@ public class ShapeTransformHandler extends BaseHandler {
     @Override
     public void onDeactivate() {
         super.onDeactivate();
-        EventBus.getDefault().unregister(this);
+        mNoteManager.unregisterEventBus(this);
     }
 
     @Override
@@ -158,14 +158,14 @@ public class ShapeTransformHandler extends BaseHandler {
                 onSetShapeSelectModeChanged();
                 break;
             default:
-                EventBus.getDefault().post(new ShowSubMenuEvent(functionBarMenuID));
+                mNoteManager.post(new ShowSubMenuEvent(functionBarMenuID));
                 break;
         }
     }
 
     private void onSetShapeSelectModeChanged() {
         mNoteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_PENCIL_SCRIBBLE);
-        EventBus.getDefault().post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
+        mNoteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
     }
 
     private void redo() {
@@ -252,9 +252,9 @@ public class ShapeTransformHandler extends BaseHandler {
      * if does,we assume next touch event is going for control select shape.
      * if doesn't,we assume we are going to select shape.
      */
-    @Subscribe
-    public void onBeginShapeSelectEvent(final BeginShapeSelectEvent event) {
+    private void onBeginShapeSelecting(final MotionEvent motionEvent) {
         Log.e(TAG, "onBeginShapeSelectEvent: ");
+        shapeSelectPoints = new TouchPointList();
         new GetSelectedShapeListAction().execute(mNoteManager, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -262,7 +262,7 @@ public class ShapeTransformHandler extends BaseHandler {
                 Log.e(TAG, "req.getSelectedShapeList().size():" + req.getSelectedShapeList().size());
                 if (req.getSelectedShapeList().size() > 0) {
                     currentControlMode = ControlMode.OperatingMode;
-                    detectTransformAction(req.getSelectedRectF(), event.getMotionEvent());
+                    detectTransformAction(req.getSelectedRectF(), motionEvent);
                 } else {
                     currentControlMode = ControlMode.SelectMode;
                 }
@@ -302,10 +302,8 @@ public class ShapeTransformHandler extends BaseHandler {
         transformAction = TransformAction.Move;
     }
 
-    @Subscribe
-    public void onShapeSelectingEvent(ShapeSelectingEvent event) {
+    private void onShapeSelecting(MotionEvent motionEvent) {
         Log.e(TAG, "onShapeSelectingEvent: ");
-        MotionEvent motionEvent = event.getMotionEvent();
         if (mShapeSelectStartPoint == null || mShapeSelectPoint == null) {
             return;
         }
@@ -330,14 +328,22 @@ public class ShapeTransformHandler extends BaseHandler {
                 }
                 break;
         }
+
+        if (shapeSelectPoints != null) {
+            int n = motionEvent.getHistorySize();
+            for(int i = 0; i < n; ++i) {
+                shapeSelectPoints.add(TouchPoint.fromHistorical(motionEvent, i));
+            }
+            shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(),
+                    motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
+        }
     }
 
-    @Subscribe
-    public void onShapeSelectTouchPointListReceived(ShapeSelectTouchPointListReceivedEvent event) {
+    private void onFinishShapeSelecting() {
         Log.e(TAG, "onShapeSelectTouchPointListReceived: ");
         switch (currentControlMode) {
             case SelectMode:
-                new SelectShapeByPointListAction(event.getTouchPointList()).execute(mNoteManager, new BaseCallback() {
+                new SelectShapeByPointListAction(shapeSelectPoints).execute(mNoteManager, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         SelectShapeByPointListRequest req = (SelectShapeByPointListRequest) request;
@@ -409,4 +415,20 @@ public class ShapeTransformHandler extends BaseHandler {
         resultList.add(TRIANGLE_90_STYLE);
         return resultList;
     }
+
+    @Subscribe
+    public void onViewTouchEvent(ViewTouchEvent event) {
+        forwardShapeSelecting(event.getMotionEvent());
+    }
+
+    private void forwardShapeSelecting(final MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onBeginShapeSelecting(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onShapeSelecting(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onFinishShapeSelecting();
+        }
+    }
+
 }

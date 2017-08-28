@@ -61,8 +61,7 @@ public class NoteManager {
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
     private RequestManager requestManager = new RequestManager();
-    private DeviceConfig deviceConfig;
-    private MappingConfig mappingConfig;
+    private EventBus eventBus = new EventBus();
     private List<Shape> dirtyStash = new ArrayList<>();
     private boolean drawing = false;
     private @ScribbleMode.ScribbleModeDef
@@ -82,20 +81,30 @@ public class NoteManager {
 
     public NoteManager(Context context) {
         appContext = context.getApplicationContext();
-        initRawResource(appContext);
     }
 
-    private void initRawResource(final Context context) {
-        deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        mappingConfig = MappingConfig.sharedInstance(context, "note");
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void post(Object event) {
+        getEventBus().post(event);
+    }
+
+    public void registerEventBus(Object subscriber) {
+        getEventBus().register(subscriber);
+    }
+
+    public void unregisterEventBus(Object subscriber) {
+        getEventBus().unregister(subscriber);
     }
 
     public DeviceConfig getDeviceConfig() {
-        return deviceConfig;
+        return ConfigManager.sharedInstance(appContext).getDeviceConfig();
     }
 
     public MappingConfig getMappingConfig() {
-        return mappingConfig;
+        return ConfigManager.sharedInstance(appContext).getMappingConfig();
     }
 
     public Context getAppContext() {
@@ -125,14 +134,14 @@ public class NoteManager {
 
     public ViewHelper getViewHelper() {
         if (viewHelper == null) {
-            viewHelper = new ViewHelper(this);
+            viewHelper = new ViewHelper(eventBus);
         }
         return viewHelper;
     }
 
     public TouchHelper getTouchHelper() {
         if (touchHelper == null) {
-            touchHelper = new TouchHelper(this);
+            touchHelper = new TouchHelper(eventBus);
         }
         return touchHelper;
     }
@@ -264,15 +273,6 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
-        Log.e(TAG, "onRawTouchPointListReceivedEvent");
-        if (inSpanScribbleMode()) {
-            buildSpan();
-        }
-        EventBus.getDefault().post(new RawDataReceivedEvent());
-    }
-
-    @Subscribe
     public void onBeginErasingEvent(BeginErasingEvent event) {
         Log.e(TAG, "onBeginErasingEvent");
         onBeginErasing();
@@ -290,33 +290,6 @@ public class NoteManager {
         onFinishErasing(event.getTouchPointList());
     }
 
-    @Subscribe
-    public void onDrawingTouchDownEvent(DrawingTouchDownEvent event) {
-        Log.e(TAG, "onDrawingTouchDownEvent: ");
-        if (!event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
-    }
-
-    @Subscribe
-    public void onDrawingTouchMoveEvent(DrawingTouchMoveEvent event) {
-        Log.e(TAG, "onDrawingTouchMoveEvent: ");
-        if (event.isLast() && !event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
-    }
-
-    @Subscribe
-    public void onDrawingTouchUpEvent(DrawingTouchUpEvent event) {
-        Log.e(TAG, "onDrawingTouchUpEvent: ");
-        if (!event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
-        if (inSpanScribbleMode()) {
-            buildSpan();
-        }
-    }
-
     public SurfaceView getHostView() {
         return getViewHelper().getHostView();
     }
@@ -324,7 +297,7 @@ public class NoteManager {
     public void setView(SurfaceView surfaceView) {
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().setup(surfaceView);
-        EventBus.getDefault().register(this);
+        registerEventBus(this);
     }
 
     protected void onBeginErasing() {
@@ -351,7 +324,7 @@ public class NoteManager {
     }
 
     public void quit() {
-        EventBus.getDefault().unregister(this);
+        unregisterEventBus(this);
         getTouchHelper().quit();
         getViewHelper().quit();
         resetScribbleMode();
