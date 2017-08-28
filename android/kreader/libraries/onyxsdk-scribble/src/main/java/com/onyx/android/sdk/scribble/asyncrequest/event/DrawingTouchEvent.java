@@ -6,11 +6,11 @@ import android.view.MotionEvent;
  * Created by lxm on 2017/8/28.
  */
 
-public class ViewTouchEvent {
+public class DrawingTouchEvent {
 
     private MotionEvent motionEvent;
 
-    public ViewTouchEvent(MotionEvent motionEvent) {
+    public DrawingTouchEvent(MotionEvent motionEvent) {
         this.motionEvent = motionEvent;
     }
 

@@ -8,7 +8,7 @@ import android.view.MotionEvent;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ViewTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
@@ -416,7 +416,7 @@ public class ShapeTransformHandler extends BaseHandler {
     }
 
     @Subscribe
-    public void onViewTouchEvent(ViewTouchEvent event) {
+    public void onDrawingTouchEvent(DrawingTouchEvent event) {
         forwardShapeSelecting(event.getMotionEvent());
     }
 

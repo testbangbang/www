@@ -10,8 +10,9 @@ import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ViewTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -108,28 +109,13 @@ public abstract class BaseHandler {
     }
 
     @Subscribe
-    public void onViewTouchEvent(ViewTouchEvent event) {
-        MotionEvent motionEvent = event.getMotionEvent();
-        if (motionEvent.getPointerCount() > 1) {
-            return;
-        }
-        int toolType = motionEvent.getToolType(0);
-        if (isFingerTouch(toolType) && !isSingleTouch()) {
-            return;
-        }
+    public void onDrawingTouchEvent(DrawingTouchEvent event) {
+        forwardDrawing(event.getMotionEvent());
+    }
 
-        if ((supportBigPen() && toolType == MotionEvent.TOOL_TYPE_ERASER) || noteManager.inUserErasing()) {
-            if (isFingerTouch(toolType)) {
-                if (isEnableFingerErasing()) {
-                    forwardErasing(motionEvent);
-                }
-                return;
-            }
-            forwardErasing(motionEvent);
-        }
-        if (!(isUseRawInput() && renderByFramework())) {
-            forwardDrawing(motionEvent);
-        }
+    @Subscribe
+    public void onErasingTouchEvent(ErasingTouchEvent event) {
+        forwardErasing(event.getMotionEvent());
     }
 
     private boolean forwardDrawing(final MotionEvent motionEvent) {

@@ -13,13 +13,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
@@ -381,6 +376,7 @@ public class NoteManager {
     public void resumeRawDrawing() {
         getDocumentHelper().setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
         getTouchHelper().resumeRawDrawing();
+        updateInUserErasingState();
     }
 
     public Bitmap getRenderBitmap() {
@@ -448,6 +444,8 @@ public class NoteManager {
 
     public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
         getDocumentHelper().updateDrawingArgs(drawingArgs);
+        updateRenderByFrameworkState();
+        updateInUserErasingState();
     }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
@@ -478,6 +476,8 @@ public class NoteManager {
 
     public void setCurrentShapeType(int type) {
         getDocumentHelper().setCurrentShapeType(type);
+        updateRenderByFrameworkState();
+        updateInUserErasingState();
     }
 
     public void save(final Context context, final String title , boolean closeAfterSave) {
@@ -490,5 +490,14 @@ public class NoteManager {
 
     public void redo(final Context context) {
         getNoteDocument().getCurrentPage(context).redo(inSpanScribbleMode());
+    }
+
+    private void updateInUserErasingState() {
+        getTouchHelper().setInUserErasing(inUserErasing());
+    }
+
+    private void updateRenderByFrameworkState() {
+        boolean renderByFramework = ShapeFactory.isDFBShape(getDocumentHelper().getCurrentShapeType());
+        getTouchHelper().setRenderByFramework(renderByFramework);
     }
 }

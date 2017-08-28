@@ -87,6 +87,14 @@ public class TouchHelper {
         return rawInputManager;
     }
 
+    public void setInUserErasing(boolean inUserErasing) {
+        getTouchReader().setInUserErasing(inUserErasing);
+    }
+
+    public void setRenderByFramework(boolean renderByFramework) {
+        getTouchReader().setRenderByFramework(renderByFramework);
+    }
+
     public void pauseRawDrawing() {
         getRawInputManager().pauseRawDrawing();
         getEpdPenManager().pauseDrawing();
