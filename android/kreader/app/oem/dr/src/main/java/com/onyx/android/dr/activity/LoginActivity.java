@@ -1,5 +1,6 @@
 package com.onyx.android.dr.activity;
 
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -227,6 +228,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             college_students_info_layout.setVisibility(View.GONE);
             other_identity_info_layout.setVisibility(View.GONE);
             schoolchildren_layout.setVisibility(View.GONE);
+            teacher_info_layout.setVisibility(View.GONE);
             loginNextButton.setVisibility(View.GONE);
             CommonNotices.showMessage(this, getString(R.string.sign_up_succeed));
         }
@@ -390,7 +392,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         signUpInfo.info.address.city = spinnerCity.getText().toString();
         signUpInfo.info.address.district = spinnerCounty.getText().toString();
         String identity = userIdentity.getSelectedItem().toString();
-        signUpInfo.info.name = getGroupID(identity);
+        signUpInfo.groupId = getGroupID(identity);
         if (getString(R.string.Schoolchildren).equals(identity)) {
             schoolchildrenInfo(signUpInfo);
         } else if (getString(R.string.teacher).equals(identity)) {

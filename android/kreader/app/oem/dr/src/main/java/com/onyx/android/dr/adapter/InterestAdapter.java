@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -50,9 +51,15 @@ public class InterestAdapter extends PageRecyclerView.PageAdapter<InterestAdapte
     }
 
     @Override
-    public void onPageBindViewHolder(ViewHolder holder, int position) {
-        holder.interestCheckbox.setText(list.get(position).name);
-        list.get(position).checked = holder.interestCheckbox.isChecked();
+    public void onPageBindViewHolder(final ViewHolder holder, final int position) {
+        final InterestBean bean = list.get(position);
+        holder.interestCheckbox.setText(bean.name);
+        holder.interestCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                bean.checked = isChecked;
+            }
+        });
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

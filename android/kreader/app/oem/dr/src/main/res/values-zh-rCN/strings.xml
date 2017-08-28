@@ -35,7 +35,7 @@
     <string name="password_can_not_be_empty">密码不能为空</string>
     <string name="Schoolchildren">中小学生</string>
     <string name="College_Students">大学生</string>
-    <string name="teacher">教师</string>
+    <string name="teacher">老师</string>
     <string name="identity_title">请填写个人信息,以便系统推荐适合您学习进度的各类读物</string>
     <string name="username">用户名:</string>
     <string name="identity">身份:</string>
@@ -56,7 +56,7 @@
     <string name="chinese">语文</string>
     <string name="third_language">第二外语:</string>
     <string name="next_step">下一步</string>
-    <string name="other">其他</string>
+    <string name="other">社会人</string>
     <string name="prev_chapter">上一章</string>
     <string name="next_chapter">下一章</string>
     <string name="read_setting">阅读设置</string>

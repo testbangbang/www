@@ -58,7 +58,7 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
         lvTips = (PageRecyclerView) findViewById(R.id.search_lv_tips);
         adapter = new SearchHintListAdapter();
         lvTips.setAdapter(adapter);
-        title = (TextView) findViewById(R.id.title);
+        title = (TextView) findViewById(R.id.search_history_title);
         line = findViewById(R.id.line);
         clearHistory = (TextView) findViewById(R.id.clear_history);
         listLayout = (LinearLayout) findViewById(R.id.list_layout);
@@ -128,7 +128,6 @@ public class CustomSearchView extends LinearLayout implements View.OnClickListen
         adapter.notifyDataSetChanged();
         showHistory(true);
         listLayout.setVisibility(adapter.getList().size() == 0 ? GONE : VISIBLE);
-
     }
 
     /**
