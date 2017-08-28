@@ -110,6 +110,8 @@ public class RendererHelper {
         Bitmap bitmap = updateRenderBitmap(parent.getViewportSize());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
+        //TODO:when using dash effect,disable antialias for drawing rect.enhanced drawing speed.
+        paint.setAntiAlias(false);
         paint.setPathEffect(selectedDashPathEffect);
         RectF rect = new RectF(start.getX(), start.getY(), end.getX(), end.getY());
         canvas.drawRect(rect, paint);
