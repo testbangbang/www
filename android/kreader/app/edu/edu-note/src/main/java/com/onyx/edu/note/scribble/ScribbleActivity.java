@@ -92,7 +92,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     protected void onStart() {
         super.onStart();
-        EventBus.getDefault().register(this);
+        noteManager.registerEventBus(this);
         deviceReceiver.registerReceiver(this);
     }
 
@@ -114,7 +114,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     @Override
     protected void onStop() {
         deviceReceiver.unregisterReceiver(this);
-        EventBus.getDefault().unregister(this);
+        noteManager.unregisterEventBus(this);
         noteManager.quit();
         super.onStop();
     }

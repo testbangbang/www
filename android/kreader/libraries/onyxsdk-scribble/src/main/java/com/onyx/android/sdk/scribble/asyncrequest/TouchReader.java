@@ -3,19 +3,11 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 import android.graphics.Rect;
 import android.view.MotionEvent;
 
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginShapeSelectEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ShapeSelectingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -27,18 +19,13 @@ import java.util.List;
 
 public class TouchReader {
 
-    private NoteManager noteManager;
-    private Shape currentShape = null;
-    private TouchPointList shapeSelectPoints;
-    private TouchPointList erasePoints;
     private Rect limitRect = new Rect();
-    private boolean singleTouch = false;
-    private boolean bigPen = false;
-    private boolean fingerErasing = false;
-    private boolean rawInput = false;
+    private EventBus eventBus;
+    private boolean inUserErasing = false;
+    private boolean renderByFramework = false;
 
-    public TouchReader(NoteManager noteManager) {
-        this.noteManager = noteManager;
+    public TouchReader(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public TouchReader setLimitRect(Rect softwareLimitRect) {
@@ -46,195 +33,48 @@ public class TouchReader {
         return this;
     }
 
-    private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER;
+    public boolean isInUserErasing() {
+        return inUserErasing;
     }
 
-    private boolean isSingleTouch() {
-        return singleTouch;
+    public boolean isRenderByFramework() {
+        return renderByFramework;
     }
 
-    public TouchReader setSingleTouch(boolean single) {
-        singleTouch = single;
-        return this;
+    public void setInUserErasing(boolean inUserErasing) {
+        this.inUserErasing = inUserErasing;
     }
 
-    private boolean supportBigPen() {
-        return bigPen;
+    public void setRenderByFramework(boolean renderByFramework) {
+        this.renderByFramework = renderByFramework;
     }
 
-    public TouchReader useBigPen(boolean use) {
-        bigPen = use;
-        return this;
-    }
-
-    private boolean isEnableFingerErasing() {
-        return fingerErasing;
-    }
-
-    public TouchReader enableFingerErasing(boolean enable) {
-        fingerErasing = enable;
-        return this;
-    }
-
-    private boolean isUseRawInput() {
-        return rawInput;
-    }
-
-    public TouchReader useRawInput(boolean enable) {
-        rawInput = enable;
-        return this;
-    }
-
-    private boolean renderByFramework() {
-        return ShapeFactory.isDFBShape(noteManager.getDocumentHelper().getCurrentShapeType());
-    }
-
-    public boolean processTouchEvent(final MotionEvent motionEvent) {
+    public void processTouchEvent(final MotionEvent motionEvent) {
         if (motionEvent.getPointerCount() > 1) {
-            return true;
+            return;
         }
         int toolType = motionEvent.getToolType(0);
         if (isFingerTouch(toolType) && !isSingleTouch()) {
-            return true;
+            return;
         }
 
-        if ((supportBigPen() && toolType == MotionEvent.TOOL_TYPE_ERASER) || noteManager.inUserErasing()) {
+        if ((supportBigPen() && toolType == MotionEvent.TOOL_TYPE_ERASER) || isInUserErasing()) {
             if (isFingerTouch(toolType)) {
                 if (isEnableFingerErasing()) {
-                    return forwardErasing(motionEvent);
+                    eventBus.post(new ErasingTouchEvent(motionEvent));
+                    return;
                 }
-                return true;
+                return;
             }
-            return forwardErasing(motionEvent);
-        }
-        if (noteManager.getDocumentHelper().inShapeSelecting()){
-            return forwardShapeSelecting(motionEvent);
-        }
-        if (!(isUseRawInput() && renderByFramework())) {
-            return forwardDrawing(motionEvent);
-        }
-        return true;
-    }
-
-    private boolean forwardDrawing(final MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            onDrawingTouchDown(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-            onDrawingTouchMove(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            onDrawingTouchUp(motionEvent);
-        }
-        return true;
-    }
-
-    private boolean forwardShapeSelecting(final MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            onBeginShapeSelecting(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-            onShapeSelecting(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            onFinishShapeSelecting();
-        }
-        return true;
-    }
-
-    private boolean forwardErasing(final MotionEvent motionEvent) {
-        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-            onBeginErasing();
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-            onErasing(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
-            onFinishErasing();
-        }
-        return true;
-    }
-
-    private void beforeDownMessage(final Shape currentShape) {
-        if (ShapeFactory.isDFBShape(currentShape.getType())) {
-            noteManager.enableScreenPost(false);
-        } else {
-            noteManager.enableScreenPost(true);
-        }
-    }
-
-    private Shape createNewShape(boolean isSpanTextMode, int type) {
-        Shape shape = ShapeFactory.createShape(type);
-        shape.setStrokeWidth(noteManager.getDocumentHelper().getStrokeWidth());
-        shape.setColor(noteManager.getDocumentHelper().getStrokeColor());
-        shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
-        return shape;
-    }
-
-    private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape(noteManager.inSpanScribbleMode(), noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
-        beforeDownMessage(currentShape);
-        noteManager.onNewShape(currentShape);
-        final TouchPoint normalized = new TouchPoint(motionEvent);
-        final TouchPoint screen = touchPointFromNormalized(normalized);
-        if (!checkTouchPoint(normalized)) {
+            eventBus.post(new ErasingTouchEvent(motionEvent));
             return;
         }
-        currentShape.onDown(normalized, screen);
-        noteManager.setDrawing(true);
-        EventBus.getDefault().post(new DrawingTouchDownEvent(motionEvent,currentShape));
+        if (!(isUseRawInput() && isRenderByFramework())) {
+            eventBus.post(new DrawingTouchEvent(motionEvent));
+        }
     }
 
-    private void onDrawingTouchMove(final MotionEvent motionEvent) {
-        if (currentShape == null) {
-            return;
-        }
-        int n = motionEvent.getHistorySize();
-        for(int i = 0; i < n; ++i) {
-            final TouchPoint normalized = fromHistorical(motionEvent, i);
-            final TouchPoint screen = touchPointFromNormalized(normalized);
-            if (!checkTouchPoint(normalized)) {
-                continue;
-            }
-            currentShape.onMove(normalized, screen);
-        }
-        EventBus.getDefault().post(new DrawingTouchMoveEvent(motionEvent,currentShape,false));
-
-        final TouchPoint normalized = new TouchPoint(motionEvent);
-        final TouchPoint screen = touchPointFromNormalized(normalized);
-        if (!checkTouchPoint(normalized)) {
-            return;
-        }
-        currentShape.onMove(normalized, screen);
-        noteManager.setDrawing(true);
-        EventBus.getDefault().post(new DrawingTouchMoveEvent(motionEvent,currentShape,true));
-    }
-
-    private void onDrawingTouchUp(final MotionEvent motionEvent) {
-        if (currentShape == null) {
-            return;
-        }
-        final TouchPoint normalized = new TouchPoint(motionEvent);
-        final TouchPoint screen = touchPointFromNormalized(normalized);
-        if (!checkTouchPoint(normalized)) {
-            return;
-        }
-        currentShape.onUp(normalized, screen);
-        noteManager.setDrawing(false);
-        EventBus.getDefault().post(new DrawingTouchUpEvent(motionEvent, currentShape));
-    }
-
-    private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
-        // TODO
-        //return viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
-        return normalized;
-    }
-
-    private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
-        return new TouchPoint(motionEvent.getHistoricalX(i),
-                motionEvent.getHistoricalY(i),
-                motionEvent.getHistoricalPressure(i),
-                motionEvent.getHistoricalSize(i),
-                motionEvent.getHistoricalEventTime(i));
-    }
-
-
-    private boolean checkTouchPoint(final TouchPoint touchPoint) {
+    public boolean checkTouchPoint(final TouchPoint touchPoint) {
         return limitRect.contains((int) touchPoint.x, (int) touchPoint.y);
     }
 
@@ -251,47 +91,28 @@ public class TouchReader {
         return true;
     }
 
-
-    private void onBeginErasing() {
-        erasePoints = new TouchPointList();
-        EventBus.getDefault().post(new BeginErasingEvent());
+    private boolean isFingerTouch(int toolType) {
+        return toolType == MotionEvent.TOOL_TYPE_FINGER;
     }
 
-    private boolean onErasing(final MotionEvent motionEvent) {
-        EventBus.getDefault().post(new ErasingEvent(new TouchPoint(motionEvent), false));
-        if (erasePoints != null) {
-            int n = motionEvent.getHistorySize();
-            for(int i = 0; i < n; ++i) {
-                erasePoints.add(fromHistorical(motionEvent, i));
-            }
-            erasePoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
-        }
-        return true;
+    private boolean isSingleTouch() {
+        return getDeviceConfig().isSingleTouch();
     }
 
-    private void onFinishErasing() {
-        EventBus.getDefault().post(new EraseTouchPointListReceivedEvent(erasePoints));
+    private boolean supportBigPen() {
+        return getDeviceConfig().supportBigPen();
     }
 
-    private void onBeginShapeSelecting(MotionEvent motionEvent) {
-        shapeSelectPoints = new TouchPointList();
-        EventBus.getDefault().post(new BeginShapeSelectEvent(motionEvent));
+    private boolean isEnableFingerErasing() {
+        return getDeviceConfig().isEnableFingerErasing();
     }
 
-    private boolean onShapeSelecting(final MotionEvent motionEvent) {
-        EventBus.getDefault().post(new ShapeSelectingEvent(motionEvent));
-        if (shapeSelectPoints != null) {
-            int n = motionEvent.getHistorySize();
-            for(int i = 0; i < n; ++i) {
-                shapeSelectPoints.add(fromHistorical(motionEvent, i));
-            }
-            shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(),
-                    motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
-        }
-        return true;
+    private boolean isUseRawInput() {
+        return getDeviceConfig().useRawInput();
     }
 
-    private void onFinishShapeSelecting() {
-        EventBus.getDefault().post(new ShapeSelectTouchPointListReceivedEvent(shapeSelectPoints));
+    private DeviceConfig getDeviceConfig() {
+        return ConfigManager.getInstance().getDeviceConfig();
     }
+
 }

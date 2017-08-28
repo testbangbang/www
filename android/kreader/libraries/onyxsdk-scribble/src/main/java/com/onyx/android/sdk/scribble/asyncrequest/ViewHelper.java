@@ -6,6 +6,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by lxm on 2017/8/15.
  */
@@ -14,10 +16,10 @@ public class ViewHelper {
 
     private SurfaceView hostView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
-    private NoteManager parent;
+    private EventBus eventBus;
 
-    public ViewHelper(NoteManager noteManager) {
-        parent = noteManager;
+    public ViewHelper(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public void setHostView(SurfaceView hostView) {

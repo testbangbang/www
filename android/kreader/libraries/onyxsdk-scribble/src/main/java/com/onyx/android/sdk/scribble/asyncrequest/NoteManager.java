@@ -13,13 +13,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
@@ -61,8 +56,7 @@ public class NoteManager {
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
     private Context appContext;
     private RequestManager requestManager = new RequestManager();
-    private DeviceConfig deviceConfig;
-    private MappingConfig mappingConfig;
+    private EventBus eventBus = new EventBus();
     private List<Shape> dirtyStash = new ArrayList<>();
     private boolean drawing = false;
     private @ScribbleMode.ScribbleModeDef
@@ -82,20 +76,31 @@ public class NoteManager {
 
     public NoteManager(Context context) {
         appContext = context.getApplicationContext();
-        initRawResource(appContext);
+        ConfigManager.init(appContext);
     }
 
-    private void initRawResource(final Context context) {
-        deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        mappingConfig = MappingConfig.sharedInstance(context, "note");
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void post(Object event) {
+        getEventBus().post(event);
+    }
+
+    public void registerEventBus(Object subscriber) {
+        getEventBus().register(subscriber);
+    }
+
+    public void unregisterEventBus(Object subscriber) {
+        getEventBus().unregister(subscriber);
     }
 
     public DeviceConfig getDeviceConfig() {
-        return deviceConfig;
+        return ConfigManager.getInstance().getDeviceConfig();
     }
 
     public MappingConfig getMappingConfig() {
-        return mappingConfig;
+        return ConfigManager.getInstance().getMappingConfig();
     }
 
     public Context getAppContext() {
@@ -125,14 +130,14 @@ public class NoteManager {
 
     public ViewHelper getViewHelper() {
         if (viewHelper == null) {
-            viewHelper = new ViewHelper(this);
+            viewHelper = new ViewHelper(eventBus);
         }
         return viewHelper;
     }
 
     public TouchHelper getTouchHelper() {
         if (touchHelper == null) {
-            touchHelper = new TouchHelper(this);
+            touchHelper = new TouchHelper(eventBus);
         }
         return touchHelper;
     }
@@ -264,15 +269,6 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
-        Log.e(TAG, "onRawTouchPointListReceivedEvent");
-        if (inSpanScribbleMode()) {
-            buildSpan();
-        }
-        EventBus.getDefault().post(new RawDataReceivedEvent());
-    }
-
-    @Subscribe
     public void onBeginErasingEvent(BeginErasingEvent event) {
         Log.e(TAG, "onBeginErasingEvent");
         onBeginErasing();
@@ -290,33 +286,6 @@ public class NoteManager {
         onFinishErasing(event.getTouchPointList());
     }
 
-    @Subscribe
-    public void onDrawingTouchDownEvent(DrawingTouchDownEvent event) {
-        Log.e(TAG, "onDrawingTouchDownEvent: ");
-        if (!event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
-    }
-
-    @Subscribe
-    public void onDrawingTouchMoveEvent(DrawingTouchMoveEvent event) {
-        Log.e(TAG, "onDrawingTouchMoveEvent: ");
-        if (event.isLast() && !event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
-    }
-
-    @Subscribe
-    public void onDrawingTouchUpEvent(DrawingTouchUpEvent event) {
-        Log.e(TAG, "onDrawingTouchUpEvent: ");
-        if (!event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
-        if (inSpanScribbleMode()) {
-            buildSpan();
-        }
-    }
-
     public SurfaceView getHostView() {
         return getViewHelper().getHostView();
     }
@@ -324,7 +293,7 @@ public class NoteManager {
     public void setView(SurfaceView surfaceView) {
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().setup(surfaceView);
-        EventBus.getDefault().register(this);
+        registerEventBus(this);
     }
 
     protected void onBeginErasing() {
@@ -351,7 +320,7 @@ public class NoteManager {
     }
 
     public void quit() {
-        EventBus.getDefault().unregister(this);
+        unregisterEventBus(this);
         getTouchHelper().quit();
         getViewHelper().quit();
         resetScribbleMode();
@@ -407,6 +376,7 @@ public class NoteManager {
     public void resumeRawDrawing() {
         getDocumentHelper().setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
         getTouchHelper().resumeRawDrawing();
+        updateInUserErasingState();
     }
 
     public Bitmap getRenderBitmap() {
@@ -474,6 +444,8 @@ public class NoteManager {
 
     public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
         getDocumentHelper().updateDrawingArgs(drawingArgs);
+        updateRenderByFrameworkState();
+        updateInUserErasingState();
     }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
@@ -504,6 +476,8 @@ public class NoteManager {
 
     public void setCurrentShapeType(int type) {
         getDocumentHelper().setCurrentShapeType(type);
+        updateRenderByFrameworkState();
+        updateInUserErasingState();
     }
 
     public void save(final Context context, final String title , boolean closeAfterSave) {
@@ -516,5 +490,14 @@ public class NoteManager {
 
     public void redo(final Context context) {
         getNoteDocument().getCurrentPage(context).redo(inSpanScribbleMode());
+    }
+
+    private void updateInUserErasingState() {
+        getTouchHelper().setInUserErasing(inUserErasing());
+    }
+
+    private void updateRenderByFrameworkState() {
+        boolean renderByFramework = ShapeFactory.isDFBShape(getDocumentHelper().getCurrentShapeType());
+        getTouchHelper().setRenderByFramework(renderByFramework);
     }
 }

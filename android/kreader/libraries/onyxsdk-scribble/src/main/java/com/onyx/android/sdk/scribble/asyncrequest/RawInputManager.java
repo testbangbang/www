@@ -25,12 +25,12 @@ public class RawInputManager {
     private static final String TAG = RawInputManager.class.getSimpleName();
 
     private RawInputProcessor rawInputProcessor = null;
-    private NoteManager noteManager;
     private boolean useRawInput = true;
     private TouchPointList erasePoints;
+    private EventBus eventBus;
 
-    public RawInputManager(NoteManager noteManager) {
-        this.noteManager = noteManager;
+    public RawInputManager(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public void startRawInputProcessor() {
@@ -40,7 +40,7 @@ public class RawInputManager {
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
             public void onBeginRawData() {
-                EventBus.getDefault().post(new BeginRawDataEvent());
+                eventBus.post(new BeginRawDataEvent());
             }
 
             @Override
@@ -50,12 +50,12 @@ public class RawInputManager {
 
             @Override
             public void onBeginErasing() {
-                EventBus.getDefault().post(new BeginErasingEvent());
+                eventBus.post(new BeginErasingEvent());
             }
 
             @Override
             public void onEraseTouchPointListReceived(final TouchPointList pointList) {
-                EventBus.getDefault().post(new ErasingEvent(null, false));
+                eventBus.post(new ErasingEvent(null, false));
             }
 
             @Override
@@ -64,7 +64,7 @@ public class RawInputManager {
 
             @Override
             public void onEndErasing() {
-                EventBus.getDefault().post(new EraseTouchPointListReceivedEvent(erasePoints));
+                eventBus.post(new EraseTouchPointListReceivedEvent(erasePoints));
             }
         });
         startRawDrawing();
@@ -74,19 +74,7 @@ public class RawInputManager {
         if (!isUseRawInput()) {
             return;
         }
-        Shape shape = createNewShape(noteManager.inSpanScribbleMode(),
-                noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
-        shape.addPoints(pointList);
-        noteManager.onNewShape(shape);
-        EventBus.getDefault().post(new RawTouchPointListReceivedEvent(shape,pointList));
-    }
-
-    private Shape createNewShape(boolean isSpanTextMode, int type) {
-        Shape shape = ShapeFactory.createShape(type);
-        shape.setStrokeWidth(noteManager.getDocumentHelper().getStrokeWidth());
-        shape.setColor(noteManager.getDocumentHelper().getStrokeColor());
-        shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
-        return shape;
+        eventBus.post(new RawTouchPointListReceivedEvent(pointList));
     }
 
     private void startRawDrawing() {
