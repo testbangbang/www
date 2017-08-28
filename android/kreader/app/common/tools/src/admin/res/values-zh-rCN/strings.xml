@@ -26,6 +26,7 @@
     <string name="btn_admin_bind">管理员手机绑定</string>
     <string name="fields_following_required">*以下均为必填项</string>
     <string name="required_fields_is_empty">还有必填项没有填写</string>
+    <string name="field_is_optional">(可选项)</string>
     <string name="apply_bind_fail">申请提交失败</string>
     <string name="apply_bind_success">已经提交绑定申请，请等待1&#8211;3个工作日审核批准</string>
 
