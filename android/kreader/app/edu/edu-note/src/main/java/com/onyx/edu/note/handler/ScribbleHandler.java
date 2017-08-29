@@ -166,7 +166,7 @@ public class ScribbleHandler extends BaseHandler {
     public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
-                noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
+                switchToSpanLayoutMode();
                 break;
             case ScribbleToolBarMenuID.EXPORT:
                 break;
@@ -182,6 +182,15 @@ public class ScribbleHandler extends BaseHandler {
             case ScribbleToolBarMenuID.SETTING:
                 break;
         }
+    }
+
+    private void switchToSpanLayoutMode() {
+        noteManager.syncWithCallback(true, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SPAN_SCRIBBLE));
+            }
+        });
     }
 
     @Override
