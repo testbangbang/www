@@ -191,6 +191,7 @@ public class RawInputProcessor {
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        resetPointList();
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapToView(touchPoint);
         if (addToList(touchPoint, true)) {
