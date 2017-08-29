@@ -44,11 +44,11 @@ public class DocumentHelper {
     }
 
     public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo(parent.inSpanScribbleMode());
+        getNoteDocument().getCurrentPage(context).undo(parent.inSpanLayoutMode());
     }
 
     public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo(parent.inSpanScribbleMode());
+        getNoteDocument().getCurrentPage(context).redo(parent.inSpanLayoutMode());
     }
 
     public void clearPageUndoRedo(final Context context) {

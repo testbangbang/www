@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -62,14 +61,14 @@ public class NoteManager {
     private List<Shape> dirtyStash = new ArrayList<>();
     private boolean drawing = false;
     private @ScribbleMode.ScribbleModeDef
-    int mCurrentScribbleMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
+    int currentLayoutMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
 
     public int getCurrentScribbleMode() {
-        return mCurrentScribbleMode;
+        return currentLayoutMode;
     }
 
     public void setCurrentScribbleMode(int currentScribbleMode) {
-        mCurrentScribbleMode = currentScribbleMode;
+        currentLayoutMode = currentScribbleMode;
     }
 
     public void resetScribbleMode() {
@@ -189,7 +188,7 @@ public class NoteManager {
                                  boolean resume,
                                  final BaseCallback callback) {
         final List<Shape> stash = detachStash();
-        if (inSpanScribbleMode()) {
+        if (inSpanLayoutMode()) {
             stash.clear();
         }
         PageFlushRequest flushRequest = new PageFlushRequest(stash, render, resume, shapeDataInfo.getDrawingArgs());
@@ -333,8 +332,8 @@ public class NoteManager {
         resetScribbleMode();
     }
 
-    public boolean inSpanScribbleMode() {
-        return mCurrentScribbleMode == ScribbleMode.MODE_SPAN_SCRIBBLE;
+    public boolean inSpanLayoutMode() {
+        return currentLayoutMode == ScribbleMode.MODE_SPAN_SCRIBBLE;
     }
 
     public void drawSpanLayoutBackground(final RenderContext renderContext) {
@@ -492,11 +491,11 @@ public class NoteManager {
     }
 
     public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo(inSpanScribbleMode());
+        getNoteDocument().getCurrentPage(context).undo(inSpanLayoutMode());
     }
 
     public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo(inSpanScribbleMode());
+        getNoteDocument().getCurrentPage(context).redo(inSpanLayoutMode());
     }
 
     private void updateInUserErasingState() {
