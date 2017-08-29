@@ -9,6 +9,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
@@ -31,6 +32,7 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -125,6 +127,25 @@ public class RendererHelper {
         boundingPaint.setStyle(Paint.Style.STROKE);
         boundingPaint.setPathEffect(selectedDashPathEffect);
         renderContext.canvas.drawRect(selectedRectF, boundingPaint);
+        drawCornerPoint(selectedRectF, renderContext);
+    }
+
+    private void drawCornerPoint(RectF selectedRectF,RenderContext renderContext){
+        Paint cornerPointPaint = new Paint(Color.BLACK);
+        cornerPointPaint.setStyle(Paint.Style.FILL);
+        PointF leftTopCornerPoint,rightTopCornerPoint,leftBottomCornerPoint,rightBottomCornerPoint;
+        leftTopCornerPoint = new PointF(selectedRectF.left,selectedRectF.top);
+        rightTopCornerPoint = new PointF(selectedRectF.right,selectedRectF.top);
+        leftBottomCornerPoint = new PointF(selectedRectF.left,selectedRectF.bottom);
+        rightBottomCornerPoint = new PointF(selectedRectF.right,selectedRectF.bottom);
+        ArrayList<PointF> dragPointList = new ArrayList<>();
+        dragPointList.add(leftTopCornerPoint);
+        dragPointList.add(rightTopCornerPoint);
+        dragPointList.add(leftBottomCornerPoint);
+        dragPointList.add(rightBottomCornerPoint);
+        for (PointF pointF : dragPointList) {
+            renderContext.canvas.drawCircle(pointF.x, pointF.y, 5, cornerPointPaint);
+        }
     }
 
     private Paint preparePaint(final NoteManager parent) {
