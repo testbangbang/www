@@ -13,7 +13,8 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
@@ -32,6 +33,7 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.android.sdk.scribble.view.LinedEditText;
+import com.onyx.android.sdk.utils.Debug;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -264,25 +266,30 @@ public class NoteManager {
 
     @Subscribe
     public void onBeginRawDataEvent(BeginRawDataEvent event) {
-        Log.e(TAG, "onBeginRawDataEvent");
+        Debug.e(getClass(), "onBeginRawDataEvent");
         removeSpanRunnable();
     }
 
     @Subscribe
     public void onBeginErasingEvent(BeginErasingEvent event) {
-        Log.e(TAG, "onBeginErasingEvent");
+        Debug.i(getClass(), "onBeginErasingEvent");
         onBeginErasing();
     }
 
     @Subscribe
     public void onErasingEvent(ErasingEvent event) {
-        Log.e(TAG, "onErasingEvent: ");
         onErasing(event.getTouchPoint(), event.isShowIndicator());
     }
 
     @Subscribe
-    public void onEraseTouchPointListReceivedEvent(EraseTouchPointListReceivedEvent event) {
-        Log.e(TAG, "onEraseTouchPointListReceivedEvent: ");
+    public void onTouchErasePointsReceivedEvent(TouchErasePointsReceivedEvent event) {
+        Debug.i(getClass(), "onTouchErasePointsReceivedEvent: ");
+        onFinishErasing(event.getTouchPointList());
+    }
+
+    @Subscribe
+    public void onRawErasePointsReceivedEvent(RawErasePointsReceivedEvent event) {
+        Debug.i(getClass(), "onRawErasePointsReceivedEvent: ");
         onFinishErasing(event.getTouchPointList());
     }
 

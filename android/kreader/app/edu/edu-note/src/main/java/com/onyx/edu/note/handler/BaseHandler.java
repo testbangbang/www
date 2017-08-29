@@ -8,7 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
@@ -233,35 +233,11 @@ public abstract class BaseHandler {
     }
 
     private void onFinishErasing() {
-        noteManager.post(new EraseTouchPointListReceivedEvent(erasePoints));
+        noteManager.post(new TouchErasePointsReceivedEvent(erasePoints));
     }
 
     private void drawCurrentPage() {
         AsyncBaseNoteRequest request = new AsyncBaseNoteRequest();
         noteManager.submitRequest(request, null);
-    }
-
-    private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER;
-    }
-
-    private boolean isSingleTouch() {
-        return noteManager.getDeviceConfig().isSingleTouch();
-    }
-
-    private boolean supportBigPen() {
-        return noteManager.getDeviceConfig().supportBigPen();
-    }
-
-    private boolean isEnableFingerErasing() {
-        return noteManager.getDeviceConfig().isEnableFingerErasing();
-    }
-
-    private boolean isUseRawInput() {
-        return noteManager.getDeviceConfig().useRawInput();
-    }
-
-    private boolean renderByFramework() {
-        return ShapeFactory.isDFBShape(noteManager.getDocumentHelper().getCurrentShapeType());
     }
 }
