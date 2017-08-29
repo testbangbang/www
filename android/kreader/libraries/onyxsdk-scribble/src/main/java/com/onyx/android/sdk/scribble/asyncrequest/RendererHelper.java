@@ -133,16 +133,11 @@ public class RendererHelper {
     private void drawCornerPoint(RectF selectedRectF,RenderContext renderContext){
         Paint cornerPointPaint = new Paint(Color.BLACK);
         cornerPointPaint.setStyle(Paint.Style.FILL);
-        PointF leftTopCornerPoint,rightTopCornerPoint,leftBottomCornerPoint,rightBottomCornerPoint;
-        leftTopCornerPoint = new PointF(selectedRectF.left,selectedRectF.top);
-        rightTopCornerPoint = new PointF(selectedRectF.right,selectedRectF.top);
-        leftBottomCornerPoint = new PointF(selectedRectF.left,selectedRectF.bottom);
-        rightBottomCornerPoint = new PointF(selectedRectF.right,selectedRectF.bottom);
         ArrayList<PointF> dragPointList = new ArrayList<>();
-        dragPointList.add(leftTopCornerPoint);
-        dragPointList.add(rightTopCornerPoint);
-        dragPointList.add(leftBottomCornerPoint);
-        dragPointList.add(rightBottomCornerPoint);
+        dragPointList.add(new PointF(selectedRectF.left,selectedRectF.top));
+        dragPointList.add(new PointF(selectedRectF.right,selectedRectF.top));
+        dragPointList.add(new PointF(selectedRectF.left,selectedRectF.bottom));
+        dragPointList.add(new PointF(selectedRectF.right,selectedRectF.bottom));
         for (PointF pointF : dragPointList) {
             renderContext.canvas.drawCircle(pointF.x, pointF.y, 5, cornerPointPaint);
         }
