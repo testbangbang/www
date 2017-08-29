@@ -65,38 +65,60 @@ public class RendererHelper {
         renderBitmapWrapper.clear();
     }
 
-    public void renderVisiblePagesInBitmap(final NoteManager parent, final AsyncBaseNoteRequest request) {
+    private RenderContext createRenderContext(final NoteManager parent) {
         Bitmap bitmap = updateRenderBitmap(parent.getViewportSize());
         bitmap.eraseColor(Color.WHITE);
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
-
-        if (!parent.inSpanLayoutMode()) {
-            drawBackground(parent.getAppContext(),
-                    canvas, paint, parent.getNoteDocument().getBackground(),
-                    parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
-        }
-        prepareRenderingBuffer(bitmap);
-
         final Matrix renderMatrix = new Matrix();
-        final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
+        return RenderContext.create(bitmap, canvas, paint, renderMatrix);
+    }
+
+    private void renderNormalVisiblePages(final NoteManager parent, final AsyncBaseNoteRequest request) {
+        final RenderContext renderContext = createRenderContext(parent);
+        drawNormalLayoutBackground(parent, renderContext.canvas, renderContext.paint);
+
+        prepareRenderingBuffer(renderContext.bitmap);
+        renderVisiblePages(parent, request, renderContext);
+
+        flushRenderingBuffer(renderContext.bitmap);
+        drawRandomTestPath(request, renderContext.canvas, renderContext.paint);
+    }
+
+    private void renderSpanVisiblePages(final NoteManager parent, final AsyncBaseNoteRequest request) {
+        final RenderContext renderContext = createRenderContext(parent);
+
+        prepareRenderingBuffer(renderContext.bitmap);
+        renderVisiblePages(parent, request, renderContext);
+
+        renderSpanCursorShape(parent, renderContext);
+        drawSpanLayoutBackground(parent, renderContext);
+
+        flushRenderingBuffer(renderContext.bitmap);
+        drawRandomTestPath(request, renderContext.canvas, renderContext.paint);
+    }
+
+    private void renderVisiblePages(final NoteManager parent,
+                                    final AsyncBaseNoteRequest request,
+                                    final RenderContext renderContext) {
         for (PageInfo page : request.getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(parent.getAppContext(), page.getName());
             renderContext.force = notePage.getSelectedRect() != null;
             notePage.render(renderContext, null);
             renderSelectedRect(notePage.getSelectedRect(), renderContext);
         }
-        renderSpanCursorShape(parent, renderContext);
-        drawSpanLayoutBackground(parent, renderContext);
 
-        flushRenderingBuffer(bitmap);
-        drawRandomTestPath(request, canvas, paint);
+    }
+
+    public void renderVisiblePagesInBitmap(final NoteManager parent, final AsyncBaseNoteRequest request) {
+        if (parent.inSpanLayoutMode()) {
+            renderSpanVisiblePages(parent, request);
+        }else {
+            renderNormalVisiblePages(parent, request);
+        }
     }
 
     private void renderSpanCursorShape(final NoteManager parent, final RenderContext renderContext) {
-        if (!parent.inSpanLayoutMode()) {
-            return;
-        }
         Shape cursorShape = parent.getSpanCursorShape();
         if (cursorShape == null) {
             return;
@@ -106,6 +128,12 @@ public class RendererHelper {
 
     private void drawSpanLayoutBackground(final NoteManager parent, final RenderContext renderContext) {
         parent.drawSpanLayoutBackground(renderContext);
+    }
+
+    private void drawNormalLayoutBackground(final NoteManager parent, final Canvas canvas, final Paint paint) {
+        drawBackground(parent.getAppContext(),
+                canvas, paint, parent.getNoteDocument().getBackground(),
+                parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
     }
 
     public void renderSelectionRectangle(final NoteManager parent, final TouchPoint start, final TouchPoint end) {
