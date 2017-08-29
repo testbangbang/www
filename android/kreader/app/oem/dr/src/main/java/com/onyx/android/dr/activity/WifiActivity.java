@@ -14,6 +14,9 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.WifiSettingAdapter;
+import com.onyx.android.dr.devicesetting.data.wifi.AccessPoint;
+import com.onyx.android.dr.devicesetting.data.wifi.WifiUtil;
+import com.onyx.android.dr.devicesetting.manager.WifiAdmin;
 import com.onyx.android.dr.devicesetting.ui.dialog.WifiConnectedDialog;
 import com.onyx.android.dr.devicesetting.ui.dialog.WifiLoginDialog;
 import com.onyx.android.dr.devicesetting.ui.dialog.WifiSavedDialog;
@@ -22,9 +25,6 @@ import com.onyx.android.dr.util.AppConfig;
 import com.onyx.android.dr.util.CommonUtil;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
-import com.onyx.android.sdk.wifi.AccessPoint;
-import com.onyx.android.sdk.wifi.WifiAdmin;
-import com.onyx.android.sdk.wifi.WifiUtil;
 import com.umeng.analytics.MobclickAgent;
 
 import java.net.SocketException;
