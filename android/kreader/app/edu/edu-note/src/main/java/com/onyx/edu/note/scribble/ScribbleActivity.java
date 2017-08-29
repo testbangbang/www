@@ -55,7 +55,6 @@ import com.onyx.android.sdk.scribble.view.LinedEditText;
 import com.onyx.edu.note.util.Constant;
 import com.onyx.edu.note.util.Utils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
@@ -383,7 +382,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void loadLineLayoutShapes() {
-        if (noteManager.inSpanScribbleMode()) {
+        if (noteManager.inSpanLayoutMode()) {
             noteManager.loadPageShapes();
         }
     }
@@ -394,7 +393,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void showSubMenu(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
-        mSubMenu.show(mainMenuID, mViewModel.getSubMenuIDList(mainMenuID), noteManager.inSpanScribbleMode());
+        mSubMenu.show(mainMenuID, mViewModel.getSubMenuIDList(mainMenuID), noteManager.inSpanLayoutMode());
     }
 
     private boolean hideSubMenu() {
@@ -430,7 +429,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Subscribe
     public void onRawDataReceived(RawDataReceivedEvent event) {
-        if (!noteManager.inSpanScribbleMode()) {
+        if (!noteManager.inSpanLayoutMode()) {
             new RenderInBackgroundAction().execute(noteManager, null);
         }
     }
@@ -508,7 +507,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         noteManager.setCurrentScribbleMode(event.getTargetScribbleMode());
         noteManager.clearPageUndoRedo(ScribbleActivity.this);
         noteManager.clearShapeSelectRecord();
-        if (noteManager.inSpanScribbleMode()) {
+        if (noteManager.inSpanLayoutMode()) {
             mBinding.spanTextView.post(new Runnable() {
                 @Override
                 public void run() {

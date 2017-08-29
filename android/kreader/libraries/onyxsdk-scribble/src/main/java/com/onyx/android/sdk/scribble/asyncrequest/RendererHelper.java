@@ -71,7 +71,7 @@ public class RendererHelper {
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
 
-        if (!parent.inSpanScribbleMode()) {
+        if (!parent.inSpanLayoutMode()) {
             drawBackground(parent.getAppContext(),
                     canvas, paint, parent.getNoteDocument().getBackground(),
                     parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
@@ -94,7 +94,7 @@ public class RendererHelper {
     }
 
     private void renderSpanCursorShape(final NoteManager parent, final RenderContext renderContext) {
-        if (!parent.inSpanScribbleMode()) {
+        if (!parent.inSpanLayoutMode()) {
             return;
         }
         Shape cursorShape = parent.getSpanCursorShape();

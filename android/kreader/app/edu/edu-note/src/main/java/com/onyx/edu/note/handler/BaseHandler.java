@@ -93,7 +93,7 @@ public abstract class BaseHandler {
 
     @Subscribe
     public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
-        Shape shape = createNewShape(noteManager.inSpanScribbleMode(),
+        Shape shape = createNewShape(noteManager.inSpanLayoutMode(),
                 noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
         shape.addPoints(event.getTouchPointList());
         noteManager.onNewShape(shape);
@@ -130,7 +130,7 @@ public abstract class BaseHandler {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape(noteManager.inSpanScribbleMode(), noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
+        currentShape = createNewShape(noteManager.inSpanLayoutMode(), noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
         beforeDownMessage(currentShape);
         noteManager.onNewShape(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);

@@ -28,7 +28,6 @@ import com.onyx.android.sdk.scribble.view.LinedEditText;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.apache.commons.collections4.MapUtils;
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -304,7 +303,7 @@ public class SpanHelper {
     }
 
     public void drawLineLayoutBackground(final RenderContext renderContext, View hostView) {
-        if (!noteManager.inSpanScribbleMode()) {
+        if (!noteManager.inSpanLayoutMode()) {
             return;
         }
         if (hostView == null) {
