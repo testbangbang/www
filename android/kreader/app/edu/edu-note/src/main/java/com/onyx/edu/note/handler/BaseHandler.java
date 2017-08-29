@@ -240,28 +240,4 @@ public abstract class BaseHandler {
         AsyncBaseNoteRequest request = new AsyncBaseNoteRequest();
         noteManager.submitRequest(request, null);
     }
-
-    private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER;
-    }
-
-    private boolean isSingleTouch() {
-        return noteManager.getDeviceConfig().isSingleTouch();
-    }
-
-    private boolean supportBigPen() {
-        return noteManager.getDeviceConfig().supportBigPen();
-    }
-
-    private boolean isEnableFingerErasing() {
-        return noteManager.getDeviceConfig().isEnableFingerErasing();
-    }
-
-    private boolean isUseRawInput() {
-        return noteManager.getDeviceConfig().useRawInput();
-    }
-
-    private boolean renderByFramework() {
-        return ShapeFactory.isDFBShape(noteManager.getDocumentHelper().getCurrentShapeType());
-    }
 }
