@@ -94,7 +94,7 @@ public abstract class BaseHandler {
     @Subscribe
     public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
         Shape shape = createNewShape(noteManager.inSpanLayoutMode(),
-                noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
+                noteManager.getShapeDataInfo().getCurrentShapeType());
         shape.addPoints(event.getTouchPointList());
         noteManager.onNewShape(shape);
         onRawTouchPointListReceived();
@@ -102,8 +102,8 @@ public abstract class BaseHandler {
 
     private Shape createNewShape(boolean isSpanTextMode, int type) {
         Shape shape = ShapeFactory.createShape(type);
-        shape.setStrokeWidth(noteManager.getDocumentHelper().getStrokeWidth());
-        shape.setColor(noteManager.getDocumentHelper().getStrokeColor());
+        shape.setStrokeWidth(noteManager.getShapeDataInfo().getStrokeWidth());
+        shape.setColor(noteManager.getShapeDataInfo().getStrokeColor());
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }
@@ -130,7 +130,7 @@ public abstract class BaseHandler {
     }
 
     private void onDrawingTouchDown(final MotionEvent motionEvent) {
-        currentShape = createNewShape(noteManager.inSpanLayoutMode(), noteManager.getDocumentHelper().getNoteDrawingArgs().getCurrentShapeType());
+        currentShape = createNewShape(noteManager.inSpanLayoutMode(), noteManager.getShapeDataInfo().getCurrentShapeType());
         beforeDownMessage(currentShape);
         noteManager.onNewShape(currentShape);
         final TouchPoint normalized = new TouchPoint(motionEvent);
