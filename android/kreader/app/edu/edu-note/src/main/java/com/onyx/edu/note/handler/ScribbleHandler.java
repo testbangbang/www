@@ -360,6 +360,11 @@ public class ScribbleHandler extends BaseHandler {
         renderInBackground();
     }
 
+    @Override
+    public void onDrawingTouchUp() {
+        noteManager.syncWithCallback(false, false, null);
+    }
+
     private void renderInBackground() {
         new RenderInBackgroundAction().execute(noteManager, null);
     }
