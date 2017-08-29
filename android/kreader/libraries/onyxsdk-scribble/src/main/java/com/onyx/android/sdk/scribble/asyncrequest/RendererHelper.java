@@ -9,6 +9,7 @@ import android.graphics.DashPathEffect;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
@@ -31,6 +32,7 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -110,6 +112,8 @@ public class RendererHelper {
         Bitmap bitmap = updateRenderBitmap(parent.getViewportSize());
         Canvas canvas = new Canvas(bitmap);
         Paint paint = preparePaint(parent);
+        //TODO:when using dash effect,disable antialias for drawing rect.enhanced drawing speed.
+        paint.setAntiAlias(false);
         paint.setPathEffect(selectedDashPathEffect);
         RectF rect = new RectF(start.getX(), start.getY(), end.getX(), end.getY());
         canvas.drawRect(rect, paint);
@@ -123,6 +127,20 @@ public class RendererHelper {
         boundingPaint.setStyle(Paint.Style.STROKE);
         boundingPaint.setPathEffect(selectedDashPathEffect);
         renderContext.canvas.drawRect(selectedRectF, boundingPaint);
+        drawCornerPoint(selectedRectF, renderContext);
+    }
+
+    private void drawCornerPoint(RectF selectedRectF,RenderContext renderContext){
+        Paint cornerPointPaint = new Paint(Color.BLACK);
+        cornerPointPaint.setStyle(Paint.Style.FILL);
+        ArrayList<PointF> dragPointList = new ArrayList<>();
+        dragPointList.add(new PointF(selectedRectF.left,selectedRectF.top));
+        dragPointList.add(new PointF(selectedRectF.right,selectedRectF.top));
+        dragPointList.add(new PointF(selectedRectF.left,selectedRectF.bottom));
+        dragPointList.add(new PointF(selectedRectF.right,selectedRectF.bottom));
+        for (PointF pointF : dragPointList) {
+            renderContext.canvas.drawCircle(pointF.x, pointF.y, 5, cornerPointPaint);
+        }
     }
 
     private Paint preparePaint(final NoteManager parent) {
