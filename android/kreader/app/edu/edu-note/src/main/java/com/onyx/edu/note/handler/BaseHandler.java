@@ -8,7 +8,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
@@ -233,7 +233,7 @@ public abstract class BaseHandler {
     }
 
     private void onFinishErasing() {
-        noteManager.post(new EraseTouchPointListReceivedEvent(erasePoints));
+        noteManager.post(new TouchErasePointsReceivedEvent(erasePoints));
     }
 
     private void drawCurrentPage() {
