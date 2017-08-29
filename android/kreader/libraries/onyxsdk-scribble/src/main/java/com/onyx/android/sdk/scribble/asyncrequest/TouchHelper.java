@@ -1,12 +1,16 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
+import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by lxm on 2017/8/15.
@@ -14,14 +18,15 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
 public class TouchHelper {
     private static final String TAG = TouchHelper.class.getSimpleName();
-    private NoteManager noteManager;
 
     private EpdPenManager epdPenManager;
     private TouchReader touchReader;
     private RawInputManager rawInputManager;
 
-    public TouchHelper(NoteManager parent) {
-        this.noteManager = parent;
+    private EventBus eventBus;
+
+    public TouchHelper(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public EpdPenManager getEpdPenManager() {
@@ -46,20 +51,14 @@ public class TouchHelper {
         view.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent motionEvent) {
-                return getTouchReader().processTouchEvent(motionEvent);
+                getTouchReader().processTouchEvent(motionEvent);
+                return true;
             }
         });
 
         Rect limitRect = new Rect();
         view.getLocalVisibleRect(limitRect);
-
-        final DeviceConfig deviceConfig = getDeviceConfig();
-        getTouchReader()
-                .setLimitRect(limitRect)
-                .useBigPen(deviceConfig.supportBigPen())
-                .useRawInput(deviceConfig.useRawInput())
-                .setSingleTouch(deviceConfig.isSingleTouch())
-                .enableFingerErasing(deviceConfig.isEnableFingerErasing());
+        getTouchReader().setLimitRect(limitRect);
     }
 
     private void setupRawInputManager(final View view) {
@@ -70,18 +69,30 @@ public class TouchHelper {
                 .startRawInputProcessor();
     }
 
+    public boolean checkTouchPoint(final TouchPoint touchPoint) {
+        return getTouchReader().checkTouchPoint(touchPoint);
+    }
+
     public TouchReader getTouchReader() {
         if (touchReader == null) {
-            touchReader = new TouchReader(noteManager);
+            touchReader = new TouchReader(eventBus);
         }
         return touchReader;
     }
 
     public RawInputManager getRawInputManager() {
         if (rawInputManager == null) {
-            rawInputManager = new RawInputManager(noteManager);
+            rawInputManager = new RawInputManager(eventBus);
         }
         return rawInputManager;
+    }
+
+    public void setInUserErasing(boolean inUserErasing) {
+        getTouchReader().setInUserErasing(inUserErasing);
+    }
+
+    public void setRenderByFramework(boolean renderByFramework) {
+        getTouchReader().setRenderByFramework(renderByFramework);
     }
 
     public void pauseRawDrawing() {
@@ -105,6 +116,6 @@ public class TouchHelper {
     }
 
     private DeviceConfig getDeviceConfig() {
-        return noteManager.getDeviceConfig();
+        return ConfigManager.getInstance().getDeviceConfig();
     }
 }

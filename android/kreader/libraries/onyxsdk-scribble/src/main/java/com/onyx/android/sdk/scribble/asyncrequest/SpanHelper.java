@@ -212,7 +212,7 @@ public class SpanHelper {
                 if (newAddShapeList != null && newAddShapeList.size() > 0) {
                     subPageSpanTextShapeMap.put(newAddShapeList.get(0).getGroupId(), newAddShapeList);
                 }
-                EventBus.getDefault().post(new SpanFinishedEvent(builder, newAddShapeList, req.getLastShapeSpan()));
+                noteManager.post(new SpanFinishedEvent(builder, newAddShapeList, req.getLastShapeSpan()));
             }
         });
     }
@@ -271,7 +271,7 @@ public class SpanHelper {
         Layout layout = spanTextView.getLayout();
         int line = layout.getLineForOffset(pos);
         if (line == (getLineLayoutArgs().getLineCount() - 1)) {
-            EventBus.getDefault().post(new SpanTextShowOutOfRangeEvent());
+            noteManager.post(new SpanTextShowOutOfRangeEvent());
             noteManager.sync(true, true);
             return;
         }

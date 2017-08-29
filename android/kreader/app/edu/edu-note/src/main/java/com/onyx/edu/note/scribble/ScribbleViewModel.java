@@ -70,7 +70,7 @@ public class ScribbleViewModel extends BaseObservable {
     ScribbleViewModel(Context context) {
         // Force use of Application Context.
         mNoteManager = NoteApplication.getInstance().getNoteManager();
-        EventBus.getDefault().register(this);
+        mNoteManager.registerEventBus(this);
     }
 
     void start(String uniqueID, String parentID, @ScribbleAction.ScribbleActionDef int action, final BaseCallback callback) {
@@ -144,7 +144,7 @@ public class ScribbleViewModel extends BaseObservable {
 
     void onActivityDestroyed() {
         // Clear references to avoid potential memory leaks.
-        EventBus.getDefault().unregister(this);
+        mNoteManager.unregisterEventBus(this);
         mNavigator = null;
     }
 

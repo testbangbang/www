@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.touch;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
