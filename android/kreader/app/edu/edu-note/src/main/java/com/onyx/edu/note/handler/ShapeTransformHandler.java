@@ -10,11 +10,9 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
@@ -78,12 +76,13 @@ public class ShapeTransformHandler extends BaseHandler {
     private TouchPoint mShapeSelectStartPoint = null;
     private TouchPoint mShapeSelectPoint = null;
     private ControlMode currentControlMode = ControlMode.SelectMode;
-    private TransformAction transformAction = TransformAction.Zoom;
+    private TransformAction transformAction = TransformAction.Undefined;
     private TouchPointList shapeSelectPoints;
+    private RectF selectedRectF;
 
     private enum ControlMode {SelectMode, OperatingMode}
 
-    private enum TransformAction {Zoom, Move}
+    private enum TransformAction {Undefined, Zoom, Move}
 
     private BaseCallback actionDoneCallback = new BaseCallback() {
         @Override
@@ -261,7 +260,7 @@ public class ShapeTransformHandler extends BaseHandler {
                 Log.e(TAG, "req.getSelectedShapeList().size():" + req.getSelectedShapeList().size());
                 if (req.getSelectedShapeList().size() > 0) {
                     currentControlMode = ControlMode.OperatingMode;
-                    detectTransformAction(req.getSelectedRectF(), motionEvent);
+                    selectedRectF = req.getSelectedRectF();
                 } else {
                     currentControlMode = ControlMode.SelectMode;
                 }
@@ -293,7 +292,7 @@ public class ShapeTransformHandler extends BaseHandler {
         detectRectFList.add(leftBottomCornerRect);
         detectRectFList.add(rightBottomCornerRect);
         for (RectF rectF : detectRectFList) {
-            if (rectF.contains(event.getRawX(), event.getRawY())) {
+            if (rectF.contains(event.getX(), event.getY())) {
                 transformAction = TransformAction.Zoom;
                 return;
             }
@@ -317,6 +316,9 @@ public class ShapeTransformHandler extends BaseHandler {
                 new ShapeSelectionAction(mShapeSelectStartPoint, mShapeSelectPoint).execute(noteManager, null);
                 break;
             case OperatingMode:
+                if (transformAction == TransformAction.Undefined) {
+                    detectTransformAction(selectedRectF, motionEvent);
+                }
                 switch (transformAction) {
                     case Move:
                         new ChangeSelectedShapePositionAction(mShapeSelectPoint, false).execute(noteManager, null);
@@ -342,15 +344,7 @@ public class ShapeTransformHandler extends BaseHandler {
         Log.e(TAG, "onShapeSelectTouchPointListReceived: ");
         switch (currentControlMode) {
             case SelectMode:
-                new SelectShapeByPointListAction(shapeSelectPoints).execute(noteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        SelectShapeByPointListRequest req = (SelectShapeByPointListRequest) request;
-                        for (Shape shape : req.getSelectResultList()) {
-                            Log.e(TAG, "shape:" + shape);
-                        }
-                    }
-                });
+                new SelectShapeByPointListAction(shapeSelectPoints).execute(noteManager, null);
                 break;
             case OperatingMode:
                 switch (transformAction) {
@@ -361,6 +355,8 @@ public class ShapeTransformHandler extends BaseHandler {
                         new ChangeSelectedShapeScaleAction(mShapeSelectPoint, true).execute(noteManager, null);
                         break;
                 }
+                selectedRectF = null;
+                transformAction = TransformAction.Undefined;
                 break;
         }
     }
