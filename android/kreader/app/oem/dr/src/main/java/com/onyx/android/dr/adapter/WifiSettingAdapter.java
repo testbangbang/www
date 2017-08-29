@@ -9,9 +9,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.devicesetting.data.wifi.AccessPoint;
 import com.onyx.android.dr.util.AppConfig;
 import com.onyx.android.dr.view.PageRecyclerView;
-import com.onyx.android.sdk.wifi.AccessPoint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
