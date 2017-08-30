@@ -15,17 +15,20 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutArgsEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutCursorEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
+import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
+import com.onyx.android.sdk.scribble.data.SpanLayoutData;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
@@ -50,11 +53,11 @@ public class NoteManager {
 
     private RendererHelper rendererHelper;
     private DocumentHelper documentHelper;
-    private SpanHelper spanHelper;
     private ViewHelper viewHelper;
     private TouchHelper touchHelper;
 
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
+    private SpanLayoutData spanLayoutData = new SpanLayoutData();
     private Context appContext;
     private RequestManager requestManager = new RequestManager();
     private EventBus eventBus = new EventBus();
@@ -117,16 +120,9 @@ public class NoteManager {
 
     public DocumentHelper getDocumentHelper() {
         if (documentHelper == null) {
-            documentHelper = new DocumentHelper(this);
+            documentHelper = new DocumentHelper();
         }
         return documentHelper;
-    }
-
-    public SpanHelper getSpanHelper() {
-        if (spanHelper == null) {
-            spanHelper = new SpanHelper(this);
-        }
-        return spanHelper;
     }
 
     public ViewHelper getViewHelper() {
@@ -211,62 +207,31 @@ public class NoteManager {
         syncWithCallback(true, true, callback);
     }
 
-    public void deleteSpan(boolean resume) {
-        getSpanHelper().deleteSpan(resume);
-    }
-
-    public void updateLineLayoutArgs(LinedEditText spanTextView) {
-        getSpanHelper().updateLineLayoutArgs(spanTextView);
-    }
-
-    public void updateLineLayoutCursor(LinedEditText spanTextView) {
-        getSpanHelper().updateLineLayoutCursor(spanTextView);
+    public LineLayoutArgs getLineLayoutArgs() {
+        return spanLayoutData.getLineLayoutArgs();
     }
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
-        return getSpanHelper().checkShapesOutOfRange(shapes);
+        return getTouchHelper().checkShapesOutOfRange(shapes);
     }
 
-    public void openSpanTextFunc() {
-        getSpanHelper().openSpanTextFunc();
+    private void updateLineLayoutArgs(LinedEditText spanTextView) {
+        spanLayoutData.updateLineLayoutArgs(spanTextView);
     }
 
-    public void loadPageShapes() {
-        getSpanHelper().loadPageShapes();
+    @Subscribe
+    public void updateLineLayoutCursorEvent(UpdateLineLayoutCursorEvent event) {
+        spanLayoutData.updateLineLayoutCursor(event.getSpanTextView());
     }
 
-    private void buildSpan() {
-        getSpanHelper().buildSpan();
-    }
-
-    private void removeSpanRunnable() {
-        getSpanHelper().removeSpanRunnable();
-    }
-
-    public void exitSpanTextFunc() {
-        getSpanHelper().exitSpanTextFunc();
-    }
-
-    public void buildTextShape(String text, LinedEditText spanTextView) {
-        getSpanHelper().buildTextShape(text, spanTextView);
-    }
-
-    public void buildSpaceShape(final int width, int height) {
-        getSpanHelper().buildSpaceShape(width, height);
-    }
-
-    public void buildSpaceShape() {
-        getSpanHelper().buildSpaceShape();
-    }
-
-    public void buildLineBreakShape(LinedEditText spanTextView) {
-        getSpanHelper().buildLineBreakShape(spanTextView);
+    @Subscribe
+    public void updateLineLayoutArgsEvent(UpdateLineLayoutArgsEvent event) {
+        updateLineLayoutArgs(event.getSpanTextView());
     }
 
     @Subscribe
     public void onBeginRawDataEvent(BeginRawDataEvent event) {
         Debug.e(getClass(), "onBeginRawDataEvent");
-        removeSpanRunnable();
     }
 
     @Subscribe
@@ -336,12 +301,8 @@ public class NoteManager {
         return currentLayoutMode == ScribbleMode.MODE_SPAN_SCRIBBLE;
     }
 
-    public void drawSpanLayoutBackground(final RenderContext renderContext) {
-        getSpanHelper().drawLineLayoutBackground(renderContext, getHostView());
-    }
-
     public Shape getSpanCursorShape() {
-        return getSpanHelper().getCursorShape();
+        return spanLayoutData.getCursorShape();
     }
 
     public List<Shape> detachStash() {
@@ -455,12 +416,12 @@ public class NoteManager {
     }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        getDocumentHelper().getNoteDocument().open(context, documentUniqueId, parentUniqueId);
+        getDocumentHelper().openDocument(this, context, documentUniqueId, parentUniqueId);
         getRendererHelper().init();
     }
 
     public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        getNoteDocument().create(context, documentUniqueId, parentUniqueId);
+        getDocumentHelper().createDocument(this, context, documentUniqueId, parentUniqueId);
         getRendererHelper().init();
     }
 
@@ -491,11 +452,11 @@ public class NoteManager {
     }
 
     public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo(inSpanLayoutMode());
+        getDocumentHelper().undo(context, inSpanLayoutMode());
     }
 
     public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo(inSpanLayoutMode());
+        getDocumentHelper().redo(context, inSpanLayoutMode());
     }
 
     private void updateInUserErasingState() {

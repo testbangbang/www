@@ -23,6 +23,7 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.R;
+import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -127,7 +128,27 @@ public class RendererHelper {
     }
 
     private void drawSpanLayoutBackground(final NoteManager parent, final RenderContext renderContext) {
-        parent.drawSpanLayoutBackground(renderContext);
+        if (parent.getHostView() == null) {
+            return;
+        }
+        if (parent.getDocumentHelper().getLineLayoutBackground() == NoteBackgroundType.EMPTY) {
+            return;
+        }
+        LineLayoutArgs args = parent.getLineLayoutArgs();
+        if (args == null) {
+            return;
+        }
+
+        Rect viewRect = new Rect();
+        parent.getHostView().getLocalVisibleRect(viewRect);
+        int count = args.getLineCount();
+        int lineHeight = args.getLineHeight();
+        int baseline = args.getBaseLine();
+        Paint paint = new Paint();
+        for (int i = 0; i < count; i++) {
+            renderContext.canvas.drawLine(viewRect.left, baseline + 1, viewRect.right, baseline + 1, paint);
+            baseline += lineHeight;
+        }
     }
 
     private void drawNormalLayoutBackground(final NoteManager parent, final Canvas canvas, final Paint paint) {
