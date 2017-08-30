@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
@@ -426,6 +428,10 @@ public class BaseDevice {
     }
 
     public void enableA2ForSpecificView(View view) {
+    }
+
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+
     }
 
     public boolean isLegalSystem(final Context context){
