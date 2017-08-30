@@ -310,8 +310,9 @@ public abstract class BaseHandler {
         if (e2.getAction() == MotionEvent.ACTION_MOVE){
             if(rightEdgeSlide(readerDataHolder, e1, e2, distanceX, distanceY)) {
                 setScrolling(false);
+            } else {
+                panning(readerDataHolder, (int) (e2.getX() - getStartPoint().x), (int) (e2.getY() - getStartPoint().y));
             }
-            panning(readerDataHolder, (int) (e2.getX() - getStartPoint().x), (int) (e2.getY() - getStartPoint().y));
         }
         return true;
     }
