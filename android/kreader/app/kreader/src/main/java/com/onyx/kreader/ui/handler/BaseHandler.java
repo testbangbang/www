@@ -59,8 +59,8 @@ public abstract class BaseHandler {
 
     private static final float IGNORE_PROPORTIONS_ADJUST = 0.85f;
     private static final float IGNORE_PROPORTIONS_WIDTH = 0.95f;
-    private static final float IGNORE_PROPORTIONS_HIGHT_START = 0.50f;
-    private static final float IGNORE_PROPORTIONS_HIGHT_END = 0.60f;
+    private static final float IGNORE_PROPORTIONS_HEIGHT_START = 0.50f;
+    private static final float IGNORE_PROPORTIONS_HEIGHT_END = 0.60f;
 
     private Point startPoint = new Point();
     private HandlerManager parent;
@@ -485,8 +485,8 @@ public abstract class BaseHandler {
         Context context = readerDataHolder.getContext();
         if ((x < getWidthPixels(context) * (1 - IGNORE_PROPORTIONS_WIDTH)
                 || x > getWidthPixels(context) * IGNORE_PROPORTIONS_WIDTH)
-                && y > getHeightPixels(context) * IGNORE_PROPORTIONS_HIGHT_START
-                && y < getHeightPixels(context) * IGNORE_PROPORTIONS_HIGHT_END) {
+                && y > getHeightPixels(context) * IGNORE_PROPORTIONS_HEIGHT_START
+                && y < getHeightPixels(context) * IGNORE_PROPORTIONS_HEIGHT_END) {
             return true;
         }
         return false;
