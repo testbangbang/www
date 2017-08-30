@@ -90,7 +90,9 @@ public class HomeActivity extends BaseActivity {
         loadAuthToken(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                EpdController.invalidate(view, UpdateMode.GC);
+                if (DeviceConfig.sharedInstance(getApplicationContext()).enableFullRefresh()) {
+                    EpdController.invalidate(view, UpdateMode.GC);
+                }
             }
         });
     }
