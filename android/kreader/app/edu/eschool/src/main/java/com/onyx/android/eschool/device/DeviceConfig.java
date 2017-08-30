@@ -229,6 +229,6 @@ public class DeviceConfig {
     }
 
     public boolean enableFullRefresh() {
-        return backend.getBoolean(ENABLE_FULL_REFRESH, true);
+        return backend.getBoolean(ENABLE_FULL_REFRESH, false);
     }
 }
