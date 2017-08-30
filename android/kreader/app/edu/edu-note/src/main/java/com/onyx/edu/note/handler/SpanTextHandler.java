@@ -324,17 +324,11 @@ public class SpanTextHandler extends BaseHandler {
 
     @Subscribe
     public void buildLineBreakShapeEvent(BuildLineBreakShapeEvent event) {
-        if (event == null) {
-            return;
-        }
         buildLineBreakShape(event.getSpanTextView());
     }
 
     @Subscribe
     public void buildTextShapeEvent(BuildTextShapeEvent event) {
-        if (event == null) {
-            return;
-        }
         buildTextShape(event.getText(), event.getSpanTextView());
     }
 
@@ -345,9 +339,6 @@ public class SpanTextHandler extends BaseHandler {
 
     @Subscribe
     public void onDeleteSpanEvent(DeleteSpanEvent event) {
-        if (event == null) {
-            return;
-        }
         deleteSpan(event.isResume());
     }
 

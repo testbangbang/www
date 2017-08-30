@@ -221,17 +221,11 @@ public class NoteManager {
 
     @Subscribe
     public void updateLineLayoutCursorEvent(UpdateLineLayoutCursorEvent event) {
-        if (event == null) {
-            return;
-        }
         spanLayoutData.updateLineLayoutCursor(event.getSpanTextView());
     }
 
     @Subscribe
     public void updateLineLayoutArgsEvent(UpdateLineLayoutArgsEvent event) {
-        if (event == null) {
-            return;
-        }
         updateLineLayoutArgs(event.getSpanTextView());
     }
 
@@ -458,11 +452,11 @@ public class NoteManager {
     }
 
     public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo(inSpanLayoutMode());
+        getDocumentHelper().undo(context, inSpanLayoutMode());
     }
 
     public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo(inSpanLayoutMode());
+        getDocumentHelper().redo(context, inSpanLayoutMode());
     }
 
     private void updateInUserErasingState() {
