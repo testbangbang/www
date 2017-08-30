@@ -18,37 +18,35 @@ import com.onyx.android.sdk.scribble.utils.InkUtils;
 public class DocumentHelper {
 
     private NoteDocument noteDocument = new NoteDocument();
-    private NoteManager parent;
 
-    public DocumentHelper(NoteManager parent) {
-        this.parent = parent;
+    public DocumentHelper() {
     }
 
-    public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+    public void openDocument(final NoteManager noteManager, final Context context, final String documentUniqueId, final String parentUniqueId) {
         getNoteDocument().open(context, documentUniqueId, parentUniqueId);
-        onDocumentOpened();
+        onDocumentOpened(noteManager);
     }
 
-    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+    public void createDocument(final NoteManager noteManager, final Context context, final String documentUniqueId, final String parentUniqueId) {
         getNoteDocument().create(context, documentUniqueId, parentUniqueId);
-        onDocumentOpened();
+        onDocumentOpened(noteManager);
     }
 
-    private void onDocumentOpened() {
-        parent.getRendererHelper().clearRenderBitmap();
-        NoteModel.setDefaultEraserRadius(parent.getDeviceConfig().getEraserRadius());
-        getNoteDocument().getNoteDrawingArgs().setEraserRadius(parent.getDeviceConfig().getEraserRadius());
-        InkUtils.setPressureEntries(parent.getMappingConfig().getPressureList());
+    private void onDocumentOpened(final NoteManager noteManager) {
+        noteManager.getRendererHelper().clearRenderBitmap();
+        NoteModel.setDefaultEraserRadius(noteManager.getDeviceConfig().getEraserRadius());
+        getNoteDocument().getNoteDrawingArgs().setEraserRadius(noteManager.getDeviceConfig().getEraserRadius());
+        InkUtils.setPressureEntries(noteManager.getMappingConfig().getPressureList());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }
 
-    public void undo(final Context context) {
-        getNoteDocument().getCurrentPage(context).undo(parent.inSpanLayoutMode());
+    public void undo(final Context context, boolean inSpanLayoutMode) {
+        getNoteDocument().getCurrentPage(context).undo(inSpanLayoutMode);
     }
 
-    public void redo(final Context context) {
-        getNoteDocument().getCurrentPage(context).redo(parent.inSpanLayoutMode());
+    public void redo(final Context context, boolean inSpanLayoutMode) {
+        getNoteDocument().getCurrentPage(context).redo(inSpanLayoutMode);
     }
 
     public void clearPageUndoRedo(final Context context) {

@@ -7,6 +7,7 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
 import org.greenrobot.eventbus.EventBus;
@@ -89,6 +90,19 @@ public class TouchReader {
             }
         }
         return true;
+    }
+
+    public boolean checkShapesOutOfRange(List<Shape> shapes) {
+        if (shapes == null || shapes.size() == 0) {
+            return false;
+        }
+        for (Shape shape : shapes) {
+            TouchPointList pointList = shape.getPoints();
+            if (!checkTouchPointList(pointList)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isFingerTouch(int toolType) {
