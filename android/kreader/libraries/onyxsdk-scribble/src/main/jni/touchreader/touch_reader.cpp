@@ -159,8 +159,9 @@ void TouchReader::readTouchEventLoop(void *userData, onTouchPointReceived callba
 std::string TouchReader::findDevice() {
     using namespace std;
     for(int i = 0; i < 3; ++i) {
-        char temp[80] = {0};
-        sprintf(temp, "/dev/input/event%d", i);
+        const int MAX = 80;
+        char temp[MAX] = {0};
+        snprintf(temp, MAX - 1, "/dev/input/event%d", i);
         string path = temp;
         string deviceName;
         int fd = openDevice(path, deviceName);
