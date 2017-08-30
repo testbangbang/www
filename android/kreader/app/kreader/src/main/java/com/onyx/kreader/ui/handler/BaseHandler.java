@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.handler;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -56,6 +57,11 @@ public abstract class BaseHandler {
 
     private float SINGLE_TAP_MOVE_TOLERANCE = 15;  //dp
 
+    private static final float IGNORE_PROPORTIONS_ADJUST = 0.85f;
+    private static final float IGNORE_PROPORTIONS_WIDTH = 0.95f;
+    private static final float IGNORE_PROPORTIONS_HEIGHT_START = 0.50f;
+    private static final float IGNORE_PROPORTIONS_HEIGHT_END = 0.60f;
+
     private Point startPoint = new Point();
     private HandlerManager parent;
     private boolean longPress = false;
@@ -64,6 +70,8 @@ public abstract class BaseHandler {
     private boolean pinchZooming = false;
     private boolean scrolling = false;
     private boolean smallScrollToSingleTap = false;
+
+    private DisplayMetrics displayMetrics;
 
     public boolean isSingleTapUp() {
         return singleTapUp;
@@ -302,8 +310,9 @@ public abstract class BaseHandler {
         if (e2.getAction() == MotionEvent.ACTION_MOVE){
             if(rightEdgeSlide(readerDataHolder, e1, e2, distanceX, distanceY)) {
                 setScrolling(false);
+            } else {
+                panning(readerDataHolder, (int) (e2.getX() - getStartPoint().x), (int) (e2.getY() - getStartPoint().y));
             }
-            panning(readerDataHolder, (int) (e2.getX() - getStartPoint().x), (int) (e2.getY() - getStartPoint().y));
         }
         return true;
     }
@@ -327,8 +336,7 @@ public abstract class BaseHandler {
             return false;
         }
         float startX = e2.getX();
-        DisplayMetrics dm = readerDataHolder.getContext().getResources().getDisplayMetrics();
-        if (startX > dm.widthPixels * 8.5 / 10) {
+        if (startX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST) {
             if (distanceY < 0 && Math.abs(distanceY) > 4) {
                 readerDataHolder.adjustLowerBrightness();
             } else if ( Math.abs(distanceY) > 4 ){
@@ -368,6 +376,9 @@ public abstract class BaseHandler {
             return true;
         }
         if (tryPageLink(readerDataHolder, x, y)) {
+            return true;
+        }
+        if (ignoreEdgeTouch(readerDataHolder, x, y)) {
             return true;
         }
         return false;
@@ -469,4 +480,32 @@ public abstract class BaseHandler {
         }
         readerDataHolder.getEventBus().post(new QuitEvent());
     }
+
+    private boolean ignoreEdgeTouch(ReaderDataHolder readerDataHolder, float x, float y) {
+        Context context = readerDataHolder.getContext();
+        if ((x < getWidthPixels(context) * (1 - IGNORE_PROPORTIONS_WIDTH)
+                || x > getWidthPixels(context) * IGNORE_PROPORTIONS_WIDTH)
+                && y > getHeightPixels(context) * IGNORE_PROPORTIONS_HEIGHT_START
+                && y < getHeightPixels(context) * IGNORE_PROPORTIONS_HEIGHT_END) {
+            return true;
+        }
+        return false;
+
+    }
+
+    private float getWidthPixels(Context context){
+        if (displayMetrics == null) {
+            displayMetrics = context.getResources().getDisplayMetrics();
+        }
+        return displayMetrics.widthPixels;
+    }
+
+    private float getHeightPixels(Context context){
+        if (displayMetrics == null) {
+            displayMetrics = context.getResources().getDisplayMetrics();
+        }
+        return displayMetrics.heightPixels;
+    }
+
+
 }
