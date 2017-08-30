@@ -1,12 +1,9 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
-import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
@@ -24,6 +21,7 @@ public class TouchHelper {
     private RawInputManager rawInputManager;
 
     private EventBus eventBus;
+    private Rect customLimitRect;
 
     public TouchHelper(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -56,9 +54,13 @@ public class TouchHelper {
             }
         });
 
-        Rect limitRect = new Rect();
-        view.getLocalVisibleRect(limitRect);
-        getTouchReader().setLimitRect(limitRect);
+        if (customLimitRect == null) {
+            Rect limitRect = new Rect();
+            view.getLocalVisibleRect(limitRect);
+            getTouchReader().setLimitRect(limitRect);
+        }else {
+            getTouchReader().setLimitRect(customLimitRect);
+        }
     }
 
     private void setupRawInputManager(final View view) {
@@ -117,5 +119,11 @@ public class TouchHelper {
 
     private DeviceConfig getDeviceConfig() {
         return ConfigManager.getInstance().getDeviceConfig();
+    }
+
+    public void setCustomLimitRect(View view,Rect rect) {
+        customLimitRect = rect;
+        getTouchReader().setLimitRect(rect);
+        getRawInputManager().setCustomLimitRect(view,rect);
     }
 }

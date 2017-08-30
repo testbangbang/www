@@ -26,6 +26,10 @@ public class ExportEditedPicRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(NoteManager parent) throws Exception {
         File file = new File(ExportUtils.getExportPicPath(document));
+        if (!file.exists()){
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
         FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.PNG, 100);
     }
 

@@ -263,6 +263,10 @@ public class NoteManager {
         getSpanHelper().buildLineBreakShape(spanTextView);
     }
 
+    public void setCustomLimitRect(Rect targetRect){
+        getTouchHelper().setCustomLimitRect(getHostView(), targetRect);
+    }
+
     @Subscribe
     public void onBeginRawDataEvent(BeginRawDataEvent event) {
         Debug.e(getClass(), "onBeginRawDataEvent");

@@ -265,7 +265,7 @@ public class RendererHelper {
             dest = new Rect(0, 0, canvas.getWidth() - 1, canvas.getHeight() - 1);
         }
         Rect src = new Rect(0, 0, bitmap.getWidth() - 1, bitmap.getHeight() - 1);
-        if (DeviceConfig.isColorDevice()) {
+        if (DeviceConfig.isColorDevice() && resID != Integer.MIN_VALUE) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
         } else {
             canvas.drawBitmap(bitmap, src, dest, paint);
