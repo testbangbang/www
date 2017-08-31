@@ -24,7 +24,7 @@
     <dimen name="dialog_brightness_button_margin_left">10dp</dimen>
     <dimen name="dialog_brightness_button_margin_right">10dp</dimen>
     <dimen name="dialog_brightness_ratingbar_margin_right">10dp</dimen>
-    <dimen name="dialog_font_setting_display_text_size">18sp</dimen>
+    <dimen name="dialog_font_setting_display_text_size">22sp</dimen>
     <dimen name="reader_layer_menu_tts_seek_bar_width">300dp</dimen>
     <dimen name="image_view_indicator_size">35dp</dimen>
     <dimen name="image_view_indicator_margin_right">6dp</dimen>
