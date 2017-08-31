@@ -172,11 +172,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         // move background reader tabs to back first, so we can avoid unintended screen update
         ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            if (entry.getKey() != currentTab) {
-                moveReaderTabToBack(entry.getKey());
+
+        // force close all tabs in case the bug of tab opened but not in opened tab list
+        ReaderTabManager.ReaderTab[] allTabs = ReaderTabManager.ReaderTab.values();
+        for (ReaderTabManager.ReaderTab tab : allTabs) {
+            if (tab != currentTab) {
+                moveReaderTabToBack(tab);
             }
         }
+
         moveReaderTabToBack(currentTab);
         finish();
     }
@@ -1017,10 +1021,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private boolean moveReaderTabToBack(ReaderTabManager.ReaderTab tab) {
-        if (!tabManager.getOpenedTabs().containsKey(tab)) {
-            return false;
-        }
-
         String clzName = tabManager.getTabActivity(tab).getName();
         ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
