@@ -335,6 +335,9 @@ public abstract class BaseHandler {
         if(isLongPress()){
             return false;
         }
+        if(readerDataHolder.getReaderViewInfo().canPan()) {
+            return false;
+        }
         float startX = e2.getX();
         if (startX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST) {
             if (distanceY < 0 && Math.abs(distanceY) > 4) {
