@@ -2,15 +2,16 @@ package com.onyx.edu.reader.device;
 
 import android.content.Context;
 import android.os.Build;
+
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.reader.BuildConfig;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
@@ -56,6 +57,7 @@ public class DeviceConfig {
     private boolean supportMultipleTabs = false;
     private boolean customFormEnabled = false;
     private boolean enableDictWebSearch = true;
+    private boolean enableCustomRefreshConfig = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -530,6 +532,14 @@ public class DeviceConfig {
 
     public void setFrontLight(int frontLight) {
         this.frontLight = frontLight;
+    }
+
+    public boolean isEnableCustomRefreshConfig() {
+        return enableCustomRefreshConfig;
+    }
+
+    public void setEnableCustomRefreshConfig(boolean enableCustomRefreshConfig) {
+        this.enableCustomRefreshConfig = enableCustomRefreshConfig;
     }
 
     public SingletonSharedPreference.AnnotationHighlightStyle defaultAnnotationHighlightStyle() {

@@ -46,14 +46,14 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.edu.reader.BuildConfig;
 import com.onyx.edu.reader.R;
@@ -87,6 +87,7 @@ import com.onyx.edu.reader.ui.events.ClosePopupEvent;
 import com.onyx.edu.reader.ui.events.CloudConfInitEvent;
 import com.onyx.edu.reader.ui.events.ConfirmCloseDialogEvent;
 import com.onyx.edu.reader.ui.events.DialogUIChangeEvent;
+import com.onyx.edu.reader.ui.events.DocumentActivatedEvent;
 import com.onyx.edu.reader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.edu.reader.ui.events.DocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ForceCloseEvent;
@@ -110,7 +111,6 @@ import com.onyx.edu.reader.ui.events.ShortcutErasingEvent;
 import com.onyx.edu.reader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.edu.reader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.edu.reader.ui.events.ShowReaderSettingsEvent;
-import com.onyx.edu.reader.ui.events.DocumentActivatedEvent;
 import com.onyx.edu.reader.ui.events.SlideshowStartEvent;
 import com.onyx.edu.reader.ui.events.SystemUIChangedEvent;
 import com.onyx.edu.reader.ui.events.UpdateScribbleMenuEvent;
@@ -543,7 +543,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         boolean update = (event != null && event.isApplyGCIntervalUpdate());
         if (update) {
-            ReaderDeviceManager.applyWithGcUpdate(surfaceView);
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, false);
         } else {
             ReaderDeviceManager.disableRegal();
         }
