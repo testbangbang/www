@@ -37,7 +37,7 @@
     <dimen name="login_text_margin_left">20dp</dimen>
     <dimen name="spinner_drop_down_ver_offset">48dp</dimen>
     <dimen name="login_text_margin_right">5dp</dimen>
-    <dimen name="login_layout_title_margin_top">30dp</dimen>
+    <dimen name="login_layout_title_margin_top">50dp</dimen>
     <dimen name="user_info_edit_text_width">300dp</dimen>
     <dimen name="user_info_text_view_width">280dp</dimen>
     <dimen name="login_next_button_margin_bottom">350dp</dimen>
@@ -245,4 +245,5 @@
     <dimen name="device_setting_title_font_size">20sp</dimen>
     <dimen name="device_setting_setting_font_size">16sp</dimen>
     <dimen name="good_sentence_supplements_width">200dp</dimen>
+    <dimen name="login_title_line_width">600dp</dimen>
 </resources>

@@ -38,93 +38,124 @@
                 style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
-                android:gravity="end"
                 android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
-                android:entries="@array/GradeList"/>
+                android:entries="@array/GradeList"
+                android:gravity="end" />
 
             <EditText
                 android:id="@+id/schoolchildren_class"
-                style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
-                android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/level_three_font_size"
+                android:background="@null"
                 android:layout_weight="1"
-                android:gravity="end"
                 android:hint="@string/clazz" />
         </LinearLayout>
     </LinearLayout>
 
-    <TextView
-        style="@style/UserInfoTextViewStyle"
-        android:text="@string/textbook_publishing_house" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_marginTop="@dimen/edit_text_margin_top"
         android:orientation="horizontal">
 
         <TextView
             style="@style/UserInfoTextViewStyle"
-            android:text="@string/english_subject" />
+            android:text="@string/textbook_publishing_house" />
 
-        <Spinner
-            android:id="@+id/english_publisher"
-            style="@style/UserInfoEditTextStyle"
-            android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
-            android:entries="@array/EnglishPublishers" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="@dimen/user_info_edit_text_width"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/login_text_margin_right"
-            android:text="@string/publishers" />
+            android:background="@drawable/rectangle_stroke"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:padding="@dimen/edit_text_margin_top"
+                android:text="@string/english"
+                android:textColor="@color/white" />
+
+            <Spinner
+                android:id="@+id/english_publisher"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
+                android:entries="@array/EnglishPublishers" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_marginTop="@dimen/edit_text_margin_top"
         android:orientation="horizontal">
 
         <TextView
-            style="@style/UserInfoTextViewStyle"
-            android:text="@string/chinese" />
+            style="@style/UserInfoTextViewStyle" />
 
-        <Spinner
-            android:id="@+id/chinese_publisher"
-            style="@style/UserInfoEditTextStyle"
-            android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
-            android:entries="@array/ChinesePublishers" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="@dimen/user_info_edit_text_width"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/login_text_margin_right"
-            android:text="@string/publishers" />
+            android:background="@drawable/rectangle_stroke"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:padding="@dimen/edit_text_margin_top"
+                android:text="@string/chinese"
+                android:textColor="@color/white" />
+
+            <Spinner
+                android:id="@+id/chinese_publisher"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
+                android:entries="@array/ChinesePublishers" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_marginTop="@dimen/edit_text_margin_top"
         android:orientation="horizontal">
 
         <TextView
-            style="@style/UserInfoTextViewStyle"
-            android:text="@string/third_language" />
+            style="@style/UserInfoTextViewStyle" />
 
-        <EditText
-            android:id="@+id/third_language_publisher"
-            style="@style/UserInfoEditTextStyle" />
-
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="@dimen/user_info_edit_text_width"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/login_text_margin_right"
-            android:text="@string/publishers" />
+            android:background="@drawable/rectangle_stroke"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/black"
+                android:text="@string/third_language"
+                android:padding="@dimen/edit_text_margin_top"
+                android:textColor="@color/white" />
+
+            <EditText
+                android:id="@+id/third_language_publisher"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/level_three_font_size"
+                android:background="@null"
+                android:layout_weight="1" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

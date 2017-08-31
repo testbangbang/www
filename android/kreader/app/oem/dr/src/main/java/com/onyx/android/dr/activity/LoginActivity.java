@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -95,6 +94,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     EditText spinnerCounty;
     @Bind(R.id.schoolchildren_class)
     EditText schoolchildrenClass;
+    @Bind(R.id.login_title_line)
+    View loginTitleLine;
 
     private LoginPresenter loginPresenter;
     private View identity_layout;
@@ -107,7 +108,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
     private int step = 0;
     private View readingInfo;
     private String identity;
-    private TextView login_title;
     private List<GroupBean> groups = new ArrayList<>();
     private boolean stepNotComplete;
     private InterestAdapter teacherInterestAdapter;
@@ -131,7 +131,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     protected void initView() {
-        login_title = (TextView) findViewById(R.id.login_title);
         login_layout = findViewById(R.id.login_layout);
         identity_layout = findViewById(R.id.identity_layout);
         schoolchildren_layout = findViewById(R.id.schoolchildren_layout);
@@ -222,7 +221,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void setSignUpResult(boolean result) {
         if (result) {
-            login_title.setVisibility(View.GONE);
+            loginTitle.setVisibility(View.GONE);
+            loginTitleLine.setVisibility(View.GONE);
             step = 0;
             login_layout.setVisibility(View.VISIBLE);
             college_students_info_layout.setVisibility(View.GONE);
@@ -267,7 +267,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
             connectNetwork();
             return;
         }
-        login_title.setVisibility(View.VISIBLE);
+        loginTitle.setVisibility(View.VISIBLE);
+        loginTitleLine.setVisibility(View.VISIBLE);
         step = STEP_FIRST;
         login_layout.setVisibility(View.GONE);
         identity_layout.setVisibility(View.VISIBLE);

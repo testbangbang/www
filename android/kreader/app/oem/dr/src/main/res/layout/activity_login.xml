@@ -12,8 +12,19 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/login_layout_title_margin_top"
-        android:visibility="gone"
-        android:text="@string/identity_title" />
+        android:text="@string/identity_title"
+        android:textSize="@dimen/level_one_heading_font"
+        android:visibility="gone" />
+
+    <View
+        android:id="@+id/login_title_line"
+        android:layout_width="@dimen/login_title_line_width"
+        android:layout_height="@dimen/line_height"
+        android:layout_below="@+id/login_title"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:background="@color/black"
+        android:visibility="gone"/>
 
     <include
         android:id="@+id/login_layout"
