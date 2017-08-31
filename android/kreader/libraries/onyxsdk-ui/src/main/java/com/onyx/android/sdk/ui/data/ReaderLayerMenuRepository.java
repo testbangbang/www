@@ -80,10 +80,10 @@ public class ReaderLayerMenuRepository {
                 if (item.getItemType() != ReaderMenuItem.ItemType.Group) {
                     continue;
                 }
-                do {
+                while (item.getItemType() != ReaderMenuItem.ItemType.Group && i < flattenArray.length) {
                     i++;
                     item = flattenArray[i];
-                } while (item.getItemType() != ReaderMenuItem.ItemType.Group);
+                }
             }
             if (excludingSet.contains(item.getAction())) {
                 continue;
