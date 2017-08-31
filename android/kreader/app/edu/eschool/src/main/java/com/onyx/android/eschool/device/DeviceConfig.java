@@ -53,6 +53,8 @@ public class DeviceConfig {
     static public final String DEVICE_QR_CODE_SHOW_CONFIG = "qr_code_show_config";
     static public final String DEVICE_INFO_SHOW_CONFIG = "info_show_config";
 
+    static public final String ENABLE_FULL_REFRESH = "enable_full_refresh";
+
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
             globalInstance = new DeviceConfig(context);
@@ -224,5 +226,9 @@ public class DeviceConfig {
             return null;
         }
         return JSONObjectParseUtils.parseObject(backend.getString(DEVICE_INFO_SHOW_CONFIG), DeviceInfoShowConfig.class);
+    }
+
+    public boolean enableFullRefresh() {
+        return backend.getBoolean(ENABLE_FULL_REFRESH, false);
     }
 }
