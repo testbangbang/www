@@ -1,7 +1,6 @@
 package com.onyx.edu.reader.note.data;
 
 import android.content.Context;
-import android.databinding.tool.util.L;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.*;

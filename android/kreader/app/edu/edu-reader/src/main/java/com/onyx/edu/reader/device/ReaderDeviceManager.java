@@ -2,10 +2,11 @@ package com.onyx.edu.reader.device;
 
 import android.content.Context;
 import android.view.View;
+
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
-import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 
 /**
  * Created by Joy on 2016/5/6.
