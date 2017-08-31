@@ -22,6 +22,12 @@ import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BuildLineBreakShapeEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BuildTextShapeEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DeleteSpanEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.LoadSpanPageShapesEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutArgsEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutCursorEvent;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -422,7 +428,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                     switch (keyCode) {
                         case KeyEvent.KEYCODE_DEL:
                             mViewModel.setKeyboardInput(true);
-                            noteManager.deleteSpan(false);
+                            noteManager.post(new DeleteSpanEvent(false));
                             return true;
                         case KeyEvent.KEYCODE_ENTER:
                             onCloseKeyBoard();
@@ -452,7 +458,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             return;
         }
         mViewModel.setKeyboardInput(true);
-        noteManager.buildTextShape(text, mBinding.spanTextView);
+        noteManager.post(new BuildTextShapeEvent(mBinding.spanTextView, text));
     }
 
     private void initRecyclerView() {
@@ -477,14 +483,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             noteManager.syncWithCallback(true, !mViewModel.isKeyboardInput(), new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
-                    loadLineLayoutShapes();
+                    noteManager.post(new LoadSpanPageShapesEvent());
                 }
             });
             mViewModel.setBuildingSpan(false);
             return;
         }
 
-        noteManager.updateLineLayoutCursor(mBinding.spanTextView);
+        noteManager.post(new UpdateLineLayoutCursorEvent(mBinding.spanTextView));
         final DocumentFlushAction action = new DocumentFlushAction(lineLayoutShapes,
                 true,
                 !mViewModel.isKeyboardInput(),
@@ -495,12 +501,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 mViewModel.setBuildingSpan(false);
             }
         });
-    }
-
-    private void loadLineLayoutShapes() {
-        if (noteManager.inSpanLayoutMode()) {
-            noteManager.loadPageShapes();
-        }
     }
 
     private void onCloseKeyBoard() {
@@ -555,7 +555,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         if (mViewModel.isBuildingSpan()){
             return;
         }
-        noteManager.buildLineBreakShape(mBinding.spanTextView);
+        noteManager.post(new BuildLineBreakShapeEvent(mBinding.spanTextView));
     }
 
     @Subscribe
@@ -627,7 +627,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             mBinding.spanTextView.post(new Runnable() {
                 @Override
                 public void run() {
-                    noteManager.updateLineLayoutArgs(mBinding.spanTextView);
+                    noteManager.post(new UpdateLineLayoutArgsEvent(mBinding.spanTextView));
                 }
             });
         }

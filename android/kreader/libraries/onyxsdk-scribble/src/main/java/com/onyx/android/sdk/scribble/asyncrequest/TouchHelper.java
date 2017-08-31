@@ -5,9 +5,12 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by lxm on 2017/8/15.
@@ -110,6 +113,10 @@ public class TouchHelper {
     public void quitRawDrawing() {
         getRawInputManager().quitRawDrawing();
         getEpdPenManager().quitDrawing();
+    }
+
+    public boolean checkShapesOutOfRange(List<Shape> shapes) {
+        return getTouchReader().checkShapesOutOfRange(shapes);
     }
 
     public void quit() {
