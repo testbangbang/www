@@ -226,7 +226,7 @@
     <string name="dialog_slideshow_title">Слайд-шоу</string>
     <string name="settings_regal_mode_tittle">SNOW Field</string>
     <string name="dialog_slideshow_intervals_title">Интервал (в секундах)</string>
-    <string name="dialog_slideshow_max_page_count_title">Максимальный номер страница</string>
+    <string name="dialog_slideshow_max_page_count_title">Максимальный номер страницы</string>
     <string name="dialog_slideshow_statistic_duration">Длительность:\u0020</string>
     <string name="dialog_slideshow_statistic_page_count">Номер страницы:\u0020</string>
     <string name="dialog_slideshow_statistic_start_battery">Стартовый заряд батареи:\u0020</string>
