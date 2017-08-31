@@ -7,6 +7,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.view.View;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.device.Device;
 
 /**
@@ -225,6 +227,10 @@ public abstract class EpdController
 
     public static void enableA2ForSpecificView(View view) {
         Device.currentDevice().enableA2ForSpecificView(view);
+    }
+
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+        Device.currentDevice().setWebViewContrastOptimize(view, enabled);
     }
 
     public static void mapToView(View view, float[] src, float[] dst) {

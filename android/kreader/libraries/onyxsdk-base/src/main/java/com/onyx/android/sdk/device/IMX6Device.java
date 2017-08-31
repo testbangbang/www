@@ -8,6 +8,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdatePolicy;
@@ -96,6 +98,7 @@ public class IMX6Device extends BaseDevice {
 
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
+    private static Method sMethodWebViewSetCssInjectEnabled;
 
     private static Method sMethodSetQRShowConfig;
     private static Method sMethodSetInfoShowConfig;
@@ -800,6 +803,8 @@ public class IMX6Device extends BaseDevice {
             // signature of "public void disableA2()"
             sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
 
+            sMethodWebViewSetCssInjectEnabled = ReflectUtil.getMethodSafely(WebView.class, "setCssInjectEnabled", boolean.class);
+
             sMethodSetQRShowConfig = ReflectUtil.getMethodSafely(cls,"setQRShowConfig",int.class,int.class,int.class);
             sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
 
@@ -1122,6 +1127,11 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void enableA2ForSpecificView(View view) {
         ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
+    }
+
+    @Override
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+        ReflectUtil.invokeMethodSafely(sMethodWebViewSetCssInjectEnabled, view, enabled);
     }
 
     @Override
