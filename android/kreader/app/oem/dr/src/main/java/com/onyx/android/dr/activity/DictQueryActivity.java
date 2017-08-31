@@ -79,6 +79,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     TextView title;
     @Bind(R.id.image)
     ImageView image;
+    @Bind(R.id.tab_menu_next)
+    ImageView menuNext;
     @Bind(R.id.activity_query_chinese_linearlayout)
     LinearLayout chineseLinearLayout;
     @Bind(R.id.activity_query_english_linearlayout)
@@ -125,6 +127,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         dictPresenter = new DictFunctionPresenter(this);
         dictPresenter.loadData(this);
         dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
+        menuNext.setVisibility(View.GONE);
         initTitleData();
         loadDictData();
         initEvent();
@@ -217,6 +220,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
             R.id.image_view_back,
             R.id.activity_strokes_search,
             R.id.activity_word_spell_search,
+            R.id.activity_word_japanese_search,
             R.id.activity_example_query_search})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -235,7 +239,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
             case R.id.activity_example_query_search:
                 startDictResultShowActivity(exampleQuery);
                 break;
-            case R.id.activity_strokes_search:
+            case R.id.activity_word_japanese_search:
+                startDictResultShowActivity(japaneseQuery);
                 break;
             case R.id.activity_word_spell_search:
                 startDictResultShowActivity(spellQuery);
