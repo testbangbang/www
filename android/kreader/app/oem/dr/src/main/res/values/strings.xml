@@ -432,4 +432,7 @@
     <string name="perfect_this_article_or_this_page_good_sentence">Perfect this article or this page good sentence:</string>
     <string name="word_commonly_used">);word commonly used(</string>
     <string name="word_interpretation">);word interpretation:</string>
+    <string name="register_password">password:</string>
+    <string name="college_grade">grade:</string>
+    <string name="college_clazz">class:</string>
 </resources>

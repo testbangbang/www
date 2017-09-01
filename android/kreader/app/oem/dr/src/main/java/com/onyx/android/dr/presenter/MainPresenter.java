@@ -71,6 +71,7 @@ public class MainPresenter {
                 if (groups != null && groups.size() > 0) {
                     String library = groups.get(0).library;
                     DRPreferenceManager.saveLibraryParentId(DRApplication.getInstance(), library);
+                    DRPreferenceManager.saveUserType(DRApplication.getInstance(), groups.get(0).name);
                     getLibraryList(library);
                 }
             }
