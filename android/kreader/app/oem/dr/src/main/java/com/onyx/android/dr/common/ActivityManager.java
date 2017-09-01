@@ -10,13 +10,18 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
+import com.onyx.android.dr.activity.CreateGroupActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
 import com.onyx.android.dr.activity.EBookStoreActivity;
+import com.onyx.android.dr.activity.ExitGroupActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
+import com.onyx.android.dr.activity.GroupHomePageActivity;
+import com.onyx.android.dr.activity.GroupMemberManageActivity;
 import com.onyx.android.dr.activity.HearAndSpeakActivity;
 import com.onyx.android.dr.activity.InformalEssayActivity;
+import com.onyx.android.dr.activity.JoinGroupActivity;
 import com.onyx.android.dr.activity.LoginActivity;
 import com.onyx.android.dr.activity.MemorandumActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
@@ -204,6 +209,41 @@ public class ActivityManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.INFORMAL_ESSAY_CONTENT, content);
         intent.setClass(context, SpeechRecordingActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startGroupHomePageActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, GroupHomePageActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startCreateGroupActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, CreateGroupActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startJoinGroupActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, JoinGroupActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startExitGroupActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, ExitGroupActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startGroupMemberManageActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, GroupMemberManageActivity.class);
         context.startActivity(intent);
     }
 

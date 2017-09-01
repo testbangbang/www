@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/search_group_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/recommend_group_name_margin_top">
+
+        <LinearLayout
+            android:layout_width="@dimen/user_info_text_view_width"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/login_text_margin_right"
+            android:gravity="right">
+
+            <CheckBox
+                android:id="@+id/join_group_activity_group_name_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/check_box_margin_right"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/group_name" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/join_group_activity_group_name"
+            style="@style/CreateGroupEditTextStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/custom_group_margin_top">
+
+        <LinearLayout
+            android:layout_width="@dimen/user_info_text_view_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/login_text_margin_right"
+            android:gravity="right">
+
+            <CheckBox
+                android:id="@+id/join_group_activity_group_owner_check"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/login_text_margin_right"
+                android:scaleX="1.5"
+                android:scaleY="1.5" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/group_owner_name" />
+
+        </LinearLayout>
+
+        <EditText
+            android:id="@+id/join_group_activity_group_owner"
+            style="@style/CreateGroupEditTextStyle" />
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_margin="@dimen/create_group_activity_margin_top">
+
+        <TextView
+            android:id="@+id/join_group_activity_search_group"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_alignParentRight="true"
+            android:text="@string/search_group" />
+
+    </RelativeLayout>
+</LinearLayout>

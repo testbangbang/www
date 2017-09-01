@@ -165,23 +165,11 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         DictPreference.init(this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
-        initTitleData();
         initItemData();
         getIntentDatas();
         initSound();
         settingDictionaryFunction();
         initEvent();
-    }
-
-    private void initTitleData() {
-        image.setImageResource(R.drawable.new_word_notebook);
-        if (dictType == Constants.ENGLISH_TYPE) {
-            title.setText(getString(R.string.dict_query_language));
-        } else if (dictType == Constants.CHINESE_TYPE) {
-            title.setText(getString(R.string.dict_query_chinese_language));
-        }else if (dictType == Constants.OTHER_TYPE) {
-            title.setText(getString(R.string.minority_language_new_word_notebook));
-        }
     }
 
     private void initItemData() {
@@ -202,8 +190,20 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     private void getIntentDatas() {
         editQuery = getIntent().getStringExtra(Constants.EDITQUERY);
         dictType = getIntent().getIntExtra(Constants.DICTTYPE, -1);
+        initTitleData();
         loadDictionary();
         insertQueryRecord();
+    }
+
+    private void initTitleData() {
+        image.setImageResource(R.drawable.new_word_notebook);
+        if (dictType == Constants.ENGLISH_TYPE) {
+            title.setText(getString(R.string.dict_query_language));
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            title.setText(getString(R.string.dict_query_chinese_language));
+        }else if (dictType == Constants.OTHER_TYPE) {
+            title.setText(getString(R.string.Japanese));
+        }
     }
 
     private void loadDictionary() {
@@ -293,10 +293,11 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     public void testWordDictQuery() {
         if (!StringUtils.isNullOrEmpty(editQuery)) {
             queryWordRequest = new QueryWordRequest(editQuery);
-            Log.i(TAG, String.valueOf(pathList.size()));
+            Log.i("@@@11" + TAG, String.valueOf(pathList.size()));
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
+                    Log.i("@@@22", queryWordRequest.queryResult.size() + "");
                     if (queryWordRequest.queryResult == null) {
                         return;
                     }

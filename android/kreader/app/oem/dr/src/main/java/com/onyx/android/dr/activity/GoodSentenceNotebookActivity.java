@@ -43,7 +43,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     private GoodSentenceAdapter goodSentenceAdapter;
     private GoodSentencePresenter goodSentencePresenter;
     private int dictType;
-    private List<GoodSentenceNoteEntity> newWordList;
+    private List<GoodSentenceNoteEntity> goodSentenceList;
     private ArrayList<Boolean> listCheck;
     private TimePickerDialog timePickerDialog;
 
@@ -71,7 +71,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
 
     @Override
     protected void initData() {
-        newWordList = new ArrayList<GoodSentenceNoteEntity>();
+        goodSentenceList = new ArrayList<GoodSentenceNoteEntity>();
         listCheck = new ArrayList<>();
         timePickerDialog = new TimePickerDialog(this);
         loadData();
@@ -101,9 +101,9 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
-        newWordList = dataList;
+        goodSentenceList = dataList;
         listCheck = checkList;
-        goodSentenceAdapter.setDataList(newWordList, listCheck);
+        goodSentenceAdapter.setDataList(goodSentenceList, listCheck);
         goodSentenceRecyclerView.setAdapter(goodSentenceAdapter);
     }
 
@@ -130,11 +130,19 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
                 finish();
                 break;
             case R.id.good_sentence_activity_delete:
-                goodSentencePresenter.remoteAdapterDatas(listCheck, goodSentenceAdapter);
+                removeData();
                 break;
             case R.id.good_sentence_activity_export:
                 timePickerDialog.showDatePickerDialog();
                 break;
+        }
+    }
+
+    private void removeData() {
+        if (goodSentenceList.size() > 0) {
+            goodSentencePresenter.remoteAdapterDatas(listCheck, goodSentenceAdapter);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
     }
 

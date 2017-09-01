@@ -132,7 +132,11 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
                 finish();
                 break;
             case R.id.new_word_activity_delete:
-                newWordPresenter.remoteAdapterDatas(listCheck, newWordAdapter);
+                if (newWordList.size() > 0) {
+                    newWordPresenter.remoteAdapterDatas(listCheck, newWordAdapter);
+                } else {
+                    CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+                }
                 break;
             case R.id.new_word_activity_export:
                 timePickerDialog.showDatePickerDialog();

@@ -3,7 +3,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
- <!--   <style name="AppTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">-->
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -29,12 +28,27 @@
         <item name="android:padding">@dimen/edit_text_padding</item>
     </style>
 
+    <style name="CreateGroupEditTextStyle">
+        <item name="android:layout_width">@dimen/create_group_edit_text_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/rectangle_stroke</item>
+        <item name="android:padding">@dimen/edit_text_padding</item>
+        <item name="android:textSize">@dimen/level_three_font_size</item>
+    </style>
+
     <style name="UserInfoTextViewStyle">
         <item name="android:layout_width">@dimen/user_info_text_view_width</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginRight">@dimen/login_text_margin_right</item>
         <item name="android:gravity">right</item>
         <item name="android:textSize">@dimen/level_two_font_size</item>
+    </style>
+
+    <style name="CreateGroupTextViewStyle">
+        <item name="android:layout_width">@dimen/user_info_text_view_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">@dimen/login_text_margin_right</item>
+        <item name="android:gravity">right</item>
     </style>
 
     <style name="TabMenuItem">

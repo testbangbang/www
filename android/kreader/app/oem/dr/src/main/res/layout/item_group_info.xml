@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:padding="@dimen/item_group_info_padding"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/group_info_item_group_name"
+        style="@style/dialog_time_selector_textview_style"
+        android:layout_marginLeft="@dimen/group_info_item_group_name_margin_left"
+        android:text="@string/memorandum_activity_time" />
+
+    <TextView
+        android:id="@+id/group_info_item_owner_name"
+        style="@style/dialog_time_selector_textview_style"
+        android:layout_toRightOf="@+id/group_info_item_group_name"
+        android:layout_marginLeft="@dimen/group_info_item_owner_name_margin_left"
+        android:text="@string/memorandum_activity_time_quantum" />
+
+    <CheckBox
+        android:id="@+id/group_info_item_check"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginRight="@dimen/group_info_item_check_margin_right"
+        android:scaleX="1.3"
+        android:scaleY="1.3" />
+
+</RelativeLayout>
