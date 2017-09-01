@@ -5,8 +5,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -16,6 +18,10 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildLineBreakShapeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildTextShapeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DeleteSpanEvent;
@@ -23,41 +29,40 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.LoadSpanPageShapesEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutArgsEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutCursorEvent;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+import com.onyx.android.sdk.scribble.view.LinedEditText;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
 import com.onyx.edu.note.NoteApplication;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.edu.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
+import com.onyx.edu.note.actions.scribble.ExportEditedPicAction;
 import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
-import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
+import com.onyx.edu.note.handler.HandlerArgs;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
 import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
-import com.onyx.android.sdk.scribble.view.LinedEditText;
 import com.onyx.edu.note.util.Constant;
 import com.onyx.edu.note.util.Utils;
 
@@ -77,6 +82,10 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     HandlerManager handlerManager;
     ScribbleSubMenu mSubMenu;
     private @ScribbleAction.ScribbleActionDef int mScribbleAction;
+    private EditMode currentEditMode = EditMode.NormalMode;
+    private Uri editPictUri;
+
+    private enum EditMode {NormalMode, PicEditMode}
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +100,23 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         initRecyclerView();
         initSpanTextView();
         buildSubMenu();
-        handlerManager = new HandlerManager(this, mViewModel);
+        handlerManager = new HandlerManager(mViewModel);
+        checkEditMode();
+    }
+
+    private void checkEditMode() {
+        Intent editIntent = getIntent();
+        if (TextUtils.isEmpty(editIntent.getAction())){
+            return;
+        }
+        switch (editIntent.getAction()) {
+            case Intent.ACTION_EDIT:
+                currentEditMode = EditMode.PicEditMode;
+                editPictUri = editIntent.getData();
+                mBinding.pageCountControl.setVisibility(View.GONE);
+                mBinding.pageIndicator.setVisibility(View.GONE);
+                break;
+        }
     }
 
     @Override
@@ -147,7 +172,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     private void handleIntent(Intent intent) {
         mScribbleAction =
-                intent.getIntExtra(Constant.SCRIBBLE_ACTION_TAG, ScribbleAction.INVALID);
+                intent.getIntExtra(Constant.SCRIBBLE_ACTION_TAG,
+                        currentEditMode == EditMode.PicEditMode ? ScribbleAction.EDIT : ScribbleAction.INVALID);
         if (!ScribbleAction.isValidAction(mScribbleAction)) {
             //TODO:direct call finish here.because we don't want incorrect illegal call.
             finish();
@@ -158,7 +184,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         BaseCallback callback = new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                handlerManager.changeScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
+                switch (currentEditMode) {
+                    case PicEditMode:
+                        handlerManager.changeScribbleMode(ScribbleMode.MODE_PIC_EDIT, new HandlerArgs().setEditPicUri(editPictUri));
+                        break;
+                    case NormalMode:
+                        handlerManager.changeScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
+                        break;
+                }
             }
         };
         mViewModel.start(uniqueID, parentID, mScribbleAction, callback);
@@ -219,12 +252,104 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     public void onBackPressed() {
         //TODO:need back key to dismiss sub menu first or direct exit even sub menu showing?
         if (!hideSubMenu()) {
-            if (mScribbleAction == ScribbleAction.CREATE) {
-                saveNewNoteDocument();
-            } else {
-                onDocumentClose();
+            switch (mScribbleAction) {
+                case ScribbleAction.CREATE:
+                    saveNewNoteDocument();
+                    break;
+                case ScribbleAction.EDIT:
+                    switch (currentEditMode) {
+                        case NormalMode:
+                            onDocumentClose();
+                            break;
+                        case PicEditMode:
+                            saveEditPic();
+                            break;
+                    }
             }
         }
+    }
+
+    private void saveEditPic() {
+        final OnyxAlertDialog saveEditPicDialog = getExportedPicDialog();
+        noteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveEditPicDialog.show(getFragmentManager(), "SaveEditPicDialog");
+            }
+        });
+    }
+
+    private OnyxAlertDialog getExportedPicDialog() {
+        final OnyxAlertDialog dialog = new OnyxAlertDialog();
+        dialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.save))
+                .setAlertMsgString(getString(R.string.save_and_exit))
+                .setCanceledOnTouchOutside(false)
+                .setEnableNeutralButton(true)
+                .setNeutralButtonText(getString(R.string.discard))
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        onExportEditedPic();
+                    }
+                })
+                .setNegativeAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        noteManager.sync(true, true);
+                    }
+                })
+                .setNeutralAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        Handler handler = new Handler(getMainLooper());
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
+                                        .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
+                            }
+                        }, 2000);
+                        ScribbleActivity.this.finish();
+                    }
+                }));
+        return dialog;
+    }
+
+    private void onExportEditedPic() {
+        noteManager.syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ExportEditedPicAction(getWindowManager(), noteManager.getShapeDataInfo().getDocumentUniqueId(),
+                        noteManager.getShapeDataInfo().getPageNameList().getPageNameList().get(0), editPictUri)
+                        .execute(noteManager, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                noteManager.syncWithCallback(false, false, new BaseCallback() {
+                                    @Override
+                                    public void done(BaseRequest request, Throwable e) {
+                                        afterExportEditedPic();
+                                    }
+                                });
+                            }
+                        });
+            }
+        });
+    }
+
+    private void afterExportEditedPic() {
+        Handler handler = new Handler(getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
+                        .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
+            }
+        }, 2000);
+        handlerManager.quit();
+        ScribbleActivity.super.onBackPressed();
     }
 
     private void saveNewNoteDocument() {

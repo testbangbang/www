@@ -1,5 +1,7 @@
 package com.onyx.edu.note.handler;
 
+import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -9,15 +11,14 @@ import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
-import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
-import com.onyx.edu.note.actions.scribble.DocumentDeletePageAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
-import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
-import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
-import com.onyx.edu.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
+import com.onyx.edu.note.actions.scribble.SetBackgroundAsLocalFileAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
@@ -31,20 +32,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_ENGLISH;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_GRID;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_GRID_5_5;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_GRID_POINT;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_LEFT_GRID;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_LINE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_LINE_1_6;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_LINE_2_0;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_LINE_COLUMN;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_MATS;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_MUSIC;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_TABLE_GRID;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Eraser.ERASE_PARTIALLY;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Eraser.ERASE_TOTALLY;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.BRUSH_PEN_STYLE;
@@ -66,8 +53,8 @@ import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA
  * Created by solskjaer49 on 2017/6/23 17:49.
  */
 
-public class ScribbleHandler extends BaseHandler {
-    private static final String TAG = ScribbleHandler.class.getSimpleName();
+public class PicEditHandler extends BaseHandler {
+    private static final String TAG = PicEditHandler.class.getSimpleName();
     private BaseCallback mActionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
@@ -75,7 +62,7 @@ public class ScribbleHandler extends BaseHandler {
         }
     };
 
-    public ScribbleHandler(NoteManager mNoteManager) {
+    public PicEditHandler(NoteManager mNoteManager) {
         super(mNoteManager);
     }
 
@@ -84,6 +71,25 @@ public class ScribbleHandler extends BaseHandler {
         super.onActivate(args);
         noteManager.registerEventBus(this);
         noteManager.sync(true, true);
+        final String path = FileUtils.getRealFilePathFromUri(NoteApplication.getInstance(), args.getEditPicUri());
+        SetBackgroundAsLocalFileAction action = new SetBackgroundAsLocalFileAction(
+                path, !noteManager.inUserErasing());
+        action.execute(noteManager, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                noteManager.post(new RequestInfoUpdateEvent(request, e));
+                noteManager.setCustomLimitRect(getPicCustomLimitRect(path));
+            }
+        });
+    }
+
+    private Rect getPicCustomLimitRect(String path) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        return BitmapUtils.getScaleInSideAndCenterRect(
+                noteManager.getHostView().getHeight(), noteManager.getHostView().getWidth(),
+                options.outHeight, options.outWidth, false);
     }
 
     @Override
@@ -96,28 +102,21 @@ public class ScribbleHandler extends BaseHandler {
     public void buildFunctionBarMenuFunctionList() {
         functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SHAPE_SELECT);
     }
 
     @Override
     protected void buildToolBarMenuFunctionList() {
         toolBarMenuIDList = new ArrayList<>();
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SAVE);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SETTING);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.EXPORT);
     }
 
     @Override
     protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
         functionBarSubMenuIDMap = new SparseArray<>();
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
     }
@@ -125,18 +124,6 @@ public class ScribbleHandler extends BaseHandler {
     @Override
     public void handleFunctionBarMenuFunction(int functionBarMenuID) {
         switch (functionBarMenuID) {
-            case ScribbleFunctionBarMenuID.ADD_PAGE:
-                addPage();
-                break;
-            case ScribbleFunctionBarMenuID.DELETE_PAGE:
-                deletePage();
-                break;
-            case ScribbleFunctionBarMenuID.NEXT_PAGE:
-                nextPage();
-                break;
-            case ScribbleFunctionBarMenuID.PREV_PAGE:
-                prevPage();
-                break;
             case ScribbleFunctionBarMenuID.SHAPE_SELECT:
                 onSetShapeSelectModeChanged();
                 break;
@@ -151,8 +138,6 @@ public class ScribbleHandler extends BaseHandler {
         Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
         if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
             onStrokeWidthChanged(subMenuID);
-        } else if (ScribbleSubMenuID.isBackgroundGroup(subMenuID)) {
-            onBackgroundChanged(subMenuID);
         } else if (ScribbleSubMenuID.isEraserGroup(subMenuID)) {
             onEraserChanged(subMenuID);
         } else if (ScribbleSubMenuID.isPenStyleGroup(subMenuID)) {
@@ -167,8 +152,6 @@ public class ScribbleHandler extends BaseHandler {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
                 switchToSpanLayoutMode();
-                break;
-            case ScribbleToolBarMenuID.EXPORT:
                 break;
             case ScribbleToolBarMenuID.UNDO:
                 undo();
@@ -195,46 +178,18 @@ public class ScribbleHandler extends BaseHandler {
 
     @Override
     public void prevPage() {
-        noteManager.syncWithCallback(true, true, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
-                prevPageAction.execute(noteManager, mActionDoneCallback);
-            }
-        });
     }
 
     @Override
     public void nextPage() {
-        noteManager.syncWithCallback(true, true, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                GotoNextPageAction nextPageAction = new GotoNextPageAction();
-                nextPageAction.execute(noteManager, mActionDoneCallback);
-            }
-        });
     }
 
     @Override
     public void addPage() {
-        noteManager.syncWithCallback(true, true, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                DocumentAddNewPageAction addNewPageAction = new DocumentAddNewPageAction();
-                addNewPageAction.execute(noteManager, mActionDoneCallback);
-            }
-        });
     }
 
     @Override
     public void deletePage() {
-        noteManager.syncWithCallback(true, true, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                DocumentDeletePageAction deletePageAction = new DocumentDeletePageAction();
-                deletePageAction.execute(noteManager, mActionDoneCallback);
-            }
-        });
     }
 
     private void redo() {
@@ -274,25 +229,6 @@ public class ScribbleHandler extends BaseHandler {
         return resultList;
     }
 
-    private  List<Integer> buildSubMenuBGIDList() {
-        List<Integer> resultList = new ArrayList<>();
-        resultList.add(BG_EMPTY);
-        resultList.add(BG_LINE);
-        resultList.add(BG_LEFT_GRID);
-        resultList.add(BG_GRID_5_5);
-        resultList.add(BG_GRID);
-        resultList.add(BG_MATS);
-        resultList.add(BG_MUSIC);
-        resultList.add(BG_ENGLISH);
-        resultList.add(BG_LINE_1_6);
-        resultList.add(BG_LINE_2_0);
-        resultList.add(BG_LINE_COLUMN);
-        resultList.add(BG_TABLE_GRID);
-        resultList.add(BG_CALENDAR);
-        resultList.add(BG_GRID_POINT);
-        return resultList;
-    }
-
     private List<Integer> buildSubMenuEraserIDList() {
         List<Integer> resultList = new ArrayList<>();
         resultList.add(ERASE_PARTIALLY);
@@ -314,19 +250,13 @@ public class ScribbleHandler extends BaseHandler {
         return resultList;
     }
 
-    private void onBackgroundChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
-        int bgType = ScribbleSubMenuID.bgFromMenuID(subMenuID);
-        NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(bgType, !noteManager.inUserErasing());
-        changeBGAction.execute(noteManager, mActionDoneCallback);
-    }
-
     private void onShapeChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
         int shapeType = ScribbleSubMenuID.shapeTypeFromMenuID(subMenuID);
         noteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
         noteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
     }
 
-    private void onSetShapeSelectModeChanged(){
+    private void onSetShapeSelectModeChanged() {
         Log.e(TAG, "onSetShapeSelectModeChanged: ");
         noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SHAPE_TRANSFORM));
     }
