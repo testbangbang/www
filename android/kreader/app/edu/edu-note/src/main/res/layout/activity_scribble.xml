@@ -93,82 +93,92 @@
 
         </FrameLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/layout_footer"
             android:layout_width="match_parent"
             android:layout_height="@dimen/onyx_main_note_menu_height"
             android:layout_alignParentBottom="true">
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/function_recycler_view"
-                items="@{viewModel.mFunctionBarMenuIDList}"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent" />
+            <!--<com.onyx.android.sdk.ui.view.PageRecyclerView-->
+                <!--android:id="@+id/function_recycler_view"-->
+                <!--items="@{viewModel.mFunctionBarMenuIDList}"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content" />-->
 
-            <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
-                android:id="@+id/page_count_control"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:layout_toLeftOf="@+id/page_indicator"
-                android:layout_toRightOf="@+id/function_recycler_view"
-                android:orientation="horizontal">
+            <!--<View-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_weight="1"-->
+                <!--android:layout_height="wrap_content"/>-->
 
-                <com.onyx.android.sdk.ui.view.CustomIconView
-                    android:id="@+id/button_delete_page"
-                    android:layout_width="@dimen/onyx_main_note_menu_height"
-                    android:layout_height="@dimen/onyx_main_note_menu_height"
-                    android:layout_alignParentRight="true"
-                    android:onClick="@{()->viewModel.deletePage()}"
-                    android:src="@drawable/ic_delete"
-                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
+            <!--<LinearLayout-->
+                <!--android:orientation="vertical"-->
+                <!--android:id="@+id/page_menu"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"/>-->
+            <!--<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout-->
+                <!--android:id="@+id/page_count_control"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:layout_toLeftOf="@+id/page_indicator"-->
+                <!--android:layout_toRightOf="@+id/function_recycler_view"-->
+                <!--android:orientation="horizontal">-->
 
-                <com.onyx.android.sdk.ui.view.CustomIconView
-                    android:id="@+id/button_add_page"
-                    android:layout_width="@dimen/onyx_main_note_menu_height"
-                    android:layout_height="@dimen/onyx_main_note_menu_height"
-                    android:layout_marginRight="5dp"
-                    android:layout_toLeftOf="@+id/button_delete_page"
-                    android:onClick="@{()->viewModel.addPage()}"
-                    android:src="@drawable/ic_add"
-                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
+                <!--<com.onyx.android.sdk.ui.view.CustomIconView-->
+                    <!--android:id="@+id/button_delete_page"-->
+                    <!--android:layout_width="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:layout_height="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:layout_alignParentRight="true"-->
+                    <!--android:onClick="@{()->viewModel.deletePage()}"-->
+                    <!--android:src="@drawable/ic_delete"-->
+                    <!--app:iconDrawingSize="@dimen/note_function_item_img_size" />-->
 
-            </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+                <!--<com.onyx.android.sdk.ui.view.CustomIconView-->
+                    <!--android:id="@+id/button_add_page"-->
+                    <!--android:layout_width="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:layout_height="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:layout_marginRight="5dp"-->
+                    <!--android:layout_toLeftOf="@+id/button_delete_page"-->
+                    <!--android:onClick="@{()->viewModel.addPage()}"-->
+                    <!--android:src="@drawable/ic_add"-->
+                    <!--app:iconDrawingSize="@dimen/note_function_item_img_size" />-->
 
-            <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-                android:id="@+id/page_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:gravity="center"
-                android:orientation="horizontal">
+            <!--</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>-->
 
-                <com.onyx.android.sdk.ui.view.CustomIconView
-                    android:id="@+id/button_previous_page"
-                    android:layout_width="@dimen/onyx_main_note_menu_height"
-                    android:layout_height="@dimen/onyx_main_note_menu_height"
-                    android:onClick="@{()->viewModel.onPrevPage()}"
-                    android:src="@drawable/ic_note_prev_page_black"
-                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
+            <!--<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout-->
+                <!--android:id="@+id/page_indicator"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_alignParentRight="true"-->
+                <!--android:layout_centerVertical="true"-->
+                <!--android:gravity="center"-->
+                <!--android:orientation="horizontal">-->
 
-                <Button
-                    android:id="@+id/button_page_progress"
-                    android:layout_width="@dimen/wrap_content"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/imagebtn_bg"
-                    android:focusable="true"
-                    android:gravity="center"
-                    android:text="@{@string/page_count(viewModel.mCurrentPage,viewModel.mTotalPage)}" />
+                <!--<com.onyx.android.sdk.ui.view.CustomIconView-->
+                    <!--android:id="@+id/button_previous_page"-->
+                    <!--android:layout_width="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:layout_height="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:onClick="@{()->viewModel.onPrevPage()}"-->
+                    <!--android:src="@drawable/ic_note_prev_page_black"-->
+                    <!--app:iconDrawingSize="@dimen/note_function_item_img_size" />-->
 
-                <com.onyx.android.sdk.ui.view.CustomIconView
-                    android:id="@+id/button_next_page"
-                    android:layout_width="@dimen/onyx_main_note_menu_height"
-                    android:layout_height="@dimen/onyx_main_note_menu_height"
-                    android:onClick="@{()->viewModel.onNextPage()}"
-                    android:src="@drawable/ic_note_next_page_black"
-                    app:iconDrawingSize="@dimen/note_function_item_img_size" />
-            </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
-        </RelativeLayout>
+                <!--<Button-->
+                    <!--android:id="@+id/button_page_progress"-->
+                    <!--android:layout_width="@dimen/wrap_content"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:background="@drawable/imagebtn_bg"-->
+                    <!--android:focusable="true"-->
+                    <!--android:gravity="center"-->
+                    <!--android:text="@{@string/page_count(viewModel.mCurrentPage,viewModel.mTotalPage)}" />-->
+
+                <!--<com.onyx.android.sdk.ui.view.CustomIconView-->
+                    <!--android:id="@+id/button_next_page"-->
+                    <!--android:layout_width="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:layout_height="@dimen/onyx_main_note_menu_height"-->
+                    <!--android:onClick="@{()->viewModel.onNextPage()}"-->
+                    <!--android:src="@drawable/ic_note_next_page_black"-->
+                    <!--app:iconDrawingSize="@dimen/note_function_item_img_size" />-->
+            <!--</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>-->
+        </LinearLayout>
     </RelativeLayout>
 </layout>

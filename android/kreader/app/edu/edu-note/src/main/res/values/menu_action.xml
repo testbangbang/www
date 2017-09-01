@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="menu_pen_style">1</integer>
+    <integer name="menu_scribble_bg">2</integer>
+    <integer name="menu_erase">3</integer>
+    <integer name="menu_pen_width">4</integer>
+    <integer name="menu_shape_select">5</integer>
+</resources>

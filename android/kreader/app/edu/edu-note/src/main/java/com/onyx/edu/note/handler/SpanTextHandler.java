@@ -92,7 +92,7 @@ public class SpanTextHandler extends BaseHandler {
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            noteManager.post(new RequestInfoUpdateEvent(request, e));
+            noteManager.post(new RequestInfoUpdateEvent(noteManager.getShapeDataInfo(), request, e));
             if (reloadPageShape) {
                 loadPageShapes();
             }

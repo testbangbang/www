@@ -29,6 +29,7 @@ import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
@@ -44,6 +45,7 @@ import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
+import com.onyx.edu.note.databinding.ScribbleBottomMenuBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
@@ -55,6 +57,8 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
 import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
+import com.onyx.edu.note.ui.BottomMenuViewModel;
+import com.onyx.edu.note.ui.MenuManager;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
 import com.onyx.android.sdk.scribble.view.LinedEditText;
@@ -70,6 +74,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     private static final String TAG = ScribbleActivity.class.getSimpleName();
     ActivityScribbleBinding mBinding;
     ScribbleViewModel mViewModel;
+    MenuManager<ScribbleBottomMenuBinding, BottomMenuViewModel> bottomMenu;
+    MenuManager subMenu;
     ScribbleFunctionAdapter mFunctionBarAdapter, mToolBarAdapter;
     protected SurfaceHolder.Callback surfaceCallback;
     DeviceReceiver deviceReceiver = new DeviceReceiver();
@@ -84,14 +90,22 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         noteManager = NoteApplication.getInstance().getNoteManager();
+        initBottomMenu();
         mViewModel = new ScribbleViewModel(this);
         mViewModel.setNavigator(this);
         // Link View and ViewModel
         mBinding.setViewModel(mViewModel);
+        mBinding.layoutFooter.addView(bottomMenu.getRootView());
         initRecyclerView();
         initSpanTextView();
         buildSubMenu();
         handlerManager = new HandlerManager(this, mViewModel);
+    }
+
+    private void initBottomMenu() {
+        bottomMenu = new MenuManager<ScribbleBottomMenuBinding, BottomMenuViewModel>(this,
+                new BottomMenuViewModel(noteManager.getEventBus()),
+                R.layout.scribble_bottom_menu);
     }
 
     @Override
@@ -126,6 +140,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Override
     protected void onDestroy() {
+        bottomMenu.onDestroy();
         mViewModel.onActivityDestroyed();
         super.onDestroy();
     }
@@ -346,13 +361,17 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void initRecyclerView() {
-        mBinding.functionRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
-        mBinding.toolBarRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
-        mBinding.toolBarRecyclerView.setHasFixedSize(true);
-        mBinding.functionRecyclerView.setHasFixedSize(true);
-        buildBarIconAdapter();
-        mBinding.functionRecyclerView.setAdapter(mFunctionBarAdapter);
-        mBinding.toolBarRecyclerView.setAdapter(mToolBarAdapter);
+        PageRecyclerView functionMenu = bottomMenu.getBinding().functionMenuList;
+        functionMenu.setLayoutManager(new DisableScrollGridManager(this));
+        functionMenu.setHasFixedSize(true);
+        functionMenu.setAdapter(new BottomMenuViewModel.PageFunctionAdapter(noteManager.getEventBus()));
+//        mBinding.functionRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
+//        mBinding.toolBarRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
+//        mBinding.toolBarRecyclerView.setHasFixedSize(true);
+//        mBinding.functionRecyclerView.setHasFixedSize(true);
+//        buildBarIconAdapter();
+//        mBinding.functionRecyclerView.setAdapter(mFunctionBarAdapter);
+//        mBinding.toolBarRecyclerView.setAdapter(mToolBarAdapter);
     }
 
     private void buildBarIconAdapter() {
@@ -586,16 +605,16 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 viewModel.setNavigator(mItemNavigator);
                 getItemVMList().add(viewModel);
             }
-            if (activityWeakReference.get() != null) {
-                switch (mMenuType) {
-                    case ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU:
-                        activityWeakReference.get().mBinding.functionRecyclerView.notifyDataSetChanged();
-                        break;
-                    case ScribbleFunctionMenuIDType.TOOL_BAR_MENU:
-                        activityWeakReference.get().mBinding.toolBarRecyclerView.notifyDataSetChanged();
-                        break;
-                }
-            }
+//            if (activityWeakReference.get() != null) {
+//                switch (mMenuType) {
+//                    case ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU:
+//                        activityWeakReference.get().mBinding.functionRecyclerView.notifyDataSetChanged();
+//                        break;
+//                    case ScribbleFunctionMenuIDType.TOOL_BAR_MENU:
+//                        activityWeakReference.get().mBinding.toolBarRecyclerView.notifyDataSetChanged();
+//                        break;
+//                }
+//            }
         }
     }
 }

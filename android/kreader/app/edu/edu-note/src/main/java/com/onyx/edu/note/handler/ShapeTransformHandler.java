@@ -72,6 +72,14 @@ import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA
  */
 
 public class ShapeTransformHandler extends BaseHandler {
+
+    private BaseCallback actionDoneCallback = new BaseCallback() {
+        @Override
+        public void done(BaseRequest request, Throwable e) {
+            noteManager.post(new RequestInfoUpdateEvent(noteManager.getShapeDataInfo(), request, e));
+        }
+    };
+
     private static final String TAG = ShapeTransformHandler.class.getSimpleName();
     private TouchPoint mShapeSelectStartPoint = null;
     private TouchPoint mShapeSelectPoint = null;
@@ -83,13 +91,6 @@ public class ShapeTransformHandler extends BaseHandler {
     private enum ControlMode {SelectMode, OperatingMode}
 
     private enum TransformAction {Undefined, Zoom, Move}
-
-    private BaseCallback actionDoneCallback = new BaseCallback() {
-        @Override
-        public void done(BaseRequest request, Throwable e) {
-            noteManager.post(new RequestInfoUpdateEvent(request, e));
-        }
-    };
 
     public ShapeTransformHandler(NoteManager noteManager) {
         super(noteManager);

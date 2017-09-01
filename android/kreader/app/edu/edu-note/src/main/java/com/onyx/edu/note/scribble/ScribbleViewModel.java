@@ -85,6 +85,7 @@ public class ScribbleViewModel extends BaseObservable {
                     mCurrentNoteModel.set(req.getNoteModel());
                     mNoteTitle.set(mCurrentNoteModel.get() != null ? mCurrentNoteModel.get().getTitle() :
                             DateTimeUtil.formatDate(new Date()));
+                    mNoteManager.post(new RequestInfoUpdateEvent(mNoteManager.getShapeDataInfo(), request, e));
                 }
                 BaseCallback.invoke(callback, request, e);
             }
@@ -136,7 +137,6 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     private void updateInfo(AsyncBaseNoteRequest request) {
-        mNoteManager.setShapeDataInfo(request.getShapeDataInfo());
         mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
         mCurrentPage.set(mShapeDataInfo.get().getHumanReadableCurPageIndex());
         mTotalPage.set(mShapeDataInfo.get().getPageCount());

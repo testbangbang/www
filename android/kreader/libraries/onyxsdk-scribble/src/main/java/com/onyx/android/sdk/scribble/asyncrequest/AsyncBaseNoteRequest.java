@@ -163,6 +163,7 @@ public class AsyncBaseNoteRequest extends BaseRequest {
     }
 
     public void updateShapeDataInfo(final NoteManager parent) {
+        parent.saveShapeDataInfo(getShapeDataInfo());
         parent.updateShapeDataInfo(getContext(), getShapeDataInfo());
     }
 

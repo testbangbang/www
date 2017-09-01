@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.onyx.android.sdk.ui.data.MenuAction"/>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.ui.BottomMenuViewModel" />
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:id="@+id/page_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/function_menu_list"
+            menuActions="@{viewModel.menuActions}"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            android:id="@+id/button_delete_page"
+            android:layout_width="@dimen/onyx_main_note_menu_height"
+            android:layout_height="@dimen/onyx_main_note_menu_height"
+            android:layout_alignParentRight="true"
+            android:onClick="@{(v) ->viewModel.itemClicked(v)}"
+            viewModel="@{viewModel}"
+            menuAction="@{MenuAction.DELETE_PAGE}"
+            android:src="@drawable/ic_delete"
+            app:iconDrawingSize="@dimen/note_function_item_img_size" />
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            android:id="@+id/button_add_page"
+            android:layout_width="@dimen/onyx_main_note_menu_height"
+            android:layout_height="@dimen/onyx_main_note_menu_height"
+            android:layout_marginRight="5dp"
+            android:layout_toLeftOf="@+id/button_delete_page"
+            android:onClick="@{(v) ->viewModel.itemClicked(v)}"
+            viewModel="@{viewModel}"
+            menuAction="@{MenuAction.ADD_PAGE}"
+            android:src="@drawable/ic_add"
+            app:iconDrawingSize="@dimen/note_function_item_img_size" />
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            android:id="@+id/button_previous_page"
+            android:layout_width="@dimen/onyx_main_note_menu_height"
+            android:layout_height="@dimen/onyx_main_note_menu_height"
+            android:onClick="@{(v) ->viewModel.itemClicked(v)}"
+            viewModel="@{viewModel}"
+            menuAction="@{MenuAction.PREV_PAGE}"
+            android:src="@drawable/ic_note_prev_page_black"
+            app:iconDrawingSize="@dimen/note_function_item_img_size" />
+
+        <Button
+            android:id="@+id/button_page_progress"
+            android:layout_width="@dimen/wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@{@string/page_count(viewModel.currentPage,viewModel.totalPage)}" />
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            android:id="@+id/button_next_page"
+            android:layout_width="@dimen/onyx_main_note_menu_height"
+            android:layout_height="@dimen/onyx_main_note_menu_height"
+            android:onClick="@{(v) ->viewModel.itemClicked(v)}"
+            viewModel="@{viewModel}"
+            menuAction="@{MenuAction.NEXT_PAGE}"
+            android:src="@drawable/ic_note_next_page_black"
+            app:iconDrawingSize="@dimen/note_function_item_img_size" />
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>

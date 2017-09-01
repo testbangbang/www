@@ -5,6 +5,7 @@ import android.util.SparseArray;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
@@ -21,6 +22,7 @@ import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
+import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 

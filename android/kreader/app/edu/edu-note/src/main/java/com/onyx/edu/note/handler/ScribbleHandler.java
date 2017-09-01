@@ -8,6 +8,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.data.MenuAction;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
@@ -26,6 +27,9 @@ import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
+import com.onyx.edu.note.ui.MenuClickEvent;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,16 +72,18 @@ import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA
 
 public class ScribbleHandler extends BaseHandler {
     private static final String TAG = ScribbleHandler.class.getSimpleName();
-    private BaseCallback mActionDoneCallback = new BaseCallback() {
-        @Override
-        public void done(BaseRequest request, Throwable e) {
-            noteManager.post(new RequestInfoUpdateEvent(request, e));
-        }
-    };
 
     public ScribbleHandler(NoteManager mNoteManager) {
         super(mNoteManager);
     }
+
+    private BaseCallback mActionDoneCallback = new BaseCallback() {
+        @Override
+        public void done(BaseRequest request, Throwable e) {
+            noteManager.post(new RequestInfoUpdateEvent(noteManager.getShapeDataInfo(), request, e));
+        }
+    };
+
 
     @Override
     public void onActivate() {
@@ -120,6 +126,24 @@ public class ScribbleHandler extends BaseHandler {
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+    }
+
+    @Subscribe
+    public void onMenuClickEvent(MenuClickEvent event) {
+        switch (event.getMenuAction()) {
+            case MenuAction.ADD_PAGE:
+                addPage();
+                break;
+            case MenuAction.DELETE_PAGE:
+                deletePage();
+                break;
+            case MenuAction.PREV_PAGE:
+                prevPage();
+                break;
+            case MenuAction.NEXT_PAGE:
+                nextPage();
+                break;
+        }
     }
 
     @Override

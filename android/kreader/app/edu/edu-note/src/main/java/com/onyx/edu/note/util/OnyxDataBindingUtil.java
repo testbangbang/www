@@ -8,7 +8,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.edu.note.ui.BaseMenuViewModel;
 import com.onyx.edu.note.ui.PageAdapter;
+import com.onyx.edu.note.ui.PageDataBindingAdapter;
 
 import java.util.List;
 
@@ -17,6 +19,12 @@ import java.util.List;
  */
 
 public class OnyxDataBindingUtil {
+
+    @BindingAdapter({"viewModel", "menuAction"})
+    public static void bindMenu(View view, BaseMenuViewModel viewModel, int menuAction) {
+        viewModel.bindMenu(menuAction, view);
+    }
+
     @BindingAdapter({"android:src"})
     public static void setImageViewResource(ImageView imageView, int resource) {
         imageView.setImageResource(resource);
@@ -38,6 +46,15 @@ public class OnyxDataBindingUtil {
         PageAdapter adapter = (PageAdapter) recyclerView.getAdapter();
         if (adapter != null) {
             adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @BindingAdapter("menuActions")
+    public static void setMenuActions(PageRecyclerView recyclerView, List menuActions) {
+        PageDataBindingAdapter adapter = (PageDataBindingAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.setRawData(recyclerView, menuActions);
         }
     }
 

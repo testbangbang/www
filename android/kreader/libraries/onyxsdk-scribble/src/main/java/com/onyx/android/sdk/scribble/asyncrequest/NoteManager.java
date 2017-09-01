@@ -195,7 +195,7 @@ public class NoteManager {
         return shapeDataInfo;
     }
 
-    public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
+    public void saveShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
     }
 
