@@ -53,6 +53,7 @@ import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
+import com.onyx.edu.note.handler.HandlerArgs;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
@@ -185,7 +186,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             public void done(BaseRequest request, Throwable e) {
                 switch (currentEditMode) {
                     case PicEditMode:
-                        handlerManager.changeScribbleMode(ScribbleMode.MODE_PIC_EDIT, editPictUri);
+                        handlerManager.changeScribbleMode(ScribbleMode.MODE_PIC_EDIT, new HandlerArgs().setEditPicUri(editPictUri));
                         break;
                     case NormalMode:
                         handlerManager.changeScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
@@ -269,8 +270,18 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void saveEditPic() {
-        final OnyxAlertDialog saveEditPicDialog = new OnyxAlertDialog();
-        saveEditPicDialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.save))
+        final OnyxAlertDialog saveEditPicDialog = getExportedPicDialog();
+        noteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveEditPicDialog.show(getFragmentManager(), "SaveEditPicDialog");
+            }
+        });
+    }
+
+    private OnyxAlertDialog getExportedPicDialog() {
+        final OnyxAlertDialog dialog = new OnyxAlertDialog();
+        dialog.setParams(new OnyxAlertDialog.Params().setTittleString(getString(R.string.save))
                 .setAlertMsgString(getString(R.string.save_and_exit))
                 .setCanceledOnTouchOutside(false)
                 .setEnableNeutralButton(true)
@@ -278,21 +289,21 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 .setPositiveAction(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        saveEditPicDialog.dismiss();
+                        dialog.dismiss();
                         onExportEditedPic();
                     }
                 })
                 .setNegativeAction(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        saveEditPicDialog.dismiss();
+                        dialog.dismiss();
                         noteManager.sync(true, true);
                     }
                 })
                 .setNeutralAction(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        saveEditPicDialog.dismiss();
+                        dialog.dismiss();
                         Handler handler = new Handler(getMainLooper());
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -304,20 +315,14 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                         ScribbleActivity.this.finish();
                     }
                 }));
-        noteManager.syncWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                saveEditPicDialog.show(getFragmentManager(),"SaveEditPicDialog");
-            }
-        });
+        return dialog;
     }
 
     private void onExportEditedPic() {
         noteManager.syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new ExportEditedPicAction(getWindowManager(),
-                        noteManager.getShapeDataInfo().getDocumentUniqueId(),
+                new ExportEditedPicAction(getWindowManager(), noteManager.getShapeDataInfo().getDocumentUniqueId(),
                         noteManager.getShapeDataInfo().getPageNameList().getPageNameList().get(0), editPictUri)
                         .execute(noteManager, new BaseCallback() {
                             @Override
@@ -325,22 +330,26 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                                 noteManager.syncWithCallback(false, false, new BaseCallback() {
                                     @Override
                                     public void done(BaseRequest request, Throwable e) {
-                                        Handler handler = new Handler(getMainLooper());
-                                        handler.postDelayed(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
-                                                        .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
-                                            }
-                                        }, 2000);
-                                        handlerManager.quit();
-                                        ScribbleActivity.super.onBackPressed();
+                                        afterExportEditedPic();
                                     }
                                 });
                             }
                         });
             }
         });
+    }
+
+    private void afterExportEditedPic() {
+        Handler handler = new Handler(getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
+                        .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
+            }
+        }, 2000);
+        handlerManager.quit();
+        ScribbleActivity.super.onBackPressed();
     }
 
     private void saveNewNoteDocument() {

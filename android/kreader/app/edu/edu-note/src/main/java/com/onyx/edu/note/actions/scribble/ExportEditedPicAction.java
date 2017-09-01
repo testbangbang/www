@@ -1,5 +1,6 @@
 package com.onyx.edu.note.actions.scribble;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -17,6 +18,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.BaseNoteAction;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,39 +32,26 @@ public class ExportEditedPicAction extends BaseNoteAction {
     private Rect size;
     private String noteTitle;
     private int count;
+    private WeakReference<Context> contextWeakReference;
 
     public ExportEditedPicAction(WindowManager wm, String douId, String currentPageUniqueId, Uri exportedPicUri) {
         pageUniqueIds = new ArrayList<>();
         pageUniqueIds.add(currentPageUniqueId);
-
+        contextWeakReference = new WeakReference<Context>(NoteApplication.getInstance());
         this.douId = douId;
         int width = wm.getDefaultDisplay().getWidth();
         int height = wm.getDefaultDisplay().getHeight();
         this.size = new Rect(0, 0, width, height);
-        this.noteTitle = FileUtils.getBaseName(FileUtils.getRealFilePathFromUri(NoteApplication.getInstance(), exportedPicUri)).replaceAll(":", " ");
+        this.noteTitle = FileUtils.getBaseName(FileUtils.getRealFilePathFromUri(contextWeakReference.get(), exportedPicUri)).replaceAll(":", " ");
     }
 
     @Override
-    public void execute(NoteManager noteManager, BaseCallback callback) {
+    public void execute(NoteManager noteManager, final BaseCallback callback) {
+        Context context = contextWeakReference.get();
+        if (context == null){
+            return;
+        }
         count = pageUniqueIds.size();
-//        progress = new DialogProgress(activity, 0, count);
-//        progress.setCanceledOnTouchOutside(false);
-//        progress.setTitle(activity.getString(R.string.exporting_info));
-//        String location = null;
-//        try {
-//            location = activity.getString(R.string.export_location, ExportUtils.getExportPicPath(noteTitle));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        progress.setSubTitle(location);
-//        progress.show();
-//
-//        progress.setOnDismissListener(new DialogInterface.OnDismissListener() {
-//            @Override
-//            public void onDismiss(DialogInterface dialogInterface) {
-//                callback.done(null, null);
-//            }
-//        });
         getPageBitmap(noteManager,callback);
     }
 
@@ -82,7 +71,6 @@ public class ExportEditedPicAction extends BaseNoteAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
-//                    onExportFail(activity, progress);
                     return;
                 }
                 exportPage(noteManager, renderRequest.getRenderBitmap(), index);
@@ -99,26 +87,7 @@ public class ExportEditedPicAction extends BaseNoteAction {
                 if (!bitmap.isRecycled()) {
                     bitmap.recycle();
                 }
-                if (e != null) {
-//                    onExportFail(activity, progress);
-                    return;
-                }
-
-//                progress.setProgress(index);
-                if (index == count) {
-//                    onExportSuccess(activity, progress);
-                }
             }
         });
     }
-
-//    private void onExportFail(final T activity, DialogProgress progress) {
-//        progress.setTitle(activity.getString(R.string.export_fail));
-//        progress.getProgressBar().setVisibility(View.GONE);
-//    }
-//
-//    private void onExportSuccess(final T activity, DialogProgress progress) {
-//        progress.setTitle(activity.getString(R.string.export_success));
-//        progress.dismiss();
-//    }
 }

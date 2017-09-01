@@ -2,7 +2,6 @@ package com.onyx.edu.note.handler;
 
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -63,40 +62,34 @@ public class PicEditHandler extends BaseHandler {
         }
     };
 
-    public void setBgUri(Uri bgUri) {
-        this.bgUri = bgUri;
-    }
-
-    private Uri bgUri;
-
     public PicEditHandler(NoteManager mNoteManager) {
         super(mNoteManager);
     }
 
     @Override
-    public void onActivate() {
-        super.onActivate();
+    public void onActivate(HandlerArgs args) {
+        super.onActivate(args);
         noteManager.registerEventBus(this);
         noteManager.sync(true, true);
-        final String path = FileUtils.getRealFilePathFromUri(NoteApplication.getInstance(), bgUri);
+        final String path = FileUtils.getRealFilePathFromUri(NoteApplication.getInstance(), args.getEditPicUri());
         SetBackgroundAsLocalFileAction action = new SetBackgroundAsLocalFileAction(
                 path, !noteManager.inUserErasing());
         action.execute(noteManager, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 noteManager.post(new RequestInfoUpdateEvent(request, e));
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inJustDecodeBounds = true;
-                BitmapFactory.decodeFile(path, options);
-                int imageHeight = options.outHeight;
-                int imageWidth = options.outWidth;
-                Rect customRect = BitmapUtils.getScaleInSideAndCenterRect(
-                        noteManager.getHostView().getHeight(), noteManager.getHostView().getWidth(),
-                        imageHeight, imageWidth, false);
-                Log.e(TAG, "customRect:" + customRect);
-                noteManager.setCustomLimitRect(customRect);
+                noteManager.setCustomLimitRect(getPicCustomLimitRect(path));
             }
         });
+    }
+
+    private Rect getPicCustomLimitRect(String path) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(path, options);
+        return BitmapUtils.getScaleInSideAndCenterRect(
+                noteManager.getHostView().getHeight(), noteManager.getHostView().getWidth(),
+                options.outHeight, options.outWidth, false);
     }
 
     @Override
@@ -161,10 +154,10 @@ public class PicEditHandler extends BaseHandler {
                 switchToSpanLayoutMode();
                 break;
             case ScribbleToolBarMenuID.UNDO:
-                unDo();
+                undo();
                 break;
             case ScribbleToolBarMenuID.REDO:
-                reDo();
+                redo();
                 break;
             case ScribbleToolBarMenuID.SAVE:
                 saveDocument(uniqueID, title, false, null);
@@ -199,7 +192,7 @@ public class PicEditHandler extends BaseHandler {
     public void deletePage() {
     }
 
-    private void reDo() {
+    private void redo() {
         noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -209,7 +202,7 @@ public class PicEditHandler extends BaseHandler {
         });
     }
 
-    private void unDo() {
+    private void undo() {
         noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

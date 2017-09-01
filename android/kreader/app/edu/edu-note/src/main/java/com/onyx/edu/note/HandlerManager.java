@@ -1,6 +1,5 @@
 package com.onyx.edu.note;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
@@ -11,6 +10,7 @@ import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.handler.BaseHandler;
+import com.onyx.edu.note.handler.HandlerArgs;
 import com.onyx.edu.note.handler.PicEditHandler;
 import com.onyx.edu.note.handler.ScribbleHandler;
 import com.onyx.edu.note.handler.ShapeTransformHandler;
@@ -46,18 +46,15 @@ public class HandlerManager {
     }
 
     public void resetToDefaultProvider() {
-        setActiveProvider(SCRIBBLE_PROVIDER);
+        setActiveProvider(SCRIBBLE_PROVIDER, null);
     }
 
-    public void setActiveProvider(String providerName, Uri... bgUri) {
+    public void setActiveProvider(String providerName, HandlerArgs args) {
         if (!TextUtils.isEmpty(activeProviderName) && providerMap.get(activeProviderName) != null) {
             providerMap.get(activeProviderName).onDeactivate();
         }
         activeProviderName = providerName;
-        if (activeProviderName.equalsIgnoreCase(PIC_EDIT_PROVIDER)) {
-            ((PicEditHandler) providerMap.get(activeProviderName)).setBgUri(bgUri[0]);
-        }
-        providerMap.get(activeProviderName).onActivate();
+        providerMap.get(activeProviderName).onActivate(args);
     }
 
     @NonNull
@@ -69,7 +66,11 @@ public class HandlerManager {
         return providerMap.get(activeProviderName);
     }
 
-    public void changeScribbleMode(@ScribbleMode.ScribbleModeDef int targetMode , Uri... bgUri) {
+    public void changeScribbleMode(@ScribbleMode.ScribbleModeDef int targetMode) {
+        changeScribbleMode(targetMode, null);
+    }
+
+    public void changeScribbleMode(@ScribbleMode.ScribbleModeDef int targetMode, HandlerArgs args) {
         String targetProviderName = null;
         switch (targetMode) {
             case ScribbleMode.MODE_NORMAL_SCRIBBLE:
@@ -85,7 +86,7 @@ public class HandlerManager {
                 targetProviderName = PIC_EDIT_PROVIDER;
                 break;
         }
-        setActiveProvider(targetProviderName, bgUri);
+        setActiveProvider(targetProviderName, args);
     }
 
     public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
@@ -106,7 +107,7 @@ public class HandlerManager {
                 closeAfterSave, callback);
     }
 
-    public void quit(){
+    public void quit() {
         getActiveProvider().onDeactivate();
     }
 }

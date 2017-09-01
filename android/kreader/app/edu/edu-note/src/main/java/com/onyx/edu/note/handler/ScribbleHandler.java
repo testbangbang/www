@@ -80,8 +80,8 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void onActivate() {
-        super.onActivate();
+    public void onActivate(HandlerArgs args) {
+        super.onActivate(args);
         noteManager.registerEventBus(this);
         noteManager.sync(true, true);
     }
@@ -171,10 +171,10 @@ public class ScribbleHandler extends BaseHandler {
             case ScribbleToolBarMenuID.EXPORT:
                 break;
             case ScribbleToolBarMenuID.UNDO:
-                unDo();
+                undo();
                 break;
             case ScribbleToolBarMenuID.REDO:
-                reDo();
+                redo();
                 break;
             case ScribbleToolBarMenuID.SAVE:
                 saveDocument(uniqueID, title, false, null);
@@ -237,7 +237,7 @@ public class ScribbleHandler extends BaseHandler {
         });
     }
 
-    private void reDo() {
+    private void redo() {
         noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -247,7 +247,7 @@ public class ScribbleHandler extends BaseHandler {
         });
     }
 
-    private void unDo() {
+    private void undo() {
         noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
