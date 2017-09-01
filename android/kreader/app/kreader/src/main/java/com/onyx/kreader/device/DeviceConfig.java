@@ -31,6 +31,8 @@ public class DeviceConfig {
 
     private Map<String, Map<String, JSONObject>> keyBinding = null;
 
+    private boolean hasCapacitiveKeys = false;
+
     private boolean deleteAcsmAfterFulfillment = false;
     private boolean supportZipCompressedBooks = false;
     private boolean disableDictionaryFunc = false;
@@ -573,6 +575,14 @@ public class DeviceConfig {
 
     public void setStatisticsUrl(String statisticsUrl) {
         this.statisticsUrl = statisticsUrl;
+    }
+
+    public boolean isHasCapacitiveKeys () {
+        return hasCapacitiveKeys;
+    }
+
+    public void setHasCapacitiveKeys (boolean capacitiveKeys) {
+        hasCapacitiveKeys = capacitiveKeys;
     }
 }
 

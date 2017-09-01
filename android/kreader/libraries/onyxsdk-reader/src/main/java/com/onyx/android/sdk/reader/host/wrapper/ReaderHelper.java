@@ -117,6 +117,7 @@ public class ReaderHelper {
         this.pluginOptions = pluginOptions;
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
+        LegacySdkDataUtils.recordStartReading(context, documentPath);
     }
 
     private void saveMetadata(final Context context, final String path) {

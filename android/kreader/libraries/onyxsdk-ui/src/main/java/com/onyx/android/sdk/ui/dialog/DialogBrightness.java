@@ -177,6 +177,7 @@ public class DialogBrightness extends OnyxBaseDialog {
         }
         int value = mLightSteps.get(mRatingBarLightSettings.getProgress());
         FrontLightController.setBrightness(this.getContext(), value);
+        FrontLightController.setBrightnessConfigValue(this.getContext(), value);
     }
 
     @Override

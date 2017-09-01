@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.handler;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
@@ -19,6 +20,7 @@ import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
@@ -41,6 +43,7 @@ import java.util.List;
  */
 public abstract class BaseHandler {
 
+    private static final String TAG = BaseHandler.class.getSimpleName();
     public static class HandlerInitialState {
         public String ttsInitialPosition;
         public RelativeLayout slideShowParentLayout;
@@ -55,6 +58,11 @@ public abstract class BaseHandler {
 
     private float SINGLE_TAP_MOVE_TOLERANCE = 15;  //dp
 
+    private static final float IGNORE_PROPORTIONS_ADJUST = 0.85f;
+    private static final float IGNORE_PROPORTIONS_WIDTH = 0.95f;
+    private static final float IGNORE_PROPORTIONS_HEIGHT_START = 0.50f;
+    private static final float IGNORE_PROPORTIONS_HEIGHT_END = 0.60f;
+
     private Point startPoint = new Point();
     private HandlerManager parent;
     private boolean longPress = false;
@@ -63,7 +71,7 @@ public abstract class BaseHandler {
     private boolean pinchZooming = false;
     private boolean scrolling = false;
     private boolean smallScrollToSingleTap = false;
-
+    private DisplayMetrics displayMetrics;
 
     public boolean isSingleTapUp() {
         return singleTapUp;
@@ -97,6 +105,7 @@ public abstract class BaseHandler {
         startPoint = new Point((int)e.getX(), (int)e.getY());
         actionUp = false;
         singleTapUp = false;
+        readerDataHolder.getCurrentBrightness();
         return true;
     }
 
@@ -117,6 +126,14 @@ public abstract class BaseHandler {
     }
 
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder,MotionEvent e) {
+        switch (e.getAction()){
+            case  MotionEvent.ACTION_DOWN:
+                break;
+            case  MotionEvent.ACTION_UP:
+                readerDataHolder.setBrightnessConfigValue();
+                break;
+
+        }
         return true;
     }
 
@@ -272,6 +289,7 @@ public abstract class BaseHandler {
     }
 
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+
         if (isPinchZooming()) {
             // scrolling may happens after pinch zoom, so we always reset scroll state to avoid conflicts
             setScrolling(false);
@@ -289,14 +307,19 @@ public abstract class BaseHandler {
         setSingleTap(false);
         setScrolling(true);
         getStartPoint().set((int)e1.getX(), (int)e1.getY());
-        if (e2.getAction() == MotionEvent.ACTION_MOVE) {
-            panning(readerDataHolder,(int)(e2.getX() - getStartPoint().x), (int)(e2.getY() - getStartPoint().y));
+        if (e2.getAction() == MotionEvent.ACTION_MOVE){
+            if(rightEdgeSlide(readerDataHolder, e1, e2, distanceX, distanceY)) {
+                setScrolling(false);
+            } else {
+                panning(readerDataHolder, (int) (e2.getX() - getStartPoint().x), (int) (e2.getY() - getStartPoint().y));
+            }
         }
         return true;
     }
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
         setLongPress(true);
+        readerDataHolder.cleanChangeCount();
         actionUp = false;
     }
 
@@ -306,6 +329,25 @@ public abstract class BaseHandler {
         }
 
         PanAction.panning(readerDataHolder, offsetX, offsetY);
+    }
+
+    private boolean rightEdgeSlide(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+        if(isLongPress()){
+            return false;
+        }
+        if(readerDataHolder.getReaderViewInfo().canPan()) {
+            return false;
+        }
+        float startX = e2.getX();
+        if (startX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST) {
+            if (distanceY < 0 && Math.abs(distanceY) > 4) {
+                readerDataHolder.adjustLowerBrightness();
+            } else if ( Math.abs(distanceY) > 4 ){
+                readerDataHolder.adjustRaiseBrightness();
+            }
+            return true;
+        }
+        return false;
     }
 
     public void panFinished(ReaderDataHolder readerDataHolder,int offsetX, int offsetY) {
@@ -337,6 +379,9 @@ public abstract class BaseHandler {
             return true;
         }
         if (tryPageLink(readerDataHolder, x, y)) {
+            return true;
+        }
+        if (ignoreEdgeTouch(readerDataHolder, x, y)) {
             return true;
         }
         return false;
@@ -437,5 +482,35 @@ public abstract class BaseHandler {
             return;
         }
         readerDataHolder.getEventBus().post(new QuitEvent());
+    }
+
+    private boolean ignoreEdgeTouch(ReaderDataHolder readerDataHolder, float x, float y) {
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isHasCapacitiveKeys()) {
+            return false;
+        }
+
+        Context context = readerDataHolder.getContext();
+        if ((x < getWidthPixels(context) * (1 - IGNORE_PROPORTIONS_WIDTH)
+                || x > getWidthPixels(context) * IGNORE_PROPORTIONS_WIDTH)
+                && y > getHeightPixels(context) * IGNORE_PROPORTIONS_HEIGHT_START
+                && y < getHeightPixels(context) * IGNORE_PROPORTIONS_HEIGHT_END) {
+            return true;
+        }
+        return false;
+
+    }
+
+    private float getWidthPixels(Context context){
+        if (displayMetrics == null) {
+            displayMetrics = context.getResources().getDisplayMetrics();
+        }
+        return displayMetrics.widthPixels;
+    }
+
+    private float getHeightPixels(Context context){
+        if (displayMetrics == null) {
+            displayMetrics = context.getResources().getDisplayMetrics();
+        }
+        return displayMetrics.heightPixels;
     }
 }
