@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.CustomAppInfo;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -63,6 +64,11 @@ public class ApplicationsActivity extends BaseActivity {
 
     private List<AppDataInfo> appDataInfoList = new ArrayList<>();
     private boolean showCleanTestAppMenu = false;
+    private List<CustomAppInfo> customAppInfoList = new ArrayList<CustomAppInfo>() {
+        {
+            // TODO: 17-8-31 custom "app"
+        }
+    };
 
     @Override
     protected Integer getLayoutId() {
@@ -145,10 +151,23 @@ public class ApplicationsActivity extends BaseActivity {
                 }
                 showCleanTestAppMenu = listRequest.isTestAppExist();
                 appDataInfoList = listRequest.getAppInfoList();
+                addCustomIcon(appDataInfoList, customAppInfoList);
                 notifyDataChanged();
             }
         });
         showProgressDialog(listRequest, null);
+    }
+
+    private void addCustomIcon(List<AppDataInfo> appDataInfoList, List<CustomAppInfo> customAppInfoList) {
+        for (CustomAppInfo customAppInfo : customAppInfoList) {
+            AppDataInfo appDataInfo = new AppDataInfo();
+            appDataInfo.activityClassName = customAppInfo.getActivityClass().getName();
+            appDataInfo.iconDrawable = getResources().getDrawable(customAppInfo.getResource());
+            appDataInfo.intent = new Intent(this, customAppInfo.getActivityClass());
+            appDataInfo.labelName = getString(customAppInfo.getLabelName());
+            appDataInfo.isSystemApp = false;
+            appDataInfoList.add(appDataInfo);
+        }
     }
 
     private Map<String, String> getCustomizedIconApps() {

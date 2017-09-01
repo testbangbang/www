@@ -53,6 +53,7 @@
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            android:launchMode="singleTask"
             android:windowSoftInputMode="stateVisible|adjustPan" />
 
         <activity android:name=".reader.activity.ReaderActivity" />

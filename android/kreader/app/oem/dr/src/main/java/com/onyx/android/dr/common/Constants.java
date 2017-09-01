@@ -98,6 +98,7 @@ public class Constants {
     public static final int VALUE_NEGATIVE_ONE = -1;
     public static final String METADATA_ARRAY = "metadata_array";
     public static final int NEW_WORD_REVIEW_COUNT = 5;
+    public static final String GROUP_NAME = "group_name";
     public static String STANDBY_PIC_DIRECTORY = "/data/local/assets/images/";
     public static final String APK_NAME = "dr.apk";
     public static final String APK_DOWNLOAD_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + Constants.APK_NAME;

@@ -41,6 +41,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginRight">@dimen/login_text_margin_right</item>
         <item name="android:gravity">right</item>
+        <item name="android:textSize">@dimen/level_two_font_size</item>
     </style>
 
     <style name="CreateGroupTextViewStyle">

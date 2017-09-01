@@ -462,4 +462,7 @@
     <string name="select_search_group_name_type">select search group name type</string>
     <string name="exit_group_success">exit group success</string>
     <string name="delete_group_member_success">delete group member success</string>
+    <string name="register_password">password:</string>
+    <string name="college_grade">grade:</string>
+    <string name="college_clazz">class:</string>
 </resources>

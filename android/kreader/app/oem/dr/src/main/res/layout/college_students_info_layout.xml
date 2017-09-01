@@ -11,7 +11,7 @@
 
         <TextView
             style="@style/UserInfoTextViewStyle"
-            android:text="@string/grade" />
+            android:text="@string/college_grade" />
 
         <EditText
             android:id="@+id/college_student_grade"
@@ -26,7 +26,7 @@
 
         <TextView
             style="@style/UserInfoTextViewStyle"
-            android:text="@string/grade" />
+            android:text="@string/college_clazz" />
 
         <EditText
             android:id="@+id/college_student_discipline"
