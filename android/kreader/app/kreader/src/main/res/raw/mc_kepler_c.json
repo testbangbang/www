@@ -24,5 +24,6 @@
       "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""},
       "KEYCODE_BACK": {"action": "close", "args": ""}
     }
-  }
+  },
+  "hasCapacitiveKeys" :true
 }

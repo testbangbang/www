@@ -20,6 +20,7 @@ import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
@@ -70,7 +71,6 @@ public abstract class BaseHandler {
     private boolean pinchZooming = false;
     private boolean scrolling = false;
     private boolean smallScrollToSingleTap = false;
-
     private DisplayMetrics displayMetrics;
 
     public boolean isSingleTapUp() {
@@ -485,6 +485,10 @@ public abstract class BaseHandler {
     }
 
     private boolean ignoreEdgeTouch(ReaderDataHolder readerDataHolder, float x, float y) {
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isHasCapacitiveKeys()) {
+            return false;
+        }
+
         Context context = readerDataHolder.getContext();
         if ((x < getWidthPixels(context) * (1 - IGNORE_PROPORTIONS_WIDTH)
                 || x > getWidthPixels(context) * IGNORE_PROPORTIONS_WIDTH)
@@ -509,6 +513,4 @@ public abstract class BaseHandler {
         }
         return displayMetrics.heightPixels;
     }
-
-
 }
