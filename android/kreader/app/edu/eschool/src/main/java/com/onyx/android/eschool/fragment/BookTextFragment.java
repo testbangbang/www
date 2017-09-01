@@ -47,6 +47,7 @@ import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -93,6 +94,8 @@ public class BookTextFragment extends Fragment {
 
     private String fragmentName;
     private boolean isVisibleToUser = false;
+
+    private DialogProgressHolder progressDialogHolder = new DialogProgressHolder();
 
     public static BookTextFragment newInstance(String fragmentName, String libraryId) {
         BookTextFragment fragment = new BookTextFragment();
@@ -668,6 +671,26 @@ public class BookTextFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        dismissAllProgressDialog();
+    }
+
+    private void showProgressDialog(final Object object, int resId, DialogProgressHolder.DialogCancelListener listener) {
+        if (progressDialogHolder == null) {
+            return;
+        }
+        progressDialogHolder.showProgressDialog(getActivity(), object, resId, listener);
+    }
+
+    private void dismissProgressDialog(final Object object) {
+        if (progressDialogHolder != null) {
+            progressDialogHolder.dismissProgressDialog(object);
+        }
+    }
+
+    private void dismissAllProgressDialog() {
+        if (progressDialogHolder != null) {
+            progressDialogHolder.dismissAllProgressDialog();
+        }
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -733,6 +756,7 @@ public class BookTextFragment extends Fragment {
         refreshAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dismissProgressDialog(refreshAction);
                 if (e != null) {
                     return;
                 }
@@ -741,5 +765,6 @@ public class BookTextFragment extends Fragment {
                 preloadNext();
             }
         });
+        showProgressDialog(refreshAction, R.string.refreshing, null);
     }
 }
