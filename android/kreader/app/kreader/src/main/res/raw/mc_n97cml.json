@@ -2,7 +2,6 @@
   "ttsEnabled" : false,
   "hasFrontLight" : true,
   "disableNoteFunc" : true,
-  "regalEnable" :true,
   "pronounceEnable" :false,
   "keyBinding": {
     "HandlerManager": {
