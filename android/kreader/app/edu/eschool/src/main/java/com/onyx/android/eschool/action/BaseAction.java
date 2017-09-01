@@ -27,12 +27,13 @@ public abstract class BaseAction<T extends BaseDataHolder> {
     }
 
     public void hideLoadingDialog() {
-        if (dialogLoading != null && dialogLoading.isShowing()) {
-            try {
+        try {
+            if (dialogLoading != null && dialogLoading.isShowing()) {
                 dialogLoading.dismiss();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             dialogLoading = null;
         }
     }
