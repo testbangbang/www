@@ -120,15 +120,19 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
                 finish();
                 break;
             case R.id.memorandum_activity_delete:
-                if (memorandumList.size() > 0) {
-                    memorandumPresenter.remoteAdapterDatas(listCheck, memorandumAdapter);
-                } else {
-                    CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
-                }
+                removeData();
                 break;
             case R.id.memorandum_activity_new:
                 ActivityManager.startAddMemorandumActivity(this);
                 break;
+        }
+    }
+
+    private void removeData() {
+        if (memorandumList.size() > 0) {
+            memorandumPresenter.remoteAdapterDatas(listCheck, memorandumAdapter);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
     }
 

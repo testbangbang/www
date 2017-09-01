@@ -150,11 +150,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 finish();
                 break;
             case R.id.infromal_essay_activity_delete:
-                if (informalEssayList.size() > 0) {
-                    informalEssayPresenter.remoteAdapterDatas(listCheck, informalEssayAdapter);
-                } else {
-                    CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
-                }
+                removeData();
                 break;
             case R.id.infromal_essay_activity_export:
                 timePickerDialog.showDatePickerDialog();
@@ -162,6 +158,14 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
             case R.id.infromal_essay_activity_new:
                 ActivityManager.startAddInformalEssayActivity(this);
                 break;
+        }
+    }
+
+    private void removeData() {
+        if (informalEssayList.size() > 0) {
+            informalEssayPresenter.remoteAdapterDatas(listCheck, informalEssayAdapter);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
     }
 

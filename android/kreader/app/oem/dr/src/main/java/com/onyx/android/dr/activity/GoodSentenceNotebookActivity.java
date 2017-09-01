@@ -130,15 +130,19 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
                 finish();
                 break;
             case R.id.good_sentence_activity_delete:
-                if (goodSentenceList.size() > 0) {
-                    goodSentencePresenter.remoteAdapterDatas(listCheck, goodSentenceAdapter);
-                } else {
-                    CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
-                }
+                removeData();
                 break;
             case R.id.good_sentence_activity_export:
                 timePickerDialog.showDatePickerDialog();
                 break;
+        }
+    }
+
+    private void removeData() {
+        if (goodSentenceList.size() > 0) {
+            goodSentencePresenter.remoteAdapterDatas(listCheck, goodSentenceAdapter);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
     }
 
