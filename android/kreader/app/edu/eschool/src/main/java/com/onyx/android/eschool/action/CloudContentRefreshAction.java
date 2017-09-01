@@ -29,10 +29,10 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
         dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), refreshRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                hideLoadingDialog();
                 QueryResult<Metadata> result = refreshRequest.getProductResult();
                 if (e != null || result == null || result.hasException()) {
                     ToastUtils.showToast(request.getContext(), R.string.refresh_fail);
+                    BaseCallback.invoke(baseCallback, request, e);
                     return;
                 }
                 if (result.isContentEmpty()) {
@@ -42,7 +42,6 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-        showLoadingDialog(dataHolder, R.string.refreshing);
     }
 
     public LibraryDataModel getLibraryDataModel() {
