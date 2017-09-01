@@ -208,6 +208,7 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        Log.e(TAG, "onPause: " );
         if (wifiAdmin != null) {
             wifiAdmin.unregisterReceiver();
         }
@@ -215,6 +216,15 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
             scanTimer.cancel();
             wifiScanTimerTask.cancel();
         }
+    }
+
+    /**
+     * ref link:https://stackoverflow.com/questions/6388351/how-to-finish-an-activity-when-home-button-pressed
+     */
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        finish();
     }
 
     private void updateUI(boolean isWifiEnable, int wifiExtraState) {
