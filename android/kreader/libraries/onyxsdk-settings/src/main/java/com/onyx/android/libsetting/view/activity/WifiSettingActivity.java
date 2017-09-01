@@ -208,7 +208,6 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e(TAG, "onPause: " );
         if (wifiAdmin != null) {
             wifiAdmin.unregisterReceiver();
         }
