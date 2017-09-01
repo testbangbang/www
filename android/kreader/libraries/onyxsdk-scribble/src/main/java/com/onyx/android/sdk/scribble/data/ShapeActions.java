@@ -65,8 +65,6 @@ public class ShapeActions {
         originalList.addAll(originalShapeList);
         transformList.addAll(transformShapeList);
         HashMap<String, List<Shape>> transformShapeHashMap = new HashMap<>();
-        Log.d("ShapeActions", "originalList.size():" + originalList.size());
-        Log.d("ShapeActions", "transformList.size():" + transformList.size());
         transformShapeHashMap.put(TRANSFORM_ORIGINAL, originalList);
         transformShapeHashMap.put(TRANSFORM_FINISHED, transformList);
         return new UndoRedoManager.Action<>(ACTION_TRANSFORM_SHAPE_LIST, transformShapeHashMap);

@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 
 /**
  * Created by ming on 2017/3/21.
@@ -22,7 +22,7 @@ public class GetOldScribbleCountRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(AsyncNoteViewHelper helper) throws Exception {
+    public void execute(NoteManager helper) throws Exception {
         Cursor cursor = null;
         try {
             Uri uri = Uri.parse(ImportScribbleRequest.OLD_SCRIBBLE_URL);

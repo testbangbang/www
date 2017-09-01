@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -47,7 +47,7 @@ public class NoteLibraryLoadRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper shapeManager) throws Exception {
+    public void execute(final NoteManager shapeManager) throws Exception {
         noteModel = NoteDataProvider.load(parentUniqueId);
         if (noteModel != null) {
             noteModel.setExtraAttributes(NoteDataProvider.getNoteAbsolutePath(

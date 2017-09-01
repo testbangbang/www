@@ -5,6 +5,7 @@ package com.onyx.android.sdk.api.device.epd;
 
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.View;
 import android.webkit.WebView;
 
@@ -249,7 +250,11 @@ public abstract class EpdController
     }
 
     public static void mapToRawTouchPoint(View view, float[] src, float[] dst) {
-        Device.currentDevice().mapFromRawTouchPoint(view, src, dst);
+        Device.currentDevice().mapToRawTouchPoint(view, src, dst);
+    }
+
+    public static RectF mapToRawTouchPoint(View view, RectF rect) {
+        return Device.currentDevice().mapToRawTouchPoint(view, rect);
     }
 
     public static float getTouchWidth() {

@@ -11,6 +11,7 @@ import android.widget.RelativeLayout;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
@@ -124,7 +125,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     }
 
     private void updateIndicator(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID,boolean isLineLayoutMode) {
-        NoteManager manager = NoteManager.sharedInstance(getContext().getApplicationContext());
+        NoteManager manager = NoteApplication.getInstance().getNoteManager();
         int targetID = Integer.MIN_VALUE;
         switch (mainMenuID) {
             case ScribbleFunctionBarMenuID.ERASER:

@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 
 /**
@@ -18,11 +18,11 @@ public class NoteSetBackgroundAsLocalFileRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper parent) throws Exception {
-        parent.setBackground(NoteBackgroundType.FILE);
-        parent.setBackgroundFilePath(localFilePath);
-        renderCurrentPageInBitmap(parent);
-        updateShapeDataInfo(parent);
+    public void execute(final NoteManager noteManager) throws Exception {
+        noteManager.setBackground(NoteBackgroundType.FILE);
+        noteManager.setBackgroundFilePath(localFilePath);
+        renderCurrentPageInBitmap(noteManager);
+        updateShapeDataInfo(noteManager);
     }
 
 }

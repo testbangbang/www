@@ -36,7 +36,7 @@ public class HandlerManager {
     }
 
     private void initProviderMap(Context context) {
-        NoteManager manager = NoteManager.sharedInstance(context);
+        NoteManager manager = NoteApplication.getInstance().getNoteManager();
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(manager));
         providerMap.put(SPAN_TEXT_PROVIDER, new SpanTextHandler(manager));
         providerMap.put(SHAPE_TRANSFORM_PROVIDER, new ShapeTransformHandler(manager));

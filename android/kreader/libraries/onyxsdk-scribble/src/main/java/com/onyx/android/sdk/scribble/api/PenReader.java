@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.api;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.SurfaceView;
 import android.view.View;
 
@@ -44,7 +45,7 @@ public class PenReader {
         rawInputProcessor.setMoveFeedback(true);
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
         rawInputProcessor.setHostView(view);
-        rawInputProcessor.setLimitRect(new Rect(0, 0, (int) getTouchHeight(), (int) getTouchWidth()));
+        rawInputProcessor.setLimitRect(new RectF(0, 0, getTouchHeight(), getTouchWidth()));
     }
 
     public void start() {

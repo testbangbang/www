@@ -124,6 +124,22 @@ public class BaseDevice {
     public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
     }
 
+    public RectF mapToRawTouchPoint(View view, RectF rect) {
+        float src[] = new float[]{rect.left, rect.top};
+        float dst[] = new float[2];
+        float dst2[] = new float[2];
+        mapToRawTouchPoint(view, src, dst);
+
+        src[0] = rect.right;
+        src[1] = rect.bottom;
+        mapToRawTouchPoint(view, src, dst2);
+        return new RectF(
+                Math.min(dst[0], dst2[0]),
+                Math.min(dst[1], dst2[1]),
+                Math.max(dst[0], dst2[0]),
+                Math.max(dst[1], dst2[1]));
+    }
+
     public int getFrontLightBrightnessMinimum(Context context) {
         return 0;
     }

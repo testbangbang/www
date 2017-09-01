@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 
 /**
@@ -20,7 +20,7 @@ public class NoteDocumentSaveRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper parent) throws Exception {
+    public void execute(final NoteManager parent) throws Exception {
         renderCurrentPageInBitmap(parent);
         NoteDataProvider.saveThumbnailWithSize(getContext(),
                 parent.getNoteDocument().getDocumentUniqueId(),
