@@ -1,10 +1,7 @@
 package com.onyx.kreader.note.bridge;
 
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -17,6 +14,10 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
+import com.onyx.kreader.note.event.DFBShapeStartEvent;
+import com.onyx.kreader.note.event.RawErasingFinishEvent;
+import com.onyx.kreader.note.event.RawErasingStartEvent;
 
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -62,7 +63,6 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile float[] dstPoint = new float[4];
     private volatile TouchPointList touchPointList;
     private View hostView;
-    private Handler handler = new Handler(Looper.getMainLooper());
     private SingleThreadExecutor singleThreadExecutor;
 
     public RawEventProcessor(final NoteManager p) {
@@ -76,6 +76,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void start() {
+        Debug.e(getClass(), "start");
         stop = false;
         reportData = true;
         clearInternalState();
@@ -83,16 +84,19 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void resume() {
+        Debug.e(getClass(), "resume");
         clearInternalState();
         reportData = true;
     }
 
     public void pause() {
+        Debug.e(getClass(), "pause");
         clearInternalState();
         reportData = false;
     }
 
     public void quit() {
+        Debug.e(getClass(), "quit");
         stop = true;
         reportData = false;
         closeInputDevice();
@@ -256,6 +260,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        Debug.e(getClass(), "pressReceived");
         if (!isReportData()) {
             return;
         }
@@ -267,6 +272,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        Debug.e(getClass(), "moveReceived");
         if (!isReportData()) {
             return;
         }
@@ -278,6 +284,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+        Debug.e(getClass(), "releaseReceived");
         if (!isReportData()) {
             return;
         }
@@ -373,22 +380,12 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     private void invokeRawErasingStart() {
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                getCallback().onRawErasingStart();
-            }
-        });
+        getNoteManager().getParent().getEventBus().post(new RawErasingStartEvent());
     }
 
     private void invokeRawErasingFinish() {
         final TouchPointList list = touchPointList;
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                getCallback().onRawErasingFinished(list);
-            }
-        });
+        getNoteManager().getParent().getEventBus().post(new RawErasingFinishEvent(list));
     }
 
     private void invokeDFBShapeStart() {
@@ -396,12 +393,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (shortcut) {
             getCallback().enableTouchInput(false);
         }
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                getCallback().onDFBShapeStart(shortcut);
-            }
-        });
+        getNoteManager().getParent().getEventBus().post(new DFBShapeStartEvent(shortcut));
     }
 
     private void invokeDFBShapeFinished(final Shape shape) {
@@ -411,12 +403,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (shape == null) {
             return;
         }
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                getCallback().onDFBShapeFinished(shape, shortcut);
-            }
-        });
+        getNoteManager().getParent().getEventBus().post(new DFBShapeFinishedEvent(shape, shortcut));
     }
 
 }

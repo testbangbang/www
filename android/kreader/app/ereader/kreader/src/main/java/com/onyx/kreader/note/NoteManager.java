@@ -2,12 +2,19 @@ package com.onyx.kreader.note;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.MotionEvent;
+import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
@@ -30,14 +37,21 @@ import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
+import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
+import com.onyx.kreader.note.event.DFBShapeStartEvent;
+import com.onyx.kreader.note.event.RawErasingFinishEvent;
+import com.onyx.kreader.note.event.RawErasingStartEvent;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +68,7 @@ public class NoteManager {
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
-    private volatile View view;
+    private volatile SurfaceView surfaceView;
 
     private volatile Shape currentShape = null;
     private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
@@ -76,6 +90,7 @@ public class NoteManager {
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
+        p.getEventBus().register(this);
     }
 
     public final RequestManager getRequestManager() {
@@ -134,12 +149,12 @@ public class NoteManager {
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
     }
 
-    public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
+    public void updateHostView(final Context context, final SurfaceView sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
         if (noteConfig == null || mappingConfig == null) {
             initNoteArgs(context);
         }
-        view = sv;
-        getNoteEventProcessorManager().update(view, visibleDrawRect, excludeRect);
+        surfaceView = sv;
+        getNoteEventProcessorManager().update(surfaceView, visibleDrawRect, excludeRect);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {
@@ -221,9 +236,12 @@ public class NoteManager {
             }
 
             public void onDFBShapeFinished(final Shape shape, boolean shortcut) {
+                Debug.e(getClass(), "onDFBShapeFinished");
                 onNewStash(shape);
                 if (shortcut) {
                     getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
+                } else {
+                    getParent().getEventBus().post(new ShapeAddedEvent());
                 }
             }
 
@@ -251,8 +269,8 @@ public class NoteManager {
     }
 
     public void enableScreenPost(boolean enable) {
-        if (view != null) {
-            EpdController.enablePost(view, enable ? 1 : 0);
+        if (surfaceView != null) {
+            EpdController.enablePost(surfaceView, enable ? 1 : 0);
         }
     }
 
@@ -261,7 +279,11 @@ public class NoteManager {
         return renderBitmapWrapper.getBitmap();
     }
 
-    // copy from render bitmap to view bitmap.
+    public Bitmap getRenderBitmap() {
+        return renderBitmapWrapper.getBitmap();
+    }
+
+    // copy from render bitmap to surfaceView bitmap.
     public void copyBitmap() {
         if (renderBitmapWrapper == null) {
             return;
@@ -330,9 +352,78 @@ public class NoteManager {
         return runnable;
     }
 
+    public void renderToSurfaceView() {
+        if (visiblePages.size() <= 0) {
+            return;
+        }
+
+        Rect rect = checkSurfaceView();
+        if (rect == null) {
+            return;
+        }
+
+        applyUpdateMode();
+        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
+        if (canvas == null) {
+            return;
+        }
+
+        try {
+            PageInfo page = visiblePages.get(0);
+            final Matrix renderMatrix = new Matrix();
+            updateMatrix(renderMatrix, page);
+
+            Paint paint = new Paint();
+            clearBackground(canvas, paint, rect);
+            getParent().getReaderPainter().drawPage(getParent().getContext(),
+                    canvas, getParent().getReader().getViewportBitmap().getBitmap(),
+                    getParent().getReaderUserDataInfo(), getParent().getReaderViewInfo(),
+                    getParent().getSelectionManager());
+            canvas.drawBitmap(getRenderBitmap(), 0, 0, paint);
+            RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
+            for (Shape shape : getShapeStash()) {
+                shape.render(renderContext);
+            }
+        } finally {
+            surfaceView.getHolder().unlockCanvasAndPost(canvas);
+        }
+    }
+
+    private Rect checkSurfaceView() {
+        if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
+            Log.e(TAG, "surfaceView is not valid");
+            return null;
+        }
+        return getViewportSize();
+    }
+
+    private void updateMatrix(final Matrix matrix, final PageInfo pageInfo) {
+        matrix.reset();
+        matrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+        matrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+    }
+
+    private void applyUpdateMode() {
+        if (false) {
+            EpdController.setViewDefaultUpdateMode(surfaceView, UpdateMode.GC);
+        } else {
+            EpdController.resetUpdateMode(surfaceView);
+        }
+    }
+
+    private Canvas getCanvasForDraw(SurfaceView surfaceView, Rect rect) {
+        return surfaceView.getHolder().lockCanvas(rect);
+    }
+
+    private void clearBackground(final Canvas canvas, final Paint paint, final Rect rect) {
+        paint.setStyle(Paint.Style.FILL);
+        paint.setColor(Color.WHITE);
+        canvas.drawRect(rect, paint);
+    }
+
     private Rect getViewportSize() {
-        if (view != null) {
-            return new Rect(0, 0, view.getWidth(), view.getHeight());
+        if (surfaceView != null) {
+            return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
         }
         return null;
     }
@@ -563,4 +654,36 @@ public class NoteManager {
             this.enableShortcutErasing = enableShortcutErasing;
         }
     }
+
+    @Subscribe
+    public void onRawErasingStartEvent(RawErasingStartEvent e) {
+        Debug.e(getClass(), "onRawErasingStartEvent");
+        getParent().getEventBus().post(new ShortcutErasingStartEvent());
+    }
+
+    @Subscribe
+    public void onRawErasingFinishEvent(RawErasingFinishEvent e) {
+        Debug.e(getClass(), "onRawErasingFinishEvent");
+        getParent().getEventBus().post(new ShortcutErasingFinishEvent(e.list));
+    }
+
+    @Subscribe
+    public void onDFBShapeStart(DFBShapeStartEvent e) {
+        Debug.e(getClass(), "onDFBShapeStart");
+        if (e.shortcut) {
+            getParent().getEventBus().post(new ShortcutDrawingStartEvent());
+        }
+    }
+
+    @Subscribe
+    public void onDFBShapeFinished(DFBShapeFinishedEvent e) {
+        Debug.e(getClass(), "onDFBShapeFinished");
+        onNewStash(e.shape);
+        if (e.triggerByButton) {
+            getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
+        } else {
+            getParent().getEventBus().post(new ShapeAddedEvent());
+        }
+    }
+
 }

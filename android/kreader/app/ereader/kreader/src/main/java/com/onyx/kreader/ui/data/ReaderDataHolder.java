@@ -35,6 +35,7 @@ import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.ReaderBroadcastReceiver;
+import com.onyx.kreader.ui.ReaderPainter;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.TextSelectionEvent;
@@ -84,6 +85,8 @@ public class ReaderDataHolder {
     private boolean sideNoting = false;
     private int sideNotePage = 0;
     private int sideNotePageCount = 1;
+
+    private ReaderPainter readerPainter = new ReaderPainter();
 
     private WindowParameters windowParameters = new WindowParameters();
 
@@ -521,6 +524,10 @@ public class ReaderDataHolder {
 
     public WindowParameters getWindowParameters() {
         return windowParameters;
+    }
+
+    public ReaderPainter getReaderPainter() {
+        return readerPainter;
     }
 
     private void addActiveDialog(Dialog dialog) {
