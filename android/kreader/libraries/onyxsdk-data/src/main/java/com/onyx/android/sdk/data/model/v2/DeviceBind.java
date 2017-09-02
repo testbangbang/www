@@ -17,4 +17,6 @@ public class DeviceBind extends BaseData {
     public String installationId;
     @ColumnIgnore
     public AccountCommon info;
+
+    public String tag;
 }

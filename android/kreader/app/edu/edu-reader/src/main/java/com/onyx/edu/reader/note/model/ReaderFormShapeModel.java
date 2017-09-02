@@ -32,6 +32,9 @@ public class ReaderFormShapeModel extends ReaderNoteShapeModel {
     @Column
     private boolean review;
 
+    @Column
+    private int revision;
+
     public String getFormId() {
         return formId;
     }
@@ -78,5 +81,13 @@ public class ReaderFormShapeModel extends ReaderNoteShapeModel {
 
     public void setReview(boolean review) {
         this.review = review;
+    }
+
+    public int getRevision() {
+        return revision;
+    }
+
+    public void setRevision(int revision) {
+        this.revision = revision;
     }
 }

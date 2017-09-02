@@ -5,10 +5,10 @@ import android.graphics.RectF;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.edu.reader.note.NoteManager;
 
@@ -21,16 +21,16 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
 
     private TouchPoint eraserPoint;
     private TouchPointList historyErasingPoints = new TouchPointList();
-    private OnyxMatrix viewToEpdMatrix = null;
-    private int viewPosition[] = {0, 0};
+    private float src[] = {0, 0};
+    private float dst[] = {0, 0};
+    private View hostView;
 
     public TouchEventProcessor(final NoteManager p) {
         super(p);
     }
 
-    public void update(final View view, final OnyxMatrix matrix, final Rect rect, final List<RectF> excludeRect) {
-        view.getLocationOnScreen(viewPosition);
-        viewToEpdMatrix = matrix;
+    public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
+        this.hostView = view;
         setLimitRect(rect);
         addExcludeRect(excludeRect);
     }
@@ -174,8 +174,10 @@ public class TouchEventProcessor extends NoteEventProcessorBase {
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
-        final TouchPoint screen = viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
-        return screen;
+        src[0] = normalized.getX();
+        src[1] = normalized.getY();
+        EpdController.mapToEpd(hostView, src, dst);
+        return new TouchPoint(dst[0], dst[1], normalized.getPressure(), normalized.getSize(), normalized.getTimestamp());
     }
 
     private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {

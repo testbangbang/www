@@ -79,6 +79,7 @@ import com.onyx.edu.reader.ui.data.FormFieldControlFactory;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
+import com.onyx.edu.reader.ui.events.ActiveFormHandlerEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
@@ -348,6 +349,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void initReaderMenu(){
         ShowReaderMenuAction.initDisableMenus(getReaderDataHolder());
+        updateFormMenu();
     }
 
     private void initStatusBar() {
@@ -1125,6 +1127,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         formFieldControls.clear();
     }
 
+    @Subscribe
+    public void activeFormHandlerEvent(final ActiveFormHandlerEvent event) {
+        activeFormHandler();
+    }
+
     private void addFormFieldControls(Canvas canvas, boolean renderFormField) {
         for (PageInfo pageInfo : getReaderDataHolder().getVisiblePages()) {
             if (getReaderDataHolder().getReaderUserDataInfo().hasFormFields(pageInfo)) {
@@ -1154,6 +1161,13 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         getHandlerManager().setActiveProvider(getReaderDataHolder().getDefaultProvider(), FormBaseHandler.createInitialState(formFieldControls));
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
+    }
+
+    private void updateFormMenu() {
+        if (!getReaderDataHolder().useFormMode()) {
+            return;
+        }
         ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
     }
 

@@ -1,18 +1,14 @@
 package com.onyx.android.sdk.scribble.touch;
 
-import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import android.text.method.Touch;
-import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.EPDShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.DetectInputDeviceUtil;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -116,6 +112,7 @@ public class RawInputProcessor {
 
     public void quit() {
         rawInputCallback = null;
+        hostView = null;
         closeInputDevice();
         reportData = false;
         stop = true;

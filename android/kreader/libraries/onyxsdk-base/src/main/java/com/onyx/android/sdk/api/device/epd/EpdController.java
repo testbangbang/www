@@ -230,12 +230,28 @@ public abstract class EpdController
         Device.currentDevice().mapToEpd(view, src, dst);
     }
 
+    public static void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
+        Device.currentDevice().mapFromRawTouchPoint(view, src, dst);
+    }
+
+    public static void mapToRawTouchPoint(View view, float[] src, float[] dst) {
+        Device.currentDevice().mapFromRawTouchPoint(view, src, dst);
+    }
+
     public static float getTouchWidth() {
         return Device.currentDevice().getTouchWidth();
     }
 
     public static float getTouchHeight() {
         return Device.currentDevice().getTouchHeight();
+    }
+
+    public static float getEpdWidth() {
+        return Device.currentDevice().getEpdWidth();
+    }
+
+    public static float getEpdHeight() {
+        return Device.currentDevice().getEpdHeight();
     }
 
     public static void enableRegal() {

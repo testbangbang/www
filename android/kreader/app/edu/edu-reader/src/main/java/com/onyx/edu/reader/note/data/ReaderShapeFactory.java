@@ -15,11 +15,16 @@ import com.onyx.edu.reader.note.model.SignatureShapeModel;
  */
 public class ReaderShapeFactory {
 
+    // shape form type
     static public final int SHAPE_FORM_SINGLE_SELECTION = 0;
     static public final int SHAPE_FORM_MULTIPLE_SELECTION = 1;
     static public final int SHAPE_FORM_FILL = 2;
     static public final int SHAPE_LIMIT_REGION_SCRIBBLE = 3;
     static public final int SHAPE_FREE_AREA_SCRIBBLE = 4;
+
+    //document review status
+    static public final int NOTE_DOCUMENT_NORMAL_STATE = 0;
+    static public final int NOTE_DOCUMENT_LOCK_STATE = 1;
 
     public static boolean isUniqueFormShape(int formType) {
         return formType == SHAPE_FORM_SINGLE_SELECTION ||
@@ -67,6 +72,7 @@ public class ReaderShapeFactory {
             ((ReaderFormShapeModel) shapeModel).setFormValue(shape.getFormValue());
             ((ReaderFormShapeModel) shapeModel).setLock(shape.isLock());
             ((ReaderFormShapeModel) shapeModel).setReview(shape.isReview());
+            ((ReaderFormShapeModel) shapeModel).setRevision(shape.getRevision());
         } else {
             shapeModel = new ReaderNoteShapeModel();
         }
@@ -118,6 +124,7 @@ public class ReaderShapeFactory {
         shape.setFormRect(model.getFormRect());
         shape.setLock(model.isLock());
         shape.setReview(model.isReview());
+        shape.setRevision(model.getRevision());
     }
 
     private static void syncSignatureShapeFromModel(final Shape shape, final SignatureShapeModel model) {

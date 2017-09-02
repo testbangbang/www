@@ -689,4 +689,12 @@ public class HandlerManager {
     public boolean isEnableNoteInScribbleForm() {
         return getActiveProvider().isEnableNoteInScribbleForm();
     }
+
+    public boolean lockShapeByRevision() {
+        return getActiveProvider().lockShapeByRevision();
+    }
+
+    public boolean lockShapeByDocumentStatus() {
+        return getActiveProvider().lockShapeByDocumentStatus();
+    }
 }

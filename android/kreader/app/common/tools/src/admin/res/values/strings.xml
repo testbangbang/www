@@ -16,6 +16,7 @@
 
     <string name="main_item_func_select">Function selection</string>
     <string name="main_item_scanner">QrCode Scan</string>
+    <string name="main_item_scanner_batch">QrCode Scan Batch</string>
     <string name="main_item_user_manager">User Manager</string>
     <string name="main_item_account_info">Account Info</string>
 
@@ -102,4 +103,35 @@
     <string name="delete">Delete</string>
     <string name="delete_success">Delete successfully</string>
     <string name="delete_fail">Delete failed</string>
+
+    <string name="warning">Warning</string>
+    <string name="db_clear_warning">This will clear all the records in the database, please be careful!!</string>
+    <string name="db_clear_success">The database has been clear!!</string>
+    <string name="db_file_no_exists">The database file does not exist</string>
+    <string name="confirm_clear">Confirm Clear</string>
+    <string name="confirm_clear_tip">Please enter \"Confirm Clear\" to prevent misuse</string>
+    <string name="confirm_clear_check">Enter \"Confirm Clear\" words to verify</string>
+
+    <string name="scan_code_not_match_warning">Scanning failed, deviceBinding info doesn\'t conform to structure!</string>
+    <string name="scan_code_mac_empty_warning">The code doesn\'t have the device mac address, recommended to re-brush firmware</string>
+    <string name="device_info_save_fail">Device info save failed</string>
+    <string name="scan_device_binding">Scanning Binding</string>
+    <string name="scan_device_success_format">The scan is successful, has scanned %d count</string>
+    <string name="scan_device_before_format">Scanned devices(without duplication):%d</string>
+
+    <string name="export_db_permission_deny_rationale">Db file export to SDCard, you need to agree with permissions</string>
+    <string name="export_file_path_do">Export the path：</string>
+    <string name="storage_has_no_external">Has No external storage</string>
+    <string name="db_export_dir">Onyx-export/</string>
+    <string name="export_fail">Export failed</string>
+    <string name="export_success">Export success</string>
+    <string name="exporting">Exporting&#8230;</string>
+
+    <string name="menu_export_db_file">Export database file</string>
+    <string name="menu_clear_db">Clear local database</string>
+
+    <string name="batch_select">Batch Select</string>
+    <string name="batch_input_content">Please enter the batch you want to bind now!!</string>
+    <string name="batch_input_hint">Such as the specific xx school x grade/class</string>
+
 </resources>

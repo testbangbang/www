@@ -66,17 +66,12 @@ public class NoteEventProcessorManager {
     }
 
     public void update(final View targetView,
-                       final DeviceConfig noteConfig,
-                       final MappingConfig mappingConfig,
                        final Rect visibleDrawRect,
-                       final List<RectF> excludeRect,
-                       int orientation) {
+                       final List<RectF> excludeRect) {
         detectTouchType();
         view = targetView;
-        getTouchEventProcessor().update(targetView, getViewToEpdMatrix(mappingConfig, orientation), visibleDrawRect, excludeRect);
-        getRawEventProcessor().update(getTouchToScreenMatrix(noteConfig, orientation),
-                getScreenToViewMatrix(noteConfig, mappingConfig, orientation),
-                visibleDrawRect, excludeRect);
+        getTouchEventProcessor().update(targetView, visibleDrawRect, excludeRect);
+        getRawEventProcessor().update(targetView, visibleDrawRect, excludeRect);
     }
 
     private void detectTouchType() {
@@ -90,53 +85,6 @@ public class NoteEventProcessorManager {
             return false;
         }
         return singleTouch;
-    }
-
-    private OnyxMatrix getViewToEpdMatrix(final MappingConfig mappingConfig, int orientation) {
-        final MappingConfig.MappingEntry entry = mappingConfig.getEntry(orientation);
-        OnyxMatrix viewMatrix = new OnyxMatrix();
-        if (entry != null) {
-            viewMatrix.postRotate(entry.orientation);
-            viewMatrix.postTranslate(entry.tx, entry.ty);
-        }
-        return viewMatrix;
-    }
-
-    private Matrix getTouchToScreenMatrix(final DeviceConfig noteConfig, int orientation) {
-        final Matrix screenMatrix = new Matrix();
-        screenMatrix.preScale(noteConfig.getEpdWidth() / getTouchWidth(noteConfig),
-                noteConfig.getEpdHeight() / getTouchHeight(noteConfig));
-        return screenMatrix;
-    }
-
-    private Matrix getScreenToViewMatrix(final DeviceConfig noteConfig, final MappingConfig mappingConfig, int orientation) {
-        if (!noteConfig.useRawInput()) {
-            return null;
-        }
-
-        int viewPosition[] = {0, 0};
-        view.getLocationOnScreen(viewPosition);
-        final Matrix viewMatrix = new Matrix();
-        final MappingConfig.MappingEntry entry = mappingConfig.getEntry(orientation);
-        viewMatrix.postRotate(entry.epd);
-        viewMatrix.postTranslate(entry.etx - viewPosition[0], entry.ety - viewPosition[1]);
-        return viewMatrix;
-    }
-
-    private float getTouchWidth(final DeviceConfig noteConfig) {
-        float value = Device.currentDevice().getTouchWidth();
-        if (value <= 0) {
-            return noteConfig.getTouchWidth();
-        }
-        return value;
-    }
-
-    private float getTouchHeight(final DeviceConfig noteConfig) {
-        float value = Device.currentDevice().getTouchHeight();
-        if (value <= 0) {
-            return noteConfig.getTouchHeight();
-        }
-        return value;
     }
 
     private TouchEventProcessor getTouchEventProcessor() {

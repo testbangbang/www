@@ -42,6 +42,7 @@ public class FormMeetingHandler extends FormBaseHandler {
 
     public FormMeetingHandler(HandlerManager parent) {
         super(parent);
+        setEnableNoteDrawing(true);
     }
 
     @Override
@@ -140,14 +141,6 @@ public class FormMeetingHandler extends FormBaseHandler {
             }
         }
     }
-
-    private void lockRadioGroupChildView(RelativeRadioGroup group) {
-        int childCount = group.getChildCount();
-        for (int i = 0; i < childCount; i++) {
-            group.getChildAt(i).setEnabled(false);
-        }
-    }
-
 
     public boolean isLockVoteFormView() {
         return lockVoteFormView;
