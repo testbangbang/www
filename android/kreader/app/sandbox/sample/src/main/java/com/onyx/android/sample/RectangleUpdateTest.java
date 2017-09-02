@@ -5,6 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.device.Device;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 

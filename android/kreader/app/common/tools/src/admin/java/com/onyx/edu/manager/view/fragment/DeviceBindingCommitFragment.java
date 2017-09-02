@@ -132,6 +132,7 @@ public class DeviceBindingCommitFragment extends Fragment {
         macAddressTv = getMacAddressTv(parentView, R.id.layout_mac_address);
         usernameEdit = getUserInfoEditView(parentView, R.id.layout_username, getString(R.string.username_do));
         phoneTvEdit = getUserInfoEditView(parentView, R.id.layout_phone, getString(R.string.phone_do));
+        phoneTvEdit.setHint(R.string.field_is_optional);
     }
 
     private void initData() {
@@ -433,9 +434,7 @@ public class DeviceBindingCommitFragment extends Fragment {
         if (deviceBind == null) {
             return false;
         }
-        if (deviceBind.info == null || StringUtils.isNullOrEmpty(deviceBind.info.name)
-                || StringUtils.isNullOrEmpty(deviceBind.info.phone)
-                ) {
+        if (deviceBind.info == null || StringUtils.isNullOrEmpty(deviceBind.info.name)) {
             return false;
         }
         return true;

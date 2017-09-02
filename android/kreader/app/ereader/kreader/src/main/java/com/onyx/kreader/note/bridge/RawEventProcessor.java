@@ -5,7 +5,9 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
+import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -56,11 +58,10 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile DataInputStream dataInputStream;
     private volatile boolean reportData = false;
 
-    private volatile Matrix inputToScreenMatrix;
-    private volatile Matrix screenToViewMatrix;
     private volatile float[] srcPoint = new float[2];
-    private volatile float[] dstPoint = new float[2];
+    private volatile float[] dstPoint = new float[4];
     private volatile TouchPointList touchPointList;
+    private View hostView;
     private Handler handler = new Handler(Looper.getMainLooper());
     private SingleThreadExecutor singleThreadExecutor;
 
@@ -68,9 +69,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         super(p);
     }
 
-    public void update(final Matrix screenMatrix, final Matrix viewMatrix, final Rect rect, final List<RectF> excludeRect) {
-        this.inputToScreenMatrix = screenMatrix;
-        this.screenToViewMatrix = viewMatrix;
+    public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
+        this.hostView = view;
         setLimitRect(rect);
         addExcludeRect(excludeRect);
     }
@@ -204,43 +204,19 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         }
     }
 
-    /**
-     * Use screen matrix to map from touch device to screen with correct orientation.
-     * Use view matrix to map from screen to view.
-     * finally we getById points inside view. we may need the page matrix
-     * to map points from view to page.
-     * @param touchPoint
-     * @return
-     */
-    private TouchPoint mapInputToScreenPoint(final TouchPoint touchPoint) {
-        dstPoint[0] = touchPoint.x;
-        dstPoint[1] = touchPoint.y;
-        if (inputToScreenMatrix != null) {
-            srcPoint[0] = touchPoint.x;
-            srcPoint[1] = touchPoint.y;
-            inputToScreenMatrix.mapPoints(dstPoint, srcPoint);
-        }
-        touchPoint.x = dstPoint[0];
-        touchPoint.y = dstPoint[1];
-        return touchPoint;
-    }
+    private void mapRawTouchPoint(final float x, final float y, final TouchPoint screenPoint, final TouchPoint viewPoint) {
+        srcPoint[0] = x;
+        srcPoint[1] = y;
 
-    /**
-     * map points from screen to view.
-     * @param touchPoint
-     * @return
-     */
-    private TouchPoint mapScreenPointToView(final TouchPoint touchPoint) {
-        dstPoint[0] = touchPoint.x;
-        dstPoint[1] = touchPoint.y;
-        if (screenToViewMatrix != null) {
-            srcPoint[0] = touchPoint.x;
-            srcPoint[1] = touchPoint.y;
-            screenToViewMatrix.mapPoints(dstPoint, srcPoint);
+        EpdController.mapFromRawTouchPoint(hostView, srcPoint, dstPoint);
+        if (screenPoint != null) {
+            screenPoint.x = dstPoint[0];
+            screenPoint.y = dstPoint[1];
         }
-        touchPoint.x = dstPoint[0];
-        touchPoint.y = dstPoint[1];
-        return touchPoint;
+        if (viewPoint != null) {
+            viewPoint.x = dstPoint[2];
+            viewPoint.y = dstPoint[3];
+        }
     }
 
     private boolean addToList(final TouchPoint touchPoint, boolean create) {
@@ -319,7 +295,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             return;
         }
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        mapScreenPointToView(touchPoint);
+        mapRawTouchPoint(x, y, null, touchPoint);
         touchPoint.normalize(pageInfo);
         addToList(touchPoint, true);
     }
@@ -330,7 +306,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             return;
         }
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        mapScreenPointToView(touchPoint);
+        mapRawTouchPoint(x, y, null, touchPoint);
         touchPoint.normalize(pageInfo);
         addToList(touchPoint, true);
     }
@@ -341,7 +317,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         final PageInfo pageInfo = hitTest(x, y);
         if (pageInfo != null) {
             final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-            mapScreenPointToView(touchPoint);
+            mapRawTouchPoint(x, y, null, touchPoint);
             touchPoint.normalize(pageInfo);
             addToList(touchPoint, true);
         }
@@ -350,30 +326,30 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private void drawingPressReceived(int x, int y, int pressure, int size, long ts) {
         invokeDFBShapeStart();
-        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
-        mapScreenPointToView(touchPoint);
-        if (!checkTouchPoint(touchPoint, screen)) {
+        final TouchPoint screenTouch = new TouchPoint(x, y, pressure, size, ts);
+        final TouchPoint viewTouch = new TouchPoint(screenTouch);
+        mapRawTouchPoint(x, y, screenTouch, viewTouch);
+        if (!checkTouchPoint(viewTouch, screenTouch)) {
             return;
         }
-        getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, true, false);
+        getNoteManager().collectPoint(getLastPageInfo(), viewTouch, screenTouch, true, false);
     }
 
     private void drawingMoveReceived(int x, int y, int pressure, int size, long ts) {
-        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
-        mapScreenPointToView(touchPoint);
-        if (!checkTouchPoint(touchPoint, screen)) {
+        final TouchPoint screenTouch = new TouchPoint(x, y, pressure, size, ts);
+        final TouchPoint viewTouch = new TouchPoint(screenTouch);
+        mapRawTouchPoint(x, y, screenTouch, viewTouch);
+        if (!checkTouchPoint(viewTouch, screenTouch)) {
             return;
         }
-        getNoteManager().collectPoint(getLastPageInfo(), touchPoint, screen, true, false);
+        getNoteManager().collectPoint(getLastPageInfo(), viewTouch, screenTouch, true, false);
     }
 
     private void drawingReleaseReceived(int x, int y, int pressure, int size, long ts) {
-        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint screen = new TouchPoint(mapInputToScreenPoint(touchPoint));
-        mapScreenPointToView(touchPoint);
-        if (!checkTouchPoint(touchPoint, screen)) {
+        final TouchPoint screenTouch = new TouchPoint(x, y, pressure, size, ts);
+        final TouchPoint viewTouch = new TouchPoint(screenTouch);
+        mapRawTouchPoint(x, y, screenTouch, viewTouch);
+        if (!checkTouchPoint(viewTouch, screenTouch)) {
             return;
         }
         finishCurrentShape();

@@ -9,10 +9,23 @@ import com.onyx.edu.note.actions.BaseNoteAction;
  * Created by zhuzeng on 7/19/16.
  */
 public class RedoAction extends BaseNoteAction {
+
+    public RedoAction(boolean isResume) {
+        this.isResume = isResume;
+    }
+
+
+    public RedoAction() {
+        this.isResume = true;
+    }
+
+    private boolean isResume = false;
+
+
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         RedoRequest redoRequest = new RedoRequest();
-        redoRequest.setResumeInputProcessor(true);
+        redoRequest.setResumeInputProcessor(isResume);
         redoRequest.setRender(true);
         noteManager.submitRequest(redoRequest, callback);
     }

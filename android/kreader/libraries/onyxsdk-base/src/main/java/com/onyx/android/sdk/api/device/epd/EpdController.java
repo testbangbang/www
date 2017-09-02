@@ -5,7 +5,10 @@ package com.onyx.android.sdk.api.device.epd;
 
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.View;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.device.Device;
 
 /**
@@ -186,6 +189,10 @@ public abstract class EpdController
         Device.currentDevice().enablePost(view, enable);
     }
 
+    public static void resetEpdPost() {
+        Device.currentDevice().resetEpdPost();
+    }
+
     public static void setPainterStyle(boolean antiAlias, Paint.Style strokeStyle, Paint.Join joinStyle, Paint.Cap capStyle) {
         Device.currentDevice().setPainterStyle(antiAlias, strokeStyle, joinStyle, capStyle);
     }
@@ -222,6 +229,10 @@ public abstract class EpdController
         Device.currentDevice().enableA2ForSpecificView(view);
     }
 
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+        Device.currentDevice().setWebViewContrastOptimize(view, enabled);
+    }
+
     public static void mapToView(View view, float[] src, float[] dst) {
         Device.currentDevice().mapToView(view, src, dst);
     }
@@ -230,12 +241,36 @@ public abstract class EpdController
         Device.currentDevice().mapToEpd(view, src, dst);
     }
 
+    public static Rect mapToEpd(View view, Rect src) {
+        return Device.currentDevice().mapToEpd(view, src);
+    }
+
+    public static void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
+        Device.currentDevice().mapFromRawTouchPoint(view, src, dst);
+    }
+
+    public static void mapToRawTouchPoint(View view, float[] src, float[] dst) {
+        Device.currentDevice().mapFromRawTouchPoint(view, src, dst);
+    }
+
+    public static RectF mapToRawTouchPoint(View view, RectF rect) {
+        return Device.currentDevice().mapToRawTouchPoint(view, rect);
+    }
+
     public static float getTouchWidth() {
         return Device.currentDevice().getTouchWidth();
     }
 
     public static float getTouchHeight() {
         return Device.currentDevice().getTouchHeight();
+    }
+
+    public static float getEpdWidth() {
+        return Device.currentDevice().getEpdWidth();
+    }
+
+    public static float getEpdHeight() {
+        return Device.currentDevice().getEpdHeight();
     }
 
     public static void enableRegal() {

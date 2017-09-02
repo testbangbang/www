@@ -139,7 +139,7 @@ public class NoteManager {
             initNoteArgs(context);
         }
         view = sv;
-        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
+        getNoteEventProcessorManager().update(view, visibleDrawRect, excludeRect);
     }
 
     public final NoteEventProcessorManager getNoteEventProcessorManager() {

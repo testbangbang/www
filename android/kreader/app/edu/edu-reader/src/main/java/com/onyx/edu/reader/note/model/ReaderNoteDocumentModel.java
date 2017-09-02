@@ -67,6 +67,9 @@ public class ReaderNoteDocumentModel extends BaseModel {
     @Column
     int reviewStatus;
 
+    @Column
+    int reviewRevision;
+
     Bitmap thumbnail;
 
     public ReaderNoteDocumentModel() {
@@ -214,6 +217,14 @@ public class ReaderNoteDocumentModel extends BaseModel {
 
     public void setCurrentShapeType(int currentShapeType) {
         this.currentShapeType = currentShapeType;
+    }
+
+    public int getReviewRevision() {
+        return reviewRevision;
+    }
+
+    public void setReviewRevision(int reviewRevision) {
+        this.reviewRevision = reviewRevision;
     }
 
     private void beforeSave() {
