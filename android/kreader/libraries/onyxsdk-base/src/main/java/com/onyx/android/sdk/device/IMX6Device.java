@@ -8,6 +8,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdatePolicy;
@@ -86,6 +88,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodMapFromRawTouchPoint = null;
     private static Method sMethodMapToRawTouchPoint = null;
     private static Method sMethodEnablePost = null;
+    private static Method sMethodResetEpdPost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
     private static Method sMethodApplyGammaCorrection = null;
@@ -95,6 +98,7 @@ public class IMX6Device extends BaseDevice {
 
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
+    private static Method sMethodWebViewSetCssInjectEnabled;
 
     private static Method sMethodSetQRShowConfig;
     private static Method sMethodSetInfoShowConfig;
@@ -584,6 +588,14 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void resetEpdPost() {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodResetEpdPost, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean supportScreenHandWriting() {
         return (sMethodSetScreenHandWritingPenState != null);
     }
@@ -746,6 +758,7 @@ public class IMX6Device extends BaseDevice {
             sMethodMapFromRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapFromRawTouchPoint", View.class, float[].class, float[].class);
             sMethodMapToRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapToRawTouchPoint", View.class, float[].class, float[].class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
+            sMethodResetEpdPost = ReflectUtil.getMethodSafely(cls, "resetEpdPost");
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
@@ -789,6 +802,8 @@ public class IMX6Device extends BaseDevice {
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
             // signature of "public void disableA2()"
             sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
+
+            sMethodWebViewSetCssInjectEnabled = ReflectUtil.getMethodSafely(WebView.class, "setCssInjectEnabled", boolean.class);
 
             sMethodSetQRShowConfig = ReflectUtil.getMethodSafely(cls,"setQRShowConfig",int.class,int.class,int.class);
             sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
@@ -1112,6 +1127,11 @@ public class IMX6Device extends BaseDevice {
     @Override
     public void enableA2ForSpecificView(View view) {
         ReflectUtil.invokeMethodSafely(sMethodEnableA2, view);
+    }
+
+    @Override
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+        ReflectUtil.invokeMethodSafely(sMethodWebViewSetCssInjectEnabled, view, enabled);
     }
 
     @Override

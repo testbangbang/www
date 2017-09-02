@@ -26,6 +26,7 @@
 
     <string name="btn_admin_bind">Administrator phone binding</string>
     <string name="fields_following_required">*The following are required</string>
+    <string name="field_is_optional">(Optional)</string>
     <string name="required_fields_is_empty">The fields required is empty</string>
     <string name="apply_bind_fail">Applying a binding failed</string>
     <string name="apply_bind_success">You has submitted a binding request, please wait 1&#8211;3 working days for approval</string>

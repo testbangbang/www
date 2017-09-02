@@ -81,7 +81,8 @@ public class SettingConfig {
         static private final String ENABLE_AUTO_WIFI_RESCAN_TAG = "enable_auto_wifi_scan";
         static private final String CUSTOM_ROW_COUNT_TAG = "custom_row_count";
         static private final String USE_EDU_CONFIG = "use_edu_config";
-
+        static private final String PRESET_CUSTOM_WIFI_SSID = "preset_custom_wifi_ssid";
+        static private final String PRESET_CUSTOM_WIFI_PASSWORD = "preset_custom_wifi_password";
     }
 
     static class Default {
@@ -101,6 +102,9 @@ public class SettingConfig {
         static private final String MASTER_CLEAR_ACTION = "android.settings.MASTER_CLEAR";
         static private final String TIME_ZONE_PICKER_ACTION = "android.settings.TIME_ZONE_SETTING";
         static private final String PRE_N_VPN_SETTING_ACTION = "android.net.vpn.SETTINGS";
+
+        static public final String ONYX_PRESET_WIFI_SSID= "onyx-ap";
+        static public final String ONYX_PRESET_WIFI_PASSWORD = "";
     }
 
     private boolean enableNetworkLatencyConfig = false;
@@ -566,6 +570,19 @@ public class SettingConfig {
         Boolean result = getData(Custom.USE_EDU_CONFIG, Boolean.class);
         if (result == null) {
             return false;
+        }
+        return result;
+    }
+
+    public String[] getPresetCustomWifiInfo() {
+        String[] result = new String[2];
+        result[0] = getData(Custom.PRESET_CUSTOM_WIFI_SSID, String.class);
+        if (TextUtils.isEmpty(result[0])) {
+            result[0] = Default.ONYX_PRESET_WIFI_SSID;
+        }
+        result[1] = getData(Custom.PRESET_CUSTOM_WIFI_PASSWORD, String.class);
+        if (TextUtils.isEmpty(result[1])) {
+            result[1] = Default.ONYX_PRESET_WIFI_PASSWORD;
         }
         return result;
     }

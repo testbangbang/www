@@ -5,10 +5,13 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
@@ -100,10 +103,41 @@ public class BaseDevice {
     public void mapToEpd(View view, float[] src, float[] dst) {
     }
 
+    public Rect mapToEpd(View view, Rect srcRect) {
+        float src[] = new float[]{srcRect.left, srcRect.top};
+        float dst[] = new float[2];
+        float dst2[] = new float[2];
+        mapToEpd(view, src, dst);
+        src[0] = srcRect.right;
+        src[1] = srcRect.bottom;
+        mapToEpd(view, src, dst2);
+        return new Rect(
+                (int)Math.min(dst[0], dst2[0]),
+                (int)Math.min(dst[1], dst2[1]),
+                (int)Math.max(dst[0], dst2[0]),
+                (int)Math.max(dst[1], dst2[1]));
+    }
+
     public void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
     }
 
     public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
+    }
+
+    public RectF mapToRawTouchPoint(View view, RectF rect) {
+        float src[] = new float[]{rect.left, rect.top};
+        float dst[] = new float[2];
+        float dst2[] = new float[2];
+        mapToRawTouchPoint(view, src, dst);
+
+        src[0] = rect.right;
+        src[1] = rect.bottom;
+        mapToRawTouchPoint(view, src, dst2);
+        return new RectF(
+                Math.min(dst[0], dst2[0]),
+                Math.min(dst[1], dst2[1]),
+                Math.max(dst[0], dst2[0]),
+                Math.max(dst[1], dst2[1]));
     }
 
     public int getFrontLightBrightnessMinimum(Context context) {
@@ -277,6 +311,9 @@ public class BaseDevice {
     public void enablePost(View view, int enable) {
     }
 
+    public void resetEpdPost() {
+    }
+
     public void setScreenHandWritingPenState(View view, int penState) {
     }
 
@@ -407,6 +444,10 @@ public class BaseDevice {
     }
 
     public void enableA2ForSpecificView(View view) {
+    }
+
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+
     }
 
     public boolean isLegalSystem(final Context context){

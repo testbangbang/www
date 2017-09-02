@@ -21,6 +21,7 @@ import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -479,6 +480,80 @@ public class WifiAdmin {
         Field field = ownerClass.getField("disableReason");
         Object property = field.get(config);
         return (int) property;
+    }
+
+    public WifiConfiguration createWifiConfiguration(String ssid, String password, int type) {
+        WifiConfiguration config = new WifiConfiguration();
+        config.allowedAuthAlgorithms.clear();
+        config.allowedGroupCiphers.clear();
+        config.allowedKeyManagement.clear();
+        config.allowedPairwiseCiphers.clear();
+        config.allowedProtocols.clear();
+        config.SSID = "\"" + ssid + "\"";
+
+        WifiConfiguration tempConfig = this.isExist(ssid);
+        if (tempConfig != null) {
+            wifiManager.removeNetwork(tempConfig.networkId);
+        }
+
+        switch (type){
+            case SECURITY_NONE:
+                config.wepKeys[0] = "";
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                config.wepTxKeyIndex = 0;
+                break;
+            case SECURITY_WEP:
+                config.hiddenSSID = true;
+                config.wepKeys[0] = "\"" + password + "\"";
+                config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.SHARED);
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP40);
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.WEP104);
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.NONE);
+                config.wepTxKeyIndex = 0;
+                break;
+            case SECURITY_PSK:
+                config.preSharedKey = "\"" + password + "\"";
+                config.hiddenSSID = true;
+                config.allowedAuthAlgorithms.set(WifiConfiguration.AuthAlgorithm.OPEN);
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.TKIP);
+                config.allowedKeyManagement.set(WifiConfiguration.KeyMgmt.WPA_PSK);
+                config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.TKIP);
+                config.allowedGroupCiphers.set(WifiConfiguration.GroupCipher.CCMP);
+                config.allowedPairwiseCiphers.set(WifiConfiguration.PairwiseCipher.CCMP);
+                config.status = WifiConfiguration.Status.ENABLED;
+                break;
+        }
+        return config;
+    }
+
+    private WifiConfiguration isExist(String ssid) {
+        List<WifiConfiguration> existingConfigs = wifiManager.getConfiguredNetworks();
+        if (existingConfigs == null) {
+            return null;
+        }
+        for (WifiConfiguration existingConfig : existingConfigs) {
+            if (existingConfig.SSID.equals("\"" + ssid + "\"")) {
+                return existingConfig;
+            }
+        }
+        return null;
+    }
+
+    public void addNetwork(WifiConfiguration wcg) {
+        int wcgID = wifiManager.addNetwork(wcg);
+        wifiManager.enableNetwork(wcgID, true);
+    }
+
+    public void addNetwork(ArrayList<WifiConfiguration> wcgList) {
+        if (wcgList == null || wcgList.isEmpty()) {
+            return;
+        }
+        for (WifiConfiguration config : wcgList) {
+            int wcgID = wifiManager.addNetwork(config);
+            wifiManager.enableNetwork(wcgID, true);
+        }
     }
 
 }

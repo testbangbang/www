@@ -208,7 +208,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         srcPoint[0] = x;
         srcPoint[1] = y;
 
-        EpdController.mapRawTouchPoint(hostView, srcPoint, dstPoint);
+        EpdController.mapFromRawTouchPoint(hostView, srcPoint, dstPoint);
         if (screenPoint != null) {
             screenPoint.x = dstPoint[0];
             screenPoint.y = dstPoint[1];
