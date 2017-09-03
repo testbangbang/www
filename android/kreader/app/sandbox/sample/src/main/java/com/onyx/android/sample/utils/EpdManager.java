@@ -25,15 +25,18 @@ public class EpdManager {
     public static int PENDING           = 0x02;
     public static int NOTHING_TO_MERGE  = 0x04;
 
+
+    public static int STATE_NORMAL = 0;
+    public static int STATE_REMOVED = 1;
+
     static public class PixelPoint {
         public int x;
         public int y;
-        public int state;
+        public int state = STATE_NORMAL;
 
         public PixelPoint(int x, int y) {
             this.x = x;
             this.y = y;
-            state = 1;
         }
     }
 
@@ -49,7 +52,7 @@ public class EpdManager {
         public Rect rect = new Rect();
         public Bitmap updBuffer;
         public UpdateRequest(final Bitmap bitmap) {
-            updBuffer = bitmap;
+            updBuffer = ImageUtils.create(bitmap);
         }
     }
 
@@ -81,14 +84,12 @@ public class EpdManager {
     public static class Collision {
         public Rect boundingRect = new Rect();
         public ArrayList<PixelPoint> pixels = new ArrayList<>();
-        public Bitmap bitmap;
         public void add(int x, int y) {
             pixels.add(new PixelPoint(x, y));
             boundingRect.union(x, y);
         }
 
-        public Collision(final Bitmap b) {
-            bitmap = b;
+        public Collision() {
         }
 
         public boolean isEmpty() {
@@ -114,8 +115,7 @@ public class EpdManager {
         for(String path : pathList) {
             framebufferList.add(new Framebuffer(ImageUtils.loadBitmapFromFile(path)));
         }
-        workingBuffer = ImageUtils.create(framebufferList.get(0).buffer);
-        workingBuffer.eraseColor(Color.WHITE);
+        workingBuffer = ImageUtils.create(getCurrentFramebuffer().buffer);
 
         mcu = ImageUtils.loadBitmapFromFile(pathList.get(0));
         mcu.eraseColor(Color.argb(0xff, 0, 0, MAX_FRAME));
@@ -126,7 +126,7 @@ public class EpdManager {
 
     public void merge() {
         mergeUpdateRequest();
-        mergeCollision();
+        mergeCollisionList();
     }
 
     public void mergeUpdateRequest() {
@@ -135,15 +135,15 @@ public class EpdManager {
             int index = it.nextIndex();
             UpdateRequest updateEntry = it.next();
             Bitmap upd = updateEntry.updBuffer;
-            Bitmap originUpd = ImageUtils.create(upd);
+            final Bitmap framebuffer = getCurrentFramebuffer().buffer;
             Bitmap originWb = ImageUtils.create(workingBuffer);
-            Lut lut = new Lut(originUpd);
-            Collision collision = new Collision(originUpd);
+            Lut lut = new Lut(upd);
+            Collision collision = new Collision();
 
             int state = mergeUpdateRequest(upd, workingBuffer, lut, collision, mcu, MAX_FRAME);
-            Log.e(TAG, "Frame index: " + currentWaveformFrame +  " merge state: " + state + " update buffer index: " + index);
+            Log.e(TAG, "Waveform index: " + currentWaveformFrame +  " merge state: " + state + " update buffer index: " + index);
             if ((state & ImageUtils.SOMETHING_MERGED) > 0) {
-                dump(originUpd, originWb, upd, workingBuffer, index);
+                dumpStateToBitmap(upd, lut, collision, originWb, workingBuffer, index);
             }
 
             if (state == ImageUtils.NOTHING_TO_MERGE) {
@@ -156,29 +156,28 @@ public class EpdManager {
             if (!lut.isEmpty()) {
                 lutList.add(lut);
             }
-
-            if (!collision.isEmpty() || !lut.isEmpty()) {
-                it.remove();
-            }
+            it.remove();
         }
     }
 
-    public void mergeCollision() {
+    // try to reduce all collisions and merge the final collision with wb.
+    public void mergeCollisionList() {
         ListIterator<Collision> it = collisionList.listIterator();
         while (it.hasNext()) {
             int index = it.nextIndex();
             Collision collisionEntry = it.next();
-            Bitmap upd = collisionEntry.bitmap;
-            Bitmap originUpd = ImageUtils.create(upd);
+            Bitmap framebuffer = getCurrentFramebuffer().buffer;
+            final Bitmap collision = createByIndex(framebuffer, collisionEntry.pixels);
             Bitmap originWb = ImageUtils.create(workingBuffer);
 
-            int state = mergeCollision(collisionEntry, workingBuffer, mcu, MAX_FRAME);
-            Log.e(TAG, "Frame index: " + currentWaveformFrame +  " merge state: " + state + " update buffer index: " + index);
+            int state = mergeCollision(collisionEntry, framebuffer, workingBuffer, mcu, MAX_FRAME);
+            Log.e(TAG, "Collision merged wf frame: " + currentWaveformFrame +  " merge state: " + state + " collision index: " + index);
             if ((state & ImageUtils.SOMETHING_MERGED) > 0) {
-                dump(originUpd, originWb, upd, workingBuffer, index);
+                dump(framebuffer, collision, originWb, workingBuffer, index);
             }
 
             if (state == ImageUtils.NOTHING_TO_MERGE) {
+                Log.e(TAG, "collision removed");
                 it.remove();
             }
         }
@@ -208,31 +207,56 @@ public class EpdManager {
         return updState;
     }
 
-    public static int mergeCollision(final Collision collision, final Bitmap workingBuffer, final Bitmap mcu, int maxFrame) {
+    public static int mergeCollision(final Collision collision,
+                                     final Bitmap framebuffer,
+                                     final Bitmap workingBuffer,
+                                     final Bitmap mcu, int maxFrame) {
         int updState = NOTHING_TO_MERGE;
-        final Bitmap upd = collision.bitmap;
         for(PixelPoint point : collision.pixels) {
-            if (point.state == 0) {
+            if (point.state == STATE_REMOVED) {
                 continue;
             }
             int x = point.x;
             int y = point.y;
-            int v1 = upd.getPixel(x, y);
-            int v2 = workingBuffer.getPixel(x, y);
-            if (v1 == Color.TRANSPARENT || v1 == v2) {
-                continue;
-            }
+            int v1 = framebuffer.getPixel(x, y);
             int state = (mcu.getPixel(x, y) & 0xff);
             if (state >= maxFrame) {
                 workingBuffer.setPixel(x, y, v1);
                 mcu.setPixel(x, y, Color.argb(0xff, 0, 0, 0));
                 updState |= SOMETHING_MERGED;
-                point.state = 0;
+                point.state = STATE_REMOVED;
             } else {
                 updState |= PENDING;
             }
         }
         return updState;
+    }
+
+    public void dumpStateToBitmap(final Bitmap upd,
+                                  final Lut lut,
+                                  final Collision collision,
+                                  final Bitmap originWB,
+                                  final Bitmap workingBuffer,
+                                  int index) {
+        String path;
+        path = String.format("/mnt/sdcard/wf-" + currentWaveformFrame + "-lut-" + index + ".png");
+        FileUtils.deleteFile(path);
+        Bitmap lutBitmap = createByIndex(lut.bitmap, lut.pixels);
+        Bitmap collisionBitmap = createByIndex(upd, collision.pixels);
+        Bitmap result = ImageUtils.merge(upd, lutBitmap, collisionBitmap, originWB, workingBuffer);
+        BitmapUtils.saveBitmap(result, path);
+        Log.e(TAG, "save result buffer: " + path);
+    }
+
+    static public Bitmap createByIndex(final Bitmap bitmap, final List<PixelPoint> pixelPoints) {
+        Bitmap target = ImageUtils.create(bitmap);
+        target.eraseColor(Color.WHITE);
+        for (PixelPoint pixelPoint : pixelPoints) {
+            if (pixelPoint.state == STATE_NORMAL) {
+                target.setPixel(pixelPoint.x, pixelPoint.y, bitmap.getPixel(pixelPoint.x, pixelPoint.y));
+            }
+        }
+        return target;
     }
 
     public void dump(final Bitmap originUpd, final Bitmap originWb, final Bitmap mergedUpd, final Bitmap mergedWb, int index) {
@@ -246,31 +270,26 @@ public class EpdManager {
             Log.e(TAG, "save upd buffer: " + path);
         }
 
-        path = String.format("/mnt/sdcard/result-frame-" + currentWaveformFrame + "-update-buffer-index-" + index + ".png");
+        path = String.format("/mnt/sdcard/wf-" + currentWaveformFrame + "-collision-" + index + ".png");
         FileUtils.deleteFile(path);
         Bitmap result = ImageUtils.merge(originUpd, originWb, mergedUpd, mergedWb);
         BitmapUtils.saveBitmap(result, path);
         Log.e(TAG, "save result buffer: " + path);
-
-//        Bitmap result = ImageUtils.merge(upd, workingBuffer);
-//        path = String.format("/mnt/sdcard/result-" + currentWaveformFrame + "-update-buffer-" + updIndex + ".png");
-//        FileUtils.deleteFile(path);
-//        BitmapUtils.saveBitmap(result, path);
-//        Log.e(TAG, "save result bitmap: " + path);
     }
 
     public boolean isFinished() {
-        return updRequestList.isEmpty() && collisionList.isEmpty() && lutList.isEmpty();
+        return updRequestList.isEmpty() && collisionList.isEmpty() && lutList.isEmpty() && currentFb >= framebufferList.size();
     }
 
     public void nextWaveformFrame() {
         currentWaveformFrame += waveformFrameStep;
         ListIterator<Lut> iterator = lutList.listIterator();
         while (iterator.hasNext()) {
+            int index = iterator.nextIndex();
             Lut lut = iterator.next();
             lut.currentFrame += waveformFrameStep;
             if (lut.isFinished()) {
-                Log.e("################", "LUT Finished: ");
+                Log.e("################", "LUT: " + index + " Finished.");
                 iterator.remove();
             }
         }
@@ -283,13 +302,19 @@ public class EpdManager {
             return false;
         }
 
-        updRequestList.clear();
         updRequestList.add(new UpdateRequest(getCurrentFramebuffer().buffer));
         return true;
     }
 
     public Framebuffer getCurrentFramebuffer() {
-        return framebufferList.get(currentFb);
+        if (currentFb < framebufferList.size()) {
+            return framebufferList.get(currentFb);
+        }
+        return framebufferList.get(framebufferList.size() - 1);
+    }
+
+    public int rate() {
+        return 5;
     }
 
 }

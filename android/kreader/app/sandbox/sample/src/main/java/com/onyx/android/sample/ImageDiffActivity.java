@@ -114,19 +114,21 @@ public class ImageDiffActivity extends AppCompatActivity {
     }
 
     private void calculateUpdWorkingBuffer2() {
-        // load upd list
         List<String> pathList = new ArrayList<>();
-        for(int i = 0; i < 6; ++i) {
+        for(int i = 0; i < 7; ++i) {
             pathList.add("/mnt/sdcard/scp-" + i + ".png");
         }
 
         EpdManager epdManager = new EpdManager();
         epdManager.init(pathList);
 
+        int i = 0;
         while (!epdManager.isFinished()) {
             epdManager.merge();
             epdManager.nextWaveformFrame();
-            epdManager.nextFramebuffer();
+            if (++i % epdManager.rate() == 0) {
+                epdManager.nextFramebuffer();
+            }
         }
 
         Log.e(TAG, "all finished with verify result.");
