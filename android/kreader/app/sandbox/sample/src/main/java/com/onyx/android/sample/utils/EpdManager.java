@@ -57,7 +57,7 @@ public class EpdManager {
     }
 
     static public class Lut {
-        public ArrayList<PixelPoint> pixels = new ArrayList<>();
+        public List<PixelPoint> pixels = new ArrayList<>();
         public Rect boundingRect = new Rect();
         public int currentFrame;
         public int maxFrame = MAX_FRAME;
@@ -83,7 +83,7 @@ public class EpdManager {
 
     public static class Collision {
         public Rect boundingRect = new Rect();
-        public ArrayList<PixelPoint> pixels = new ArrayList<>();
+        public List<PixelPoint> pixels = new ArrayList<>();
         public void add(int x, int y) {
             pixels.add(new PixelPoint(x, y));
             boundingRect.union(x, y);
@@ -94,6 +94,14 @@ public class EpdManager {
 
         public boolean isEmpty() {
             return pixels.isEmpty();
+        }
+
+        public void addAll(final List<PixelPoint> list) {
+            for(PixelPoint pixelPoint : list) {
+                if (pixelPoint.state == STATE_NORMAL) {
+                    pixels.add(pixelPoint);
+                }
+            }
         }
     }
 
@@ -161,25 +169,29 @@ public class EpdManager {
     }
 
     // try to reduce all collisions and merge the final collision with wb.
+    // it can also be merged with update request rect
     public void mergeCollisionList() {
+        Collision mergedCollision = new Collision();
         ListIterator<Collision> it = collisionList.listIterator();
         while (it.hasNext()) {
-            int index = it.nextIndex();
             Collision collisionEntry = it.next();
-            Bitmap framebuffer = getCurrentFramebuffer().buffer;
-            final Bitmap collision = createByIndex(framebuffer, collisionEntry.pixels);
-            Bitmap originWb = ImageUtils.create(workingBuffer);
+            mergedCollision.addAll(collisionEntry.pixels);
+        }
+        collisionList.clear();
+        collisionList.add(mergedCollision);
 
-            int state = mergeCollision(collisionEntry, framebuffer, workingBuffer, mcu, MAX_FRAME);
-            Log.e(TAG, "Collision merged wf frame: " + currentWaveformFrame +  " merge state: " + state + " collision index: " + index);
-            if ((state & ImageUtils.SOMETHING_MERGED) > 0) {
-                dump(framebuffer, collision, originWb, workingBuffer, index);
-            }
+        Bitmap framebuffer = getCurrentFramebuffer().buffer;
+        final Bitmap collision = createByIndex(framebuffer, mergedCollision.pixels);
+        Bitmap originWb = ImageUtils.create(workingBuffer);
 
-            if (state == ImageUtils.NOTHING_TO_MERGE) {
-                Log.e(TAG, "collision removed");
-                it.remove();
-            }
+        int state = mergeCollision(mergedCollision, framebuffer, workingBuffer, mcu, MAX_FRAME);
+        Log.e(TAG, "Collision merged wf frame: " + currentWaveformFrame +  " merge state: " + state + " collision index: " + 0);
+        if ((state & ImageUtils.SOMETHING_MERGED) > 0) {
+            dump(framebuffer, collision, originWb, workingBuffer, 0);
+        }
+
+        if (state == NOTHING_TO_MERGE) {
+            collisionList.clear();
         }
     }
 
@@ -219,6 +231,11 @@ public class EpdManager {
             int x = point.x;
             int y = point.y;
             int v1 = framebuffer.getPixel(x, y);
+            int v2 = workingBuffer.getPixel(x, y);
+            if (v1 == v2) {
+                point.state = STATE_REMOVED;
+                continue;
+            }
             int state = (mcu.getPixel(x, y) & 0xff);
             if (state >= maxFrame) {
                 workingBuffer.setPixel(x, y, v1);
@@ -289,7 +306,7 @@ public class EpdManager {
             Lut lut = iterator.next();
             lut.currentFrame += waveformFrameStep;
             if (lut.isFinished()) {
-                Log.e("################", "LUT: " + index + " Finished.");
+                Log.e("################", "LUT: " + index + " Finished, with rect: " + lut.boundingRect);
                 iterator.remove();
             }
         }
