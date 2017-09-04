@@ -20,7 +20,7 @@
 #include <linux/input.h>
 #include <errno.h>
 
-TouchReader::TouchReader() {
+TouchReader::TouchReader() : limitArray(nullptr) {
 
 }
 

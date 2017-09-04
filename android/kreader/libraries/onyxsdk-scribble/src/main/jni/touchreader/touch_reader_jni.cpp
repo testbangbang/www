@@ -46,7 +46,10 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcesso
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetLimitRegion
   (JNIEnv *env, jobject, jfloatArray limitRegion) {
     int len = env->GetArrayLength(limitRegion);
+    jfloat *buf = (jfloat *)calloc(len, sizeof(jfloat));
     jboolean isCopy = false;
     jfloat *array = env->GetFloatArrayElements(limitRegion, &isCopy);
-    touchReader.setLimitRegion(array, len);
+    memcpy(buf, array, len * sizeof(jfloat));
+    env->ReleaseFloatArrayElements(limitRegion, array, 0);
+    touchReader.setLimitRegion(buf, len);
 }
