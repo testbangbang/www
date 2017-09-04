@@ -1048,6 +1048,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void renderPageWithShapeDataInBackground() {
         if (!getReaderDataHolder().supportScalable()) {
+            beforeDrawPage();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            afterDrawPage();
             return;
         }
 
