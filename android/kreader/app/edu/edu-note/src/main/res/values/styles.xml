@@ -8,4 +8,36 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="main_menu_item">
+        <item name="android:layout_width">@dimen/onyx_main_note_menu_height</item>
+        <item name="android:layout_height">@dimen/onyx_main_note_menu_height</item>
+        <item name="android:visibility">gone</item>
+        <item name="iconDrawingSize">@dimen/note_function_item_img_size</item>
+    </style>
+
+    <style name="sub_menu_item_view_group">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:minWidth">@dimen/onyx_main_note_menu_height</item>
+        <item name="android:background">@drawable/image_button_bg</item>
+        <item name="alwaysLayoutImageView">true</item>
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center_horizontal</item>
+    </style>
+
+    <style name="sub_menu_item_image_view">
+        <item name="android:layout_width">@dimen/note_function_item_img_size</item>
+        <item name="android:layout_height">@dimen/note_function_item_img_size</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:layout_marginTop">@dimen/note_function_item_img_top_margin</item>
+    </style>
+
+    <style name="sub_menu_item_checkbox">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_centerHorizontal">true</item>
+        <item name="android:button">@drawable/note_check_indicator</item>
+        <item name="android:clickable">false</item>
+        <item name="android:focusable">false</item>
+    </style>
 </resources>

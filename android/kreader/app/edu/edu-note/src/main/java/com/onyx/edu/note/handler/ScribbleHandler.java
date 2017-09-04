@@ -5,10 +5,11 @@ import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.ui.data.MenuAction;
+import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
 import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
@@ -73,14 +74,15 @@ import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA
 public class ScribbleHandler extends BaseHandler {
     private static final String TAG = ScribbleHandler.class.getSimpleName();
 
-    public ScribbleHandler(NoteManager mNoteManager) {
-        super(mNoteManager);
+    public ScribbleHandler(NoteManager noteManager) {
+        super(noteManager);
     }
 
     private BaseCallback mActionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            noteManager.post(new RequestInfoUpdateEvent(noteManager.getShapeDataInfo(), request, e));
+            AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
+            noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
         }
     };
 
@@ -101,47 +103,61 @@ public class ScribbleHandler extends BaseHandler {
     @Override
     public void buildFunctionBarMenuFunctionList() {
         functionBarMenuIDList = new ArrayList<>();
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SHAPE_SELECT);
+        functionBarMenuIDList.add(MenuId.PEN_STYLE);
+        functionBarMenuIDList.add(MenuId.BG);
+        functionBarMenuIDList.add(MenuId.ERASER);
+        functionBarMenuIDList.add(MenuId.PEN_WIDTH);
+        functionBarMenuIDList.add(MenuId.SHAPE_SELECT);
+
+        functionBarMenuIDList.add(MenuId.ADD_PAGE);
+        functionBarMenuIDList.add(MenuId.DELETE_PAGE);
+        functionBarMenuIDList.add(MenuId.PREV_PAGE);
+        functionBarMenuIDList.add(MenuId.NEXT_PAGE);
     }
 
     @Override
     protected void buildToolBarMenuFunctionList() {
         toolBarMenuIDList = new ArrayList<>();
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SAVE);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SETTING);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.EXPORT);
+        toolBarMenuIDList.add(MenuId.SWITCH_TO_SPAN_SCRIBBLE_MODE);
+        toolBarMenuIDList.add(MenuId.UNDO);
+        toolBarMenuIDList.add(MenuId.SAVE);
+        toolBarMenuIDList.add(MenuId.REDO);
+        toolBarMenuIDList.add(MenuId.SETTING);
+        toolBarMenuIDList.add(MenuId.EXPORT);
     }
 
     @Override
     protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
         functionBarSubMenuIDMap = new SparseArray<>();
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        functionBarSubMenuIDMap.put(MenuId.PEN_WIDTH, buildSubMenuThicknessIDList());
+        functionBarSubMenuIDMap.put(MenuId.BG, buildSubMenuBGIDList());
+        functionBarSubMenuIDMap.put(MenuId.ERASER, buildSubMenuEraserIDList());
+        functionBarSubMenuIDMap.put(MenuId.PEN_STYLE, buildSubMenuPenStyleIDList());
     }
 
     @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
         switch (event.getMenuAction()) {
-            case MenuAction.ADD_PAGE:
+            case MenuId.ADD_PAGE:
                 addPage();
                 break;
-            case MenuAction.DELETE_PAGE:
+            case MenuId.DELETE_PAGE:
                 deletePage();
                 break;
-            case MenuAction.PREV_PAGE:
+            case MenuId.PREV_PAGE:
                 prevPage();
                 break;
-            case MenuAction.NEXT_PAGE:
+            case MenuId.NEXT_PAGE:
                 nextPage();
+                break;
+            case MenuId.SHAPE_SELECT:
+                onSetShapeSelectModeChanged();
+                break;
+            case MenuId.PEN_STYLE:
+            case MenuId.PEN_WIDTH:
+            case MenuId.ERASER:
+            case MenuId.BG:
+                noteManager.post(new ShowSubMenuEvent(event.getMenuAction()));
                 break;
         }
     }

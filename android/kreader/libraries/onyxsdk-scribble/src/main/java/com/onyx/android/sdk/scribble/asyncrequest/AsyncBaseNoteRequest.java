@@ -162,6 +162,8 @@ public class AsyncBaseNoteRequest extends BaseRequest {
         return shapeDataInfo;
     }
 
+    // saveShapeDataInfo <--- working thread
+    // noteManager.getShapeDataInfo --> working thread
     public void updateShapeDataInfo(final NoteManager parent) {
         parent.saveShapeDataInfo(getShapeDataInfo());
         parent.updateShapeDataInfo(getContext(), getShapeDataInfo());

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.ui.SubMenuViewModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent">
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/sub_menu_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@android:color/white" />
+
+        <View
+            android:id="@+id/subMenuTopBoundary"
+            style="@style/single_line_X_axis_View"
+            android:layout_height="1dp"
+            android:layout_above="@id/sub_menu_list" />
+
+        <View
+            android:id="@+id/dismiss_zone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/subMenuTopBoundary"
+            android:layout_alignParentTop="true"
+            android:background="@android:color/transparent" />
+    </RelativeLayout>
+
+</layout>

@@ -79,16 +79,16 @@ public class HandlerManager {
         setActiveProvider(targetProviderName);
     }
 
-    public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+    public void handleSubMenuFunction(int subMenuID) {
         getActiveProvider().handleSubMenuFunction(subMenuID);
     }
 
-    public void handleToolBarMenuFunction(@ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID) {
+    public void handleToolBarMenuFunction(int toolBarMenuID) {
         getActiveProvider().handleToolBarMenuFunction(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
                 toolBarMenuID);
     }
 
-    public void handleFunctionBarMenuFunction(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID) {
+    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
         getActiveProvider().handleFunctionBarMenuFunction(functionBarMenuID);
     }
 

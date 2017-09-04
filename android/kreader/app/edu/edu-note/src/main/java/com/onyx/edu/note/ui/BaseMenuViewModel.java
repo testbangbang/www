@@ -5,47 +5,97 @@ import android.support.annotation.CallSuper;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Checkable;
 
-import com.onyx.android.sdk.ui.data.MenuAction;
 import com.onyx.android.sdk.utils.Debug;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lxm on 2017/8/31.
  */
 
-public abstract class BaseMenuViewModel extends BaseObservable {
+public class BaseMenuViewModel extends BaseObservable {
 
     private static final String TAG = "BaseMenuViewModel";
+
+//    private Set<Integer> checkedMenuIds;
+//    private Set<Integer> enabledMenuIds;
+//    private Set<Integer> showedMenuIds;
 
     private SparseArray<View> views;
     private EventBus eventBus;
 
     public BaseMenuViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
-        eventBus.register(this);
         views = new SparseArray<>();
     }
 
-    public void bindMenu(@MenuAction.ActionDef int menuAction, View view) {
+    public void bindMenu(int menuAction, View view) {
         views.put(menuAction, view);
     }
 
-    public View getMenuView(@MenuAction.ActionDef int menuAction) {
+    public BaseMenuViewModel show(List<Integer> showedMenuIds) {
+        for(int i = 0; i < views.size(); i++) {
+            int key = views.keyAt(i);
+            View view = views.get(key);
+            view.setVisibility(showedMenuIds.contains(key) ? View.VISIBLE : View.GONE);
+        }
+        return this;
+    }
+
+    public BaseMenuViewModel check(List<Integer> checkedMenuIds) {
+        for(int i = 0; i < views.size(); i++) {
+            int key = views.keyAt(i);
+            View view = views.get(key);
+            checkImpl(view, checkedMenuIds.contains(key));
+        }
+        return this;
+    }
+
+    private void checkChildView(ViewGroup parent, boolean checked) {
+        int size = parent.getChildCount();
+        for (int i = 0; i < size; i++) {
+            View view = parent.getChildAt(i);
+            checkImpl(view, checked);
+        }
+    }
+
+    private void checkImpl(View view, boolean checked) {
+        if (view instanceof Checkable) {
+            ((Checkable) view).setChecked(checked);
+        }
+        if (view instanceof ViewGroup) {
+            checkChildView((ViewGroup) view, checked);
+        }
+    }
+
+    public BaseMenuViewModel enable(List<Integer> enabledMenuIds) {
+        for(int i = 0; i < views.size(); i++) {
+            int key = views.keyAt(i);
+            View view = views.get(key);
+            view.setEnabled(enabledMenuIds.contains(key));
+        }
+        return this;
+    }
+
+    public View getMenuView(int menuAction) {
         return views.get(menuAction);
     }
 
-    public @MenuAction.ActionDef
-    int getMenuAction(View view) {
+    public int getMenuAction(View view) {
         Debug.d(getClass(), "getMenuAction start: ");
         int index = views.indexOfValue(view);
-        @MenuAction.ActionDef int  menuAction = MenuAction.translate(views.keyAt(index));
+        int  menuAction = views.keyAt(index);
         Debug.d(getClass(), "getMenuAction end: ");
         return menuAction;
     }
 
-    public void itemClicked(View view) {
+    public void menuClicked(View view) {
         Log.d(TAG, "onClick: " + view.getId() + "---action" + getMenuAction(view));
         eventBus.post(MenuClickEvent.create(view, getMenuAction(view)));
     }

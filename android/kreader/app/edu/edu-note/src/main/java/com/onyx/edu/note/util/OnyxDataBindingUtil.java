@@ -4,6 +4,7 @@ import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -20,14 +21,21 @@ import java.util.List;
 
 public class OnyxDataBindingUtil {
 
-    @BindingAdapter({"viewModel", "menuAction"})
-    public static void bindMenu(View view, BaseMenuViewModel viewModel, int menuAction) {
-        viewModel.bindMenu(menuAction, view);
+    @BindingAdapter({"viewModel", "menuId"})
+    public static void bindMenu(View view, BaseMenuViewModel viewModel, int menuId) {
+        viewModel.bindMenu(menuId, view);
     }
 
     @BindingAdapter({"android:src"})
     public static void setImageViewResource(ImageView imageView, int resource) {
         imageView.setImageResource(resource);
+    }
+
+    @BindingAdapter("android:layout_width")
+    public static void setLayoutWidth(View view, int width) {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.width = width;
+        view.setLayoutParams(layoutParams);
     }
 
     @BindingAdapter({"imageState"})

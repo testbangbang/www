@@ -85,7 +85,8 @@ public class ScribbleViewModel extends BaseObservable {
                     mCurrentNoteModel.set(req.getNoteModel());
                     mNoteTitle.set(mCurrentNoteModel.get() != null ? mCurrentNoteModel.get().getTitle() :
                             DateTimeUtil.formatDate(new Date()));
-                    mNoteManager.post(new RequestInfoUpdateEvent(mNoteManager.getShapeDataInfo(), request, e));
+                    AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
+                    mNoteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
                 }
                 BaseCallback.invoke(callback, request, e);
             }

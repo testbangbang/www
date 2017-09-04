@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.onyx.android.sdk.ui.data.MenuId"/>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.ui.MainMenuViewModel" />
+
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:id="@+id/page_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.PEN_STYLE}"
+            android:src="@drawable/ic_shape"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.BG}"
+            android:src="@drawable/ic_template"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.ERASER}"
+            android:src="@drawable/ic_eraser"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.PEN_WIDTH}"
+            android:src="@drawable/ic_width"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.DELETE}"
+            android:src="@drawable/ic_delet_big"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.SPACE}"
+            android:src="@drawable/ic_space"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.ENTER}"
+            android:src="@drawable/ic_enter"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.KEYBOARD}"
+            android:src="@drawable/ic_keyboard"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.COLOR}"
+            android:src="@drawable/ic_color"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.SHAPE_SELECT}"
+            android:src="@drawable/ic_menu_more"/>
+
+        <View
+            app:layout_flexGrow="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.DELETE_PAGE}"
+            android:src="@drawable/ic_delete" />
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.ADD_PAGE}"
+            android:src="@drawable/ic_add" />
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.PREV_PAGE}"
+            android:src="@drawable/ic_note_prev_page_black" />
+
+        <Button
+            android:id="@+id/button_page_progress"
+            android:layout_width="@dimen/wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
+            android:gravity="center"
+            android:text="@{@string/page_count(viewModel.currentPage,viewModel.totalPage)}" />
+
+        <com.onyx.android.sdk.ui.view.CustomIconView
+            style="@style/main_menu_item"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.NEXT_PAGE}"
+            android:src="@drawable/ic_note_next_page_black"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

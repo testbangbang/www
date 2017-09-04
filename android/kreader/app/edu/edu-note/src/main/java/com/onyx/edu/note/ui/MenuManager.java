@@ -5,47 +5,120 @@ import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.android.databinding.library.baseAdapters.BR;
-import com.onyx.android.sdk.ui.data.MenuAction;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by lxm on 2017/8/31.
  */
 
-public class MenuManager<B extends ViewDataBinding, V extends BaseMenuViewModel> {
+public class MenuManager {
 
-    private B binding;
-    private V viewModel;
+    private ViewDataBinding mainMenuBinding;
+    private BaseMenuViewModel mainMenuViewModel;
 
-    public MenuManager(Context context, V viewModel, int layoutId) {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(context), layoutId, null, false);
-        this.viewModel = viewModel;
-        binding.setVariable(BR.viewModel, viewModel);
+    private ViewDataBinding toolbarBinding;
+    private BaseMenuViewModel toolbarViewModel;
+
+    private ViewDataBinding subMenuBinding;
+    private BaseMenuViewModel subMenuViewModel;
+
+    public MenuManager addMainMenu(ViewGroup parent,
+                                   BaseMenuViewModel viewModel,
+                                   int layoutId,
+                                   ViewGroup.LayoutParams params) {
+        mainMenuBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), layoutId, null, false);
+        this.mainMenuViewModel = viewModel;
+        mainMenuBinding.setVariable(BR.viewModel, viewModel);
+        parent.addView(getMainMenuView(), params);
+        return this;
     }
 
-    public V getViewModel() {
-        return viewModel;
+    public MenuManager addToolbar(ViewGroup parent,
+                                  BaseMenuViewModel viewModel,
+                                  int layoutId,
+                                  ViewGroup.LayoutParams params) {
+        toolbarBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), layoutId, null, false);
+        this.toolbarViewModel = viewModel;
+        toolbarBinding.setVariable(BR.viewModel, viewModel);
+        parent.addView(getToolbarView(), params);
+        return this;
     }
 
-    public B getBinding() {
-        return binding;
+    public MenuManager setMainMenuIds(List<Integer> menuIds) {
+        if (getMainMenuViewModel() == null) {
+            return this;
+        }
+        getMainMenuViewModel().show(menuIds);
+        return this;
     }
 
-    public View getRootView() {
-        return binding.getRoot();
+    public MenuManager setToolbarMenuIds(List<Integer> menuIds) {
+        if (getToolbarViewModel() == null) {
+            return this;
+        }
+        getToolbarViewModel().show(menuIds);
+        return this;
     }
 
-    public View getMenuView(@MenuAction.ActionDef int menuAction) {
-        return viewModel.getMenuView(menuAction);
+    public MenuManager showSubMenuView(ViewGroup parent,
+                                       BaseMenuViewModel viewModel,
+                                       int layoutId,
+                                       ViewGroup.LayoutParams params) {
+        subMenuBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), layoutId, null, false);
+        this.subMenuViewModel = viewModel;
+        subMenuBinding.setVariable(BR.viewModel, viewModel);
+        parent.addView(getSubMenuView(), params);
+        return this;
     }
 
-    public @MenuAction.ActionDef
-    int getMenuAction(View view) {
-        return viewModel.getMenuAction(view);
+    public MenuManager checkSubMenu(final List<Integer> menuIds) {
+        if (getSubMenuViewModel() == null) {
+            return this;
+        }
+        getSubMenuView().post(new Runnable() {
+            @Override
+            public void run() {
+                getSubMenuViewModel().check(menuIds);
+            }
+        });
+        return this;
+    }
+
+    public View getMainMenuView() {
+        return mainMenuBinding.getRoot();
+    }
+
+    public View getToolbarView() {
+        return toolbarBinding.getRoot();
+    }
+
+    public View getSubMenuView() {
+        return subMenuBinding.getRoot();
+    }
+
+    public BaseMenuViewModel getMainMenuViewModel() {
+        return mainMenuViewModel;
+    }
+
+    public BaseMenuViewModel getToolbarViewModel() {
+        return toolbarViewModel;
+    }
+
+    public BaseMenuViewModel getSubMenuViewModel() {
+        return subMenuViewModel;
     }
 
     public void onDestroy() {
-        viewModel.onDestroy();
+        if (getMainMenuViewModel() != null) {
+            getMainMenuViewModel().onDestroy();
+        }
+        if (getToolbarViewModel() != null) {
+            getToolbarViewModel().onDestroy();
+        }
     }
 }

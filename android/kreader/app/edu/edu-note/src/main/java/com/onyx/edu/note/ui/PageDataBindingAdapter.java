@@ -16,7 +16,9 @@ import java.util.List;
  * Created by lxm on 2017/9/1.
  */
 
-public abstract class PageDataBindingAdapter<VH extends BindingViewHolder, T, VM extends BaseObservable>
+public abstract class PageDataBindingAdapter<T,
+        VH extends BindingViewHolder,
+        VM extends BaseObservable>
         extends PageRecyclerView.PageAdapter<VH> {
 
     public List<VM> getItemVMList() {

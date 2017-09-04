@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.ui.view;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.ViewGroup;
 
@@ -28,19 +29,32 @@ public abstract class AdaptiveHeightPageAdapter<VH extends RecyclerView.ViewHold
         if (itemHeight == 0) {
             return;
         }
-        getItemHeightMap().put(holder.getAdapterPosition(), itemHeight);
+        int row = getPagePaginator().rowInCurrentPage(holder.getAdapterPosition());
+        Integer value = getItemHeightMap().get(row);
+        value = (value != null && value > itemHeight) ? value : itemHeight;
+        getItemHeightMap().put(row, value);
+        updateParentHeight(holder);
+    }
+
+    private void updateParentHeight(VH holder) {
+        Log.d("", "updateParentHeight: ");
+        if (getPagePaginator().getCurrentPageEnd() != holder.getAdapterPosition()) {
+            return;
+        }
         ViewGroup.LayoutParams params = pageRecyclerView.getLayoutParams();
         params.height = calculateAdaptiveParentHeight();
         pageRecyclerView.setLayoutParams(params);
     }
 
+
     private int calculateAdaptiveParentHeight() {
         final int paddingBottom = pageRecyclerView.getOriginPaddingBottom();
         final int paddingTop = pageRecyclerView.getPaddingTop();
-        int start = pageRecyclerView.getPaginator().getCurrentPageBegin();
-        int end = pageRecyclerView.getPaginator().getCurrentPageEnd();
+        int startRow = getPagePaginator().getCurrentPageBeginRow();
+        int endRow = getPagePaginator().getCurrentPageEndRow();
         int height = 0;
-        for (int i = start; i <= end; i++) {
+
+        for (int i = startRow; i <= endRow; i++) {
             Integer value =  getItemHeightMap().get(i);
             if (value != null) {
                 height += value;

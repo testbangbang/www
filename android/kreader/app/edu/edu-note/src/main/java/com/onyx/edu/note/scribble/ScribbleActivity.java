@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -28,8 +29,6 @@ import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
-import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.edu.note.HandlerManager;
@@ -44,22 +43,28 @@ import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
+import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
-import com.onyx.edu.note.databinding.ScribbleBottomMenuBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
+import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
 import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
-import com.onyx.edu.note.ui.BottomMenuViewModel;
+import com.onyx.edu.note.ui.BaseMenuViewModel;
+import com.onyx.edu.note.ui.MainMenuViewModel;
+import com.onyx.edu.note.ui.FunctionMenuClickEvent;
 import com.onyx.edu.note.ui.MenuManager;
 import com.onyx.edu.note.ui.PageAdapter;
+import com.onyx.edu.note.ui.SubMenuClickEvent;
+import com.onyx.edu.note.ui.SubMenuViewModel;
+import com.onyx.edu.note.ui.ToolbarMenuClickEvent;
 import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
 import com.onyx.android.sdk.scribble.view.LinedEditText;
 import com.onyx.edu.note.util.Constant;
@@ -68,14 +73,15 @@ import com.onyx.edu.note.util.Utils;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleNavigator, ScribbleItemNavigator {
     private static final String TAG = ScribbleActivity.class.getSimpleName();
     ActivityScribbleBinding mBinding;
     ScribbleViewModel mViewModel;
-    MenuManager<ScribbleBottomMenuBinding, BottomMenuViewModel> bottomMenu;
-    MenuManager subMenu;
+    MenuManager menu;
+//    MenuManager<SubMenuBinding, SubMenuViewModel> subMenu;
     ScribbleFunctionAdapter mFunctionBarAdapter, mToolBarAdapter;
     protected SurfaceHolder.Callback surfaceCallback;
     DeviceReceiver deviceReceiver = new DeviceReceiver();
@@ -90,22 +96,35 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         noteManager = NoteApplication.getInstance().getNoteManager();
-        initBottomMenu();
+        initMenu();
         mViewModel = new ScribbleViewModel(this);
         mViewModel.setNavigator(this);
         // Link View and ViewModel
         mBinding.setViewModel(mViewModel);
-        mBinding.layoutFooter.addView(bottomMenu.getRootView());
         initRecyclerView();
         initSpanTextView();
         buildSubMenu();
         handlerManager = new HandlerManager(this, mViewModel);
     }
 
-    private void initBottomMenu() {
-        bottomMenu = new MenuManager<ScribbleBottomMenuBinding, BottomMenuViewModel>(this,
-                new BottomMenuViewModel(noteManager.getEventBus()),
-                R.layout.scribble_bottom_menu);
+    private void initMenu() {
+        menu = new MenuManager();
+        menu.addMainMenu(mBinding.layoutFooter,
+                new MainMenuViewModel(noteManager.getEventBus()),
+                R.layout.scribble_main_menu,
+                new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
+        mBinding.subMenuLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideSubMenu();
+            }
+        });
+    }
+
+    @Subscribe
+    public void onHandlerActivate(HandlerActivateEvent activateEvent) {
+        menu.setMainMenuIds(activateEvent.getFunctionBarMenuFunctionIDList());
+        menu.setToolbarMenuIds(activateEvent.getToolBarMenuFunctionIDList());
     }
 
     @Override
@@ -140,7 +159,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Override
     protected void onDestroy() {
-        bottomMenu.onDestroy();
+        menu.onDestroy();
+//        bottomMenu.onDestroy();
         mViewModel.onActivityDestroyed();
         super.onDestroy();
     }
@@ -361,10 +381,10 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void initRecyclerView() {
-        PageRecyclerView functionMenu = bottomMenu.getBinding().functionMenuList;
-        functionMenu.setLayoutManager(new DisableScrollGridManager(this));
-        functionMenu.setHasFixedSize(true);
-        functionMenu.setAdapter(new BottomMenuViewModel.PageFunctionAdapter(noteManager.getEventBus()));
+//        PageRecyclerView functionMenu = bottomMenu.getMainMenuBinding().functionMenuList;
+//        functionMenu.setLayoutManager(new DisableScrollGridManager(this));
+//        functionMenu.setHasFixedSize(true);
+//        functionMenu.setAdapter(new MainMenuViewModel.PageFunctionAdapter(noteManager.getEventBus()));
 //        mBinding.functionRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
 //        mBinding.toolBarRecyclerView.setLayoutManager(new DisableScrollGridManager(this));
 //        mBinding.toolBarRecyclerView.setHasFixedSize(true);
@@ -412,16 +432,66 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void showSubMenu(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
-        mSubMenu.show(mainMenuID, mViewModel.getSubMenuIDList(mainMenuID), noteManager.inSpanLayoutMode());
+        mBinding.subMenuLayout.removeAllViews();
+        mBinding.subMenuLayout.setVisibility(View.VISIBLE);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        SubMenuViewModel subMenuViewModel = new SubMenuViewModel(noteManager.getEventBus());
+        menu.showSubMenuView(mBinding.subMenuLayout,
+                subMenuViewModel,
+                R.layout.pen_style_menu,
+                lp).checkSubMenu(getChosenSubMenuId(mainMenuID, noteManager.inSpanLayoutMode()));
+        subMenuViewModel.calculateMenuWidth(mBinding.subMenuLayout);
+    }
+
+    public List<Integer> getChosenSubMenuId(int mainMenuID, boolean isLineLayoutMode) {
+        NoteManager manager = NoteApplication.getInstance().getNoteManager();
+        int targetID = Integer.MIN_VALUE;
+        switch (mainMenuID) {
+            case ScribbleFunctionBarMenuID.ERASER:
+            case ScribbleFunctionBarMenuID.PEN_STYLE:
+                targetID = ScribbleSubMenuID.menuIdFromShapeType(manager.getShapeDataInfo().getCurrentShapeType());
+                break;
+            case ScribbleFunctionBarMenuID.BG:
+                targetID = ScribbleSubMenuID.menuIdFromBg(isLineLayoutMode ?
+                        manager.getShapeDataInfo().getLineLayoutBackground() : manager.getShapeDataInfo().getBackground());
+                break;
+            case ScribbleFunctionBarMenuID.PEN_WIDTH:
+                targetID = ScribbleSubMenuID.menuIdFromStrokeWidth(manager.getShapeDataInfo().getStrokeWidth());
+                break;
+        }
+        List<Integer> targets = new ArrayList<>();
+        targets.add(targetID);
+        return targets;
     }
 
     private boolean hideSubMenu() {
+//        mBinding.mainLayout.removeView(subMenu.getMainMenuView());
+        mBinding.subMenuLayout.setVisibility(View.GONE);
+        noteManager.sync(true, true);
         if (mSubMenu != null && mSubMenu.isShow()) {
             mSubMenu.dismiss(true);
             return true;
         }
         return false;
     }
+
+    @Subscribe
+    public void onFunctionMenuClickEvent(FunctionMenuClickEvent event) {
+        handlerManager.handleFunctionBarMenuFunction(event.getMenuId());
+    }
+
+    @Subscribe
+    public void onSubMenuClickEvent(SubMenuClickEvent event) {
+        handlerManager.handleSubMenuFunction(event.getMenuId());
+        hideSubMenu();
+    }
+
+    @Subscribe
+    public void onToolbarMenuClickEvent(ToolbarMenuClickEvent event) {
+        handlerManager.handleToolBarMenuFunction(event.getMenuId());
+    }
+
 
     @Override
     public void onFunctionBarMenuFunctionItem(final int mainMenuID) {

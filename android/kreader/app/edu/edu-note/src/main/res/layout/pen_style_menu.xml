@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.onyx.android.sdk.ui.data.MenuId"/>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.ui.SubMenuViewModel" />
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_marginTop="@dimen/sub_menu_margin"
+        android:layout_marginBottom="@dimen/sub_menu_margin"
+        app:flexWrap="wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.NORMAL_PEN_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_pencil" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.BRUSH_PEN_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_brush" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.LINE_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_line" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.TRIANGLE_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_triangle" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.CIRCLE_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_circle" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.RECT_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_square" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.TRIANGLE_45_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_triangle_45" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.TRIANGLE_60_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_triangle_60" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            style="@style/sub_menu_item_view_group"
+            android:layout_width="@{viewModel.subMenuWidth, default=wrap_content}"
+            android:onClick="@{(v) ->viewModel.menuClicked(v)}"
+            viewModel="@{viewModel}"
+            menuId="@{MenuId.TRIANGLE_90_STYLE}">
+            <ImageView
+                style="@style/sub_menu_item_image_view"
+                android:src="@drawable/ic_shape_triangle_90" />
+            <RadioButton
+                style="@style/sub_menu_item_checkbox"/>
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

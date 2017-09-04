@@ -68,12 +68,11 @@ public abstract class BaseHandler {
 
     protected abstract void buildFunctionBarMenuSubMenuIDListSparseArray();
 
-    public abstract void handleFunctionBarMenuFunction(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID);
+    public abstract void handleFunctionBarMenuFunction(int functionBarMenuID);
 
-    public abstract void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID);
+    public abstract void handleSubMenuFunction(int subMenuID);
 
-    public abstract void handleToolBarMenuFunction(String uniqueID, String title,
-                                                   @ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID);
+    public abstract void handleToolBarMenuFunction(String uniqueID, String title,int toolBarMenuID);
 
     public abstract void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback);
 

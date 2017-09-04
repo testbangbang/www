@@ -3,19 +3,16 @@ package com.onyx.edu.note.scribble;
 import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
-import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.View;
 
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
-import com.onyx.edu.note.data.ScribbleSubMenuID;
+import com.onyx.edu.note.ui.FunctionMenuClickEvent;
 import com.onyx.edu.note.ui.MenuClickEvent;
+import com.onyx.edu.note.ui.SubMenuClickEvent;
+import com.onyx.edu.note.ui.ToolbarMenuClickEvent;
 import com.onyx.edu.note.util.ScribbleFunctionItemUtils;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.lang.ref.WeakReference;
 
 /**
  * Created by lxm on 2017/9/1.
@@ -25,62 +22,53 @@ public class PageMenuItemViewModel extends BaseObservable {
 
     private static final String TAG = PageMenuItemViewModel.class.getSimpleName();
 
-    public final ObservableInt mIconRes = new ObservableInt();
-    public final ObservableBoolean mIsChecked = new ObservableBoolean();
-    public final ObservableBoolean mShowIndicator = new ObservableBoolean();
+    public final ObservableInt iconRes = new ObservableInt();
+    public final ObservableBoolean isChecked = new ObservableBoolean();
+    public final ObservableBoolean showIndicator = new ObservableBoolean();
 
     public int getItemID() {
-        return mItemID;
+        return itemID;
     }
 
-    private int mItemID;
+    private int itemID;
     private EventBus eventBus;
-    private @ScribbleFunctionMenuIDType.ScribbleMenuIDTypeDef
-    int mItemMenuIDType;
+    private int itemMenuIDType;
 
     public PageMenuItemViewModel(EventBus eventBus,
                                  int itemID,
-                                 @ScribbleFunctionMenuIDType.ScribbleMenuIDTypeDef int itemMenuIDType) {
+                                 int itemMenuIDType) {
         this.eventBus = eventBus;
-        mItemMenuIDType = itemMenuIDType;
-        mItemID = itemID;
-        switch (mItemMenuIDType) {
+        this.itemMenuIDType = itemMenuIDType;
+        this.itemID = itemID;
+        switch (this.itemMenuIDType) {
             case ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU:
-                mIconRes.set(ScribbleFunctionItemUtils.getFunctionBarItemIDIconRes(itemID));
-                mIsChecked.set(false);
-                mShowIndicator.set(false);
+                iconRes.set(ScribbleFunctionItemUtils.getFunctionBarItemIDIconRes(itemID));
+                isChecked.set(false);
+                showIndicator.set(false);
                 break;
             case ScribbleFunctionMenuIDType.SUB_MENU:
-                mIconRes.set(ScribbleFunctionItemUtils.getSubItemIDIconRes(itemID));
-                mShowIndicator.set(true);
+                iconRes.set(ScribbleFunctionItemUtils.getSubItemIDIconRes(itemID));
+                showIndicator.set(true);
                 break;
             case ScribbleFunctionMenuIDType.TOOL_BAR_MENU:
-                mIconRes.set(ScribbleFunctionItemUtils.getToolBarItemIDIconRes(itemID));
-                mShowIndicator.set(false);
+                iconRes.set(ScribbleFunctionItemUtils.getToolBarItemIDIconRes(itemID));
+                showIndicator.set(false);
                 break;
         }
     }
 
     public void itemClicked(View view) {
-//        Log.d(TAG, "onClick: " + view.getId() + "---action" + getMenuAction(view));
-//        eventBus.post(MenuClickEvent.create(view, mItemID);
-//        switch (mItemMenuIDType) {
-//            case ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU:
-//                if (mNavigator != null && mNavigator.get() != null) {
-//                    mNavigator.get().onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.translate(mItemID));
-//                }
-//                break;
-//            case ScribbleFunctionMenuIDType.SUB_MENU:
-//                if (mNavigator != null && mNavigator.get() != null) {
-//                    mNavigator.get().onSubMenuFunctionItem(ScribbleSubMenuID.translate(mItemID));
-//                }
-//                break;
-//            case ScribbleFunctionMenuIDType.TOOL_BAR_MENU:
-//                if (mNavigator != null && mNavigator.get() != null) {
-//                    mNavigator.get().onToolBarMenuFunctionItem(ScribbleSubMenuID.translate(mItemID));
-//                }
-//                break;
-//        }
+        switch (itemMenuIDType) {
+            case ScribbleFunctionMenuIDType.FUNCTION_BAR_MENU:
+                eventBus.post(new FunctionMenuClickEvent(itemID));
+                break;
+            case ScribbleFunctionMenuIDType.SUB_MENU:
+                eventBus.post(new SubMenuClickEvent(itemID));
+                break;
+            case ScribbleFunctionMenuIDType.TOOL_BAR_MENU:
+                eventBus.post(new ToolbarMenuClickEvent(itemID));
+                break;
+        }
     }
 
 

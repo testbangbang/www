@@ -9,6 +9,7 @@ import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildLineBreakShapeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildTextShapeEvent;
@@ -92,7 +93,8 @@ public class SpanTextHandler extends BaseHandler {
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            noteManager.post(new RequestInfoUpdateEvent(noteManager.getShapeDataInfo(), request, e));
+            AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
+            noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
             if (reloadPageShape) {
                 loadPageShapes();
             }
