@@ -217,6 +217,15 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
+    /**
+     * ref link:https://stackoverflow.com/questions/6388351/how-to-finish-an-activity-when-home-button-pressed
+     */
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        finish();
+    }
+
     private void updateUI(boolean isWifiEnable, int wifiExtraState) {
         binding.wifSwitch.setChecked(isWifiEnable);
         switch (wifiExtraState){

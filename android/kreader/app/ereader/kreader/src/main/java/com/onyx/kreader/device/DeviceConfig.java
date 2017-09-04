@@ -49,7 +49,7 @@ public class DeviceConfig {
     private boolean hideControlSettings = false;
     private boolean askForClose = false;
     private boolean supportColor = false;
-    private int defaultGamma = 100;
+    private int defaultGamma = 150;
     private int defaultTextGamma = 150;
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;

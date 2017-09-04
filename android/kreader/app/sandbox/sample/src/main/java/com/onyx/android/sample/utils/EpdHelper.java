@@ -2,6 +2,8 @@ package com.onyx.android.sample.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.util.Log;
 
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -26,6 +28,18 @@ public class EpdHelper {
             updBuffer = bitmap;
             fullMerged = false;
         }
+    }
+
+    static public class Lut {
+        public ArrayList<Point> pixels = new ArrayList<>();
+        public Rect boudingRect = new Rect();
+        public int frameIndex;
+        public int maxFrame;
+    }
+
+    public static class Conflict {
+        public Rect boudingRect = new Rect();
+        public ArrayList<Point> pixels = new ArrayList<>();
     }
 
     private List<UpdateEntry> updBufferList = new ArrayList<>();

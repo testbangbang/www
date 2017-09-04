@@ -7,9 +7,9 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.onyx.android.sample.utils.EpdHelper;
+import com.onyx.android.sample.utils.EpdManager;
 import com.onyx.android.sample.utils.ImageUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class ImageDiffActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 //        calculateAllDiffList();
-        calculateUpdWorkingBuffer();
+        calculateUpdWorkingBuffer2();
     }
 
     private void transparentImage() {
@@ -111,6 +111,27 @@ public class ImageDiffActivity extends AppCompatActivity {
         final Bitmap finalBitmap = ImageUtils.loadBitmapFromFile("/mnt/sdcard/scp-6.png");
         epdHelper.flush(finalBitmap);
         Log.e(TAG, "all finished with verify result: " + epdHelper.verify());
+    }
+
+    private void calculateUpdWorkingBuffer2() {
+        List<String> pathList = new ArrayList<>();
+        for(int i = 0; i < 7; ++i) {
+            pathList.add("/mnt/sdcard/scp-" + i + ".png");
+        }
+
+        EpdManager epdManager = new EpdManager();
+        epdManager.init(pathList);
+
+        int i = 0;
+        while (!epdManager.isFinished()) {
+            epdManager.merge();
+            epdManager.nextWaveformFrame();
+            if (++i % epdManager.rate() == 0) {
+                epdManager.nextFramebuffer();
+            }
+        }
+
+        Log.e(TAG, "all finished with verify result.");
     }
 
 
