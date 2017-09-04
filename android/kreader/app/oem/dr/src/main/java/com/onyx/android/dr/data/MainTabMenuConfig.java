@@ -8,22 +8,17 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.ApplicationEvent;
 import com.onyx.android.dr.event.ArticlePushMenuEvent;
+import com.onyx.android.dr.event.BookshelfMenuEvent;
+import com.onyx.android.dr.event.BookstoreMenuEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
-import com.onyx.android.dr.event.GradedBooksEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
-import com.onyx.android.dr.event.MyBooksMenuEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
-import com.onyx.android.dr.event.ProfessionalMaterialsMenuEvent;
-import com.onyx.android.dr.event.RealTimeBooksMenuEvent;
-import com.onyx.android.dr.event.SchoolBasedMaterialsMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
-import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.dr.util.DRPreferenceManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by hehai on 17-6-28.
@@ -39,7 +34,17 @@ public class MainTabMenuConfig {
         universityMenuData.clear();
         teacherMenuData.clear();
 
-        MenuBean menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_DICT, context.getResources().getString(R.string.menu_dict), R.drawable.ic_dict, new DictMenuEvent());
+        MenuBean menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_BOOKSHELF, getBookshelfName(context), R.drawable.ic_bookshelf, new BookshelfMenuEvent());
+        highSchoolMenuData.add(menuData);
+        universityMenuData.add(menuData);
+        teacherMenuData.add(menuData);
+
+        menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_BOOKSTORE, context.getResources().getString(R.string.bookstore), R.drawable.ic_ebook_store, new BookstoreMenuEvent());
+        highSchoolMenuData.add(menuData);
+        universityMenuData.add(menuData);
+        teacherMenuData.add(menuData);
+
+        menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_DICT, context.getResources().getString(R.string.menu_dict), R.drawable.ic_dict, new DictMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
@@ -68,6 +73,20 @@ public class MainTabMenuConfig {
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
+    }
+
+    private static String getBookshelfName(Context context) {
+        String bookshelfType = DRPreferenceManager.getBookshelfType(context, context.getResources().getString(R.string.language_bookshelf));
+        String bookshelf = context.getResources().getString(R.string.language_bookshelf);
+        switch (bookshelfType) {
+            case Constants.LANGUAGE_BOOKSHELF:
+                bookshelf = context.getResources().getString(R.string.language_bookshelf);
+                break;
+            case Constants.GRADED_BOOKSHELF:
+                bookshelf = context.getResources().getString(R.string.grade_bookshelf);
+                break;
+        }
+        return bookshelf;
     }
 
     public static List<MenuBean> getMenuData(String userType) {

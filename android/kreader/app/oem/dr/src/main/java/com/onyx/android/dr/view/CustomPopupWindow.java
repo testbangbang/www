@@ -28,7 +28,7 @@ public class CustomPopupWindow extends PopupWindow implements PopupAdapter.OnIte
     private View contentView;
     private PageRecyclerView popupWindowRecycler;
     private PopupAdapter popupAdapter;
-    public static final int constant = 10;
+    public static final int constant = 7;
     private int offsetY;
     private OnItemClickListener listener;
 

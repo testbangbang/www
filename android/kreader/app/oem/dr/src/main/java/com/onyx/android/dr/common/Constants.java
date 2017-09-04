@@ -99,6 +99,10 @@ public class Constants {
     public static final String METADATA_ARRAY = "metadata_array";
     public static final int NEW_WORD_REVIEW_COUNT = 5;
     public static final String GROUP_NAME = "group_name";
+    public static final String AUTO_LOGIN_FLAG = "auto_login_flag";
+    public static final String BOOKSHELF_TYPE = "bookshelf_type";
+    public static final String LANGUAGE_BOOKSHELF = "language_bookshelf";
+    public static final String GRADED_BOOKSHELF = "graded_bookshelf";
     public static String STANDBY_PIC_DIRECTORY = "/data/local/assets/images/";
     public static final String APK_NAME = "dr.apk";
     public static final String APK_DOWNLOAD_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + Constants.APK_NAME;

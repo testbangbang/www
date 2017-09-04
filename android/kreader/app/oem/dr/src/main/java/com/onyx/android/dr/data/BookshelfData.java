@@ -1,6 +1,7 @@
 package com.onyx.android.dr.data;
 
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -13,6 +14,7 @@ import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudChildLibraryListLoadRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,7 @@ import java.util.concurrent.CountDownLatch;
 
 public class BookshelfData {
     private Map<String, List<Metadata>> languageCategoryMap = new HashMap<>();
+    private List<String> languageList = new ArrayList<>();
 
     public void getLibraryBooks(final CloudContentListRequest req, final BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {
@@ -66,5 +69,13 @@ public class BookshelfData {
 
     public void getLibraryList(CloudChildLibraryListLoadRequest req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public List<String> getLanguageList() {
+        languageList.clear();
+        languageList.add(Constants.CHINESE);
+        languageList.add(Constants.ENGLISH);
+        languageList.add(Constants.SMALL_LANGUAGE);
+        return languageList;
     }
 }

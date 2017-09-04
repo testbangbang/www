@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -10,7 +11,9 @@
         <TextView
             android:id="@+id/group_name"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:textSize="@dimen/level_two_font_size" />
 
         <ImageView
             android:id="@+id/next_button"
@@ -18,6 +21,16 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_next" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/item_bookshelf_group_margin_right"
+            android:layout_toLeftOf="@id/next_button"
+            android:text="@string/more_books"
+            android:textSize="@dimen/level_two_font_size" />
     </RelativeLayout>
 
     <com.onyx.android.sdk.ui.view.SinglePageRecyclerView

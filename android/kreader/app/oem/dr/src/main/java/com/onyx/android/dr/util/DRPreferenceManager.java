@@ -1,6 +1,5 @@
 package com.onyx.android.dr.util;
 
-import android.app.Activity;
 import android.content.Context;
 
 import com.onyx.android.dr.common.Constants;
@@ -76,5 +75,17 @@ public class DRPreferenceManager extends PreferenceManager {
 
     public static String loadPreferredBookshelf(Context context, String defaultValue) {
         return getStringValue(context, Constants.PREFERRED_BOOKSHELF, defaultValue);
+    }
+
+    public static void saveAutoLogin(Context context, boolean isAutoLogin) {
+        setBooleanValue(context, Constants.AUTO_LOGIN_FLAG, isAutoLogin);
+    }
+
+    public static String getBookshelfType(Context context, String defaultValue) {
+        return getStringValue(context, Constants.BOOKSHELF_TYPE, defaultValue);
+    }
+
+    public static void saveBookshelfType(Context context, String bookshelfType) {
+        setStringValue(context, Constants.BOOKSHELF_TYPE, bookshelfType);
     }
 }

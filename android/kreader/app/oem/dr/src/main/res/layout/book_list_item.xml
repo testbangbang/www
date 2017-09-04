@@ -23,7 +23,16 @@
             android:layout_width="@dimen/book_list_item_widget_width"
             android:layout_height="@dimen/book_list_item_widget_height"
             android:layout_marginTop="0dp"
+            android:layout_alignParentRight="true"
             android:src="@drawable/book_item_get_widget"
+            android:visibility="gone" />
+
+        <CheckBox
+            android:id="@+id/library_item_checkbox"
+            android:layout_width="@dimen/book_list_item_widget_width"
+            android:layout_height="@dimen/book_list_item_widget_height"
+            android:layout_marginTop="0dp"
+            android:background="@drawable/checkbox_selector"
             android:visibility="gone" />
 
     </RelativeLayout>

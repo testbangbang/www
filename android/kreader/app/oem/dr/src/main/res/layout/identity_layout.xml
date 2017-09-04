@@ -30,7 +30,24 @@
 
         <EditText
             android:id="@+id/sign_up_password"
-            style="@style/UserInfoEditTextStyle" />
+            style="@style/UserInfoEditTextStyle"
+            android:inputType="textPassword" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/edit_text_margin_top">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/confirm_password" />
+
+        <EditText
+            android:id="@+id/confirm_password_password"
+            style="@style/UserInfoEditTextStyle"
+            android:inputType="textPassword" />
     </LinearLayout>
 
     <LinearLayout

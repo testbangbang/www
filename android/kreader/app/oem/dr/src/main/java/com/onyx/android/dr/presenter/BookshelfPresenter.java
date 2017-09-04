@@ -1,9 +1,6 @@
 package com.onyx.android.dr.presenter;
 
-import android.util.Log;
-
 import com.onyx.android.dr.DRApplication;
-import com.onyx.android.dr.action.CloudLibraryListLoadAction;
 import com.onyx.android.dr.data.BookshelfData;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.BookshelfView;
@@ -67,5 +64,22 @@ public class BookshelfPresenter {
 
     public void getBooks(String language) {
         bookshelfView.setBooks(bookshelfData.getLanguageCategoryMap().get(language));
+    }
+
+
+    public void getLibraryList() {
+        String libraryParentId = DRPreferenceManager.loadLibraryParentId(DRApplication.getInstance(), "");
+        final CloudChildLibraryListLoadRequest req = new CloudChildLibraryListLoadRequest(libraryParentId);
+        bookshelfData.getLibraryList(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<Library> libraryList = req.getLibraryList();
+                bookshelfView.setLibraryList(libraryList);
+            }
+        });
+    }
+
+    public void getLanguageList() {
+        bookshelfView.setLanguageList(bookshelfData.getLanguageList());
     }
 }

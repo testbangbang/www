@@ -435,4 +435,17 @@
     <string name="register_password">password:</string>
     <string name="college_grade">grade:</string>
     <string name="college_clazz">class:</string>
+    <string name="prev_step">previous step</string>
+    <string name="more_books">more</string>
+    <string name="forget_password">forget password</string>
+    <string name="auto_login">auto login</string>
+    <string name="login_title">Welcome to the book reader</string>
+    <string name="confirm_password">confirm password</string>
+    <string name="two_passwords_are_not_consistent">two passwords are not consistent</string>
+    <string name="small_language">small language</string>
+    <string name="classification_bookshelf">classification bookshelf</string>
+    <string name="chinese_subject">*chinese</string>
+    <string name="language_bookshelf">language bookshelf</string>
+    <string name="bookstore">bookstore</string>
+    <string name="grade_bookshelf">grade bookshelf</string>
 </resources>

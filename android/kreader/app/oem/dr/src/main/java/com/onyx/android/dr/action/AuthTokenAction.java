@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.AccountAvailableEvent;
 import com.onyx.android.dr.event.HardwareErrorEvent;
@@ -13,6 +14,7 @@ import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
 import com.onyx.android.dr.request.cloud.LoginByAdminRequest;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
@@ -51,6 +53,16 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             return;
         }
 
+        if (!NetworkUtil.isWiFiConnected(dataHolder.getContext())) {
+            if (0 == Utils.getConfiguredNetworks(dataHolder.getContext())) {
+                ActivityManager.startWifiActivity(dataHolder.getContext());
+            } else {
+                Device.currentDevice().enableWifiDetect(dataHolder.getContext());
+                NetworkUtil.enableWiFi(dataHolder.getContext(), true);
+            }
+            return;
+        }
+
         final CloudRequestChain requestChain = new CloudRequestChain();
         requestChain.setAbortException(false);
         addIndexLookupRequest(dataHolder, requestChain);
@@ -59,15 +71,18 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void addIndexLookupRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain) {
+        Log.e(TAG, "addIndexLookupRequest: ===================================1======");
         if (!DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
             return;
         }
+        Log.e(TAG, "addIndexLookupRequest: ===================================2======");
         final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(DeviceConfig.sharedInstance(DRApplication.getInstance()).getCloudMainIndexServerApi(),
                 createIndexService(dataHolder.getContext()));
         indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
         requestChain.addRequest(indexServiceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                Log.e(TAG, "addIndexLookupRequest: ===================================2======");
                 if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
                     Log.w(TAG, "indexService error,ready to use backup service");
                     useFallbackServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
@@ -79,16 +94,11 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private void addLoginRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain, final BaseCallback baseCallback) {
         String account = DRPreferenceManager.getUserAccount(dataHolder.getContext(), "");
         String password = DRPreferenceManager.getUserPassword(dataHolder.getContext(), "");
-        if (StringUtils.isNullOrEmpty(account) && StringUtils.isNullOrEmpty(password)) {
+        if (StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(password)) {
             EventBus.getDefault().post(new LoginFailedEvent());
             return;
         }
 
-        if (!NetworkUtil.isWiFiConnected(dataHolder.getContext())) {
-            Device.currentDevice().enableWifiDetect(dataHolder.getContext());
-            NetworkUtil.enableWiFi(dataHolder.getContext(), true);
-            return;
-        }
         BaseAuthAccount baseAuthAccount = BaseAuthAccount.create(account, password);
         final LoginByAdminRequest accountLoadRequest = new LoginByAdminRequest(baseAuthAccount);
         requestChain.addRequest(accountLoadRequest, new BaseCallback() {
