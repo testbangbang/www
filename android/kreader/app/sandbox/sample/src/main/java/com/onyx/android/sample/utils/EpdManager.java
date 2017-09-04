@@ -143,7 +143,6 @@ public class EpdManager {
             int index = it.nextIndex();
             UpdateRequest updateEntry = it.next();
             Bitmap upd = updateEntry.updBuffer;
-            final Bitmap framebuffer = getCurrentFramebuffer().buffer;
             Bitmap originWb = ImageUtils.create(workingBuffer);
             Lut lut = new Lut(upd);
             Collision collision = new Collision();
