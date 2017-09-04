@@ -14,8 +14,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.ViewType;
+import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
+import com.onyx.android.sdk.ui.dialog.DialogSortBy;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
@@ -24,11 +29,17 @@ import com.onyx.einfo.action.AuthTokenAction;
 import com.onyx.einfo.action.CloudGroupContainerListLoadAction;
 import com.onyx.einfo.adapter.ViewPagerAdapter;
 import com.onyx.einfo.custom.NoSwipePager;
+import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.BookLibraryEvent;
 import com.onyx.einfo.events.DataRefreshEvent;
+import com.onyx.einfo.events.SortByEvent;
 import com.onyx.einfo.events.TabSwitchEvent;
+import com.onyx.einfo.events.ViewTypeEvent;
 import com.onyx.einfo.listener.OnPageChangeListenerImpl;
 import com.onyx.einfo.listener.OnTabSelectedListenerImpl;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
+import com.onyx.einfo.model.MenuAction;
+import com.onyx.einfo.model.MenuCustomItem;
 import com.onyx.einfo.model.TabAction;
 import com.onyx.einfo.model.TabLibrary;
 import com.onyx.einfo.utils.QRCodeUtil;
@@ -45,7 +56,10 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -66,6 +80,7 @@ public class MainActivity extends BaseActivity {
     private List<GroupContainer> groupContainerList = new ArrayList<>();
 
     private boolean isColorDevice = false;
+    private CloudGroup currentGroup;
 
     @Override
     protected Integer getLayoutId() {
@@ -117,6 +132,7 @@ public class MainActivity extends BaseActivity {
     private void loadGroupLibraryList(List<GroupContainer> groupContainerList) {
         List<Library> libraryList = new ArrayList<>();
         if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            currentGroup = groupContainerList.get(0).group;
             libraryList = groupContainerList.get(0).libraryList;
         }
         notifyDataChanged(libraryList);
@@ -323,22 +339,149 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (CollectionUtils.isNullOrEmpty(groupContainerList)) {
+        List<MenuCustomItem> list = MenuCustomItem.getMenuItemList(DeviceConfig.sharedInstance(this)
+                .getContentMenuItemList());
+        if (CollectionUtils.isNullOrEmpty(list)) {
             return super.onCreateOptionsMenu(menu);
         }
-        for (int i = 0; i < groupContainerList.size(); i++) {
-            menu.add(0, i, Menu.NONE, groupContainerList.get(i).group.name);
+        for (int i = 0; i < list.size(); i++) {
+            menu.add(0, list.get(i).titleRes, Menu.NONE, list.get(i).titleRes);
+        }
+        if (!hasMoreGroup()) {
+            for (MenuCustomItem item : list) {
+                if (item.action == MenuAction.Group) {
+                    menu.removeItem(item.titleRes);
+                }
+            }
         }
         return true;
     }
 
+    private boolean hasMoreGroup() {
+        return CollectionUtils.getSize(groupContainerList) > 1;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if (CollectionUtils.isNullOrEmpty(groupContainerList)) {
-            return super.onOptionsItemSelected(item);
+        List<MenuCustomItem> list = MenuCustomItem.getMenuItemList(DeviceConfig.sharedInstance(this)
+                .getContentMenuItemList());
+        MenuCustomItem selectItem = null;
+        for (MenuCustomItem menuCustomItem : list) {
+            if (menuCustomItem.titleRes == item.getItemId()) {
+                selectItem = menuCustomItem;
+                break;
+            }
         }
-        notifyDataChanged(groupContainerList.get(item.getItemId()).libraryList);
+        processItemSelected(selectItem);
         return true;
+    }
+
+    private void processItemSelected(MenuCustomItem item) {
+        if (item == null) {
+            return;
+        }
+        switch (item.action) {
+            case ViewType:
+                processViewTypeSwitch();
+                break;
+            case SortBy:
+                showSortByDialog();
+                break;
+            case Group:
+                showGroupSelectDialog();
+                break;
+        }
+    }
+
+
+    private void processViewTypeSwitch() {
+        ViewType viewType = ConfigPreferenceManager.getViewType(this);
+        viewType = (viewType == ViewType.Thumbnail) ? ViewType.Details : ViewType.Thumbnail;
+        EventBus.getDefault().post(ViewTypeEvent.create(viewType));
+        ConfigPreferenceManager.setViewType(this, viewType);
+    }
+
+    private void showSortByDialog() {
+        final Map<String, SortBy> sortByMap = new LinkedHashMap<>();
+        sortByMap.put(getString(R.string.by_name), SortBy.Ordinal);
+        sortByMap.put(getString(R.string.by_creation_time), SortBy.CreationTime);
+        List<String> contentList = Arrays.asList(sortByMap.keySet().toArray(new String[0]));
+        DialogSortBy dialog = getSortByDialog(contentList, new DialogSortBy.OnSortByListener() {
+            @Override
+            public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
+                processSortBySwitch(sortByMap.get(sortBy), sortOrder);
+            }
+        });
+        dialog.setCurrentSortBySelectedIndex(getCurrentSortByIndex(ConfigPreferenceManager.getCloudSortBy(this), sortByMap));
+        dialog.setCurrentSortOrderSelected(ConfigPreferenceManager.getCloudSortOrder(this));
+        dialog.show(getFragmentManager());
+    }
+
+    private int getCurrentSortByIndex(SortBy currentSortBy, Map<String, SortBy> sortByMap) {
+        if (currentSortBy == null) {
+            return 0;
+        }
+        int index = Arrays.asList(sortByMap.values().toArray(new SortBy[0])).indexOf(currentSortBy);
+        if (index < 0) {
+            return 0;
+        }
+        return index;
+    }
+
+    private void processSortBySwitch(SortBy sortBy, SortOrder sortOrder) {
+        ConfigPreferenceManager.setCloudSortBy(this, sortBy);
+        ConfigPreferenceManager.setCloudSortOrder(this, sortOrder);
+        EventBus.getDefault().post(SortByEvent.create(sortBy, sortOrder));
+    }
+
+    private void showGroupSelectDialog() {
+        if (!hasMoreGroup()) {
+            return;
+        }
+        final Map<String, CloudGroup> groupMap = new LinkedHashMap<>();
+        for (GroupContainer groupContainer : groupContainerList) {
+            groupMap.put(groupContainer.group.name, groupContainer.group);
+        }
+        List<String> contentList = Arrays.asList(groupMap.keySet().toArray(new String[0]));
+        DialogSortBy dialog = getSortByDialog(contentList, new DialogSortBy.OnSortByListener() {
+            @Override
+            public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
+                processGroupSelect(position);
+            }
+        });
+        dialog.setShowSortOrderLayout(false);
+        dialog.setCurrentSortBySelectedIndex(getCurrentGroupIndex());
+        dialog.show(getFragmentManager());
+    }
+
+    private DialogSortBy getSortByDialog(List<String> contentList, DialogSortBy.OnSortByListener listener) {
+        DialogSortBy dialog = new DialogSortBy(null, contentList);
+        dialog.setOnSortByListener(listener);
+        dialog.setAlignParams(getDialogAlignParams());
+        return dialog;
+    }
+
+    private DialogSortBy.AlignLayoutParams getDialogAlignParams(){
+        DialogSortBy.AlignLayoutParams alignParams = new DialogSortBy.AlignLayoutParams(
+                getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_x_pos),
+                getResources().getDimensionPixelSize(R.dimen.dialog_sort_by_y_pos));
+        alignParams.width = 240;
+        alignParams.height = 220;
+        return alignParams;
+    }
+
+    private int getCurrentGroupIndex() {
+        for (int i = 0; i < groupContainerList.size(); i++) {
+            CloudGroup group = groupContainerList.get(i).group;
+            if (group._id.equals(currentGroup._id)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    private void processGroupSelect(int index) {
+        notifyDataChanged(groupContainerList.get(index).libraryList);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

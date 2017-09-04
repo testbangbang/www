@@ -48,5 +48,9 @@
     "startX": 225,
     "startY": 930
   },
-  "support_color" : true
+  "support_color" : true,
+  "content_menu_item_list": [
+    "ViewType",
+    "SortBy"
+  ]
 }
