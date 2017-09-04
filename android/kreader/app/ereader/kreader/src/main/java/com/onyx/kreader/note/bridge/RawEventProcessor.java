@@ -2,225 +2,155 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.common.request.SingleThreadExecutor;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.kreader.note.NoteManager;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
 import com.onyx.kreader.note.event.DFBShapeStartEvent;
 import com.onyx.kreader.note.event.RawErasingFinishEvent;
 import com.onyx.kreader.note.event.RawErasingStartEvent;
 
-import java.io.DataInputStream;
-import java.io.FileInputStream;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
 
 /**
  * Created by zhuzeng on 9/19/16.
  */
 public class RawEventProcessor extends NoteEventProcessorBase {
 
-    private static final int EV_SYN = 0x00;
-    private static final int EV_KEY = 0x01;
-    private static final int EV_ABS = 0x03;
-
-    private static final int ABS_X = 0x00;
-    private static final int ABS_Y = 0x01;
-    private static final int ABS_PRESSURE = 0x18;
-
-    private static final int BTN_TOUCH = 0x14a;
-    private static final int BTN_TOOL_PEN = 0x140;
-    private static final int BTN_TOOL_RUBBER = 0x141;
-    private static final int BTN_TOOL_PENCIL = 0x143;
-
-    private static final int PEN_SIZE = 0;
-
-    private String inputDevice = "/dev/input/event1";
-
-    private volatile int px, py, pressure;
-    private volatile boolean erasing = false;
     private volatile boolean shortcutDrawing = false;
     private volatile boolean shortcutErasing = false;
-    private volatile boolean pressed = false;
-    private volatile boolean lastPressed = false;
-    private volatile boolean stop = false;
-    private volatile FileInputStream fileInputStream;
-    private volatile DataInputStream dataInputStream;
-    private volatile boolean reportData = false;
+
+    private volatile TouchPointList touchPointList;
+    private Handler handler = new Handler(Looper.getMainLooper());
+
+    RawInputProcessor processor = new RawInputProcessor();
 
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[4];
-    private volatile TouchPointList touchPointList;
-    private View hostView;
-    private SingleThreadExecutor singleThreadExecutor;
 
     public RawEventProcessor(final NoteManager p) {
         super(p);
-    }
 
-    public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
-        this.hostView = view;
-        setLimitRect(rect);
-        addExcludeRect(excludeRect);
-    }
+        processor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
 
-    public void start() {
-        Debug.e(getClass(), "start");
-        stop = false;
-        reportData = true;
-        clearInternalState();
-        submitJob();
-    }
+            private boolean begin = false;
+            private TouchPoint lastPoint;
 
-    public void resume() {
-        Debug.e(getClass(), "resume");
-        clearInternalState();
-        reportData = true;
-    }
-
-    public void pause() {
-        Debug.e(getClass(), "pause");
-        clearInternalState();
-        reportData = false;
-    }
-
-    public void quit() {
-        Debug.e(getClass(), "quit");
-        stop = true;
-        reportData = false;
-        closeInputDevice();
-        clearInternalState();
-        shutdown();
-    }
-
-    private void clearInternalState() {
-        px = py = 0;
-        pressure = 0;
-        pressed = false;
-        shortcutDrawing = false;
-        shortcutErasing = false;
-        lastPressed = false;
-    }
-
-    private void closeInputDevice() {
-        FileUtils.closeQuietly(fileInputStream);
-        fileInputStream = null;
-
-        FileUtils.closeQuietly(dataInputStream);
-        dataInputStream = null;
-    }
-
-    private void shutdown() {
-        if (singleThreadExecutor != null) {
-            singleThreadExecutor.shutdown();
-            singleThreadExecutor = null;
-        }
-    }
-
-    private ExecutorService getSingleThreadPool()   {
-        if (singleThreadExecutor == null) {
-            singleThreadExecutor = new SingleThreadExecutor(Thread.MAX_PRIORITY);
-        }
-        return singleThreadExecutor.get();
-    }
-
-    private void submitJob() {
-        getSingleThreadPool().submit(new Runnable() {
             @Override
-            public void run() {
-                try {
-                    detectInputDevicePath();
-                    readLoop();
-                } catch (Exception e) {
-                    Debug.d(RawEventProcessor.class, e.toString());
-                } finally {
-                    finishCurrentShape();
-                    closeInputDevice();
+            public void onBeginRawData() {
+                shortcutErasing = false;
+                shortcutDrawing = true;
+                lastPoint = null;
+                begin = true;
+            }
+
+            @Override
+            public void onEndRawData() {
+                shortcutDrawing = false;
+                if (!isReportData()) {
+                    return;
                 }
+                drawingReleaseReceived(lastPoint);
+            }
+
+            @Override
+            public void onRawTouchPointListReceived(Shape shape, TouchPointList pointList) {
+                if (!isReportData()) {
+                    return;
+                }
+
+                if (pointList.getPoints().size() <= 0) {
+                    return;
+                }
+                if (begin) {
+                    TouchPoint point = pointList.getPoints().remove(0);
+                    drawingPressReceived(point);
+                    begin = false;
+                }
+
+                if (lastPoint != null) {
+                    drawingMoveReceived(lastPoint);
+                    lastPoint = null;
+                }
+                for (int i = 0; i < pointList.getPoints().size() - 1; i++) {
+                    drawingMoveReceived(pointList.get(i));
+                }
+
+                lastPoint = pointList.get(pointList.getPoints().size() - 1);
+            }
+
+            @Override
+            public void onBeginErasing() {
+                shortcutDrawing = false;
+                shortcutErasing = true;
+                lastPoint = null;
+                begin = true;
+            }
+
+            @Override
+            public void onEndErasing() {
+                shortcutErasing = false;
+                if (!isReportData()) {
+                    return;
+                }
+                erasingReleaseReceived(lastPoint);
+            }
+
+            @Override
+            public void onEraseTouchPointListReceived(TouchPointList pointList) {
+                if (!isReportData()) {
+                    return;
+                }
+                if (pointList.getPoints().size() <= 0) {
+                    return;
+                }
+                if (begin) {
+                    TouchPoint point = pointList.getPoints().remove(0);
+                    erasingPressReceived(point);
+                    begin = false;
+                }
+
+                if (lastPoint != null) {
+                    erasingMoveReceived(lastPoint);
+                    lastPoint = null;
+                }
+                for (int i = 0; i < pointList.getPoints().size() - 1; i++) {
+                    erasingMoveReceived(pointList.get(i));
+                }
+
+                lastPoint = pointList.get(pointList.getPoints().size() - 1);
             }
         });
     }
 
-    private void readLoop() throws Exception {
-        fileInputStream = new FileInputStream(inputDevice);
-        dataInputStream = new DataInputStream(fileInputStream);
-        byte[] data = new byte[16];
-        while (!stop) {
-            dataInputStream.readFully(data);
-            ByteBuffer wrapped = ByteBuffer.wrap(data).order(ByteOrder.LITTLE_ENDIAN);
-            if (!stop) {
-                processInputEvent(wrapped.getLong(), wrapped.getShort(), wrapped.getShort(), wrapped.getInt());
-            }
-        }
+    public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
+        processor.setHostView(view);
+        processor.setLimitRect(new RectF(rect));
+        processor.setMoveFeedback(true);
     }
 
-    private void detectInputDevicePath() {
-        inputDevice = DeviceUtils.detectInputDevicePath();
+    public void start() {
+        processor.start();
     }
 
-    private void processInputEvent(long ts, int type, int code, int value) {
-        if (type == EV_ABS) {
-            if (code == ABS_X) {
-                px = value;
-            } else if (code == ABS_Y) {
-                py = value;
-            } else if (code == ABS_PRESSURE) {
-                pressure = value;
-            }
-        } else if (type == EV_SYN) {
-            if (pressed && pressure > 0) {
-                if (!lastPressed) {
-                    pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
-                    lastPressed = true;
-                } else {
-                    moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
-                }
-            }
-            if (pressure <= 0 && lastPressed) {
-                releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
-                lastPressed = false;
-            }
-        } else if (type == EV_KEY) {
-            if (code == BTN_TOUCH)  {
-                erasing = false;
-                lastPressed = pressed;
-                pressed = value > 0;
-            } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
-                erasing = false;
-                shortcutDrawing = true;
-                shortcutErasing = false;
-            } else if (code == BTN_TOOL_RUBBER) {
-                erasing = true;
-                shortcutDrawing = false;
-                shortcutErasing = true;
-            }
-        }
+    public void resume() {
+        processor.resume();
     }
 
-    private void mapRawTouchPoint(final float x, final float y, final TouchPoint screenPoint, final TouchPoint viewPoint) {
-        srcPoint[0] = x;
-        srcPoint[1] = y;
+    public void pause() {
+        processor.pause();
+    }
 
-        EpdController.mapFromRawTouchPoint(hostView, srcPoint, dstPoint);
-        if (screenPoint != null) {
-            screenPoint.x = dstPoint[0];
-            screenPoint.y = dstPoint[1];
-        }
-        if (viewPoint != null) {
-            viewPoint.x = dstPoint[2];
-            viewPoint.y = dstPoint[3];
-        }
+    public void quit() {
+        processor.quit();
     }
 
     private boolean addToList(final TouchPoint touchPoint, boolean create) {
@@ -229,14 +159,6 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                 return false;
             }
             touchPointList = new TouchPointList(600);
-        }
-
-        if (!inLimitRect(touchPoint.x, touchPoint.y)) {
-            return false;
-        }
-
-        if (inExcludeRect(touchPoint.x, touchPoint.y)) {
-            return false;
         }
 
         if (touchPoint != null && touchPointList != null) {
@@ -252,124 +174,99 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         if (shortcutErasing && getCallback().enableShortcutErasing()) {
             return true;
         }
-        return reportData && getCallback().enableRawEventProcessor();
+        return getCallback().enableRawEventProcessor();
     }
 
-    private boolean inErasing() {
-        return erasing || shortcutErasing;
-    }
-
-    private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        Debug.e(getClass(), "pressReceived");
-        if (!isReportData()) {
-            return;
-        }
-        if (inErasing()) {
-            erasingPressReceived(x, y, pressure, size, ts);
-        } else {
-            drawingPressReceived(x, y, pressure, size, ts);
-        }
-    }
-
-    private void moveReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        Debug.e(getClass(), "moveReceived");
-        if (!isReportData()) {
-            return;
-        }
-        if (inErasing()) {
-            erasingMoveReceived(x, y, pressure, size, ts);
-        } else {
-            drawingMoveReceived(x, y, pressure, size, ts);
-        }
-    }
-
-    private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
-        Debug.e(getClass(), "releaseReceived");
-        if (!isReportData()) {
-            return;
-        }
-        if (inErasing()) {
-            erasingReleaseReceived(x, y, pressure, size, ts);
-        } else {
-            drawingReleaseReceived(x, y, pressure, size, ts);
-        }
-    }
-
-    private void erasingPressReceived(int x, int y, int pressure, int size, long ts) {
+    private void erasingPressReceived(TouchPoint touchPoint) {
         invokeRawErasingStart();
-        final PageInfo pageInfo = hitTest(x, y);
+        final PageInfo pageInfo = hitTest(touchPoint.x, touchPoint.y);
         if (pageInfo == null) {
+            invokeRawErasingFinish();
             return;
         }
-        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        mapRawTouchPoint(x, y, null, touchPoint);
+
         touchPoint.normalize(pageInfo);
         addToList(touchPoint, true);
     }
 
-    private void erasingMoveReceived(int x, int y, int pressure, int size, long ts) {
-        final PageInfo pageInfo = hitTest(x, y);
+    private void erasingMoveReceived(TouchPoint touchPoint) {
+        final PageInfo pageInfo = hitTest(touchPoint.x, touchPoint.y);
         if (pageInfo == null) {
+            invokeRawErasingFinish();
             return;
         }
-        final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-        mapRawTouchPoint(x, y, null, touchPoint);
+
         touchPoint.normalize(pageInfo);
         addToList(touchPoint, true);
     }
 
-    private void erasingReleaseReceived(int x, int y, int pressure, int size, long ts) {
+    private void erasingReleaseReceived(TouchPoint touchPoint) {
         shortcutDrawing = false;
         shortcutErasing = false;
-        final PageInfo pageInfo = hitTest(x, y);
-        if (pageInfo != null) {
-            final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
-            mapRawTouchPoint(x, y, null, touchPoint);
-            touchPoint.normalize(pageInfo);
-            addToList(touchPoint, true);
+
+        if (touchPoint == null) {
+            invokeRawErasingFinish();
+            return;
         }
+
+        final PageInfo pageInfo = hitTest(touchPoint.x, touchPoint.y);
+        if (pageInfo == null) {
+            invokeRawErasingFinish();
+            return;
+        }
+
+        touchPoint.normalize(pageInfo);
+        addToList(touchPoint, true);
         invokeRawErasingFinish();
     }
 
-    private void drawingPressReceived(int x, int y, int pressure, int size, long ts) {
+    private void drawingPressReceived(TouchPoint touchPoint) {
         invokeDFBShapeStart();
-        final TouchPoint screenTouch = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint viewTouch = new TouchPoint(screenTouch);
-        mapRawTouchPoint(x, y, screenTouch, viewTouch);
-        if (!checkTouchPoint(viewTouch, screenTouch)) {
+        final PageInfo pageInfo = hitTest(touchPoint.x, touchPoint.y);
+        if (pageInfo == null) {
+            finishCurrentShape();
             return;
         }
-        getNoteManager().collectPoint(getLastPageInfo(), viewTouch, screenTouch, true, false);
+
+        collectShapePoint(pageInfo, touchPoint, false);
     }
 
-    private void drawingMoveReceived(int x, int y, int pressure, int size, long ts) {
-        final TouchPoint screenTouch = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint viewTouch = new TouchPoint(screenTouch);
-        mapRawTouchPoint(x, y, screenTouch, viewTouch);
-        if (!checkTouchPoint(viewTouch, screenTouch)) {
+    private void drawingMoveReceived(TouchPoint touchPoint) {
+        final PageInfo pageInfo = hitTest(touchPoint.x, touchPoint.y);
+        if (pageInfo == null) {
+            finishCurrentShape();
             return;
         }
-        getNoteManager().collectPoint(getLastPageInfo(), viewTouch, screenTouch, true, false);
+
+        collectShapePoint(pageInfo, touchPoint, false);
     }
 
-    private void drawingReleaseReceived(int x, int y, int pressure, int size, long ts) {
-        final TouchPoint screenTouch = new TouchPoint(x, y, pressure, size, ts);
-        final TouchPoint viewTouch = new TouchPoint(screenTouch);
-        mapRawTouchPoint(x, y, screenTouch, viewTouch);
-        if (!checkTouchPoint(viewTouch, screenTouch)) {
+    private void drawingReleaseReceived(TouchPoint touchPoint) {
+        if (touchPoint == null) {
+            finishCurrentShape();
             return;
         }
+
+        final PageInfo pageInfo = hitTest(touchPoint.x, touchPoint.y);
+        if (pageInfo == null) {
+            finishCurrentShape();
+            return;
+        }
+
+        collectShapePoint(pageInfo, touchPoint, true);
+
         finishCurrentShape();
     }
 
-    private boolean checkTouchPoint(final TouchPoint touchPoint, final TouchPoint screen) {
-        if (hitTest(touchPoint.x, touchPoint.y) == null ||
-            !inLimitRect(touchPoint.x, touchPoint.y) ||
-            inExcludeRect(touchPoint.x, touchPoint.y)) {
-            finishCurrentShape();
-            return false;
-        }
-        return true;
+    private void collectShapePoint(PageInfo page, TouchPoint touchPoint, boolean finished) {
+        srcPoint[0] = touchPoint.x;
+        srcPoint[1] = touchPoint.y;
+        EpdController.mapToEpd(processor.getHostView(), srcPoint, dstPoint);
+        final TouchPoint screenTouch = new TouchPoint(dstPoint[0], dstPoint[1],
+                touchPoint.getPressure(), touchPoint.getSize(),
+                touchPoint.getTimestamp());
+
+        getNoteManager().collectPoint(page, touchPoint, screenTouch, true, false);
     }
 
     private void finishCurrentShape() {
@@ -386,6 +283,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private void invokeRawErasingFinish() {
         final TouchPointList list = touchPointList;
         getNoteManager().getParent().getEventBus().post(new RawErasingFinishEvent(list));
+
     }
 
     private void invokeDFBShapeStart() {
@@ -394,6 +292,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             getCallback().enableTouchInput(false);
         }
         getNoteManager().getParent().getEventBus().post(new DFBShapeStartEvent(shortcut));
+
     }
 
     private void invokeDFBShapeFinished(final Shape shape) {
@@ -407,3 +306,4 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
 }
+
