@@ -9,11 +9,13 @@ import android.view.Gravity;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.kreader.ui.events.CloseScribbleMenuEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.GotoPageLinkEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
+import com.onyx.kreader.ui.events.StopNoteEvent;
 import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 
 import org.greenrobot.eventbus.EventBus;
@@ -25,6 +27,7 @@ import org.greenrobot.eventbus.EventBus;
 public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_START_READER = "com.onyx.kreader.action.START_READER";
     public static final String ACTION_CLOSE_READER = "com.onyx.kreader.action.CLOSE_READER";
+    public static final String ACTION_STOP_NOTE = "com.onyx.kreader.action.QUIT_SCRIBBLE_MODE";
     public static final String ACTION_MOVE_TASK_TO_BACK = "com.onyx.kreader.action.MOVE_TASK_TO_BACK";
     public static final String ACTION_RESIZE_WINDOW = "com.onyx.kreader.action.RESIZE_WINDOW";
     public static final String ACTION_DOCUMENT_ACTIVATED = "com.onyx.kreader.action.DOCUMENT_ACTIVATED";
@@ -59,6 +62,12 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static void sendCloseReaderIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_CLOSE_READER);
+        sendBroadcast(context, intent);
+    }
+
+    public static void sendStopNoteIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_STOP_NOTE);
         sendBroadcast(context, intent);
     }
 
@@ -131,6 +140,8 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         }
         if (intent.getAction().equals(ACTION_CLOSE_READER)) {
             eventBus.post(new ForceCloseEvent());
+        } else if (intent.getAction().equals(ACTION_STOP_NOTE)) {
+            eventBus.post(new StopNoteEvent());
         } else if (intent.getAction().equals(ACTION_MOVE_TASK_TO_BACK)) {
             eventBus.post(new MoveTaskToBackEvent());
         } else if (intent.getAction().equals(ACTION_RESIZE_WINDOW)) {

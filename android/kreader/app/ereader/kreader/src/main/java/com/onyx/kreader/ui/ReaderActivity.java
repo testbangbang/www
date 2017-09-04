@@ -98,6 +98,7 @@ import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
+import com.onyx.kreader.ui.events.StopNoteEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
 import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
@@ -178,7 +179,8 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onPause() {
-        if (getReaderDataHolder().isDocumentInitRendered()) {
+        if (getReaderDataHolder().isDocumentInitRendered() &&
+                getReaderDataHolder().inNoteWritingProvider()) {
             final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
             FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
             flushNoteAction.execute(getReaderDataHolder(), null);
@@ -462,6 +464,9 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void updateNoteState() {
+        if (!getReaderDataHolder().isDocumentInitRendered()) {
+            return;
+        }
         if (getReaderDataHolder().inNoteWritingProvider()) {
             return;
         }
@@ -851,7 +856,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onDocumentInitRendered(final DocumentInitRenderedEvent event) {
         initReaderMenu();
         updateNoteHostView();
-        getReaderDataHolder().updateRawEventProcessor();
+//        getReaderDataHolder().updateRawEventProcessor();
 
         postDocumentInitRendered();
     }
@@ -875,7 +880,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         boolean sideNoteMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, false);
         if (sideNoteMode) {
-            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), this, true);
+            ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
         }
 
         releaseStartupWakeLock();
@@ -1112,6 +1117,11 @@ public class ReaderActivity extends OnyxBaseActivity {
                 postFinish();
             }
         });
+    }
+
+    @Subscribe
+    public void stopNote(final StopNoteEvent event) {
+        getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
     }
 
     @Subscribe

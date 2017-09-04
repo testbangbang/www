@@ -283,6 +283,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         saveReaderTabState();
 
         tabBeforeSideReading = getCurrentTabInHost();
+        ReaderBroadcastReceiver.sendStopNoteIntent(this, tabManager.getTabReceiver(tabBeforeSideReading));
+
         isSideReading = true;
 
         tabManager.resetTabState();

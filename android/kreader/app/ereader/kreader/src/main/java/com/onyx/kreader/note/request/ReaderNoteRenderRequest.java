@@ -26,7 +26,7 @@ public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
         loadShapeData(noteManager);
         updateEventProcessor(noteManager);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
-        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
+//        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }
 
     public void loadShapeData(final NoteManager parent) {
