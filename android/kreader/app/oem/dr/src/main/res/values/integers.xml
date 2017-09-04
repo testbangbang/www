@@ -68,4 +68,7 @@
     <integer name="new_word_review_col">1</integer>
     <integer name="good_sentence_review_row">3</integer>
     <integer name="good_sentence_review_col">1</integer>
+    <integer name="item_group_info_row">15</integer>
+    <integer name="group_member_tab_row">15</integer>
+    <integer name="group_member_tab_column">4</integer>
 </resources>

@@ -118,4 +118,6 @@ public class Constants {
     public static final String UPDATE_ZIP = "update.zip";
 
     public static final int DEVICE_SETTING_FRAGMENT = 0;
+    public static final int SCHOOL_CHILDREN = 0;
+    public static final int IDENTITY = 1;
 }

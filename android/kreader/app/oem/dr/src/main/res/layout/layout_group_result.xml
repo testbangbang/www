@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/group_result_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:id="@+id/memorandum_activity_buttom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true">
+
+        <TextView
+            android:id="@+id/join_group_activity_rollback"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_alignParentRight="true"
+            android:text="@string/back_to_previous_page" />
+
+        <TextView
+            android:id="@+id/join_group_activity_apply_join"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_toLeftOf="@+id/join_group_activity_rollback"
+            android:text="@string/apply_join" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/memorandum_activity_buttom"
+        android:orientation="vertical">
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/join_group_activity_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</RelativeLayout>
