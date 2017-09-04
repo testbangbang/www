@@ -592,7 +592,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         } else if (tabManager.getOpenedTabs().size() > 0) {
             ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
             if (isSideReading) {
+                updateReaderTabWindowHeight(getSideReadingLeft());
                 bringReaderTabToFront(getSideReadingLeft());
+                updateReaderTabWindowHeight(getSideReadingRight());
                 bringReaderTabToFront(getSideReadingRight());
             }
 
