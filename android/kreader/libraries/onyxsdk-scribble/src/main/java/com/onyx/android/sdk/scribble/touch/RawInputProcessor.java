@@ -81,6 +81,10 @@ public class RawInputProcessor {
         hostView = view;
     }
 
+    public View getHostView() {
+        return hostView;
+    }
+
     public void start() {
         closeRawInput();
         stop = false;
