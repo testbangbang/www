@@ -116,27 +116,7 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         database.beginTransaction();
         saveGroup(database, contentImport.group);
         Library library = saveLibrary(context, dataProvider, contentImport.library);
-        if (!CollectionUtils.isNullOrEmpty(contentImport.metadataList)) {
-            for (Metadata metadata : contentImport.metadataList) {
-                String fileName = FileUtils.getFileNameFromUrl(metadata.getLocation());
-                if (StringUtils.isNotBlank(fileName)) {
-                    String filePath = getTargetFilePath(metadata.getGuid(), parentPath, fileName);
-                    metadata.setNativeAbsolutePath(filePath);
-                }
-                String thumbnailPath = null;
-                String thumbnailFileName = FileUtils.getFileNameFromUrl(metadata.getCoverUrl());
-                if (StringUtils.isNotBlank(thumbnailFileName)) {
-                    thumbnailPath = getTargetFilePath(metadata.getGuid(), parentPath, thumbnailFileName);
-                }
-                boolean success = saveMetadata(context, dataProvider, metadata);
-                if (!success) {
-                    continue;
-                }
-                saveCloudCollection(context, dataProvider, library, metadata.getAssociationId());
-                saveThumbnail(context, dataProvider, metadata.getAssociationId(),
-                        metadata.getNativeAbsolutePath(), thumbnailPath);
-            }
-        }
+        saveAllMetadata(getContext(), dataProvider, parentPath, library, contentImport.metadataList);
         database.setTransactionSuccessful();
         database.endTransaction();
     }
@@ -154,7 +134,26 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         return sourceFilePath;
     }
 
-    private boolean saveMetadata(Context context, DataProviderBase dataProvider, Metadata metadata) {
+    private void saveAllMetadata(Context context, DataProviderBase dataProvider, String parentPath,
+                                 Library library, List<CloudMetadata> metadataList) {
+        if (!CollectionUtils.isNullOrEmpty(metadataList)) {
+            for (Metadata metadata : metadataList) {
+                boolean success = saveMetadata(context, dataProvider, parentPath, metadata);
+                if (!success) {
+                    continue;
+                }
+                saveCloudCollection(context, dataProvider, library, metadata.getAssociationId());
+                saveThumbnail(context, dataProvider, parentPath, metadata);
+            }
+        }
+    }
+
+    private boolean saveMetadata(Context context, DataProviderBase dataProvider, String parentPath, Metadata metadata) {
+        String fileName = FileUtils.getFileNameFromUrl(metadata.getLocation());
+        if (StringUtils.isNotBlank(fileName)) {
+            String filePath = getTargetFilePath(metadata.getGuid(), parentPath, fileName);
+            metadata.setNativeAbsolutePath(filePath);
+        }
         if (StringUtils.isNullOrEmpty(metadata.getNativeAbsolutePath())) {
             return false;
         }
@@ -178,9 +177,13 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         return library;
     }
 
-    private void saveThumbnail(Context context, DataProviderBase dataProvider, String associationId,
-                               String filePath, String thumbnailPath) {
-        if (StringUtils.isNullOrEmpty(thumbnailPath) || StringUtils.isNullOrEmpty(associationId)) {
+    private void saveThumbnail(Context context, DataProviderBase dataProvider, String parentPath, Metadata metadata) {
+        String thumbnailPath = null;
+        String thumbnailFileName = FileUtils.getFileNameFromUrl(metadata.getCoverUrl());
+        if (StringUtils.isNotBlank(thumbnailFileName)) {
+            thumbnailPath = getTargetFilePath(metadata.getGuid(), parentPath, thumbnailFileName);
+        }
+        if (StringUtils.isNullOrEmpty(thumbnailPath) || StringUtils.isNullOrEmpty(metadata.getAssociationId())) {
             return;
         }
         if (!FileUtils.fileExist(thumbnailPath)) {
@@ -190,7 +193,8 @@ public class CloudContentImportFromJsonRequest extends BaseCloudRequest {
         if (bitmap == null) {
             return;
         }
-        ThumbnailUtils.insertThumbnail(context, dataProvider, filePath, associationId, bitmap);
+        ThumbnailUtils.insertThumbnail(context, dataProvider, metadata.getNativeAbsolutePath(),
+                metadata.getAssociationId(), bitmap);
     }
 
     private void saveCloudCollection(Context context, DataProviderBase dataProvider, Library library, String associationId) {
