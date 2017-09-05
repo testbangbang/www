@@ -692,7 +692,7 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder, null);
     }
 
-    private void startQuiz(final ReaderDataHolder readerDataHolder) {
+    public void startQuiz(final ReaderDataHolder readerDataHolder) {
         Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.onyx.android.edu", "com.onyx.android.edu.ui.exerciserespond.ExerciseRespondActivity"));
         Log.d(TAG, "startQuiz: ----------"+KReaderApp.instance().getBookId() +"："+KReaderApp.instance().getBookName());

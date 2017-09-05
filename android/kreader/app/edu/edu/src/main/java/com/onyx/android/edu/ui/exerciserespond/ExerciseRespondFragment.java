@@ -90,38 +90,46 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         int id = v.getId();
         switch (id){
             case R.id.left_arrow:{
-                closeSoftInput();
-                int index = mPaperPager.getCurrentItem();
-                int last = index - 1;
-                if (index > 0){
-                    mPaperPager.setCurrentItem(last,false);
-                    updatePaperIndex();
-                }
+                preQuestion();
             }
             break;
             case R.id.right_arrow:{
-                closeSoftInput();
-                int index = mPaperPager.getCurrentItem();
-                int count = mQuestionsPagerAdapter.getCount();
-                int next = index + 1;
-                if (next < count){
-                    BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
-                    if (selectView.hasAnswers() || selectView.isShowAnswer()){
-                        mPaperPager.setCurrentItem(next,false);
-                        updatePaperIndex();
-                    }else {
-                        showToast(getString(R.string.ask_select_answer));
-                    }
-                }else {
-                    BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
-                    if(selectView.hasAnswers() || selectView.isShowAnswer()) {
-                        enterResultActivity();
-                    }else {
-                        showToast(getString(R.string.ask_select_answer));
-                    }
-                }
+                nextQuestion();
             }
             break;
+        }
+    }
+
+    private void preQuestion() {
+        closeSoftInput();
+        int index = mPaperPager.getCurrentItem();
+        int last = index - 1;
+        if (index > 0){
+            mPaperPager.setCurrentItem(last,false);
+            updatePaperIndex();
+        }
+    }
+
+    private void nextQuestion() {
+        closeSoftInput();
+        int index = mPaperPager.getCurrentItem();
+        int count = mQuestionsPagerAdapter.getCount();
+        int next = index + 1;
+        if (next < count){
+            BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
+            if (selectView.hasAnswers() || selectView.isShowAnswer()){
+                mPaperPager.setCurrentItem(next,false);
+                updatePaperIndex();
+            }else {
+                showToast(getString(R.string.ask_select_answer));
+            }
+        }else {
+            BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
+            if(selectView.hasAnswers() || selectView.isShowAnswer()) {
+                enterResultActivity();
+            }else {
+                showToast(getString(R.string.ask_select_answer));
+            }
         }
     }
 
@@ -185,6 +193,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
             @Override
             public void insertAnswer(long id, String answer, String score) {
                 mExerciseRespondPresenter.insertAnswerAndScore(EduApp.instance().getBookId(), id, answer, score);
+                nextQuestion();
             }
         });
         return choiceQuestionView;

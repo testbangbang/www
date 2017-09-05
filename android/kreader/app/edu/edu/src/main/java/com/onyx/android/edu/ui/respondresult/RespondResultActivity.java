@@ -1,5 +1,6 @@
 package com.onyx.android.edu.ui.respondresult;
 
+import android.app.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -37,6 +38,8 @@ public class RespondResultActivity extends BaseActivity {
     Toolbar mToolbar;
     @Bind(R.id.contentFrame)
     FrameLayout mContentFrame;
+    private String message;
+    private CommitResultFragment commitResultFragment;
 
     @Override
     protected Integer getLayoutId() {
@@ -45,9 +48,8 @@ public class RespondResultActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-
         mRightTitle.setVisibility(View.GONE);
-        mLeftTitle.setText(getString(R.string.train_result));
+        mLeftTitle.setText(getString(R.string.commit_result));
         mBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -59,22 +61,24 @@ public class RespondResultActivity extends BaseActivity {
     @Override
     protected void initData() {
         Intent intent = getIntent();
-        String message = intent.getStringExtra(RESULT);
+        message = intent.getStringExtra(RESULT);
 //        if (!TextUtils.isEmpty(message)) {
         if (true) {
-            PaperResult paperResult = JsonUtils.toBean(message, PaperResult.class);
-
-            ExaminationResultFragment respondResultFragment = (ExaminationResultFragment) getFragmentManager()
-                    .findFragmentById(R.id.contentFrame);
-            if (respondResultFragment == null) {
-                respondResultFragment = ExaminationResultFragment.newInstance();
-                ActivityUtils.addFragmentToActivity(getFragmentManager(),
-                        respondResultFragment, R.id.contentFrame);
+            commitResultFragment = (CommitResultFragment) getFragmentManager().findFragmentById(R.id.contentFrame);
+            if(commitResultFragment == null) {
+                commitResultFragment = CommitResultFragment.newInstance();
+                ActivityUtils.addFragmentToActivity(getFragmentManager(), commitResultFragment, R.id.contentFrame);
             }
-
-            RespondResultPresenter respondResultPresenter = new RespondResultPresenter(respondResultFragment);
-            respondResultPresenter.setPaperResult(paperResult);
         }
+    }
+
+    public void switchFragment() {
+        PaperResult paperResult = JsonUtils.toBean(message, PaperResult.class);
+        mLeftTitle.setText(getString(R.string.train_result));
+        ExaminationResultFragment respondResultFragment = ExaminationResultFragment.newInstance();
+        ActivityUtils.switchFragment(getFragmentManager(), commitResultFragment, respondResultFragment, R.id.contentFrame);
+        RespondResultPresenter respondResultPresenter = new RespondResultPresenter(respondResultFragment);
+        respondResultPresenter.setPaperResult(paperResult);
     }
 
     @Override

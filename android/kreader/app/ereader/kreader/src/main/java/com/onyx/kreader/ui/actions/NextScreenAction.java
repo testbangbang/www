@@ -15,7 +15,9 @@ public class NextScreenAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         if (!readerDataHolder.getReaderViewInfo().canNextScreen) {
-            Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.max_page_toast), Toast.LENGTH_SHORT).show();
+            ShowReaderMenuAction action = new ShowReaderMenuAction();
+            action.startQuiz(readerDataHolder);
+            //Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.max_page_toast), Toast.LENGTH_SHORT).show();
             return;
         }
         final PageChangedEvent pageChangedEvent = readerDataHolder.beforePageChange();
