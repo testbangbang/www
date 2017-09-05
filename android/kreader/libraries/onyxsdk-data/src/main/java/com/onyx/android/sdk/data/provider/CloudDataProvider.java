@@ -333,7 +333,7 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public void clearThumbnails() {
-
+        Delete.table(Thumbnail.class);
     }
 
     @Override
@@ -376,7 +376,7 @@ public class CloudDataProvider implements DataProviderBase {
 
     @Override
     public void clearMetadataCollection() {
-
+        Delete.table(CloudMetadataCollection.class);
     }
 
     @Override
