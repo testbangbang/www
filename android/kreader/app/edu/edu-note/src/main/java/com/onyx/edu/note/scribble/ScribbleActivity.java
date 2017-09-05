@@ -299,7 +299,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-//                        onExportEditedPic();
                         onDocumentClose();
                     }
                 })
