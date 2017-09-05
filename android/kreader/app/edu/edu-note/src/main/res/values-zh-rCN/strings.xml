@@ -11,4 +11,9 @@
     <string name="name_length_illegal">文件名不多于20个字符.</string>
     <string name="discard">丢弃</string>
     <string name="save_and_exit">保存并退出.</string>
+    <string name="export_fail">导出失败</string>
+    <string name="export_success">导出成功</string>
+    <string name="exporting_info">Exporting Note…</string>
+    <string name="export_location" formatted="false">(导出位置: %s)</string>
+
 </resources>
