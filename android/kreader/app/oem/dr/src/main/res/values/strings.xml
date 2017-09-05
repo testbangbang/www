@@ -478,4 +478,6 @@
     <string name="language_bookshelf">language bookshelf</string>
     <string name="bookstore">bookstore</string>
     <string name="grade_bookshelf">grade bookshelf</string>
+    <string name="chart">Chart</string>
+    <string name="system_update">system update</string>
 </resources>
