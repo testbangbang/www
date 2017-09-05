@@ -9,8 +9,8 @@
         "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
             "KEYCODE_PAGE_UP":  {"action": "prevScreen", "args": ""},
-            "KEYCODE_VOLUME_DOWN":  {"action": "nextScreen", "args": ""},
-            "KEYCODE_VOLUME_UP":  {"action": "prevScreen", "args": ""},
+            "KEYCODE_VOLUME_DOWN":  {"action": "prevScreen", "args": ""},
+            "KEYCODE_VOLUME_UP":  {"action": "nextScreen", "args": ""},
             "KEYCODE_DPAD_RIGHT":  {"action": "moveRight", "args": ""},
             "KEYCODE_DPAD_LEFT":  {"action": "moveLeft", "args": ""},
             "KEYCODE_DPAD_UP":  {"action": "moveUp", "args": ""},
