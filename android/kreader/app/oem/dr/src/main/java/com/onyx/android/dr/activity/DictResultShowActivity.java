@@ -2,7 +2,6 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -34,9 +33,9 @@ import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.event.WebviewPageChangedEvent;
 import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
+import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
 import com.onyx.android.dr.util.DictPreference;
-import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.conf.AppConfig;
@@ -165,6 +164,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         DictPreference.init(this);
         dictPresenter.loadData(this);
         dictPresenter.loadTabMenu(Constants.ACCOUNT_TYPE_DICT_FUNCTION);
+        EventBus.getDefault().post(new DictFunctionGoneEvent());
         initItemData();
         getIntentDatas();
         initSound();
@@ -293,11 +293,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     public void testWordDictQuery() {
         if (!StringUtils.isNullOrEmpty(editQuery)) {
             queryWordRequest = new QueryWordRequest(editQuery);
-            Log.i("@@@11" + TAG, String.valueOf(pathList.size()));
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
-                    Log.i("@@@22", queryWordRequest.queryResult.size() + "");
                     if (queryWordRequest.queryResult == null) {
                         return;
                     }
