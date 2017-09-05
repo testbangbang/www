@@ -2,6 +2,7 @@ package com.onyx.edu.note.handler;
 
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.util.Log;
 import android.util.SparseArray;
 
@@ -15,7 +16,7 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
-import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
+import com.onyx.edu.note.actions.scribble.ExportEditedPicAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.actions.scribble.SetBackgroundAsLocalFileAction;
@@ -62,6 +63,7 @@ public class PicEditHandler extends BaseHandler {
         }
     };
 
+    private Uri editUri;
     public PicEditHandler(NoteManager mNoteManager) {
         super(mNoteManager);
     }
@@ -71,7 +73,8 @@ public class PicEditHandler extends BaseHandler {
         super.onActivate(args);
         noteManager.registerEventBus(this);
         noteManager.sync(true, true);
-        final String path = FileUtils.getRealFilePathFromUri(NoteApplication.getInstance(), args.getEditPicUri());
+        editUri = args.getEditPicUri();
+        final String path = FileUtils.getRealFilePathFromUri(NoteApplication.getInstance(), editUri);
         SetBackgroundAsLocalFileAction action = new SetBackgroundAsLocalFileAction(
                 path, !noteManager.inUserErasing());
         action.execute(noteManager, new BaseCallback() {
@@ -213,10 +216,20 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback) {
-        DocumentSaveAction documentSaveAction = new DocumentSaveAction(uniqueID,
-                title, closeAfterSave);
-        documentSaveAction.execute(noteManager, callback);
+    public void saveDocument(String uniqueID, String title, final boolean closeAfterSave, final BaseCallback callback) {
+        noteManager.syncWithCallback(false, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ExportEditedPicAction(noteManager.getHostView().getContext(), noteManager.getShapeDataInfo().getDocumentUniqueId(),
+                        noteManager.getShapeDataInfo().getPageNameList().getPageNameList().get(0), editUri)
+                        .execute(noteManager, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                noteManager.syncWithCallback(false, !closeAfterSave, callback);
+                            }
+                        });
+            }
+        });
     }
 
     private List<Integer> buildSubMenuThicknessIDList() {
