@@ -1,10 +1,12 @@
 package com.onyx.edu.note.actions.scribble;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.net.Uri;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -14,10 +16,12 @@ import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.ExportEditedPicRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
+import com.onyx.android.sdk.utils.ExportUtils;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.edu.note.NoteApplication;
+import com.onyx.edu.note.R;
 import com.onyx.edu.note.actions.BaseNoteAction;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +38,18 @@ public class ExportEditedPicAction extends BaseNoteAction {
     private int count;
     private WeakReference<Context> contextWeakReference;
 
-    public ExportEditedPicAction(WindowManager wm, String douId, String currentPageUniqueId, Uri exportedPicUri) {
+    public ExportEditedPicAction(Context context, String douId, String currentPageUniqueId, Uri exportedPicUri) {
         pageUniqueIds = new ArrayList<>();
         pageUniqueIds.add(currentPageUniqueId);
-        contextWeakReference = new WeakReference<Context>(NoteApplication.getInstance());
+        contextWeakReference = new WeakReference<>(context);
         this.douId = douId;
-        int width = wm.getDefaultDisplay().getWidth();
-        int height = wm.getDefaultDisplay().getHeight();
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        int width = 0, height = 0;
+        if (wm != null) {
+            width = wm.getDefaultDisplay().getWidth();
+            height = wm.getDefaultDisplay().getHeight();
+        }
         this.size = new Rect(0, 0, width, height);
         this.noteTitle = FileUtils.getBaseName(FileUtils.getRealFilePathFromUri(contextWeakReference.get(), exportedPicUri)).replaceAll(":", " ");
     }
@@ -48,16 +57,32 @@ public class ExportEditedPicAction extends BaseNoteAction {
     @Override
     public void execute(NoteManager noteManager, final BaseCallback callback) {
         Context context = contextWeakReference.get();
-        if (context == null){
+        if (context == null) {
             return;
         }
         count = pageUniqueIds.size();
-        getPageBitmap(noteManager,callback);
+        progress = new DialogProgress(context, 0, count);
+        progress.setCanceledOnTouchOutside(false);
+        progress.setTitle(context.getString(R.string.exporting_info));
+        String location = null;
+        try {
+            location = context.getString(R.string.export_location, ExportUtils.getExportPicPath(noteTitle));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        progress.setSubTitle(location);
+        progress.show();
+        getPageBitmap(noteManager);
+        progress.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                callback.done(null, null);
+            }
+        });
     }
 
-    private void getPageBitmap(final NoteManager noteManager, final BaseCallback callback) {
+    private void getPageBitmap(final NoteManager noteManager) {
         if (pageUniqueIds == null || pageUniqueIds.size() == 0) {
-            callback.done(null, null);
             return;
         }
         String pageUniqueId = pageUniqueIds.remove(0);
@@ -74,7 +99,7 @@ public class ExportEditedPicAction extends BaseNoteAction {
                     return;
                 }
                 exportPage(noteManager, renderRequest.getRenderBitmap(), index);
-                getPageBitmap(noteManager,callback);
+                getPageBitmap(noteManager);
             }
         });
     }
@@ -87,7 +112,24 @@ public class ExportEditedPicAction extends BaseNoteAction {
                 if (!bitmap.isRecycled()) {
                     bitmap.recycle();
                 }
+                if (e != null) {
+                    onExportFail(progress);
+                }
+                progress.setProgress(index);
+                if (index == count) {
+                    onExportSuccess(progress);
+                }
             }
         });
+    }
+
+    private void onExportFail(DialogProgress progress) {
+        progress.setTitle(contextWeakReference.get().getString(R.string.export_fail));
+        progress.getProgressBar().setVisibility(View.GONE);
+    }
+
+    private void onExportSuccess(DialogProgress progress) {
+        progress.setTitle(contextWeakReference.get().getString(R.string.export_success));
+        progress.dismiss();
     }
 }

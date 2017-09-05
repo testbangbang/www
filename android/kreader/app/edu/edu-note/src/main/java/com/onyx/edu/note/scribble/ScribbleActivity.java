@@ -322,7 +322,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         noteManager.syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new ExportEditedPicAction(getWindowManager(), noteManager.getShapeDataInfo().getDocumentUniqueId(),
+                new ExportEditedPicAction(ScribbleActivity.this, noteManager.getShapeDataInfo().getDocumentUniqueId(),
                         noteManager.getShapeDataInfo().getPageNameList().getPageNameList().get(0), editPictUri)
                         .execute(noteManager, new BaseCallback() {
                             @Override
