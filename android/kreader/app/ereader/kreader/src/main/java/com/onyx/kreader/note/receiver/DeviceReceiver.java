@@ -56,6 +56,8 @@ public class DeviceReceiver extends BroadcastReceiver {
         filter.addAction(SYSTEM_HOME);
         filter.addAction(STATUS_BAR_ICON_REFRESH_START_ACTION);
         filter.addAction(STATUS_BAR_ICON_REFRESH_FINISH_ACTION);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
+        filter.addAction(Intent.ACTION_SCREEN_OFF);
         return filter;
     }
 
@@ -73,6 +75,10 @@ public class DeviceReceiver extends BroadcastReceiver {
             notifySystemUIChange(intent, true);
         } else if (STATUS_BAR_ICON_REFRESH_FINISH_ACTION.equalsIgnoreCase(action)) {
             notifySystemUIChange(intent, false);
+        } else if (Intent.ACTION_SCREEN_ON.equalsIgnoreCase(action)) {
+            notifySystemUIChange(intent, false);
+        } else if (Intent.ACTION_SCREEN_OFF.equalsIgnoreCase(action)) {
+            notifySystemUIChange(intent, true);
         }
     }
 
