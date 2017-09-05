@@ -23,6 +23,7 @@ import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.BookLibraryEvent;
+import com.onyx.android.eschool.events.DownloadingEvent;
 import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
@@ -267,12 +268,11 @@ public class BookTextFragment extends Fragment {
             }
 
             @Override
-            public void onPageBindViewHolder(BookItemHolder viewHolder, int position) {
+            public void onPageBindViewHolder(final BookItemHolder viewHolder, int position) {
                 viewHolder.itemView.setTag(position);
 
                 Metadata eBook = getEBookList().get(position);
-                viewHolder.getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
-                //updateDownloadPanel(viewHolder, eBook);
+                updateDownloadPanel(viewHolder, eBook);
                 viewHolder.titleView.setVisibility(View.VISIBLE);
                 viewHolder.titleView.setText(String.valueOf(eBook.getName()));
 
@@ -354,6 +354,12 @@ public class BookTextFragment extends Fragment {
     }
 
     private void updateDownloadPanel(BookItemHolder holder, Metadata eBook) {
+        if (isFileExists(eBook)) {
+            holder.getWidgetImage.setVisibility(View.VISIBLE);
+            holder.getWidgetImage.setImageResource(R.drawable.book_item_get_widget);
+            return;
+        }
+
         boolean showProgress = true;
         BaseDownloadTask task = getDownLoaderManager().getTask(eBook.getGuid());
         if (task == null) {
@@ -371,6 +377,10 @@ public class BookTextFragment extends Fragment {
                     getDownLoaderManager().removeTask(eBook.getGuid());
                     break;
             }
+        }
+        holder.getWidgetImage.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+        if (showProgress) {
+            holder.getWidgetImage.setImageResource(R.drawable.book_item_download_widget);
         }
     }
 
@@ -492,6 +502,13 @@ public class BookTextFragment extends Fragment {
         updatePageIndicator();
     }
 
+    private void updateOnlyContentView() {
+        if (isContentViewInvalid()) {
+            return;
+        }
+        contentPageView.getAdapter().notifyDataSetChanged();
+    }
+
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
         getPagination().resize(row, col, totalCount);
@@ -583,15 +600,21 @@ public class BookTextFragment extends Fragment {
         return true;
     }
 
-    private BaseCallback baseCallback = new BaseCallback() {
+    private BaseCallback downloadCallback = new BaseCallback() {
+
+        @Override
+        public void start(BaseRequest request) {
+            updateOnlyContentView();
+        }
+
         @Override
         public void progress(BaseRequest request, ProgressInfo info) {
-            contentPageView.notifyDataSetChanged();
+            updateOnlyContentView();
         }
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            contentPageView.notifyDataSetChanged();
+            updateOnlyContentView();
         }
     };
 
@@ -608,6 +631,7 @@ public class BookTextFragment extends Fragment {
                 openCloudFile(eBook);
             }
         });
+        downloadAction.execute(getDataHolder(), null);
     }
 
     private void processProductItemClick(final int position) {
@@ -616,7 +640,8 @@ public class BookTextFragment extends Fragment {
             openCloudFile(book);
             return;
         }
-        if(enableWifiOpenAndDetect()) {
+        if (enableWifiOpenAndDetect()) {
+            ToastUtils.showToast(getContext(), R.string.open_wifi);
             return;
         }
         startDownload(book);
@@ -722,6 +747,11 @@ public class BookTextFragment extends Fragment {
         if (pageIndicator != null) {
             pageIndicator.setTotalText(getString(R.string.hardware_error));
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        updateOnlyContentView();
     }
 
     @Override
