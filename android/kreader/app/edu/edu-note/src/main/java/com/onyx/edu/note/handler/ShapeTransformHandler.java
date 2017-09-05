@@ -99,8 +99,8 @@ public class ShapeTransformHandler extends BaseHandler {
     }
 
     @Override
-    public void onActivate() {
-        super.onActivate();
+    public void onActivate(HandlerArgs args) {
+        super.onActivate(args);
         noteManager.registerEventBus(this);
         currentControlMode = ControlMode.SelectMode;
         noteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_SELECTOR);

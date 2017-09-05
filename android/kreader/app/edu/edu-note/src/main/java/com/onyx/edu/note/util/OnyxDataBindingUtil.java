@@ -10,6 +10,7 @@ import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.edu.note.ui.BaseMenuViewModel;
+import com.onyx.edu.note.ui.MenuItem;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.ui.PageDataBindingAdapter;
 

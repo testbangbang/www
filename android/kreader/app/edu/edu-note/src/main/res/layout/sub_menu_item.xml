@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="item"
+            type="com.onyx.edu.note.ui.MenuItem" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:minWidth="@dimen/onyx_main_note_menu_height"
+        android:background="@drawable/image_button_bg"
+        android:onClick="@{(v) ->item.menuClicked(v)}"
+        android:visibility="@{item.visibility}"
+        appCompat:alwaysLayoutImageView="true">
+
+        <ImageView
+            android:id="@+id/function_item_image_view"
+            android:layout_width="@dimen/note_function_item_img_size"
+            android:layout_height="@dimen/note_function_item_img_size"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            android:src="@{item.menuIcon}" />
+
+        <RadioButton
+            android:id="@+id/function_item_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/function_item_image_view"
+            android:layout_centerHorizontal="true"
+            android:button="@drawable/note_check_indicator"
+            android:checked="@{item.checked}"
+            android:clickable="false"
+            android:focusable="false" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+</layout>

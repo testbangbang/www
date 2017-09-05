@@ -11,7 +11,6 @@
     <style name="main_menu_item">
         <item name="android:layout_width">@dimen/onyx_main_note_menu_height</item>
         <item name="android:layout_height">@dimen/onyx_main_note_menu_height</item>
-        <item name="android:visibility">gone</item>
         <item name="iconDrawingSize">@dimen/note_function_item_img_size</item>
     </style>
 

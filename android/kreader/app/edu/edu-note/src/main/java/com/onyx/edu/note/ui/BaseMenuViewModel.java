@@ -1,6 +1,7 @@
 package com.onyx.edu.note.ui;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableArrayMap;
 import android.support.annotation.CallSuper;
 import android.util.Log;
 import android.util.SparseArray;
@@ -8,7 +9,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Checkable;
 
+import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.edu.note.R;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -27,12 +30,14 @@ public class BaseMenuViewModel extends BaseObservable {
 //    private Set<Integer> enabledMenuIds;
 //    private Set<Integer> showedMenuIds;
 
+    private ObservableArrayMap<Integer, MenuItem> menuItems = new ObservableArrayMap<>();
     private SparseArray<View> views;
     private EventBus eventBus;
 
     public BaseMenuViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
         views = new SparseArray<>();
+
     }
 
     public void bindMenu(int menuAction, View view) {

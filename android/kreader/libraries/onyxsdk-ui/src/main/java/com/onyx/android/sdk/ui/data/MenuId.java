@@ -20,6 +20,7 @@ public class MenuId {
     public static final int PREV_PAGE = 11;
     public static final int NEXT_PAGE = 12;
     public static final int SHAPE_SELECT = 13;
+    public static final int PAGE = 14;
 
     public static final int NORMAL_PEN_STYLE = 100;
     public static final int BRUSH_PEN_STYLE = 101;

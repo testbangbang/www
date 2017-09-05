@@ -49,7 +49,7 @@ public abstract class BaseHandler {
     }
 
     @CallSuper
-    public void onActivate() {
+    public void onActivate(HandlerArgs args) {
         buildFunctionBarMenuFunctionList();
         buildToolBarMenuFunctionList();
         buildFunctionBarMenuSubMenuIDListSparseArray();

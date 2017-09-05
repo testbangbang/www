@@ -9,7 +9,10 @@ import android.view.ViewGroup;
 
 import com.android.databinding.library.baseAdapters.BR;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -18,107 +21,46 @@ import java.util.Set;
 
 public class MenuManager {
 
-    private ViewDataBinding mainMenuBinding;
-    private BaseMenuViewModel mainMenuViewModel;
-
-    private ViewDataBinding toolbarBinding;
-    private BaseMenuViewModel toolbarViewModel;
-
-    private ViewDataBinding subMenuBinding;
-    private BaseMenuViewModel subMenuViewModel;
+    private Menu mainMenu;
+    private Menu subMenu;
+    private Menu toolbarMenu;
 
     public MenuManager addMainMenu(ViewGroup parent,
-                                   BaseMenuViewModel viewModel,
+                                   EventBus eventBus,
                                    int layoutId,
-                                   ViewGroup.LayoutParams params) {
-        mainMenuBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), layoutId, null, false);
-        this.mainMenuViewModel = viewModel;
-        mainMenuBinding.setVariable(BR.viewModel, viewModel);
-        parent.addView(getMainMenuView(), params);
+                                   ViewGroup.LayoutParams params,
+                                   Map<Integer, MenuItem> menuItemMap) {
+        mainMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuItemMap);
+        mainMenu.show(parent, params);
         return this;
     }
 
-    public MenuManager addToolbar(ViewGroup parent,
-                                  BaseMenuViewModel viewModel,
+    public Menu getMainMenu() {
+        return mainMenu;
+    }
+
+    public Menu getSubMenu() {
+        return subMenu;
+    }
+
+    public MenuManager addSubMenu(ViewGroup parent,
+                                  EventBus eventBus,
                                   int layoutId,
-                                  ViewGroup.LayoutParams params) {
-        toolbarBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), layoutId, null, false);
-        this.toolbarViewModel = viewModel;
-        toolbarBinding.setVariable(BR.viewModel, viewModel);
-        parent.addView(getToolbarView(), params);
+                                  ViewGroup.LayoutParams params,
+                                  Map<Integer, MenuItem> menuItemMap) {
+        subMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuItemMap);
+        subMenu.show(parent, params);
         return this;
     }
 
-    public MenuManager setMainMenuIds(List<Integer> menuIds) {
-        if (getMainMenuViewModel() == null) {
-            return this;
-        }
-        getMainMenuViewModel().show(menuIds);
+    public MenuManager addToolbarMenu(ViewGroup parent,
+                                      EventBus eventBus,
+                                      int layoutId,
+                                      ViewGroup.LayoutParams params,
+                                      Map<Integer, MenuItem> menuItemMap) {
+        toolbarMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuItemMap);
+        toolbarMenu.show(parent, params);
         return this;
     }
 
-    public MenuManager setToolbarMenuIds(List<Integer> menuIds) {
-        if (getToolbarViewModel() == null) {
-            return this;
-        }
-        getToolbarViewModel().show(menuIds);
-        return this;
-    }
-
-    public MenuManager showSubMenuView(ViewGroup parent,
-                                       BaseMenuViewModel viewModel,
-                                       int layoutId,
-                                       ViewGroup.LayoutParams params) {
-        subMenuBinding = DataBindingUtil.inflate(LayoutInflater.from(parent.getContext()), layoutId, null, false);
-        this.subMenuViewModel = viewModel;
-        subMenuBinding.setVariable(BR.viewModel, viewModel);
-        parent.addView(getSubMenuView(), params);
-        return this;
-    }
-
-    public MenuManager checkSubMenu(final List<Integer> menuIds) {
-        if (getSubMenuViewModel() == null) {
-            return this;
-        }
-        getSubMenuView().post(new Runnable() {
-            @Override
-            public void run() {
-                getSubMenuViewModel().check(menuIds);
-            }
-        });
-        return this;
-    }
-
-    public View getMainMenuView() {
-        return mainMenuBinding.getRoot();
-    }
-
-    public View getToolbarView() {
-        return toolbarBinding.getRoot();
-    }
-
-    public View getSubMenuView() {
-        return subMenuBinding.getRoot();
-    }
-
-    public BaseMenuViewModel getMainMenuViewModel() {
-        return mainMenuViewModel;
-    }
-
-    public BaseMenuViewModel getToolbarViewModel() {
-        return toolbarViewModel;
-    }
-
-    public BaseMenuViewModel getSubMenuViewModel() {
-        return subMenuViewModel;
-    }
-
-    public void onDestroy() {
-        if (getMainMenuViewModel() != null) {
-            getMainMenuViewModel().onDestroy();
-        }
-        if (getToolbarViewModel() != null) {
-            getToolbarViewModel().onDestroy();
-        }
-    }
 }

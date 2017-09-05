@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View" />
+        <variable
+            name="item"
+            type="com.onyx.edu.note.ui.MenuItem" />
+    </data>
+
+    <com.onyx.android.sdk.ui.view.CustomIconView
+        style="@style/main_menu_item"
+        android:visibility="@{item.visibility}"
+        android:onClick="@{(v) ->item.menuClicked(v)}"
+        android:src="@{item.menuIcon}"/>
+
+
+</layout>
