@@ -165,6 +165,15 @@
     <dimen name="device_setting_title_font_size">20sp</dimen>
     <dimen name="device_setting_setting_font_size">16sp</dimen>
     <dimen name="good_sentence_supplements_width">200dp</dimen>
+    <dimen name="login_button_margin_left">10dp</dimen>
+    <dimen name="forget_password_text_margin_left">175dp</dimen>
+    <dimen name="bookshelf_button_padding">5dp</dimen>
+    <dimen name="item_bookshelf_group_margin_right">40dp</dimen>
+    <dimen name="login_register_qr_width">300dp</dimen>
+    <dimen name="bookshelf_tab_height">80dp</dimen>
+    <dimen name="bookshelf_tab_indicator_height">10dp</dimen>
+    <dimen name="bookshelf_type_toggle_margin">15dp</dimen>
+    <dimen name="thick_line_height">2dp</dimen>
     <dimen name="grade_margin_top">20dp</dimen>
     <dimen name="custom_group_margin_top">40dp</dimen>
     <dimen name="create_group_activity_margin_top">50dp</dimen>

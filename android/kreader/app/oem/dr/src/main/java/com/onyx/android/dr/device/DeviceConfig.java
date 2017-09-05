@@ -263,6 +263,8 @@ public class DeviceConfig {
         public static final String MENU_APPLICATION = "menu_application";
         public static final String MENU_SETTINGS = "menu_settings";
         public static final String MENU_ARTICLE_PUSH = "menu_article_push";
+        public static final String MENU_BOOKSHELF = "menu_bookshelf";
+        public static final String MENU_BOOKSTORE = "menu_bookstore";
     }
 
     public static class MyNotesInfo {

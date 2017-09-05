@@ -31,12 +31,37 @@
         <EditText
             android:id="@+id/editText_password"
             style="@style/UserInfoEditTextStyle"
-            android:inputType="textPassword"/>
+            android:inputType="textPassword" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:id="@+id/auto_login_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/user_info_text_view_width"
+            android:text="@string/auto_login"
+            android:textSize="@dimen/level_two_font_size" />
+
+        <TextView
+            android:id="@+id/forget_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/forget_password_text_margin_left"
+            android:text="@string/forget_password"
+            android:textSize="@dimen/level_two_font_size" />
+
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="@dimen/user_info_edit_text_width"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
         android:layout_marginLeft="@dimen/user_info_text_view_width"
         android:orientation="horizontal">
 

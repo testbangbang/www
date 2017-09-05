@@ -4,7 +4,7 @@
     <dimen name="title_bar_right_menu_padding">8dp</dimen>
     <dimen name="title_bar_title_padding">8dp</dimen>
     <dimen name="title_bar_margin">8dp</dimen>
-    <dimen name="line_width">1dp</dimen>
+    <dimen name="line_width">2dp</dimen>
     <dimen name="rectangle_stroke_width">2dp</dimen>
     <dimen name="rectangle_stroke_radius">5dp</dimen>
     <dimen name="item_main_menu_tab_padding">10dp</dimen>
@@ -31,16 +31,16 @@
     <dimen name="library_item_cover_width">204dp</dimen>
     <dimen name="library_item_cover_height">280dp</dimen>
     <dimen name="login_layout_width">450dp</dimen>
-    <dimen name="login_layout_margin_top">300dp</dimen>
+    <dimen name="login_layout_margin_top">250dp</dimen>
     <dimen name="edit_text_margin_top">10dp</dimen>
     <dimen name="edit_text_padding">10dp</dimen>
     <dimen name="login_text_margin_left">20dp</dimen>
     <dimen name="spinner_drop_down_ver_offset">48dp</dimen>
     <dimen name="login_text_margin_right">5dp</dimen>
-    <dimen name="login_layout_title_margin_top">50dp</dimen>
-    <dimen name="user_info_edit_text_width">300dp</dimen>
-    <dimen name="user_info_text_view_width">280dp</dimen>
-    <dimen name="login_next_button_margin_bottom">350dp</dimen>
+    <dimen name="login_layout_title_margin_top">100dp</dimen>
+    <dimen name="user_info_edit_text_width">400dp</dimen>
+    <dimen name="user_info_text_view_width">230dp</dimen>
+    <dimen name="login_next_button_margin_bottom">400dp</dimen>
     <dimen name="login_next_button_margin_right">150dp</dimen>
     <dimen name="user_info_edit_text_margin_right">10dp</dimen>
     <dimen name="reader_bookmark_lineto_y">20dp</dimen>
@@ -260,4 +260,13 @@
     <dimen name="name_margin_left">140dp</dimen>
     <dimen name="name_margin_right">5dp</dimen>
     <dimen name="login_title_line_width">600dp</dimen>
+    <dimen name="thick_line_height">2dp</dimen>
+    <dimen name="login_button_margin_left">10dp</dimen>
+    <dimen name="forget_password_text_margin_left">175dp</dimen>
+    <dimen name="bookshelf_button_padding">5dp</dimen>
+    <dimen name="item_bookshelf_group_margin_right">40dp</dimen>
+    <dimen name="login_register_qr_width">300dp</dimen>
+    <dimen name="bookshelf_tab_height">80dp</dimen>
+    <dimen name="bookshelf_tab_indicator_height">10dp</dimen>
+    <dimen name="bookshelf_type_toggle_margin">15dp</dimen>
 </resources>

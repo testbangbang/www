@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -117,6 +118,13 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
             viewHolder.coverImage.setImageBitmap(bitmap);
         }
         viewHolder.rootView.setOnClickListener(this);
+        viewHolder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                // TODO: 17-9-4 long  click
+                return false;
+            }
+        });
         viewHolder.rootView.setTag(position);
     }
 
@@ -169,6 +177,8 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         ImageView getWidgetImage;
         @Bind(R.id.library_item_textView_title)
         TextView titleView;
+        @Bind(R.id.library_item_checkbox)
+        CheckBox checkBox;
         View rootView;
 
         public LibraryItemViewHolder(final View itemView) {

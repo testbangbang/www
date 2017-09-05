@@ -7,7 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical">
+        android:gravity="center_vertical">
 
         <TextView
             style="@style/UserInfoTextViewStyle"
@@ -21,7 +21,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
         android:layout_marginTop="@dimen/edit_text_margin_top">
 
         <TextView
@@ -38,6 +38,7 @@
                 style="@style/UserInfoEditTextStyle"
                 android:layout_width="0dp"
                 android:layout_weight="1"
+                android:textSize="@dimen/level_three_font_size"
                 android:dropDownVerticalOffset="@dimen/spinner_drop_down_ver_offset"
                 android:entries="@array/GradeList"
                 android:gravity="end" />
@@ -47,12 +48,13 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/level_three_font_size"
-                android:background="@null"
+                android:layout_marginLeft="@dimen/login_button_margin_left"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/edit_text_margin_top"
                 android:layout_weight="1"
                 android:hint="@string/clazz" />
         </LinearLayout>
     </LinearLayout>
-
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -76,7 +78,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black"
                 android:padding="@dimen/edit_text_margin_top"
-                android:text="@string/english"
+                android:text="@string/english_subject"
                 android:textColor="@color/white" />
 
             <Spinner
@@ -110,7 +112,7 @@
                 android:layout_height="wrap_content"
                 android:background="@color/black"
                 android:padding="@dimen/edit_text_margin_top"
-                android:text="@string/chinese"
+                android:text="@string/chinese_subject"
                 android:textColor="@color/white" />
 
             <Spinner

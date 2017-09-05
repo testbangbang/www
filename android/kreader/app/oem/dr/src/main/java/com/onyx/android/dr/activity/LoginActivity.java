@@ -3,7 +3,9 @@ package com.onyx.android.dr.activity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,8 +42,9 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 public class LoginActivity extends BaseActivity implements LoginView {
-    private static final int STEP_SECOND = 2;
     private static final int STEP_FIRST = 1;
+    private static final int STEP_SECOND = 2;
+    private static final int STEP_THIRD = 3;
     @Bind(R.id.editText_account)
     EditText editTextAccount;
     @Bind(R.id.editText_password)
@@ -77,7 +80,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Bind(R.id.college_student_interested_subject)
     PageRecyclerView collegeStudentInterestedSubject;
     @Bind(R.id.login_next_button)
-    Button loginNextButton;
+    TextView loginNextButton;
     @Bind(R.id.user_identity)
     Spinner userIdentity;
     @Bind(R.id.other_identity_interested_subject)
@@ -96,6 +99,16 @@ public class LoginActivity extends BaseActivity implements LoginView {
     EditText schoolchildrenClass;
     @Bind(R.id.login_title_line)
     View loginTitleLine;
+    @Bind(R.id.login_prev_button)
+    TextView loginPrevButton;
+    @Bind(R.id.qr_code)
+    ImageView qrCode;
+    @Bind(R.id.auto_login_checkbox)
+    CheckBox autoLoginCheckbox;
+    @Bind(R.id.forget_password)
+    TextView forgetPassword;
+    @Bind(R.id.confirm_password_password)
+    EditText confirmPasswordPassword;
 
     private LoginPresenter loginPresenter;
     private View identity_layout;
@@ -194,6 +207,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         if (accountInfo != null) {
             CommonNotices.showMessage(this, getString(R.string.login_succeed));
             DRPreferenceManager.saveLibraryParentId(this, accountInfo.library);
+            DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
             EventBus.getDefault().post(new AccountAvailableEvent());
             finish();
         } else {
@@ -267,16 +281,18 @@ public class LoginActivity extends BaseActivity implements LoginView {
             connectNetwork();
             return;
         }
+        loginTitle.setText(getString(R.string.identity_title));
         loginTitle.setVisibility(View.VISIBLE);
         loginTitleLine.setVisibility(View.VISIBLE);
         step = STEP_FIRST;
         login_layout.setVisibility(View.GONE);
         identity_layout.setVisibility(View.VISIBLE);
         loginNextButton.setVisibility(View.VISIBLE);
+        loginPrevButton.setVisibility(View.GONE);
         readingInfo.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button})
+    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_register:
@@ -288,7 +304,22 @@ public class LoginActivity extends BaseActivity implements LoginView {
             case R.id.login_next_button:
                 nextStep();
                 break;
+            case R.id.login_prev_button:
+                prevStep();
+                break;
         }
+    }
+
+    private boolean prevStep() {
+        if (step == STEP_SECOND) {
+            collectUserInfo();
+            return true;
+        } else if (step == STEP_THIRD) {
+            collectUserInfoSecondStep();
+            qrCode.setVisibility(View.GONE);
+            return true;
+        }
+        return false;
     }
 
     private void showZone() {
@@ -333,19 +364,12 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private void nextStep() {
-        if (identity_layout.getVisibility() == View.VISIBLE) {
-            String prompt = checkIdentityComplete();
-            if (StringUtils.isNotBlank(prompt)) {
-                CommonNotices.showMessage(this, prompt);
-                return;
-            }
-            identity = (String) userIdentity.getSelectedItem();
-            readingInfo = identityMap.get(identity);
-            if (readingInfo != null) {
-                readingInfo.setVisibility(View.VISIBLE);
-                identity_layout.setVisibility(View.GONE);
-                step = STEP_SECOND;
-            }
+        if (step == STEP_FIRST) {
+            collectUserInfoSecondStep();
+        } else if (step == STEP_SECOND) {
+            readingInfo.setVisibility(View.GONE);
+            qrCode.setVisibility(View.VISIBLE);
+            step = STEP_THIRD;
         } else {
             SignUpInfo signUpInfo = new SignUpInfo();
             getUserInfo(signUpInfo);
@@ -353,6 +377,22 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 loginPresenter.signUp(signUpInfo);
             }
             stepNotComplete = false;
+        }
+    }
+
+    private void collectUserInfoSecondStep() {
+        String prompt = checkIdentityComplete();
+        if (StringUtils.isNotBlank(prompt)) {
+            CommonNotices.showMessage(this, prompt);
+            return;
+        }
+        identity = (String) userIdentity.getSelectedItem();
+        readingInfo = identityMap.get(identity);
+        if (readingInfo != null) {
+            readingInfo.setVisibility(View.VISIBLE);
+            identity_layout.setVisibility(View.GONE);
+            loginPrevButton.setVisibility(View.VISIBLE);
+            step = STEP_SECOND;
         }
     }
 
@@ -366,6 +406,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
             signUpPassword.setText(Constants.EMPTY_STRING);
             signUpPassword.requestFocus();
             return getString(R.string.password_can_not_be_empty);
+        }
+        if (signUpPassword.getText().equals(confirmPasswordPassword.getText())) {
+            return getString(R.string.two_passwords_are_not_consistent);
         }
         String email = identity_email.getText().toString();
         if (StringUtils.isNullOrEmpty(email) || !RegularUtil.isEmail(email)) {
@@ -497,8 +540,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if (step == STEP_SECOND) {
-                collectUserInfo();
+            if (prevStep()) {
                 return true;
             }
         }

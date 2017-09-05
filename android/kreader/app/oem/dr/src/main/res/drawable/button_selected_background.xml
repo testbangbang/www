@@ -6,10 +6,10 @@
         </shape>
     </item>
     <item
-        android:bottom="1px"
-        android:left="1px"
-        android:right="1px"
-        android:top="1px">
+        android:bottom="@dimen/line_width"
+        android:left="@dimen/line_width"
+        android:right="@dimen/line_width"
+        android:top="@dimen/line_width">
         <shape>
             <solid android:color="@android:color/white" />
         </shape>

@@ -29,8 +29,8 @@
     <string name="page_indicator_initial_data">0/0</string>
     <string name="register">注册</string>
     <string name="login">登录</string>
-    <string name="account">账　号</string>
-    <string name="password">密　码</string>
+    <string name="account">账　号:</string>
+    <string name="password">密　码:</string>
     <string name="account_can_not_be_empty">账号不能为空</string>
     <string name="password_can_not_be_empty">密码不能为空</string>
     <string name="Schoolchildren">中小学生</string>
@@ -48,12 +48,12 @@
     <string name="teach_subject">您教授的科目:</string>
     <string name="interested_direction">您感兴趣的方向(多选):</string>
     <string name="grade">年级</string>
-    <string name="grade_class">*年　级</string>
+    <string name="grade_class">*年　级:</string>
     <string name="school">*学　校:</string>
-    <string name="textbook_publishing_house">*教　　材:</string>
+    <string name="textbook_publishing_house">*教　材:</string>
     <string name="english_subject">英　　语:</string>
     <string name="clazz">班级</string>
-    <string name="chinese">语　　文:</string>
+    <string name="chinese">中文</string>
     <string name="third_language">第二外语:</string>
     <string name="next_step">下一步</string>
     <string name="other">社会人</string>
@@ -215,7 +215,7 @@
     <string name="Hunan_Education_Press">湖南教育出版社</string>
     <string name="Shandong_Education_Press">山东教育出版社</string>
     <string name="Zhejiang_Education_Press">浙江教育出版社</string>
-    <string name="english">英　　语:</string>
+    <string name="english">英文</string>
     <string name="phone">*手　机</string>
     <string name="first_grade">一年级</string>
     <string name="second_grade">二年级</string>
@@ -458,4 +458,17 @@
     <string name="register_password">*密　码:</string>
     <string name="college_grade">年　级:</string>
     <string name="college_clazz">班　级:</string>
+    <string name="prev_step">上一步</string>
+    <string name="more_books">更多书籍</string>
+    <string name="forget_password">忘记密码</string>
+    <string name="auto_login">下次自动登录</string>
+    <string name="login_title">欢迎使用书程阅读器</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="two_passwords_are_not_consistent">两次密码输入不一致</string>
+    <string name="small_language">小语种</string>
+    <string name="classification_bookshelf">类别书架</string>
+    <string name="chinese_subject">*中　　文：</string>
+    <string name="language_bookshelf">语言书架</string>
+    <string name="bookstore">书城</string>
+    <string name="grade_bookshelf">分级书架</string>
 </resources>

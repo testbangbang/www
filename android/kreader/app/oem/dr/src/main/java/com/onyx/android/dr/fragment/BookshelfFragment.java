@@ -1,6 +1,7 @@
 package com.onyx.android.dr.fragment;
 
 import android.graphics.Bitmap;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.ImageView;
@@ -20,19 +21,16 @@ import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.BookshelfView;
 import com.onyx.android.dr.presenter.BookshelfPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
-import com.onyx.android.sdk.data.CloudQueryBuilder;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
@@ -50,8 +48,6 @@ import butterknife.OnClick;
  */
 
 public class BookshelfFragment extends BaseFragment implements BookshelfView {
-    public static final int LIBRARY_MODE = 0;
-    public static final int BOOKSHELF_MODE = 1;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.image)
@@ -64,23 +60,41 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
     TextView titleBarRightMenu;
     @Bind(R.id.bookshelf_book_search)
     ImageView bookshelfBookSearch;
-    @Bind(R.id.bookshelf_author_search)
-    ImageView bookshelfAuthorSearch;
+    @Bind(R.id.bookshelf_type_toggle)
+    TextView bookshelfTypeToggle;
     @Bind(R.id.bookshelf_groups_recycler)
     PageRecyclerView bookshelfGroupsRecycler;
-    @Bind(R.id.enter_bookstore)
-    TextView enterBookstore;
+    @Bind(R.id.bookshelf_tab)
+    TabLayout bookshelfTab;
+    @Bind(R.id.bookshelf_tab_title)
+    LinearLayout bookshelfTabTitle;
     private BookshelfGroupAdapter adapter;
-    private int mode = LIBRARY_MODE;
-    private String language;
-    private Library library;
+    private String mode;
     private BookshelfPresenter bookshelfPresenter;
     private LibraryDataHolder dataHolder;
     private BookListAdapter listAdapter;
+    private List<Library> libraryList;
+    private List<String> languageList;
+    private View titleBar;
 
     @Override
     protected void initListener() {
+        bookshelfTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                loadDataWithMode(tab.getPosition());
+            }
 
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
     }
 
     @Override
@@ -94,6 +108,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         menuBack = (LinearLayout) rootView.findViewById(R.id.menu_back);
 
         listAdapter = new BookListAdapter(getActivity(), getDataHolder());
+        titleBar = rootView.findViewById(R.id.bookshelf_title_bar);
     }
 
     @Override
@@ -101,29 +116,40 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         if (bookshelfPresenter == null) {
             bookshelfPresenter = new BookshelfPresenter(this);
         }
-        loadDataWithMode(mode);
+        mode = DRPreferenceManager.getBookshelfType(getActivity(), Constants.LANGUAGE_BOOKSHELF);
+        loadTabWithMode(mode);
     }
 
-    private void loadDataWithMode(int mode) {
+    private void loadTabWithMode(String mode) {
         switch (mode) {
-            case LIBRARY_MODE:
-                loadLibrary();
+            case Constants.LANGUAGE_BOOKSHELF:
+                bookshelfPresenter.getLanguageList();
                 break;
-            case BOOKSHELF_MODE:
-                loadBookshelf();
+            case Constants.GRADED_BOOKSHELF:
+                bookshelfPresenter.getLibraryList();
                 break;
         }
-
     }
 
-    private void loadBookshelf() {
+    private void loadDataWithMode(int position) {
+        switch (mode) {
+            case Constants.LANGUAGE_BOOKSHELF:
+                loadBookshelf(languageList.get(position));
+                break;
+            case Constants.GRADED_BOOKSHELF:
+                loadLibrary(libraryList.get(position));
+                break;
+        }
+    }
+
+    private void loadBookshelf(String language) {
         if (titleBarTitle != null) {
             titleBarTitle.setText(String.format(getString(R.string.bookshelf), language));
             bookshelfPresenter.getBookshelf(language, getDataHolder());
         }
     }
 
-    private void loadLibrary() {
+    private void loadLibrary(Library library) {
         if (library != null) {
             if (titleBarTitle != null) {
                 titleBarTitle.setText(library.getName());
@@ -150,24 +176,14 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
     private void back() {
         if (bookshelfGroupsRecycler.getAdapter() instanceof BookListAdapter) {
             bookshelfGroupsRecycler.setAdapter(adapter);
+            titleBar.setVisibility(View.GONE);
+            bookshelfTabTitle.setVisibility(View.VISIBLE);
         } else {
             EventBus.getDefault().post(new BackToMainViewEvent());
         }
     }
 
-    public void setData(String language) {
-        this.language = language;
-        mode = BOOKSHELF_MODE;
-        loadData();
-    }
-
-    public void setData(Library library) {
-        this.library = library;
-        mode = LIBRARY_MODE;
-        loadData();
-    }
-
-    @OnClick({R.id.menu_back, R.id.bookshelf_book_search, R.id.bookshelf_author_search, R.id.enter_bookstore})
+    @OnClick({R.id.menu_back, R.id.bookshelf_book_search, R.id.bookshelf_type_toggle})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -176,21 +192,26 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
             case R.id.bookshelf_book_search:
                 search(Constants.NAME_SEARCH);
                 break;
-            case R.id.bookshelf_author_search:
-                search(Constants.AUTHOR_SEARCH);
-                break;
-            case R.id.enter_bookstore:
-                enterToBookstore();
+            case R.id.bookshelf_type_toggle:
+                toggleBookshelfMode();
                 break;
         }
     }
 
-    private void search(String type) {
-        ActivityManager.startSearchBookActivity(getActivity(), type);
+    private void toggleBookshelfMode() {
+        if (mode.equals(Constants.LANGUAGE_BOOKSHELF)) {
+            mode = Constants.GRADED_BOOKSHELF;
+            bookshelfTypeToggle.setText(getString(R.string.grade_bookshelf));
+        } else {
+            mode = Constants.LANGUAGE_BOOKSHELF;
+            bookshelfTypeToggle.setText(getString(R.string.language_bookshelf));
+        }
+        loadTabWithMode(mode);
+        DRPreferenceManager.saveBookshelfType(DRApplication.getInstance(), mode);
     }
 
-    private void enterToBookstore() {
-        ActivityManager.startEBookStoreActivity(getActivity());
+    private void search(String type) {
+        ActivityManager.startSearchBookActivity(getActivity(), type);
     }
 
     @Override
@@ -208,6 +229,28 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         adapter.setMap(map);
     }
 
+    @Override
+    public void setLibraryList(List<Library> list) {
+        this.libraryList = list;
+        bookshelfTab.removeAllTabs();
+        for (Library lib : libraryList) {
+            bookshelfTab.addTab(bookshelfTab.newTab().setText(lib.getName()));
+        }
+        int selectedTabPosition = bookshelfTab.getSelectedTabPosition();
+        loadLibrary(libraryList.get(selectedTabPosition));
+    }
+
+    @Override
+    public void setLanguageList(List<String> languageList) {
+        this.languageList = languageList;
+        bookshelfTab.removeAllTabs();
+        for (String language : languageList) {
+            bookshelfTab.addTab(bookshelfTab.newTab().setText(language));
+        }
+        int selectedTabPosition = bookshelfTab.getSelectedTabPosition();
+        loadBookshelf(languageList.get(selectedTabPosition));
+    }
+
     private LibraryDataHolder getDataHolder() {
         if (dataHolder == null) {
             dataHolder = new LibraryDataHolder(getActivity());
@@ -218,6 +261,13 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEBookListEvent(EBookListEvent event) {
+        titleBar.setVisibility(View.VISIBLE);
+        bookshelfTabTitle.setVisibility(View.GONE);
+        if (mode.equals(Constants.LANGUAGE_BOOKSHELF)) {
+            titleBarTitle.setText(languageList.get(bookshelfTab.getSelectedTabPosition()) + "/" + event.getLanguage());
+        } else {
+            titleBarTitle.setText(libraryList.get(bookshelfTab.getSelectedTabPosition()).getName() + "/" + event.getLanguage());
+        }
         bookshelfPresenter.getBooks(event.getLanguage());
     }
 

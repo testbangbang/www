@@ -23,5 +23,6 @@
         android:id="@+id/tab_menu_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_next" />
+        android:src="@drawable/ic_next"
+        android:visibility="gone"/>
 </LinearLayout>

@@ -56,10 +56,6 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
     ProgressBar nowReadingProgressBar;
     @Bind(R.id.now_reading_book_name)
     TextView nowReadingBookName;
-    @Bind(R.id.book_name_search)
-    ImageTextButton bookNameSearch;
-    @Bind(R.id.author_search)
-    ImageTextButton authorSearch;
     @Bind(R.id.image_next)
     ImageView imageNext;
     @Bind(R.id.page_count)
@@ -70,9 +66,6 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
     LinearLayout nowReadingBook;
     private BookListAdapter libraryAdapter;
     private LibraryDataHolder dataHolder;
-    private ImageTextButton englishBookshelf;
-    private ImageTextButton chineseBookshelf;
-    private ImageTextButton smallLanguageBookshelf;
     private MainViewFragmentPresenter presenter;
     private Metadata nowReadingMetadata;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.recent_book_row);
@@ -80,40 +73,7 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
 
     @Override
     protected void initListener() {
-        englishBookshelf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.loadData(Constants.ENGLISH);
-                EventBus.getDefault().post(new BookshelfEvent(Constants.ENGLISH));
-            }
-        });
-        chineseBookshelf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.loadData(Constants.CHINESE);
-                EventBus.getDefault().post(new BookshelfEvent(Constants.CHINESE));
-            }
-        });
-        smallLanguageBookshelf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                presenter.loadData(Constants.SMALL_LANGUAGE);
-                EventBus.getDefault().post(new BookshelfEvent(Constants.SMALL_LANGUAGE));
-            }
-        });
 
-        bookNameSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search(Constants.NAME_SEARCH);
-            }
-        });
-        authorSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                search(Constants.AUTHOR_SEARCH);
-            }
-        });
     }
 
     @Override
@@ -125,9 +85,6 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         recentReadingRecycler.addItemDecoration(dividerItemDecoration);
         recentReadingRecycler.setAdapter(libraryAdapter);
-        englishBookshelf = (ImageTextButton) rootView.findViewById(R.id.english_bookshelf);
-        chineseBookshelf = (ImageTextButton) rootView.findViewById(R.id.chinese_bookshelf);
-        smallLanguageBookshelf = (ImageTextButton) rootView.findViewById(R.id.small_language_bookshelf);
     }
 
     @Override
