@@ -12,7 +12,6 @@
     "com.android.speechrecorder",
     "com.android.vpndialogs",
     "com.android.settings",
-    "com.android.browser",
     "com.android.email",
     "com.android.calendar",
     "com.android.deskclock",
@@ -20,7 +19,6 @@
     "com.android.quicksearchbox",
     "com.onyx.appmarket",
     "com.onyx.android.edu",
-    "com.android.music",
     "com.android.providers.downloads.ui",
     "com.onyx.kreader",
     "com.android.soundrecorder"
