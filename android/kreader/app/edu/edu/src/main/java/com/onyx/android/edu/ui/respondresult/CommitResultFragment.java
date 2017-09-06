@@ -1,7 +1,5 @@
 package com.onyx.android.edu.ui.respondresult;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -23,6 +21,8 @@ import butterknife.OnClick;
 public class CommitResultFragment extends BaseFragment {
     @Bind(R.id.commit_paper)
     Button commitPaper;
+    @Bind(R.id.back_paper)
+    Button backPaper;
 
     public static CommitResultFragment newInstance() {
         return new CommitResultFragment();
@@ -53,8 +53,15 @@ public class CommitResultFragment extends BaseFragment {
         ButterKnife.unbind(this);
     }
 
-    @OnClick(R.id.commit_paper)
-    public void onViewClicked() {
-        ((RespondResultActivity) getActivity()).switchFragment();
+    @OnClick({R.id.back_paper, R.id.commit_paper})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.back_paper:
+                getActivity().finish();
+                break;
+            case R.id.commit_paper:
+                ((RespondResultActivity) getActivity()).switchFragment();
+                break;
+        }
     }
 }

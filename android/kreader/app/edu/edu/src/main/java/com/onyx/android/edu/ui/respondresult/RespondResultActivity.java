@@ -40,6 +40,7 @@ public class RespondResultActivity extends BaseActivity {
     FrameLayout mContentFrame;
     private String message;
     private CommitResultFragment commitResultFragment;
+    private final static int resultCode = 0x10;
 
     @Override
     protected Integer getLayoutId() {
@@ -79,6 +80,7 @@ public class RespondResultActivity extends BaseActivity {
         ActivityUtils.switchFragment(getFragmentManager(), commitResultFragment, respondResultFragment, R.id.contentFrame);
         RespondResultPresenter respondResultPresenter = new RespondResultPresenter(respondResultFragment);
         respondResultPresenter.setPaperResult(paperResult);
+        setResult(resultCode);
     }
 
     @Override

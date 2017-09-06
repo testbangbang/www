@@ -3,6 +3,8 @@ package com.onyx.android.edu.ui.exerciserespond;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -38,7 +40,7 @@ import butterknife.ButterKnife;
 /**
  * Created by ming on 16/6/24.
  */
-public class ExerciseRespondFragment extends BaseFragment implements View.OnClickListener,ExerciseRespondContract.ExerciseRespondView {
+public class ExerciseRespondFragment extends BaseFragment implements View.OnClickListener, ExerciseRespondContract.ExerciseRespondView {
 
     @Bind(R.id.paper_pager)
     CustomViewPager mPaperPager;
@@ -50,8 +52,10 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
     ImageView mRightArrow;
 
     private QuestionsPagerAdapter mQuestionsPagerAdapter;
-
     private ExerciseRespondContract.ExerciseRespondPresenter mExerciseRespondPresenter;
+    private final static int WHAT = 0x1000;
+    private final static int DELAY_TIME = 1000;
+
     @Override
     protected int getLayoutId() {
         return R.layout.fragment_exercise_respond;
@@ -88,12 +92,12 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        switch (id){
-            case R.id.left_arrow:{
+        switch (id) {
+            case R.id.left_arrow: {
                 preQuestion();
             }
             break;
-            case R.id.right_arrow:{
+            case R.id.right_arrow: {
                 nextQuestion();
             }
             break;
@@ -104,8 +108,8 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         closeSoftInput();
         int index = mPaperPager.getCurrentItem();
         int last = index - 1;
-        if (index > 0){
-            mPaperPager.setCurrentItem(last,false);
+        if (index > 0) {
+            mPaperPager.setCurrentItem(last, false);
             updatePaperIndex();
         }
     }
@@ -115,19 +119,19 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         int index = mPaperPager.getCurrentItem();
         int count = mQuestionsPagerAdapter.getCount();
         int next = index + 1;
-        if (next < count){
+        if (next < count) {
             BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
-            if (selectView.hasAnswers() || selectView.isShowAnswer()){
-                mPaperPager.setCurrentItem(next,false);
+            if (selectView.hasAnswers() || selectView.isShowAnswer()) {
+                mPaperPager.setCurrentItem(next, false);
                 updatePaperIndex();
-            }else {
+            } else {
                 showToast(getString(R.string.ask_select_answer));
             }
-        }else {
+        } else {
             BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
-            if(selectView.hasAnswers() || selectView.isShowAnswer()) {
+            if (selectView.hasAnswers() || selectView.isShowAnswer()) {
                 enterResultActivity();
-            }else {
+            } else {
                 showToast(getString(R.string.ask_select_answer));
             }
         }
@@ -136,10 +140,10 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
     private void closeSoftInput() {
     }
 
-    private void updatePaperIndex(){
+    private void updatePaperIndex() {
         int index = mPaperPager.getCurrentItem() + 1;
         int count = mQuestionsPagerAdapter.getCount();
-        String str = String.format("%d/%d",index,count);
+        String str = String.format("%d/%d", index, count);
         mPaperIndex.setText(str);
     }
 
@@ -148,13 +152,19 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         mExerciseRespondPresenter = exerciseRespondPresenter;
     }
 
-    private void enterResultActivity(){
+    private void enterResultActivity() {
         EduApp.instance().setEndTime(System.currentTimeMillis());
         PaperResult paperResult = mExerciseRespondPresenter.getPaperResult(mQuestionsPagerAdapter.getViewList());
-        getActivity().finish();
         Intent intent = new Intent(getActivity(), RespondResultActivity.class);
         intent.putExtra(RespondResultActivity.RESULT, JsonUtils.toJson(paperResult));
-        startActivity(intent);
+        startActivityForResult(intent, 0);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 0x10) {
+            getActivity().finish();
+        }
     }
 
     @Override
@@ -163,7 +173,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         for (Question question : questions) {
             if (question.getQuestionOptions() != null && question.getQuestionOptions().size() > 0) {
                 selectViews.add(generateChoiceQuestion(question, showAnswer));
-            }else {
+            } else {
                 selectViews.add(generateSubjectiveQuestion(question, showAnswer));
             }
         }
@@ -174,13 +184,23 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         updatePaperIndex();
     }
 
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if (msg.what == WHAT) {
+                nextQuestion();
+            }
+        }
+    };
+
     @Override
     public void showToast() {
         Toast.makeText(EduApp.instance(), "试题不存在，请上传试题！", Toast.LENGTH_SHORT).show();
         getActivity().finish();
     }
 
-    private ChoiceQuestionView generateChoiceQuestion(Question question, boolean showAnswer){
+    private ChoiceQuestionView generateChoiceQuestion(Question question, boolean showAnswer) {
         ChoiceQuestionView choiceQuestionView = new ChoiceQuestionView(getActivity(),
                 showAnswer,
                 question.getQuestionOptions(),
@@ -193,13 +213,13 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
             @Override
             public void insertAnswer(long id, String answer, String score) {
                 mExerciseRespondPresenter.insertAnswerAndScore(EduApp.instance().getBookId(), id, answer, score);
-                nextQuestion();
+                handler.sendEmptyMessageDelayed(WHAT, DELAY_TIME);
             }
         });
         return choiceQuestionView;
     }
 
-    private SubjectiveQuestionView generateSubjectiveQuestion(Question question, boolean showAnswer){
+    private SubjectiveQuestionView generateSubjectiveQuestion(Question question, boolean showAnswer) {
         SubjectiveQuestionView subjectiveQuestionView = new SubjectiveQuestionView(getActivity(),
                 showAnswer,
                 question.getQuestionAnalytical().getAnswer(),
