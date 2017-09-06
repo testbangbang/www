@@ -84,5 +84,9 @@ ext {
     avoscloudVersion = 'v3.13.7'
     glideVersion = '3.7.0'
     zxingVersion = '3.3.0'
+    gridlayoutVersion = '23.0.0'
+
+    androidtiffbitmapfactoryVersion = '0.9.7.6'
+
 }
 

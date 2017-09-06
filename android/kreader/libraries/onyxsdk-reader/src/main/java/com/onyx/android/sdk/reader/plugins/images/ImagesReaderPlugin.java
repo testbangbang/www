@@ -89,6 +89,8 @@ public class ImagesReaderPlugin implements ReaderPlugin,
             extensionFilters.add("jpg");
             extensionFilters.add("jpeg");
             extensionFilters.add("bmp");
+            extensionFilters.add("tif");
+            extensionFilters.add("tiff");
         }
         return extensionFilters;
     }
