@@ -19,13 +19,13 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildLineBreakShapeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildTextShapeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DeleteSpanEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.LoadSpanPageShapesEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutArgsEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutCursorEvent;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -46,7 +46,6 @@ import com.onyx.edu.note.R;
 import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.edu.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.edu.note.actions.scribble.DocumentFlushAction;
-import com.onyx.edu.note.actions.scribble.ExportEditedPicAction;
 import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
@@ -239,6 +238,16 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (!request.isAbort() && e == null) {
+                            if (currentEditMode == EditMode.PicEditMode) {
+                                Handler handler = new Handler(getMainLooper());
+                                handler.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
+                                                .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
+                                    }
+                                }, 2000);
+                            }
                             handlerManager.quit();
                             ScribbleActivity.super.onBackPressed();
                         }
@@ -290,7 +299,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                     @Override
                     public void onClick(View v) {
                         dialog.dismiss();
-                        onExportEditedPic();
+                        onDocumentClose();
                     }
                 })
                 .setNegativeAction(new View.OnClickListener() {
@@ -316,40 +325,6 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                     }
                 }));
         return dialog;
-    }
-
-    private void onExportEditedPic() {
-        noteManager.syncWithCallback(false, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                new ExportEditedPicAction(ScribbleActivity.this, noteManager.getShapeDataInfo().getDocumentUniqueId(),
-                        noteManager.getShapeDataInfo().getPageNameList().getPageNameList().get(0), editPictUri)
-                        .execute(noteManager, new BaseCallback() {
-                            @Override
-                            public void done(BaseRequest request, Throwable e) {
-                                noteManager.syncWithCallback(false, false, new BaseCallback() {
-                                    @Override
-                                    public void done(BaseRequest request, Throwable e) {
-                                        afterExportEditedPic();
-                                    }
-                                });
-                            }
-                        });
-            }
-        });
-    }
-
-    private void afterExportEditedPic() {
-        Handler handler = new Handler(getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                sendBroadcast(new Intent(DeviceReceiver.SYSTEM_UI_SCREEN_SHOT_END_ACTION)
-                        .putExtra(Constant.RELOAD_DOCUMENT_TAG, true));
-            }
-        }, 2000);
-        handlerManager.quit();
-        ScribbleActivity.super.onBackPressed();
     }
 
     private void saveNewNoteDocument() {
