@@ -83,4 +83,16 @@
         <item>2</item>
     </string-array>
 
+    <string-array name="wifi_add_access_point_security">
+        <item>None</item>
+        <item>WEP</item>
+        <item>WPA/WPA2 PSK</item>
+    </string-array>
+
+    <integer-array name="wifi_add_access_point_security_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </integer-array>
+
 </resources>

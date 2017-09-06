@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.onyx.android.eschool.action.ContentImportAction;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
@@ -43,6 +44,7 @@ import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -53,6 +55,7 @@ import java.util.Set;
  * Created by zhuzeng on 14/11/2016.
  */
 public class SchoolApp extends MultiDexApplication {
+    static private final String TAG = "SchoolApp";
     static private final String MMC_STORAGE_ID = "flash";
 
     static private SchoolApp sInstance = null;
@@ -217,34 +220,30 @@ public class SchoolApp extends MultiDexApplication {
         deviceReceiver.setMediaStateListener(new DeviceReceiver.MediaStateListener() {
             @Override
             public void onMediaMounted(Intent intent) {
-                Log.e("##onMediaMounted", intent.getData().toString());
+                Log.w(TAG, "onMediaMounted " + intent.getData().toString());
                 if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
-                    String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
-                    if (StringUtils.isNullOrEmpty(sdcardCid)) {
-                        return;
-                    }
-                    startFileSystemScan(sdcardCid, getBookDirList(false));
+                    //processRemovableSDCardScan();
+                    processRemovableSDCardContentImport();
                 }
             }
 
             @Override
             public void onMediaUnmounted(Intent intent) {
-                Log.e("##onMediaUnmounted", intent.getData().toString());
+                Log.w(TAG, "onMediaUnmounted " + intent.getData().toString());
                 if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
                 }
             }
 
             @Override
             public void onMediaBadRemoval(Intent intent) {
-                Log.e("##onMediaBadRemoval", intent.getData().toString());
+                Log.w(TAG, "onMediaBadRemoval " + intent.getData().toString());
                 if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
                 }
             }
 
             @Override
             public void onMediaRemoved(Intent intent) {
-                Log.e("##onMediaRemoved", intent.getData().toString());
-
+                Log.w(TAG, "onMediaRemoved " + intent.getData().toString());
             }
         });
         deviceReceiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
@@ -255,6 +254,27 @@ public class SchoolApp extends MultiDexApplication {
             }
         });
         deviceReceiver.enable(getApplicationContext(), true);
+    }
+
+    private void processRemovableSDCardScan() {
+        String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
+        if (StringUtils.isNullOrEmpty(sdcardCid)) {
+            return;
+        }
+        startFileSystemScan(sdcardCid, getBookDirList(false));
+    }
+
+    private void processRemovableSDCardContentImport() {
+        String jsonFilePath = DeviceConfig.sharedInstance(getApplicationContext()).getCloudContentImportJsonFilePath();
+        if (StringUtils.isNullOrEmpty(jsonFilePath)) {
+            return;
+        }
+        final File file = new File(EnvironmentUtil.getRemovableSDCardDirectory(), jsonFilePath);
+        if (!file.exists()) {
+            return;
+        }
+        ContentImportAction importAction = new ContentImportAction(file.getAbsolutePath(), true);
+        importAction.execute(getLibraryDataHolder(), null);
     }
 
     public void turnOffLed() {

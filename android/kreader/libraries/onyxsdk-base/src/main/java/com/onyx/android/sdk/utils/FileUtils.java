@@ -20,9 +20,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
 import java.math.BigInteger;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -523,5 +525,58 @@ public class FileUtils {
             return null;
         }
         return url.substring(idx + 1, url.length());
+    }
+
+    public static String getFileSize(long size) {
+        DecimalFormat df = new DecimalFormat("###.##");
+        float f = ((float) size / (float) (1024 * 1024));
+        if (f < 1.0) {
+            float f2 = ((float) size / (float) (1024));
+            return df.format(new Float(f2).doubleValue()) + "KB";
+        } else {
+            return df.format(new Float(f).doubleValue()) + "M";
+        }
+    }
+
+    public static void transferFile(final String currentFilePath, final String newFilePath) throws Exception {
+        File currentFile = new File(currentFilePath);
+        File newFile = new File(newFilePath);
+
+        FileChannel src;
+        FileChannel dst;
+        src = new FileInputStream(currentFile).getChannel();
+        dst = new FileOutputStream(newFile).getChannel();
+        dst.transferFrom(src, 0, src.size());
+
+        src.close();
+        dst.close();
+    }
+
+    public static boolean compareFileMd5(final String file1, final String file2) throws IOException, NoSuchAlgorithmException {
+        String file1Md5 = FileUtils.computeFullMD5Checksum(new File(file1));
+        String file2Md5 = FileUtils.computeFullMD5Checksum(new File(file2));
+        return file1Md5.equals(file2Md5);
+    }
+
+    public static boolean copyFile(File sourceFile, File targetFile) {
+        FileChannel source = null;
+        FileChannel destination = null;
+        try {
+            if (!targetFile.exists()) {
+                if (!targetFile.createNewFile()) {
+                    return false;
+                }
+            }
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(targetFile).getChannel();
+            source.transferTo(0, source.size(), destination);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            FileUtils.closeQuietly(source);
+            FileUtils.closeQuietly(destination);
+        }
     }
 }

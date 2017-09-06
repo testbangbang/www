@@ -43,4 +43,10 @@
         <item>"全屏切换"</item>
     </string-array>
 
+    <string-array name="wifi_add_access_point_security">
+        <item>无</item>
+        <item>WEP</item>
+        <item>WPA/WPA2 PSK</item>
+    </string-array>
+
 </resources>

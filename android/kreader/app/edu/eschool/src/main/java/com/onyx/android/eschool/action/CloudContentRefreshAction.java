@@ -17,7 +17,7 @@ import com.onyx.android.sdk.ui.utils.ToastUtils;
  */
 public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
 
-    private LibraryDataModel libraryDataModel;
+    private LibraryDataModel libraryDataModel = new LibraryDataModel();
 
     @Override
     public void execute(final LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
@@ -29,10 +29,10 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
         dataHolder.getCloudManager().submitRequest(dataHolder.getContext(), refreshRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                hideLoadingDialog();
                 QueryResult<Metadata> result = refreshRequest.getProductResult();
                 if (e != null || result == null || result.hasException()) {
                     ToastUtils.showToast(request.getContext(), R.string.refresh_fail);
+                    BaseCallback.invoke(baseCallback, request, e != null ? e : getResultException(result));
                     return;
                 }
                 if (result.isContentEmpty()) {
@@ -42,7 +42,16 @@ public class CloudContentRefreshAction extends BaseAction<LibraryDataHolder> {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-        showLoadingDialog(dataHolder, R.string.refreshing);
+    }
+
+    private Exception getResultException(QueryResult<Metadata> result) {
+        Exception contentException;
+        try {
+            contentException = result.getException();
+        } catch (Exception e) {
+            contentException = e;
+        }
+        return contentException;
     }
 
     public LibraryDataModel getLibraryDataModel() {

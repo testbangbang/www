@@ -46,4 +46,19 @@ public class QueryResult<T> implements Serializable {
     public void setException(ContentException e) {
         this.exception = e;
     }
+
+    public ContentException getException() {
+        return this.exception;
+    }
+
+    public static boolean isValidQueryResult(QueryResult result) {
+        if (result == null || result.isContentEmpty()) {
+            return false;
+        }
+        return true;
+    }
+
+    public List<T> getEnsureList() {
+        return list == null ? new ArrayList<T>() : list;
+    }
 }

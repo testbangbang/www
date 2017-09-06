@@ -4,14 +4,16 @@ import android.app.FragmentManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.edu.reader.R;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.edu.reader.device.DeviceConfig;
 
 import java.util.HashMap;
 

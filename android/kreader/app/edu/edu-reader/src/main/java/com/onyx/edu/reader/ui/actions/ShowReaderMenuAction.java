@@ -7,9 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.text.InputType;
 import android.util.Log;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -21,8 +19,18 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -32,31 +40,22 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.R;
-import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.device.ReaderDeviceManager;
-import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.edu.reader.note.actions.ChangeNoteShapeAction;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.ClearPageAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
+import com.onyx.edu.reader.note.actions.LockFormShapesAction;
 import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
-import com.onyx.edu.reader.note.actions.LockFormShapesAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
@@ -71,8 +70,6 @@ import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
 import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
-import com.onyx.edu.reader.device.DeviceConfig;
-import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.util.ArrayList;
@@ -201,6 +198,10 @@ public class ShowReaderMenuAction extends BaseAction {
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
         }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isEnableCustomRefreshConfig()){
+            disableMenus.add(ReaderMenuAction.REFRESH);
+        }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
@@ -208,7 +209,8 @@ public class ShowReaderMenuAction extends BaseAction {
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT, R.drawable.ic_exit, R.string.exit),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_write, R.string.scribble),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic, R.string.toc),
-                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.TTS, R.drawable.ic_tts, R.string.popup_selection_menu_start_tts)
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.TTS, R.drawable.ic_tts, R.string.popup_selection_menu_start_tts),
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.REFRESH, R.drawable.ic_refresh, R.string.screen_refresh)
         };
         readerMenu = new EduMenu(readerDataHolder.getContext());
         updateReaderMenuCallback(readerMenu, readerDataHolder);
