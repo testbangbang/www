@@ -11,6 +11,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import com.onyx.android.libsetting.util.SettingRecyclerViewUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
 import com.onyx.android.libsetting.view.SettingPageAdapter;
+import com.onyx.android.libsetting.view.dialog.WifiAddAccessPointDialog;
 import com.onyx.android.libsetting.view.dialog.WifiConnectedDialog;
 import com.onyx.android.libsetting.view.dialog.WifiLoginDialog;
 import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
@@ -217,6 +220,33 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.getItemId() == R.id.add_network) {
+                if (wifiAdmin != null && wifiAdmin.isWifiEnabled()) {
+                    item.setEnabled(true);
+                }
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.add_network){
+            showAddAccessPointDialog();
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.wifi_setting_activity_menu, menu);
+        return true;
+    }
+
     /**
      * ref link:https://stackoverflow.com/questions/6388351/how-to-finish-an-activity-when-home-button-pressed
      */
@@ -321,6 +351,20 @@ public class WifiSettingActivity extends OnyxAppCompatActivity {
                 }
             }
         });
+    }
+
+    private void showAddAccessPointDialog(){
+        WifiAddAccessPointDialog wifiAddAccessPointDialog  =new WifiAddAccessPointDialog();
+        wifiAddAccessPointDialog.setCallback(new WifiAddAccessPointDialog.Callback() {
+            @Override
+            public void onConnectToNewConfiguration(String ssid,String password,int securityType) {
+                if (wifiAdmin != null) {
+                    wifiAdmin.addNetwork(wifiAdmin.createWifiConfiguration(ssid, password,
+                            securityType));
+                }
+            }
+        });
+        wifiAddAccessPointDialog.show(getFragmentManager());
     }
 
     private void showConnectDialog(final AccessPoint accessPoint) {
