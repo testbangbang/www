@@ -241,5 +241,7 @@
     <string name="still_need_times_to_activate">Still need %1$d times to enter device info settings.</string>
     <string name="digitizer_fw_key" translatable="false">digitizer_fw_key</string>
     <string name="digitizer_fw">Digitizer FW</string>
+    <string name="add_network">Add Network</string>
+    <string name="network_ssid">Network SSID</string>
 </resources>
 
