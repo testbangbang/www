@@ -10,6 +10,7 @@ import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.request.local.InformalEssayInsert;
 import com.onyx.android.dr.request.local.InformalEssayQueryAll;
 import com.onyx.android.dr.request.local.InformalEssayQueryByTime;
+import com.onyx.android.dr.request.local.InformalEssayQueryByTitle;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -28,6 +29,10 @@ public class InformalEssayData {
     }
 
     public void getAllInformalEssay(Context context, InformalEssayQueryAll req, BaseCallback baseCallback) {
+        submitRequest(context, req, baseCallback);
+    }
+
+    public void getInformalEssayQueryByTitle(Context context, InformalEssayQueryByTitle req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 

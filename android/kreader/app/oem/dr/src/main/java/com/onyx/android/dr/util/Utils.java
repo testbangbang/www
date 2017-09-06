@@ -42,7 +42,6 @@ import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -781,9 +780,9 @@ public class Utils {
 
     public static String getMacAddress(Context mContext) {
         String var1 = "";
-        WifiManager var2 = (WifiManager)mContext.getSystemService(Context.WIFI_SERVICE);
+        WifiManager var2 = (WifiManager) mContext.getSystemService(Context.WIFI_SERVICE);
         WifiInfo var3 = var2.getConnectionInfo();
-        if(var3 != null) {
+        if (var3 != null) {
             var1 = var3.getMacAddress();
         }
         return var1;
@@ -798,5 +797,20 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    public static boolean stringIsContain(String big, String small) {
+        List<String> list = new ArrayList<String>();
+        for (int i = 0; i < big.length(); i++) {
+            String str = String.valueOf(big.charAt(i));
+            list.add(str);
+        }
+        for (int i = 0; i < small.length(); i++) {
+            String str = String.valueOf(small.charAt(i));
+            if (!list.contains(str)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

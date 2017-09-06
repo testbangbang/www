@@ -76,6 +76,10 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     public void setInformalEssayByTime(List<InformalEssayEntity> dataList) {
     }
 
+    @Override
+    public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
+    }
+
     @OnClick({R.id.add_infromal_essay_activity_file,
             R.id.image_view_back,
             R.id.title_bar_right_menu})

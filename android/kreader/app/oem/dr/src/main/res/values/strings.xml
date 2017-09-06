@@ -480,4 +480,11 @@
     <string name="grade_bookshelf">grade bookshelf</string>
     <string name="chart">Chart</string>
     <string name="system_update">system update</string>
+    <string name="pronounce_evaluation_hint">Third party App, to be provided.</string>
+    <string name="start_record">start_record</string>
+    <string name="fragment_speech_recording_hint">hint: You can only call your own essay file.</string>
+    <string name="fragment_speech_recording_all_number">total:</string>
+    <string name="data_unit">data unit</string>
+    <string name="hint_input_search_word">Please input search keyword.</string>
+    <string name="input_keyword">input keyword</string>
 </resources>

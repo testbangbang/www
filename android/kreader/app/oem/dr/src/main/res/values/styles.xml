@@ -475,4 +475,16 @@
         <item name="@android:windowEnterAnimation">@anim/pump_bottom</item>
         <item name="@android:windowExitAnimation">@anim/disappear</item>
     </style>
+
+    <style name="TabSecondStyle">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/rectangle_stroke</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/tab_text_color_selector</item>
+        <item name="android:padding">@dimen/new_word_activity_radio_group_padding</item>
+    </style>
 </resources>

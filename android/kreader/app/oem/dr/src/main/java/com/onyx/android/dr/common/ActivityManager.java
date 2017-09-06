@@ -55,7 +55,6 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 
 
-
 /**
  * Created by hehai on 17-6-29.
  */
@@ -204,9 +203,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startSpeechRecordingActivity(Context context, String content) {
+    public static void startSpeechRecordingActivity(Context context, String title, String content) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.INFORMAL_ESSAY_TITLE, title);
         intent.putExtra(Constants.INFORMAL_ESSAY_CONTENT, content);
         intent.setClass(context, SpeechRecordingActivity.class);
         context.startActivity(intent);

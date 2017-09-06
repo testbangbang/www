@@ -46,6 +46,7 @@ public class Constants {
     public static final String SPEECH_TIME = "speechTime";
     public static final String JUMP_SOURCE = "jumpSource";
     public static final String INFORMAL_ESSAY_CONTENT = "informalEssayContent";
+    public static final String INFORMAL_ESSAY_TITLE = "informalEssayTitle";
 
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
@@ -101,6 +102,7 @@ public class Constants {
     public static final String GROUP_NAME = "group_name";
     public static final String AUTO_LOGIN_FLAG = "auto_login_flag";
     public static final String BOOKSHELF_TYPE = "bookshelf_type";
+    public static final String SEARCH_KEYWORD = "search_keyword";
     public static final String LANGUAGE_BOOKSHELF = "language_bookshelf";
     public static final String GRADED_BOOKSHELF = "graded_bookshelf";
     public static String STANDBY_PIC_DIRECTORY = "/data/local/assets/images/";

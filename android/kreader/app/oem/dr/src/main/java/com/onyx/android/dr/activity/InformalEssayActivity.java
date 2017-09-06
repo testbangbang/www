@@ -124,9 +124,6 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
             public void setOnItemClick(int position, boolean isCheck) {
                 if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY) {
                     listCheck.set(position, isCheck);
-                } else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
-                    informalEssayContent = informalEssayList.get(position).content;
-                    ActivityManager.startSpeechRecordingActivity(InformalEssayActivity.this, informalEssayContent);
                 }
             }
 
@@ -184,6 +181,10 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
+    }
+
+    @Override
+    public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
     }
 
     @Override

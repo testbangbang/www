@@ -9,10 +9,34 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.onyx.android.sdk.ui.view.PageRecyclerView
-        android:id="@+id/hear_and_speak_activity_view"
+    <RadioGroup
+        android:id="@+id/hear_and_speak_activity_radio_group"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/hear_and_speak_activity_view_margin_top"/>
+        android:layout_below="@id/title_bar"
+        android:orientation="horizontal"
+        android:layout_margin="@dimen/new_word_activity_radio_group_padding_top">
+
+        <RadioButton
+            android:id="@+id/hear_and_speak_activity_article_repeat_after"
+            style="@style/TabSecondStyle"
+            android:text="@string/article_repeat_after" />
+
+        <RadioButton
+            android:id="@+id/hear_and_speak_activity_speech_recording"
+            style="@style/TabSecondStyle"
+            android:text="@string/speech_recording" />
+
+        <RadioButton
+            android:id="@+id/hear_and_speak_activity_pronounce_evaluation"
+            style="@style/TabSecondStyle"
+            android:text="@string/pronounce_evaluation" />
+    </RadioGroup>
+
+    <FrameLayout
+        android:id="@+id/hear_and_speak_activity_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
 
 </LinearLayout>

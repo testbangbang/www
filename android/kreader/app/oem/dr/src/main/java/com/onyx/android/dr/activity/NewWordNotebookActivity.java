@@ -3,6 +3,8 @@ package com.onyx.android.dr.activity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -39,6 +41,14 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     TextView title;
     @Bind(R.id.image)
     ImageView image;
+    @Bind(R.id.new_word_activity_radio_group)
+    RadioGroup radioGroup;
+    @Bind(R.id.new_word_activity_english)
+    RadioButton englishRadioButton;
+    @Bind(R.id.new_word_activity_chinese)
+    RadioButton chineseRadioButton;
+    @Bind(R.id.new_word_activity_minority_language)
+    RadioButton minorityLanguageRadioButton;
     private DividerItemDecoration dividerItemDecoration;
     private NewWordAdapter newWordAdapter;
     private NewWordPresenter newWordPresenter;
@@ -94,7 +104,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         } else if (dictType == Constants.CHINESE_TYPE) {
             title.setText(getString(R.string.chinese_new_word_notebook));
         } else if (dictType == Constants.OTHER_TYPE) {
-            title.setText(getString(R.string.dict_query_japanese_language));
+            title.setText(getString(R.string.minority_language_new_word_notebook));
         }
     }
 

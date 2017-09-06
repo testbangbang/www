@@ -10,6 +10,27 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+    <RadioGroup
+        android:id="@+id/new_word_activity_radio_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title_bar"
+        android:orientation="horizontal"
+        android:paddingTop="@dimen/new_word_activity_radio_group_padding_top">
+
+        <RadioButton
+            android:id="@+id/new_word_activity_english"
+            style="@style/TabSecondStyle" />
+
+        <RadioButton
+            android:id="@+id/new_word_activity_chinese"
+            style="@style/TabSecondStyle" />
+
+        <RadioButton
+            android:id="@+id/new_word_activity_minority_language"
+            style="@style/TabSecondStyle" />
+    </RadioGroup>
+
     <RelativeLayout
         android:id="@+id/new_word_activity_bottom"
         android:layout_width="match_parent"
@@ -34,8 +55,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@id/new_word_activity_bottom"
-        android:layout_below="@id/title_bar"
-        android:orientation="vertical">
+        android:layout_below="@id/new_word_activity_radio_group"
+        android:orientation="vertical"
+        android:paddingTop="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
