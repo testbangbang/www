@@ -136,7 +136,7 @@ public class WifiAddAccessPointDialog extends OnyxAlertDialog {
         if (targetSecurityValue <= 0) {
             return ssid.length() > 0;
         } else {
-            return ssid.length() > 0 && password.length() > 5;
+            return ssid.length() > 0 && password.length() >= 5;
         }
     }
 
