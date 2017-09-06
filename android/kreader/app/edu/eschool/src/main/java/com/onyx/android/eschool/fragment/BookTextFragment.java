@@ -349,7 +349,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private String getRealUrl(String url) {
-        if (!url.startsWith(Constant.HTTP_TAG)) {
+        if (StringUtils.isNotBlank(url) && !url.startsWith(Constant.HTTP_TAG)) {
             url = getCloudStore().getCloudConf().getHostBase() + url;
         }
         return url;
