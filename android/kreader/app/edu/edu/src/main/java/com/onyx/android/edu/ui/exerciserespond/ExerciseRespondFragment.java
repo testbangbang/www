@@ -53,7 +53,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
 
     private QuestionsPagerAdapter mQuestionsPagerAdapter;
     private ExerciseRespondContract.ExerciseRespondPresenter mExerciseRespondPresenter;
-    private final static int WHAT = 0x1000;
+    private final static int DELAY_MSG_CODE = 0x1000;
     private final static int DELAY_TIME = 1000;
 
     @Override
@@ -188,7 +188,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if (msg.what == WHAT) {
+            if (msg.what == DELAY_MSG_CODE) {
                 nextQuestion();
             }
         }
@@ -213,7 +213,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
             @Override
             public void insertAnswer(long id, String answer, String score) {
                 mExerciseRespondPresenter.insertAnswerAndScore(EduApp.instance().getBookId(), id, answer, score);
-                handler.sendEmptyMessageDelayed(WHAT, DELAY_TIME);
+                handler.sendEmptyMessageDelayed(DELAY_MSG_CODE, DELAY_TIME);
             }
         });
         return choiceQuestionView;
