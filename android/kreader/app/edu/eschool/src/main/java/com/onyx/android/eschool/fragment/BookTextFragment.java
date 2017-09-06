@@ -621,16 +621,6 @@ public class BookTextFragment extends Fragment {
     private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
         DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
-        downloadAction.execute(getDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                updateContentView();
-                openCloudFile(eBook);
-            }
-        });
         downloadAction.execute(getDataHolder(), null);
     }
 
