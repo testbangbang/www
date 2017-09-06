@@ -1,5 +1,7 @@
 package com.onyx.android.eschool.fragment;
 
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -566,9 +568,13 @@ public class BookTextFragment extends Fragment {
         if (!file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(getContext(),
-                MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book),
-                ViewDocumentUtils.getEduReaderComponentName(getContext()));
+        Intent intent = MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book);
+        ResolveInfo info = ViewDocumentUtils.getDefaultActivityInfo(getContext(), intent,
+                ViewDocumentUtils.getEduReaderComponentName().getPackageName());
+        if (info == null) {
+            return;
+        }
+        ActivityUtil.startActivitySafely(getContext(), intent, info.activityInfo);
     }
 
     private boolean checkBookMetadataPathValid(Metadata book) {
@@ -621,16 +627,6 @@ public class BookTextFragment extends Fragment {
     private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
         DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
-        downloadAction.execute(getDataHolder(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                updateContentView();
-                openCloudFile(eBook);
-            }
-        });
         downloadAction.execute(getDataHolder(), null);
     }
 
