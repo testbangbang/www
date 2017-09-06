@@ -6,9 +6,17 @@
     android:orientation="vertical">
 
     <Button
+        android:id="@+id/back_paper"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_paper"
+        android:textSize="30sp" />
+
+    <Button
         android:id="@+id/commit_paper"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/commit_paper"
-        android:textSize="26sp" />
+        android:textSize="30sp" />
 </LinearLayout>

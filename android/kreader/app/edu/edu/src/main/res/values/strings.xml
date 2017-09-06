@@ -12,6 +12,7 @@
     <string name="train_result">练习成绩</string>
     <string name="commit_result">确认提交</string>
     <string name="commit_paper">提交试卷</string>
+    <string name="check_paper">查看试卷</string>
     <string name="wrong_view">错题库</string>
     <string name="exercise_test">推荐试卷</string>
     <string name="exercise_detail">试卷详情</string>
