@@ -80,7 +80,7 @@ public class ChoiceQuestionView extends BaseQuestionView {
         }
         button.setText(text);
         button.setGravity(Gravity.LEFT | Gravity.CENTER);
-        button.setTextSize(25);
+        button.setTextSize(40);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
