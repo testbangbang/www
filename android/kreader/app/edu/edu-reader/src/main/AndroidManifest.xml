@@ -56,6 +56,8 @@
                 <data android:mimeType="image/bmp"/>
                 <data android:mimeType="image/x-ms-bmp"/>
                 <data android:mimeType="image/x-windows-bmp"/>
+                <data android:mimeType="image/tiff"/>
+                <data android:mimeType="image/image/tiff-fx"/>
                 <data android:mimeType="application/djvu" />
                 <data android:mimeType="text/xml" />
                 <data android:mimeType="text/plain" />
@@ -140,6 +142,8 @@
                 <data android:pathPattern=".*\\.prc"/>
                 <data android:pathPattern=".*\\.rtf"/>
                 <data android:pathPattern=".*\\.sxw"/>
+                <data android:pathPattern=".*\\.tif"/>
+                <data android:pathPattern=".*\\.tiff"/>
                 <data android:pathPattern=".*\\.trc"/>
                 <data android:pathPattern=".*\\.txt"/>
                 <data android:pathPattern=".*\\.zip"/>
