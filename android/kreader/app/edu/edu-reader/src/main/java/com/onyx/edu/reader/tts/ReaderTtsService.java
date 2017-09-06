@@ -52,21 +52,36 @@ public class ReaderTtsService {
 
     Handler handler = new Handler();
 
-    public ReaderTtsService(final Context context, Callback callback) {
+    public ReaderTtsService(final Context context, Callback callback, String engine) {
         this.context = context;
         this.callback = callback;
 
-        ttsService = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
-
-            @Override
-            public void onInit(int status) {
-                Debug.d(getClass(), "onInit: " + status);
-                if (status == TextToSpeech.SUCCESS) {
-                    initTtsService();
-                }
-            }
-        });
+        final Runnable runnable = initializeRunnable(context.getApplicationContext(), engine);
+        new Thread(runnable).start();
     }
+
+    public ReaderTtsService(final Context context, Callback callback) {
+        this(context, callback, null);
+    }
+
+    private  Runnable initializeRunnable(final Context context, final String engine) {
+        return new Runnable() {
+            @Override
+            public void run() {
+                ttsService = new TextToSpeech(context, new TextToSpeech.OnInitListener() {
+
+                    @Override
+                    public void onInit(int status) {
+                        Debug.d(getClass(), "onInit: " + status);
+                        if (status == TextToSpeech.SUCCESS) {
+                            initTtsService();
+                        }
+                    }
+                }, engine);
+            }
+        };
+    }
+
 
     private void initTtsService() {
         ttsService.setOnUtteranceProgressListener(new UtteranceProgressListener() {
@@ -100,7 +115,6 @@ public class ReaderTtsService {
                 });
             }
         });
-
         initTtsLanguage();
     }
 

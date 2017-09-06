@@ -71,6 +71,7 @@ public class DeviceConfig {
     private boolean exitAfterFinish = false;
     private String umengKey;
     private String channel;
+    private String ttsEngine;
 
     // in seconds
     private int slideshowMinimumInterval = 1;
@@ -604,6 +605,14 @@ public class DeviceConfig {
 
     public void setStatisticsUrl(String statisticsUrl) {
         this.statisticsUrl = statisticsUrl;
+    }
+
+    public String getTtsEngine() {
+        return ttsEngine;
+    }
+
+    public void setTtsEngine(String ttsEngine) {
+        this.ttsEngine = ttsEngine;
     }
 
     public static void adjustOptionsWithDeviceConfig(final BaseOptions baseOptions, final Context context) {

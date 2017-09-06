@@ -1,6 +1,7 @@
 package com.onyx.edu.reader.tts;
 
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 
 /**
@@ -42,7 +43,7 @@ public class ReaderTtsManager {
             public void onError() {
                 readerDataHolder.notifyTtsError();
             }
-        });
+        }, DeviceConfig.sharedInstance(readerDataHolder.getContext()).getTtsEngine());
     }
 
     public boolean isSpeaking() {

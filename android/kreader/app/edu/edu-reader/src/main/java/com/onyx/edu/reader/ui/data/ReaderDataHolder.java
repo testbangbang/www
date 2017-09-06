@@ -696,6 +696,13 @@ public class ReaderDataHolder {
         documentInitRendered = true;
         getEventBus().post(new DocumentInitRenderedEvent());
         cloudConfInit();
+        initTtsManager();
+    }
+
+    private void initTtsManager() {
+        if (ttsManager == null) {
+            ttsManager = new ReaderTtsManager(this);
+        }
     }
 
     private void cloudConfInit() {

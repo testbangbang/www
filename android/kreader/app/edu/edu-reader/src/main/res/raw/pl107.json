@@ -1,5 +1,5 @@
 {
-  "ttsEnabled" : false,
+  "ttsEnabled" : true,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
   "askForClose" : true,
@@ -13,6 +13,7 @@
   "gcInterval" : 1,
   "customFormEnabled" : true,
   "enableDictWebSearch" : false,
+  "ttsEngine" : "com.iflytek.tts",
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
