@@ -7,10 +7,14 @@ import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 
+import org.beyka.tiffbitmapfactory.TiffBitmapFactory;
+
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Locale;
 
 /**
  * Created by joy on 2/22/16.
@@ -21,36 +25,47 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     private static final HashMap<String, ImageInformation> infoCache = new HashMap<String, ImageInformation>();
 
     public static boolean drawImage(final InputStream stream, final float scale, int rotation, final RectF displayRect, final RectF positionRect, final RectF visibleRect, final Bitmap bitmap) {
-        int pageWidth = (int)(positionRect.width() / scale);
-        int pageHeight = (int)(positionRect.height() / scale);
-
         ReaderBitmapReferenceImpl srcImage = null;
-        ReaderBitmapReferenceImpl subImage = null;
         try {
             srcImage = ReaderBitmapReferenceImpl.decodeStream(stream, ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
-
-            Rect bitmapRegion = new Rect((int) (visibleRect.left / scale), (int) (visibleRect.top / scale),
-                    (int) (visibleRect.right / scale), (int) (visibleRect.bottom / scale));
-            subImage = createSubImage(srcImage.getBitmap(), bitmapRegion);
-
-            renderToBitmap(subImage.getBitmap(), bitmap, bitmapRegion, pageWidth, pageHeight,
-                    (int) displayRect.left, (int) displayRect.top,
-                    (int) displayRect.width(), (int) displayRect.height());
+            drawBitmap(srcImage.getBitmap(), bitmap, scale, rotation, displayRect, positionRect, visibleRect);
             return true;
         } catch (Throwable tr) {
             Log.w(TAG, tr);
         } finally {
             FileUtils.closeQuietly(srcImage);
-            FileUtils.closeQuietly(subImage);
         }
 
         return false;
     }
 
+    private static void drawBitmap(final Bitmap src, final Bitmap dst, final float scale, int rotation, final RectF displayRect, final RectF positionRect, final RectF visibleRect) {
+        int pageWidth = (int)(positionRect.width() / scale);
+        int pageHeight = (int)(positionRect.height() / scale);
+
+        Rect bitmapRegion = new Rect((int) (visibleRect.left / scale), (int) (visibleRect.top / scale),
+                (int) (visibleRect.right / scale), (int) (visibleRect.bottom / scale));
+        ReaderBitmapReferenceImpl subImage = createSubImage(src, bitmapRegion);
+
+        try {
+            renderToBitmap(subImage.getBitmap(), dst, bitmapRegion, pageWidth, pageHeight,
+                    (int) displayRect.left, (int) displayRect.top,
+                    (int) displayRect.width(), (int) displayRect.height());
+        } finally {
+            FileUtils.closeQuietly(subImage);
+        }
+    }
+
     public ImageInformation imageInfo(final String path) {
         if (!infoCache.containsKey(path)) {
             ImageInformation imageInformation = new ImageInformation();
-            if (!BitmapUtils.decodeBitmapSize(path, imageInformation.getSize())) {
+            if (isTiffImage(path)) {
+                final TiffBitmapFactory.Options options = new TiffBitmapFactory.Options();
+                options.inJustDecodeBounds = true;
+                TiffBitmapFactory.decodeFile(new File(path), options);
+                imageInformation.getSize().width = options.outWidth;
+                imageInformation.getSize().height = options.outHeight;
+            } else if (!BitmapUtils.decodeBitmapSize(path, imageInformation.getSize())) {
                 return null;
             }
             saveImageInformation(path, imageInformation);
@@ -59,6 +74,13 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
     }
 
     public boolean drawImage(final String imagePath, final float scale, int rotation, final RectF displayRect, final RectF positionRect, final RectF visibleRect, final Bitmap bitmap) {
+        if (isTiffImage(imagePath)) {
+            final TiffBitmapFactory.Options options = new TiffBitmapFactory.Options();
+            Bitmap src = TiffBitmapFactory.decodeFile(new File(imagePath), options);
+            drawBitmap(src, bitmap, scale, rotation, displayRect, positionRect, visibleRect);
+            return true;
+        }
+
         FileInputStream stream = null;
         try {
             stream = new FileInputStream(imagePath);
@@ -119,6 +141,11 @@ public class ImagesAndroidWrapper implements ImagesWrapper {
 //        paint.setDither(true);
         Matrix matrix = mapViewportToScreen(viewportRegion, docWidth, docHeight, x, y, width, height);
         canvas.drawBitmap(viewportBitmap, matrix, paint);
+    }
+
+    private static boolean isTiffImage(String path) {
+        return path.toLowerCase(Locale.getDefault()).endsWith(".tif") ||
+                path.toLowerCase(Locale.getDefault()).endsWith(".tiff");
     }
 
 }
