@@ -209,6 +209,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.EXIT, R.drawable.ic_exit, R.string.exit),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_SCRIBBLE, R.drawable.ic_write, R.string.scribble),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.DIRECTORY_TOC, R.drawable.ic_topic, R.string.toc),
+                (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.TTS, R.drawable.ic_tts, R.string.popup_selection_menu_start_tts),
                 (ReaderLayerMenuItem) ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.REFRESH, R.drawable.ic_refresh, R.string.screen_refresh)
         };
         readerMenu = new EduMenu(readerDataHolder.getContext());
