@@ -46,5 +46,15 @@
     "startX": 225,
     "startY": 930
   },
-  "enable_full_refresh": false
+  "enable_full_refresh": false,
+  "media_scan_support": true,
+  "music_dir": [
+    "Music",
+    "Movies",
+    "cloud"
+  ],
+  "gallery_dir": [
+    "Pictures",
+    "DCIM"
+  ]
 }

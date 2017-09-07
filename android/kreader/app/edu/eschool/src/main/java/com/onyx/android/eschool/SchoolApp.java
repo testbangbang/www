@@ -9,6 +9,7 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.eschool.action.ContentImportAction;
+import com.onyx.android.eschool.action.MediaScanAction;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
@@ -48,6 +49,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -63,6 +65,7 @@ public class SchoolApp extends MultiDexApplication {
     static private LibraryDataHolder libraryDataHolder;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private HashSet<String> mediaFilesSet = new LinkedHashSet<>();
 
     @Override
     public void onCreate() {
@@ -218,6 +221,14 @@ public class SchoolApp extends MultiDexApplication {
 
     private void initEventListener() {
         deviceReceiver.setMediaStateListener(new DeviceReceiver.MediaStateListener() {
+
+            @Override
+            public void onMediaScanStarted(Intent intent) {
+                if (DeviceConfig.sharedInstance(getApplicationContext()).supportMediaScan()) {
+                    processMediaScan();
+                }
+            }
+
             @Override
             public void onMediaMounted(Intent intent) {
                 Log.w(TAG, "onMediaMounted " + intent.getData().toString());
@@ -275,6 +286,13 @@ public class SchoolApp extends MultiDexApplication {
         }
         ContentImportAction importAction = new ContentImportAction(file.getAbsolutePath(), true);
         importAction.execute(getLibraryDataHolder(), null);
+    }
+
+    private void processMediaScan() {
+        MediaScanAction mediaScanAction = new MediaScanAction(
+                DeviceConfig.sharedInstance(getApplicationContext()).getMediaDir(),
+                mediaFilesSet, true);
+        mediaScanAction.execute(getLibraryDataHolder(), null);
     }
 
     public void turnOffLed() {

@@ -8,9 +8,11 @@ import com.onyx.android.eschool.BuildConfig;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -54,6 +56,10 @@ public class DeviceConfig {
     static public final String DEVICE_INFO_SHOW_CONFIG = "info_show_config";
 
     static public final String ENABLE_FULL_REFRESH = "enable_full_refresh";
+
+    static public final String MEDIA_SCAN_SUPPORT = "media_scan_support";
+    static public final String GALLERY_DIR = "gallery_dir";
+    static public final String MUSIC_DIR = "music_dir";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -230,5 +236,34 @@ public class DeviceConfig {
 
     public boolean enableFullRefresh() {
         return backend.getBoolean(ENABLE_FULL_REFRESH, true);
+    }
+
+    public boolean supportMediaScan() {
+        return backend.getBoolean(MEDIA_SCAN_SUPPORT, true);
+    }
+
+    public List<String> getMusicDir() {
+        if (backend.hasKey(MUSIC_DIR)) {
+            return backend.getList(MUSIC_DIR);
+        }
+        return null;
+    }
+
+    public List<String> getGalleryDir() {
+        if (backend.hasKey(GALLERY_DIR)) {
+            return backend.getList(GALLERY_DIR);
+        }
+        return null;
+    }
+
+    public List<String> getMediaDir() {
+        List<String> list = new ArrayList<>();
+        if (!CollectionUtils.isNullOrEmpty(getMusicDir())) {
+            list.addAll(getMusicDir());
+        }
+        if (!CollectionUtils.isNullOrEmpty(getGalleryDir())) {
+            list.addAll(getGalleryDir());
+        }
+        return list;
     }
 }
