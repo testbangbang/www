@@ -708,21 +708,12 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_gam
     imgfilter::ImageGammaFilter filter;
     filter.setGamma(gamma);
 
-    int length = 0;
-    if (regions != NULL) {
-        length = env->GetArrayLength(regions);
-    }
-    if (regions == NULL || length <= 0) {
-        return true;
-        //return filter.doFilterInPlace((AndroidBitmapFormat)info.format, (unsigned char *)pixels, info.width, info.height);
-    }
-
-    jboolean isCopy = false;
-    jfloat * temp = env->GetFloatArrayElements(regions, &isCopy);
+    JNIFloatArray array(env, regions);
+    const jfloat * temp = array.getLocalArray();
     if (temp == NULL) {
         return false;
     }
-    for(int i = 0; i < length / 4; ++i) {
+    for(int i = 0; i < array.getLength() / 4; ++i) {
         filter.doRegionFilterInPlace((AndroidBitmapFormat)info.format,
                 (unsigned char *)pixels,
                 temp[i * 4],

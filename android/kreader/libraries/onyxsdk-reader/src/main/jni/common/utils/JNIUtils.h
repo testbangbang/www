@@ -195,6 +195,45 @@ public:
     
 };
 
+class JNIFloatArray {
+
+private:
+    JNIEnv * myEnv;
+    const jfloatArray & javaFloatArray;
+    float * localFloatArray;
+    int length = 0;
+
+public:
+    JNIFloatArray(JNIEnv *env, const jfloatArray & array): myEnv(env), javaFloatArray(array), localFloatArray(0)  {
+
+        if (array != NULL) {
+            length = env->GetArrayLength(array);
+        }
+        if (array == NULL || length <= 0) {
+            return;
+        }
+        localFloatArray = env->GetFloatArrayElements(array, 0);
+    }
+
+    ~JNIFloatArray() {
+        if (localFloatArray != 0) {
+            myEnv->ReleaseFloatArrayElements(javaFloatArray, localFloatArray, 0);
+        }
+        localFloatArray = 0;
+        length = 0;
+    }
+
+public:
+    const float * getLocalArray() {
+        return localFloatArray;
+    }
+
+    int getLength() {
+        return length;
+    }
+};
+
+
 class JByteArray {
     
 private:
