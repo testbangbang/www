@@ -21,6 +21,17 @@ public class Menu {
 
     private SparseArray<MenuItem> itemMap;
 
+    public static Menu addMenu(ViewGroup parent,
+                               EventBus eventBus,
+                               int layoutId,
+                               int menuVariable,
+                               ViewGroup.LayoutParams params,
+                               SparseArray<MenuItem> menuItemMap) {
+        Menu menu = Menu.create(parent.getContext(), eventBus, layoutId, menuVariable, menuItemMap);
+        menu.show(parent, params);
+        return menu;
+    }
+
     public static Menu create(final Context context,
                               final EventBus eventBus,
                               final int layoutId,
