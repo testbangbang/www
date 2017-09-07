@@ -193,7 +193,6 @@ public class HearAndSpeakActivity extends BaseActivity implements HearAndSpeakVi
             if (!StringUtils.isNullOrEmpty(text)) {
                 DRPreferenceManager.saveSearchKeyword(this, text);
                 EventBus.getDefault().post(new SearchKeywordEvent());
-//                switchCurrentFragment(currentPageID);
             } else {
                 CommonNotices.showMessage(this, getString(R.string.hint_input_search_word));
             }

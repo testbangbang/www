@@ -538,9 +538,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDictFunctionVisibleEvent(DictFunctionVisibleEvent event) {
-//        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) resultContainer.getLayoutParams();
-//        layoutParams.bottomMargin = (int) getResources().getDimension(R.dimen.dict_result_function_height);
-//        resultContainer.setLayoutParams(layoutParams);
         functionContainer.setVisibility(View.VISIBLE);
         testWordDictQuery();
     }

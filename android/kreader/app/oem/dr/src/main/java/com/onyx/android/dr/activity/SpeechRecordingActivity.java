@@ -57,20 +57,6 @@ public class SpeechRecordingActivity extends BaseActivity
     ImageButton stopButton;
     @Bind(R.id.speech_recording_activity_record_playback)
     ImageButton playButton;
-//    @Bind(R.id.record_time_activity_discard)
-//    Button discardButton;
-//    @Bind(R.id.record_time_activity_accept)
-//    Button acceptButton;
-//    @Bind(R.id.record_time_activity_timer_view)
-//    TextView timerView;
-//    @Bind(R.id.record_time_activity_state_one)
-//    TextView stateOne;
-//    @Bind(R.id.record_time_activity_state_two)
-//    TextView stateTwo;
-//    @Bind(R.id.speech_recording_activity_state)
-//    ImageView stateLED;
-//    @Bind(R.id.speech_recording_activity_exit_buttons)
-//    LinearLayout exitButtons;
     @Bind(R.id.record_time_activity_progressbar)
     ProgressBar stateProgressBar;
     private static final String RECORDER_STATE_KEY = "recorder_state";
@@ -209,15 +195,6 @@ public class SpeechRecordingActivity extends BaseActivity
             case R.id.speech_recording_activity_stop:
                 recorder.stop();
                 break;
-//            case R.id.record_time_activity_accept:
-//                recorder.stop();
-//                saveSample();
-////                exitButtons.setVisibility(View.GONE);
-//                break;
-//            case R.id.record_time_activity_discard:
-//                recorder.delete();
-////                exitButtons.setVisibility(View.GONE);
-//                break;
         }
     }
 
@@ -456,7 +433,6 @@ public class SpeechRecordingActivity extends BaseActivity
         boolean ongoing = state == Recorder.RECORDING_STATE || state == Recorder.PLAYING_STATE;
         long time = ongoing ? recorder.progress() : recorder.sampleLength();
         String timeStr = String.format(timerFormat, time / SIXTY, time % SIXTY);
-//        timerView.setText(timeStr);
         if (state == Recorder.PLAYING_STATE) {
             stateProgressBar.setProgress((int) (PROGRESS_VALUE * time / recorder.sampleLength()));
         } else if (state == Recorder.RECORDING_STATE) {
@@ -497,7 +473,6 @@ public class SpeechRecordingActivity extends BaseActivity
             timeStr = String.format(res.getString(R.string.sec_available), t);
         else if (t < MINUTE_VALUE)
             timeStr = String.format(res.getString(R.string.min_available), t / SIXTY + 1);
-//        stateOne.setText(timeStr);
     }
 
     /**
@@ -512,51 +487,24 @@ public class SpeechRecordingActivity extends BaseActivity
                     playButton.setEnabled(false);
                     stopButton.setEnabled(false);
                     recordButton.requestFocus();
-//                    stateOne.setVisibility(View.INVISIBLE);
-//                    stateLED.setVisibility(View.INVISIBLE);
-//                    stateTwo.setVisibility(View.INVISIBLE);
-//                    exitButtons.setVisibility(View.GONE);
                     stateProgressBar.setVisibility(View.INVISIBLE);
                 } else {
                     recordButton.setEnabled(true);
                     playButton.setEnabled(true);
                     stopButton.setEnabled(false);
-//                    stateOne.setVisibility(View.INVISIBLE);
-//                    stateLED.setVisibility(View.INVISIBLE);
-//                    stateTwo.setVisibility(View.INVISIBLE);
-//                    exitButtons.setVisibility(View.VISIBLE);
                     stateProgressBar.setVisibility(View.INVISIBLE);
                 }
-//                if (sampleInterrupted) {
-////                    stateTwo.setVisibility(View.VISIBLE);
-////                    stateTwo.setText(res.getString(R.string.recording_stopped));
-////                    stateLED.setVisibility(View.INVISIBLE);
-//                }
-//                if (errorUiMessage != null) {
-//                    stateOne.setText(errorUiMessage);
-//                    stateOne.setVisibility(View.VISIBLE);
-//                }
                 break;
             case Recorder.RECORDING_STATE:
                 recordButton.setEnabled(false);
                 playButton.setEnabled(false);
                 stopButton.setEnabled(true);
-//                stateOne.setVisibility(View.VISIBLE);
-//                stateLED.setVisibility(View.VISIBLE);
-//                stateLED.setImageResource(R.drawable.recording_led);
-//                stateTwo.setVisibility(View.VISIBLE);
-//                stateTwo.setText(res.getString(R.string.record));
-//                exitButtons.setVisibility(View.GONE);
                 stateProgressBar.setVisibility(View.INVISIBLE);
                 break;
             case Recorder.PLAYING_STATE:
                 recordButton.setEnabled(true);
                 playButton.setEnabled(false);
                 stopButton.setEnabled(true);
-//                stateOne.setVisibility(View.INVISIBLE);
-//                stateLED.setVisibility(View.INVISIBLE);
-//                stateTwo.setVisibility(View.INVISIBLE);
-//                exitButtons.setVisibility(View.VISIBLE);
                 stateProgressBar.setVisibility(View.VISIBLE);
                 break;
         }
