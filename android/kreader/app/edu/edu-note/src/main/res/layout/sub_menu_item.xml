@@ -19,6 +19,7 @@
         android:background="@drawable/image_button_bg"
         android:onClick="@{(v) ->item.menuClicked(v)}"
         android:visibility="@{item.visibility}"
+        android:enabled="@{item.enabled}"
         appCompat:alwaysLayoutImageView="true">
 
         <ImageView

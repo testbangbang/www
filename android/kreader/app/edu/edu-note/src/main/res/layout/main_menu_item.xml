@@ -9,6 +9,7 @@
     </data>
 
     <ImageView
+        android:enabled="@{item.enabled}"
         android:background="@drawable/imagebtn_bg"
         android:paddingLeft="@dimen/menu_padding_left_right"
         android:paddingRight="@dimen/menu_padding_left_right"
