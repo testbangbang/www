@@ -3,6 +3,7 @@ package com.onyx.edu.note.util;
 import android.support.annotation.IdRes;
 import android.util.SparseIntArray;
 
+import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
@@ -65,27 +66,27 @@ public class ScribbleFunctionItemUtils {
 
     private static void buildToolBarMenuIDIconSparseArray() {
         sToolBarMenuItemIDIconSparseArray = new SparseIntArray();
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE, R.drawable.ic_vector);
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE, R.drawable.ic_note);
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.UNDO, R.drawable.ic_undo);
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SAVE, R.drawable.ic_save);
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.REDO, R.drawable.ic_redo);
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.SETTING, R.drawable.ic_setting);
-        sToolBarMenuItemIDIconSparseArray.put(ScribbleToolBarMenuID.EXPORT, R.drawable.ic_export);
+        sToolBarMenuItemIDIconSparseArray.put(MenuId.SWITCH_TO_SPAN_SCRIBBLE_MODE, R.drawable.ic_vector);
+        sToolBarMenuItemIDIconSparseArray.put(MenuId.SWITCH_TO_NORMAL_SCRIBBLE_MODE, R.drawable.ic_note);
+        sToolBarMenuItemIDIconSparseArray.put(MenuId.UNDO, R.drawable.ic_undo);
+        sToolBarMenuItemIDIconSparseArray.put(MenuId.SAVE, R.drawable.ic_save);
+        sToolBarMenuItemIDIconSparseArray.put(MenuId.REDO, R.drawable.ic_redo);
+        sToolBarMenuItemIDIconSparseArray.put(MenuId.SETTING, R.drawable.ic_setting);
+        sToolBarMenuItemIDIconSparseArray.put(MenuId.EXPORT, R.drawable.ic_export);
     }
 
     private static void buildFunctionMenuIDIconSparseArray() {
         sFunctionBarMenuItemIDIconSparseArray = new SparseIntArray();
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.PEN_STYLE, R.drawable.ic_shape);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.BG, R.drawable.ic_template);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.ERASER, R.drawable.ic_eraser);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.PEN_WIDTH, R.drawable.ic_width);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.DELETE, R.drawable.ic_delet_big);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.SPACE, R.drawable.ic_space);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.ENTER, R.drawable.ic_enter);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.KEYBOARD, R.drawable.ic_keyboard);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.COLOR, R.drawable.ic_color);
-        sFunctionBarMenuItemIDIconSparseArray.put(ScribbleFunctionBarMenuID.SHAPE_SELECT, R.drawable.ic_menu_more);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.PEN_STYLE, R.drawable.ic_shape);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.BG, R.drawable.ic_template);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.ERASER, R.drawable.ic_eraser);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.PEN_WIDTH, R.drawable.ic_width);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.DELETE, R.drawable.ic_delet_big);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.SPACE, R.drawable.ic_space);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.ENTER, R.drawable.ic_enter);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.KEYBOARD, R.drawable.ic_keyboard);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.COLOR, R.drawable.ic_color);
+        sFunctionBarMenuItemIDIconSparseArray.put(MenuId.SHAPE_SELECT, R.drawable.ic_menu_more);
     }
 
     private static void buildSubMenuIDIconSparseArray() {

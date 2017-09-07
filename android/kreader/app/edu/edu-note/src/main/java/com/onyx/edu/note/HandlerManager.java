@@ -6,9 +6,6 @@ import android.text.TextUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
-import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.handler.BaseHandler;
 import com.onyx.edu.note.handler.HandlerArgs;
 import com.onyx.edu.note.handler.PicEditHandler;
@@ -89,17 +86,17 @@ public class HandlerManager {
         setActiveProvider(targetProviderName, args);
     }
 
-    public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
-        getActiveProvider().handleSubMenuFunction(subMenuID);
+    public void handleSubMenuFunction(int subMenuID) {
+        getActiveProvider().handleSubMenuEvent(subMenuID);
     }
 
-    public void handleToolBarMenuFunction(@ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID) {
-        getActiveProvider().handleToolBarMenuFunction(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
+    public void handleToolBarMenuFunction(int toolBarMenuID) {
+        getActiveProvider().handleToolBarMenuEvent(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
                 toolBarMenuID);
     }
 
-    public void handleFunctionBarMenuFunction(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID) {
-        getActiveProvider().handleFunctionBarMenuFunction(functionBarMenuID);
+    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
+        getActiveProvider().handleMainMenuEvent(functionBarMenuID);
     }
 
     public void saveDocument(boolean closeAfterSave, BaseCallback callback) {

@@ -17,14 +17,9 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
-import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
-import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -35,10 +30,6 @@ public abstract class BaseHandler {
     private static final String TAG = BaseHandler.class.getSimpleName();
     protected NoteManager noteManager;
 
-    List<Integer> functionBarMenuIDList = new ArrayList<>();
-    List<Integer> toolBarMenuIDList = new ArrayList<>();
-    SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
-
     private Shape currentShape = null;
     private TouchPointList erasePoints;
 
@@ -48,10 +39,10 @@ public abstract class BaseHandler {
 
     @CallSuper
     public void onActivate(HandlerArgs args) {
-        buildFunctionBarMenuFunctionList();
-        buildToolBarMenuFunctionList();
-        buildFunctionBarMenuSubMenuIDListSparseArray();
-        noteManager.post(new HandlerActivateEvent(functionBarMenuIDList, toolBarMenuIDList, functionBarSubMenuIDMap));
+        buildMainMenuIds();
+        buildToolBarMenuIds();
+        buildSubMenuIds();
+//        noteManager.post(new HandlerActivateEvent(functionBarMenuIDList, toolBarMenuIDList, functionBarSubMenuIDMap));
     }
 
     public void onDeactivate() {
@@ -60,18 +51,17 @@ public abstract class BaseHandler {
     public void close() {
     }
 
-    protected abstract void buildFunctionBarMenuFunctionList();
+    public abstract List<Integer> buildMainMenuIds();
 
-    protected abstract void buildToolBarMenuFunctionList();
+    public abstract List<Integer> buildToolBarMenuIds();
 
-    protected abstract void buildFunctionBarMenuSubMenuIDListSparseArray();
+    public abstract SparseArray<List<Integer>> buildSubMenuIds();
 
-    public abstract void handleFunctionBarMenuFunction(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID);
+    public abstract void handleMainMenuEvent(int functionBarMenuID);
 
-    public abstract void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID);
+    public abstract void handleSubMenuEvent(int subMenuID);
 
-    public abstract void handleToolBarMenuFunction(String uniqueID, String title,
-                                                   @ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID);
+    public abstract void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID);
 
     public abstract void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback);
 

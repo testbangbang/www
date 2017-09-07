@@ -8,6 +8,7 @@ import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -59,7 +60,8 @@ public class PicEditHandler extends BaseHandler {
     private BaseCallback mActionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            noteManager.post(new RequestInfoUpdateEvent(request, e));
+            AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest) request;
+            noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
         }
     };
 
@@ -80,7 +82,8 @@ public class PicEditHandler extends BaseHandler {
         action.execute(noteManager, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteManager.post(new RequestInfoUpdateEvent(request, e));
+                AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest) request;
+                noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
                 noteManager.setCustomLimitRect(getPicCustomLimitRect(path));
             }
         });
@@ -102,30 +105,33 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void buildFunctionBarMenuFunctionList() {
-        functionBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildMainMenuIds() {
+        List<Integer> functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
+        return functionBarMenuIDList;
     }
 
     @Override
-    protected void buildToolBarMenuFunctionList() {
-        toolBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildToolBarMenuIds() {
+        List<Integer> toolBarMenuIDList = new ArrayList<>();
         toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        return toolBarMenuIDList;
     }
 
     @Override
-    protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        functionBarSubMenuIDMap = new SparseArray<>();
+    public SparseArray<List<Integer>> buildSubMenuIds() {
+        SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        return functionBarSubMenuIDMap;
     }
 
     @Override
-    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
+    public void handleMainMenuEvent(int functionBarMenuID) {
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.SHAPE_SELECT:
                 onSetShapeSelectModeChanged();
@@ -137,8 +143,8 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void handleSubMenuFunction(int subMenuID) {
-        Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
+    public void handleSubMenuEvent(int subMenuID) {
+        Log.e(TAG, "handleSubMenuEvent: " + subMenuID);
         if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
             onStrokeWidthChanged(subMenuID);
         } else if (ScribbleSubMenuID.isEraserGroup(subMenuID)) {
@@ -151,7 +157,7 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
+    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
                 switchToSpanLayoutMode();

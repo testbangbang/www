@@ -9,6 +9,7 @@ import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildLineBreakShapeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildTextShapeEvent;
@@ -92,7 +93,8 @@ public class SpanTextHandler extends BaseHandler {
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            noteManager.post(new RequestInfoUpdateEvent(request, e));
+            AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
+            noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
             if (reloadPageShape) {
                 loadPageShapes();
             }
@@ -118,35 +120,38 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public void buildFunctionBarMenuFunctionList() {
-        functionBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildMainMenuIds() {
+        List<Integer> functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.DELETE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SPACE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ENTER);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.KEYBOARD);
+        return functionBarMenuIDList;
     }
 
     @Override
-    protected void buildToolBarMenuFunctionList() {
-        toolBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildToolBarMenuIds() {
+        List<Integer> toolBarMenuIDList = new ArrayList<>();
         toolBarMenuIDList.add(ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.SAVE);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        return toolBarMenuIDList;
     }
 
     @Override
-    protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        functionBarSubMenuIDMap = new SparseArray<>();
+    public SparseArray<List<Integer>> buildSubMenuIds() {
+        SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
+        return functionBarSubMenuIDMap;
     }
 
     @Override
-    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
-        Log.e(TAG, "handleFunctionBarMenuFunction: " + functionBarMenuID);
+    public void handleMainMenuEvent(int functionBarMenuID) {
+        Log.e(TAG, "handleMainMenuEvent: " + functionBarMenuID);
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.DELETE:
                 deleteSpan(true);
@@ -179,8 +184,8 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public void handleSubMenuFunction(int subMenuID) {
-        Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
+    public void handleSubMenuEvent(int subMenuID) {
+        Log.e(TAG, "handleSubMenuEvent: " + subMenuID);
         if (ScribbleSubMenuID.isBackgroundGroup(subMenuID)) {
             onBackgroundChanged(subMenuID);
         } else if (ScribbleSubMenuID.isPenStyleGroup(subMenuID)) {
@@ -189,7 +194,7 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
+    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE:
                 noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
