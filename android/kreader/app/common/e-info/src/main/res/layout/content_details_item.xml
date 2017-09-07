@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/book_list_item_padding"
+    android:gravity="center_vertical"
+    app:alwaysLayoutImageView="true">
+
+    <RelativeLayout
+        android:id="@+id/cover_panel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:padding="4dp"
+        android:background="@drawable/imagebtn_bg">
+
+        <ImageView
+            android:id="@+id/image_cover"
+            android:layout_width="@dimen/book_list_item_cover_image_width"
+            android:layout_height="@dimen/book_list_item_cover_image_height"
+            android:scaleType="fitXY"
+            android:src="@drawable/cloud_default_cover_detail" />
+
+        <ImageView
+            android:id="@+id/image_get_widget"
+            android:layout_width="@dimen/book_list_item_get_image_width"
+            android:layout_height="@dimen/book_list_item_get_image_height"
+            android:layout_alignTop="@+id/image_cover"
+            android:src="@drawable/book_item_get_widget"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/textView_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/cover_panel"
+        android:layout_marginLeft="@dimen/book_list_item_text_margin_left"
+        android:layout_toRightOf="@+id/cover_panel"
+        android:textSize="@dimen/book_list_item_text_size" />
+
+    <TextView
+        android:id="@+id/textView_recommend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView_title"
+        android:layout_alignBottom="@+id/cover_panel"
+        android:layout_toRightOf="@+id/cover_panel"
+        android:text="@string/text_recommend_person"
+        android:textSize="@dimen/book_list_item_text_size" />
+
+    <TextView
+        android:id="@+id/textView_authors"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/cover_panel"
+        android:layout_marginLeft="@dimen/book_list_item_author_text_margin_left"
+        android:layout_toRightOf="@+id/textView_recommend"
+        android:textSize="@dimen/book_list_item_text_size" />
+
+    <ImageView
+        android:id="@+id/image_message_widget"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@+id/cover_panel"
+        android:layout_alignTop="@+id/cover_panel"
+        android:layout_marginRight="@dimen/book_list_item_notification_image_margin_right"
+        android:layout_marginTop="@dimen/book_list_item_notification_image_margin_top"
+        android:src="@drawable/ic_message"
+        android:visibility="gone" />
+
+</com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

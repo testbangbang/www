@@ -28,6 +28,8 @@
     <dimen name="book_item_cover_image_height">310dp</dimen>
     <dimen name="book_item_get_image_width">55dp</dimen>
     <dimen name="book_item_get_image_height">32dp</dimen>
+    <dimen name="book_item_notification_image_margin_top">-16dp</dimen>
+    <dimen name="book_item_notification_image_margin_right">12dp</dimen>
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -38,5 +40,16 @@
     <dimen name="tab_layout_tab_image_margin">42dp</dimen>
 
     <dimen name="menu_item_text_size">28sp</dimen>
+
+    <dimen name="book_list_item_cover_image_width">118dp</dimen>
+    <dimen name="book_list_item_cover_image_height">144dp</dimen>
+    <dimen name="book_list_item_get_image_width">35dp</dimen>
+    <dimen name="book_list_item_get_image_height">21dp</dimen>
+    <dimen name="book_list_item_notification_image_margin_top">-15dp</dimen>
+    <dimen name="book_list_item_notification_image_margin_right">-16dp</dimen>
+    <dimen name="book_list_item_text_size">24sp</dimen>
+    <dimen name="book_list_item_text_margin_left">26dp</dimen>
+    <dimen name="book_list_item_author_text_margin_left">8dp</dimen>
+    <dimen name="book_list_item_padding">14dp</dimen>
 
 </resources>

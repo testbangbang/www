@@ -26,12 +26,8 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         this.pageTabList = pageTabList;
     }
 
-    private ContentFragment getCommonContentFragment(String fragmentName, Library library) {
-        String libraryId = null;
-        if (library != null) {
-            libraryId = library.getIdString();
-        }
-        return ContentFragment.newInstance(fragmentName, libraryId);
+    private Fragment getCommonContentFragment(String fragmentName, Library library) {
+        return ContentFragment.newInstance(fragmentName, library);
     }
 
     private Fragment getContentFragment(Library library) {

@@ -4,6 +4,7 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.DeviceBind_Table;
 import com.raizlabs.android.dbflow.annotation.Database;
@@ -59,6 +60,8 @@ public class ContentDatabase {
         @Override
         public void onPreMigrate() {
             addColumn(SQLiteType.TEXT, DeviceBind_Table.tag.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, Metadata_Table.ordinal.getNameAlias().name());
+            addColumn(SQLiteType.TEXT, CloudMetadata_Table.ordinal.getNameAlias().name());
         }
     }
 
