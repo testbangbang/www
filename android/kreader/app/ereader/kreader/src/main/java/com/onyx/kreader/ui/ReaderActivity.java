@@ -625,6 +625,8 @@ public class ReaderActivity extends OnyxBaseActivity {
                 !getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
             return;
         }
+
+        renderPageWithShapeDataInBackground();
     }
 
     @Subscribe
