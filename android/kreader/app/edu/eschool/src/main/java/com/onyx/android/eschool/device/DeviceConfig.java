@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.onyx.android.eschool.BuildConfig;
+import com.onyx.android.eschool.R;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
@@ -32,12 +33,14 @@ public class DeviceConfig {
     static private Locale currentLocale = null;
 
     static private Map<String, String> defaultCustomizedIconAppsMap;
+    static private Map<String, String> defaultCustomizedProductCoverMap;
 
     private GObject backend;
 
     static public final String APP_FILTERS = "app_filters";
     static public final String TEST_APPS = "test_apps";
     static public final String CUSTOMIZED_ICON_APPS_MAPS = "customized_icon_apps_maps";
+    static public final String CUSTOMIZED_COVER_PRODUCTS_MAPS = "customized_cover_products_maps";
 
     static public final String VERIFY_DICTIONARY_TAG = "verify_dictionary";
     static public final String VERIFY_BOOKS_TAG = "verify_books";
@@ -186,6 +189,20 @@ public class DeviceConfig {
             defaultCustomizedIconAppsMap.putAll((Map<String, String>) (backend.getObject(CUSTOMIZED_ICON_APPS_MAPS)));
         }
         return defaultCustomizedIconAppsMap;
+    }
+
+    public Map<String, String> getCustomizedProductCovers() {
+        if (defaultCustomizedProductCoverMap == null) {
+            defaultCustomizedProductCoverMap = new HashMap<>();
+            defaultCustomizedProductCoverMap.put("default", "cloud_default_cover");
+            defaultCustomizedProductCoverMap.put("mp3", "cover_mp3");
+            defaultCustomizedProductCoverMap.put("wav", "cover_wav");
+            defaultCustomizedProductCoverMap.put("apk", "cover_apk");
+        }
+        if (backend.hasKey(CUSTOMIZED_COVER_PRODUCTS_MAPS)) {
+            defaultCustomizedProductCoverMap.putAll((Map<String, String>) (backend.getObject(CUSTOMIZED_COVER_PRODUCTS_MAPS)));
+        }
+        return defaultCustomizedProductCoverMap;
     }
 
     public String getCloudContentHost() {
