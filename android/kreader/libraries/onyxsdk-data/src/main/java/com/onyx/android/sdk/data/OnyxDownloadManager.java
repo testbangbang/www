@@ -1,8 +1,6 @@
 package com.onyx.android.sdk.data;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.FileDownloader;
@@ -13,9 +11,10 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.utils.DownloadListener;
 import com.onyx.android.sdk.data.utils.NotificationItem;
-import com.onyx.android.sdk.data.v2.ContentService;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2016/8/15.
@@ -82,16 +81,20 @@ public class OnyxDownloadManager {
         return task;
     }
 
-    public BaseDownloadTask download(final Context context, String token, final String url, final String path, final Object tag, final BaseCallback baseCallback) {
+    public BaseDownloadTask download(final Context context, Map<String, String> header, final String url, final String path, final Object tag, final BaseCallback baseCallback) {
         CloudFileDownloadRequest request = createDownloadRequest(url, path, tag);
         request.setContext(context);
-        return download(token, request, baseCallback);
+        return download(header, request, baseCallback);
     }
 
-    public BaseDownloadTask download(String token, final CloudFileDownloadRequest request, final BaseCallback baseCallback) {
+    public BaseDownloadTask download(Map<String, String> header, final CloudFileDownloadRequest request, final BaseCallback baseCallback) {
         request.setTaskId(FileDownloadUtils.generateId(request.getUrl(), request.getPath()));
         BaseDownloadTask task = FileDownloader.getImpl().create(request.getUrl()).setPath(request.getPath()).setTag(request.getTag());
-        task.addHeader(Constant.HEADER_AUTHORIZATION, ContentService.CONTENT_AUTH_PREFIX + token);
+        if (!CollectionUtils.isNullOrEmpty(header)) {
+            for (String key : header.keySet()) {
+                task.addHeader(key, header.get(key));
+            }
+        }
         task.setListener(createDownloadListener(request, baseCallback));
         return task;
     }

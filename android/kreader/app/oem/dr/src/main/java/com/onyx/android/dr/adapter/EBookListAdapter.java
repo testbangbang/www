@@ -19,12 +19,14 @@ import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
+import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -36,7 +38,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -162,8 +166,10 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         final String filePath = getDataSaveFilePath(eBook);
         String bookDownloadUrl = DeviceConfig.sharedInstance(DRApplication.getInstance()).getBookDownloadUrl(eBook.getGuid());
         String token = DRApplication.getCloudStore().getCloudManager().getToken();
+        Map<String, String> header = new HashMap<>();
+        header.put(Constant.HEADER_AUTHORIZATION, ContentService.CONTENT_AUTH_PREFIX + token);
         OnyxDownloadManager downLoaderManager = getDownLoaderManager();
-        BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), token, bookDownloadUrl, filePath, eBook.getGuid(), new BaseCallback() {
+        BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), header, bookDownloadUrl, filePath, eBook.getGuid(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {

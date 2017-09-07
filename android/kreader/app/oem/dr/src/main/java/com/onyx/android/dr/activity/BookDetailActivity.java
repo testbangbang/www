@@ -24,6 +24,7 @@ import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.utils.CloudUtils;
+import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -34,6 +35,8 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -144,8 +147,10 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         final String filePath = getDataSaveFilePath(eBook);
         String bookDownloadUrl = DeviceConfig.sharedInstance(DRApplication.getInstance()).getBookDownloadUrl(eBook.getGuid());
         String token = DRApplication.getCloudStore().getCloudManager().getToken();
+        Map<String, String> header = new HashMap<>();
+        header.put(Constant.HEADER_AUTHORIZATION, ContentService.CONTENT_AUTH_PREFIX + token);
         OnyxDownloadManager downLoaderManager = getDownLoaderManager();
-        BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), token, bookDownloadUrl, filePath, eBook.getGuid(), new BaseCallback() {
+        BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), header, bookDownloadUrl, filePath, eBook.getGuid(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
