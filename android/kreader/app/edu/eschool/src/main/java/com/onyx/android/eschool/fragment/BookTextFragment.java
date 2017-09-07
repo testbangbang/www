@@ -23,6 +23,7 @@ import com.onyx.android.eschool.action.CloudContentRefreshAction;
 import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
+import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.events.DownloadingEvent;
@@ -59,6 +60,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
@@ -280,7 +282,7 @@ public class BookTextFragment extends Fragment {
 
                 Bitmap bitmap = getBitmap(eBook.getAssociationId());
                 if (bitmap == null) {
-                    viewHolder.coverImage.setImageResource(R.drawable.cloud_default_cover);
+                    viewHolder.coverImage.setImageResource(getImageResource(eBook));
                     if (newPage) {
                         newPage = false;
                         noThumbnailPosition = position;
@@ -291,6 +293,18 @@ public class BookTextFragment extends Fragment {
                 }
             }
         });
+    }
+
+    private int getImageResource(Metadata book) {
+        String type = book.getType();
+        if (StringUtils.isNullOrEmpty(type)) {
+            return R.drawable.cloud_default_cover;
+        }
+        Map<String, String> map = DeviceConfig.sharedInstance(getContext()).getCustomizedProductCovers();
+        if (map.containsKey(type)) {
+            return RawResourceUtil.getDrawableIdByName(getContext(), map.get(type));
+        }
+        return R.drawable.cloud_default_cover;
     }
 
     public int getLibraryListSize() {
