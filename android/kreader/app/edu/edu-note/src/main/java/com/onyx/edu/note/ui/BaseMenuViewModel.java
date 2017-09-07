@@ -9,14 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Checkable;
 
-import com.onyx.android.sdk.ui.data.MenuId;
+import com.onyx.android.sdk.ui.data.MenuClickEvent;
+import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.android.sdk.utils.Debug;
-import com.onyx.edu.note.R;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by lxm on 2017/8/31.
@@ -93,10 +92,10 @@ public class BaseMenuViewModel extends BaseObservable {
     }
 
     public int getMenuAction(View view) {
-        Debug.d(getClass(), "getMenuAction start: ");
+        Debug.d(getClass(), "getMenuId start: ");
         int index = views.indexOfValue(view);
         int  menuAction = views.keyAt(index);
-        Debug.d(getClass(), "getMenuAction end: ");
+        Debug.d(getClass(), "getMenuId end: ");
         return menuAction;
     }
 

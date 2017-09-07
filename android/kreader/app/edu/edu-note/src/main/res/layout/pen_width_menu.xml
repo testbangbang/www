@@ -28,40 +28,27 @@
             android:layout_height="1dp"/>
 
         <include
-            bind:item="@{item[MenuId.NORMAL_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_pencil)}"
+            bind:item="@{item[MenuId.THICKNESS_ULTRA_LIGHT].setMenuIcon(R.drawable.ic_width_1)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.BRUSH_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_brush)}"
+            bind:item="@{item[MenuId.THICKNESS_LIGHT].setMenuIcon(R.drawable.ic_width_2)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.LINE_STYLE].setMenuIcon(R.drawable.ic_shape_line)}"
-            layout="@layout/sub_menu_item"/>
-
-
-        <include
-            bind:item="@{item[MenuId.TRIANGLE_STYLE].setMenuIcon(R.drawable.ic_shape_triangle)}"
+            bind:item="@{item[MenuId.THICKNESS_NORMAL].setMenuIcon(R.drawable.ic_width_3)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.CIRCLE_STYLE].setMenuIcon(R.drawable.ic_shape_circle)}"
+            bind:item="@{item[MenuId.THICKNESS_BOLD].setMenuIcon(R.drawable.ic_width_4)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.RECT_STYLE].setMenuIcon(R.drawable.ic_shape_square)}"
+            bind:item="@{item[MenuId.THICKNESS_ULTRA_BOLD].setMenuIcon(R.drawable.ic_width_5)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.TRIANGLE_45_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_45)}"
-            layout="@layout/sub_menu_item"/>
-
-        <include
-            bind:item="@{item[MenuId.TRIANGLE_60_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_60)}"
-            layout="@layout/sub_menu_item"/>
-
-        <include
-            bind:item="@{item[MenuId.TRIANGLE_90_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_90)}"
+            bind:item="@{item[MenuId.THICKNESS_CUSTOM_BOLD].setMenuIcon(R.drawable.ic_width_6)}"
             layout="@layout/sub_menu_item"/>
 
     </com.google.android.flexbox.FlexboxLayout>

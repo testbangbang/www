@@ -5,14 +5,18 @@
         <import type="android.view.View" />
         <variable
             name="item"
-            type="com.onyx.edu.note.ui.MenuItem" />
+            type="com.onyx.android.sdk.ui.data.MenuItem" />
     </data>
 
-    <com.onyx.android.sdk.ui.view.CustomIconView
-        style="@style/main_menu_item"
-        android:visibility="@{item.visibility}"
+    <ImageView
+        android:background="@drawable/imagebtn_bg"
+        android:paddingLeft="@dimen/menu_padding_left_right"
+        android:paddingRight="@dimen/menu_padding_left_right"
+        android:paddingTop="@dimen/menu_padding_top_bottom"
+        android:paddingBottom="@dimen/menu_padding_top_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="@{item == null ? View.GONE : item.visibility}"
         android:onClick="@{(v) ->item.menuClicked(v)}"
         android:src="@{item.menuIcon}"/>
-
-
 </layout>

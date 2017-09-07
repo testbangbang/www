@@ -1,17 +1,15 @@
-package com.onyx.edu.note.ui;
+package com.onyx.android.sdk.ui.data;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.databinding.library.baseAdapters.BR;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.Map;
 
 /**
  * Created by lxm on 2017/9/5.
@@ -21,19 +19,22 @@ public class Menu {
 
     private ViewDataBinding menuBinding;
 
-    private Map<Integer, MenuItem> itemMap;
+    private SparseArray<MenuItem> itemMap;
 
     public static Menu create(final Context context,
                               final EventBus eventBus,
                               final int layoutId,
-                              final Map<Integer, MenuItem> itemMap) {
+                              final int menuVariable,
+                              final SparseArray<MenuItem> itemMap) {
         Menu menu = new Menu();
         menu.itemMap = itemMap;
-        for (Integer key : itemMap.keySet()) {
+        int size = itemMap.size();
+        for (int i = 0; i < size; i++) {
+            Integer key = itemMap.keyAt(i);
             itemMap.get(key).setMenuId(key).setEventBus(eventBus);
         }
         menu.menuBinding = DataBindingUtil.inflate(LayoutInflater.from(context), layoutId, null, false);
-        menu.menuBinding.setVariable(BR.item, itemMap);
+        menu.menuBinding.setVariable(menuVariable, itemMap);
         return menu;
     }
 
@@ -43,22 +44,26 @@ public class Menu {
     }
 
     public Menu check(int menuId) {
-        itemMap.get(menuId).setChecked(true);
-        executePendingBindings();
+        MenuItem item = itemMap.get(menuId);
+        if (item != null) {
+            item.setChecked(true);
+        }
         return this;
     }
 
     public Menu setText(int menuId, String text) {
-        itemMap.get(menuId).setText(text);
-        executePendingBindings();
+        MenuItem item = itemMap.get(menuId);
+        if (item != null) {
+            item.setText(text);
+        }
         return this;
     }
 
     public Menu unCheckAll() {
-        for (MenuItem menuItem : itemMap.values()) {
-            menuItem.setChecked(false);
+        int size = itemMap.size();
+        for (int i = 0; i < size; i++) {
+            itemMap.valueAt(i).setChecked(false);
         }
-        executePendingBindings();
         return this;
     }
 

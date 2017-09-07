@@ -1,19 +1,10 @@
-package com.onyx.edu.note.ui;
+package com.onyx.android.sdk.ui.data;
 
-import android.content.Context;
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
-import android.view.LayoutInflater;
-import android.view.View;
+import android.util.SparseArray;
 import android.view.ViewGroup;
 
-import com.android.databinding.library.baseAdapters.BR;
 
 import org.greenrobot.eventbus.EventBus;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by lxm on 2017/8/31.
@@ -28,9 +19,10 @@ public class MenuManager {
     public MenuManager addMainMenu(ViewGroup parent,
                                    EventBus eventBus,
                                    int layoutId,
+                                   int menuVariable,
                                    ViewGroup.LayoutParams params,
-                                   Map<Integer, MenuItem> menuItemMap) {
-        mainMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuItemMap);
+                                   SparseArray<MenuItem> menuItemMap) {
+        mainMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuVariable, menuItemMap);
         mainMenu.show(parent, params);
         return this;
     }
@@ -43,12 +35,17 @@ public class MenuManager {
         return subMenu;
     }
 
+    public Menu getToolbarMenu() {
+        return toolbarMenu;
+    }
+
     public MenuManager addSubMenu(ViewGroup parent,
                                   EventBus eventBus,
                                   int layoutId,
+                                  int menuVariable,
                                   ViewGroup.LayoutParams params,
-                                  Map<Integer, MenuItem> menuItemMap) {
-        subMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuItemMap);
+                                  SparseArray<MenuItem> menuItemMap) {
+        subMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuVariable, menuItemMap);
         subMenu.show(parent, params);
         return this;
     }
@@ -56,9 +53,10 @@ public class MenuManager {
     public MenuManager addToolbarMenu(ViewGroup parent,
                                       EventBus eventBus,
                                       int layoutId,
+                                      int menuVariable,
                                       ViewGroup.LayoutParams params,
-                                      Map<Integer, MenuItem> menuItemMap) {
-        toolbarMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuItemMap);
+                                      SparseArray<MenuItem> menuItemMap) {
+        toolbarMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuVariable, menuItemMap);
         toolbarMenu.show(parent, params);
         return this;
     }

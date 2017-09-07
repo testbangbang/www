@@ -7,7 +7,6 @@ import android.view.View;
 
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
 import com.onyx.edu.note.ui.FunctionMenuClickEvent;
-import com.onyx.edu.note.ui.MenuClickEvent;
 import com.onyx.edu.note.ui.SubMenuClickEvent;
 import com.onyx.edu.note.ui.ToolbarMenuClickEvent;
 import com.onyx.edu.note.util.ScribbleFunctionItemUtils;

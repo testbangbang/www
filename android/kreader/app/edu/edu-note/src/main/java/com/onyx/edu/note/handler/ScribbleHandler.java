@@ -26,9 +26,11 @@ import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
+import com.onyx.edu.note.scribble.event.QuitScribbleEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
-import com.onyx.edu.note.ui.MenuClickEvent;
+import com.onyx.edu.note.ui.HideSubMenuEvent;
+import com.onyx.android.sdk.ui.data.MenuClickEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -101,43 +103,49 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void buildFunctionBarMenuFunctionList() {
-        functionBarMenuIDList = new ArrayList<>();
-        functionBarMenuIDList.add(MenuId.PEN_STYLE);
-        functionBarMenuIDList.add(MenuId.BG);
-        functionBarMenuIDList.add(MenuId.ERASER);
-        functionBarMenuIDList.add(MenuId.PEN_WIDTH);
-        functionBarMenuIDList.add(MenuId.SHAPE_SELECT);
+    public List<Integer> buildFunctionMenuIds() {
+        List<Integer> functionMenuIds = new ArrayList<>();
+        functionMenuIds.add(MenuId.PEN_STYLE);
+        functionMenuIds.add(MenuId.BG);
+        functionMenuIds.add(MenuId.ERASER);
+        functionMenuIds.add(MenuId.PEN_WIDTH);
+        functionMenuIds.add(MenuId.SHAPE_SELECT);
 
-        functionBarMenuIDList.add(MenuId.ADD_PAGE);
-        functionBarMenuIDList.add(MenuId.DELETE_PAGE);
-        functionBarMenuIDList.add(MenuId.PREV_PAGE);
-        functionBarMenuIDList.add(MenuId.NEXT_PAGE);
+        functionMenuIds.add(MenuId.ADD_PAGE);
+        functionMenuIds.add(MenuId.DELETE_PAGE);
+        functionMenuIds.add(MenuId.PREV_PAGE);
+        functionMenuIds.add(MenuId.NEXT_PAGE);
+        functionMenuIds.add(MenuId.PAGE);
+
+        return functionMenuIds;
     }
 
     @Override
-    protected void buildToolBarMenuFunctionList() {
-        toolBarMenuIDList = new ArrayList<>();
-        toolBarMenuIDList.add(MenuId.SWITCH_TO_SPAN_SCRIBBLE_MODE);
-        toolBarMenuIDList.add(MenuId.UNDO);
-        toolBarMenuIDList.add(MenuId.SAVE);
-        toolBarMenuIDList.add(MenuId.REDO);
-        toolBarMenuIDList.add(MenuId.SETTING);
-        toolBarMenuIDList.add(MenuId.EXPORT);
+    public List<Integer> buildToolBarMenuIds() {
+        List<Integer> toolBarMenuIds = new ArrayList<>();
+        toolBarMenuIds.add(MenuId.SCRIBBLE_TITLE);
+        toolBarMenuIds.add(MenuId.SWITCH_TO_SPAN_SCRIBBLE_MODE);
+        toolBarMenuIds.add(MenuId.UNDO);
+        toolBarMenuIds.add(MenuId.SAVE);
+        toolBarMenuIds.add(MenuId.REDO);
+        toolBarMenuIds.add(MenuId.SETTING);
+        toolBarMenuIds.add(MenuId.EXPORT);
+        return toolBarMenuIds;
     }
 
     @Override
-    protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        functionBarSubMenuIDMap = new SparseArray<>();
+    public SparseArray<List<Integer>> buildSubMenuIds() {
+        SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
         functionBarSubMenuIDMap.put(MenuId.PEN_WIDTH, buildSubMenuThicknessIDList());
         functionBarSubMenuIDMap.put(MenuId.BG, buildSubMenuBGIDList());
         functionBarSubMenuIDMap.put(MenuId.ERASER, buildSubMenuEraserIDList());
         functionBarSubMenuIDMap.put(MenuId.PEN_STYLE, buildSubMenuPenStyleIDList());
+        return functionBarSubMenuIDMap;
     }
 
     @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
-        switch (event.getMenuAction()) {
+        switch (event.getMenuId()) {
             case MenuId.ADD_PAGE:
                 addPage();
                 break;
@@ -157,13 +165,36 @@ public class ScribbleHandler extends BaseHandler {
             case MenuId.PEN_WIDTH:
             case MenuId.ERASER:
             case MenuId.BG:
-                noteManager.post(new ShowSubMenuEvent(event.getMenuAction()));
+                noteManager.post(new ShowSubMenuEvent(event.getMenuId()));
                 break;
+            case MenuId.SWITCH_TO_SPAN_SCRIBBLE_MODE:
+                switchToSpanLayoutMode();
+                break;
+            case MenuId.EXPORT:
+                break;
+            case MenuId.UNDO:
+                undo();
+                break;
+            case MenuId.REDO:
+                redo();
+                break;
+            case MenuId.SAVE:
+//                saveDocument(uniqueID, title, false, null);
+                break;
+            case MenuId.SETTING:
+                break;
+            case MenuId.SCRIBBLE_TITLE:
+                noteManager.post(new QuitScribbleEvent());
+                break;
+        }
+        if (ScribbleSubMenuID.isSubMenuId(event.getMenuId())) {
+            handleSubMenuEvent(event.getMenuId());
+            noteManager.post(new HideSubMenuEvent());
         }
     }
 
     @Override
-    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
+    public void handleFunctionMenuEvent(int functionBarMenuID) {
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.ADD_PAGE:
                 addPage();
@@ -187,8 +218,8 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void handleSubMenuFunction(int subMenuID) {
-        Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
+    public void handleSubMenuEvent(int subMenuID) {
+        Log.e(TAG, "handleSubMenuEvent: " + subMenuID);
         if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
             onStrokeWidthChanged(subMenuID);
         } else if (ScribbleSubMenuID.isBackgroundGroup(subMenuID)) {
@@ -203,7 +234,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
+    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
                 switchToSpanLayoutMode();

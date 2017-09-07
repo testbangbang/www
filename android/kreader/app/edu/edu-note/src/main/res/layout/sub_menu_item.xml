@@ -8,12 +8,12 @@
 
         <variable
             name="item"
-            type="com.onyx.edu.note.ui.MenuItem" />
+            type="com.onyx.android.sdk.ui.data.MenuItem" />
     </data>
 
     <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@{item.width, default=wrap_content}"
+        android:layout_height="wrap_content"
         android:minWidth="@dimen/onyx_main_note_menu_height"
         android:background="@drawable/image_button_bg"
         android:onClick="@{(v) ->item.menuClicked(v)}"

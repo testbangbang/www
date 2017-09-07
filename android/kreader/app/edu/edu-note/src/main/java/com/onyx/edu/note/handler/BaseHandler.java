@@ -5,7 +5,6 @@ import android.util.SparseArray;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
@@ -18,11 +17,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
-import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
-import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -37,10 +32,6 @@ public abstract class BaseHandler {
     private static final String TAG = BaseHandler.class.getSimpleName();
     protected NoteManager noteManager;
 
-    List<Integer> functionBarMenuIDList = new ArrayList<>();
-    List<Integer> toolBarMenuIDList = new ArrayList<>();
-    SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
-
     private Shape currentShape = null;
     private TouchPointList erasePoints;
 
@@ -50,10 +41,10 @@ public abstract class BaseHandler {
 
     @CallSuper
     public void onActivate(HandlerArgs args) {
-        buildFunctionBarMenuFunctionList();
-        buildToolBarMenuFunctionList();
-        buildFunctionBarMenuSubMenuIDListSparseArray();
-        noteManager.post(new HandlerActivateEvent(functionBarMenuIDList, toolBarMenuIDList, functionBarSubMenuIDMap));
+        buildFunctionMenuIds();
+        buildToolBarMenuIds();
+        buildSubMenuIds();
+//        noteManager.post(new HandlerActivateEvent(functionBarMenuIDList, toolBarMenuIDList, functionBarSubMenuIDMap));
     }
 
     public void onDeactivate() {
@@ -62,17 +53,17 @@ public abstract class BaseHandler {
     public void close() {
     }
 
-    protected abstract void buildFunctionBarMenuFunctionList();
+    public abstract List<Integer> buildFunctionMenuIds();
 
-    protected abstract void buildToolBarMenuFunctionList();
+    public abstract List<Integer> buildToolBarMenuIds();
 
-    protected abstract void buildFunctionBarMenuSubMenuIDListSparseArray();
+    public abstract SparseArray<List<Integer>> buildSubMenuIds();
 
-    public abstract void handleFunctionBarMenuFunction(int functionBarMenuID);
+    public abstract void handleFunctionMenuEvent(int functionBarMenuID);
 
-    public abstract void handleSubMenuFunction(int subMenuID);
+    public abstract void handleSubMenuEvent(int subMenuID);
 
-    public abstract void handleToolBarMenuFunction(String uniqueID, String title,int toolBarMenuID);
+    public abstract void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID);
 
     public abstract void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback);
 

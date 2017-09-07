@@ -6,9 +6,6 @@ import android.text.TextUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
-import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.handler.BaseHandler;
 import com.onyx.edu.note.handler.HandlerArgs;
 import com.onyx.edu.note.handler.PicEditHandler;
@@ -90,16 +87,16 @@ public class HandlerManager {
     }
 
     public void handleSubMenuFunction(int subMenuID) {
-        getActiveProvider().handleSubMenuFunction(subMenuID);
+        getActiveProvider().handleSubMenuEvent(subMenuID);
     }
 
     public void handleToolBarMenuFunction(int toolBarMenuID) {
-        getActiveProvider().handleToolBarMenuFunction(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
+        getActiveProvider().handleToolBarMenuEvent(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
                 toolBarMenuID);
     }
 
     public void handleFunctionBarMenuFunction(int functionBarMenuID) {
-        getActiveProvider().handleFunctionBarMenuFunction(functionBarMenuID);
+        getActiveProvider().handleFunctionMenuEvent(functionBarMenuID);
     }
 
     public void saveDocument(boolean closeAfterSave, BaseCallback callback) {

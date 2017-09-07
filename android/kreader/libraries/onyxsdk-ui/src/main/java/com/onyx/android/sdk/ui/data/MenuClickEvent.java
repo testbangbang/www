@@ -1,4 +1,4 @@
-package com.onyx.edu.note.ui;
+package com.onyx.android.sdk.ui.data;
 
 import android.view.View;
 
@@ -9,20 +9,19 @@ import android.view.View;
 public class MenuClickEvent {
 
     private View view;
-    private int menuAction;
+    private int menuId;
 
     public View getView() {
         return view;
     }
 
-    public
-    int getMenuAction() {
-        return menuAction;
+    public int getMenuId() {
+        return menuId;
     }
 
-    public MenuClickEvent(View view, int menuAction) {
+    public MenuClickEvent(View view, int menuId) {
         this.view = view;
-        this.menuAction = menuAction;
+        this.menuId = menuId;
     }
 
     public static MenuClickEvent create(View view, int menuAction) {

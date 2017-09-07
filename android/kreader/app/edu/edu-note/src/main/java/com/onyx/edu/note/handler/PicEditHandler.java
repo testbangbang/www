@@ -102,30 +102,33 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void buildFunctionBarMenuFunctionList() {
-        functionBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildFunctionMenuIds() {
+        List<Integer> functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
+        return functionBarMenuIDList;
     }
 
     @Override
-    protected void buildToolBarMenuFunctionList() {
-        toolBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildToolBarMenuIds() {
+        List<Integer> toolBarMenuIDList = new ArrayList<>();
         toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        return toolBarMenuIDList;
     }
 
     @Override
-    protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        functionBarSubMenuIDMap = new SparseArray<>();
+    public SparseArray<List<Integer>> buildSubMenuIds() {
+        SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        return functionBarSubMenuIDMap;
     }
 
     @Override
-    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
+    public void handleFunctionMenuEvent(int functionBarMenuID) {
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.SHAPE_SELECT:
                 onSetShapeSelectModeChanged();
@@ -137,8 +140,8 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void handleSubMenuFunction(int subMenuID) {
-        Log.e(TAG, "handleSubMenuFunction: " + subMenuID);
+    public void handleSubMenuEvent(int subMenuID) {
+        Log.e(TAG, "handleSubMenuEvent: " + subMenuID);
         if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
             onStrokeWidthChanged(subMenuID);
         } else if (ScribbleSubMenuID.isEraserGroup(subMenuID)) {
@@ -151,7 +154,7 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
+    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
                 switchToSpanLayoutMode();

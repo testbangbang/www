@@ -1,61 +1,59 @@
-package com.onyx.edu.note.ui;
+package com.onyx.android.sdk.ui.data;
 
 import android.databinding.BaseObservable;
-import android.databinding.Observable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
+import android.databinding.ObservableFloat;
 import android.databinding.ObservableInt;
-import android.databinding.ObservableShort;
-import android.util.Log;
+import android.util.SparseArray;
 import android.view.View;
 
-import com.onyx.edu.note.R;
-
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by lxm on 2017/9/5.
  */
 
-public class MenuItem {
+public class MenuItem extends BaseObservable {
 
     private static final String TAG = "MenuItem";
 
-    public boolean checked;
-
-    public int visibility = View.GONE;
-
-    public int menuIcon = android.R.color.transparent;
-
-    public String text;
+    public ObservableBoolean checked = new ObservableBoolean();
+    public ObservableInt visibility = new ObservableInt(View.GONE);
+    public ObservableInt menuIcon = new ObservableInt(android.R.color.transparent);
+    public ObservableField<String> text = new ObservableField<>();
+    public ObservableInt width = new ObservableInt(200);
 
     private EventBus eventBus;
     private int menuId;
 
     public MenuItem(int visibility) {
-        this.visibility = visibility;
+        setVisibility(visibility);
     }
     public MenuItem(int visibility, String text) {
-        this.visibility = visibility;
-        this.text = text;
+        setVisibility(visibility);
+        setText(text);
     }
 
     public MenuItem(int visibility, int menuIcon) {
-        this.visibility = visibility;
-        this.menuIcon = menuIcon;
+        setVisibility(visibility);
+        setMenuIcon(menuIcon);
     }
 
 
     public void setChecked(boolean checked) {
-        this.checked = checked;
+        this.checked.set(checked);
     }
 
     public void setVisibility(int visibility) {
-        this.visibility = visibility;
+        this.visibility.set(visibility);
     }
 
-    public void setMenuIcon(int menuIcon) {
-        this.menuIcon = menuIcon;
+    public MenuItem setMenuIcon(int menuIcon) {
+        this.menuIcon.set(menuIcon);
+        return this;
     }
 
     public MenuItem setMenuId(int menuId) {
@@ -68,8 +66,12 @@ public class MenuItem {
         return this;
     }
 
+    public void setWidth(int width) {
+        this.width.set(width);
+    }
+
     public void setText(String text) {
-        this.text = text;
+        this.text.set(text);
     }
 
     public static MenuItem createVisibleMenu() {
@@ -82,6 +84,14 @@ public class MenuItem {
 
     public static MenuItem createVisibleMenu(int menuIcon) {
         return new MenuItem(View.VISIBLE, menuIcon);
+    }
+
+    public static SparseArray<MenuItem> createVisibleMenus(List<Integer> menuIds) {
+        SparseArray<MenuItem> menuItems = new SparseArray<>();
+        for (Integer id : menuIds) {
+            menuItems.put(id, createVisibleMenu());
+        }
+        return menuItems;
     }
 
     public void menuClicked(View view) {

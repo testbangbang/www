@@ -114,33 +114,36 @@ public class ShapeTransformHandler extends BaseHandler {
     }
 
     @Override
-    protected void buildFunctionBarMenuFunctionList() {
-        functionBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildFunctionMenuIds() {
+        List<Integer> functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SHAPE_SELECT);
+        return functionBarMenuIDList;
     }
 
     @Override
-    protected void buildToolBarMenuFunctionList() {
-        toolBarMenuIDList = new ArrayList<>();
+    public List<Integer> buildToolBarMenuIds() {
+        List<Integer> toolBarMenuIDList = new ArrayList<>();
         toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
         toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        return toolBarMenuIDList;
     }
 
     @Override
-    protected void buildFunctionBarMenuSubMenuIDListSparseArray() {
-        functionBarSubMenuIDMap = new SparseArray<>();
+    public SparseArray<List<Integer>> buildSubMenuIds() {
+        SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
         functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        return functionBarSubMenuIDMap;
     }
 
     @Override
-    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
+    public void handleFunctionMenuEvent(int functionBarMenuID) {
         //TODO:temp restore to normal scribble here.in shape select mode , may have different icon here.
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.ADD_PAGE:
@@ -190,13 +193,13 @@ public class ShapeTransformHandler extends BaseHandler {
     }
 
     @Override
-    public void handleSubMenuFunction(int subMenuID) {
+    public void handleSubMenuEvent(int subMenuID) {
 
     }
 
     @Override
-    public void handleToolBarMenuFunction(String uniqueID, String title, int toolBarMenuID) {
-        Log.e(TAG, "handleToolBarMenuFunction: ");
+    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
+        Log.e(TAG, "handleToolBarMenuEvent: ");
         switch (toolBarMenuID) {
             case ScribbleToolBarMenuID.UNDO:
                 undo();

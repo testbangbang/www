@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.SurfaceHolder;
@@ -42,6 +43,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
+import com.onyx.edu.note.BR;
 import com.onyx.edu.note.HandlerManager;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.R;
@@ -53,59 +55,42 @@ import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
-import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.databinding.ActivityScribbleBinding;
-import com.onyx.edu.note.databinding.PenStyleMenuBinding;
 import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.handler.HandlerArgs;
 import com.onyx.edu.note.receiver.DeviceReceiver;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
-import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
+import com.onyx.edu.note.scribble.event.QuitScribbleEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+import com.onyx.edu.note.scribble.event.SaveNoteDocumentEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
+import com.onyx.edu.note.scribble.event.UpdateScibbleTitleEvent;
 import com.onyx.edu.note.scribble.view.ScribbleSubMenu;
-import com.onyx.edu.note.ui.BaseMenuViewModel;
-import com.onyx.edu.note.ui.MainMenuViewModel;
 import com.onyx.edu.note.ui.FunctionMenuClickEvent;
-import com.onyx.edu.note.ui.MenuItem;
-import com.onyx.edu.note.ui.MenuManager;
+import com.onyx.edu.note.ui.HideSubMenuEvent;
+import com.onyx.android.sdk.ui.data.MenuItem;
+import com.onyx.android.sdk.ui.data.MenuManager;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.ui.SubMenuClickEvent;
-import com.onyx.edu.note.ui.SubMenuViewModel;
 import com.onyx.edu.note.ui.ToolbarMenuClickEvent;
 import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
 import com.onyx.edu.note.util.Constant;
 import com.onyx.edu.note.util.Utils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.BRUSH_PEN_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.CIRCLE_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.LINE_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.NORMAL_PEN_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.RECT_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_45_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_60_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_90_STYLE;
-import static com.onyx.edu.note.data.ScribbleSubMenuID.PenStyle.TRIANGLE_STYLE;
 
 public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleNavigator, ScribbleItemNavigator {
     private static final String TAG = ScribbleActivity.class.getSimpleName();
     ActivityScribbleBinding mBinding;
     ScribbleViewModel mViewModel;
-    MenuManager menu;
+    MenuManager menuManager;
 //    MenuManager<SubMenuBinding, SubMenuViewModel> subMenu;
     ScribbleFunctionAdapter mFunctionBarAdapter, mToolBarAdapter;
     protected SurfaceHolder.Callback surfaceCallback;
@@ -113,6 +98,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     NoteManager noteManager;
     HandlerManager handlerManager;
     ScribbleSubMenu mSubMenu;
+    private String docUniqueID;
     private @ScribbleAction.ScribbleActionDef int mScribbleAction;
     private EditMode currentEditMode = EditMode.NormalMode;
     private Uri editPictUri;
@@ -125,16 +111,16 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_scribble);
         initSupportActionBarWithCustomBackFunction();
         noteManager = NoteApplication.getInstance().getNoteManager();
-        initMenu();
         mViewModel = new ScribbleViewModel(this);
+        handlerManager = new HandlerManager(mViewModel);
         mViewModel.setNavigator(this);
         // Link View and ViewModel
         mBinding.setViewModel(mViewModel);
         initRecyclerView();
         initSpanTextView();
         buildSubMenu();
-        handlerManager = new HandlerManager(mViewModel);
         checkEditMode();
+        initMenu();
     }
 
     private void checkEditMode() {
@@ -146,7 +132,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             case Intent.ACTION_EDIT:
                 currentEditMode = EditMode.PicEditMode;
                 editPictUri = editIntent.getData();
-                // TODO: 2017/9/4 for change menu
+                // TODO: 2017/9/4 for change menuManager
 //                mBinding.pageCountControl.setVisibility(View.GONE);
 //                mBinding.pageIndicator.setVisibility(View.GONE);
                 break;
@@ -154,12 +140,19 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private void initMenu() {
-        menu = new MenuManager();
-        menu.addMainMenu(mBinding.layoutFooter,
+        menuManager = new MenuManager();
+        menuManager.addMainMenu(mBinding.layoutFooter,
                 noteManager.getEventBus(),
                 R.layout.scribble_main_menu,
+                BR.item,
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
-                getMainMenuItems());
+                MenuItem.createVisibleMenus(handlerManager.getActiveProvider().buildFunctionMenuIds()));
+        menuManager.addToolbarMenu(mBinding.toolMenu,
+                noteManager.getEventBus(),
+                R.layout.scribble_toolbar_menu,
+                BR.item,
+                new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
+                MenuItem.createVisibleMenus(handlerManager.getActiveProvider().buildToolBarMenuIds()));
         mBinding.subMenuLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -168,31 +161,12 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         });
     }
 
-    private Map<Integer, MenuItem> getMainMenuItems() {
-        Map<Integer, MenuItem> itemMap = new HashMap<>();
-        itemMap.put(MenuId.PEN_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape));
-        itemMap.put(MenuId.BG, MenuItem.createVisibleMenu(R.drawable.ic_template));
-        itemMap.put(MenuId.ERASER, MenuItem.createVisibleMenu(R.drawable.ic_eraser));
-        itemMap.put(MenuId.PEN_WIDTH, MenuItem.createVisibleMenu(R.drawable.ic_width));
-        itemMap.put(MenuId.SHAPE_SELECT, MenuItem.createVisibleMenu(R.drawable.ic_menu_more));
-        itemMap.put(MenuId.DELETE_PAGE, MenuItem.createVisibleMenu(R.drawable.ic_delete));
-        itemMap.put(MenuId.ADD_PAGE, MenuItem.createVisibleMenu(R.drawable.ic_add));
-        itemMap.put(MenuId.PREV_PAGE, MenuItem.createVisibleMenu(R.drawable.ic_note_prev_page_black));
-        itemMap.put(MenuId.NEXT_PAGE, MenuItem.createVisibleMenu(R.drawable.ic_note_next_page_black));
-        itemMap.put(MenuId.PAGE, MenuItem.createVisibleMenu());
-        return itemMap;
-    }
-
-    @Subscribe
-    public void onHandlerActivate(HandlerActivateEvent activateEvent) {
-    }
-
     @Subscribe
     public void onRequestFinished(RequestInfoUpdateEvent event) {
         if (!event.getRequest().isAbort() && event.getThrowable() == null) {
             int currentPage = event.getShapeDataInfo().getHumanReadableCurPageIndex();
             int totalPage = event.getShapeDataInfo().getPageCount();
-            menu.getMainMenu().setText(MenuId.PAGE, currentPage + "/" + totalPage);
+            menuManager.getMainMenu().setText(MenuId.PAGE, currentPage + "/" + totalPage);
         }
     }
 
@@ -257,7 +231,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
             finish();
             return;
         }
-        String uniqueID = intent.getStringExtra(Constant.NOTE_ID_TAG);
+        docUniqueID = intent.getStringExtra(Constant.NOTE_ID_TAG);
         String parentID = intent.getStringExtra(Constant.NOTE_PARENT_ID_TAG);
         BaseCallback callback = new BaseCallback() {
             @Override
@@ -272,7 +246,8 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 }
             }
         };
-        mViewModel.start(uniqueID, parentID, mScribbleAction, callback);
+
+        mViewModel.start(docUniqueID, parentID, mScribbleAction, callback);
     }
 
     private void addSurfaceViewCallback() {
@@ -328,7 +303,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     @Override
     public void onBackPressed() {
-        //TODO:need back key to dismiss sub menu first or direct exit even sub menu showing?
+        //TODO:need back key to dismiss sub menuManager first or direct exit even sub menuManager showing?
         if (!hideSubMenu()) {
             switch (mScribbleAction) {
                 case ScribbleAction.CREATE:
@@ -599,30 +574,46 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
         noteManager.sync(false, true);
     }
 
-    private void showSubMenu(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int mainMenuID) {
+    private void showSubMenu(int parentId) {
         mBinding.subMenuLayout.removeAllViews();
         mBinding.subMenuLayout.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        menu.addSubMenu(mBinding.subMenuLayout,
+        menuManager.addSubMenu(mBinding.subMenuLayout,
                 noteManager.getEventBus(),
-                R.layout.pen_style_menu,
+                getSubLayoutId(parentId),
+                BR.item,
                 lp,
-                getSubItems());
-        menu.getSubMenu().unCheckAll().check(getChosenSubMenuId(mainMenuID, noteManager.inSpanLayoutMode()));
+                getSubItems(parentId));
+        menuManager.getSubMenu().
+                unCheckAll().
+                check(getChosenSubMenuId(parentId, noteManager.inSpanLayoutMode()));
     }
 
-    private Map<Integer, MenuItem> getSubItems() {
-        Map<Integer, MenuItem> itemMap = new HashMap<>();
-        itemMap.put(MenuId.NORMAL_PEN_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_pencil));
-        itemMap.put(MenuId.BRUSH_PEN_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_brush));
-        itemMap.put(MenuId.LINE_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_line));
-        itemMap.put(MenuId.TRIANGLE_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_triangle));
-        itemMap.put(MenuId.CIRCLE_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_circle));
-        itemMap.put(MenuId.RECT_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_square));
-        itemMap.put(MenuId.TRIANGLE_45_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_triangle_45));
-        itemMap.put(MenuId.TRIANGLE_60_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_triangle_60));
-        itemMap.put(MenuId.TRIANGLE_90_STYLE, MenuItem.createVisibleMenu(R.drawable.ic_shape_triangle_90));
+    private int getSubLayoutId(int parentId) {
+        switch (parentId) {
+            case MenuId.PEN_STYLE:
+                return R.layout.pen_style_menu;
+            case MenuId.BG:
+                return R.layout.scribble_bg_menu;
+            case MenuId.PEN_WIDTH:
+                return R.layout.pen_width_menu;
+            case MenuId.ERASER:
+                return R.layout.scribble_erase_menu;
+        }
+        return R.layout.pen_style_menu;
+    }
+
+
+    private SparseArray<MenuItem> getSubItems(int parentId) {
+        List<Integer> subMenuIds = handlerManager.getActiveProvider().buildSubMenuIds().get(parentId);
+        SparseArray<MenuItem> itemMap = MenuItem.createVisibleMenus(subMenuIds);
+        int parentWidth = mBinding.workView.getMeasuredWidth();
+        int width = parentWidth / getResources().getInteger(R.integer.note_menu_columns);
+        int size = itemMap.size();
+        for (int i = 0; i < size; i++) {
+            itemMap.valueAt(i).setWidth(width);
+        }
         return itemMap;
     }
 
@@ -646,14 +637,25 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
     }
 
     private boolean hideSubMenu() {
-//        mBinding.mainLayout.removeView(subMenu.getMainMenuView());
+        mBinding.subMenuLayout.removeAllViews();
         mBinding.subMenuLayout.setVisibility(View.GONE);
         noteManager.sync(true, true);
-        if (mSubMenu != null && mSubMenu.isShow()) {
-            mSubMenu.dismiss(true);
-            return true;
-        }
         return false;
+    }
+
+    @Subscribe
+    public void onQuitScribbleEvent(QuitScribbleEvent event) {
+        onBackPressed();
+    }
+
+    @Subscribe
+    public void onUpdateScibbleTitleEvent(UpdateScibbleTitleEvent event) {
+        menuManager.getToolbarMenu().setText(MenuId.SCRIBBLE_TITLE, event.getTitle());
+    }
+
+    @Subscribe
+    public void onHideSubMenuEvent(HideSubMenuEvent event) {
+        hideSubMenu();
     }
 
     @Subscribe

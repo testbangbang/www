@@ -28,40 +28,60 @@
             android:layout_height="1dp"/>
 
         <include
-            bind:item="@{item[MenuId.NORMAL_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_pencil)}"
+            bind:item="@{item[MenuId.BG_EMPTY].setMenuIcon(R.drawable.ic_template_white)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.BRUSH_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_brush)}"
+            bind:item="@{item[MenuId.BG_LINE].setMenuIcon(R.drawable.ic_template_line)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.LINE_STYLE].setMenuIcon(R.drawable.ic_shape_line)}"
+            bind:item="@{item[MenuId.BG_LEFT_GRID].setMenuIcon(R.drawable.ic_template_left_grid)}"
             layout="@layout/sub_menu_item"/>
 
 
         <include
-            bind:item="@{item[MenuId.TRIANGLE_STYLE].setMenuIcon(R.drawable.ic_shape_triangle)}"
+            bind:item="@{item[MenuId.BG_GRID_5_5].setMenuIcon(R.drawable.ic_template_grid_5_5)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.CIRCLE_STYLE].setMenuIcon(R.drawable.ic_shape_circle)}"
+            bind:item="@{item[MenuId.BG_GRID].setMenuIcon(R.drawable.ic_template_grid)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.RECT_STYLE].setMenuIcon(R.drawable.ic_shape_square)}"
+            bind:item="@{item[MenuId.BG_MATS].setMenuIcon(R.drawable.ic_template_mats)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.TRIANGLE_45_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_45)}"
+            bind:item="@{item[MenuId.BG_MUSIC].setMenuIcon(R.drawable.ic_template_music)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.TRIANGLE_60_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_60)}"
+            bind:item="@{item[MenuId.BG_ENGLISH].setMenuIcon(R.drawable.ic_template_english)}"
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.TRIANGLE_90_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_90)}"
+            bind:item="@{item[MenuId.BG_LINE_1_6].setMenuIcon(R.drawable.ic_template_line_1_6)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_LINE_2_0].setMenuIcon(R.drawable.ic_template_line_2_0)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_LINE_COLUMN].setMenuIcon(R.drawable.ic_template_line_column)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_TABLE_GRID].setMenuIcon(R.drawable.ic_template_table_grid)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_CALENDAR].setMenuIcon(R.drawable.ic_template_line_calendar)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_GRID_POINT].setMenuIcon(R.drawable.ic_template_grid_point)}"
             layout="@layout/sub_menu_item"/>
 
     </com.google.android.flexbox.FlexboxLayout>

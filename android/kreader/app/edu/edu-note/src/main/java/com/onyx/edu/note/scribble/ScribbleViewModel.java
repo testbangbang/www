@@ -23,6 +23,7 @@ import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+import com.onyx.edu.note.scribble.event.UpdateScibbleTitleEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -82,11 +83,12 @@ public class ScribbleViewModel extends BaseObservable {
                 if (!request.isAbort() && e == null) {
                     NoteDocumentOpenRequest req = (NoteDocumentOpenRequest) request;
                     updateInfo(req);
-                    mCurrentNoteModel.set(req.getNoteModel());
-                    mNoteTitle.set(mCurrentNoteModel.get() != null ? mCurrentNoteModel.get().getTitle() :
-                            DateTimeUtil.formatDate(new Date()));
+                    NoteModel currentNoteModel = req.getNoteModel();
+                    String title = currentNoteModel != null ? currentNoteModel.getTitle() :
+                            DateTimeUtil.formatDate(new Date());
                     AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
                     mNoteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
+                    mNoteManager.post(new UpdateScibbleTitleEvent(title));
                 }
                 BaseCallback.invoke(callback, request, e);
             }
