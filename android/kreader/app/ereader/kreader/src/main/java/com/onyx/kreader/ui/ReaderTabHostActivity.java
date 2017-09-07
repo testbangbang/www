@@ -594,9 +594,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         } else if (tabManager.getOpenedTabs().size() > 0) {
             ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
             if (isSideReading) {
-                updateReaderTabWindowHeight(getSideReadingLeft());
                 bringReaderTabToFront(getSideReadingLeft());
-                updateReaderTabWindowHeight(getSideReadingRight());
                 bringReaderTabToFront(getSideReadingRight());
             }
 
@@ -746,6 +744,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     TreeObserverUtils.removeGlobalOnLayoutListener(tabHost.getViewTreeObserver(), this);
                     updateReaderTabWindowHeight();
                     bringSelfToFront();
+                    if (isSideReading) {
+                        bringReaderTabToFront(getSideReadingLeft());
+                        bringReaderTabToFront(getSideReadingRight());
+                    }
                     bringReaderTabToFront(getCurrentTabInHost());
                 }
             });
@@ -1043,8 +1045,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void updateReaderTabWindowHeight() {
-        if (tabHost.getTabWidget().getTabCount() > 0) {
-            updateReaderTabWindowHeight(getCurrentTabInHost());
+        if (isSideReading) {
+            updateReaderTabWindowHeight(getSideReadingLeft());
+            updateReaderTabWindowHeight(getSideReadingRight());
+        } else {
+            if (tabHost.getTabWidget().getTabCount() > 0) {
+                updateReaderTabWindowHeight(getCurrentTabInHost());
+            }
         }
     }
 
