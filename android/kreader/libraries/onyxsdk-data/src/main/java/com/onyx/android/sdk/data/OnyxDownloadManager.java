@@ -13,6 +13,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.utils.DownloadListener;
 import com.onyx.android.sdk.data.utils.NotificationItem;
+import com.onyx.android.sdk.data.v2.ContentService;
 
 import java.util.LinkedHashMap;
 
@@ -77,6 +78,20 @@ public class OnyxDownloadManager {
     public BaseDownloadTask download(final CloudFileDownloadRequest request, final BaseCallback baseCallback) {
         request.setTaskId(FileDownloadUtils.generateId(request.getUrl(), request.getPath()));
         BaseDownloadTask task = FileDownloader.getImpl().create(request.getUrl()).setPath(request.getPath()).setTag(request.getTag());
+        task.setListener(createDownloadListener(request, baseCallback));
+        return task;
+    }
+
+    public BaseDownloadTask download(final Context context, String token, final String url, final String path, final Object tag, final BaseCallback baseCallback) {
+        CloudFileDownloadRequest request = createDownloadRequest(url, path, tag);
+        request.setContext(context);
+        return download(token, request, baseCallback);
+    }
+
+    public BaseDownloadTask download(String token, final CloudFileDownloadRequest request, final BaseCallback baseCallback) {
+        request.setTaskId(FileDownloadUtils.generateId(request.getUrl(), request.getPath()));
+        BaseDownloadTask task = FileDownloader.getImpl().create(request.getUrl()).setPath(request.getPath()).setTag(request.getTag());
+        task.addHeader(Constant.HEADER_AUTHORIZATION, ContentService.CONTENT_AUTH_PREFIX + token);
         task.setListener(createDownloadListener(request, baseCallback));
         return task;
     }
