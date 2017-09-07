@@ -34,6 +34,38 @@
         <View style="@style/Horizontal_view" />
 
         <LinearLayout
+            android:id="@+id/speech_recording_activity_save_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/activity_record_container_margin_bottom"
+            android:layout_marginTop="@dimen/activity_record_container_margin_bottom"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/text_view_third_style"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/record_time_activity_min_value_margin_left"
+                android:visibility="visible"
+                android:text="@string/save_the_recording_data" />
+
+            <Button
+                android:id="@+id/speech_recording_activity_confirm"
+                style="@style/dialog_button_style"
+                android:text="@string/dialog_button_confirm"
+                android:textSize="@dimen/level_one_font_size" />
+
+            <Button
+                android:id="@+id/speech_recording_activity_cancel"
+                style="@style/dialog_button_style"
+                android:text="@string/dialog_button_cancel"
+                android:textSize="@dimen/level_one_font_size" />
+
+        </LinearLayout>
+
+        <View style="@style/Horizontal_view" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="@dimen/activity_record_container_margin_bottom"
@@ -48,14 +80,14 @@
 
             <ImageButton
                 android:id="@+id/speech_recording_activity_start_lecture"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/speech_recording_activity_start_lecture_width"
+                android:layout_height="@dimen/speech_recording_activity_start_lecture_width"
                 android:src="@drawable/record" />
 
             <ImageButton
                 android:id="@+id/speech_recording_activity_record_playback"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/speech_recording_activity_start_lecture_width"
+                android:layout_height="@dimen/speech_recording_activity_start_lecture_width"
                 android:src="@drawable/ic_reader_play" />
 
             <ImageButton
@@ -64,19 +96,60 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_reader_stop" />
 
-            <ProgressBar
-                android:id="@+id/record_time_activity_progressbar"
-                style="?android:attr/progressBarStyleHorizontal"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/record_time_activity_timer_view"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/record_time_activity_progressbar_margin_left"
-                android:layout_marginRight="@dimen/record_time_activity_progressbar_margin_left"
-                android:max="100"
-                android:orientation="horizontal"
-                android:progress="0" />
+                android:orientation="vertical">
 
+                <ProgressBar
+                    android:id="@+id/record_time_activity_progressbar"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/record_time_activity_progressbar_margin_top"
+                    android:layout_above="@+id/record_time_activity_timer_view"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/record_time_activity_progressbar_margin_left"
+                    android:layout_marginRight="@dimen/record_time_activity_progressbar_margin_left"
+                    android:max="100"
+                    android:visibility="gone"
+                    android:orientation="horizontal"
+                    android:progress="0" />
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/record_time_activity_min_value"
+                        style="@style/text_view_third_style"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/record_time_activity_min_value_margin_left"
+                        android:visibility="invisible"
+                        android:text="@string/dialog_minute_min_value" />
+
+                    <TextView
+                        android:id="@+id/record_time_activity_timer_view"
+                        style="@android:style/TextAppearance.Large"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/level_one_font_size" />
+
+                    <TextView
+                        android:id="@+id/record_time_activity_max_value"
+                        style="@style/text_view_third_style"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/record_time_activity_max_value_margin_right"
+                        android:visibility="invisible"
+                        android:text="@string/dialog_minute_max_value" />
+
+                </RelativeLayout>
+
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 

@@ -40,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/dict_result_sound_height"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="20dp"
+                android:layout_marginRight="@dimen/button_function_panel_margin_right"
                 android:orientation="horizontal"
                 android:visibility="invisible">
 

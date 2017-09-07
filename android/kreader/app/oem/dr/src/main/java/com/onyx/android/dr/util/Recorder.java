@@ -39,6 +39,7 @@ public class Recorder implements OnCompletionListener, OnErrorListener {
     public static final int PLAYING_STATE = 2;
     public static final int MINUTE_VALUE = 540;
     public static final int SIXTY = 60;
+    public static final int THIRTY = 30;
     public static final int PROGRESS_VALUE = 100;
     private int state = IDLE_STATE;
     public static final int NO_ERROR = 0;

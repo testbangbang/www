@@ -49,13 +49,15 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     RadioButton chineseRadioButton;
     @Bind(R.id.new_word_activity_minority_language)
     RadioButton minorityLanguageRadioButton;
+    @Bind(R.id.new_word_activity_all_number)
+    TextView allNumber;
     private DividerItemDecoration dividerItemDecoration;
     private NewWordAdapter newWordAdapter;
     private NewWordPresenter newWordPresenter;
     private List<NewWordNoteBookEntity> newWordList;
     private ArrayList<Boolean> listCheck;
-    private int dictType;
     private TimePickerDialog timePickerDialog;
+    private int dictType = Constants.ENGLISH_TYPE;
 
     @Override
     protected Integer getLayoutId() {
@@ -91,10 +93,10 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     }
 
     private void loadNewWordData() {
-        dictType = getIntent().getIntExtra(Constants.DICTTYPE, -1);
         newWordPresenter = new NewWordPresenter(getApplicationContext(), this);
+        radioGroup.setOnCheckedChangeListener(new TabCheckedListener());
+        radioGroup.check(R.id.new_word_activity_english);
         newWordPresenter.getAllNewWordByType(dictType);
-        initTitleData();
     }
 
     private void initTitleData() {
@@ -113,6 +115,15 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
+        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
+        if (dictType == Constants.ENGLISH_TYPE) {
+            englishRadioButton.setText(getString(R.string.english) + "(" + dataList.size() + getString(R.string.new_word_unit) + ")");
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            chineseRadioButton.setText(getString(R.string.chinese) + "(" + dataList.size() + getString(R.string.new_word_unit) + ")");
+        } else if (dictType == Constants.OTHER_TYPE) {
+            minorityLanguageRadioButton.setText(getString(R.string.small_language) + "(" + dataList.size() + getString(R.string.new_word_unit) + ")");
+        }
+        newWordList.clear();
         newWordList = dataList;
         listCheck = checkList;
         newWordAdapter.setDataList(newWordList, listCheck);
@@ -131,6 +142,26 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
                 listCheck.set(position, isCheck);
             }
         });
+    }
+
+    private class TabCheckedListener implements RadioGroup.OnCheckedChangeListener {
+        @Override
+        public void onCheckedChanged(RadioGroup group, int checkedId) {
+            switch (checkedId) {
+                case R.id.new_word_activity_english:
+                    dictType = Constants.ENGLISH_TYPE;
+                    newWordPresenter.getAllNewWordByType(Constants.ENGLISH_TYPE);
+                    break;
+                case R.id.new_word_activity_chinese:
+                    dictType = Constants.CHINESE_TYPE;
+                    newWordPresenter.getAllNewWordByType(Constants.CHINESE_TYPE);
+                    break;
+                case R.id.new_word_activity_minority_language:
+                    dictType = Constants.OTHER_TYPE;
+                    newWordPresenter.getAllNewWordByType(Constants.OTHER_TYPE);
+                    break;
+            }
+        }
     }
 
     @OnClick({R.id.new_word_activity_delete,

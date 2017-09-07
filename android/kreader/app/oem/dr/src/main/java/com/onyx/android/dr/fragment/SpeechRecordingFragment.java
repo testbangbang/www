@@ -85,9 +85,11 @@ public class SpeechRecordingFragment extends BaseFragment implements InformalEss
     }
 
     private void showData(List<InformalEssayEntity> dataList) {
-        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
-        informalEssayList.clear();
-        informalEssayList = dataList;
+        if (dataList != null && !dataList.isEmpty()) {
+            allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
+            informalEssayList.clear();
+            informalEssayList = dataList;
+        }
         speechRecordingAdapter.setDataList(informalEssayList);
         recyclerView.setAdapter(speechRecordingAdapter);
         speechRecordingAdapter.notifyDataSetChanged();

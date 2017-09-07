@@ -20,22 +20,59 @@
 
         <RadioButton
             android:id="@+id/new_word_activity_english"
-            style="@style/TabSecondStyle" />
+            style="@style/TabSecondStyle"
+            android:text="@string/english" />
 
         <RadioButton
             android:id="@+id/new_word_activity_chinese"
-            style="@style/TabSecondStyle" />
+            style="@style/TabSecondStyle"
+            android:text="@string/chinese" />
 
         <RadioButton
             android:id="@+id/new_word_activity_minority_language"
-            style="@style/TabSecondStyle" />
+            style="@style/TabSecondStyle"
+            android:text="@string/small_language" />
     </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:text="@string/new_word_activity_hint"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <View style="@style/Horizontal_view" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp">
+
+            <TextView
+                android:id="@+id/new_word_activity_all_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/fragment_speech_recording_all_number"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+        </RelativeLayout>
+    </LinearLayout>
 
     <RelativeLayout
         android:id="@+id/new_word_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/new_word_activity_export"

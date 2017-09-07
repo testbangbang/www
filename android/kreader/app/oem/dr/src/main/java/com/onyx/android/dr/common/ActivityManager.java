@@ -121,10 +121,9 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startNewWordNotebookActivity(Context context, int dictType) {
+    public static void startNewWordNotebookActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.DICTTYPE, dictType);
         intent.setClass(context, NewWordNotebookActivity.class);
         context.startActivity(intent);
     }

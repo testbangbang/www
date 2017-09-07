@@ -290,6 +290,8 @@
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="speech_recording_activity_dialog_height" format="float" type="dimen">0.25</string>
+    <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
     <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
     <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
     <string name="article_repeat_after">文章跟读</string>
@@ -479,4 +481,17 @@
     <string name="data_unit">条</string>
     <string name="hint_input_search_word">请输入搜索的关键字</string>
     <string name="input_keyword">输入关键字</string>
+    <string name="dialog_button_confirm">确定</string>
+    <string name="dialog_button_cancel">取消</string>
+    <string name="dialog_title">标题</string>
+    <string name="dialog_minute_max_value">15</string>
+    <string name="dialog_minute_min_value">0</string>
+    <string name="dialog_minute_setting_value">设置:</string>
+    <string name="setting_record_time">设置录音时长</string>
+    <string name="recording">正在录音</string>
+    <string name="save_the_recording_data">是否保存录音数据？</string>
+    <string name="record_success">录音完成</string>
+    <string name="second">秒</string>
+    <string name="new_word_activity_hint">小提示：生词本最多可存3600个词，超出部分自动清除。</string>
+    <string name="new_word_unit">个</string>
 </resources>
