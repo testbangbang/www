@@ -129,18 +129,22 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
             case R.id.book_detail_pay:
                 break;
             case R.id.book_detail_try_read:
-                if (isFileExists(metadata)) {
-                    openCloudFile(metadata);
-                    return;
-                }
-                if (enableWifiOpenAndDetect()) {
-                    return;
-                }
-                startDownload(metadata);
+                tryRead();
                 break;
             case R.id.book_detail_add_to_cart:
                 break;
         }
+    }
+
+    private void tryRead() {
+        if (isFileExists(metadata)) {
+            openCloudFile(metadata);
+            return;
+        }
+        if (enableWifiOpenAndDetect()) {
+            return;
+        }
+        startDownload(metadata);
     }
 
     private void startDownload(final Metadata eBook) {
@@ -239,8 +243,7 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         if (StringUtils.isNullOrEmpty(path)) {
             return;
         }
-        File file = new File(path);
-        if (!file.exists()) {
+        if (!FileUtils.fileExist(path)) {
             return;
         }
         ActivityManager.openBook(DRApplication.getInstance(), book, path);
