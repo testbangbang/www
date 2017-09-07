@@ -278,4 +278,19 @@
     <dimen name="book_detail_text_margin">10dp</dimen>
     <dimen name="book_detail_book_name_margin_top">20dp</dimen>
     <dimen name="popular_recommendation_title_margin_left">450dp</dimen>
+    <dimen name="scroller_margin_top">16dp</dimen>
+    <dimen name="scroller_margin_fadingEdgeLength">5dp</dimen>
+    <dimen name="tracks_padding">10dp</dimen>
+    <dimen name="arrow_down_margin_top">-4dp</dimen>
+    <dimen name="tv_title_padding_left">5dp</dimen>
+    <dimen name="iv_icon_padding_bottom">5dp</dimen>
+    <dimen name="iv_icon_padding_top">5dp</dimen>
+    <dimen name="action_item_vertical_padding_right">10dp</dimen>
+    <dimen name="horiz_separator_width">2dp</dimen>
+    <dimen name="startHandle_width">37dp</dimen>
+    <dimen name="startHandle_height">37dp</dimen>
+    <dimen name="endHandle_width">37dp</dimen>
+    <dimen name="endHandle_height">37dp</dimen>
+    <dimen name="activity_dict_result_view_margin_top">20dp</dimen>
+    <dimen name="activity_dict_result_view_margin_bottom">20dp</dimen>
 </resources>

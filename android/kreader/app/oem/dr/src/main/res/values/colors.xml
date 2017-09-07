@@ -6,4 +6,5 @@
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
     <color name="black_gray">#77000000</color>
+    <color name="tv_title_color">#fff</color>
 </resources>

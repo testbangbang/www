@@ -490,4 +490,6 @@
     <string name="book_detail_book_price">Price:￥ %.2f</string>
     <string name="qr_title">Sweep QR code link deep reader WeChat public number, access to relevant newsletter</string>
     <string name="paid">paid</string>
+    <string name="chart">Chart</string>
+    <string name="system_update">system update</string>
 </resources>

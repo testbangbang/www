@@ -483,4 +483,5 @@
     <string name="book_detail_book_price">价 格:￥ %.2f</string>
     <string name="qr_title">扫二维码链接深阅书城微信公众号，获取相关书讯</string>
     <string name="paid">已购</string>
+    <string name="chart">Chart</string>
 </resources>
