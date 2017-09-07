@@ -23,6 +23,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
     private volatile boolean pause = false;
 
     public FlushShapeListRequest(final List<PageInfo> pages, final List<Shape> list, int spi, boolean r, boolean t, boolean save) {
+        setPauseRawInputProcessor(isPause());
         setAbortPendingTasks(false);
         setRender(r);
         setTransfer(t);
