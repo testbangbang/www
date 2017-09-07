@@ -28,14 +28,14 @@ public class LoginPresenter {
         loginData = new LoginData();
     }
 
-    public void login(String userName, String password) {
+    public void login(String userName, String password, final boolean autoLogin) {
         final BaseAuthAccount neoAccountBase = BaseAuthAccount.create(userName, password);
         final LoginByAdminRequest req = new LoginByAdminRequest(neoAccountBase);
         loginData.login(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 loginView.setAccountInfo(req.getNeoAccount());
-                if (req.getNeoAccount() != null) {
+                if (req.getNeoAccount() != null && autoLogin) {
                     DRPreferenceManager.saveUserAccount(DRApplication.getInstance(), neoAccountBase.username);
                     DRPreferenceManager.saveUserPassword(DRApplication.getInstance(), neoAccountBase.password);
                 }

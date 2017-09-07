@@ -5,29 +5,52 @@
     android:orientation="vertical"
     android:padding="@dimen/fragment_content_padding">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/level_one_heading_font"
-        android:text="@string/now_reading" />
-
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <LinearLayout
-            android:id="@+id/now_reading_book"
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:orientation="vertical">
+            android:text="@string/now_reading"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/popular_recommendation_title_margin_left"
+            android:text="@string/popular_recommendation"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <ImageView
+            android:id="@+id/search_book"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_search" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/now_reading_layout_height"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:id="@+id/now_reading_book"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/now_reading_layout_margin_left"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:visibility="invisible">
 
             <ImageView
                 android:id="@+id/now_reading_book_cover"
                 android:layout_width="@dimen/now_reading_book_cover_width"
                 android:layout_height="@dimen/now_reading_book_cover_height"
-                android:background="@drawable/image_selector_bg" />
+                android:background="@drawable/image_selector_bg"
+                android:scaleType="fitXY" />
 
             <TextView
                 android:id="@+id/now_reading_text_progress"
@@ -44,23 +67,34 @@
                 android:id="@+id/now_reading_book_name"
                 android:layout_width="@dimen/fragment_main_view_bookName_width"
                 android:layout_height="wrap_content"
-                android:lines="2"
-                android:ellipsize="end"/>
+                android:ellipsize="end"
+                android:lines="1" />
+
+            <TextView
+                android:id="@+id/now_reading_time"
+                android:layout_width="@dimen/fragment_main_view_bookName_width"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lines="1" />
+
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="right"
+            android:layout_weight="1"
             android:orientation="vertical">
 
-
+            <com.onyx.android.dr.view.PageRecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginTop="@dimen/recent_add_layout_margin_top"
         android:layout_weight="1"
         android:orientation="vertical">
 
@@ -72,8 +106,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:textSize="@dimen/level_one_heading_font"
-                android:text="@string/recent_add" />
+                android:text="@string/recent_add"
+                android:textSize="@dimen/level_one_heading_font" />
 
             <ImageView
                 android:id="@+id/image_next"
@@ -88,11 +122,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/page_count_margin"
-                android:text="@string/more_books"
                 android:layout_centerVertical="true"
-                android:textSize="@dimen/level_one_heading_font"
-                android:layout_toLeftOf="@id/image_next" />
+                android:layout_marginRight="@dimen/page_count_margin"
+                android:layout_toLeftOf="@id/image_next"
+                android:text="@string/more_books"
+                android:textSize="@dimen/level_one_heading_font" />
         </RelativeLayout>
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView

@@ -235,17 +235,23 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void setSignUpResult(boolean result) {
         if (result) {
-            loginTitle.setVisibility(View.GONE);
-            loginTitleLine.setVisibility(View.GONE);
-            step = 0;
-            login_layout.setVisibility(View.VISIBLE);
-            college_students_info_layout.setVisibility(View.GONE);
-            other_identity_info_layout.setVisibility(View.GONE);
-            schoolchildren_layout.setVisibility(View.GONE);
-            teacher_info_layout.setVisibility(View.GONE);
-            loginNextButton.setVisibility(View.GONE);
+            showLoginLayout();
             CommonNotices.showMessage(this, getString(R.string.sign_up_succeed));
         }
+    }
+
+    private void showLoginLayout() {
+        step = 0;
+        login_layout.setVisibility(View.VISIBLE);
+        identity_layout.setVisibility(View.GONE);
+        college_students_info_layout.setVisibility(View.GONE);
+        other_identity_info_layout.setVisibility(View.GONE);
+        schoolchildren_layout.setVisibility(View.GONE);
+        teacher_info_layout.setVisibility(View.GONE);
+        loginNextButton.setVisibility(View.GONE);
+        loginPrevButton.setVisibility(View.GONE);
+        qrCode.setVisibility(View.GONE);
+        loginTitle.setText(getString(R.string.login_title));
     }
 
     @Override
@@ -311,12 +317,16 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private boolean prevStep() {
-        if (step == STEP_SECOND) {
+        if (step == STEP_FIRST) {
+            showLoginLayout();
+            return true;
+        } else if (step == STEP_SECOND) {
             collectUserInfo();
             return true;
         } else if (step == STEP_THIRD) {
             collectUserInfoSecondStep();
             qrCode.setVisibility(View.GONE);
+            loginTitle.setText(getString(R.string.identity_title));
             return true;
         }
         return false;
@@ -369,6 +379,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         } else if (step == STEP_SECOND) {
             readingInfo.setVisibility(View.GONE);
             qrCode.setVisibility(View.VISIBLE);
+            loginTitle.setText(getString(R.string.qr_title));
             step = STEP_THIRD;
         } else {
             SignUpInfo signUpInfo = new SignUpInfo();
@@ -528,7 +539,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             editTextPassword.requestFocus();
             return;
         }
-        loginPresenter.login(account, password);
+        loginPresenter.login(account, password, autoLoginCheckbox.isChecked());
     }
 
     private void connectNetwork() {
@@ -543,6 +554,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             if (prevStep()) {
                 return true;
             }
+            return true;
         }
         return super.dispatchKeyEvent(event);
     }

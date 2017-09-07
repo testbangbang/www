@@ -14,6 +14,8 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.action.LibraryGotoPageAction;
 import com.onyx.android.dr.adapter.BookListAdapter;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BackToMainViewEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.view.PageIndicator;
@@ -27,8 +29,11 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentRefreshRequest;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -46,10 +51,7 @@ import butterknife.OnClick;
  * Created by hehai on 17-6-29.
  */
 
-public class CommonBooksFragment extends BaseFragment {
-    public static final String LIBRARY_ID_ARGS = "LIBRARY_ID_ARGS";
-    public static final String FRAGMENT_NAME = "FRAGMENT_NAME";
-    public static final String IMAGE_RESOURCE = "image_resource";
+public class MoreBooksFragment extends BaseFragment {
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.image)
@@ -60,10 +62,6 @@ public class CommonBooksFragment extends BaseFragment {
     TextView titleBarTitle;
     @Bind(R.id.title_bar_right_menu)
     TextView titleBarRightMenu;
-    @Bind(R.id.pre_button)
-    ImageView preButton;
-    @Bind(R.id.next_button)
-    ImageView nextButton;
     @Bind(R.id.page_recycler)
     SinglePageRecyclerView pageRecycler;
     @Bind(R.id.total_tv)
@@ -74,21 +72,15 @@ public class CommonBooksFragment extends BaseFragment {
     ImageView next;
     @Bind(R.id.page_panel)
     LinearLayout pagePanel;
-    @Bind(R.id.refresh)
-    ImageView refresh;
     @Bind(R.id.page_indicator_layout)
     RelativeLayout pageIndicatorLayout;
     private LibraryDataHolder dataHolder;
     private BookListAdapter libraryAdapter;
     private LibraryViewInfo viewInfo;
     private QueryArgs args;
-    private String idString = "";
     private PageIndicator pageIndicator;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.common_books_fragment_col);
-    private String uniqueId;
-    private String fragmentName;
-    private int resourceId;
 
     @Override
     protected void initListener() {
@@ -108,40 +100,31 @@ public class CommonBooksFragment extends BaseFragment {
     @Override
     protected void initView(View rootView) {
         titleBarTitle.setText(getString(R.string.menu_real_time_articles));
-        image.setImageResource(R.drawable.ic_real_time_books);
         libraryAdapter = new BookListAdapter(getActivity(), getDataHolder());
         libraryAdapter.setRowAndCol(row, col);
+        libraryAdapter.setShowName(true);
         pageRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         pageRecycler.addItemDecoration(dividerItemDecoration);
         pageRecycler.setAdapter(libraryAdapter);
         initPageIndicator(pageIndicatorLayout);
+        titleBarRightMenu.setVisibility(View.VISIBLE);
+        titleBarRightMenu.setText(getString(R.string.enter_bookstore));
     }
 
     @Override
     protected void loadData() {
-        titleBarTitle.setText(fragmentName);
-        image.setImageResource(resourceId);
+        titleBarTitle.setText(getString(R.string.more_books));
         viewInfo = getDataHolder().getCloudViewInfo();
         viewInfo.updateSortBy(SortBy.CreationTime, SortOrder.Desc);
         viewInfo.getQueryPagination().setCurrentPage(0);
-        args = viewInfo.libraryQuery(idString);
-        args.useCloudMemDbPolicy();
-        if (NetworkUtil.isWiFiConnected(getActivity())) {
-            refreshDataFormCloud();
-        } else {
-            loadData(args);
-        }
-    }
-
-    public void setData(String idString, String fragmentName, int resourceId) {
-        this.idString = idString;
-        this.fragmentName = fragmentName;
-        this.resourceId = resourceId;
-        if (titleBarTitle != null && image != null) {
-            loadData();
-        }
+        args = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
+        args.conditionGroup.and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
+        args.fetchPolicy = FetchPolicy.DB_ONLY;
+        args.sortBy = SortBy.RecentlyRead;
+        viewInfo.updateQueryArgs(args);
+        loadData(args);
     }
 
     private void loadData(final QueryArgs args) {
@@ -185,15 +168,14 @@ public class CommonBooksFragment extends BaseFragment {
         return true;
     }
 
-    @OnClick({R.id.menu_back, R.id.pre_button, R.id.next_button})
+    @OnClick({R.id.menu_back, R.id.title_bar_right_menu})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
                 EventBus.getDefault().post(new BackToMainViewEvent());
                 break;
-            case R.id.pre_button:
-                break;
-            case R.id.next_button:
+            case R.id.title_bar_right_menu:
+                ActivityManager.startEBookStoreActivity(getActivity());
                 break;
         }
     }
@@ -249,6 +231,7 @@ public class CommonBooksFragment extends BaseFragment {
         }
         initPagination();
         pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), getPagination());
+        pageIndicator.showRefresh(false);
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
             @Override
@@ -392,5 +375,11 @@ public class CommonBooksFragment extends BaseFragment {
     public boolean onKeyPageUp() {
         prevPage();
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
     }
 }
