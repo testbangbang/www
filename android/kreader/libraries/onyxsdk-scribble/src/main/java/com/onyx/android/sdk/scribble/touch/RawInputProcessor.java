@@ -3,7 +3,6 @@ package com.onyx.android.sdk.scribble.touch;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -35,6 +34,7 @@ public class RawInputProcessor {
     private static final int ON_PRESS = 0;
     private static final int ON_MOVE = 1;
     private static final int ON_RELEASE = 2;
+    private static final int ON_RELEASE_OUT_LIMIT_REGION = 3;
 
     private native void nativeRawReader();
     private native void nativeRawClose();
@@ -44,17 +44,17 @@ public class RawInputProcessor {
     public static abstract class RawInputCallback {
 
         // when received pen down or stylus button
-        public abstract void onBeginRawData();
+        public abstract void onBeginRawData(boolean shortcutDrawing);
 
-        public abstract void onEndRawData();
+        public abstract void onEndRawData(boolean releaseOutLimitRegion);
 
         // when pen released.
         public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
 
         // caller should render the page here.
-        public abstract void onBeginErasing();
+        public abstract void onBeginErasing(boolean shortcutErasing);
 
-        public abstract void onEndErasing();
+        public abstract void onEndErasing(boolean releaseOutLimitRegion);
 
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
@@ -150,18 +150,19 @@ public class RawInputProcessor {
     }
 
     @SuppressWarnings("unused")
-    public void onTouchPointReceived(int x, int y, int pressure, boolean erasing, int state, long ts) {
+    public void onTouchPointReceived(int x, int y, int pressure, boolean erasing, boolean shortcutDrawing, boolean shortcutErasing, int state, long ts) {
 //        Log.d(TAG, "x:" + x + "y:" + y + "pressure:" +pressure + "ts:" + ts + "erasing:" + erasing + "state:" + state);
         if (!isReportData()) {
             return;
         }
         this.erasing = erasing;
         if (state == ON_PRESS) {
-            pressReceived(x, y, pressure, PEN_SIZE, ts, erasing);
+            pressReceived(x, y, pressure, PEN_SIZE, ts, erasing, shortcutDrawing, shortcutErasing);
         }else if (state == ON_MOVE) {
             moveReceived(x, y, pressure, PEN_SIZE, ts, erasing);
-        }else if (state == ON_RELEASE) {
-            releaseReceived(x, y, pressure, PEN_SIZE, ts, erasing);
+        }else if (state == ON_RELEASE || state == ON_RELEASE_OUT_LIMIT_REGION) {
+            releaseReceived(x, y, pressure, PEN_SIZE, ts, erasing,
+                    state == ON_RELEASE_OUT_LIMIT_REGION);
         }
     }
 
@@ -194,12 +195,12 @@ public class RawInputProcessor {
         return reportData;
     }
 
-    private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+    private void pressReceived(int x, int y, int pressure, int size, long ts, boolean erasing, boolean shortcutDrawing, boolean shortcutErasing) {
         resetPointList();
         final TouchPoint touchPoint = new TouchPoint(x, y, pressure, size, ts);
         mapToView(touchPoint);
         if (addToList(touchPoint, true)) {
-            invokeTouchPointListBegin(erasing);
+            invokeTouchPointListBegin(erasing, shortcutDrawing, shortcutErasing);
         }
         // Log.d(TAG, "pressed received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
@@ -214,12 +215,12 @@ public class RawInputProcessor {
 //         Log.d(TAG, "move received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
-    private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing) {
+    private void releaseReceived(int x, int y, int pressure, int size, long ts, boolean erasing, boolean releaseOutLimitRegion) {
         if (touchPointList != null && touchPointList.size() > 0) {
             invokeTouchPointListReceived(touchPointList, erasing);
         }
         resetPointList();
-        invokeTouchPointListEnd(erasing);
+        invokeTouchPointListEnd(erasing, releaseOutLimitRegion);
         //Log.d(TAG, "release received, x: " + x + " y: " + y + " pressure: " + pressure + " ts: " + ts + " erasing: " + erasing);
     }
 
@@ -227,7 +228,7 @@ public class RawInputProcessor {
         touchPointList = null;
     }
 
-    private void invokeTouchPointListBegin(final boolean erasing) {
+    private void invokeTouchPointListBegin(final boolean erasing, final boolean shortcutDrawing, final boolean shortcutErasing) {
         if (rawInputCallback == null || (!isReportData() && !erasing)) {
             return;
         }
@@ -236,15 +237,15 @@ public class RawInputProcessor {
             @Override
             public void run() {
                 if (erasing) {
-                    rawInputCallback.onBeginErasing();
+                    rawInputCallback.onBeginErasing(shortcutErasing);
                 } else {
-                    rawInputCallback.onBeginRawData();
+                    rawInputCallback.onBeginRawData(shortcutDrawing);
                 }
             }
         });
     }
 
-    private void invokeTouchPointListEnd(final boolean erasing) {
+    private void invokeTouchPointListEnd(final boolean erasing, final boolean releaseOutLimitRegion) {
         if (rawInputCallback == null || (!isReportData() && !erasing)) {
             return;
         }
@@ -253,9 +254,9 @@ public class RawInputProcessor {
             @Override
             public void run() {
                 if (erasing) {
-                    rawInputCallback.onEndErasing();
+                    rawInputCallback.onEndErasing(releaseOutLimitRegion);
                 } else {
-                    rawInputCallback.onEndRawData();
+                    rawInputCallback.onEndRawData(releaseOutLimitRegion);
                 }
             }
         });

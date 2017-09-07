@@ -20,7 +20,9 @@
 #include <linux/input.h>
 #include <errno.h>
 
-TouchReader::TouchReader() : limitArray(nullptr) {
+TouchReader::TouchReader() :
+    limitArray(nullptr), shortcutDrawing(false), shortcutErasing(false)
+{
 
 }
 
@@ -120,14 +122,14 @@ void TouchReader::processEvent(void *userData, onTouchPointReceived callback, in
                 state = ON_PRESS;
                 lastState = state;
             } else {
-                state = inLimitRegion(px, py) ? ON_MOVE : ON_RELEASE;
+                state = inLimitRegion(px, py) ? ON_MOVE : ON_RELEASE_OUT_LIMIT_REGION;
             }
         } else {
             state = ON_RELEASE;
         }
-        lastPressed = state != ON_RELEASE;
-        if(lastState != ON_RELEASE) {
-           callback(userData, px, py, pressure, ts, erasing, state);
+        lastPressed = state != ON_RELEASE && state != ON_RELEASE_OUT_LIMIT_REGION;
+        if(lastState != ON_RELEASE && lastState != ON_RELEASE_OUT_LIMIT_REGION) {
+           callback(userData, px, py, pressure, ts, erasing, shortcutDrawing, shortcutErasing, state);
         }
         lastState = state;
     } else if (type == EV_KEY) {
@@ -135,11 +137,19 @@ void TouchReader::processEvent(void *userData, onTouchPointReceived callback, in
             erasing = false;
             pressed = value;
             lastPressed = false;
+            if (!pressed) {
+                shortcutDrawing = false;
+                shortcutErasing = false;
+            }
         } else if (code == BTN_TOOL_PENCIL || code == BTN_TOOL_PEN) {
             erasing = false;
+            shortcutDrawing = true;
+            shortcutErasing = false;
         } else if (code == BTN_TOOL_RUBBER) {
             erasing = true;
             pressed = value;
+            shortcutDrawing = false;
+            shortcutErasing = true;
         }
     }
 }

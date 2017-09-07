@@ -12,6 +12,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
 import com.onyx.kreader.note.event.DFBShapeStartEvent;
@@ -45,15 +46,17 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             private TouchPoint lastPoint;
 
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut) {
+                Debug.d(getClass(), "onBeginRawData: " + shortcut);
                 shortcutErasing = false;
-                shortcutDrawing = true;
+                shortcutDrawing = shortcut;
                 lastPoint = null;
                 begin = true;
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean releaseOutLimitRegion) {
+                Debug.d(getClass(), "onEndRawData: " + releaseOutLimitRegion);
                 shortcutDrawing = false;
                 if (!isReportData()) {
                     return;
@@ -84,19 +87,23 @@ public class RawEventProcessor extends NoteEventProcessorBase {
                     drawingMoveReceived(pointList.get(i));
                 }
 
-                lastPoint = pointList.get(pointList.getPoints().size() - 1);
+                if (pointList.size() > 0) {
+                    lastPoint = pointList.get(pointList.getPoints().size() - 1);
+                }
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut) {
+                Debug.d(getClass(), "onBeginErasing: " + shortcut);
                 shortcutDrawing = false;
-                shortcutErasing = true;
+                shortcutErasing = shortcut;
                 lastPoint = null;
                 begin = true;
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean releaseOutLimitRegion) {
+                Debug.d(getClass(), "onEndErasing: " + releaseOutLimitRegion);
                 shortcutErasing = false;
                 if (!isReportData()) {
                     return;

@@ -9,18 +9,18 @@ TouchReader touchReader;
 static jobject readerObject;
 static bool debug = false;
 
-static void reportTouchPoint(JNIEnv *env, jobject thiz, int px, int py, int pressure, bool erasing, int state, long ts) {
+static void reportTouchPoint(JNIEnv *env, jobject thiz, int px, int py, int pressure, bool erasing, bool shortcutDrawing, bool shortcutErasing, int state, long ts) {
     JNIUtils utils(env);
-    utils.findMethod(rawTouchClassName, "onTouchPointReceived", "(IIIZIJ)V");
-    env->CallVoidMethod(thiz, utils.getMethodId(), px, py, pressure, erasing, state, ts);
+    utils.findMethod(rawTouchClassName, "onTouchPointReceived", "(IIIZZZIJ)V");
+    env->CallVoidMethod(thiz, utils.getMethodId(), px, py, pressure, erasing, shortcutDrawing, shortcutErasing, state, ts);
 }
 
-static void onTouchPointReceived(void * userData, int px, int py, int pressure, long ts, bool erasing, int state) {
+static void onTouchPointReceived(void * userData, int px, int py, int pressure, long ts, bool erasing, bool shortcutDrawing, bool shortcutErasing, int state) {
     if(debug) {
-       LOGI("onTouchPointReceived x y pressure ts erasing state %d %d %d %d %d %d \n", px, py, pressure, ts, erasing, state);
+       LOGI("onTouchPointReceived x y pressure ts erasing state %d %d %d %d %d %d \n", px, py, pressure, ts, erasing, shortcutDrawing, shortcutErasing, state);
     }
     JNIEnv *readerEnv = (JNIEnv *)userData;
-    reportTouchPoint(readerEnv, readerObject, px, py, pressure, erasing, state, ts);
+    reportTouchPoint(readerEnv, readerObject, px, py, pressure, erasing, shortcutDrawing, shortcutErasing, state, ts);
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawReader
