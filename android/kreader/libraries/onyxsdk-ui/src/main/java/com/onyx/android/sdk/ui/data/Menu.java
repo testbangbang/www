@@ -51,6 +51,14 @@ public class Menu {
         return this;
     }
 
+    public Menu setColumns(int columns) {
+        int size = itemMap.size();
+        for (int i = 0; i < size; i++) {
+            itemMap.valueAt(i).setLayoutColumns(columns);
+        }
+        return this;
+    }
+
     public Menu setText(int menuId, String text) {
         MenuItem item = itemMap.get(menuId);
         if (item != null) {

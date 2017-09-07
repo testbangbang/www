@@ -12,7 +12,8 @@
     </data>
 
     <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
-        android:layout_width="@{item.width, default=wrap_content}"
+        layoutColumns="@{item.layoutColumns}"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:minWidth="@dimen/onyx_main_note_menu_height"
         android:background="@drawable/image_button_bg"

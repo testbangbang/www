@@ -64,7 +64,6 @@ import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
 import com.onyx.edu.note.scribble.event.QuitScribbleEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
-import com.onyx.edu.note.scribble.event.SaveNoteDocumentEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
@@ -146,7 +145,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
                 R.layout.scribble_main_menu,
                 BR.item,
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
-                MenuItem.createVisibleMenus(handlerManager.getActiveProvider().buildFunctionMenuIds()));
+                MenuItem.createVisibleMenus(handlerManager.getActiveProvider().buildMainMenuIds()));
         menuManager.addToolbarMenu(mBinding.toolMenu,
                 noteManager.getEventBus(),
                 R.layout.scribble_toolbar_menu,
@@ -607,14 +606,7 @@ public class ScribbleActivity extends OnyxAppCompatActivity implements ScribbleN
 
     private SparseArray<MenuItem> getSubItems(int parentId) {
         List<Integer> subMenuIds = handlerManager.getActiveProvider().buildSubMenuIds().get(parentId);
-        SparseArray<MenuItem> itemMap = MenuItem.createVisibleMenus(subMenuIds);
-        int parentWidth = mBinding.workView.getMeasuredWidth();
-        int width = parentWidth / getResources().getInteger(R.integer.note_menu_columns);
-        int size = itemMap.size();
-        for (int i = 0; i < size; i++) {
-            itemMap.valueAt(i).setWidth(width);
-        }
-        return itemMap;
+        return MenuItem.createVisibleMenus(subMenuIds, getResources().getInteger(R.integer.note_menu_columns));
     }
 
     public int getChosenSubMenuId(int mainMenuID, boolean isLineLayoutMode) {

@@ -114,7 +114,7 @@ public class ShapeTransformHandler extends BaseHandler {
     }
 
     @Override
-    public List<Integer> buildFunctionMenuIds() {
+    public List<Integer> buildMainMenuIds() {
         List<Integer> functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
@@ -143,7 +143,7 @@ public class ShapeTransformHandler extends BaseHandler {
     }
 
     @Override
-    public void handleFunctionMenuEvent(int functionBarMenuID) {
+    public void handleMainMenuEvent(int functionBarMenuID) {
         //TODO:temp restore to normal scribble here.in shape select mode , may have different icon here.
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.ADD_PAGE:

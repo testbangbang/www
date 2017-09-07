@@ -103,7 +103,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public List<Integer> buildFunctionMenuIds() {
+    public List<Integer> buildMainMenuIds() {
         List<Integer> functionMenuIds = new ArrayList<>();
         functionMenuIds.add(MenuId.PEN_STYLE);
         functionMenuIds.add(MenuId.BG);
@@ -194,7 +194,7 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void handleFunctionMenuEvent(int functionBarMenuID) {
+    public void handleMainMenuEvent(int functionBarMenuID) {
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.ADD_PAGE:
                 addPage();

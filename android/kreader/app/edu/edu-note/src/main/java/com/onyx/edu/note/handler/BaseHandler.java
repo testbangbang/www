@@ -17,11 +17,9 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,7 +39,7 @@ public abstract class BaseHandler {
 
     @CallSuper
     public void onActivate(HandlerArgs args) {
-        buildFunctionMenuIds();
+        buildMainMenuIds();
         buildToolBarMenuIds();
         buildSubMenuIds();
 //        noteManager.post(new HandlerActivateEvent(functionBarMenuIDList, toolBarMenuIDList, functionBarSubMenuIDMap));
@@ -53,13 +51,13 @@ public abstract class BaseHandler {
     public void close() {
     }
 
-    public abstract List<Integer> buildFunctionMenuIds();
+    public abstract List<Integer> buildMainMenuIds();
 
     public abstract List<Integer> buildToolBarMenuIds();
 
     public abstract SparseArray<List<Integer>> buildSubMenuIds();
 
-    public abstract void handleFunctionMenuEvent(int functionBarMenuID);
+    public abstract void handleMainMenuEvent(int functionBarMenuID);
 
     public abstract void handleSubMenuEvent(int subMenuID);
 

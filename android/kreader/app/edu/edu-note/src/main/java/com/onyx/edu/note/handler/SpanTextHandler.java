@@ -120,7 +120,7 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public List<Integer> buildFunctionMenuIds() {
+    public List<Integer> buildMainMenuIds() {
         List<Integer> functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
@@ -150,8 +150,8 @@ public class SpanTextHandler extends BaseHandler {
     }
 
     @Override
-    public void handleFunctionMenuEvent(int functionBarMenuID) {
-        Log.e(TAG, "handleFunctionMenuEvent: " + functionBarMenuID);
+    public void handleMainMenuEvent(int functionBarMenuID) {
+        Log.e(TAG, "handleMainMenuEvent: " + functionBarMenuID);
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.DELETE:
                 deleteSpan(true);

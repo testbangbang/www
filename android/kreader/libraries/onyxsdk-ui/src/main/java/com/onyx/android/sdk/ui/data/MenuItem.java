@@ -25,6 +25,8 @@ public class MenuItem extends BaseObservable {
     public ObservableInt menuIcon = new ObservableInt(android.R.color.transparent);
     public ObservableField<String> text = new ObservableField<>();
     public ObservableInt width = new ObservableInt(200);
+    // work for parent layout is FlexboxLayout
+    public ObservableInt layoutColumns = new ObservableInt();
 
     private EventBus eventBus;
     private int menuId;
@@ -32,6 +34,7 @@ public class MenuItem extends BaseObservable {
     public MenuItem(int visibility) {
         setVisibility(visibility);
     }
+
     public MenuItem(int visibility, String text) {
         setVisibility(visibility);
         setText(text);
@@ -58,6 +61,11 @@ public class MenuItem extends BaseObservable {
 
     public MenuItem setMenuId(int menuId) {
         this.menuId = menuId;
+        return this;
+    }
+
+    public MenuItem setLayoutColumns(int layoutColumns) {
+        this.layoutColumns.set(layoutColumns);
         return this;
     }
 
@@ -93,6 +101,17 @@ public class MenuItem extends BaseObservable {
         }
         return menuItems;
     }
+
+    public static SparseArray<MenuItem> createVisibleMenus(List<Integer> menuIds, int columns) {
+        SparseArray<MenuItem> menuItems = new SparseArray<>();
+        for (Integer id : menuIds) {
+            MenuItem item = new MenuItem(View.VISIBLE);
+            item.setLayoutColumns(columns);
+            menuItems.put(id, item);
+        }
+        return menuItems;
+    }
+
 
     public void menuClicked(View view) {
         eventBus.post(MenuClickEvent.create(view, menuId));

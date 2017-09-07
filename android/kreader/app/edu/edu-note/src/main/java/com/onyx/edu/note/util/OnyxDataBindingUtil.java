@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.edu.note.ui.BaseMenuViewModel;
 import com.onyx.android.sdk.ui.data.MenuItem;
@@ -25,6 +26,17 @@ public class OnyxDataBindingUtil {
     @BindingAdapter({"viewModel", "menuId"})
     public static void bindMenu(View view, BaseMenuViewModel viewModel, int menuId) {
         viewModel.bindMenu(menuId, view);
+    }
+
+    @BindingAdapter({"layoutColumns"})
+    public static void setLayoutColumns(View view, int layoutColumns) {
+        ViewGroup parent = (ViewGroup) view.getParent();
+        if (parent instanceof FlexboxLayout) {
+            FlexboxLayout.LayoutParams lp = (FlexboxLayout.LayoutParams)view.getLayoutParams();
+            float flexBasisPercent = (float) 1/layoutColumns;
+            lp.setFlexBasisPercent(flexBasisPercent);
+            view.setLayoutParams(lp);
+        }
     }
 
     @BindingAdapter({"android:src"})

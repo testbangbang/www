@@ -102,7 +102,7 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public List<Integer> buildFunctionMenuIds() {
+    public List<Integer> buildMainMenuIds() {
         List<Integer> functionBarMenuIDList = new ArrayList<>();
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
         functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
@@ -128,7 +128,7 @@ public class PicEditHandler extends BaseHandler {
     }
 
     @Override
-    public void handleFunctionMenuEvent(int functionBarMenuID) {
+    public void handleMainMenuEvent(int functionBarMenuID) {
         switch (functionBarMenuID) {
             case ScribbleFunctionBarMenuID.SHAPE_SELECT:
                 onSetShapeSelectModeChanged();

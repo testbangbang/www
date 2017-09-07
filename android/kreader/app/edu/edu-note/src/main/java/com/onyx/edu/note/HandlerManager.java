@@ -96,7 +96,7 @@ public class HandlerManager {
     }
 
     public void handleFunctionBarMenuFunction(int functionBarMenuID) {
-        getActiveProvider().handleFunctionMenuEvent(functionBarMenuID);
+        getActiveProvider().handleMainMenuEvent(functionBarMenuID);
     }
 
     public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
