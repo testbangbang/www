@@ -3,7 +3,6 @@ package com.onyx.android.sdk.ui.data;
 import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
-import android.databinding.ObservableFloat;
 import android.databinding.ObservableInt;
 import android.util.SparseArray;
 import android.view.View;
@@ -25,7 +24,8 @@ public class MenuItem extends BaseObservable {
     public ObservableInt menuIcon = new ObservableInt(android.R.color.transparent);
     public ObservableField<String> text = new ObservableField<>();
     public ObservableInt width = new ObservableInt(200);
-    // work for parent layout is FlexboxLayout
+    public ObservableBoolean enabled = new ObservableBoolean();
+    // work when parent layout is FlexboxLayout
     public ObservableInt layoutColumns = new ObservableInt();
 
     private EventBus eventBus;
@@ -61,6 +61,11 @@ public class MenuItem extends BaseObservable {
 
     public MenuItem setMenuId(int menuId) {
         this.menuId = menuId;
+        return this;
+    }
+
+    public MenuItem setEnabled(boolean enabled) {
+        this.enabled.set(enabled);
         return this;
     }
 

@@ -59,6 +59,14 @@ public class Menu {
         return this;
     }
 
+    public Menu setEnabled(int menuId, boolean enabled) {
+        MenuItem item = itemMap.get(menuId);
+        if (item != null) {
+            item.setEnabled(enabled);
+        }
+        return this;
+    }
+
     public Menu setText(int menuId, String text) {
         MenuItem item = itemMap.get(menuId);
         if (item != null) {
