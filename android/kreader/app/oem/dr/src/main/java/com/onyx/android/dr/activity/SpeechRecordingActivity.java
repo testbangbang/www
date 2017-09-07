@@ -257,28 +257,6 @@ public class SpeechRecordingActivity extends BaseActivity
         });
     }
 
-//    private void saveRecordData() {
-//        alertDialog = new AlertInfoDialog(this, getString(R.string.save_the_recording_data), true,
-//                getResources().getString(R.string.complete), getResources().getString(R.string.abandon));
-//        setDialogAttributes();
-//        alertDialog.setOKOnClickListener(new AlertInfoDialog.OnOKClickListener() {
-//            @Override
-//            public void onOKClick(int value) {
-//                recorder.stop();
-//                saveSample();
-//            }
-//        });
-//        alertDialog.setCancelOnClickListener(new AlertInfoDialog.OnCancelClickListener() {
-//            @Override
-//            public void onCancelClick() {
-//                if (alertDialog.isShowing()) {
-//                    alertDialog.dismiss();
-//                }
-//                recorder.delete();
-//            }
-//        });
-//    }
-
     private void setDialogAttributes() {
         WindowManager.LayoutParams attributes = alertDialog.getWindow().getAttributes();
         Float heightProportion = Float.valueOf(getString(R.string.speech_recording_activity_dialog_height));
