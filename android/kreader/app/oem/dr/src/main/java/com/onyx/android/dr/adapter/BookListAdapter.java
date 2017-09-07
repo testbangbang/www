@@ -15,8 +15,10 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.LibraryDataModel;
@@ -33,8 +35,6 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -55,6 +55,8 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     private int noThumbnailPosition = 0;
     private boolean isVisibleToUser = false;
     private LibraryDataHolder dataHolder;
+    private boolean isShowName;
+    private boolean isShowTime;
 
     public BookListAdapter(Context context, LibraryDataHolder dataHolder) {
         this.context = context;
@@ -103,8 +105,10 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
 
         Metadata eBook = getEBookList().get(position);
         viewHolder.getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
-        viewHolder.titleView.setVisibility(View.VISIBLE);
+        viewHolder.titleView.setVisibility(isShowName ? View.VISIBLE : View.GONE);
+        viewHolder.timeView.setVisibility(isShowTime ? View.VISIBLE : View.GONE);
         viewHolder.titleView.setText(String.valueOf(eBook.getName()));
+        viewHolder.timeView.setText(TimeUtils.getStringByDate(eBook.getCreatedAt()));
 
         Bitmap bitmap = getBitmap(eBook.getAssociationId());
         if (bitmap == null) {
@@ -147,8 +151,9 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
 
     private void startDownload(final Metadata eBook) {
         final String filePath = getDataSaveFilePath(eBook);
+        String bookDownloadUrl = DeviceConfig.sharedInstance(DRApplication.getInstance()).getBookDownloadUrl(eBook.getGuid());
         OnyxDownloadManager downLoaderManager = getDownLoaderManager();
-        BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), eBook.getLocation(), filePath, eBook.getGuid(), new BaseCallback() {
+        BaseDownloadTask download = downLoaderManager.download(DRApplication.getInstance(), bookDownloadUrl, filePath, eBook.getGuid(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
@@ -177,6 +182,8 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         ImageView getWidgetImage;
         @Bind(R.id.library_item_textView_title)
         TextView titleView;
+        @Bind(R.id.library_item_textView_time)
+        TextView timeView;
         @Bind(R.id.library_item_checkbox)
         CheckBox checkBox;
         View rootView;
@@ -320,6 +327,14 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     public void updateContentView(LibraryDataModel libraryDataModel) {
         pageDataModel = dataHolder.getCloudViewInfo().getPageLibraryDataModel(libraryDataModel);
         updateContentView();
+    }
+
+    public void setShowName(boolean showName) {
+        isShowName = showName;
+    }
+
+    public void setShowTime(boolean showTime) {
+        isShowTime = showTime;
     }
 }
 

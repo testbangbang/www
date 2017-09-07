@@ -5,6 +5,7 @@ import android.os.Build;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.sdk.BuildConfig;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.utils.RawResourceUtil;
@@ -23,6 +24,7 @@ public class DeviceConfig {
 
     static public final String CLOUD_CONTENT_DEFAULT_HOST = "http://oa.o-in.me:9058/";
     static public final String CLOUD_CONTENT_DEFAULT_API = "http://oa.o-in.me:9058/api/";
+    static public final String BOOK_DOWNLOAD_URL = "books/%s/file";
 
     static private DeviceConfig globalInstance;
     static private Locale currentLocale = null;
@@ -326,5 +328,9 @@ public class DeviceConfig {
             state = mainMenu.getBooleanValue(menuItem);
         }
         return state;
+    }
+
+    public String getBookDownloadUrl(String bookId) {
+        return DRApplication.getCloudStore().getCloudConf().getApiBase() + String.format(BOOK_DOWNLOAD_URL, bookId);
     }
 }

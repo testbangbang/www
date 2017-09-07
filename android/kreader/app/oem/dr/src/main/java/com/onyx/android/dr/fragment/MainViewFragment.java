@@ -14,12 +14,10 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.event.BookshelfEvent;
+import com.onyx.android.dr.event.MoreBooksEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.MainFragmentView;
 import com.onyx.android.dr.presenter.MainViewFragmentPresenter;
-import com.onyx.android.dr.util.DRPreferenceManager;
-import com.onyx.android.dr.view.ImageTextButton;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManagerHelper;
@@ -64,6 +62,8 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
     PageRecyclerView recentReadingRecycler;
     @Bind(R.id.now_reading_book)
     LinearLayout nowReadingBook;
+    @Bind(R.id.search_book)
+    ImageView searchBook;
     private BookListAdapter libraryAdapter;
     private LibraryDataHolder dataHolder;
     private MainViewFragmentPresenter presenter;
@@ -80,6 +80,8 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
     protected void initView(View rootView) {
         libraryAdapter = new BookListAdapter(getActivity(), getDataHolder());
         libraryAdapter.setRowAndCol(row, col);
+        libraryAdapter.setShowName(true);
+        libraryAdapter.setShowTime(true);
         recentReadingRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
@@ -89,8 +91,11 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
 
     @Override
     protected void loadData() {
-        presenter = new MainViewFragmentPresenter(this);
-        presenter.loadData(DRPreferenceManager.loadPreferredBookshelf(getActivity(), Constants.SMALL_LANGUAGE));
+        if (presenter == null) {
+            presenter = new MainViewFragmentPresenter(this);
+        }
+        presenter.getNowReading();
+        presenter.loadData("");
     }
 
     @Override
@@ -103,19 +108,23 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
         return false;
     }
 
-    @OnClick({R.id.now_reading_book_cover, R.id.image_next})
+    @OnClick({R.id.now_reading_book_cover, R.id.image_next, R.id.search_book})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.now_reading_book_cover:
                 openCloudFile(nowReadingMetadata);
                 break;
             case R.id.image_next:
+                EventBus.getDefault().post(new MoreBooksEvent());
+                break;
+            case R.id.search_book:
+                search();
                 break;
         }
     }
 
-    private void search(String type) {
-        ActivityManager.startSearchBookActivity(getActivity(), type);
+    private void search() {
+        ActivityManager.startSearchBookActivity(getActivity(), Constants.NAME_SEARCH);
     }
 
     private void openCloudFile(final Metadata book) {
@@ -164,9 +173,16 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
     @Override
     public void setDatas(QueryResult<Metadata> queryResult) {
         if (queryResult.list != null && queryResult.list.size() > 0) {
-            setNowReading(queryResult.list.remove(0));
             Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(getActivity(), DRApplication.getCloudStore().getCloudManager(), queryResult.list);
             libraryAdapter.updateContentView(getLibraryDataModel(queryResult, bitmaps));
+        }
+    }
+
+    @Override
+    public void setNowReading(QueryResult<Metadata> queryResult) {
+        if (queryResult.list != null && queryResult.list.size() > 0) {
+            Metadata metadata = queryResult.list.get(0);
+            setNowReading(metadata);
         }
     }
 
@@ -210,5 +226,11 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
             bitmap = refBitmap.get();
         }
         return bitmap;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadData();
     }
 }

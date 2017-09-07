@@ -1,6 +1,5 @@
 package com.onyx.android.dr.adapter;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
@@ -95,7 +94,7 @@ public class EBookGroupAdapter extends PageRecyclerView.PageAdapter<EBookGroupAd
         queryArgs.recursive = true;
         queryArgs.limit = item_col;
         final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), listRequest, new BaseCallback() {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {

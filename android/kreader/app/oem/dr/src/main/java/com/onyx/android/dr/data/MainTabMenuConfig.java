@@ -9,7 +9,6 @@ import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.ApplicationEvent;
 import com.onyx.android.dr.event.ArticlePushMenuEvent;
 import com.onyx.android.dr.event.BookshelfMenuEvent;
-import com.onyx.android.dr.event.BookstoreMenuEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
@@ -35,11 +34,6 @@ public class MainTabMenuConfig {
         teacherMenuData.clear();
 
         MenuBean menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_BOOKSHELF, getBookshelfName(context), R.drawable.ic_bookshelf, new BookshelfMenuEvent());
-        highSchoolMenuData.add(menuData);
-        universityMenuData.add(menuData);
-        teacherMenuData.add(menuData);
-
-        menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_BOOKSTORE, context.getResources().getString(R.string.bookstore), R.drawable.ic_ebook_store, new BookstoreMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);

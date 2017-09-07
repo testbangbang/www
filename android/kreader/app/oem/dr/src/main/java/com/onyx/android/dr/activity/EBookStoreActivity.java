@@ -1,6 +1,7 @@
 package com.onyx.android.dr.activity;
 
 import android.graphics.Bitmap;
+import android.support.design.widget.TabLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.ImageView;
@@ -54,6 +55,10 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     LinearLayout menuBack;
     @Bind(R.id.ebook_store_groups_recycler)
     PageRecyclerView ebookStoreGroupsRecycler;
+    @Bind(R.id.title_bar_right_menu)
+    TextView titleBarRightMenu;
+    @Bind(R.id.ebook_store_tab)
+    TabLayout ebookStoreTab;
     private EBookStorePresenter eBookStorePresenter;
     private List<Library> libraryList;
     private EBookGroupAdapter adapter;

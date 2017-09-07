@@ -10,6 +10,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
+import com.onyx.android.dr.activity.BookDetailActivity;
 import com.onyx.android.dr.activity.CreateGroupActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
@@ -39,6 +40,7 @@ import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
 import com.onyx.android.dr.activity.WifiActivity;
 import com.onyx.android.dr.bean.NewWordBean;
+import com.onyx.android.dr.data.database.BookDetailEntity;
 import com.onyx.android.dr.event.MenuWifiSettingEvent;
 import com.onyx.android.dr.reader.activity.AfterReadingActivity;
 import com.onyx.android.dr.reader.activity.ReadSummaryActivity;
@@ -46,6 +48,7 @@ import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.dr.reader.view.CustomDialog;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -53,7 +56,6 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-
 
 
 /**
@@ -378,6 +380,13 @@ public class ActivityManager {
 
     public static void startWifiActivity(Context context) {
         Intent intent = new Intent(context, WifiActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startBookDetailActivity(Context context,String bookId) {
+        Intent intent = new Intent(context, BookDetailActivity.class);
+        intent.putExtra(Constant.ID_TAG,bookId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
