@@ -24,7 +24,7 @@ public class MenuItem extends BaseObservable {
     public ObservableInt menuIcon = new ObservableInt(android.R.color.transparent);
     public ObservableField<String> text = new ObservableField<>();
     public ObservableInt width = new ObservableInt(200);
-    public ObservableBoolean enabled = new ObservableBoolean();
+    public ObservableBoolean enabled = new ObservableBoolean(true);
     // work when parent layout is FlexboxLayout
     public ObservableInt layoutColumns = new ObservableInt();
 
