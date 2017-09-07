@@ -22,8 +22,7 @@ public class MenuManager {
                                    int menuVariable,
                                    ViewGroup.LayoutParams params,
                                    SparseArray<MenuItem> menuItemMap) {
-        mainMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuVariable, menuItemMap);
-        mainMenu.show(parent, params);
+        mainMenu = Menu.addMenu(parent, eventBus, layoutId, menuVariable, params, menuItemMap);
         return this;
     }
 
@@ -45,8 +44,7 @@ public class MenuManager {
                                   int menuVariable,
                                   ViewGroup.LayoutParams params,
                                   SparseArray<MenuItem> menuItemMap) {
-        subMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuVariable, menuItemMap);
-        subMenu.show(parent, params);
+        subMenu = Menu.addMenu(parent, eventBus, layoutId, menuVariable, params, menuItemMap);
         return this;
     }
 
@@ -56,8 +54,7 @@ public class MenuManager {
                                       int menuVariable,
                                       ViewGroup.LayoutParams params,
                                       SparseArray<MenuItem> menuItemMap) {
-        toolbarMenu = Menu.create(parent.getContext(), eventBus, layoutId, menuVariable, menuItemMap);
-        toolbarMenu.show(parent, params);
+        toolbarMenu = Menu.addMenu(parent, eventBus, layoutId, menuVariable, params, menuItemMap);
         return this;
     }
 
