@@ -31,6 +31,7 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
 import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
@@ -352,7 +353,7 @@ public class NoteManager {
         return runnable;
     }
 
-    public void renderToSurfaceView() {
+    public void renderToSurfaceView(boolean applyGCIntervalUpdate) {
         if (visiblePages.size() <= 0) {
             return;
         }
@@ -362,7 +363,11 @@ public class NoteManager {
             return;
         }
 
-        applyUpdateMode();
+        if (applyGCIntervalUpdate) {
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, getParent().getReaderViewInfo().isTextPages());
+        } else {
+            applyUpdateMode();
+        }
         Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
         if (canvas == null) {
             return;

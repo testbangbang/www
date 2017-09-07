@@ -11,9 +11,20 @@ import java.util.List;
  */
 public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
 
+    public ReaderNoteRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean applyGCIntervalUpdate, boolean abortPending) {
+        setPauseRawInputProcessor(false);
+        setRender(true);
+        setApplyGCIntervalUpdate(applyGCIntervalUpdate);
+        setDocUniqueId(id);
+        setAbortPendingTasks(abortPending);
+        setViewportSize(size);
+        setVisiblePages(pages);
+    }
+
     public ReaderNoteRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean abortPending) {
         setPauseRawInputProcessor(false);
         setRender(true);
+        setApplyGCIntervalUpdate(false);
         setDocUniqueId(id);
         setAbortPendingTasks(abortPending);
         setViewportSize(size);

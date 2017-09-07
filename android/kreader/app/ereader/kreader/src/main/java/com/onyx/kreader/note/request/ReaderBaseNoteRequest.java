@@ -36,6 +36,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private volatile boolean render = true;
     private volatile boolean transfer = true;
     private volatile boolean resetNoteDataInfo = true;
+    private volatile boolean applyGCIntervalUpdate = false;
     private volatile int associatedUniqueId;
 
     public ReaderBaseNoteRequest() {
@@ -165,7 +166,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                         updateShapeDataInfo(parent);
                         if (isRender() && isTransfer()) {
                             parent.enableScreenPost(true);
-                            parent.renderToSurfaceView();
+                            parent.renderToSurfaceView(applyGCIntervalUpdate);
                         }
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
@@ -338,6 +339,14 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void setResetNoteDataInfo(boolean resetNoteDataInfo) {
         this.resetNoteDataInfo = resetNoteDataInfo;
+    }
+
+    public boolean isApplyGCIntervalUpdate() {
+        return applyGCIntervalUpdate;
+    }
+
+    public void setApplyGCIntervalUpdate(boolean applyGCIntervalUpdate) {
+        this.applyGCIntervalUpdate = applyGCIntervalUpdate;
     }
 
     public int getAssociatedUniqueId() {

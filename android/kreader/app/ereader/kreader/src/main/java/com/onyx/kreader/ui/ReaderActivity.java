@@ -513,7 +513,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 //        }
 
         if (event != null && event.isRenderShapeData()) {
-            renderPageWithShapeDataInBackground();
+            renderPageWithShapeDataInBackground(true);
         }
     }
 
@@ -551,7 +551,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
-        renderPageWithShapeDataInBackground();
+        renderPageWithShapeDataInBackground(true);
 //        final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
 //        if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
 //            return;
@@ -1049,6 +1049,10 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void renderPageWithShapeDataInBackground() {
+        renderPageWithShapeDataInBackground(false);
+    }
+
+    private void renderPageWithShapeDataInBackground(boolean applyGCInterval) {
         if (!getReaderDataHolder().supportScalable()) {
             beforeDrawPage();
             drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
@@ -1061,6 +1065,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 pages,
                 getReaderDataHolder().getDisplayRect(),
+                applyGCInterval,
                 false);
         int uniqueId = getReaderDataHolder().getLastRequestSequence();
 
