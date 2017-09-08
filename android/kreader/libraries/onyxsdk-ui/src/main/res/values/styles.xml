@@ -158,7 +158,7 @@
     <!---->
 
     <style name="global_activities_back_function_layout">
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:paddingLeft">@dimen/global_activities_back_function_layout_padding</item>
         <item name="android:clickable">true</item>
