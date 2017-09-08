@@ -20,11 +20,21 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.ReaderTextStyle;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -36,34 +46,24 @@ import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.edu.reader.R;
-import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.device.ReaderDeviceManager;
-import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.edu.reader.note.actions.ChangeNoteShapeAction;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.ClearPageAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
-import com.onyx.edu.reader.note.actions.FlushSignatureShapesChain;
+import com.onyx.edu.reader.note.actions.LoadSignatureToFormAction;
+import com.onyx.edu.reader.note.actions.LockFormShapesAction;
 import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
-import com.onyx.edu.reader.note.actions.LockFormShapesAction;
-import com.onyx.edu.reader.note.actions.LoadSignatureToFormAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
@@ -75,7 +75,6 @@ import com.onyx.edu.reader.ui.actions.form.ShowFormMeetingMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormSignMenuAction;
 import com.onyx.edu.reader.ui.actions.form.ShowFormUserHomeWorkMenuAction;
-import com.onyx.edu.reader.ui.actions.form.ShowFormVoteMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderCropArgs;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
@@ -87,10 +86,8 @@ import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
 import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
-import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.ui.handler.BaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
-import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
 import java.io.File;
@@ -1258,6 +1255,11 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public ReaderTextStyle getReaderStyle() {
                 return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
+            }
+
+            @Override
+            public WindowParameters getWindowParameters() {
+                return readerDataHolder.getWindowParameters();
             }
         };
     }
