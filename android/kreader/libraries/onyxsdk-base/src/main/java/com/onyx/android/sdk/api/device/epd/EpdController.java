@@ -250,7 +250,7 @@ public abstract class EpdController
     }
 
     public static void mapToRawTouchPoint(View view, float[] src, float[] dst) {
-        Device.currentDevice().mapFromRawTouchPoint(view, src, dst);
+        Device.currentDevice().mapToRawTouchPoint(view, src, dst);
     }
 
     public static RectF mapToRawTouchPoint(View view, RectF rect) {

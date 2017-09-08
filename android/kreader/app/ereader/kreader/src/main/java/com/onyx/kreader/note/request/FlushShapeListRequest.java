@@ -23,6 +23,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
     private volatile boolean pause = false;
 
     public FlushShapeListRequest(final List<PageInfo> pages, final List<Shape> list, int spi, boolean r, boolean t, boolean save) {
+        setPauseRawInputProcessor(isPause());
         setAbortPendingTasks(false);
         setRender(r);
         setTransfer(t);
@@ -36,9 +37,11 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape() && !isPause());
         ensureDocumentOpened(noteManager);
         for(Shape shape : shapeList) {
-            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), subPageIndex);
-            readerNotePage.addShape(shape, true);
-            count = readerNotePage.getNewAddedShapeList().size();
+            final ReaderNotePage readerNotePage = noteManager.getNoteDocument().ensurePageExist(getContext(), shape.getPageUniqueId(), shape.getSubPageUniqueId());
+            if (readerNotePage != null) {
+                readerNotePage.addShape(shape, true);
+                count += readerNotePage.getNewAddedShapeList().size();
+            }
         }
 
         if (count != shapeList.size() && BuildConfig.DEBUG) {

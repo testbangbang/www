@@ -195,3 +195,13 @@ void Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_close(JNIEnv *, jclas
     }
     g_writer.close();
 }
+
+void Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_setDocumentTitle
+  (JNIEnv *env, jclass, jstring path, jstring title) {
+    if (!path || !title) {
+        return;
+    }
+    JNIString strPath(env, path);
+    JNIString strTitle(env, title);
+    g_writer.setDocumentTitle(strPath.getLocalString(), strTitle.getLocalString());
+}

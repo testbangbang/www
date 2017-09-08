@@ -8,7 +8,7 @@ import android.net.Uri;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.PageNameList;
@@ -79,7 +79,7 @@ public class ImportScribbleRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(AsyncNoteViewHelper helper) throws Exception {
+    public void execute(final NoteManager helper) throws Exception {
         Cursor cursor = null;
         try {
             Uri uri = Uri.parse(OLD_SCRIBBLE_URL);
@@ -106,7 +106,7 @@ public class ImportScribbleRequest extends AsyncBaseNoteRequest {
         }
     }
 
-    private void readColumnData(AsyncNoteViewHelper helper, Cursor c, int count, int index) {
+    private void readColumnData(final NoteManager helper, Cursor c, int count, int index) {
         if (!columnIndexesInitialized) {
             sColumnID = c.getColumnIndex(_ID);
             sColumnMD5 = c.getColumnIndex(MD5);

@@ -122,6 +122,15 @@ public class ReaderTabManager {
         }
     }
 
+    public void resetTabState() {
+        openedTabs.clear();
+
+        addNewTabToFreeList(ReaderTab.TAB_1);
+        addNewTabToFreeList(ReaderTab.TAB_2);
+        addNewTabToFreeList(ReaderTab.TAB_3);
+        addNewTabToFreeList(ReaderTab.TAB_4);
+    }
+
     public LinkedHashMap<ReaderTab, String> getOpenedTabs() {
         return openedTabs;
     }
