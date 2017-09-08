@@ -114,4 +114,12 @@ public class TouchPoint implements Serializable, Cloneable {
         clone = (TouchPoint) super.clone();
         return clone;
     }
+
+    public static TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
+        return new TouchPoint(motionEvent.getHistoricalX(i),
+                motionEvent.getHistoricalY(i),
+                motionEvent.getHistoricalPressure(i),
+                motionEvent.getHistoricalSize(i),
+                motionEvent.getHistoricalEventTime(i));
+    }
 }

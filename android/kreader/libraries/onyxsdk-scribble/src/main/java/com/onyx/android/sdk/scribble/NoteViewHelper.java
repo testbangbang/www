@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -281,7 +282,7 @@ public class NoteViewHelper {
         softwareLimitRect = new Rect();
         surfaceView.getLocalVisibleRect(softwareLimitRect);
         getRawInputProcessor().setHostView(surfaceView);
-        getRawInputProcessor().setLimitRect(softwareLimitRect);
+        getRawInputProcessor().setLimitRect(new RectF(softwareLimitRect));
         EpdController.setScreenHandWritingRegionLimit(surfaceView);
     }
 

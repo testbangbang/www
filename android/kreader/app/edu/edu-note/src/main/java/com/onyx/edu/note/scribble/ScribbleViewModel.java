@@ -16,12 +16,14 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
 import com.onyx.edu.note.actions.scribble.DocumentEditAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+import com.onyx.edu.note.scribble.event.UpdateScibbleTitleEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -68,8 +70,8 @@ public class ScribbleViewModel extends BaseObservable {
 
     ScribbleViewModel(Context context) {
         // Force use of Application Context.
-        mNoteManager = NoteManager.sharedInstance(context.getApplicationContext());
-        EventBus.getDefault().register(this);
+        mNoteManager = NoteApplication.getInstance().getNoteManager();
+        mNoteManager.registerEventBus(this);
     }
 
     void start(String uniqueID, String parentID, @ScribbleAction.ScribbleActionDef int action, final BaseCallback callback) {
@@ -81,9 +83,12 @@ public class ScribbleViewModel extends BaseObservable {
                 if (!request.isAbort() && e == null) {
                     NoteDocumentOpenRequest req = (NoteDocumentOpenRequest) request;
                     updateInfo(req);
-                    mCurrentNoteModel.set(req.getNoteModel());
-                    mNoteTitle.set(mCurrentNoteModel.get() != null ? mCurrentNoteModel.get().getTitle() :
-                            DateTimeUtil.formatDate(new Date()));
+                    NoteModel currentNoteModel = req.getNoteModel();
+                    String title = currentNoteModel != null ? currentNoteModel.getTitle() :
+                            DateTimeUtil.formatDate(new Date());
+                    AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
+                    mNoteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
+                    mNoteManager.post(new UpdateScibbleTitleEvent(title));
                 }
                 BaseCallback.invoke(callback, request, e);
             }
@@ -135,7 +140,6 @@ public class ScribbleViewModel extends BaseObservable {
     }
 
     private void updateInfo(AsyncBaseNoteRequest request) {
-        mNoteManager.setShapeDataInfo(request.getShapeDataInfo());
         mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
         mCurrentPage.set(mShapeDataInfo.get().getHumanReadableCurPageIndex());
         mTotalPage.set(mShapeDataInfo.get().getPageCount());
@@ -143,7 +147,7 @@ public class ScribbleViewModel extends BaseObservable {
 
     void onActivityDestroyed() {
         // Clear references to avoid potential memory leaks.
-        EventBus.getDefault().unregister(this);
+        mNoteManager.unregisterEventBus(this);
         mNavigator = null;
     }
 

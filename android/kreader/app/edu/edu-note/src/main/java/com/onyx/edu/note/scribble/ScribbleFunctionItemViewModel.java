@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 import android.support.annotation.Nullable;
+import android.view.View;
 
 import com.onyx.edu.note.data.ScribbleFunctionMenuIDType;
 import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;

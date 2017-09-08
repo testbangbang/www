@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/image_button_bg">
+
+    <CheckBox
+        android:id="@+id/target_folder_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true" />
+
+    <TextView
+        android:id="@+id/textview_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_margin="5dp"
+        android:layout_toRightOf="@id/target_folder_checkbox"
+        android:ellipsize="middle"
+        android:gravity="left|center_vertical"
+        android:singleLine="true"
+        android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large" />
+</RelativeLayout>

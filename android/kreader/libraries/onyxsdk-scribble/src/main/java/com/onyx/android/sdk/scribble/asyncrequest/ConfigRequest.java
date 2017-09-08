@@ -16,7 +16,7 @@ public class ConfigRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper parent) throws Exception {
+    public void execute(final NoteManager parent) throws Exception {
 
     }
 

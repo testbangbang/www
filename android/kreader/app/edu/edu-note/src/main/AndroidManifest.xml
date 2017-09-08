@@ -25,6 +25,16 @@
             </intent-filter>
         </activity>
         <activity android:name=".scribble.ScribbleActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.EDIT" />
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data android:mimeType="image/jpeg" />
+                <data android:mimeType="image/png" />
+                <data android:mimeType="image/bmp" />
+                <data android:mimeType="image/x-ms-bmp" />
+                <data android:mimeType="image/x-windows-bmp" />
+            </intent-filter>
         </activity>
     </application>
 
