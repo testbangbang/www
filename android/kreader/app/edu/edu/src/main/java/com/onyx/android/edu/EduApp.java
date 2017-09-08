@@ -4,6 +4,10 @@ import android.app.Application;
 
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
+import com.onyx.libedu.db.PaperQuestionAndAnswer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by ming on 2016/11/1.
@@ -16,6 +20,7 @@ public class EduApp extends Application{
     private long endTime;
     private String bookName;
     private String bookId;
+    private List<PaperQuestionAndAnswer> answerPaperList = new ArrayList<>();
 
     public void setStartTime(long startTime) {
         this.startTime = startTime;
@@ -58,5 +63,22 @@ public class EduApp extends Application{
 
     public String getBookId() {
         return bookId;
+    }
+
+    public void setAnswerPaper(PaperQuestionAndAnswer answerPaper) {
+        if(answerPaperList != null && answerPaperList.size() > 0) {
+            for (PaperQuestionAndAnswer paper : answerPaperList) {
+                if (answerPaper.requestionId.equals(paper.requestionId)) {
+                    paper.getScore = answerPaper.getScore;
+                    paper.userAnswer = answerPaper.userAnswer;
+                    return;
+                }
+            }
+        }
+        answerPaperList.add(answerPaper);
+    }
+
+    public List<PaperQuestionAndAnswer> getAnswerPaperList() {
+        return answerPaperList;
     }
 }
