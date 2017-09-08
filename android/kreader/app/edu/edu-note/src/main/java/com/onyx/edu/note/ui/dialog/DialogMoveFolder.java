@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -41,6 +42,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
     DialogMoveFolderCallback callback;
     //Use to string to avoid random id coincidentally same as this flag.
     String targetParentID = Boolean.toString(Boolean.FALSE);
+    PageRecyclerView targetLibraryPageRecyclerView;
 
     public interface DialogMoveFolderCallback {
         void onMove(String targetParentId);
@@ -62,6 +64,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
         Params params = new Params().setTittleString(getString(R.string.move))
                 .setCustomContentLayoutResID(R.layout.alert_dialog_content_move_folder)
                 .setEnableNegativeButton(false)
+                .setCustomLayoutHeight((int) (5 * getResources().getDimension(R.dimen.dialog_move_folder_item_height)))
                 .setPositiveAction(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -77,7 +80,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
                 .setCustomViewAction(new CustomViewAction() {
                     @Override
                     public void onCreateCustomView(View customView, TextView pageIndicator) {
-                        final PageRecyclerView targetLibraryPageRecyclerView = (PageRecyclerView) customView.findViewById(R.id.page_recycler_view_move_folder);
+                        targetLibraryPageRecyclerView = (PageRecyclerView) customView.findViewById(R.id.page_recycler_view_move_folder);
                         initRecyclerView(targetLibraryPageRecyclerView);
                     }
                 });
@@ -86,6 +89,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
     }
 
     private void initRecyclerView(PageRecyclerView recyclerView) {
+        recyclerView.setLayoutManager(new DisableScrollLinearManager(getActivity()));
         recyclerView.setAdapter(new PageRecyclerView.PageAdapter() {
             @Override
             public int getRowCount() {
@@ -99,7 +103,7 @@ public class DialogMoveFolder extends OnyxAlertDialog {
 
             @Override
             public int getDataCount() {
-                return noteModelBooleanHashMap.size();
+                return noteModelList.size();
             }
 
             @Override
@@ -116,23 +120,22 @@ public class DialogMoveFolder extends OnyxAlertDialog {
         OnyxPageDividerItemDecoration itemDecoration;
         itemDecoration = new OnyxPageDividerItemDecoration(getActivity(), OnyxPageDividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
-        itemDecoration.setActualChildCount(recyclerView.getPageAdapter().getRowCount());
+        itemDecoration.setActualChildCount(recyclerView.getPageAdapter().getDataCount());
         recyclerView.setItemDecorationHeight(itemDecoration.getDivider().getIntrinsicHeight());
     }
 
     private class FolderItemHolder extends RecyclerView.ViewHolder {
-
         private TextView noteModelNameTextView;
         private CheckBox selectionCheckbox;
 
         public FolderItemHolder(View itemView) {
             super(itemView);
-            noteModelNameTextView = (TextView) itemView.findViewById(R.id.textView_note_name);
+            noteModelNameTextView = (TextView) itemView.findViewById(R.id.textview_title);
             selectionCheckbox = (CheckBox) itemView.findViewById(R.id.target_folder_checkbox);
         }
 
         public void bindView(final PageRecyclerView pageRecyclerView, final NoteModel model, boolean checked) {
-            noteModelNameTextView.setText(model.getTitle());
+            noteModelNameTextView.setText(model.getExtraAttributes());
             selectionCheckbox.setChecked(checked);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

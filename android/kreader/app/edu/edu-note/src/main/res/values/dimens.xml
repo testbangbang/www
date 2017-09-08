@@ -11,4 +11,5 @@
     <dimen name="menu_padding_left_right">8dp</dimen>
     <dimen name="menu_padding_top_bottom">6dp</dimen>
     <dimen name="onyx_sub_note_menu_height">72dp</dimen>
+    <dimen name="dialog_move_folder_item_height">40dp</dimen>
 </resources>

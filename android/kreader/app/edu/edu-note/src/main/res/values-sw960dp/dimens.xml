@@ -6,4 +6,5 @@
     <dimen name="note_function_item_img_size">48dp</dimen>
     <dimen name="note_function_item_img_top_margin">5dp</dimen>
     <dimen name="onyx_sub_note_menu_height">80dp</dimen>
+    <dimen name="dialog_move_folder_item_height">48dp</dimen>
 </resources>

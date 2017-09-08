@@ -15,14 +15,14 @@ import android.widget.Toast;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLoadMovableLibraryRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.R;
+import com.onyx.edu.note.actions.manager.NoteLoadMovableLibraryAction;
 import com.onyx.edu.note.actions.manager.NoteMoveAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.databinding.ActivityManagerBinding;
@@ -130,6 +130,14 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
                 mViewModel.deleteNote(mPendingOperationIDList);
                 break;
             case R.id.move:
+                NoteLoadMovableLibraryAction action = new NoteLoadMovableLibraryAction(mViewModel.getCurrentNoteModelUniqueID(),mPendingOperationIDList);
+                action.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        NoteLoadMovableLibraryRequest req = (NoteLoadMovableLibraryRequest)request;
+                        showMovableFolderDialog(req.getNoteList());
+                    }
+                });
                 break;
             case R.id.rename:
                 break;
@@ -210,12 +218,14 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
             @Override
             public void onMove(String targetParentId) {
                 NoteMoveAction noteMoveAction = new NoteMoveAction(targetParentId,
-                        mPendingOperationIDList, true, false, false);
+                        mPendingOperationIDList, false, false, false);
                 noteMoveAction.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        mViewModel.loadData();
-                        dialogMoveFolder.dismiss();
+                        if (e == null) {
+                            mViewModel.loadData();
+                            dialogMoveFolder.dismiss();
+                        }
                     }
                 });
             }
