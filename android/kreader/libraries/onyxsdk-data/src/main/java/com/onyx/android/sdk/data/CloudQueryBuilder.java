@@ -185,6 +185,10 @@ public class CloudQueryBuilder {
         return CloudMetadata_Table.lastAccess;
     }
 
+    public static IntProperty getMetadataOrdinalProperty() {
+        return CloudMetadata_Table.ordinal;
+    }
+
     public static Property<String> getMetadataCollectionDocIdProperty() {
         return CloudMetadataCollection_Table.documentUniqueId;
     }
@@ -342,7 +346,7 @@ public class CloudQueryBuilder {
         return args;
     }
 
-    private static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
+    public static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
         if (asc) {
             orderBy.ascending();
         } else {
@@ -389,6 +393,9 @@ public class CloudQueryBuilder {
                 break;
             case InstallTime:
                 property = getMetadataLastAccessProperty();
+                break;
+            case Ordinal:
+                property = getMetadataOrdinalProperty();
                 break;
         }
         return property;

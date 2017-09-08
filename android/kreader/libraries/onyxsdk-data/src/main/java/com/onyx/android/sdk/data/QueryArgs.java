@@ -252,4 +252,16 @@ public class QueryArgs implements Serializable {
     public void useCloudOnlyPolicy() {
         fetchPolicy = FetchPolicy.CLOUD_ONLY;
     }
+
+    public QueryArgs copyPart() {
+        QueryArgs args = new QueryArgs(sortBy, order);
+        args.limit = limit;
+        args.offset = offset;
+        args.orderByList.addAll(orderByList);
+        args.conditionGroup = conditionGroup;
+        args.libraryUniqueId = libraryUniqueId;
+        args.category = category;
+        args.query = query;
+        return args;
+    }
 }

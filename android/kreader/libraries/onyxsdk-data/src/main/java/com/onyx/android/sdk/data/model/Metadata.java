@@ -1,15 +1,20 @@
 package com.onyx.android.sdk.data.model;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.db.ContentDatabase;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.annotation.Column;
+import com.raizlabs.android.dbflow.annotation.ColumnIgnore;
 import com.raizlabs.android.dbflow.annotation.Table;
 
 import java.io.File;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 6/2/16.
@@ -110,6 +115,12 @@ public class Metadata extends BaseData {
 
     @Column
     private String coverUrl;
+
+    @Column
+    private int ordinal;
+
+    @ColumnIgnore
+    private Map<String, String> bookCovers = new HashMap<>();
 
     public void setFetchSource(int fetchSource) {
         this.fetchSource = fetchSource;
@@ -347,6 +358,30 @@ public class Metadata extends BaseData {
         return storageId;
     }
 
+    public int getOrdinal() {
+        return ordinal;
+    }
+
+    public void setOrdinal(int ordinal) {
+        this.ordinal = ordinal;
+    }
+
+    public Map<String,String> getBookCovers() {
+        return bookCovers;
+    }
+
+    public void setBookCovers(Map<String, String> coversMap) {
+        this.bookCovers = coversMap;
+    }
+
+    @JSONField(deserialize = false, serialize = false)
+    public String getCoverUrl(String key) {
+        if (CollectionUtils.isNullOrEmpty(bookCovers)) {
+            return null;
+        }
+        return bookCovers.get(key);
+    }
+
     public static Metadata createFromFile(String path) {
         return createFromFile(new File(path));
     }
@@ -433,5 +468,4 @@ public class Metadata extends BaseData {
     public boolean isNew() {
         return readingStatus == ReadingStatus.NEW;
     }
-
 }

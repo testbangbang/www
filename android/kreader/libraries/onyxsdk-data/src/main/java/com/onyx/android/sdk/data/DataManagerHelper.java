@@ -299,23 +299,39 @@ public class DataManagerHelper {
         return success;
     }
 
+    private static Map<String, String> getMetadataCovers(Metadata metadata, boolean useThumbnailKind) {
+        Map<String, String> coverMap = metadata.getBookCovers();
+        if (CollectionUtils.isNullOrEmpty(coverMap)) {
+            coverMap = new HashMap<>();
+            if (useThumbnailKind) {
+                for (OnyxThumbnail.ThumbnailKind thumbnailKind : OnyxThumbnail.ThumbnailKind.values()) {
+                    coverMap.put(thumbnailKind.toString().toLowerCase(), null);
+                }
+            }
+        }
+        return coverMap;
+    }
+
     public static Map<String, CloseableReference<Bitmap>> loadCloudThumbnailBitmapsWithCache(Context context, CloudManager cloudManager,
                                                                                              List<Metadata> metadataList) {
         Map<String, CloseableReference<Bitmap>> map = new HashMap<>();
         for (Metadata metadata : metadataList) {
-            CloseableReference<Bitmap> refBitmap = loadCloudThumbnailBitmapWithCache(context, cloudManager, metadata);
-            if (refBitmap == null) {
-                continue;
+            Map<String, String> coverMap = getMetadataCovers(metadata, true);
+            for (String coverKey : coverMap.keySet()) {
+                String key = CacheManager.generateCloudThumbnailKey(metadata.getAssociationId(), coverMap.get(coverKey), coverKey);
+                CloseableReference<Bitmap> refBitmap = loadCloudThumbnailBitmapWithCache(context, cloudManager, key);
+                if (refBitmap == null) {
+                    continue;
+                }
+                map.put(key, refBitmap);
             }
-            map.put(metadata.getAssociationId(), refBitmap);
         }
         return map;
     }
 
     public static CloseableReference<Bitmap> loadCloudThumbnailBitmapWithCache(Context context, CloudManager cloudManager,
-                                                                               Metadata metadata) {
+                                                                               String key) {
         BitmapReferenceLruCache bitmapLruCache = cloudManager.getCacheManager().getBitmapLruCache();
-        String key = CacheManager.generateCloudThumbnailKey(metadata.getAssociationId(), metadata.getCoverUrl());
         if (StringUtils.isNullOrEmpty(key)) {
             return null;
         }
