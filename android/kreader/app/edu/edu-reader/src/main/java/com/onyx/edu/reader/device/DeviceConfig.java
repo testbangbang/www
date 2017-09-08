@@ -57,6 +57,7 @@ public class DeviceConfig {
     private boolean customFormEnabled = false;
     private boolean enableDictWebSearch = true;
     private boolean showMenuTitle = false;
+    private boolean supportSignature = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -86,6 +87,8 @@ public class DeviceConfig {
     private String statisticsUrl = "http://oa.o-in.me:9058/api/";
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
+
+    private String signatureDocumentPath = "/system/media/signature.pdf";
 
     private DeviceConfig(Context context) {
         String content = readConfig(context);
@@ -702,6 +705,22 @@ public class DeviceConfig {
     private static ReaderTextStyle.PageMargin getDefaultPageMargin(Context context) {
         int index = DeviceConfig.sharedInstance(context).getDefaultPageMarginIndex();
         return ReaderTextStyle.getPageMarginByIndex(index);
+    }
+
+    public String getSignatureDocumentPath() {
+        return signatureDocumentPath;
+    }
+
+    public void setSignatureDocumentPath(String signatureDocumentPath) {
+        this.signatureDocumentPath = signatureDocumentPath;
+    }
+
+    public boolean isSupportSignature() {
+        return supportSignature;
+    }
+
+    public void setSupportSignature(boolean supportSignature) {
+        this.supportSignature = supportSignature;
     }
 }
 

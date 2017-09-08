@@ -60,17 +60,28 @@ public class ReaderNotePage {
         return subPageUniqueId;
     }
 
-    public void clear(boolean addToHistory, boolean clearReviewShape) {
+    public void clear(boolean addToHistory, boolean clearReviewShape, boolean lockShapeByRevision, int documentReviewRevision) {
         if (clearReviewShape) {
             reviewShapeList.clear();
         }
 
-        if (shapeList.size() > 0 && addToHistory) {
-            removedShapeList.addAll(shapeList);
-            undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(shapeList), false);
+        List<Shape> canModifiedShapes = getCanModifiedShapes(documentReviewRevision, lockShapeByRevision);
+        if (canModifiedShapes.size() > 0 && addToHistory) {
+            removedShapeList.addAll(canModifiedShapes);
+            undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(canModifiedShapes), false);
         }
-        shapeList.clear();
+        shapeList.removeAll(canModifiedShapes);
         newAddedShapeList.clear();
+    }
+
+    private List<Shape> getCanModifiedShapes(int documentReviewRevision, boolean lockShapeByRevision) {
+        List<Shape> canModifiedShapes = new ArrayList<>();
+        for (Shape shape : shapeList) {
+            if (lockShapeByRevision && shape.canModified(documentReviewRevision)) {
+                canModifiedShapes.add(shape);
+            }
+        }
+        return canModifiedShapes;
     }
 
     public void addShapeFromModel(final Shape shape) {
@@ -143,13 +154,16 @@ public class ReaderNotePage {
         }
     }
 
-    public boolean removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius) {
+    public boolean removeShapesByTouchPointList(final TouchPointList touchPointList, final float radius, final boolean lockShapeByRevision, final int documentReviewRevision) {
         boolean removed = false;
         if (touchPointList == null) {
             return removed;
         }
         Map<String, Shape> hitShapes = new HashMap<>();
         for(Shape shape : shapeList) {
+            if (lockShapeByRevision && !shape.canModified(documentReviewRevision)) {
+                continue;
+            }
             for(TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     hitShapes.put(shape.getShapeUniqueId(), shape);
@@ -237,6 +251,13 @@ public class ReaderNotePage {
 
         final List<ReaderFormShapeModel> formShapeModels = ReaderNoteDataProvider.loadFormShapeList(context, getDocumentUniqueId(), getPageUniqueId());
         for(ReaderFormShapeModel model : formShapeModels) {
+            Integer formType = model.getFormType();
+            if (formType == null) {
+                continue;
+            }
+            if (!ReaderShapeFactory.isScribbleFormShape(formType)) {
+                continue;
+            }
             addShapeFromModel(ReaderShapeFactory.shapeFromFormModel(model));
         }
         setLoaded(true);

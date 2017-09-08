@@ -204,6 +204,7 @@ public abstract class BaseReaderRequest extends BaseRequest {
                         currentPage, totalPage);
                 ContentSdKDataUtils.updateProgress(getContext(), reader.getDocumentPath(),
                         currentPage, totalPage);
+                LegacySdkDataUtils.recordFinishReading(getContext(), currentPage, totalPage);
             }
         } catch (Throwable tr) {
             Log.w(TAG, this.getClass().toString());

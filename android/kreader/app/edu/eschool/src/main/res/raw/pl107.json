@@ -47,5 +47,6 @@
     "orientation": 0,
     "startX": 225,
     "startY": 930
-  }
+  },
+  "enable_full_refresh": false
 }

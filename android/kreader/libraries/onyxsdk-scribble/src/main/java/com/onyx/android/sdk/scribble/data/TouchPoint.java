@@ -1,9 +1,10 @@
 package com.onyx.android.sdk.scribble.data;
 
 
-import android.graphics.Matrix;
 import android.view.MotionEvent;
+
 import com.onyx.android.sdk.data.PageInfo;
+
 import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;
@@ -12,7 +13,7 @@ import java.io.Serializable;
  * Created by zhuzeng on 4/22/16.
  */
 @Flat
-public class TouchPoint implements Serializable {
+public class TouchPoint implements Serializable, Cloneable {
 
     @Flat
     public float x;
@@ -94,11 +95,31 @@ public class TouchPoint implements Serializable {
         y = (y - pageInfo.getDisplayRect().top) / pageInfo.getActualScale();
     }
 
+    public void origin(final PageInfo pageInfo) {
+        x = x * pageInfo.getActualScale() + pageInfo.getDisplayRect().left;
+        y = y * pageInfo.getActualScale() + pageInfo.getDisplayRect().top;
+    }
+
     public void setTimestamp(long timestamp) {
         this.timestamp = timestamp;
     }
 
     public static TouchPoint create(final MotionEvent motionEvent) {
         return new TouchPoint(motionEvent);
+    }
+
+    @Override
+    protected TouchPoint clone() throws CloneNotSupportedException {
+        TouchPoint clone;
+        clone = (TouchPoint) super.clone();
+        return clone;
+    }
+
+    public static TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
+        return new TouchPoint(motionEvent.getHistoricalX(i),
+                motionEvent.getHistoricalY(i),
+                motionEvent.getHistoricalPressure(i),
+                motionEvent.getHistoricalSize(i),
+                motionEvent.getHistoricalEventTime(i));
     }
 }

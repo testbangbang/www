@@ -1,9 +1,10 @@
 package com.onyx.android.sdk.im;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.alibaba.fastjson.JSONObject;
+import com.onyx.android.sdk.im.data.Message;
+import com.onyx.android.sdk.im.event.MessageEvent;
 import com.onyx.android.sdk.im.push.AVOSCloudPushService;
 import com.onyx.android.sdk.im.push.BasePushService;
 import com.onyx.android.sdk.im.socket.SocketIOClient;
@@ -85,9 +86,13 @@ public class IMManager {
         if (config == null || StringUtils.isNullOrEmpty(config.getServerUri())) {
             return;
         }
-        socketIOClient = new SocketIOClient(config);
+        String event = config.getSocketIOEvent();
+        if (StringUtils.isNullOrEmpty(event)) {
+            return;
+        }
+        socketIOClient = getSocketIOClient(config);
         socketIOClient.connect();
-        socketIOClient.on(Constant.NEW_MESSAGE, new Emitter.Listener() {
+        socketIOClient.on(event, new Emitter.Listener() {
             @Override
             public void call(Object... args) {
                 Debug.d(getClass(), "receiver push");
@@ -100,16 +105,23 @@ public class IMManager {
         });
     }
 
+    private SocketIOClient getSocketIOClient(IMConfig c) {
+        if (socketIOClient == null) {
+            socketIOClient = new SocketIOClient(this, c);
+        }
+        socketIOClient.setConfig(c);
+        return socketIOClient;
+    }
+
     private void stopSocketIOClient(Context context) {
         if (socketIOClient == null) {
             return;
         }
-        socketIOClient.off(Constant.NEW_MESSAGE, null);
         socketIOClient.close();
         socketIOClient = null;
     }
 
-    private void startPushServiceImpl(Context activityContext) {
+    private void startPushServiceImpl(Context appContext) {
         if (config == null) {
             return;
         }
@@ -121,11 +133,14 @@ public class IMManager {
                 basePushService = new AVOSCloudPushService();
                 break;
         }
-        basePushService.init(activityContext, config);
-        basePushService.start(activityContext);
+        basePushService.init(appContext, config);
+        basePushService.start(appContext);
     }
 
     private void stopPushServiceImpl(Context activityContext) {
+        if (basePushService == null) {
+            return;
+        }
         basePushService.stop(activityContext);
         basePushService = null;
     }
@@ -137,7 +152,7 @@ public class IMManager {
         broadcastMessage(message);
     }
 
-    private void onReceivedSocketMessage(Message message) {
+    public void onReceivedSocketMessage(Message message) {
         if (!socketEnable) {
             return;
         }
@@ -146,10 +161,12 @@ public class IMManager {
 
     public void broadcastMessage(Message message) {
         String messageId = message.getId();
-        if (messageIdSets.contains(messageId)) {
+        if (!StringUtils.isNullOrEmpty(messageId) && messageIdSets.contains(messageId)) {
             return;
         }
-        messageIdSets.add(messageId);
+        if (!StringUtils.isNullOrEmpty(messageId)) {
+            messageIdSets.add(messageId);
+        }
         getEventBus().post(MessageEvent.create(message));
     }
 

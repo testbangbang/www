@@ -24,7 +24,9 @@ class AlThreadData {
 
 	public volatile AlBookOptions				param_void1;
 	public volatile String						param_char1;
-	
+
+	public volatile TAL_NOTIFY_RESULT			result = TAL_NOTIFY_RESULT.ERROR;
+
 	public void clearAll() {
 		synchronized (lock) { 
 		clearWork0();
@@ -199,6 +201,7 @@ class AlThreadData {
 			this.clearWork0();
 			this.sendNotifyForUIThread(id, res);
 
+			result = res;
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

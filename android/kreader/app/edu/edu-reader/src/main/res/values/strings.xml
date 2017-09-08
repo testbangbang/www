@@ -516,4 +516,8 @@
     <string name="exit">Exit</string>
     <string name="submit">Submit</string>
     <string name="fetch">Fetch</string>
+    <string name="timer">Timer</string>
+    <string name="touch">Touch</string>
+    <string name="submit_vote_tips">Cannot change after the vote, decide to submit your choice?</string>
+    <string name="can_not_modify">Correction, temporarily can not be modified</string>
 </resources>

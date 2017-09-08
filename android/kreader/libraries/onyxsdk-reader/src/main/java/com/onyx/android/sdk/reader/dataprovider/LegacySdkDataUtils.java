@@ -6,6 +6,7 @@ import android.util.Log;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.compatability.OnyxBookProgress;
 import com.onyx.android.sdk.data.compatability.OnyxCmsCenter;
+import com.onyx.android.sdk.data.compatability.OnyxHistoryEntryHelper;
 import com.onyx.android.sdk.data.compatability.OnyxMetadata;
 import com.onyx.android.sdk.data.compatability.OnyxSysCenter;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -135,4 +136,14 @@ public class LegacySdkDataUtils {
         metadata.setAuthors(new ArrayList<>(documentMetadata.getAuthors()));
         metadata.setPublisher(documentMetadata.getPublisher());
     }
+
+    public static void recordStartReading(Context context, String documentPath) {
+        OnyxMetadata data = getMetadataByPath(documentPath);
+        OnyxHistoryEntryHelper.recordStartReading(context, data.getMD5(), data.getProgress());
+    }
+
+    public static void recordFinishReading(Context context, int currentPage, int totalPage) {
+        OnyxHistoryEntryHelper.recordFinishReading(context, new OnyxBookProgress(currentPage+1, totalPage));
+    }
+
 }

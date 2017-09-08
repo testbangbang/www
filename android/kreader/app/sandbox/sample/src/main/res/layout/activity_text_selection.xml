@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sample.SelectableTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.onyx.android.sample.TextSelectionActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textSize="40sp"
+    android:gravity="center"
+    android:id="@+id/text_select_tv">
+</com.onyx.android.sample.SelectableTextView>
+
+

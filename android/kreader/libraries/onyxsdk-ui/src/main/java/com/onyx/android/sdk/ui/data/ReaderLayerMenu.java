@@ -131,6 +131,7 @@ public class ReaderLayerMenu extends ReaderMenu {
             @Override
             public void run(ReaderLayerMenuItem value) {
                 updateShowNoteMenuItem(value, state);
+                updateSideNoteMenuItem(value, state);
                 updateScribbleMenuItems(value, state);
                 updateFontMenuItems(value);
             }
@@ -154,6 +155,13 @@ public class ReaderLayerMenu extends ReaderMenu {
         item.setTitleResourceId(state.isShowingNotes()
                 ? R.string.reader_layer_menu_hide_scribble
                 : R.string.reader_layer_menu_show_scribble);
+    }
+
+    private void updateSideNoteMenuItem(final ReaderLayerMenuItem item, final ReaderMenuState state) {
+        if (item.getAction() != ReaderMenuAction.NOTE_SIDE_NOTE) {
+            return;
+        }
+        item.setVisible(state.isSupportingSideNote());
     }
 
     private void updateScribbleMenuItems(final ReaderLayerMenuItem item, final ReaderMenuState state) {

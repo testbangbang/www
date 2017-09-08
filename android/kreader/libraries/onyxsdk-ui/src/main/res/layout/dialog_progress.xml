@@ -32,4 +32,23 @@
         android:focusable="true"
         android:max="20"
         android:id="@+id/progress" />
+
+    <View
+        android:layout_marginTop="10dp"
+        android:visibility="gone"
+        android:id="@+id/button_line"
+        android:background="@android:color/black"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <Button
+        android:visibility="gone"
+        android:background="@android:color/white"
+        android:id="@+id/dismiss_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_title_text_size" />
+
 </LinearLayout>

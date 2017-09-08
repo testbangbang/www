@@ -6,6 +6,7 @@ import android.support.v4.util.LruCache;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
@@ -35,6 +36,7 @@ public class ReaderDataHolder {
 
     private HandlerManager handlerManager;
     private SelectionManager selectionManager;
+    private CloudManager cloudManager;
     private DataManager dataManager;
     private Reader reader;
     private LruCache<Integer, Bitmap> readerPageCache = new LruCache<>(5);
@@ -88,6 +90,13 @@ public class ReaderDataHolder {
             dataManager = new DataManager();
         }
         return dataManager;
+    }
+
+    public CloudManager getCloudManager() {
+        if (cloudManager == null) {
+            cloudManager = new CloudManager();
+        }
+        return cloudManager;
     }
 
     public void submitNonRenderRequest(final BaseReaderRequest request) {

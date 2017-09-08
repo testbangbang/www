@@ -66,6 +66,11 @@ jstring getFieldName(JNIEnv *env, const CPDF_FormField *field) {
     return env->NewStringUTF(name.UTF8Encode().c_str());
 }
 
+jstring getPushButtonCaption(JNIEnv *env, const CPDF_FormField *field) {
+    CFX_WideString caption = field->GetFieldDict()->GetDictFor("MK")->GetUnicodeTextFor("CA");
+    return env->NewStringUTF(caption.UTF8Encode().c_str());
+}
+
 jobject createObject(JNIEnv *env, const char *className, const char *methodName,
                      const char *methodSignature, ...) {
     jclass clazz = env->FindClass(className);
@@ -115,7 +120,7 @@ jobject createTextObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE page) {
 
     static const char *readerFormTextClassName = "com/onyx/android/sdk/reader/api/ReaderFormText";
     static const char *methodName = "create";
-    static const char *methodSignature = "(Ljava/lang/String;FFFFLjava/lang/String;)Lcom/onyx/android/sdk/reader/api/ReaderFormText;";
+    static const char *methodSignature = "(Ljava/lang/String;FFFFLjava/lang/String;)Lcom/onyx/android/sdk/reader/api/ReaderFormField;";
     return createObject(env, readerFormTextClassName, methodName, methodSignature,
                         name, rect.left, rect.top, rect.right, rect.bottom, nullptr);
 }
@@ -194,6 +199,26 @@ jobject createRadioGroupObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE pag
                         name, array);
 }
 
+jobject createPushButtonObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE page) {
+    CFX_FloatRect rect;
+    if (!getFieldRegion(page, field, &rect)) {
+        return nullptr;
+    }
+
+    jstring name = getFieldName(env, field);
+    if (!name) {
+        return nullptr;
+    }
+
+    jstring caption = getPushButtonCaption(env, field);
+
+    static const char *readerFormTextClassName = "com/onyx/android/sdk/reader/api/ReaderFormPushButton";
+    static const char *methodName = "create";
+    static const char *methodSignature = "(Ljava/lang/String;Ljava/lang/String;FFFF)Lcom/onyx/android/sdk/reader/api/ReaderFormPushButton;";
+    return createObject(env, readerFormTextClassName, methodName, methodSignature,
+                        name, caption, rect.left, rect.top, rect.right, rect.bottom);
+}
+
 jobject createFieldObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE page) {
     CPDF_FormField::Type type = field->GetType();
     switch (type) {
@@ -203,6 +228,8 @@ jobject createFieldObject(JNIEnv *env, CPDF_FormField *field, FPDF_PAGE page) {
         return createCheckBoxObject(env, field, page);
     case CPDF_FormField::RadioButton:
         return createRadioGroupObject(env, field, page);
+    case CPDF_FormField::PushButton:
+        return createPushButtonObject(env, field, page);
     default:
         return nullptr;
     }

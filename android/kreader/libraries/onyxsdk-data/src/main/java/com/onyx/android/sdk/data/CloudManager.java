@@ -154,4 +154,15 @@ public class CloudManager {
     public void setToken(String token) {
         this.token = token;
     }
+
+    public RequestManager getRequestManager() {
+        return requestManager;
+    }
+
+    public CloudManager useBackupCloudConf() {
+        setAllCloudConf(CloudConf.create(Constant.ONYX_BACKUP_HOST_BASE,
+                Constant.ONYX_BACKUP_API_BASE,
+                Constant.DEFAULT_CLOUD_STORAGE));
+        return this;
+    }
 }

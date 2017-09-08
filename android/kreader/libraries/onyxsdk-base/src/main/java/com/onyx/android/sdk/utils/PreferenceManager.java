@@ -42,6 +42,10 @@ public class PreferenceManager {
         return sDefaultPreferences.getString(key, defaultValue);
     }
 
+    public static long getLongValue(Context context, String key, long defaultValue) {
+        return sDefaultPreferences.getLong(key, defaultValue);
+    }
+
     public static void setBooleanValue(Context context, int ResID, boolean value) {
         setBooleanValue(context, context.getResources().getString(ResID), value);
     }
@@ -52,6 +56,10 @@ public class PreferenceManager {
 
     public static void setStringValue(Context context, int ResID, String value) {
         setStringValue(context, context.getResources().getString(ResID), value);
+    }
+
+    public static void setLongValue(Context context, int ResID, long value) {
+        setLongValue(context, context.getResources().getString(ResID), value);
     }
 
     public static void setBooleanValue(Context context, String key, boolean value) {
@@ -69,6 +77,12 @@ public class PreferenceManager {
     public static void setStringValue(Context context, String key, String value) {
         sDefaultEditor = sDefaultPreferences.edit();
         sDefaultEditor.putString(key, value);
+        sDefaultEditor.apply();
+    }
+
+    public static void setLongValue(Context context, String key, long value) {
+        sDefaultEditor = sDefaultPreferences.edit();
+        sDefaultEditor.putLong(key, value);
         sDefaultEditor.apply();
     }
 }

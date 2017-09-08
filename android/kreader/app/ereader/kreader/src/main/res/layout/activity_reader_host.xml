@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_reader_host"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -7,37 +8,58 @@
     <TabHost
         android:id="@+id/tab_host"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:orientation="horizontal"
+            <RelativeLayout
+                android:id="@+id/layout_menu"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:background="@android:color/white">
+
+                <ImageView
+                    android:id="@+id/btn_menu"
+                    android:layout_width="@dimen/activity_multiple_reader_tab_height"
+                    android:layout_height="@dimen/activity_multiple_reader_tab_height"
+                    android:padding="5dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_settings"
+                    android:layout_alignParentLeft="true"/>
 
                 <ImageView
                     android:id="@+id/btn_switch"
+                    android:layout_width="@dimen/activity_multiple_reader_tab_height"
+                    android:layout_height="@dimen/activity_multiple_reader_tab_height"
                     android:padding="5dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_unfold"
+                    android:layout_toRightOf="@id/btn_menu"/>
+
+                <View
+                    android:id="@+id/view_placeholder"
                     android:layout_width="@dimen/activity_multiple_reader_tab_height"
-                    android:layout_height="@dimen/activity_multiple_reader_tab_height" />
+                    android:layout_height="@dimen/activity_multiple_reader_tab_height"
+                    android:layout_alignParentRight="true" />
 
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/btn_switch"
+                    android:layout_toLeftOf="@id/view_placeholder"/>
 
-            </LinearLayout>
+            </RelativeLayout>
 
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_below="@id/layout_menu">
 
                 <View
                     android:id="@+id/view_blank_tab_content"
@@ -45,7 +67,16 @@
                     android:layout_height="match_parent" />
 
             </FrameLayout>
-        </LinearLayout>
+
+            <com.onyx.android.sdk.ui.view.DashedLine
+                android:id="@+id/dash_line_splitter"
+                app:dashLine_orientation="vertical"
+                android:layout_width="2dp"
+                android:layout_height="match_parent"
+                android:layout_below="@id/layout_menu"
+                android:layout_centerHorizontal="true"
+                android:visibility="invisible" />
+        </RelativeLayout>
     </TabHost>
 
 </RelativeLayout>

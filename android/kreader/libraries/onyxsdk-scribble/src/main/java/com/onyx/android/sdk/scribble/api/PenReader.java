@@ -3,6 +3,9 @@ package com.onyx.android.sdk.scribble.api;
 import android.content.Context;
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.view.SurfaceView;
+import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -34,21 +37,15 @@ public class PenReader {
     private DeviceConfig deviceConfig;
     private PenReaderCallback penReaderCallback;
 
-    public PenReader(final Context context) {
-        init(context);
+    public PenReader(final Context context, final View view) {
+        init(context, view);
     }
 
-    private void init(final Context context) {
+    private void init(final Context context, final View view) {
         rawInputProcessor.setMoveFeedback(true);
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        rawInputProcessor.setViewMatrix(new Matrix());
-        final Matrix screenMatrix = new Matrix();
-        screenMatrix.postRotate(deviceConfig.getEpdPostOrientation());
-        screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
-        screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
-                deviceConfig.getEpdHeight() / getTouchHeight());
-        rawInputProcessor.setScreenMatrix(screenMatrix);
-        rawInputProcessor.setLimitRect(new Rect(0, 0, (int) getTouchHeight(), (int) getTouchWidth()));
+        rawInputProcessor.setHostView(view);
+        rawInputProcessor.setLimitRect(new RectF(0, 0, getTouchHeight(), getTouchWidth()));
     }
 
     public void start() {
@@ -71,7 +68,7 @@ public class PenReader {
         this.penReaderCallback = callback;
         rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut) {
                 penReaderCallback.onBeginRawData();
             }
 
@@ -81,7 +78,7 @@ public class PenReader {
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut) {
                 penReaderCallback.onBeginErasing();
             }
 
@@ -91,12 +88,12 @@ public class PenReader {
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean releaseOutLimitRegion) {
                 penReaderCallback.onEndErasing();
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean releaseOutLimitRegion) {
                 penReaderCallback.onEndRawData();
             }
         });

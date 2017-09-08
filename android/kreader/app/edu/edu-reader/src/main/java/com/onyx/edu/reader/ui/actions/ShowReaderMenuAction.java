@@ -7,13 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
-import android.text.InputType;
 import android.util.Log;
-import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.OnyxDictionaryInfo;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
@@ -21,21 +20,27 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
+import com.onyx.android.sdk.ui.data.ReaderMenuViewData;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.utils.Debug;
@@ -53,13 +58,24 @@ import com.onyx.edu.reader.note.actions.ChangeNoteShapeAction;
 import com.onyx.edu.reader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.edu.reader.note.actions.ClearPageAction;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
+import com.onyx.edu.reader.note.actions.FlushSignatureShapesChain;
 import com.onyx.edu.reader.note.actions.RedoAction;
 import com.onyx.edu.reader.note.actions.RestoreShapeAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.LockFormShapesAction;
+import com.onyx.edu.reader.note.actions.LoadSignatureToFormAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
+import com.onyx.edu.reader.ui.actions.form.BaseMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormExamMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormExerciseMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormInteractiveMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormMeetingMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormSignMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormUserHomeWorkMenuAction;
+import com.onyx.edu.reader.ui.actions.form.ShowFormVoteMenuAction;
 import com.onyx.edu.reader.ui.data.ReaderCropArgs;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
@@ -72,9 +88,12 @@ import com.onyx.edu.reader.ui.dialog.DialogSearch;
 import com.onyx.edu.reader.ui.dialog.DialogTableOfContent;
 import com.onyx.edu.reader.ui.dialog.DialogTextStyle;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.ui.handler.BaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.view.EduMenu;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -201,6 +220,10 @@ public class ShowReaderMenuAction extends BaseAction {
         if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportColor()) {
             disableMenus.add(ReaderMenuAction.SCRIBBLE_DRAG);
         }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isSupportSignature()) {
+            disableMenus.add(ReaderMenuAction.SIGNATURE);
+        }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
@@ -226,6 +249,9 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onMenuItemClicked(ReaderMenuItem menuItem) {
                 Log.d(TAG, "onMenuItemClicked: " + menuItem.getAction());
+                if (readerDataHolder.getHandlerManager().onMenuClicked(menuItem.getAction())) {
+                    return;
+                }
                 switch (menuItem.getAction()) {
                     case FONT:
                         showTextStyleDialog(readerDataHolder);
@@ -808,16 +834,41 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
-    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showNoteMenu) {
-        readerActivity.getExtraView().removeAllViews();
-        final ShowFormMenuActon formMenuActon = new ShowFormMenuActon(disableMenus,
-                readerActivity.getExtraView(),
-                showNoteMenu,
-                getScribbleActionCallback(readerDataHolder));
+    public static void showFormMenu(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        ReaderMenuViewData readerMenuViewData = ReaderMenuViewData.create(disableMenus, readerDataHolder.getHandlerManager().isEnableNoteDrawing(), readerActivity.getExtraView());
         if (noteDataInfo != null) {
             int currentShapeType = noteDataInfo.getCurrentShapeType();
-            formMenuActon.setSelectShapeAction(createShapeAction(currentShapeType));
+            readerMenuViewData.setSelectShapeAction(createShapeAction(currentShapeType));
+        }
+        ShowScribbleMenuAction.ActionCallback actionCallback = getScribbleActionCallback(readerDataHolder);
+        BaseMenuAction formMenuActon;
+        Debug.d(ShowReaderMenuAction.class, readerDataHolder.getHandlerManager().getActiveProviderName());
+        switch (readerDataHolder.getHandlerManager().getActiveProviderName()) {
+            case HandlerManager.FORM_PROVIDER:
+                formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_INTERACTIVE_PROVIDER:
+                formMenuActon = new ShowFormInteractiveMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_EXAM_PROVIDER:
+                formMenuActon = new ShowFormExamMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_EXERCISE_PROVIDER:
+                formMenuActon = new ShowFormExerciseMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_MEETING_PROVIDER:
+                formMenuActon = new ShowFormMeetingMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_SIGNATURE_PROVIDER:
+                formMenuActon = new ShowFormSignMenuAction(readerMenuViewData, actionCallback);
+                break;
+            case HandlerManager.FORM_USERHOMEWORK_PROVIDER:
+                formMenuActon = new ShowFormUserHomeWorkMenuAction(readerMenuViewData, actionCallback);
+                break;
+            default:
+                formMenuActon = new ShowFormMenuAction(readerMenuViewData, actionCallback);
+                break;
         }
         formMenuActon.execute(readerDataHolder, null);
     }
@@ -827,6 +878,9 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public void onClicked(final ReaderMenuAction action) {
                 if (processScribbleActionGroup(readerDataHolder, action)) {
+                    return;
+                }
+                if (readerDataHolder.getHandlerManager().onMenuClicked(action)) {
                     return;
                 }
                 processScribbleAction(readerDataHolder, action);
@@ -873,6 +927,12 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case SCRIBBLE_PAGE_POSITION:
                 DialogGotoPage.show(readerDataHolder, true, null);
+                break;
+            case SIGNATURE:
+                signature(readerDataHolder);
+                break;
+            case TOGGLE_FORM_SCRIBBLE:
+                toggleFormScribble(readerDataHolder);
                 break;
             case SCRIBBLE_WIDTH1:
             case SCRIBBLE_WIDTH2:
@@ -963,6 +1023,69 @@ public class ShowReaderMenuAction extends BaseAction {
         }
     }
 
+    private static void toggleFormScribble(final ReaderDataHolder readerDataHolder) {
+        BaseHandler handler = readerDataHolder.getHandlerManager().getActiveProvider();
+        boolean enableNoteDrawing = handler.isEnableNoteDrawing();
+        handler.onDeactivate(readerDataHolder);
+        handler.setEnableNoteDrawing(!enableNoteDrawing);
+        readerDataHolder.redrawPage();
+    }
+
+    private static void signature(final ReaderDataHolder readerDataHolder) {
+        NeoAccountBase account = readerDataHolder.getAccount();
+        if (account == null) {
+            return;
+        }
+        ReaderFormScribble signatureForm = readerDataHolder.getFirstSignatureForm();
+        if (signatureForm == null) {
+            return;
+        }
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        final LoadSignatureToFormAction signatureToFormAction = new LoadSignatureToFormAction(account._id, signatureForm.getRect());
+        actionChain.addAction(signatureToFormAction);
+        actionChain.addAction(new FlushNoteAction(pages, true, true, true, false));
+        actionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (!signatureToFormAction.hasSinature()) {
+                    openSignatureDoc(readerDataHolder);
+                }
+            }
+        });
+    }
+
+    public static void openJumpFromDoc(final ReaderDataHolder readerDataHolder) {
+        String path = readerDataHolder.getJumpFromDocPath();
+        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(path));
+        openDocument(readerDataHolder, intent, path);
+    }
+
+    private static void openSignatureDoc(final ReaderDataHolder readerDataHolder) {
+        String path = DeviceConfig.sharedInstance(readerDataHolder.getContext()).getSignatureDocumentPath();
+        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(new File(path));
+        intent.putExtra(Constant.JUMP_FROM_DOCUMENT_PATH_TAG, readerDataHolder.getDocumentPath());
+        openDocument(readerDataHolder, intent, path);
+    }
+
+    private static void openDocument(final ReaderDataHolder readerDataHolder, final Intent intent, final String path) {
+        if (StringUtils.isNullOrEmpty(path)) {
+            return;
+        }
+        final File file = new File(path);
+        if (!file.exists()) {
+            return;
+        }
+        new SaveReaderStateActionChain().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ActivityUtil.startActivitySafely(readerDataHolder.getContext(),
+                        intent,
+                        ViewDocumentUtils.getEduReaderComponentName(readerDataHolder.getContext()));
+            }
+        });
+    }
+
     private static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
@@ -1044,7 +1167,7 @@ public class ShowReaderMenuAction extends BaseAction {
         action.execute(readerDataHolder, null);
     }
 
-    private static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
+    public static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
         final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getFirstPageInfo());
         clearPageAction.execute(readerDataHolder, null);
     }
@@ -1120,6 +1243,11 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public boolean isShowingNotes() {
                 return SingletonSharedPreference.isShowNote(readerDataHolder.getContext());
+            }
+
+            @Override
+            public boolean isSupportingSideNote() {
+                return false;
             }
 
             @Override

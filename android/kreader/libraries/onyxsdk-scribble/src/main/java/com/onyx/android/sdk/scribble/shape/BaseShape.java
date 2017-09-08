@@ -41,6 +41,10 @@ public class BaseShape implements Shape {
     private FormValue formValue;
     private boolean lock;
     private boolean review;
+    private int revision;
+
+    private boolean selected = false;
+    private float scale = 1.0f;
 
     /**
      * rectangle, circle, etc.
@@ -123,9 +127,29 @@ public class BaseShape implements Shape {
         this.displayStrokeWidth = displayStrokeWidth;
     }
 
+    @Override
+    public void setScale(float targetScaleValue) {
+        scale = targetScaleValue;
+    }
+
+    @Override
+    public float getScale() {
+        return scale;
+    }
+
+    @Override
+    public void setSelected(boolean isSelected) {
+        selected = isSelected;
+    }
+
+    @Override
+    public boolean isSelected() {
+        return selected;
+    }
+
     public float getDisplayScale(final RenderContext renderContext) {
         if (renderContext == null || renderContext.matrix == null) {
-            return 1.0f;
+            return scale;
         }
         return renderContext.displayScale;
     }
@@ -200,6 +224,16 @@ public class BaseShape implements Shape {
 
     public void onTranslate(final float dx, final float dy) {
         normalizedPoints.translateAllPoints(dx, dy);
+        updatePoints();
+    }
+
+    public void onScale(final float scale) {
+        normalizedPoints.scaleAllPoints(scale);
+        updatePoints();
+    }
+
+    @Override
+    public void updatePoints() {
         if (normalizedPoints.size() > 0) {
             downPoint.set(normalizedPoints.get(0));
         }
@@ -434,5 +468,18 @@ public class BaseShape implements Shape {
     @Override
     public boolean inVisibleDrawRectF(RectF rect) {
         return true;
+    }
+
+    public int getRevision() {
+        return revision;
+    }
+
+    public void setRevision(int revision) {
+        this.revision = revision;
+    }
+
+    @Override
+    public boolean canModified(int documentReviewRevision) {
+        return revision >= documentReviewRevision;
     }
 }

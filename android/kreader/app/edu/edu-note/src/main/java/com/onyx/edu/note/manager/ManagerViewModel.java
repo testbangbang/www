@@ -12,8 +12,9 @@ import android.text.TextUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.request.note.NoteLibraryLoadRequest;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLibraryLoadRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.edu.note.actions.manager.CreateLibraryAction;
 import com.onyx.edu.note.actions.manager.LoadNoteListAction;
@@ -59,7 +60,7 @@ public class ManagerViewModel extends BaseObservable {
     ManagerViewModel(Context context) {
         // Force use of Application Context.
         mContext = context.getApplicationContext();
-        mNoteManager = NoteManager.sharedInstance(mContext);
+        mNoteManager = NoteApplication.getInstance().getNoteManager();
         items.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<NoteModel>>() {
             @Override
             public void onChanged(ObservableList<NoteModel> sender) {

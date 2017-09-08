@@ -12,6 +12,6 @@ public class SaveDocumentOptionsAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
         final SaveDocumentOptionsRequest saveDocumentOptionsRequest = new SaveDocumentOptionsRequest();
-        readerDataHolder.submitNonRenderRequest(saveDocumentOptionsRequest, null);
+        readerDataHolder.submitNonRenderRequest(saveDocumentOptionsRequest, baseCallback);
     }
 }

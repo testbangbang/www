@@ -41,6 +41,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
@@ -78,6 +79,7 @@ import com.onyx.edu.reader.ui.data.FormFieldControlFactory;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
+import com.onyx.edu.reader.ui.events.ActiveFormHandlerEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.edu.reader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
@@ -118,7 +120,7 @@ import com.onyx.edu.reader.ui.events.UpdateTabWidgetVisibilityEvent;
 import com.onyx.edu.reader.ui.gesture.MyOnGestureListener;
 import com.onyx.edu.reader.ui.gesture.MyScaleGestureListener;
 import com.onyx.edu.reader.ui.handler.BaseHandler;
-import com.onyx.edu.reader.ui.handler.FormFieldHandler;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.SlideshowHandler;
 import com.onyx.edu.reader.ui.receiver.NetworkConnectChangedReceiver;
@@ -347,6 +349,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private void initReaderMenu(){
         ShowReaderMenuAction.initDisableMenus(getReaderDataHolder());
+        updateFormMenu();
     }
 
     private void initStatusBar() {
@@ -665,6 +668,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (getReaderDataHolder() == null) {
             return;
         }
+        getReaderDataHolder().activeIMService();
         if (!getReaderDataHolder().isDocumentOpened() ||
                 getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
             return;
@@ -823,6 +827,10 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (metadata != null) {
             getReaderDataHolder().setCloudDocId(metadata.getCloudId());
         }
+        String jumpFromPath = getIntent().getStringExtra(Constant.JUMP_FROM_DOCUMENT_PATH_TAG);
+        if (!StringUtils.isNullOrEmpty(jumpFromPath)) {
+            getReaderDataHolder().setJumpFromDocPath(jumpFromPath);
+        }
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
@@ -897,6 +905,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         updateNoteHostView();
         getReaderDataHolder().updateRawEventProcessor();
         getReaderDataHolder().resetHandlerManager();
+        getReaderDataHolder().activeIMService();
 
         postDocumentInitRendered();
     }
@@ -929,9 +938,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onScribbleMenuSizeChanged(final ScribbleMenuChangedEvent event) {
         Rect rect = new Rect();
         surfaceView.getLocalVisibleRect(rect);
-        Rect formRect = getFormRect();
-        if (formRect != null) {
-            rect = formRect;
+        if (getReaderDataHolder().inFormProvider() && getReaderDataHolder().getHandlerManager().isEnableNoteInScribbleForm()) {
+            Rect formRect = getFormScribbleRect();
+            if (formRect != null) {
+                rect = formRect;
+            }
         }
         int bottomOfTopToolBar = event.getBottomOfTopToolBar();
         int topOfBottomToolBar = event.getTopOfBottomToolBar();
@@ -947,7 +958,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRect()), rotation);
     }
 
-    private Rect getFormRect() {
+    private Rect getFormScribbleRect() {
         Rect rect = null;
         for (View formFieldControl : formFieldControls) {
             if (isFormScribble(formFieldControl)) {
@@ -1116,6 +1127,11 @@ public class ReaderActivity extends OnyxBaseActivity {
         formFieldControls.clear();
     }
 
+    @Subscribe
+    public void activeFormHandlerEvent(final ActiveFormHandlerEvent event) {
+        activeFormHandler();
+    }
+
     private void addFormFieldControls(Canvas canvas, boolean renderFormField) {
         for (PageInfo pageInfo : getReaderDataHolder().getVisiblePages()) {
             if (getReaderDataHolder().getReaderUserDataInfo().hasFormFields(pageInfo)) {
@@ -1141,32 +1157,19 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
-        if (!getReaderDataHolder().useCustomFormMode()) {
+        if (!getReaderDataHolder().useFormMode()) {
             return;
         }
-        boolean startNoteDrawing = hasScribbleFormField();
-        if (!startNoteDrawing || getReaderDataHolder().hasDialogShowing()) {
-            getHandlerManager().setActiveProvider(HandlerManager.FORM_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-        }else {
-            getHandlerManager().setActiveProvider(HandlerManager.FORM_SCRIBBLE_PROVIDER, FormFieldHandler.createInitialState(formFieldControls));
-        }
-
-        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this, startNoteDrawing);
+        getHandlerManager().setActiveProvider(getReaderDataHolder().getDefaultProvider(), FormBaseHandler.createInitialState(formFieldControls));
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
     }
 
-    private boolean hasScribbleFormField() {
-        if (formFieldControls == null) {
-            return false;
+    private void updateFormMenu() {
+        if (!getReaderDataHolder().useFormMode()) {
+            return;
         }
-        for (View formFieldControl : formFieldControls) {
-            ReaderFormField field = (ReaderFormField) formFieldControl.getTag();
-            if (field instanceof ReaderFormScribble) {
-                return true;
-            }
-        }
-        return false;
+        ShowReaderMenuAction.showFormMenu(getReaderDataHolder(), this);
     }
-
 
     private boolean isFormScribble(View view) {
         return view.getTag() instanceof ReaderFormScribble;

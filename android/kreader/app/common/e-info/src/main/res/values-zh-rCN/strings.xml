@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">会议系统</string>
+
+    <string name="username_do">姓名：</string>
+    <string name="phone_do">电话：</string>
+    <string name="organization_do">组织：</string>
+
+    <string name="home_item_note_text">笔记本</string>
+    <string name="home_item_setting_text">设置</string>
+    <string name="home_item_pic_display_text">班级风采</string>
+    <string name="home_item_application_text">应用</string>
+    <string name="home_item_syllabus">课程表</string>
+    <string name="home_item_library">本地书库</string>
+    <string name="home_item_archives">档案室</string>
+    <string name="home_item_note">手写</string>
+    <string name="home_item_reading_room">阅览室</string>
+
+    <string name="page">页码：</string>
+    <string name="no_more_items">没有更多内容了</string>
+    <string name="save">保存</string>
+    <string name="save_success">保存成功</string>
+    <string name="save_fail">保存失败</string>
+    <string name="name">姓名</string>
+    <string name="student_id">学号</string>
+    <string name="grade">年级</string>
+    <string name="name_colon">姓名：</string>
+    <string name="student_id_colon">学号：</string>
+    <string name="grade_colon">年级：</string>
+    <string name="publisher">出版社</string>
+    <string name="primary_school">小学</string>
+    <string name="secondary_school">初中</string>
+    <string name="high_school">高中</string>
+    <string name="college_school">大学</string>
+    <string name="school_grade_class">学校+年级+班级</string>
+    <string name="change_avatar">更换头像</string>
+    <string name="current_learning_progress">您当前的学习进度</string>
+    <string name="last_studying_time">上次学习时刻</string>
+
+    <string name="download_link_invalid">下载链接为空或者有误</string>
+    <string name="category_below_content_empty_tip">该分类内容为空</string>
+
+    <string name="application_list">应用列表</string>
+    <string name="menu_app_npi_clear">清除测试应用</string>
+
+    <string name="filter_all">全部</string>
+    <string name="filter_new_books">未读</string>
+    <string name="filter_read">已阅读完</string>
+    <string name="filter_reading">正在阅读</string>
+    <string name="filter_tag">标签</string>
+
+    <string name="by_name">按名称</string>
+    <string name="by_type">按类型</string>
+    <string name="by_size">按大小</string>
+    <string name="by_tittle">按标题</string>
+    <string name="by_author">按作者</string>
+    <string name="by_creation_time">按创建时间</string>
+
+    <string name="filter">筛选</string>
+    <string name="filter_fail">筛选失败</string>
+    <string name="sort">排序</string>
+    <string name="sort_fail">排序失败</string>
+    <string name="library">书库</string>
+    <string name="library_build">创建书库</string>
+    <string name="library_build_fail">创建书库失败</string>
+    <string name="library_name">书库名</string>
+    <string name="description">描述</string>
+
+    <string name="tip">提示</string>
+    <string name="library_delete_tip">删除书库不会删除掉实际的书本</string>
+    <string name="library_delete_fail">删除书库失败</string>
+
+    <string name="chose_one_book_at_least">请至少选择一本</string>
+    <string name="no_library_choice">当前没有书库</string>
+    <string name="library_choose">选择书库</string>
+    <string name="library_add_to_fail">加入书库失败</string>
+    <string name="adding">添加中...</string>
+    <string name="loading">加载中...</string>
+    <string name="library_remove_from_fail">从书库中移出书本失败</string>
+    <string name="file_path_null">文件路径为空</string>
+    <string name="file_not_exist">文件不存在</string>
+    <string name="total_format">总计：%d</string>
+
+    <string name="menu_property">属性</string>
+    <string name="menu_sort">排序</string>
+    <string name="menu_filter">过滤</string>
+    <string name="menu_multi_choice_mode">多选模式</string>
+    <string name="menu_library_toc_index">书库目录索引</string>
+    <string name="menu_library_build">创建书库</string>
+    <string name="menu_library_add">加入书库</string>
+    <string name="menu_library_remove">移出书库</string>
+    <string name="menu_library_delete">删除书库</string>
+    <string name="menu_view_switch">视图切换</string>
+    <string name="menu_group_select">组别选择</string>
+
+    <string name="go_to_page">页面跳转</string>
+    <string name="current_page">当前页面</string>
+    <string name="library_toc_loading">书库目录加载中...</string>
+    <string name="library_toc_load_fail">书库目录加载异常</string>
+
+    <string name="downloading">下载中&#8230;</string>
+    <string name="download_fail">下载失败</string>
+    <string name="file_path_invalid">文件路径无效</string>
+
+    <string name="open_wifi">wifi没有连接，正在打开wifi&#8230;</string>
+    <string name="refreshing">正在获取新内容&#8230;</string>
+    <string name="refresh_fail">获取新内容失败了</string>
+    <string name="refresh_content_empty">获取的新内容为空</string>
+
+    <string name="token_exception_contact_admin">登录异常，请检查网络重试或者联系管理员</string>
+    <string name="hardware_error">硬件错误, 请检查网络重试或者联系管理员</string>
+
+    <string name="account_un_login">未登录</string>
+
+    <string name="cloud_content_import_loading">正在导入预装的书&#8230;</string>
+    <string name="cloud_content_import_success">导入成功</string>
+    <string name="cloud_content_import_failed">导入失败</string>
+
+    <string name="main_item_user_info_title">个人信息</string>
+
+    <string name="online_library_id_error">在线书库id异常</string>
+    <string name="online_library_load_error">获取书库异常</string>
+    <string name="online_group_load_error">获取分组异常</string>
+
+</resources>

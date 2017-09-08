@@ -8,6 +8,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.request.FlushShapeListRequest;
+import com.onyx.edu.reader.note.request.FlushSignatureShapesRequest;
 import com.onyx.edu.reader.ui.actions.BaseAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.events.ShapeRenderFinishEvent;

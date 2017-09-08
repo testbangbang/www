@@ -146,7 +146,7 @@ public class NoteManager {
             initNoteArgs(context);
         }
         view = sv;
-        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
+        getNoteEventProcessorManager().update(view, visibleDrawRect, excludeRect);
         setVisibleDrawRectF(new RectF(visibleDrawRect.left, visibleDrawRect.top, visibleDrawRect.right, visibleDrawRect.bottom));
     }
 
@@ -373,7 +373,12 @@ public class NoteManager {
     }
 
     private void onNewStash(final Shape shape) {
+        parent.getHandlerManager().getActiveProvider().onShapeAdded(shape);
         shapeStash.add(shape);
+    }
+
+    public void addNewStashList(final List<Shape> shapes) {
+        shapeStash.addAll(shapes);
     }
 
     public final NoteDrawingArgs getNoteDrawingArgs() {
@@ -573,12 +578,22 @@ public class NoteManager {
     }
 
     private void detectionScribbleFormShape(final PageInfo pageInfo, final Shape shape, final TouchPoint origin) {
+        if (!parent.inFormProvider()) {
+            return;
+        }
+        if (!parent.getHandlerManager().isEnableNoteInScribbleForm()) {
+            shape.setFormShape(true);
+            shape.setFormType(ReaderShapeFactory.SHAPE_FREE_AREA_SCRIBBLE);
+            shape.setRevision(getNoteDocument().getReviewRevision());
+            return;
+        }
         ReaderFormField field = getScribbleFormField(pageInfo, origin);
         if (field != null) {
             shape.setFormShape(true);
             shape.setFormId(field.getName());
             shape.setFormRect(field.getRect());
-            shape.setFormType(ReaderShapeFactory.SHAPE_FORM_QA);
+            shape.setFormType(ReaderShapeFactory.SHAPE_LIMIT_REGION_SCRIBBLE);
+            shape.setRevision(getNoteDocument().getReviewRevision());
         }
     }
 

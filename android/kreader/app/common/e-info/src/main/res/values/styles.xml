@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/OnyxAppCompat"></style>
+
+    <style name="ToolBarStyle.Transparent.TextLarge" parent="@style/OnyxToolBarStyle">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="popupTheme">@style/ToolBar.Popup</item>
+    </style>
+
+    <style name="ToolBar.Popup" parent="@style/OnyxAppCompat.ToolBar.Popup"> 
+        <item name="android:textSize">@dimen/menu_item_text_size</item>
+    </style>
+
+    <style name="tabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">25sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="tabLayoutStyle" parent="Base.Widget.Design.TabLayout">
+        <item name="tabMaxWidth">@dimen/tab_layout_tab_max_width</item>
+        <item name="tabMinWidth">@dimen/tab_layout_tab_max_width</item>
+        <item name="tabBackground">@android:color/transparent</item>
+        <item name="tabIndicatorHeight">0dp</item>
+        <item name="tabSelectedTextColor">@android:color/black</item>
+    </style>
+
+</resources>

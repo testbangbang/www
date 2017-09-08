@@ -1,11 +1,10 @@
 package com.onyx.kreader.ui.data;
 
 import android.content.Context;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 
 import com.onyx.android.sdk.reader.api.ReaderDrmCertificateFactory;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 import java.io.File;
 
@@ -24,10 +23,7 @@ public class DrmCertificateFactory implements ReaderDrmCertificateFactory {
     @Override
     public String getDeviceId() {
         try {
-            WifiManager wifiManager = (WifiManager)context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-            WifiInfo info = wifiManager.getConnectionInfo();
-            String address = info.getMacAddress().toLowerCase();
-            return address;
+            return NetworkUtil.getMacAddress(context);
         } catch (Throwable tr) {
             return "";
         }

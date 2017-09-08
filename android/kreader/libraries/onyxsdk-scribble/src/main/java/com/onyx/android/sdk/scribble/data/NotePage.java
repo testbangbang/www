@@ -1,14 +1,20 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
-import android.util.Log;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+import android.support.annotation.Nullable;
 
-import com.onyx.android.sdk.scribble.shape.*;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
+import com.onyx.android.sdk.scribble.shape.EPDShape;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -27,11 +33,32 @@ public class NotePage {
     private List<Shape> shapeList = new ArrayList<>();
     private List<Shape> newAddedShapeList = new ArrayList<>();
     private List<Shape> removedShapeList = new ArrayList<>();
+    private List<Shape> selectedShapeList = new ArrayList<>();
+    private List<Shape> dirtyShapeList = new ArrayList<>();
+    private List<Shape> preTransformShapeList = new ArrayList<>();
 
     private int currentShapeType;
     private Shape currentShape;
     private boolean loaded = false;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
+
+    public void saveCurrentSelectShape() {
+        if (preTransformShapeList.size() == 0) {
+            for (Shape shape : selectedShapeList) {
+                Shape newShape = ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape));
+                //TODO: we need deep copy here.
+                newShape.getPoints().getPoints().clear();
+                for (TouchPoint point:shape.getPoints().getPoints()){
+                    try {
+                        newShape.getPoints().getPoints().add(point.clone());
+                    } catch (CloneNotSupportedException e) {
+                        e.printStackTrace();
+                    }
+                }
+                preTransformShapeList.add(newShape);
+            }
+        }
+    }
 
 
     public static abstract class RenderCallback {
@@ -105,6 +132,38 @@ public class NotePage {
         }
     }
 
+    public void removeTransformShape(final Shape shape) {
+        updateShape(shape);
+        dirtyShapeList.remove(shape);
+        shapeList.remove(shape);
+        if (selectedShapeList.contains(shape)){
+            selectedShapeList.remove(shape);
+        }
+    }
+
+    public void addTransformShape(final Shape shape) {
+        shape.setSelected(true);
+        updateShape(shape);
+        dirtyShapeList.add(shape);
+        shapeList.add(shape);
+        selectedShapeList.add(shape);
+        if (removedShapeList.contains(shape)) {
+            removedShapeList.remove(shape);
+        }
+    }
+
+    public void addTransformShapeList(final List<Shape> shapes) {
+        for (Shape shape : shapes) {
+            addTransformShape(shape);
+        }
+    }
+
+    public void removeTransformShapeList(final List<Shape> shapes) {
+        for (Shape shape : shapes) {
+            removeTransformShape(shape);
+        }
+    }
+
     public void removeShapeList(final List<Shape> shapes, boolean addToHistory) {
         for (Shape shape : shapes) {
             removeShape(shape, addToHistory);
@@ -131,6 +190,13 @@ public class NotePage {
         undoRedoManager.clear();
     }
 
+    public void clearShapeSelectRecord() {
+        for (Shape shape : selectedShapeList) {
+            shape.setSelected(false);
+        }
+        selectedShapeList.clear();
+    }
+
     private void updateShape(final Shape shape) {
         shape.setDocumentUniqueId(getDocumentUniqueId());
         shape.setPageUniqueId(getPageUniqueId());
@@ -143,6 +209,7 @@ public class NotePage {
         updateShape(shape);
         removedShapeList.add(shape);
         newAddedShapeList.remove(shape);
+        dirtyShapeList.remove(shape);
         shapeList.remove(shape);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.removeShapeAction(shape), false);
@@ -167,11 +234,61 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            hitTestShape(entry, touchPointList, radius);
+            hitTestAndRemoveShape(entry, touchPointList, radius);
         }
     }
 
-    private void hitTestShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
+    @Nullable
+    public List<Shape> selectShapeByTouchPointList(TouchPointList touchPointList, float radius) {
+        if (touchPointList == null) {
+            return null;
+        }
+        Map<String, Shape> hitShapes = new HashMap<>();
+        for (Shape shape : shapeList) {
+            if (!shape.isFreePosition()) {
+                continue;
+            }
+            for (TouchPoint touchPoint : touchPointList.getPoints()) {
+                if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                    hitShapes.put(shape.getShapeUniqueId(), shape);
+                    break;
+                }
+            }
+        }
+        HashSet<Shape> shapeHashSet = new HashSet<>();
+        List<Shape> resultList = new ArrayList<>();
+        selectedShapeList.clear();
+        for (Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
+            shapeHashSet.addAll(hitTestAndSelectShape(entry, touchPointList, radius));
+        }
+        resultList.addAll(shapeHashSet);
+        for (Shape shape : shapeList) {
+            if (resultList.contains(shape)) {
+                shape.setSelected(true);
+            } else {
+                shape.setSelected(false);
+            }
+        }
+        selectedShapeList.addAll(resultList);
+        return resultList;
+    }
+
+    public List<Shape> getSelectedShapeList(){
+        return selectedShapeList;
+    }
+
+    private List<Shape> hitTestAndSelectShape(Map.Entry<String, Shape> entry,
+                                              TouchPointList touchPointList, float radius) {
+        List<Shape> resultList = new ArrayList<>();
+        for (TouchPoint touchPoint : touchPointList.getPoints()) {
+            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                resultList.add(entry.getValue());
+            }
+        }
+        return resultList;
+    }
+
+    private void hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
         for(TouchPoint touchPoint : touchPointList.getPoints()) {
             if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                 removeShape(entry.getValue(), true);
@@ -213,11 +330,41 @@ public class NotePage {
         if (shapeList == null) {
             return;
         }
-        for(Shape shape : shapeList) {
+        final Matrix renderMatrix = new Matrix();
+        for (Shape shape : shapeList) {
+            renderMatrix.reset();
+            renderMatrix.postScale(shape.getScale(), shape.getScale());
+            renderContext.setMatrix(renderMatrix);
             shape.render(renderContext);
             if (callback != null && callback.isRenderAbort()) {
                 break;
             }
+        }
+    }
+
+    public RectF getSelectedRect() {
+        List<RectF> selectShapeRectList = new ArrayList<>();
+        for (Shape shape : shapeList) {
+            if (shape.isSelected()) {
+                RectF selectRect = new RectF();
+                if ((shape instanceof EPDShape)) {
+                    if (((BaseShape) shape).getOriginDisplayPath() != null) {
+                        ((BaseShape) shape).getOriginDisplayPath().computeBounds(selectRect, true);
+                    } else {
+                        selectRect = shape.getBoundingRect();
+                    }
+                }
+                selectShapeRectList.add(selectRect);
+            }
+        }
+        if (selectShapeRectList.size() == 0) {
+            return new RectF();
+        } else {
+            RectF resultSelectRectF = new RectF();
+            for (RectF targetRect : selectShapeRectList) {
+                resultSelectRectF.union(targetRect);
+            }
+            return resultSelectRectF;
         }
     }
 
@@ -242,7 +389,8 @@ public class NotePage {
      * @param subPageName
      * @return
      */
-    public static final NotePage loadPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
+    public static final NotePage loadPage(final Context context, final String docUniqueId,
+                                          final String pageName, final String subPageName) {
         final List<ShapeModel> list = ShapeDataProvider.loadShapeList(context, docUniqueId, pageName, subPageName);
         final NotePage notePage = createPage(context, docUniqueId, pageName, subPageName);
         for(ShapeModel model : list) {
@@ -255,20 +403,21 @@ public class NotePage {
     public void loadPage(final Context context) {
         newAddedShapeList.clear();
         removedShapeList.clear();
-        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context, getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
+        final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context,
+                getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
         for(ShapeModel model : modelList) {
             addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
         setLoaded(true);
     }
 
-    public static final NotePage createPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
-        final NotePage page = new NotePage(docUniqueId, pageName, subPageName);
-        return page;
+    public static final NotePage createPage(final Context context, final String docUniqueId,
+                                            final String pageName, final String subPageName) {
+        return new NotePage(docUniqueId, pageName, subPageName);
     }
 
     public List<ShapeModel> getNewAddedShapeModeList() {
-        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        List<ShapeModel> modelList = new ArrayList<>(newAddedShapeList.size());
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -289,7 +438,8 @@ public class NotePage {
     }
 
     public boolean savePage(final Context context) {
-        List<ShapeModel> modelList = new ArrayList<ShapeModel>(newAddedShapeList.size());
+        List<ShapeModel> modelList = new ArrayList<>(newAddedShapeList.size());
+        //TODO: new shape;
         for(Shape shape : newAddedShapeList) {
             final ShapeModel model = ShapeFactory.modelFromShape(shape);
             modelList.add(model);
@@ -298,11 +448,19 @@ public class NotePage {
             ShapeDataProvider.saveShapeList(context, modelList);
         }
 
-        List<String> list = new ArrayList<>();
-        for(Shape shape: removedShapeList) {
-            list.add(shape.getShapeUniqueId());
+        modelList.clear();
+
+        //TODO: dirtyShape(shape transform);
+        for (Shape shape : dirtyShapeList) {
+            final ShapeModel model = ShapeFactory.modelFromShape(shape);
+            modelList.add(model);
         }
-        ShapeDataProvider.removeShapesByIdList(context, list);
+        if (modelList.size() > 0) {
+            ShapeDataProvider.updateShapeList(context, modelList);
+        }
+
+        //TODO: removed Shape;
+        ShapeDataProvider.removeShapesByIdList(context, getRemovedShapeIdList());
         newAddedShapeList.clear();
         removedShapeList.clear();
         return true;
@@ -326,5 +484,37 @@ public class NotePage {
 
     public void remove() {
 
+    }
+
+    public void setScaleToSelectShapeList(float scale, boolean addToActionHistory) {
+        if (selectedShapeList.size() <= 0) {
+            return;
+        }
+        for (Shape shape : selectedShapeList) {
+            shape.onScale(scale);
+        }
+        dirtyShapeList.clear();
+        dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            preTransformShapeList.clear();
+        }
+    }
+
+    public void setTranslateToSelectShapeList(float dX, float dY, boolean addToActionHistory) {
+        if (selectedShapeList.size() <= 0) {
+            return;
+        }
+        for (Shape shape : selectedShapeList) {
+            shape.onTranslate(dX, dY);
+        }
+        dirtyShapeList.clear();
+        dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            preTransformShapeList.clear();
+        }
     }
 }

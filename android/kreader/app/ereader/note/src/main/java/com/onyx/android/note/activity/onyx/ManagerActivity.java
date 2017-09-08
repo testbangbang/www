@@ -60,6 +60,7 @@ public class ManagerActivity extends BaseManagerActivity {
     private ImageView moveButton;
     private ImageView deleteButton;
     private ImageView settingButton;
+    private ImageView backupButton;
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
     private @AscDescOrder.AscDescOrderDef int ascOrder= AscDescOrder.DESC;
@@ -159,6 +160,7 @@ public class ManagerActivity extends BaseManagerActivity {
         moveButton = (ImageView) findViewById(R.id.move_btn);
         deleteButton = (ImageView) findViewById(R.id.delete_btn);
         settingButton = (ImageView) findViewById(R.id.setting_btn);
+        backupButton = (ImageView) findViewById(R.id.backup_restore_btn);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
         ImageView sortByButton = (ImageView) findViewById(R.id.button_sort_by);
         deleteButton.setOnClickListener(new View.OnClickListener() {
@@ -204,6 +206,12 @@ public class ManagerActivity extends BaseManagerActivity {
             @Override
             public void onClick(View v) {
                 getSupportActionBar().openOptionsMenu();
+            }
+        });
+        backupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackupRestore();
             }
         });
         moveButton.setOnClickListener(new View.OnClickListener() {
@@ -338,6 +346,10 @@ public class ManagerActivity extends BaseManagerActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void onBackupRestore() {
+        startActivity(new Intent(ManagerActivity.this,BackupRestoreActivity.class));
     }
 
     private void importScribbleData() {

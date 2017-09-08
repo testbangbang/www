@@ -13,8 +13,10 @@ import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
+import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.ui.ReaderTabHostBroadcastReceiver;
@@ -27,6 +29,13 @@ import com.onyx.edu.reader.ui.actions.ToggleBookmarkAction;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.ui.handler.form.FormExamHandler;
+import com.onyx.edu.reader.ui.handler.form.FormExerciseHandler;
+import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
+import com.onyx.edu.reader.ui.handler.form.FormInteractiveHandler;
+import com.onyx.edu.reader.ui.handler.form.FormMeetingHandler;
+import com.onyx.edu.reader.ui.handler.form.FormSignHandler;
+import com.onyx.edu.reader.ui.handler.form.FormUserHomeWorkHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -49,7 +58,12 @@ public class HandlerManager {
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
     public static final String FORM_PROVIDER = "form";
-    public static final String FORM_SCRIBBLE_PROVIDER = "form_scribble";
+    public static final String FORM_INTERACTIVE_PROVIDER = "form_interactive";
+    public static final String FORM_EXAM_PROVIDER = "form_exam";
+    public static final String FORM_EXERCISE_PROVIDER = "form_exercise";
+    public static final String FORM_MEETING_PROVIDER = "form_meeting";
+    public static final String FORM_SIGNATURE_PROVIDER = "form_signature";
+    public static final String FORM_USERHOMEWORK_PROVIDER = "form_user_homework";
 
     private static final int TOUCH_HORIZONTAL_PART = 3;
     private static final int TOUCH_VERTICAL_PART = 2;
@@ -76,8 +90,13 @@ public class HandlerManager {
         providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));
-        providerMap.put(FORM_PROVIDER, new FormFieldHandler(this));
-        providerMap.put(FORM_SCRIBBLE_PROVIDER, new FormScribbleHandler(this));
+        providerMap.put(FORM_PROVIDER, new FormBaseHandler(this));
+        providerMap.put(FORM_INTERACTIVE_PROVIDER, new FormInteractiveHandler(this));
+        providerMap.put(FORM_EXAM_PROVIDER, new FormExamHandler(this));
+        providerMap.put(FORM_EXERCISE_PROVIDER, new FormExerciseHandler(this));
+        providerMap.put(FORM_MEETING_PROVIDER, new FormMeetingHandler(this));
+        providerMap.put(FORM_SIGNATURE_PROVIDER, new FormSignHandler(this));
+        providerMap.put(FORM_USERHOMEWORK_PROVIDER, new FormUserHomeWorkHandler(this));
         activeProviderName = READING_PROVIDER;
         enable.set(true);
         enableTouch.set(true);
@@ -180,14 +199,29 @@ public class HandlerManager {
         setActiveProvider(getDefaultProvider());
     }
 
-    private String getDefaultProvider() {
-        if (readerDataHolder.useCustomFormMode()) {
-            if (readerDataHolder.hasScribbleFormField()) {
-                return FORM_SCRIBBLE_PROVIDER;
-            }
-            return FORM_PROVIDER;
+    public String getDefaultProvider() {
+        ReaderDocumentCategory documentCategory = readerDataHolder.getDocumentCategory();
+        if (documentCategory == null) {
+            return READING_PROVIDER;
         }
-        return READING_PROVIDER;
+        switch (documentCategory) {
+            case NORMAL:
+            case BOOK:
+                return READING_PROVIDER;
+            case HOMEWORK:
+            case EXERCISE:
+                return FORM_EXERCISE_PROVIDER;
+            case EXAMINATION:
+                return FORM_EXAM_PROVIDER;
+            case MEETING:
+                return FORM_MEETING_PROVIDER;
+            case SIGNATURE:
+                return FORM_SIGNATURE_PROVIDER;
+            case USERHOMEWORK:
+                return FORM_USERHOMEWORK_PROVIDER;
+            default:
+                return READING_PROVIDER;
+        }
     }
 
     public void setActiveProvider(final String providerName) {
@@ -207,6 +241,10 @@ public class HandlerManager {
 
     public String getActiveProviderName() {
         return activeProviderName;
+    }
+
+    public boolean onMenuClicked(ReaderMenuAction action) {
+        return getActiveProvider().onMenuClicked(action);
     }
 
     public boolean onKeyDown(ReaderDataHolder readerDataHolder, int keyCode, KeyEvent event) {
@@ -642,5 +680,21 @@ public class HandlerManager {
 
     public void close(final ReaderDataHolder readerDataHolder) {
         getActiveProvider().close(readerDataHolder);
+    }
+
+    public boolean isEnableNoteDrawing() {
+        return getActiveProvider().isEnableNoteDrawing();
+    }
+
+    public boolean isEnableNoteInScribbleForm() {
+        return getActiveProvider().isEnableNoteInScribbleForm();
+    }
+
+    public boolean lockShapeByRevision() {
+        return getActiveProvider().lockShapeByRevision();
+    }
+
+    public boolean lockShapeByDocumentStatus() {
+        return getActiveProvider().lockShapeByDocumentStatus();
     }
 }

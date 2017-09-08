@@ -86,6 +86,10 @@ public interface Shape {
 
     void onTranslate(final float dx, final float dy);
 
+    void onScale(final float scale);
+
+    void updatePoints();
+
     void addPoints(final TouchPointList points);
 
     TouchPointList getPoints();
@@ -147,4 +151,18 @@ public interface Shape {
     TouchPoint getCurrentPoint();
 
     TouchPoint getCurrentScreenPoint();
+
+    void setScale(float targetScaleValue);
+
+    float getScale();
+
+    void setSelected(boolean isSelected);
+
+    boolean isSelected();
+
+    int getRevision();
+
+    void setRevision(int revision);
+
+    boolean canModified(int documentReviewRevision);
 }

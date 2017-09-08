@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:textColor="@android:color/black"
+          android:layout_marginRight="@dimen/signature_text_margin_right"
+          android:padding="@dimen/signature_text_padding"
+          android:background="@drawable/fillet_view_bg"
+          android:text="电子签"
+          android:textSize="@dimen/scribble_page_position_size">
+</TextView>

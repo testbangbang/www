@@ -43,7 +43,6 @@ import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -459,6 +458,21 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
                 onFinishErasing(pointList);
+            }
+
+            @Override
+            public void onBeginShapeSelect() {
+                
+            }
+
+            @Override
+            public void onShapeSelecting(MotionEvent motionEvent) {
+
+            }
+
+            @Override
+            public void onShapeSelectTouchPointListReceived(TouchPointList pointList) {
+
             }
 
             public void onDrawingTouchDown(final MotionEvent motionEvent, final Shape shape) {

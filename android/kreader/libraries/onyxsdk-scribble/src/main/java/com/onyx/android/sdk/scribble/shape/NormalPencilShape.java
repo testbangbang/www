@@ -1,9 +1,7 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
+
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -46,6 +44,9 @@ public class NormalPencilShape extends EPDShape {
         if (path == null || renderContext.force) {
             path = ShapeUtils.renderShape(renderContext, getNormalizedPoints());
             setOriginDisplayPath(path);
+        }
+        if (path == null) {
+            return;
         }
         renderContext.canvas.drawPath(path, renderContext.paint);
     }

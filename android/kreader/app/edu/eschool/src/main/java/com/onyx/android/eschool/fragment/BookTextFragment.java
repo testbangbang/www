@@ -17,6 +17,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.liulishuo.filedownloader.model.FileDownloadStatus;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.action.CloudContentLoadAction;
 import com.onyx.android.eschool.action.CloudContentRefreshAction;
 import com.onyx.android.eschool.action.DownloadAction;
 import com.onyx.android.eschool.action.LibraryGotoPageAction;
@@ -24,6 +25,7 @@ import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.events.HardwareErrorEvent;
+import com.onyx.android.eschool.events.PushNotificationEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -37,16 +39,16 @@ import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
-import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.PushNotificationDeleteRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -65,7 +67,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -93,6 +94,8 @@ public class BookTextFragment extends Fragment {
 
     private String fragmentName;
     private boolean isVisibleToUser = false;
+
+    private DialogProgressHolder progressDialogHolder = new DialogProgressHolder();
 
     public static BookTextFragment newInstance(String fragmentName, String libraryId) {
         BookTextFragment fragment = new BookTextFragment();
@@ -164,16 +167,14 @@ public class BookTextFragment extends Fragment {
     }
 
     private void loadData(final QueryArgs args) {
-        final CloudContentListRequest listRequest = new CloudContentListRequest(args);
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(args, true);
+        contentLoadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
-                getDataHolder().getCloudViewInfo().getCurrentQueryArgs().useMemCloudDbPolicy();
+                updateContentView(contentLoadAction.getDataModel());
                 preloadNext();
             }
         });
@@ -185,22 +186,17 @@ public class BookTextFragment extends Fragment {
             return;
         }
         QueryArgs queryArgs = getDataHolder().getCloudViewInfo().nextPage();
-        final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
+        final CloudContentLoadAction loadAction = new CloudContentLoadAction(queryArgs, true);
+        loadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                updateContentView(loadAction.getDataModel());
                 preloadNext();
             }
         });
-    }
-
-    private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
-        return LibraryViewInfo.buildLibraryDataModel(result, map);
     }
 
     private QueryPagination getPagination() {
@@ -219,8 +215,8 @@ public class BookTextFragment extends Fragment {
             return;
         }
         QueryArgs queryArgs = getDataHolder().getCloudViewInfo().pageQueryArgs(preLoadPage);
-        final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, null);
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(queryArgs, false);
+        contentLoadAction.execute(getDataHolder(), null);
     }
 
     protected void initView(ViewGroup parentView) {
@@ -243,6 +239,7 @@ public class BookTextFragment extends Fragment {
             }
         });
         contentPageView.setAdapter(new PageRecyclerView.PageAdapter<BookItemHolder>() {
+
             @Override
             public int getRowCount() {
                 return row;
@@ -320,7 +317,7 @@ public class BookTextFragment extends Fragment {
         getCloudStore().submitRequestToSingle(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if(!isContentValid(request, e)) {
+                if (!isContentValid(request, e)) {
                     return;
                 }
                 CloseableReference<Bitmap> closeableRef = loadRequest.getRefBitmap();
@@ -412,16 +409,14 @@ public class BookTextFragment extends Fragment {
             postPrevTab();
             return;
         }
-
-        final CloudContentListRequest listRequest = new CloudContentListRequest(getDataHolder().getCloudViewInfo().prevPage());
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(getDataHolder().getCloudViewInfo().prevPage(), true);
+        contentLoadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                updateContentView(contentLoadAction.getDataModel());
                 preLoadPrev();
             }
         });
@@ -432,8 +427,9 @@ public class BookTextFragment extends Fragment {
         if (preLoadPage < 0) {
             return;
         }
-        CloudContentListRequest listRequest = new CloudContentListRequest(getDataHolder().getCloudViewInfo().pageQueryArgs(preLoadPage));
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, null);
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(
+                getDataHolder().getCloudViewInfo().pageQueryArgs(preLoadPage), false);
+        contentLoadAction.execute(getDataHolder(), null);
     }
 
     private void showGotoPageAction(int currentPage) {
@@ -450,25 +446,20 @@ public class BookTextFragment extends Fragment {
 
     private void gotoPageImpl(int page) {
         final int originPage = getPagination().getCurrentPage();
-        loadData(getDataHolder().getCloudViewInfo().gotoPage(page), new BaseCallback() {
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(
+                getDataHolder().getCloudViewInfo().gotoPage(page), true);
+        contentLoadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     getPagination().setCurrentPage(originPage);
                     return;
                 }
-                CloudContentListRequest listRequest = (CloudContentListRequest) request;
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
+                updateContentView(contentLoadAction.getDataModel());
                 preLoadPrev();
                 preloadNext();
             }
         });
-    }
-
-    private void loadData(QueryArgs queryArgs, BaseCallback callback) {
-        CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, callback);
     }
 
     private LibraryDataModel getPageDataModel() {
@@ -481,7 +472,7 @@ public class BookTextFragment extends Fragment {
     }
 
     private void updateContentView() {
-        if(isContentViewInvalid()) {
+        if (isContentViewInvalid()) {
             return;
         }
         newPage = true;
@@ -549,6 +540,17 @@ public class BookTextFragment extends Fragment {
         ActivityUtil.startActivitySafely(getContext(),
                 MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book),
                 ViewDocumentUtils.getEduReaderComponentName(getContext()));
+        afterFileOpened(book);
+    }
+
+    private void afterFileOpened(final Metadata book) {
+        LibraryDataModel pageDataModel = getPageDataModel();
+        pageDataModel.notificationMap.remove(book.getAssociationId());
+        List<String> list = new ArrayList<>();
+        list.add(book.getAssociationId());
+        PushNotificationDeleteRequest deleteRequest = new PushNotificationDeleteRequest(list);
+        getDataHolder().getCloudManager().submitRequest(getContext().getApplicationContext(), deleteRequest, null);
+        updateContentView();
     }
 
     private boolean checkBookMetadataPathValid(Metadata book) {
@@ -596,6 +598,7 @@ public class BookTextFragment extends Fragment {
         String filePath = getDataSaveFilePath(eBook);
         DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
         downloadAction.execute(getDataHolder(), new BaseCallback() {
+
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -613,7 +616,7 @@ public class BookTextFragment extends Fragment {
             openCloudFile(book);
             return;
         }
-        if(enableWifiOpenAndDetect()) {
+        if (enableWifiOpenAndDetect()) {
             return;
         }
         startDownload(book);
@@ -668,6 +671,26 @@ public class BookTextFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        dismissAllProgressDialog();
+    }
+
+    private void showProgressDialog(final Object object, int resId, DialogProgressHolder.DialogCancelListener listener) {
+        if (progressDialogHolder == null) {
+            return;
+        }
+        progressDialogHolder.showProgressDialog(getActivity(), object, resId, listener);
+    }
+
+    private void dismissProgressDialog(final Object object) {
+        if (progressDialogHolder != null) {
+            progressDialogHolder.dismissProgressDialog(object);
+        }
+    }
+
+    private void dismissAllProgressDialog() {
+        if (progressDialogHolder != null) {
+            progressDialogHolder.dismissAllProgressDialog();
+        }
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -698,6 +721,15 @@ public class BookTextFragment extends Fragment {
     public void onHardwareErrorEvent(HardwareErrorEvent event) {
         if (pageIndicator != null) {
             pageIndicator.setTotalText(getString(R.string.hardware_error));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onNotificationEvent(PushNotificationEvent event) {
+        LibraryDataModel dataModel = getPageDataModel();
+        if (dataModel != null) {
+            dataModel.notificationMap.put(event.notification.productId, event.notification);
+            updateContentView();
         }
     }
 
@@ -733,6 +765,7 @@ public class BookTextFragment extends Fragment {
         refreshAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dismissProgressDialog(refreshAction);
                 if (e != null) {
                     return;
                 }
@@ -741,5 +774,6 @@ public class BookTextFragment extends Fragment {
                 preloadNext();
             }
         });
+        showProgressDialog(refreshAction, R.string.refreshing, null);
     }
 }

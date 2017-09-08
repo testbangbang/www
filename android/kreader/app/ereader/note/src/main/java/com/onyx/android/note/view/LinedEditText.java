@@ -85,7 +85,6 @@ public class LinedEditText extends EditText {
     public InputConnection onCreateInputConnection(EditorInfo outAttrs) {
         outAttrs.actionLabel = null;
         outAttrs.label = "Test text";
-        outAttrs.inputType = InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS;
         outAttrs.imeOptions = EditorInfo.IME_ACTION_DONE;
         final SpanInputConnection spanInputConnection = new SpanInputConnection(this, true, new SpanInputConnection.Callback() {
             @Override

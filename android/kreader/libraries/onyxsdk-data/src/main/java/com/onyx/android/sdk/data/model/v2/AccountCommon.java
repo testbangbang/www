@@ -6,4 +6,5 @@ package com.onyx.android.sdk.data.model.v2;
 public class AccountCommon {
     public String name;
     public String phone;
+    public String organization;
 }

@@ -343,6 +343,14 @@ public class AlBookEng{
 
 	private final AlTextOnScreen textOnScreen = new AlTextOnScreen();
 
+	public static String drmDeviceId;
+	public static String drmCertificate;
+
+	public void activateDeviceDRM(String deviceId, String certificate) {
+		drmDeviceId = deviceId;
+		drmCertificate = certificate;
+    }
+
 
     /**
      * Инициализация окна (Activity), с которым взаимодействует библиотека.
@@ -2905,6 +2913,9 @@ public class AlBookEng{
 		threadData.param_void1 = bookOptions;
 		threadData.param_char1 = fName;
 		AlThreadData.startThread(threadData, TAL_THREAD_TASK.OPENBOOK, engOptions.runInOneThread);
+		if (engOptions.runInOneThread) {
+			return threadData.result == TAL_NOTIFY_RESULT.OK ? TAL_RESULT.OK : TAL_RESULT.ERROR;
+		}
 		return TAL_RESULT.OK;
 	}
 

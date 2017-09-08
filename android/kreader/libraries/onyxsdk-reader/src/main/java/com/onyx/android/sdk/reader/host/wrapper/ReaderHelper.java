@@ -126,6 +126,7 @@ public class ReaderHelper {
         this.pluginOptions = pluginOptions;
         saveMetadata(context, documentPath);
         saveThumbnail(context, documentPath);
+        LegacySdkDataUtils.recordStartReading(context, documentPath);
     }
 
     private void saveMetadata(final Context context, final String path) {
@@ -424,10 +425,10 @@ public class ReaderHelper {
     }
 
     private void applyImageGamma(final ReaderBitmapReferenceImpl bitmap, final List<RectF> regions) {
-        if (getDocumentOptions().isGammaCorrectionEnabled() &&
-                !bitmap.isGammaIgnored()) {
-            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), getDocumentOptions().getGammaLevel(), regions)) {
-                bitmap.setGammaCorrection(getDocumentOptions().getGammaLevel());
+        float level = getDocumentOptions().getGammaLevel();
+        if (getDocumentOptions().isGammaCorrectionEnabled() && !bitmap.isGammaApplied(level)) {
+            if (ImageUtils.applyGammaCorrection(bitmap.getBitmap(), level, regions)) {
+                bitmap.setGammaCorrection(level);
             }
         }
     }

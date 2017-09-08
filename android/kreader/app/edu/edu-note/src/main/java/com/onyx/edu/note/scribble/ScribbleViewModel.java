@@ -6,25 +6,26 @@ import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
+import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteDocumentOpenRequest;
 import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
-import com.onyx.android.sdk.scribble.request.note.NoteDocumentOpenRequest;
 import com.onyx.android.sdk.utils.DateTimeUtil;
-import com.onyx.edu.note.NoteManager;
-import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.scribble.DocumentCreateAction;
-import com.onyx.edu.note.actions.scribble.DocumentDeletePageAction;
 import com.onyx.edu.note.actions.scribble.DocumentEditAction;
-import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
-import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
-import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
-import com.onyx.edu.note.actions.scribble.RedoAction;
-import com.onyx.edu.note.actions.scribble.UndoAction;
 import com.onyx.edu.note.data.ScribbleAction;
+import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
+import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
+import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.Date;
 import java.util.List;
@@ -36,16 +37,17 @@ import java.util.List;
 public class ScribbleViewModel extends BaseObservable {
     private static final String TAG = ScribbleViewModel.class.getSimpleName();
 
-    // To avoid leaks, this must be an Application Context.
-    private Context mContext;
-
     // These observable fields will update Views automatically
     public final ObservableInt mCurrentPage = new ObservableInt();
     public final ObservableInt mTotalPage = new ObservableInt();
-    public final ObservableList<Integer> mMainMenuIDList = new ObservableArrayList<>();
+    public final ObservableList<Integer> mFunctionBarMenuIDList = new ObservableArrayList<>();
+    public final ObservableList<Integer> mToolBarMenuIDList = new ObservableArrayList<>();
     private final ObservableField<NoteModel> mCurrentNoteModel = new ObservableField<>();
     private final ObservableField<ShapeDataInfo> mShapeDataInfo = new ObservableField<>();
     public final ObservableField<String> mNoteTitle = new ObservableField<>();
+    private SparseArray<List<Integer>> mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
+    private boolean mIsKeyboardInput = false;
+    private boolean mIsBuildingSpan = false;
 
     void setNavigator(ScribbleNavigator mScribbleNavigator) {
         this.mNavigator = mScribbleNavigator;
@@ -53,16 +55,27 @@ public class ScribbleViewModel extends BaseObservable {
 
     private ScribbleNavigator mNavigator;
     private NoteManager mNoteManager;
+    private String mParentID;
+
+    public String getCurrentDocumentUniqueID() {
+        return mCurrentDocumentUniqueID;
+    }
+
+    public String getParentUniqueID() {
+        return mParentID;
+    }
+
     private String mCurrentDocumentUniqueID;
 
     ScribbleViewModel(Context context) {
         // Force use of Application Context.
-        this.mContext = context.getApplicationContext();
-        mNoteManager = NoteManager.sharedInstance(mContext);
+        mNoteManager = NoteApplication.getInstance().getNoteManager();
+        mNoteManager.registerEventBus(this);
     }
 
     void start(String uniqueID, String parentID, @ScribbleAction.ScribbleActionDef int action, final BaseCallback callback) {
         mCurrentDocumentUniqueID = uniqueID;
+        mParentID = parentID;
         BaseCallback baseCallback = new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -88,103 +101,41 @@ public class ScribbleViewModel extends BaseObservable {
         }
     }
 
+    public boolean isKeyboardInput() {
+        return mIsKeyboardInput;
+    }
+
+    public void setKeyboardInput(boolean isKeyboardInput) {
+        mIsKeyboardInput = isKeyboardInput;
+    }
+
+    public boolean isBuildingSpan() {
+        return mIsBuildingSpan;
+    }
+
+    public void setBuildingSpan(boolean isBuildingSpan) {
+        mIsBuildingSpan = isBuildingSpan;
+    }
+
+    //Todo:temp use navigator communicate with handler manager.
+
     public void onPrevPage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                GotoPrevPageAction prevPageAction = new GotoPrevPageAction();
-                prevPageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.PREV_PAGE);
     }
 
     public void onNextPage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                GotoNextPageAction nextPageAction = new GotoNextPageAction();
-                nextPageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.NEXT_PAGE);
     }
 
     public void addPage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                DocumentAddNewPageAction addNewPageAction = new DocumentAddNewPageAction();
-                addNewPageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.ADD_PAGE);
     }
 
     public void deletePage() {
-        mNoteManager.syncWithCallback(true, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                DocumentDeletePageAction deletePageAction = new DocumentDeletePageAction();
-                deletePageAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
+        mNavigator.onFunctionBarMenuFunctionItem(ScribbleFunctionBarMenuID.DELETE_PAGE);
     }
 
-    public void reDo() {
-        mNoteManager.syncWithCallback(false, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                RedoAction reDoAction = new RedoAction();
-                reDoAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
-    }
-
-    public void unDo() {
-        mNoteManager.syncWithCallback(false, true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                UndoAction unDoAction = new UndoAction();
-                unDoAction.execute(mNoteManager, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        onRequestFinished((BaseNoteRequest) request, e);
-                    }
-                });
-            }
-        });
-    }
-
-    private void onRequestFinished(BaseNoteRequest request, Throwable throwable) {
-        if (!request.isAbort() && throwable == null) {
-            updateInfo(request);
-        }
-    }
-
-    private void updateInfo(BaseNoteRequest request) {
+    private void updateInfo(AsyncBaseNoteRequest request) {
         mNoteManager.setShapeDataInfo(request.getShapeDataInfo());
         mShapeDataInfo.set(mNoteManager.getShapeDataInfo());
         mCurrentPage.set(mShapeDataInfo.get().getHumanReadableCurPageIndex());
@@ -193,6 +144,7 @@ public class ScribbleViewModel extends BaseObservable {
 
     void onActivityDestroyed() {
         // Clear references to avoid potential memory leaks.
+        mNoteManager.unregisterEventBus(this);
         mNavigator = null;
     }
 
@@ -200,18 +152,32 @@ public class ScribbleViewModel extends BaseObservable {
         mNoteTitle.set(title);
     }
 
-    public void onSaveDocument(boolean closeAfterSave) {
-        onSaveDocument(closeAfterSave, null);
+    List<Integer> getSubMenuIDList(int mainMenuID) {
+        return mFunctionBarMenuSubMenuIDListSparseArray.get(mainMenuID);
     }
 
-    void onSaveDocument(boolean closeAfterSave, BaseCallback callback) {
-        DocumentSaveAction documentSaveAction = new DocumentSaveAction(mCurrentDocumentUniqueID,
-                mNoteTitle.get(), closeAfterSave);
-        documentSaveAction.execute(mNoteManager, callback);
+    private void setFunctionBarMenuIDList(List<Integer> functionBarMenuIDList) {
+        mFunctionBarMenuIDList.clear();
+        mFunctionBarMenuIDList.addAll(functionBarMenuIDList);
     }
 
-    public void setMainMenuIDList(List<Integer> mainMenuIDList) {
-        mMainMenuIDList.clear();
-        mMainMenuIDList.addAll(mainMenuIDList);
+    private void setToolBarMenuIDList(List<Integer> toolBarMenuIDList) {
+        mToolBarMenuIDList.clear();
+        mToolBarMenuIDList.addAll(toolBarMenuIDList);
     }
+
+    @Subscribe
+    public void onRequestFinished(RequestInfoUpdateEvent event) {
+        if (!event.getRequest().isAbort() && event.getThrowable() == null) {
+            updateInfo(event.getRequest());
+        }
+    }
+
+    @Subscribe
+    public void onHandlerActivate(HandlerActivateEvent activateEvent) {
+        setFunctionBarMenuIDList(activateEvent.getFunctionBarMenuFunctionIDList());
+        setToolBarMenuIDList(activateEvent.getToolBarMenuFunctionIDList());
+        mFunctionBarMenuSubMenuIDListSparseArray = activateEvent.getFunctionBarMenuSubMenuIDListSparseArray();
+    }
+
 }

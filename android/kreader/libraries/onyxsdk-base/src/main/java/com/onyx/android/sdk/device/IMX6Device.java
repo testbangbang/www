@@ -2,11 +2,14 @@ package com.onyx.android.sdk.device;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdatePolicy;
@@ -67,15 +70,25 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableRegal = null;
 
     private static Method sMethodMoveTo = null;
+    private static Method sMethodMoveToView = null;
     private static Method sMethodSetStrokeColor = null;
     private static Method sMethodSetStrokeStyle = null;
     private static Method sMethodSetStrokeWidth = null;
     private static Method sMethodSetPainterStyle = null;
     private static Method sMethodLineTo = null;
+    private static Method sMethodLineToView = null;
     private static Method sMethodQuadTo = null;
+    private static Method sMethodQuadToView = null;
     private static Method sMethodGetTouchWidth = null;
     private static Method sMethodGetTouchHeight = null;
+    private static Method sMethodGetEpdWidth = null;
+    private static Method sMethodGetEpdHeight = null;
+    private static Method sMethodMapToView = null;
+    private static Method sMethodMapToEpd = null;
+    private static Method sMethodMapFromRawTouchPoint = null;
+    private static Method sMethodMapToRawTouchPoint = null;
     private static Method sMethodEnablePost = null;
+    private static Method sMethodResetEpdPost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
     private static Method sMethodApplyGammaCorrection = null;
@@ -85,6 +98,7 @@ public class IMX6Device extends BaseDevice {
 
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
+    private static Method sMethodWebViewSetCssInjectEnabled;
 
     private static Method sMethodSetQRShowConfig;
     private static Method sMethodSetInfoShowConfig;
@@ -169,6 +183,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodStopTpd;
     private static Method sMethodStartTpd;
     private static Method sMethodEnableTpd;
+    private static Method sMethodHasWifi;
 
     private IMX6Device() {
     }
@@ -380,6 +395,14 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void moveTo(View view, float x, float y, float width) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMoveToView, null, view, x, y, width);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean supportDFB() {
         return (sMethodLineTo != null);
     }
@@ -409,10 +432,28 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void lineTo(View view, float x, float y, UpdateMode mode) {
+        int value = getUpdateMode(mode);
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodLineToView, null, view, x, y, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void quadTo(float x, float y, UpdateMode mode) {
         int value = getUpdateMode(mode);
         try {
             ReflectUtil.invokeMethodSafely(sMethodQuadTo, null, x, y, value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void quadTo(View view, float x, float y, UpdateMode mode) {
+        int value = getUpdateMode(mode);
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodQuadToView, null, view, x, y, value);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -436,6 +477,61 @@ public class IMX6Device extends BaseDevice {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    public float getEpdWidth() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetEpdWidth, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public float getEpdHeight() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetEpdHeight, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public void mapToView(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapToView, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void mapToEpd(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapToEpd, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapFromRawTouchPoint, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapToRawTouchPoint, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
@@ -492,6 +588,14 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void resetEpdPost() {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodResetEpdPost, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean supportScreenHandWriting() {
         return (sMethodSetScreenHandWritingPenState != null);
     }
@@ -504,12 +608,43 @@ public class IMX6Device extends BaseDevice {
         }
     }
 
+    public void setScreenHandWritingRegionLimit(View view) {
+        if (view == null) {
+            return;
+        }
+        setScreenHandWritingRegionLimit(view, 0, 0, view.getRight(), view.getBottom());
+    }
+
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
+        setScreenHandWritingRegionLimit(view, new int[] { left, top, right, bottom });
+    }
+
+    @Override
+    public void setScreenHandWritingRegionLimit(View view, int[] array) {
         try {
-            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, left, top, right, bottom);
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, view, array);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
+        int array[] = new int[regions.length * 4];
+        for (int i = 0; i < regions.length; i++) {
+            Rect region = regions[i];
+
+            int left = Math.min(region.left, region.right);
+            int top = Math.min(region.top, region.bottom);
+            int right = Math.max(region.left, region.right);
+            int bottom = Math.max(region.top, region.bottom);
+
+            array[4 * i] = left;
+            array[4 * i + 1] = top;
+            array[4 * i + 2] = right;
+            array[4 * i + 3] = bottom;
+        }
+        setScreenHandWritingRegionLimit(view, array);
     }
 
     public void applyGammaCorrection(boolean apply, int value) {
@@ -590,7 +725,9 @@ public class IMX6Device extends BaseDevice {
             sMethodLed = ReflectUtil.getMethodSafely(deviceControllerClass, "led", boolean.class);
             sMethodSetLedColor = ReflectUtil.getMethodSafely(deviceControllerClass, "setLedColor", String.class, int.class);
 
+
             sMethodEnableTpd = ReflectUtil.getMethodSafely(cls, "enableOnyxTpd", int.class);
+            sMethodHasWifi = ReflectUtil.getMethodSafely(deviceControllerClass, "hasWifi");
             // signature of "public void setUpdatePolicy(int updatePolicy, int guInterval)"
             sMethodSetUpdatePolicy = ReflectUtil.getMethodSafely(cls, "setUpdatePolicy", int.class, int.class);
             // signature of "public void postInvalidate(int updateMode)"
@@ -609,11 +746,21 @@ public class IMX6Device extends BaseDevice {
             sMethodMoveTo = ReflectUtil.getMethodSafely(cls, "moveTo", float.class, float.class, float.class);
             sMethodLineTo = ReflectUtil.getMethodSafely(cls, "lineTo", float.class, float.class, int.class);
             sMethodQuadTo = ReflectUtil.getMethodSafely(cls, "quadTo", float.class, float.class, int.class);
+            sMethodMoveToView = ReflectUtil.getMethodSafely(cls, "moveTo", View.class, float.class, float.class, float.class);
+            sMethodLineToView = ReflectUtil.getMethodSafely(cls, "lineTo", View.class, float.class, float.class, int.class);
+            sMethodQuadToView = ReflectUtil.getMethodSafely(cls, "quadTo", View.class, float.class, float.class, int.class);
             sMethodGetTouchWidth = ReflectUtil.getMethodSafely(cls, "getTouchWidth");
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
+            sMethodGetEpdWidth = ReflectUtil.getMethodSafely(cls, "getEpdWidth");
+            sMethodGetEpdHeight = ReflectUtil.getMethodSafely(cls, "getEpdHeight");
+            sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
+            sMethodMapToEpd = ReflectUtil.getMethodSafely(cls, "mapToEpd", View.class, float[].class, float[].class);
+            sMethodMapFromRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapFromRawTouchPoint", View.class, float[].class, float[].class);
+            sMethodMapToRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapToRawTouchPoint", View.class, float[].class, float[].class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
+            sMethodResetEpdPost = ReflectUtil.getMethodSafely(cls, "resetEpdPost");
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
-            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", int.class, int.class, int.class, int.class);
+            sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);
@@ -655,6 +802,8 @@ public class IMX6Device extends BaseDevice {
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
             // signature of "public void disableA2()"
             sMethodDisableA2 = ReflectUtil.getMethodSafely(cls, "disableA2");
+
+            sMethodWebViewSetCssInjectEnabled = ReflectUtil.getMethodSafely(WebView.class, "setCssInjectEnabled", boolean.class);
 
             sMethodSetQRShowConfig = ReflectUtil.getMethodSafely(cls,"setQRShowConfig",int.class,int.class,int.class);
             sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
@@ -981,6 +1130,11 @@ public class IMX6Device extends BaseDevice {
     }
 
     @Override
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+        ReflectUtil.invokeMethodSafely(sMethodWebViewSetCssInjectEnabled, view, enabled);
+    }
+
+    @Override
     public void setQRShowConfig(int orientation, int startX, int startY) {
         ReflectUtil.invokeMethodSafely(sMethodSetQRShowConfig, null, orientation, startX, startY);
     }
@@ -993,5 +1147,16 @@ public class IMX6Device extends BaseDevice {
     public void gotoSleep(final Context context) {
         long value = System.currentTimeMillis();
         ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
+    }
+
+    @Override
+    public boolean hasWifi(Context context)
+    {
+        Boolean has = (Boolean)this.invokeDeviceControllerMethod(context,  sMethodHasWifi);
+        if (has == null) {
+            return false;
+        }
+
+        return has.booleanValue();
     }
 }

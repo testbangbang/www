@@ -11,10 +11,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupListRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupRequest;
 import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -24,6 +25,7 @@ import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.GroupSelectAdapter;
 import com.onyx.edu.manager.adapter.ItemClickListener;
 import com.onyx.edu.manager.event.GroupSelectEvent;
+import com.onyx.edu.manager.view.dialog.DialogHolder;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -43,10 +45,14 @@ public class GroupListFragment extends Fragment {
     LinearLayout parentGroupLayout;
     @Bind(R.id.child_group)
     RecyclerView childGroupLayout;
+    @Bind(R.id.root_group)
+    TextView rootGroupTv;
 
     private GroupSelectAdapter groupAdapter;
     private CloudGroup childGroup;
     private List<CloudGroup> parentGroupList = new ArrayList<>();
+
+    private DialogHolder dialogHolder = new DialogHolder();
 
     public static Fragment newInstance() {
         return new GroupListFragment();
@@ -80,7 +86,14 @@ public class GroupListFragment extends Fragment {
     }
 
     private void initData() {
-        loadGroup(null, null);
+        loadGroup(null, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (childGroup != null) {
+                    rootGroupTv.setText(childGroup.name);
+                }
+            }
+        });
     }
 
     private void initChildGroupPageView() {
@@ -111,10 +124,13 @@ public class GroupListFragment extends Fragment {
 
     private void loadGroup(final CloudGroup group, final BaseCallback baseCallback) {
         final String groupId = group != null ? group._id : null;
-        final CloudGroupListRequest groupListRequest = new CloudGroupListRequest(String.valueOf(groupId));
+        final CloudGroupRequest groupListRequest = new CloudGroupRequest(String.valueOf(groupId));
+        final MaterialDialog dialog = DialogHolder.getProgressDialog(getContext());
+        showDialog(dialog);
         AdminApplication.getCloudManager().submitRequest(getContext(), groupListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dismissDialog(dialog);
                 if (e != null && StringUtils.isNotBlank(groupId)) {
                     return;
                 }
@@ -122,6 +138,14 @@ public class GroupListFragment extends Fragment {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
+    }
+
+    private void showDialog(MaterialDialog dialog) {
+        dialogHolder.postShowDialog(dialog);
+    }
+
+    private void dismissDialog(MaterialDialog dialog) {
+        dialogHolder.dismissDialog(dialog);
     }
 
     private void addLibraryToParentRefList(CloudGroup group) {

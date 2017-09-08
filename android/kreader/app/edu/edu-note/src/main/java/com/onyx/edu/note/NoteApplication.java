@@ -3,8 +3,9 @@ package com.onyx.edu.note;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -14,17 +15,19 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 import com.squareup.leakcanary.LeakCanary;
 
+import org.greenrobot.eventbus.EventBus;
+
 /**
  * Created by solskjaer49 on 2017/5/17 17:06.
  */
 
 public class NoteApplication extends Application {
-    private static NoteManager noteManager;
-    private static NoteApplication instance;
+    private NoteManager noteManager;
+    private static NoteApplication sInstance;
 
-    public static NoteManager getNoteManager() {
+    public NoteManager getNoteManager() {
         if (noteManager == null) {
-            noteManager = NoteManager.sharedInstance(instance);
+            noteManager = new NoteManager(sInstance);
         }
         return noteManager;
     }
@@ -43,14 +46,22 @@ public class NoteApplication extends Application {
         }
         LeakCanary.install(this);
         // Normal app init code...
-        instance = this;
+        sInstance = this;
         initDataProvider(this);
         installExceptionHandler();
         initCompatColorImageConfig();
+        initEventBusIndex();
+        resetEpd();
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        resetEpd();
     }
 
     public static NoteApplication getInstance() {
-        return instance;
+        return sInstance;
     }
 
     private void initDataProvider(final Context context) {
@@ -66,13 +77,20 @@ public class NoteApplication extends Application {
             @Override
             public void uncaughtException(Thread thread, Throwable e) {
                 e.printStackTrace();
-                final View view = getNoteManager().getView();
-                getNoteManager().reset(view);
+                resetEpd();
             }
         });
     }
 
     private void initCompatColorImageConfig() {
         AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
+    }
+
+    private void initEventBusIndex(){
+        EventBus.builder().addIndex(new OnyxEventBusIndex()).installDefaultEventBus();
+    }
+
+    private void resetEpd() {
+        EpdController.resetEpdPost();
     }
 }

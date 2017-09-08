@@ -8,21 +8,33 @@ import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.edu.reader.note.model.ReaderFormShapeModel;
 import com.onyx.edu.reader.note.model.ReaderNoteShapeModel;
+import com.onyx.edu.reader.note.model.SignatureShapeModel;
 
 /**
  * Created by zhuzeng on 9/16/16.
  */
 public class ReaderShapeFactory {
 
+    // shape form type
     static public final int SHAPE_FORM_SINGLE_SELECTION = 0;
     static public final int SHAPE_FORM_MULTIPLE_SELECTION = 1;
     static public final int SHAPE_FORM_FILL = 2;
-    static public final int SHAPE_FORM_QA = 3;
+    static public final int SHAPE_LIMIT_REGION_SCRIBBLE = 3;
+    static public final int SHAPE_FREE_AREA_SCRIBBLE = 4;
+
+    //document review status
+    static public final int NOTE_DOCUMENT_NORMAL_STATE = 0;
+    static public final int NOTE_DOCUMENT_LOCK_STATE = 1;
 
     public static boolean isUniqueFormShape(int formType) {
         return formType == SHAPE_FORM_SINGLE_SELECTION ||
                 formType == SHAPE_FORM_MULTIPLE_SELECTION ||
                 formType == SHAPE_FORM_FILL;
+    }
+
+    public static boolean isScribbleFormShape(int formType) {
+        return formType == SHAPE_LIMIT_REGION_SCRIBBLE ||
+                formType == SHAPE_FREE_AREA_SCRIBBLE;
     }
 
     public static final Shape shapeFromModel(final ReaderNoteShapeModel shapeModel) {
@@ -34,6 +46,12 @@ public class ReaderShapeFactory {
     public static final Shape shapeFromFormModel(final ReaderFormShapeModel shapeModel) {
         Shape shape = ShapeFactory.createShape(shapeModel.getShapeType());
         syncFormShapeDataFromModel(shape, shapeModel);
+        return shape;
+    }
+
+    public static final Shape shapeFromSignatureModel(final SignatureShapeModel shapeModel) {
+        Shape shape = ShapeFactory.createShape(shapeModel.getShapeType());
+        syncSignatureShapeFromModel(shape, shapeModel);
         return shape;
     }
 
@@ -54,9 +72,23 @@ public class ReaderShapeFactory {
             ((ReaderFormShapeModel) shapeModel).setFormValue(shape.getFormValue());
             ((ReaderFormShapeModel) shapeModel).setLock(shape.isLock());
             ((ReaderFormShapeModel) shapeModel).setReview(shape.isReview());
-        }else {
+            ((ReaderFormShapeModel) shapeModel).setRevision(shape.getRevision());
+        } else {
             shapeModel = new ReaderNoteShapeModel();
         }
+        syncModelFromShape(shapeModel, shape);
+        return shapeModel;
+    }
+
+    public static SignatureShapeModel signatureModelFromShape(final Shape shape, final String accountId) {
+        SignatureShapeModel shapeModel = new SignatureShapeModel();
+        shapeModel.setAccountId(accountId);
+        shapeModel.setSignatureRect(shape.getFormRect());
+        syncModelFromShape(shapeModel, shape);
+        return shapeModel;
+    }
+
+    private static void syncModelFromShape(final ReaderNoteShapeModel shapeModel, final Shape shape) {
         shapeModel.setDocumentUniqueId(shape.getDocumentUniqueId());
         shapeModel.setPageUniqueId(shape.getPageUniqueId());
         shapeModel.setShapeUniqueId(shape.getShapeUniqueId());
@@ -69,7 +101,6 @@ public class ReaderShapeFactory {
         shapeModel.setExtraAttributes(shape.getShapeExtraAttributes());
         shapeModel.setPageOriginHeight(shape.getPageOriginHeight());
         shapeModel.setPageOriginWidth(shape.getPageOriginWidth());
-        return shapeModel;
     }
 
     private static void syncShapeDataFromModel(final Shape shape, final ReaderNoteShapeModel model) {
@@ -93,6 +124,12 @@ public class ReaderShapeFactory {
         shape.setFormRect(model.getFormRect());
         shape.setLock(model.isLock());
         shape.setReview(model.isReview());
+        shape.setRevision(model.getRevision());
+    }
+
+    private static void syncSignatureShapeFromModel(final Shape shape, final SignatureShapeModel model) {
+        syncShapeDataFromModel(shape, model);
+        shape.setFormRect(model.getSignatureRect());
     }
 
     public static Shape createFormShape(String documentUniqueId,

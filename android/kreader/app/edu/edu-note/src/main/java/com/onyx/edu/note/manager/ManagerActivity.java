@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -43,13 +44,19 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        resetEpd();
     }
 
     @Override
     protected void onDestroy() {
         mViewModel.onActivityDestroyed();
         cleanUpAllDialog();
+        resetEpd();
         super.onDestroy();
+    }
+
+    private void resetEpd() {
+        EpdController.resetEpdPost();
     }
 
     private void initView() {

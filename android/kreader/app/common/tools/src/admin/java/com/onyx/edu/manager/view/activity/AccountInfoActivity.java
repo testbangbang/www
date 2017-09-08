@@ -4,11 +4,14 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
@@ -17,6 +20,7 @@ import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.manager.ContentManager;
+import com.onyx.edu.manager.view.dialog.DialogHolder;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -91,6 +95,7 @@ public class AccountInfoActivity extends AppCompatActivity {
         }
         cloudAccount.token = accountBase.token;
         cloudAccount.tokenExpiresIn = accountBase.tokenExpiresIn;
+        cloudAccount.setCreatedAt(accountBase.getCreatedAt());
         ContentManager.saveAccount(this, cloudAccount);
     }
 
@@ -120,8 +125,13 @@ public class AccountInfoActivity extends AppCompatActivity {
 
     @OnClick(R.id.btn_sign_out)
     public void onSignOutClick() {
-        ToastUtils.showToast(getApplicationContext(), R.string.logout_success);
-        resetAccountAndFinish();
+        DialogHolder.showAlertDialog(this, null, getString(R.string.account_logout_confirm_content), new MaterialDialog.SingleButtonCallback() {
+            @Override
+            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                ToastUtils.showToast(getApplicationContext(), R.string.logout_success);
+                resetAccountAndFinish();
+            }
+        });
     }
 
     private void resetAccountAndFinish() {

@@ -27,10 +27,14 @@ public class RemoveShapesByTouchPointListAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final RemoveShapesByTouchPointListRequest request = new RemoveShapesByTouchPointListRequest(visiblePages, touchPointList);
-        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, new BaseCallback() {
+        final RemoveShapesByTouchPointListRequest removeRequest = new RemoveShapesByTouchPointListRequest(visiblePages,
+                touchPointList,
+                readerDataHolder.getHandlerManager().lockShapeByDocumentStatus(),
+                readerDataHolder.getHandlerManager().lockShapeByRevision());
+        readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), removeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getHandlerManager().getActiveProvider().onShapesRemoved(removeRequest.getRemovedShapeList());
                 readerDataHolder.getEventBus().post(ShapeRenderFinishEvent.shapeReadyEvent());
                 BaseCallback.invoke(baseCallback, request, e);
             }

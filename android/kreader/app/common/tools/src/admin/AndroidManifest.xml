@@ -2,8 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.onyx.edu.manager">
 
-    <uses-feature android:name="android.hardware.camera" />
-    <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.autofocus"
+        android:required="true" />
+    <uses-feature
+        android:name="android.hardware.camera.flash"
+        android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.Sensor"
+        android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.FLASHLIGHT" />
@@ -14,10 +25,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-
-    <uses-feature
-        android:name="android.hardware.Sensor"
-        android:required="false" />
 
     <application
         android:name=".AdminApplication"
@@ -43,6 +50,12 @@
         <activity android:name=".view.activity.UserManagerActivity" />
 
         <activity android:name=".view.activity.AccountInfoActivity" />
+
+        <activity android:name=".view.activity.DeviceBindingActivity" />
+
+        <activity android:name=".view.activity.GroupListSelectActivity" />
+
+        <activity android:name=".view.activity.FactoryActivity" />
 
         <provider
             android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"

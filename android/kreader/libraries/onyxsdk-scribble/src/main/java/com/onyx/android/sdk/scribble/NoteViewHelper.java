@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -81,6 +82,14 @@ public class NoteViewHelper {
         // caller should do hit test in current page, remove shapes hit-tested.
         public abstract void onEraseTouchPointListReceived(final TouchPointList pointList);
 
+        // caller should render the page here.
+        public abstract void onBeginShapeSelect();
+
+        // caller should draw shape select indicator
+        public abstract void onShapeSelecting(final MotionEvent motionEvent);
+
+        // caller should do hit test in current page, shapes select hit-tested.
+        public abstract void onShapeSelectTouchPointListReceived(final TouchPointList pointList);
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
@@ -94,14 +103,16 @@ public class NoteViewHelper {
     private List<Shape> dirtyStash = new ArrayList<>();
     private InputCallback callback;
     private TouchPointList erasePoints;
+    private TouchPointList shapeSelectPoints;
     private DeviceConfig deviceConfig;
     private MappingConfig mappingConfig;
     private LineLayoutArgs lineLayoutArgs;
     private Shape currentShape = null;
     private Shape cursorShape = null;
     private boolean shortcutErasing = false;
-    private OnyxMatrix viewToEpdMatrix = null;
     private int viewPosition[] = {0, 0};
+    private float src[] = {0, 0};
+    private float dst[] = {0, 0};
     private boolean supportBigPen = false;
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
@@ -117,7 +128,6 @@ public class NoteViewHelper {
         setCallback(c);
         initRawResource(context);
         initBigPenState(context);
-        initViewToEpdMatrix();
         initWithSurfaceView(view);
         initRawInputProcessor();
         updateScreenMatrix();
@@ -247,13 +257,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
-        final Matrix screenMatrix = new Matrix();
-        screenMatrix.postRotate(deviceConfig.getEpdPostOrientation());
-        screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
-        screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
-                deviceConfig.getEpdHeight() / getTouchHeight());
-        getRawInputProcessor().setScreenMatrix(screenMatrix);
+        getRawInputProcessor().setHostView(surfaceView);
     }
 
     // consider view offset to screen.
@@ -262,22 +266,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
-        final Matrix viewMatrix = new Matrix();
-        viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
-        getRawInputProcessor().setViewMatrix(viewMatrix);
-    }
-
-    private OnyxMatrix initViewToEpdMatrix() {
-        viewToEpdMatrix = new OnyxMatrix();
-        viewToEpdMatrix.postRotate(deviceConfig.getViewPostOrientation());
-        viewToEpdMatrix.postTranslate(deviceConfig.getViewPostTx(), deviceConfig.getViewPostTy());
-        return viewToEpdMatrix;
-    }
-
-    // matrix from android view to epd.
-    private OnyxMatrix matrixFromViewToEpd() {
-        return viewToEpdMatrix;
+        getRawInputProcessor().setHostView(surfaceView);
     }
 
     public void setCustomLimitRect(Rect targetRect){
@@ -290,54 +279,11 @@ public class NoteViewHelper {
     }
 
     private void updateLimitRect() {
-        Rect dfbLimitRect = new Rect();
         softwareLimitRect = new Rect();
-        int xAxisOffset = 0, yAxisOffset = 0;
-
-
-        if (customLimitRect == null) {
-            //for software render limit rect
-            surfaceView.getLocalVisibleRect(softwareLimitRect);
-            //for dfb render limit rect
-            surfaceView.getGlobalVisibleRect(dfbLimitRect);
-        } else {
-            Rect surfaceLocalVisibleRect = new Rect();
-
-            surfaceView.getLocalVisibleRect(surfaceLocalVisibleRect);
-            softwareLimitRect = customLimitRect;
-
-            //a little tricky here,we assume target rect is always smaller than visible rect.
-            xAxisOffset = customLimitRect.left - surfaceLocalVisibleRect.left;
-            yAxisOffset = surfaceLocalVisibleRect.bottom - customLimitRect.bottom;
-
-            surfaceView.getGlobalVisibleRect(dfbLimitRect);
-
-            //do the transform here.
-            dfbLimitRect.set(dfbLimitRect.left + xAxisOffset,
-                    dfbLimitRect.top + yAxisOffset,
-                    dfbLimitRect.right - xAxisOffset,
-                    dfbLimitRect.bottom - yAxisOffset);
-        }
-
-        dfbLimitRect.offsetTo(0, 0);
-        getRawInputProcessor().setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
-
-        int viewPosition[] = {0, 0};
-        surfaceView.getLocationOnScreen(viewPosition);
-        if (DeviceConfig.sharedInstance(surfaceView.getContext()).getEpdPostOrientation() == 270) {
-            int reverseTop = ((Activity) surfaceView.getContext()).getWindow().getDecorView().getBottom() - surfaceView.getHeight() - viewPosition[1];
-            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, reverseTop + yAxisOffset);
-        }else {
-            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
-        }
-
-        final OnyxMatrix matrix = matrixFromViewToEpd();
-        matrix.mapInPlace(dfbLimitRect);
-        EpdController.setScreenHandWritingRegionLimit(surfaceView,
-                Math.min(dfbLimitRect.left, dfbLimitRect.right),
-                Math.min(dfbLimitRect.top, dfbLimitRect.bottom),
-                Math.max(dfbLimitRect.left, dfbLimitRect.right),
-                Math.max(dfbLimitRect.top, dfbLimitRect.bottom));
+        surfaceView.getLocalVisibleRect(softwareLimitRect);
+        getRawInputProcessor().setHostView(surfaceView);
+        getRawInputProcessor().setLimitRect(new RectF(softwareLimitRect));
+        EpdController.setScreenHandWritingRegionLimit(surfaceView);
     }
 
     private void startDrawing() {
@@ -529,7 +475,7 @@ public class NoteViewHelper {
         }
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut) {
                 if (callback != null) {
                     callback.onBeginRawData();
                 }
@@ -541,7 +487,7 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut) {
                 ensureErasing();
             }
 
@@ -550,11 +496,11 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean releaseOutLimitRegion) {
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean releaseOutLimitRegion) {
             }
         });
         startDrawing();
@@ -608,6 +554,33 @@ public class NoteViewHelper {
         shortcutErasing = false;
     }
 
+    private void onBeginShapeSelecting() {
+        shapeSelectPoints = new TouchPointList();
+        if (callback != null) {
+            callback.onBeginShapeSelect();
+        }
+    }
+
+    private boolean onShapeSelecting(final MotionEvent motionEvent) {
+        if (callback != null) {
+            callback.onShapeSelecting(motionEvent);
+        }
+        if (shapeSelectPoints != null) {
+            int n = motionEvent.getHistorySize();
+            for(int i = 0; i < n; ++i) {
+                shapeSelectPoints.add(fromHistorical(motionEvent, i));
+            }
+            shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(), motionEvent.getPressure(), motionEvent.getSize(), motionEvent.getEventTime()));
+        }
+        return true;
+    }
+
+    private void onFinishShapeSelecting() {
+        if (callback != null) {
+            callback.onShapeSelectTouchPointListReceived(shapeSelectPoints);
+        }
+    }
+
     public List<Shape> getDirtyStash() {
         return dirtyStash;
     }
@@ -635,11 +608,23 @@ public class NoteViewHelper {
         int type = getCurrentShapeType();
         if (ShapeFactory.isDFBShape(type)) {
             setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
-        } else if (type == ShapeFactory.SHAPE_ERASER) {
-            setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
-        } else {
-            setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
+            return;
         }
+        switch (type) {
+            case ShapeFactory.SHAPE_ERASER:
+                setPenState(NoteDrawingArgs.PenState.PEN_USER_ERASING);
+                break;
+            case ShapeFactory.SHAPE_SELECTOR:
+                setPenState(NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING);
+                break;
+            default:
+                setPenState(NoteDrawingArgs.PenState.PEN_CANVAS_DRAWING);
+                break;
+        }
+    }
+
+    public boolean inShapeSelecting(){
+        return getPenState() == NoteDrawingArgs.PenState.PEN_SHAPE_SELECTING;
     }
 
     public boolean inErasing() {
@@ -701,6 +686,9 @@ public class NoteViewHelper {
             }
             return forwardErasing(motionEvent);
         }
+        if (inShapeSelecting()){
+            return forwardShapeSelecting(motionEvent);
+        }
         if (!(useRawInput() && renderByFramework())) {
             return forwardDrawing(motionEvent);
         }
@@ -714,6 +702,17 @@ public class NoteViewHelper {
             onDrawingTouchMove(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
             onDrawingTouchUp(motionEvent);
+        }
+        return true;
+    }
+
+    private boolean forwardShapeSelecting(final MotionEvent motionEvent) {
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onBeginShapeSelecting();
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onShapeSelecting(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onFinishShapeSelecting();
         }
         return true;
     }
@@ -799,7 +798,11 @@ public class NoteViewHelper {
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
-        return viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
+        src[0] = normalized.getX();
+        src[1] = normalized.getY();
+        EpdController.mapToEpd(surfaceView, src, dst);
+        TouchPoint result = new TouchPoint(dst[0], dst[1], normalized.getPressure(), normalized.getSize(), normalized.getTimestamp());
+        return result;
     }
 
     private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
@@ -827,6 +830,7 @@ public class NoteViewHelper {
         }
         return true;
     }
+
     public boolean supportColor(Context context){
         return DeviceConfig.sharedInstance(context, "note").supportColor();
     }

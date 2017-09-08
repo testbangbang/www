@@ -90,4 +90,5 @@
     <string name="english_font_face">English Font face</string>
     <string name="cold_light">Cold light</string>
     <string name="warm_light">Warm light</string>
+    <string name="reader_layer_menu_note_side_note">Side Node</string>
 </resources>

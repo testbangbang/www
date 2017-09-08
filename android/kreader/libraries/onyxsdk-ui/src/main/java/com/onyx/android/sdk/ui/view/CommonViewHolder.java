@@ -22,6 +22,10 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
         views = new SparseArray<>();
     }
 
+    public View getItemView() {
+        return itemView;
+    }
+
     public <T extends View> T getView(int viewId) {
         View view = views.get(viewId);
         if (view == null) {
@@ -76,6 +80,12 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
     public CommonViewHolder setVisibility(int viewId, int visibility) {
         View view = getView(viewId);
         view.setVisibility(visibility);
+        return this;
+    }
+
+    public CommonViewHolder setEnabled(int viewId, boolean enabled) {
+        View view = getView(viewId);
+        view.setEnabled(enabled);
         return this;
     }
 

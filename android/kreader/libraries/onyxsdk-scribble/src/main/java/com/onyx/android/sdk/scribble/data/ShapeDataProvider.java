@@ -29,6 +29,9 @@ public class ShapeDataProvider {
         public abstract void finished();
     }
 
+    public static void clear() {
+        new Delete().from(ShapeModel.class).execute();
+    }
 
     public static List<ShapeModel> loadShapeList(final Context context,
                                                  final String documentUniqueId,
@@ -44,11 +47,27 @@ public class ShapeDataProvider {
         return list;
     }
 
+    public static List<ShapeModel> loadShapeList(final Context context) {
+        return new Select().from(ShapeModel.class).queryList();
+    }
+
     public static void saveShapeList(final Context context,
                                      final Collection<ShapeModel> list) {
-        final DatabaseWrapper database= FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
+        final DatabaseWrapper database = FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
-        for(ShapeModel shapeModel : list) {
+        for (ShapeModel shapeModel : list) {
+            shapeModel.save();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+    }
+
+    public static void updateShapeList(final Context context,
+                                       final Collection<ShapeModel> list) {
+        final DatabaseWrapper database = FlowManager.getDatabase(ShapeDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for (ShapeModel shapeModel : list) {
+            removeShape(context, shapeModel.shapeUniqueId);
             shapeModel.save();
         }
         database.setTransactionSuccessful();
@@ -63,7 +82,15 @@ public class ShapeDataProvider {
         shapeModel.save();
     }
 
-    public static void svaeShapeListInBackground(final Context context,
+    public static void updateShape(final Context context,
+                                   final ShapeModel shapeModel){
+        if (shapeModel == null){
+            return;
+        }
+        shapeModel.update();
+    }
+
+    public static void saveShapeListInBackground(final Context context,
                                                  final Collection<ShapeModel> list,
                                                  final DataProviderCallback callback) {
         final DatabaseDefinition database= FlowManager.getDatabase(ShapeDatabase.NAME);

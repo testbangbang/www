@@ -22,6 +22,7 @@ LOCAL_LDLIBS := -llog -ljnigraphics -lz
 LOCAL_SRC_FILES := \
     onyx_pdfium.cpp \
     form_helper.cpp \
+    onyx_drm_jni.cpp \
     pdfwriter/onyx_pdf_writer.cpp \
     pdfwriter/writer_jni.cpp
 

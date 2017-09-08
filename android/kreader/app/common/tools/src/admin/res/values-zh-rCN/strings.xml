@@ -15,15 +15,18 @@
 
     <string name="main_item_func_select">功能选择</string>
     <string name="main_item_scanner">扫一扫</string>
+    <string name="main_item_scanner_batch">批量扫</string>
     <string name="main_item_user_manager">人员管理</string>
     <string name="main_item_account_info">账号信息</string>
 
     <string name="back">返回</string>
     <string name="exit">退出</string>
+    <string name="update">更新</string>
 
     <string name="btn_admin_bind">管理员手机绑定</string>
     <string name="fields_following_required">*以下均为必填项</string>
     <string name="required_fields_is_empty">还有必填项没有填写</string>
+    <string name="field_is_optional">(可选项)</string>
     <string name="apply_bind_fail">申请提交失败</string>
     <string name="apply_bind_success">已经提交绑定申请，请等待1&#8211;3个工作日审核批准</string>
 
@@ -51,6 +54,8 @@
     <string name="user_add_new">添加新用户</string>
     <string name="user_device_bind">绑定用户</string>
     <string name="user_device_un_bind">解绑用户</string>
+    <string name="user_device_unbind_confirm_content">确定解绑此用户吗？</string>
+    <string name="user_has_bound_tip">该用户已绑定过，请重新选择未绑定的或者新添加一个</string>
     <string name="device_bind_fail">设备绑定失败</string>
     <string name="device_bind_success">设备绑定成功</string>
     <string name="device_bind_info_edit_title">信息填写</string>
@@ -59,6 +64,10 @@
     <string name="device_unbind_fail">解绑失败</string>
     <string name="device_unbind_success">解绑成功</string>
 
+    <string name="group_be_in">所在组</string>
+    <string name="group_add">添加组</string>
+    <string name="group_delete_alert_message">确定要删除这个组？</string>
+    <string name="group_has_no_selection">至少选择一个组</string>
     <string name="group_has_no_users">该组里无用户</string>
     <string name="operation_not_support">暂未支持</string>
     <string name="user_search_edit_hint">搜索用户,空白搜索全部</string>
@@ -74,4 +83,55 @@
     <string name="count_down_timer_desc_format">%ds后可再次申请</string>
 
     <string name="account_is_invalid">账号异常，请重新登录</string>
+    <string name="account_login_tip">使用分配的管理员账号登录</string>
+    <string name="account_logout_confirm_content">要退出当前账号？</string>
+    <string name="app_update_change_log_empty_content">更新内容:未写</string>
+    <string name="app_update_new_version_detect">检测到新版本</string>
+    <string name="downloading">正在下载中&#8230;</string>
+    <string name="download_failed">下载失败了</string>
+    <string name="install_failed">安装出了问题</string>
+
+    <string name="applying">正在申请中&#8230;</string>
+    <string name="do_apply">发起申请</string>
+    <string name="repeat_apply_warning">不能短期内重复申请</string>
+    <string name="phone_verify_content">您输入的手机号为:%s，请先发起手机验证申请</string>
+    <string name="phone_verify_input_hint">输入收到的验证码</string>
+    <string name="verify">验证</string>
+    <string name="verify_code_error">验证码不对，无法通过</string>
+    <string name="waiting_for_verify_code">稍等手机运营商发送短信验证码</string>
+    <string name="phone_verify_apply_error">短信验证申请失败，重新发起申请</string>
+
+    <string name="delete">删除</string>
+    <string name="delete_success">删除成功</string>
+    <string name="delete_fail">删除失败</string>
+
+    <string name="warning">警告</string>
+    <string name="db_clear_warning">此操作会清除掉数据库里所有的记录，请谨慎操作！！</string>
+    <string name="db_clear_success">已清空数据库！！</string>
+    <string name="db_file_no_exists">数据文件不存在</string>
+    <string name="confirm_clear">确认清空</string>
+    <string name="confirm_clear_tip">请输入\"确认清空\"来防止误操作</string>
+    <string name="confirm_clear_check">输入\"确认清空\"四个字进行校验</string>
+
+    <string name="scan_code_not_match_warning">扫码失败，设备绑定的信息不符合结构！</string>
+    <string name="scan_code_mac_empty_warning">该二维码没有设备的mac地址，建议重新刷机！！</string>
+    <string name="device_info_save_fail">设备信息存储失败</string>
+    <string name="scan_device_binding">扫码绑定</string>
+    <string name="scan_device_success_format">本次扫码成功，已扫了%d台</string>
+    <string name="scan_device_before_format">已扫描过的设备(不含重复)：%d</string>
+
+    <string name="export_db_permission_deny_rationale">db文件导出到sd卡，需要获取读取外部存储卡的权限</string>
+    <string name="export_file_path_do">导出的路径：</string>
+    <string name="storage_has_no_external">没有外部存储</string>
+    <string name="db_export_dir">Onyx工厂管理/</string>
+    <string name="export_fail">导出失败</string>
+    <string name="export_success">导出成功</string>
+    <string name="exporting">导出中&#8230;</string>
+
+    <string name="menu_export_db_file">导出db文件</string>
+    <string name="menu_clear_db">清空db数据库</string>
+
+    <string name="batch_select">选择批次</string>
+    <string name="batch_input_content">请输入当前要绑定的批次！！</string>
+    <string name="batch_input_hint">比如具体的xx小学x年级x班</string>
 </resources>

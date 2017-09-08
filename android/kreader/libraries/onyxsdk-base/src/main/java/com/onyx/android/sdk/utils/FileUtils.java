@@ -3,7 +3,6 @@ package com.onyx.android.sdk.utils;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.net.Uri;
 import android.util.Log;
 
@@ -19,12 +18,12 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
-import java.math.BigInteger;
+import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -260,6 +259,20 @@ public class FileUtils {
             closeQuietly(out);
         }
         return succeed;
+    }
+
+    public static void copyFile(File src, File dst) throws IOException {
+        FileChannel srcChannel = null;
+        FileChannel dstChannel = null;
+
+        try {
+            srcChannel = new FileInputStream(src).getChannel();
+            dstChannel = new FileOutputStream(dst).getChannel();
+            srcChannel.transferTo(0, srcChannel.size(), dstChannel);
+        } finally {
+            closeQuietly(srcChannel);
+            closeQuietly(dstChannel);
+        }
     }
 
     public static String getRealFilePathFromUri(Context context, Uri uri) {
@@ -523,5 +536,36 @@ public class FileUtils {
             return null;
         }
         return url.substring(idx + 1, url.length());
+    }
+
+    public static String getFileSize(long size) {
+        DecimalFormat df = new DecimalFormat("###.##");
+        float f = ((float) size / (float) (1024 * 1024));
+        if (f < 1.0) {
+            float f2 = ((float) size / (float) (1024));
+            return df.format(new Float(f2).doubleValue()) + "KB";
+        } else {
+            return df.format(new Float(f).doubleValue()) + "M";
+        }
+    }
+
+    public static void transferFile(final String currentFilePath, final String newFilePath) throws Exception {
+        File currentFile = new File(currentFilePath);
+        File newFile = new File(newFilePath);
+
+        FileChannel src;
+        FileChannel dst;
+        src = new FileInputStream(currentFile).getChannel();
+        dst = new FileOutputStream(newFile).getChannel();
+        dst.transferFrom(src, 0, src.size());
+
+        src.close();
+        dst.close();
+    }
+
+    public static boolean compareFileMd5(final String file1, final String file2) throws IOException, NoSuchAlgorithmException {
+        String file1Md5 = FileUtils.computeFullMD5Checksum(new File(file1));
+        String file2Md5 = FileUtils.computeFullMD5Checksum(new File(file2));
+        return file1Md5.equals(file2Md5);
     }
 }

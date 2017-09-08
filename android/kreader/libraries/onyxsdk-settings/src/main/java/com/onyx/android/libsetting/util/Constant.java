@@ -6,6 +6,8 @@ package com.onyx.android.libsetting.util;
 
 public class Constant {
     static final public String VOLUME_CHANGED_ACTION = "android.media.VOLUME_CHANGED_ACTION";
+    static final public String WIFI_CONFIGURE_NEW_WIFI_ACTION = "com.android.systemui.CONFIGURE_NEW_WIFI_ACTION";
+
     static final public String ARGS_SSID = "args_ssid";
     static final public String ARGS_SIGNAL_LEVEL = "args_signal_level";
     static final public String ARGS_SECURITY_MODE = "args_security_mode";

@@ -24,4 +24,13 @@
 
     <dimen name="onyx_scribble_btn_page_progress_width">@dimen/wrap_content</dimen>
     <dimen name="dialog_move_folder_item_height">40dp</dimen>
+
+    <dimen name="backup_restore_text_margin_top">30dp</dimen>
+    <dimen name="backup_restore_text_padding">14dp</dimen>
+    <dimen name="backup_restore_list_item_padding">16dp</dimen>
+    <dimen name="backup_restore_list_item_text_big_size">30sp</dimen>
+    <dimen name="backup_restore_list_item_text_small_size">20sp</dimen>
+    <dimen name="backup_restore_list_item_image_size">30dp</dimen>
+    <dimen name="backup_restore_list_item_min_text_width">330dp</dimen>
+    <dimen name="backup_restore_list_item_name_text_padding_left">20dp</dimen>
 </resources>

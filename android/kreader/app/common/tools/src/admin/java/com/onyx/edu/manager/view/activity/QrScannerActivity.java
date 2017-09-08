@@ -7,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -28,15 +27,13 @@ import com.onyx.edu.manager.event.DeviceUserInfoSwitchEvent;
 import com.onyx.edu.manager.event.GroupReSelectEvent;
 import com.onyx.edu.manager.event.GroupSelectEvent;
 import com.onyx.edu.manager.view.dialog.DialogHolder;
-import com.onyx.edu.manager.view.fragment.DeviceBindCommitFragment;
+import com.onyx.edu.manager.view.fragment.DeviceBindingCommitFragment;
 import com.onyx.edu.manager.view.fragment.DeviceUserInfoFragment;
 import com.onyx.edu.manager.view.fragment.GroupListFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.ArrayList;
 
 import butterknife.ButterKnife;
 
@@ -70,12 +67,13 @@ public class QrScannerActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
-        if (resultCode != RESULT_OK) {
-            finish();
-            return;
-        }
+        super.onActivityResult(requestCode, resultCode, intent);
         switch (requestCode) {
             case REQUEST_QR_CODE:
+                if (resultCode != RESULT_OK) {
+                    finish();
+                    return;
+                }
                 processRequestQrCode(intent);
                 break;
         }
@@ -110,7 +108,11 @@ public class QrScannerActivity extends AppCompatActivity {
                     processNetWorkException();
                     return;
                 }
-                processBoundUserInfo(userInfoByMacRequest.getGroupUserInfo());
+                GroupUserInfo groupUserInfo = userInfoByMacRequest.getGroupUserInfo();
+                if (groupUserInfo != null) {
+                    groupUserInfo.device = deviceBind;
+                }
+                processBoundUserInfo(groupUserInfo);
             }
         });
     }
@@ -130,19 +132,13 @@ public class QrScannerActivity extends AppCompatActivity {
     }
 
     private void processBoundUserInfo(GroupUserInfo groupUserInfo) {
-        showFragment(DeviceBindCommitFragment.newInstance(groupUserInfo, false));
+        showFragment(DeviceBindingCommitFragment.newInstance(groupUserInfo, false));
     }
 
     private void processUnboundUserInfo(final DeviceBind deviceBind) {
-        if (groupSelected != null) {
-            GroupUserInfo groupUserInfo = new GroupUserInfo();
-            groupUserInfo.groups = new ArrayList<>();
-            groupUserInfo.groups.add(groupSelected);
-            groupUserInfo.device = deviceBind;
-            showFragment(DeviceUserInfoFragment.newInstance(groupUserInfo));
-        } else {
-            showFragment(GroupListFragment.newInstance());
-        }
+        GroupUserInfo groupUserInfo = new GroupUserInfo();
+        groupUserInfo.device = deviceBind;
+        showFragment(DeviceUserInfoFragment.newInstance(groupUserInfo));
     }
 
     @Override
@@ -166,22 +162,11 @@ public class QrScannerActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceBindCommitEvent(DeviceBindCommitEvent event) {
         event.groupUserInfo.device = scannedDeviceBind;
-        showFragment(DeviceBindCommitFragment.newInstance(event.groupUserInfo, true));
+        showFragment(DeviceBindingCommitFragment.newInstance(event.groupUserInfo, true));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceUserInfoSwitchEvent(DeviceUserInfoSwitchEvent event) {
         processUnboundUserInfo(scannedDeviceBind);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGroupSelectEvent(GroupSelectEvent event) {
-        groupSelected = event.group;
-        processUnboundUserInfo(scannedDeviceBind);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onGroupReSelectEvent(GroupReSelectEvent event) {
-        showFragment(GroupListFragment.newInstance());
     }
 }

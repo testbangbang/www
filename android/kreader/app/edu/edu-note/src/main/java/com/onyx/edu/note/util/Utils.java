@@ -22,8 +22,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.view.View;
 
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.R;
 
 /**
@@ -65,5 +69,24 @@ public class Utils {
 
     public static boolean isValidNote(NoteModel model) {
         return model.getType() > Constant.TYPE_CREATE_NOTE;
+    }
+
+    public static void showNoteNameIllegal(Context context, android.app.FragmentManager fragmentManager, final boolean isInteractWithScribble) {
+        final OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
+        final NoteManager noteManager = NoteApplication.getInstance().getNoteManager();
+        OnyxAlertDialog.Params params = new OnyxAlertDialog.Params().setTittleString(context.getString(R.string.noti))
+                .setAlertMsgString(context.getString(R.string.note_name_already_exist))
+                .setEnableNegativeButton(false).setCanceledOnTouchOutside(false)
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        illegalDialog.dismiss();
+                        if (isInteractWithScribble) {
+                            noteManager.sync(true, !noteManager.inUserErasing());
+                        }
+                    }
+                });
+        illegalDialog.setParams(params);
+        illegalDialog.show(fragmentManager, "illegalDialog");
     }
 }

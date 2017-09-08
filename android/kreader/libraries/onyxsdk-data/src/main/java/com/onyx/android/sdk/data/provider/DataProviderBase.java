@@ -52,7 +52,6 @@ public interface DataProviderBase {
 
     void deleteAnnotation(final Annotation annotation);
 
-
     Bookmark loadBookmark(final String application, final String associationId, final int pageNumber);
 
     List<Bookmark> loadBookmarks(final String application, final String associationId, final OrderBy orderBy);
@@ -62,6 +61,8 @@ public interface DataProviderBase {
     void deleteBookmark(final Bookmark bookmark);
 
     Library loadLibrary(String uniqueId);
+
+    QueryResult<Library> fetchAllLibrary(String parentId, QueryArgs queryArgs);
 
     List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs);
 

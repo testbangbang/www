@@ -1,7 +1,9 @@
 package com.onyx.edu.manager.view.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.KeyEvent;
@@ -10,16 +12,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jiang.android.lib.adapter.expand.StickyRecyclerHeadersDecoration;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.DeviceBind;
 import com.onyx.android.sdk.data.model.v2.GroupUserInfo;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudGroupUserListRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.qrcode.utils.ScreenUtils;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
@@ -28,9 +35,9 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.manager.AdminApplication;
 import com.onyx.edu.manager.R;
 import com.onyx.edu.manager.adapter.ContactAdapter;
+import com.onyx.edu.manager.adapter.GroupSelectAdapter;
 import com.onyx.edu.manager.adapter.ItemClickListener;
 import com.onyx.edu.manager.event.DeviceBindCommitEvent;
-import com.onyx.edu.manager.event.GroupReSelectEvent;
 import com.onyx.edu.manager.manager.ContentManager;
 import com.onyx.edu.manager.model.ContactEntity;
 import com.onyx.edu.manager.pinyin.CharacterParser;
@@ -64,6 +71,13 @@ public class DeviceUserInfoFragment extends Fragment {
     @Bind(R.id.edit_search)
     EditText contactSearch;
 
+    @Bind(R.id.parent_group)
+    LinearLayout parentGroupLayout;
+    @Bind(R.id.child_group)
+    RecyclerView childGroupLayout;
+    @Bind(R.id.root_group)
+    TextView rootGroupTv;
+
     private GroupUserInfo groupUserInfo;
 
     private ContactAdapter<ContactEntity> contactAdapter;
@@ -76,6 +90,11 @@ public class DeviceUserInfoFragment extends Fragment {
             return o1.sortLetter.compareTo(o2.sortLetter);
         }
     };
+
+    private GroupSelectAdapter groupAdapter;
+    private CloudGroup childGroup;
+    private static CloudGroup rootGroup;
+    private static List<CloudGroup> parentGroupList = new ArrayList<>();
 
     public static Fragment newInstance(GroupUserInfo groupUserInfo) {
         Bundle bundle = new Bundle();
@@ -99,24 +118,19 @@ public class DeviceUserInfoFragment extends Fragment {
     }
 
     private void initView() {
+        initChildGroupPageView();
         initContentPageView();
         initSideBarView();
         initContactSearchView();
         updateMacAddress(getGroupUserInfo().device);
+        updateRootGroupView(rootGroup);
+        updateParentGroupRef();
     }
 
     private void initToolbar(View parentView) {
         View view = parentView.findViewById(R.id.toolbar_header);
         TextView titleView = (TextView) view.findViewById(R.id.toolbar_title);
         titleView.setText(R.string.user_device_bind);
-        TextView otherTextView = (TextView) view.findViewById(R.id.toolbar_other);
-        otherTextView.setText(R.string.node_re_select);
-        otherTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                groupReselectClick();
-            }
-        });
     }
 
     private void initContactSearchView() {
@@ -169,6 +183,24 @@ public class DeviceUserInfoFragment extends Fragment {
         macAddressTv.setText(String.format(getString(R.string.mac_address_format), deviceBind.mac));
     }
 
+    private void updateRootGroupView(CloudGroup cloudGroup) {
+        if (cloudGroup != null) {
+            rootGroup = cloudGroup;
+            if (StringUtils.isNotBlank(rootGroup.name)) {
+                rootGroupTv.setText(rootGroup.name);
+            }
+        }
+    }
+
+    private void updateParentGroupRef() {
+        if(CollectionUtils.isNullOrEmpty(parentGroupList)) {
+            return;
+        }
+        for (CloudGroup group : parentGroupList) {
+            parentGroupLayout.addView(getParentGroupTextView(group));
+        }
+    }
+
     private boolean isUserDeviceBound(ContactEntity entity) {
         if (entity.accountInfo == null || CollectionUtils.isNullOrEmpty(entity.accountInfo.devices)) {
             return false;
@@ -178,8 +210,7 @@ public class DeviceUserInfoFragment extends Fragment {
 
     private void initContentPageView() {
         contactRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<ContactEntity>(getContext(),
-                deviceBindEntityList) {
+        contactRecyclerView.setAdapter(contactAdapter = new ContactAdapter<ContactEntity>(deviceBindEntityList) {
             @Override
             public String getMacAddress(ContactEntity entity) {
                 return isUserDeviceBound(entity) ? getString(R.string.has_bound) : getString(R.string.has_no_bind);
@@ -203,7 +234,15 @@ public class DeviceUserInfoFragment extends Fragment {
                     ToastUtils.showToast(getContext().getApplicationContext(), R.string.mac_address_invalid_for_bind);
                     return;
                 }
-                startCommitDeviceBind(contactAdapter.getItem(position).accountInfo);
+                ContactEntity contactEntity = contactAdapter.getItem(position);
+                if (contactEntity == null) {
+                    return;
+                }
+                if (isUserDeviceBound(contactEntity)) {
+                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.user_has_bound_tip);
+                    return;
+                }
+                startCommitDeviceBind(contactEntity.accountInfo);
             }
 
             @Override
@@ -213,58 +252,174 @@ public class DeviceUserInfoFragment extends Fragment {
     }
 
     private GroupUserInfo getGroupUserInfo() {
-        if (groupUserInfo != null) {
-            return groupUserInfo;
-        }
-        groupUserInfo = JSONObjectParseUtils.parseObject(getArguments().getString(ContentManager.KEY_GROUP_USER_INFO),
-                GroupUserInfo.class);
         if (groupUserInfo == null) {
-            groupUserInfo = new GroupUserInfo();
+            groupUserInfo = JSONObjectParseUtils.parseObject(getArguments().getString(ContentManager.KEY_GROUP_USER_INFO),
+                    GroupUserInfo.class);
+            if (groupUserInfo == null) {
+                groupUserInfo = new GroupUserInfo();
+            }
         }
         return groupUserInfo;
     }
 
     private void initData() {
-        final CloudGroupUserListRequest userListRequest = new CloudGroupUserListRequest(getGroupUserInfo().groups.get(0)._id);
-        AdminApplication.getCloudManager().submitRequest(getContext(), userListRequest, new BaseCallback() {
+        final CloudGroup lastGroup = getLastCloudGroup();
+        loadGroupAndUserList(lastGroup, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                List<NeoAccountBase> groupUserList;
-                if (e != null || (CollectionUtils.isNullOrEmpty(groupUserList = userListRequest.getGroupUserList()))) {
-                    ToastUtils.showToast(getContext().getApplicationContext(), R.string.group_has_no_users);
-                    return;
+                if (lastGroup == null) {
+                    updateRootGroupView(childGroup);
                 }
-                processDeviceBindList(groupUserList);
             }
         });
     }
 
-    private void processDeviceBindList(List<NeoAccountBase> accountList) {
+    private void initChildGroupPageView() {
+        childGroupLayout.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        childGroupLayout.setAdapter(groupAdapter = new GroupSelectAdapter(childGroup));
+        groupAdapter.setItemClickListener(new ItemClickListener() {
+            @Override
+            public void onClick(int position, View view) {
+                processGroupItemClick(childGroup.children.get(position));
+            }
+
+            @Override
+            public void onLongClick(int position, View view) {
+            }
+        });
+    }
+
+    private void processGroupItemClick(final CloudGroup group) {
+        loadGroupAndUserList(group);
+    }
+
+    private void loadGroupAndUserList(final CloudGroup group) {
+        loadGroupAndUserList(group, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (group != null) {
+                    addLibraryToParentRefList(group);
+                }
+                if (e != null && group != null && StringUtils.isNotBlank(group._id)) {
+                    ToastUtils.showToast(request.getContext().getApplicationContext(), R.string.group_has_no_users);
+                }
+            }
+        });
+    }
+
+    private void loadGroupAndUserList(CloudGroup group, final BaseCallback baseCallback) {
+        final String groupId = group != null ? group._id : null;
+        CloudRequestChain requestChain = new CloudRequestChain();
+        addCloudGroupListRequest(requestChain, groupId, baseCallback);
+        addCloudGroupUserListRequest(requestChain, groupId, baseCallback);
+        requestChain.setAbortException(false);
+        requestChain.execute(getContext(), AdminApplication.getCloudManager());
+    }
+
+    private void addCloudGroupListRequest(CloudRequestChain requestChain, final String groupId, final BaseCallback baseCallback) {
+        final CloudGroupRequest groupListRequest = new CloudGroupRequest(String.valueOf(groupId));
+        requestChain.addRequest(groupListRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                groupAdapter.setGroupContainer(childGroup = groupListRequest.getChildGroup());
+                if (StringUtils.isNullOrEmpty(groupId)) {
+                    BaseCallback.invoke(baseCallback, request, e);
+                }
+            }
+        });
+    }
+
+    private void addCloudGroupUserListRequest(CloudRequestChain requestChain, String groupId,
+                                              final BaseCallback baseCallback) {
+        if (StringUtils.isNullOrEmpty(groupId)) {
+            return;
+        }
+        final CloudGroupUserListRequest userListRequest = new CloudGroupUserListRequest(groupId);
+        requestChain.addRequest(userListRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    processUserList(userListRequest.getGroupUserList());
+                }
+                BaseCallback.invoke(baseCallback, request, e);
+            }
+        });
+    }
+
+    private void processUserList(List<NeoAccountBase> userInfoList) {
+        if (CollectionUtils.isNullOrEmpty(userInfoList)) {
+            userInfoList = new ArrayList<>();
+        }
         List<ContactEntity> list = new ArrayList<>();
-        for (NeoAccountBase account : accountList) {
+        for (NeoAccountBase accountBase : userInfoList) {
             ContactEntity entity = new ContactEntity();
-            NeoAccountBase.parseInfo(account);
-            entity.username = account.getName();
-            entity.accountInfo = account;
+            entity.username = accountBase.getName();
+            entity.accountInfo = accountBase;
             list.add(entity);
         }
         deviceBindEntityList.clear();
         deviceBindEntityList.addAll(list);
-        splitContactList(deviceBindEntityList);
-        contactRecyclerView.getAdapter().notifyDataSetChanged();
+        sortContactEntityList(deviceBindEntityList);
+        contactAdapter.setContactEntityList(deviceBindEntityList);
     }
 
-    private void splitContactList(List<ContactEntity> contactEntityList) {
-        for (ContactEntity entity : contactEntityList) {
-            String pinyin = characterParser.getSelling(getContactEntityUsername(entity));
+    private void sortContactEntityList(List<ContactEntity> contactEntityList) {
+        for (ContactEntity contactEntity : contactEntityList) {
+            String pinyin = characterParser.getSelling(getContactEntityUsername(contactEntity));
             String sortString = pinyin.substring(0, 1).toUpperCase();
             if (sortString.matches("[A-Z]")) {
-                entity.sortLetter = sortString;
+                contactEntity.sortLetter = sortString;
             } else {
-                entity.sortLetter = sortString;
+                contactEntity.sortLetter = sortString;
             }
         }
         Collections.sort(contactEntityList, pinyinComparator);
+    }
+
+    private void addLibraryToParentRefList(CloudGroup group) {
+        if (!CollectionUtils.isNullOrEmpty(parentGroupList)) {
+            if (parentGroupList.get(parentGroupList.size() - 1)._id.equals(group._id)) {
+                return;
+            }
+        }
+        parentGroupList.add(group);
+        parentGroupLayout.addView(getParentGroupTextView(group));
+    }
+
+    private TextView getParentGroupTextView(CloudGroup group) {
+        TextView tv = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.group_parent_item, null);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        layoutParams.setMargins((int) ScreenUtils.getDimenPixelSize(getContext(), 10), 0, 0, 0);
+        tv.setLayoutParams(layoutParams);
+        tv.setText(group.name);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                processLibraryRefViewClick(v);
+            }
+        });
+        return tv;
+    }
+
+    private void processLibraryRefViewClick(View v) {
+        int index = parentGroupLayout.indexOfChild(v);
+        if (index == parentGroupLayout.getChildCount() - 1) {
+            return;
+        }
+        int removeCount = parentGroupLayout.getChildCount() - 1 - index;
+        for (int i = 0; i < removeCount; i++) {
+            parentGroupLayout.removeViewAt(parentGroupLayout.getChildCount() - 1);
+            parentGroupList.remove(parentGroupList.size() - 1);
+        }
+        loadGroupAndUserList(parentGroupList.get(index), null);
+    }
+
+    private static CloudGroup getLastCloudGroup() {
+        if (CollectionUtils.isNullOrEmpty(parentGroupList)) {
+            return rootGroup;
+        }
+        return parentGroupList.get(parentGroupList.size() - 1);
     }
 
     private String getContactEntityUsername(ContactEntity entity) {
@@ -275,14 +430,25 @@ public class DeviceUserInfoFragment extends Fragment {
                 .replaceAll("\b", "");
     }
 
-    private void startCommitDeviceBind(NeoAccountBase accountBase) {
-        GroupUserInfo groupUserInfo = getGroupUserInfo();
-        groupUserInfo.user = accountBase;
-        EventBus.getDefault().post(new DeviceBindCommitEvent(groupUserInfo));
+    private CloudGroup getWillAddToGroup() {
+        CloudGroup lastGroup = getLastCloudGroup();
+        if (lastGroup != null) {
+            return lastGroup;
+        }
+        return rootGroup;
     }
 
-    private void groupReselectClick() {
-        EventBus.getDefault().post(new GroupReSelectEvent());
+    private void startCommitDeviceBind(NeoAccountBase accountBase) {
+        CloudGroup willAddGroup = getWillAddToGroup();
+        if (willAddGroup == null) {
+            ToastUtils.showToast(getContext().getApplicationContext(), R.string.group_has_no_selection);
+            return;
+        }
+        GroupUserInfo groupUserInfo = getGroupUserInfo();
+        groupUserInfo.user = accountBase;
+        groupUserInfo.groups.add(willAddGroup);
+        DeviceBindCommitEvent bindCommitEvent = new DeviceBindCommitEvent(groupUserInfo);
+        EventBus.getDefault().post(bindCommitEvent);
     }
 
     @OnClick(R.id.toolbar_back)
@@ -295,9 +461,47 @@ public class DeviceUserInfoFragment extends Fragment {
         startCommitDeviceBind(null);
     }
 
+    @OnClick(R.id.root_group)
+    public void onRootGroupClick() {
+        parentGroupLayout.removeAllViews();
+        parentGroupList.clear();
+        deviceBindEntityList.clear();
+        contactRecyclerView.getAdapter().notifyDataSetChanged();
+        initData();
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        return processBackKey();
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
+    private boolean processBackKey() {
+        if (CollectionUtils.isNullOrEmpty(parentGroupList)) {
+            getActivity().onBackPressed();
+            return false;
+        }
+        parentGroupLayout.removeViewAt(parentGroupLayout.getChildCount() - 1);
+        parentGroupList.remove(parentGroupList.size() - 1);
+        loadGroupAndUserList(getLastCloudGroup(), null);
+        return true;
     }
 }

@@ -2,9 +2,9 @@ package com.onyx.edu.note.actions.scribble;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
-import com.onyx.android.sdk.scribble.request.navigation.PageFlushRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.edu.note.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.BaseNoteAction;
 
 import java.util.ArrayList;
@@ -17,26 +17,21 @@ public class DocumentFlushAction extends BaseNoteAction {
 
     private volatile List<Shape> shapeList = new ArrayList<>();
     private volatile boolean resumeDrawing;
-    private volatile boolean render;
     private volatile NoteDrawingArgs drawingArgs;
-    private volatile boolean mForceRender;
+    private volatile boolean mRender;
 
-    public DocumentFlushAction(final List<Shape> list, boolean r, boolean resume, boolean forceRender, final NoteDrawingArgs args) {
+    public DocumentFlushAction(final List<Shape> list, boolean render, boolean resume, final NoteDrawingArgs args) {
         if (list != null) {
             shapeList.addAll(list);
         }
-        render = r;
         resumeDrawing = resume;
         drawingArgs = args;
-        mForceRender = forceRender;
+        mRender = render;
     }
 
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
-        PageFlushRequest flushRequest = new PageFlushRequest(shapeList, render, resumeDrawing, drawingArgs);
-        if (mForceRender) {
-            flushRequest.setRender(mForceRender);
-        }
+        PageFlushRequest flushRequest = new PageFlushRequest(shapeList, mRender, resumeDrawing, drawingArgs);
         noteManager.submitRequest(flushRequest, callback);
     }
 }

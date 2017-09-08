@@ -107,15 +107,6 @@ public class ReaderTestActivity extends Activity {
 
    private void test() {
         final RawInputProcessor input = new RawInputProcessor();
-        final Matrix matrix = new Matrix();
-
-        // read config later.
-        // left matrix m * pt
-        matrix.postRotate(90);
-        matrix.postTranslate(1200, 0);
-        // right matrix pt * scale.
-        matrix.preScale(1600.0f / 10206.0f, 1200.0f / 7422.0f);
-        input.setScreenMatrix(matrix);
         input.start();
     }
 

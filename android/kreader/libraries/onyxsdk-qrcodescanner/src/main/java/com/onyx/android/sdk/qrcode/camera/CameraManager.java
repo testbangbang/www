@@ -48,7 +48,7 @@ public final class CameraManager {
      */
     public static void init(Context context) {
         if (sCameraManager == null) {
-            sCameraManager = new CameraManager(context);
+            sCameraManager = new CameraManager(context.getApplicationContext());
         }
     }
 

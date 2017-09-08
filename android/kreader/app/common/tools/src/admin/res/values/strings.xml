@@ -16,14 +16,17 @@
 
     <string name="main_item_func_select">Function selection</string>
     <string name="main_item_scanner">QrCode Scan</string>
+    <string name="main_item_scanner_batch">QrCode Scan Batch</string>
     <string name="main_item_user_manager">User Manager</string>
     <string name="main_item_account_info">Account Info</string>
 
     <string name="back">Back</string>
     <string name="exit">Exit</string>
+    <string name="update">Update</string>
 
     <string name="btn_admin_bind">Administrator phone binding</string>
     <string name="fields_following_required">*The following are required</string>
+    <string name="field_is_optional">(Optional)</string>
     <string name="required_fields_is_empty">The fields required is empty</string>
     <string name="apply_bind_fail">Applying a binding failed</string>
     <string name="apply_bind_success">You has submitted a binding request, please wait 1&#8211;3 working days for approval</string>
@@ -52,6 +55,8 @@
     <string name="user_add_new">Add a new user</string>
     <string name="user_device_bind">Bind the user</string>
     <string name="user_device_un_bind">User unbundled</string>
+    <string name="user_device_unbind_confirm_content">Do you want to bind this user?</string>
+    <string name="user_has_bound_tip">The user has been bound, please re-select the unbound or add a new one</string>
     <string name="device_bind">Bind</string>
     <string name="device_bind_fail">Device binding failed</string>
     <string name="device_bind_success">Device binding is successful</string>
@@ -60,6 +65,10 @@
     <string name="device_unbind_fail">Unbind failed</string>
     <string name="device_unbind_success">Unbind success</string>
 
+    <string name="group_be_in">The groups</string>
+    <string name="group_add">Add group</string>
+    <string name="group_delete_alert_message">Make sure you want to delete this group？</string>
+    <string name="group_has_no_selection">Select at least one group</string>
     <string name="group_has_no_users">There are no users in this group</string>
     <string name="operation_not_support">Not yet supported</string>
     <string name="user_search_edit_hint">Search for users, blank search all</string>
@@ -74,5 +83,56 @@
     <string name="preparing">Preparing now&#8230;</string>
     <string name="count_down_timer_desc_format">Can apply again After %d seconds</string>
     <string name="account_is_invalid">Account is abnormal, please re-login</string>
+    <string name="account_login_tip">Login using the assigned administrator account</string>
+    <string name="account_logout_confirm_content">Do you want to exit your current account?</string>
+    <string name="app_update_change_log_empty_content">Update Content: not written</string>
+    <string name="app_update_new_version_detect">New version detected</string>
+    <string name="downloading">Downloading&#8230;</string>
+    <string name="download_failed">The download failed</string>
+    <string name="install_failed">There is a problem with the installation</string>
+
+    <string name="applying">Is applying&#8230;</string>
+    <string name="do_apply">Do Apply</string>
+    <string name="repeat_apply_warning">Cannot apply repeat in the short term</string>
+    <string name="phone_verify_content">The phone number is:%s，please initiate a mobile verification application first</string>
+    <string name="phone_verify_input_hint">Enter the received code</string>
+    <string name="verify">Verify</string>
+    <string name="verify_code_error">Verification code is incorrect and can not pass</string>
+    <string name="waiting_for_verify_code">Wait for the phone operator to send the SMS verification code</string>
+    <string name="phone_verify_apply_error">SMS verification application failed, re-initiated application</string>
+
+    <string name="delete">Delete</string>
+    <string name="delete_success">Delete successfully</string>
+    <string name="delete_fail">Delete failed</string>
+
+    <string name="warning">Warning</string>
+    <string name="db_clear_warning">This will clear all the records in the database, please be careful!!</string>
+    <string name="db_clear_success">The database has been clear!!</string>
+    <string name="db_file_no_exists">The database file does not exist</string>
+    <string name="confirm_clear">Confirm Clear</string>
+    <string name="confirm_clear_tip">Please enter \"Confirm Clear\" to prevent misuse</string>
+    <string name="confirm_clear_check">Enter \"Confirm Clear\" words to verify</string>
+
+    <string name="scan_code_not_match_warning">Scanning failed, deviceBinding info doesn\'t conform to structure!</string>
+    <string name="scan_code_mac_empty_warning">The code doesn\'t have the device mac address, recommended to re-brush firmware</string>
+    <string name="device_info_save_fail">Device info save failed</string>
+    <string name="scan_device_binding">Scanning Binding</string>
+    <string name="scan_device_success_format">The scan is successful, has scanned %d count</string>
+    <string name="scan_device_before_format">Scanned devices(without duplication):%d</string>
+
+    <string name="export_db_permission_deny_rationale">Db file export to SDCard, you need to agree with permissions</string>
+    <string name="export_file_path_do">Export the path：</string>
+    <string name="storage_has_no_external">Has No external storage</string>
+    <string name="db_export_dir">Onyx-export/</string>
+    <string name="export_fail">Export failed</string>
+    <string name="export_success">Export success</string>
+    <string name="exporting">Exporting&#8230;</string>
+
+    <string name="menu_export_db_file">Export database file</string>
+    <string name="menu_clear_db">Clear local database</string>
+
+    <string name="batch_select">Batch Select</string>
+    <string name="batch_input_content">Please enter the batch you want to bind now!!</string>
+    <string name="batch_input_hint">Such as the specific xx school x grade/class</string>
 
 </resources>
