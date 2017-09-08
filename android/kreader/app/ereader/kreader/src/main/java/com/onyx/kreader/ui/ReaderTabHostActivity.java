@@ -39,28 +39,33 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
+import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.utils.PdfWriterUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.DeviceReceiver;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogTabHostMenu;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+
+import static com.onyx.android.sdk.utils.FileUtils.closeQuietly;
 
 public class ReaderTabHostActivity extends OnyxBaseActivity {
 
@@ -345,11 +350,25 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         tabBeforeSideReading = null;
     }
 
+    public static void copyFile(File src, File dst) throws IOException {
+        FileChannel srcChannel = null;
+        FileChannel dstChannel = null;
+
+        try {
+            srcChannel = new FileInputStream(src).getChannel();
+            dstChannel = new FileOutputStream(dst).getChannel();
+            srcChannel.transferTo(0, srcChannel.size(), dstChannel);
+        } finally {
+            closeQuietly(srcChannel);
+            closeQuietly(dstChannel);
+        }
+    }
+
     private void startSideNote(String path) {
         File noteFile = getNoteFile(path);
         if (!noteFile.exists()) {
             try {
-                FileUtils.copyFile(new File("/sdcard/blanknote.pdf"), noteFile);
+                copyFile(new File("/sdcard/blanknote.pdf"), noteFile);
                 PdfWriterUtils.setDocumentTitle(noteFile.getAbsolutePath(),
                         FileUtils.getBaseName(noteFile.getName()));
             } catch (IOException e) {
