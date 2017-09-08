@@ -14,6 +14,7 @@ import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.request.local.InformalEssayInsert;
 import com.onyx.android.dr.request.local.InformalEssayQueryAll;
 import com.onyx.android.dr.request.local.InformalEssayQueryByTime;
+import com.onyx.android.dr.request.local.InformalEssayQueryByTitle;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -44,6 +45,17 @@ public class InformalEssayPresenter {
                 allDatas = req.getAllDatas();
                 ArrayList<Boolean> checkList = req.getCheckList();
                 informalEssayView.setInformalEssayData(allDatas, checkList);
+            }
+        });
+    }
+
+    public void getInformalEssayQueryByTitle(String keyword) {
+        final InformalEssayQueryByTitle req = new InformalEssayQueryByTitle(keyword);
+        infromalEssayData.getInformalEssayQueryByTitle(context, req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                allDatas = req.getData();
+                informalEssayView.setInformalEssayByTitle(allDatas);
             }
         });
     }

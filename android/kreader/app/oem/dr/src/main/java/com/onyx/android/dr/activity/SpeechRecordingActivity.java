@@ -17,6 +17,7 @@ import android.os.PowerManager.WakeLock;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -24,12 +25,15 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.dialog.AlertInfoDialog;
 import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.dr.util.Recorder;
 import com.onyx.android.dr.util.RemainingTimeCalculator;
+import com.onyx.android.dr.util.Utils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -38,9 +42,9 @@ import java.util.Date;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-import static com.onyx.android.dr.util.Recorder.MINUTE_VALUE;
 import static com.onyx.android.dr.util.Recorder.PROGRESS_VALUE;
 import static com.onyx.android.dr.util.Recorder.SIXTY;
+import static com.onyx.android.dr.util.Recorder.THIRTY;
 
 public class SpeechRecordingActivity extends BaseActivity
         implements Button.OnClickListener, Recorder.OnStateChangedListener {
@@ -58,22 +62,20 @@ public class SpeechRecordingActivity extends BaseActivity
     ImageButton stopButton;
     @Bind(R.id.speech_recording_activity_record_playback)
     ImageButton playButton;
-    @Bind(R.id.record_time_activity_discard)
-    Button discardButton;
-    @Bind(R.id.record_time_activity_accept)
-    Button acceptButton;
-    @Bind(R.id.record_time_activity_timer_view)
-    TextView timerView;
-    @Bind(R.id.record_time_activity_state_one)
-    TextView stateOne;
-    @Bind(R.id.record_time_activity_state_two)
-    TextView stateTwo;
-    @Bind(R.id.speech_recording_activity_state)
-    ImageView stateLED;
-    @Bind(R.id.speech_recording_activity_exit_buttons)
-    LinearLayout exitButtons;
     @Bind(R.id.record_time_activity_progressbar)
     ProgressBar stateProgressBar;
+    @Bind(R.id.record_time_activity_timer_view)
+    TextView mTimerView;
+    @Bind(R.id.record_time_activity_max_value)
+    TextView mMaxValue;
+    @Bind(R.id.record_time_activity_min_value)
+    TextView mMinValue;
+    @Bind(R.id.speech_recording_activity_confirm)
+    Button confirm;
+    @Bind(R.id.speech_recording_activity_cancel)
+    Button cancel;
+    @Bind(R.id.speech_recording_activity_save_container)
+    LinearLayout saveContainer;
     private static final String RECORDER_STATE_KEY = "recorder_state";
     private static final String SAMPLE_INTERRUPTED_KEY = "sample_interrupted";
     private static final String MAX_FILE_SIZE_KEY = "max_file_size";
@@ -106,6 +108,10 @@ public class SpeechRecordingActivity extends BaseActivity
     private String dataScheme = "file";
     private String colourString = "count(*)";
     private int millisecond = 1000;
+    private int speechTime = 0;
+    private int number = 0;
+    private String informalEssayTitle;
+    private AlertInfoDialog alertDialog;
 
     private Runnable updateTimer = new Runnable() {
         public void run() {
@@ -137,12 +143,13 @@ public class SpeechRecordingActivity extends BaseActivity
 
     private void getIntentData() {
         String informalEssayContent = getIntent().getStringExtra(Constants.INFORMAL_ESSAY_CONTENT);
+        informalEssayTitle = getIntent().getStringExtra(Constants.INFORMAL_ESSAY_TITLE);
         content.setText(informalEssayContent);
     }
 
     private void initTitleData() {
         image.setImageResource(R.drawable.speech_recording);
-        title.setText(getString(R.string.speech_recording));
+        title.setText(getString(R.string.speech_recording) + "/" + informalEssayTitle);
     }
 
     private void initRecordData() {
@@ -193,8 +200,9 @@ public class SpeechRecordingActivity extends BaseActivity
     @OnClick({R.id.image_view_back,
             R.id.speech_recording_activity_record_playback,
             R.id.speech_recording_activity_stop,
-            R.id.record_time_activity_accept,
-            R.id.record_time_activity_discard,
+            R.id.speech_recording_activity_setting,
+            R.id.speech_recording_activity_confirm,
+            R.id.speech_recording_activity_cancel,
             R.id.speech_recording_activity_start_lecture})
     public void onClick(View view) {
         if (!view.isEnabled()) {
@@ -202,6 +210,10 @@ public class SpeechRecordingActivity extends BaseActivity
         }
         switch (view.getId()) {
             case R.id.speech_recording_activity_start_lecture:
+                if (speechTime == 0) {
+                    CommonNotices.showMessage(this, getString(R.string.set_speech_time));
+                    return;
+                }
                 recordSpeechContent();
                 break;
             case R.id.speech_recording_activity_record_playback:
@@ -210,16 +222,50 @@ public class SpeechRecordingActivity extends BaseActivity
             case R.id.speech_recording_activity_stop:
                 recorder.stop();
                 break;
-            case R.id.record_time_activity_accept:
+            case R.id.speech_recording_activity_setting:
+                settingSpeechTime();
+                break;
+            case R.id.speech_recording_activity_confirm:
                 recorder.stop();
                 saveSample();
-                exitButtons.setVisibility(View.GONE);
+                saveContainer.setVisibility(View.GONE);
                 break;
-            case R.id.record_time_activity_discard:
+            case R.id.speech_recording_activity_cancel:
                 recorder.delete();
-                exitButtons.setVisibility(View.GONE);
+                saveContainer.setVisibility(View.GONE);
+                CommonNotices.showMessage(this, getString(R.string.please_record_again));
                 break;
         }
+    }
+
+    private void settingSpeechTime() {
+        alertDialog = new AlertInfoDialog(this, getString(R.string.setting_record_time), false,
+                getResources().getString(R.string.dialog_button_confirm), getResources().getString(R.string.dialog_button_cancel));
+        setDialogAttributes();
+        alertDialog.setOKOnClickListener(new AlertInfoDialog.OnOKClickListener() {
+            @Override
+            public void onOKClick(int value) {
+                speechTime = value;
+            }
+        });
+        alertDialog.setCancelOnClickListener(new AlertInfoDialog.OnCancelClickListener() {
+            @Override
+            public void onCancelClick() {
+                if (alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
+            }
+        });
+    }
+
+    private void setDialogAttributes() {
+        WindowManager.LayoutParams attributes = alertDialog.getWindow().getAttributes();
+        Float heightProportion = Float.valueOf(getString(R.string.speech_recording_activity_dialog_height));
+        Float widthProportion = Float.valueOf(getString(R.string.speech_recording_activity_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
+        alertDialog.getWindow().setAttributes(attributes);
+        alertDialog.show();
     }
 
     private void recordSpeechContent() {
@@ -296,6 +342,7 @@ public class SpeechRecordingActivity extends BaseActivity
             return;
         }
         setResult(RESULT_OK, new Intent().setData(uri));
+        CommonNotices.showMessage(this, getString(R.string.saved_successfully));
     }
 
     /**
@@ -457,48 +504,31 @@ public class SpeechRecordingActivity extends BaseActivity
         boolean ongoing = state == Recorder.RECORDING_STATE || state == Recorder.PLAYING_STATE;
         long time = ongoing ? recorder.progress() : recorder.sampleLength();
         String timeStr = String.format(timerFormat, time / SIXTY, time % SIXTY);
-        timerView.setText(timeStr);
+        mTimerView.setText(timeStr);
         if (state == Recorder.PLAYING_STATE) {
-            stateProgressBar.setProgress((int) (PROGRESS_VALUE * time / recorder.sampleLength()));
-        } else if (state == Recorder.RECORDING_STATE) {
-            updateTimeRemaining();
-        }
-        if (ongoing) {
-            handler.postDelayed(updateTimer, millisecond);
-        }
-    }
-
-    /**
-     * Called when we're in recording state. Find out how much longer we can
-     * go on recording. If it's under 5 minutes, we display a count-down in
-     * the UI. If we've run out of time, stop the recording.
-     */
-    private void updateTimeRemaining() {
-        long t = remainingTimeCalculator.timeRemaining();
-        if (t <= 0) {
-            sampleInterrupted = true;
-            int limit = remainingTimeCalculator.currentLowerLimit();
-            switch (limit) {
-                case RemainingTimeCalculator.DISK_SPACE_LIMIT:
-                    errorUiMessage = getResources().getString(R.string.storage_is_full);
-                    break;
-                case RemainingTimeCalculator.FILE_SIZE_LIMIT:
-                    errorUiMessage = getResources().getString(R.string.max_length_reached);
-                    break;
-                default:
-                    errorUiMessage = null;
-                    break;
+            long value = PROGRESS_VALUE * time / recorder.sampleLength();
+            stateProgressBar.setProgress((int) value);
+            if (time >= speechTime * SIXTY) {
+                mMaxValue.setText(speechTime * SIXTY + getString(R.string.second));
+            }else {
+                mMaxValue.setText(String.valueOf(recorder.sampleLength()) + getString(R.string.second));
             }
-            recorder.stop();
-            return;
+        } else if (state == Recorder.RECORDING_STATE) {
+            if (speechTime * SIXTY - time < THIRTY) {
+                Resources res = getResources();
+                if (number == 0) {
+                    CommonNotices.showMessage(this, String.format(res.getString(R.string.sec_available), THIRTY));
+                    number++;
+                }
+            }
         }
-        Resources res = getResources();
-        String timeStr = "";
-        if (t < SIXTY)
-            timeStr = String.format(res.getString(R.string.sec_available), t);
-        else if (t < MINUTE_VALUE)
-            timeStr = String.format(res.getString(R.string.min_available), t / SIXTY + 1);
-        stateOne.setText(timeStr);
+        if (speechTime * SIXTY > time){
+            if (ongoing) {
+                handler.postDelayed(updateTimer, millisecond);
+            }
+        }else{
+            mTimerView.setText(timeStr);
+        }
     }
 
     /**
@@ -508,60 +538,61 @@ public class SpeechRecordingActivity extends BaseActivity
         Resources res = getResources();
         switch (recorder.state()) {
             case Recorder.IDLE_STATE:
-                if (recorder.sampleLength() == 0) {
-                    recordButton.setEnabled(true);
-                    playButton.setEnabled(false);
-                    stopButton.setEnabled(false);
-                    recordButton.requestFocus();
-                    stateOne.setVisibility(View.INVISIBLE);
-                    stateLED.setVisibility(View.INVISIBLE);
-                    stateTwo.setVisibility(View.INVISIBLE);
-                    exitButtons.setVisibility(View.GONE);
-                    stateProgressBar.setVisibility(View.INVISIBLE);
-                } else {
-                    recordButton.setEnabled(true);
-                    playButton.setEnabled(true);
-                    stopButton.setEnabled(false);
-                    stateOne.setVisibility(View.INVISIBLE);
-                    stateLED.setVisibility(View.INVISIBLE);
-                    stateTwo.setVisibility(View.INVISIBLE);
-                    exitButtons.setVisibility(View.VISIBLE);
-                    stateProgressBar.setVisibility(View.INVISIBLE);
-                }
-                if (sampleInterrupted) {
-                    stateTwo.setVisibility(View.VISIBLE);
-                    stateTwo.setText(res.getString(R.string.recording_stopped));
-                    stateLED.setVisibility(View.INVISIBLE);
-                }
-                if (errorUiMessage != null) {
-                    stateOne.setText(errorUiMessage);
-                    stateOne.setVisibility(View.VISIBLE);
-                }
+                setIdleState();
                 break;
             case Recorder.RECORDING_STATE:
-                recordButton.setEnabled(false);
-                playButton.setEnabled(false);
-                stopButton.setEnabled(true);
-                stateOne.setVisibility(View.VISIBLE);
-                stateLED.setVisibility(View.VISIBLE);
-                stateLED.setImageResource(R.drawable.recording_led);
-                stateTwo.setVisibility(View.VISIBLE);
-                stateTwo.setText(res.getString(R.string.record));
-                exitButtons.setVisibility(View.GONE);
-                stateProgressBar.setVisibility(View.INVISIBLE);
+                setRecordingState();
                 break;
             case Recorder.PLAYING_STATE:
-                recordButton.setEnabled(true);
-                playButton.setEnabled(false);
-                stopButton.setEnabled(true);
-                stateOne.setVisibility(View.INVISIBLE);
-                stateLED.setVisibility(View.INVISIBLE);
-                stateTwo.setVisibility(View.INVISIBLE);
-                exitButtons.setVisibility(View.VISIBLE);
-                stateProgressBar.setVisibility(View.VISIBLE);
+                setPlayingState();
                 break;
         }
         updateTimerView();
+    }
+
+    private void setPlayingState() {
+        recordButton.setEnabled(true);
+        playButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        stateProgressBar.setVisibility(View.VISIBLE);
+        mMaxValue.setVisibility(View.VISIBLE);
+        mMinValue.setVisibility(View.VISIBLE);
+        mTimerView.setVisibility(View.VISIBLE);
+        saveContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void setRecordingState() {
+        recordButton.setEnabled(false);
+        playButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        stateProgressBar.setVisibility(View.GONE);
+        mMaxValue.setVisibility(View.INVISIBLE);
+        mMinValue.setVisibility(View.INVISIBLE);
+        saveContainer.setVisibility(View.GONE);
+        mTimerView.setVisibility(View.VISIBLE);
+    }
+
+    private void setIdleState() {
+        if (recorder.sampleLength() == 0) {
+            recordButton.setEnabled(true);
+            playButton.setEnabled(false);
+            stopButton.setEnabled(false);
+            recordButton.requestFocus();
+            stateProgressBar.setVisibility(View.INVISIBLE);
+            mTimerView.setVisibility(View.INVISIBLE);
+            mMaxValue.setVisibility(View.INVISIBLE);
+            mMinValue.setVisibility(View.INVISIBLE);
+            saveContainer.setVisibility(View.GONE);
+        } else {
+            recordButton.setEnabled(true);
+            playButton.setEnabled(true);
+            stopButton.setEnabled(false);
+            stateProgressBar.setVisibility(View.INVISIBLE);
+            mTimerView.setVisibility(View.INVISIBLE);
+            mMaxValue.setVisibility(View.INVISIBLE);
+            mMinValue.setVisibility(View.INVISIBLE);
+            saveContainer.setVisibility(View.GONE);
+        }
     }
 
     /**

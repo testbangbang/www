@@ -89,6 +89,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView image;
     @Bind(R.id.dict_result_activity_function_container)
     LinearLayout functionContainer;
+    @Bind(R.id.dict_result_activity_result_container)
+    LinearLayout resultContainer;
     private DictFunctionPresenter dictPresenter;
     private DictFunctionAdapter dictFunctionAdapter;
     private DictionaryManager dictionaryManager;
@@ -201,7 +203,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             title.setText(getString(R.string.dict_query_language));
         } else if (dictType == Constants.CHINESE_TYPE) {
             title.setText(getString(R.string.dict_query_chinese_language));
-        }else if (dictType == Constants.OTHER_TYPE) {
+        } else if (dictType == Constants.OTHER_TYPE) {
             title.setText(getString(R.string.Japanese));
         }
     }
@@ -537,6 +539,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDictFunctionVisibleEvent(DictFunctionVisibleEvent event) {
         functionContainer.setVisibility(View.VISIBLE);
+        testWordDictQuery();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

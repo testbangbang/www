@@ -289,7 +289,9 @@
     <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.38</string>
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
+    <string name="speech_recording_activity_dialog_height" format="float" type="dimen">0.25</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
     <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
     <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
     <string name="do_not_install_note_apk">do not install note apk</string>
@@ -492,4 +494,25 @@
     <string name="paid">paid</string>
     <string name="chart">Chart</string>
     <string name="system_update">system update</string>
+    <string name="pronounce_evaluation_hint">Third party App, to be provided.</string>
+    <string name="start_record">start_record</string>
+    <string name="fragment_speech_recording_hint">hint: You can only call your own essay file.</string>
+    <string name="fragment_speech_recording_all_number">total:</string>
+    <string name="data_unit">data unit</string>
+    <string name="hint_input_search_word">Please input search keyword.</string>
+    <string name="input_keyword">input keyword</string>
+    <string name="dialog_button_confirm">confirm</string>
+    <string name="dialog_button_cancel">cancel</string>
+    <string name="dialog_title">title</string>
+    <string name="dialog_minute_max_value">15</string>
+    <string name="dialog_minute_min_value">0</string>
+    <string name="dialog_minute_setting_value">setting:</string>
+    <string name="setting_record_time">setting record time</string>
+    <string name="recording">recording</string>
+    <string name="save_the_recording_data">Whether to save the recording data？</string>
+    <string name="record_success">record_success</string>
+    <string name="second">second</string>
+    <string name="new_word_activity_hint">Tip: the new word can be saved up to 3,600 words.</string>
+    <string name="new_word_unit">individual</string>
+    <string name="please_record_again">please record again</string>
 </resources>

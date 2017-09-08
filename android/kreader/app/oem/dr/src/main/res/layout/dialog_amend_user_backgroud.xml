@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/rectangle_stroke"
+    android:fillViewport="true"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/dialog_title_padding"
+        android:text="@string/dialog_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/level_one_font_size" />
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:id="@+id/dialog_center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dialog_seek_bar_container_margin"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                style="@style/text_view_third_style"
+                android:padding="@dimen/dialog_title_padding"
+                android:text="@string/record_time_data_minute" />
+
+            <SeekBar
+                android:id="@+id/dialog_seek_bar"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:focusable="true"
+                android:maxHeight="@dimen/dialog_seek_bar_max_height"
+                android:minHeight="@dimen/dialog_seek_bar_max_height"
+                android:progressDrawable="@drawable/po_seek_bar"
+                android:thumb="@drawable/seek_bar_thumb_style" />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/dialog_seek_bar_min_value"
+                style="@style/text_view_third_style"
+                android:layout_marginLeft="@dimen/dialog_minute_min_value_margin_left"
+                android:text="@string/dialog_minute_min_value" />
+
+            <TextView
+                android:id="@+id/dialog_seek_bar_setting_value"
+                style="@style/text_view_third_style"
+                android:layout_centerInParent="true"
+                android:text="@string/dialog_minute_setting_value" />
+
+            <TextView
+                android:id="@+id/dialog_seek_bar_max_value"
+                style="@style/text_view_third_style"
+                android:layout_alignParentRight="true"
+                android:text="@string/dialog_minute_max_value" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="@dimen/dialog_title_padding">
+
+        <Button
+            android:id="@+id/dialog_button_confirm"
+            style="@style/dialog_button_style"
+            android:text="@string/dialog_button_confirm"
+            android:textSize="@dimen/level_one_font_size" />
+
+        <Button
+            android:id="@+id/dialog_button_cancel"
+            style="@style/dialog_button_style"
+            android:text="@string/dialog_button_cancel"
+            android:textSize="@dimen/level_one_font_size" />
+    </LinearLayout>
+
+</LinearLayout>

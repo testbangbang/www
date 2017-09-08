@@ -88,4 +88,12 @@ public class DRPreferenceManager extends PreferenceManager {
     public static void saveBookshelfType(Context context, String bookshelfType) {
         setStringValue(context, Constants.BOOKSHELF_TYPE, bookshelfType);
     }
+
+    public static String getSearchKeyword(Context context, String defaultValue) {
+        return getStringValue(context, Constants.SEARCH_KEYWORD, defaultValue);
+    }
+
+    public static void saveSearchKeyword(Context context, String bookshelfType) {
+        setStringValue(context, Constants.SEARCH_KEYWORD, bookshelfType);
+    }
 }

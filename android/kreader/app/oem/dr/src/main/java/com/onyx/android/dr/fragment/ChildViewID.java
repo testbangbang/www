@@ -11,4 +11,8 @@ public class ChildViewID {
     public static final int FRAGMENT_SCHOOL_BASED_MATERIALS = 2;
     public static final int FRAGMENT_BOOKSHELF = 3;
     public static final int FRAGMENT_BOOKSHELF_V2 = 4;
+
+    public static final int ARTICLE_REPEAT_AFTER = 5;
+    public static final int SPEECH_RECORDING = 6;
+    public static final int PRONOUNCE_EVALUATION = 7;
 }

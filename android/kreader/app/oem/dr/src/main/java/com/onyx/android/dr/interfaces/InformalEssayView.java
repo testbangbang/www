@@ -11,4 +11,5 @@ import java.util.List;
 public interface InformalEssayView {
     void setInformalEssayData(List<InformalEssayEntity> dataList, ArrayList<Boolean> listCheck);
     void setInformalEssayByTime(List<InformalEssayEntity> dataList);
+    void setInformalEssayByTitle(List<InformalEssayEntity> dataList);
 }

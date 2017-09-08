@@ -305,22 +305,26 @@ public class PageRecyclerView extends RecyclerView {
     }
 
     public void prevPage() {
+        if (paginator == null) {
+            return;
+        }
         if (paginator.prevPage()){
             onPageChange();
             return;
         }
-
         if (pageTurningCycled && paginator.pages() > 1 && paginator.isFirstPage()) {
             gotoPage(paginator.lastPage());
         }
     }
 
     public void nextPage() {
+        if (paginator == null) {
+            return;
+        }
         if (paginator.nextPage()){
             onPageChange();
             return;
         }
-
         if (pageTurningCycled && paginator.pages() > 1 && paginator.isLastPage()) {
             gotoPage(0);
         }
