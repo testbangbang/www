@@ -33,9 +33,10 @@ public class PaperQuestionAndAnswer {
         public static final String ANSWER = "answer";
         public static final String USER_ANSWER = "userAnswer";
         public static final String GET_SCORE = "getScore";
+        public static final String TIMES = "times";
 
         private static String ARRAY_COLUMN[] = new String[]{BOOK_ID, PAPER_ID, REQUESTION_ID, QUESTION,
-                OPTION1, OPTION2, OPTION3, OPTION4, ANSWER, USER_ANSWER, GET_SCORE};
+                OPTION1, OPTION2, OPTION3, OPTION4, ANSWER, USER_ANSWER, GET_SCORE, TIMES};
         private static HashMap<String, Integer> columnMap = new HashMap<String, Integer>();
 
         public static ContentValues createValuesFromObject(PaperQuestionAndAnswer paper) {
@@ -51,6 +52,7 @@ public class PaperQuestionAndAnswer {
             values.put(ANSWER, paper.answer);
             values.put(USER_ANSWER, paper.userAnswer);
             values.put(GET_SCORE, paper.getScore);
+            values.put(TIMES, paper.times);
             return values;
         }
 
@@ -77,6 +79,7 @@ public class PaperQuestionAndAnswer {
             String answer = c.getString(columnMap.get(ANSWER));
             String userAnswer = c.getString(columnMap.get(USER_ANSWER));
             String getScore = c.getString(columnMap.get(GET_SCORE));
+            String times = c.getString(columnMap.get(TIMES));
 
             PaperQuestionAndAnswer paperQuestionAndAnswer = new PaperQuestionAndAnswer();
             paperQuestionAndAnswer.bookId = bookId;
@@ -90,6 +93,7 @@ public class PaperQuestionAndAnswer {
             paperQuestionAndAnswer.answer = answer;
             paperQuestionAndAnswer.userAnswer = userAnswer;
             paperQuestionAndAnswer.getScore = getScore;
+            paperQuestionAndAnswer.times = times;
 
             return paperQuestionAndAnswer;
         }
@@ -106,12 +110,14 @@ public class PaperQuestionAndAnswer {
     public String answer = null;
     public String userAnswer = null;
     public String getScore = null;
+    public String times = null;
 
-    public static List<PaperQuestionAndAnswer> getPaperQuestionAndAnswerByPaperId(Context context, String paperId) {
+    public static List<PaperQuestionAndAnswer> getAnswerPaperByTimes(Context context, String paperId, String times) {
         Cursor c = null;
         ArrayList<PaperQuestionAndAnswer> list = new ArrayList<>();
         try {
-            c = context.getContentResolver().query(CONTENT_URI, null, Column.PAPER_ID + "= ?", new String[]{paperId}, null);
+            c = context.getContentResolver().query(CONTENT_URI, null, Column.PAPER_ID + "= ? AND " +
+                    Column.TIMES + "= ?", new String[]{paperId, times}, null);
             if (c == null) {
                 Log.w(TAG, "getPaperQuestionAndAnswerByBookId: get paper failed");
                 return null;
@@ -129,6 +135,15 @@ public class PaperQuestionAndAnswer {
         }
     }
 
+    public static boolean deleteAnswerPaperByTimes(Context context, String paperId, String times) {
+        int delete = context.getContentResolver().delete(CONTENT_URI, Column.PAPER_ID + "= ? AND " + Column.TIMES +
+                "= ?", new String[]{paperId, times});
+        if(delete <= 0) {
+            return false;
+        }
+        return true;
+    }
+
     public static List<PaperQuestionAndAnswer> getPaperQuestionAndAnswerByBookId(Context context, String bookId) {
         Cursor c = null;
         ArrayList<PaperQuestionAndAnswer> list = new ArrayList<>();
@@ -141,6 +156,18 @@ public class PaperQuestionAndAnswer {
 
             for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
                 PaperQuestionAndAnswer paperQuestionAndAnswer = Column.readColumnData(c);
+                boolean flag = false;
+                if (list != null && list.size() > 0) {
+                    for (PaperQuestionAndAnswer paper : list) {
+                        if (paperQuestionAndAnswer.requestionId.equals(paper.requestionId)) {
+                            flag = true;
+                            break;
+                        }
+                    }
+                }
+                if (flag) {
+                    continue;
+                }
                 list.add(paperQuestionAndAnswer);
             }
             return list;
@@ -158,21 +185,21 @@ public class PaperQuestionAndAnswer {
             c = context.getContentResolver().query(CONTENT_URI, null, Column.BOOK_ID + " = ? AND " +
                             Column.REQUESTION_ID + "= ?",
                     new String[]{bookId, requestionId + ""}, null);
-            if(c == null) {
+            if (c == null) {
                 Log.d(TAG, "updatePaperQuestionAndAnswerById: query by requestionId failed");
                 return false;
             }
 
-            if(c.moveToFirst()) {
+            if (c.moveToFirst()) {
                 paperQuestionAndAnswer = Column.readColumnData(c);
             }
-        }finally {
-            if(c != null) {
+        } finally {
+            if (c != null) {
                 c.close();
             }
         }
-        
-        if(paperQuestionAndAnswer == null) {
+
+        if (paperQuestionAndAnswer == null) {
             Log.d(TAG, "updateAnswerById: get paper failed");
             return false;
         }
@@ -188,6 +215,30 @@ public class PaperQuestionAndAnswer {
         return true;
     }
 
+    public static List<PaperQuestionAndAnswer> getAnswerPaperById(Context context, String bookId, long requestionId) {
+        List<PaperQuestionAndAnswer> list = new ArrayList<>();
+        Cursor c = null;
+        try {
+            c = context.getContentResolver().query(CONTENT_URI, null, Column.BOOK_ID + " = ? AND " +
+                            Column.REQUESTION_ID + "= ?",
+                    new String[]{bookId, requestionId + ""}, null);
+            if (c == null) {
+                Log.d(TAG, "updatePaperQuestionAndAnswerById: query by requestionId failed");
+                return null;
+            }
+
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                PaperQuestionAndAnswer paperQuestionAndAnswer = Column.readColumnData(c);
+                list.add(paperQuestionAndAnswer);
+            }
+            return list;
+        } finally {
+            if (c != null) {
+                c.close();
+            }
+        }
+    }
+
     public static boolean insertPaperQuestionAndAnswer(Context context, PaperQuestionAndAnswer paper) {
         ContentValues values = Column.createValuesFromObject(paper);
         Uri result = context.getContentResolver().insert(CONTENT_URI, values);
@@ -197,6 +248,17 @@ public class PaperQuestionAndAnswer {
 
         String id = result.getLastPathSegment();
         if (id == null) {
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean updatePaperQuestionAndAnswer(Context context, PaperQuestionAndAnswer paper) {
+        ContentValues values = Column.createValuesFromObject(paper);
+        int count = context.getContentResolver().update(CONTENT_URI, values, Column.BOOK_ID + "= ? AND " +
+                        Column.REQUESTION_ID + " = ? AND " + Column.TIMES + "= ?",
+                new String[]{paper.bookId, paper.requestionId, paper.times});
+        if (count < 0) {
             return false;
         }
         return true;

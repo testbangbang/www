@@ -8,6 +8,7 @@ import com.onyx.android.edu.bean.PaperResult;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.libedu.EduCloudManager;
+import com.onyx.libedu.db.PaperQuestionAndAnswer;
 import com.onyx.libedu.model.ChooseQuestionVariable;
 import com.onyx.libedu.model.Question;
 import com.onyx.libedu.request.cloud.GetQuestionsRequest;
@@ -77,12 +78,18 @@ public class ExerciseRespondPresenter implements ExerciseRespondContract.Exercis
     }
 
     @Override
-    public void insertAnswerAndScore(String bookId, long questionId, String answer, String score) {
-        InsertUserAnswerRequest rq = new InsertUserAnswerRequest(bookId, questionId, answer, score);
+    public void insertAnswerAndScore(String bookId, long questionId, final String answer, final String score) {
+        final InsertUserAnswerRequest rq = new InsertUserAnswerRequest(bookId, questionId, answer, score);
         eduCloudManager.submitRequest(EduApp.instance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-
+                List<PaperQuestionAndAnswer> answerPaperList = rq.getAnswerPaperList();
+                if(answerPaperList != null && answerPaperList.size() > 0) {
+                    PaperQuestionAndAnswer paperQuestionAndAnswer = answerPaperList.get(0);
+                    paperQuestionAndAnswer.userAnswer = answer;
+                    paperQuestionAndAnswer.getScore = score;
+                    EduApp.instance().setAnswerPaper(paperQuestionAndAnswer);
+                }
             }
         });
     }

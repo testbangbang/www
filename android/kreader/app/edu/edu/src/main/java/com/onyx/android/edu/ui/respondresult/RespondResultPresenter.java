@@ -39,7 +39,8 @@ public class RespondResultPresenter implements RespondResultContract.Presenter{
 
     @Override
     public void updateExaminationPaper(Float score, int count, int errorCount) {
-        UpdateExaminationPaper rq = new UpdateExaminationPaper(score, count, errorCount, EduApp.instance().getBookId());
+        UpdateExaminationPaper rq = new UpdateExaminationPaper(score, count, errorCount,
+                EduApp.instance().getBookId(), EduApp.instance().getAnswerPaperList());
         eduCloudManager.submitRequest(EduApp.instance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

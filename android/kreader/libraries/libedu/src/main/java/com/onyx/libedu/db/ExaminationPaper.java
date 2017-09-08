@@ -7,7 +7,9 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.util.Log;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by li on 2017/7/28.
@@ -29,6 +31,8 @@ public class ExaminationPaper {
         public static final String CORRECT_COUNT = "correctCount";
         public static final String ERROR_COUNT = "errorCount";
         public static final String TIMES = "times";
+        public static final String MODIFY_TIME = "modifyTime";
+        public static final String LIMITS = "limits";
 
         private static boolean sColumnIndexesInitialized = false;
         private static int sColumnPaperID = -1;
@@ -38,7 +42,7 @@ public class ExaminationPaper {
         private static int sColumnBookId = -1;
 
         private static String COLUMN_ARRAY[] = new String[]{PAPER_ID, ACCOUNT, CONTENT, VERSION, BOOK_ID, SCORE,
-                CORRECT_COUNT, ERROR_COUNT, TIMES};
+                CORRECT_COUNT, ERROR_COUNT, TIMES, MODIFY_TIME, LIMITS};
 
         private static HashMap<String, Integer> columnMap = new HashMap<String, Integer>();
 
@@ -53,6 +57,8 @@ public class ExaminationPaper {
             values.put(CORRECT_COUNT, paper.correctCount);
             values.put(ERROR_COUNT, paper.errorCount);
             values.put(TIMES, paper.times);
+            values.put(MODIFY_TIME, paper.modifyTime);
+            values.put(LIMITS, paper.limits);
             return values;
         }
 
@@ -79,6 +85,8 @@ public class ExaminationPaper {
             String correctCount = c.getString(columnMap.get(CORRECT_COUNT));
             String errorCount = c.getString(columnMap.get(ERROR_COUNT));
             String times = c.getString(columnMap.get(TIMES));
+            long modifyTime = c.getLong(columnMap.get(MODIFY_TIME));
+            String limits = c.getString(columnMap.get(LIMITS));
 
             ExaminationPaper examinationPaper = new ExaminationPaper();
             examinationPaper.paperId = paperid;
@@ -90,6 +98,8 @@ public class ExaminationPaper {
             examinationPaper.correctCount = correctCount;
             examinationPaper.errorCount = errorCount;
             examinationPaper.times = times;
+            examinationPaper.modifyTime = modifyTime;
+            examinationPaper.limits = limits;
             return examinationPaper;
         }
 
@@ -104,20 +114,23 @@ public class ExaminationPaper {
     public String correctCount = null;
     public String errorCount = null;
     public String times = null;
+    public long modifyTime = 0;
+    public String limits = null;
 
-    public static ExaminationPaper getExaminationPaperByBookId(Context context, String bookId) {
+    public static List<ExaminationPaper> getExaminationPaperByBookId(Context context, String bookId) {
         Cursor c = null;
-        ExaminationPaper paper = null;
+        List<ExaminationPaper> paperList = new ArrayList<>();
         try {
             c = context.getContentResolver().query(CONTENT_URI, null, Column.BOOK_ID + "= ?", new String[]{bookId}, null);
             if (c == null) {
                 Log.w(TAG, "getExaminationPaperByBookId: get examination failed");
                 return null;
             }
-            if (c.moveToFirst()) {
-                paper = Column.readerColumnDate(c);
+            for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+                ExaminationPaper examinationPaper = Column.readerColumnDate(c);
+                paperList.add(examinationPaper);
             }
-            return paper;
+            return paperList;
         } finally {
             if (c != null) {
                 c.close();
@@ -166,7 +179,8 @@ public class ExaminationPaper {
 
     public static boolean updateExaminationPaper(Context context, ExaminationPaper paper) {
         ContentValues columnDate = Column.createColumnDate(paper);
-        int count = context.getContentResolver().update(CONTENT_URI, columnDate, Column.PAPER_ID + "= ?", new String[]{paper.paperId});
+        int count = context.getContentResolver().update(CONTENT_URI, columnDate, Column.PAPER_ID + "= ? AND " +
+                Column.MODIFY_TIME + "= ?", new String[]{paper.paperId, paper.modifyTime + ""});
         if (count <= 0) {
             return false;
         }
@@ -175,13 +189,12 @@ public class ExaminationPaper {
         return true;
     }
 
-    public static boolean updateExaminationPaper(Context context, Float score, int correctCount, int errorCount, String bookId) {
-        ExaminationPaper paper = getExaminationPaperByBookId(context, bookId);
-        paper.score = String.valueOf(score);
-        paper.correctCount = String.valueOf(correctCount);
-        paper.errorCount = String.valueOf(errorCount);
-        paper.times = paper.times == null ? "1" : String.valueOf(Integer.parseInt(paper.times) + 1);
-
-        return updateExaminationPaper(context, paper);
+    public static boolean deletePaper(Context context, ExaminationPaper paper) {
+        int delete = context.getContentResolver().delete(CONTENT_URI, Column.PAPER_ID + "= ? AND " + Column.TIMES + "= ?",
+                new String[]{paper.paperId, paper.times});
+        if(delete <= 0) {
+            return false;
+        }
+        return true;
     }
 }
