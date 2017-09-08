@@ -114,7 +114,6 @@ public class AlertInfoDialog extends Dialog implements View.OnClickListener {
             case R.id.dialog_button_confirm:
                 confirmListener();
                 break;
-
             case R.id.dialog_button_cancel:
                 cancelListener();
                 break;

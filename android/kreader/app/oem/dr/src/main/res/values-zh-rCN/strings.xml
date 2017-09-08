@@ -494,4 +494,5 @@
     <string name="second">秒</string>
     <string name="new_word_activity_hint">小提示：生词本最多可存3600个词，超出部分自动清除。</string>
     <string name="new_word_unit">个</string>
+    <string name="please_record_again">请重新录音</string>
 </resources>

@@ -233,6 +233,7 @@ public class SpeechRecordingActivity extends BaseActivity
             case R.id.speech_recording_activity_cancel:
                 recorder.delete();
                 saveContainer.setVisibility(View.GONE);
+                CommonNotices.showMessage(this, getString(R.string.please_record_again));
                 break;
         }
     }
@@ -341,6 +342,7 @@ public class SpeechRecordingActivity extends BaseActivity
             return;
         }
         setResult(RESULT_OK, new Intent().setData(uri));
+        CommonNotices.showMessage(this, getString(R.string.saved_successfully));
     }
 
     /**
@@ -536,49 +538,61 @@ public class SpeechRecordingActivity extends BaseActivity
         Resources res = getResources();
         switch (recorder.state()) {
             case Recorder.IDLE_STATE:
-                if (recorder.sampleLength() == 0) {
-                    recordButton.setEnabled(true);
-                    playButton.setEnabled(false);
-                    stopButton.setEnabled(false);
-                    recordButton.requestFocus();
-                    stateProgressBar.setVisibility(View.INVISIBLE);
-                    mTimerView.setVisibility(View.INVISIBLE);
-                    mMaxValue.setVisibility(View.INVISIBLE);
-                    mMinValue.setVisibility(View.INVISIBLE);
-                    saveContainer.setVisibility(View.GONE);
-                } else {
-                    recordButton.setEnabled(true);
-                    playButton.setEnabled(true);
-                    stopButton.setEnabled(false);
-                    stateProgressBar.setVisibility(View.INVISIBLE);
-                    mTimerView.setVisibility(View.INVISIBLE);
-                    mMaxValue.setVisibility(View.INVISIBLE);
-                    mMinValue.setVisibility(View.INVISIBLE);
-                    saveContainer.setVisibility(View.GONE);
-                }
+                setIdleState();
                 break;
             case Recorder.RECORDING_STATE:
-                recordButton.setEnabled(false);
-                playButton.setEnabled(false);
-                stopButton.setEnabled(true);
-                stateProgressBar.setVisibility(View.GONE);
-                mMaxValue.setVisibility(View.INVISIBLE);
-                mMinValue.setVisibility(View.INVISIBLE);
-                saveContainer.setVisibility(View.GONE);
-                mTimerView.setVisibility(View.VISIBLE);
+                setRecordingState();
                 break;
             case Recorder.PLAYING_STATE:
-                recordButton.setEnabled(true);
-                playButton.setEnabled(false);
-                stopButton.setEnabled(true);
-                stateProgressBar.setVisibility(View.VISIBLE);
-                mMaxValue.setVisibility(View.VISIBLE);
-                mMinValue.setVisibility(View.VISIBLE);
-                mTimerView.setVisibility(View.VISIBLE);
-                saveContainer.setVisibility(View.VISIBLE);
+                setPlayingState();
                 break;
         }
         updateTimerView();
+    }
+
+    private void setPlayingState() {
+        recordButton.setEnabled(true);
+        playButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        stateProgressBar.setVisibility(View.VISIBLE);
+        mMaxValue.setVisibility(View.VISIBLE);
+        mMinValue.setVisibility(View.VISIBLE);
+        mTimerView.setVisibility(View.VISIBLE);
+        saveContainer.setVisibility(View.VISIBLE);
+    }
+
+    private void setRecordingState() {
+        recordButton.setEnabled(false);
+        playButton.setEnabled(false);
+        stopButton.setEnabled(true);
+        stateProgressBar.setVisibility(View.GONE);
+        mMaxValue.setVisibility(View.INVISIBLE);
+        mMinValue.setVisibility(View.INVISIBLE);
+        saveContainer.setVisibility(View.GONE);
+        mTimerView.setVisibility(View.VISIBLE);
+    }
+
+    private void setIdleState() {
+        if (recorder.sampleLength() == 0) {
+            recordButton.setEnabled(true);
+            playButton.setEnabled(false);
+            stopButton.setEnabled(false);
+            recordButton.requestFocus();
+            stateProgressBar.setVisibility(View.INVISIBLE);
+            mTimerView.setVisibility(View.INVISIBLE);
+            mMaxValue.setVisibility(View.INVISIBLE);
+            mMinValue.setVisibility(View.INVISIBLE);
+            saveContainer.setVisibility(View.GONE);
+        } else {
+            recordButton.setEnabled(true);
+            playButton.setEnabled(true);
+            stopButton.setEnabled(false);
+            stateProgressBar.setVisibility(View.INVISIBLE);
+            mTimerView.setVisibility(View.INVISIBLE);
+            mMaxValue.setVisibility(View.INVISIBLE);
+            mMinValue.setVisibility(View.INVISIBLE);
+            saveContainer.setVisibility(View.GONE);
+        }
     }
 
     /**

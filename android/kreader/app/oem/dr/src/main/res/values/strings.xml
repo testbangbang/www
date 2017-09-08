@@ -502,4 +502,5 @@
     <string name="second">second</string>
     <string name="new_word_activity_hint">Tip: the new word can be saved up to 3,600 words.</string>
     <string name="new_word_unit">individual</string>
+    <string name="please_record_again">please record again</string>
 </resources>
