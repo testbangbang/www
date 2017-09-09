@@ -1,6 +1,5 @@
 package com.onyx.einfo.fragment;
 
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -23,12 +22,12 @@ import com.onyx.android.sdk.data.ViewType;
 import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudLibraryContentListRequest;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
+import com.onyx.einfo.action.CloudContentLoadAction;
 import com.onyx.einfo.action.CloudContentRefreshAction;
 import com.onyx.einfo.action.DownloadAction;
 import com.onyx.einfo.action.LibraryGotoPageAction;
@@ -216,15 +215,15 @@ public class ContentFragment extends Fragment {
         if (!isVisibleToUser) {
             return false;
         }
-        String lastLibraryId = getDataHolder().getCloudViewInfo().getLibraryIdString();
+        String lastLibraryId = getLibraryViewInfo().getLibraryIdString();
         if (StringUtils.isNullOrEmpty(lastLibraryId)) {
             return false;
         }
         removeLastParentLibrary();
-        if (CollectionUtils.isNullOrEmpty(getDataHolder().getCloudViewInfo().getLibraryPathList())) {
+        if (CollectionUtils.isNullOrEmpty(getLibraryViewInfo().getLibraryPathList())) {
             onRootLibraryClick();
         } else {
-            loadData(getDataHolder().getCloudViewInfo().libraryQuery(), null);
+            loadData(getLibraryViewInfo().libraryQuery());
         }
         return true;
     }
@@ -248,7 +247,7 @@ public class ContentFragment extends Fragment {
     }
 
     private void loadData(String libraryId) {
-        LibraryViewInfo viewInfo = getDataHolder().getCloudViewInfo();
+        LibraryViewInfo viewInfo = getLibraryViewInfo();
         viewInfo.updateSortBy(SortBy.CreationTime, SortOrder.Desc);
         viewInfo.getQueryPagination().setCurrentPage(0);
         QueryArgs args = viewInfo.libraryQuery(libraryId);
@@ -261,13 +260,14 @@ public class ContentFragment extends Fragment {
     }
 
     private void loadData(final QueryArgs args) {
-        loadData(args, new BaseCallback() {
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(args, true);
+        contentLoadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
-                getDataHolder().getCloudViewInfo().getCurrentQueryArgs().useMemCloudDbPolicy();
+                updateContentView(contentLoadAction.getDataModel());
                 preloadNext();
             }
         });
@@ -278,27 +278,22 @@ public class ContentFragment extends Fragment {
             postNextTab();
             return;
         }
-        loadData(getDataHolder().getCloudViewInfo().nextPage(), new BaseCallback() {
+
+        final CloudContentLoadAction loadAction = new CloudContentLoadAction(getLibraryViewInfo().nextPage(), true);
+        loadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
+                updateContentView(loadAction.getDataModel());
                 preloadNext();
             }
         });
     }
 
-    private LibraryDataModel getLibraryDataModel(QueryResult<Library> libraryResult,
-                                                 QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
-        LibraryDataModel libraryDataModel = LibraryViewInfo.buildLibraryDataModel(result, map);
-        libraryDataModel.libraryCount = (int) libraryResult.count;
-        libraryDataModel.visibleLibraryList = libraryResult.list;
-        return libraryDataModel;
-    }
-
     private QueryPagination getPagination() {
-        return getDataHolder().getCloudViewInfo().getQueryPagination();
+        return getLibraryViewInfo().getQueryPagination();
     }
 
     private void initPagination() {
@@ -312,9 +307,9 @@ public class ContentFragment extends Fragment {
         if (preLoadPage >= getPagination().pages()) {
             return;
         }
-        QueryArgs queryArgs = getDataHolder().getCloudViewInfo().pageQueryArgs(preLoadPage);
-        final CloudLibraryContentListRequest listRequest = new CloudLibraryContentListRequest(queryArgs);
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, null);
+        QueryArgs queryArgs = getLibraryViewInfo().pageQueryArgs(preLoadPage);
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(queryArgs, false);
+        contentLoadAction.execute(getDataHolder(), null);
     }
 
     protected void initView(ViewGroup parentView) {
@@ -588,12 +583,14 @@ public class ContentFragment extends Fragment {
             postPrevTab();
             return;
         }
-        loadData(getDataHolder().getCloudViewInfo().prevPage(), new BaseCallback() {
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(getLibraryViewInfo().prevPage(), true);
+        contentLoadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     return;
                 }
+                updateContentView(contentLoadAction.getDataModel());
                 preLoadPrev();
             }
         });
@@ -604,8 +601,9 @@ public class ContentFragment extends Fragment {
         if (preLoadPage < 0) {
             return;
         }
-        CloudLibraryContentListRequest listRequest = new CloudLibraryContentListRequest(getDataHolder().getCloudViewInfo().pageQueryArgs(preLoadPage));
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, null);
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(
+                getLibraryViewInfo().pageQueryArgs(preLoadPage), false);
+        contentLoadAction.execute(getDataHolder(), null);
     }
 
     private void showGotoPageAction(int currentPage) {
@@ -622,29 +620,18 @@ public class ContentFragment extends Fragment {
 
     private void gotoPageImpl(int page) {
         final int originPage = getPagination().getCurrentPage();
-        loadData(getDataHolder().getCloudViewInfo().gotoPage(page), new BaseCallback() {
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(
+                getLibraryViewInfo().gotoPage(page), true);
+        contentLoadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
                     getPagination().setCurrentPage(originPage);
                     return;
                 }
-                preloadNext();
+                updateContentView(contentLoadAction.getDataModel());
                 preLoadPrev();
-            }
-        });
-    }
-
-    private void loadData(final QueryArgs queryArgs, final BaseCallback callback) {
-        final CloudLibraryContentListRequest listRequest = new CloudLibraryContentListRequest(queryArgs);
-        getCloudStore().submitRequestToSingle(getContext(), listRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    updateContentView(getLibraryDataModel(listRequest.getLibraryQueryResult(),
-                            listRequest.getMetadataQueryResult(), listRequest.getThumbnailMap()));
-                }
-                BaseCallback.invoke(callback, request, e);
+                preloadNext();
             }
         });
     }
@@ -662,7 +649,7 @@ public class ContentFragment extends Fragment {
     }
 
     private void updateContentView(LibraryDataModel libraryDataModel) {
-        pageDataModel = getDataHolder().getCloudViewInfo().getPageLibraryDataModel(libraryDataModel);
+        pageDataModel = getLibraryViewInfo().getPageLibraryDataModel(libraryDataModel);
         updateContentView();
     }
 
@@ -691,7 +678,7 @@ public class ContentFragment extends Fragment {
     }
 
     private int getTotalCount() {
-        LibraryDataModel dataModel = getDataHolder().getCloudViewInfo().getLibraryDataModel();
+        LibraryDataModel dataModel = getLibraryViewInfo().getLibraryDataModel();
         return dataModel.bookCount + dataModel.libraryCount;
     }
 
@@ -782,6 +769,7 @@ public class ContentFragment extends Fragment {
         String filePath = getDataSaveFilePath(eBook);
         DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
         downloadAction.execute(getDataHolder(), new BaseCallback() {
+
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -793,19 +781,33 @@ public class ContentFragment extends Fragment {
         });
     }
 
+    private DialogLoading showProgressDialog(final Object object, int resId, DialogProgressHolder.DialogCancelListener listener) {
+        return showProgressDialog(object, getString(resId), listener);
+    }
+
+    private DialogLoading showProgressDialog(final Object object, String msg, DialogProgressHolder.DialogCancelListener listener) {
+        return progressHolder.showProgressDialog(getActivity(), object, msg, listener);
+    }
+
+    private void dismissProgressDialog(final Object object) {
+        if (progressHolder != null) {
+            progressHolder.dismissProgressDialog(object);
+        }
+    }
+
     private int getBookItemPosition(int originPosition) {
         return originPosition - getLibraryListSize();
     }
 
     private String removeLastParentLibrary() {
         parentLibraryRefLayout.removeViewAt(parentLibraryRefLayout.getChildCount() - 1);
-        return dataHolder.getCloudViewInfo().getLibraryPathList().remove(
-                dataHolder.getCloudViewInfo().getLibraryPathList().size() - 1).getIdString();
+        return getLibraryViewInfo().getLibraryPathList().remove(
+                getLibraryViewInfo().getLibraryPathList().size() - 1).getIdString();
     }
 
     private void remoteAllParentLibrary() {
         parentLibraryRefLayout.removeAllViews();
-        dataHolder.getCloudViewInfo().getLibraryPathList().clear();
+        getLibraryViewInfo().getLibraryPathList().clear();
     }
 
     private void processLibraryRefViewClick(View v) {
@@ -818,7 +820,7 @@ public class ContentFragment extends Fragment {
             removeLastParentLibrary();
         }
         getPagination().setCurrentPage(0);
-        loadData(dataHolder.getCloudViewInfo().libraryQuery());
+        loadData(getLibraryViewInfo().libraryQuery());
     }
 
     private TextView getLibraryTextView(Library library) {
@@ -834,29 +836,24 @@ public class ContentFragment extends Fragment {
     }
 
     private void addLibraryToParentRefList(Library library) {
-        dataHolder.getCloudViewInfo().getLibraryPathList().add(library);
+        getLibraryViewInfo().getLibraryPathList().add(library);
         parentLibraryRefLayout.addView(getLibraryTextView(library));
     }
 
     private void processLibraryItemClick(final Library library) {
-        final DialogLoading dialog = new DialogLoading(dataHolder.getContext(), getString(R.string.loading), false);
-        dialog.show();
-        loadData(getDataHolder().getCloudViewInfo().libraryQuery(library.getIdString()), new BaseCallback() {
+        QueryArgs args = getLibraryViewInfo().libraryQuery(library.getIdString());
+        final CloudContentLoadAction loadAction = new CloudContentLoadAction(args, true);
+        loadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                dismissDialog(dialog);
+                dismissProgressDialog(loadAction);
                 if (e != null) {
                     return;
                 }
                 addLibraryToParentRefList(library);
             }
         });
-    }
-
-    private void dismissDialog(Dialog dialog) {
-        if (dialog != null && dialog.isShowing()) {
-            dialog.dismiss();
-        }
+        showProgressDialog(loadAction, getString(R.string.loading), null);
     }
 
     private void processNormalModeItemClick(int position) {
