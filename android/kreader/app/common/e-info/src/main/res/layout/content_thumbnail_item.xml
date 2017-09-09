@@ -19,7 +19,7 @@
             android:layout_width="@dimen/book_item_cover_image_width"
             android:layout_height="@dimen/book_item_cover_image_height"
             android:scaleType="fitXY"
-            android:src="@drawable/cloud_default_cover" />
+            android:src="@drawable/cover_default_thumbnail" />
 
         <ImageView
             android:id="@+id/image_get_widget"

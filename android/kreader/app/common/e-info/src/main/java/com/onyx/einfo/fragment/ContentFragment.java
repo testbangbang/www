@@ -1,10 +1,13 @@
 package com.onyx.einfo.fragment;
 
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +28,7 @@ import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
+import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.action.CloudContentLoadAction;
@@ -35,6 +39,7 @@ import com.onyx.einfo.custom.PageIndicator;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.AccountTokenErrorEvent;
 import com.onyx.einfo.events.BookLibraryEvent;
+import com.onyx.einfo.events.DownloadingEvent;
 import com.onyx.einfo.events.HardwareErrorEvent;
 import com.onyx.einfo.events.SortByEvent;
 import com.onyx.einfo.events.TabSwitchEvent;
@@ -50,7 +55,6 @@ import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
-import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
@@ -383,8 +387,26 @@ public class ContentFragment extends Fragment {
         });
     }
 
-    private int getDefaultCover() {
-        return isThumbnailViewType() ? R.drawable.cloud_default_cover : R.drawable.cloud_default_cover_detail;
+    private int getImageResource(Metadata book) {
+        String viewType = getCurrentViewType().name().toLowerCase();
+        if (!isColorDevice) {
+            viewType = ViewType.Thumbnail.name().toLowerCase();
+        }
+        String type = book.getType();
+        Map<String, String> map = DeviceConfig.sharedInstance(getContext()).getCustomizedProductCovers();
+        if (StringUtils.isNullOrEmpty(type) || !map.containsKey(type)) {
+            return getDefaultCover(viewType);
+        }
+        return RawResourceUtil.getDrawableIdByName(getContext(), map.get(type) + "_" + viewType);
+    }
+
+    private int getDefaultCover(String viewType) {
+        Map<String, String> map = DeviceConfig.sharedInstance(getContext()).getCustomizedProductCovers();
+        String coverResName = map.get("default");
+        if (StringUtils.isNotBlank(viewType)) {
+            coverResName += "_" + viewType;
+        }
+        return RawResourceUtil.getDrawableIdByName(getContext(), coverResName);
     }
 
     private void updateListItemView(DetailItemHolder viewHolder, int position) {
@@ -401,7 +423,7 @@ public class ContentFragment extends Fragment {
 
     private void updateCommonView(TextView titleView, ImageView getWidgetImage, ImageView messageWidgetImage,
                                   Metadata eBook) {
-        getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
+        updateDownloadPanel(getWidgetImage, eBook);
         messageWidgetImage.setVisibility(getPageDataModel().notificationMap.containsKey(eBook.getAssociationId()) ? View.VISIBLE : View.GONE);
         titleView.setText(String.valueOf(eBook.getName()));
     }
@@ -409,7 +431,7 @@ public class ContentFragment extends Fragment {
     private void loadThumbnailCover(ImageView imageView, Metadata eBook, int position) {
         Bitmap bitmap = getBitmap(eBook);
         if (bitmap == null) {
-            imageView.setImageResource(getDefaultCover());
+            imageView.setImageResource(getImageResource(eBook));
             if (newPage) {
                 newPage = false;
                 noThumbnailPosition = position;
@@ -521,7 +543,13 @@ public class ContentFragment extends Fragment {
         return url;
     }
 
-    private void updateDownloadPanel(ThumbnailItemHolder holder, Metadata eBook) {
+    private void updateDownloadPanel(ImageView getWidgetImageView, Metadata eBook) {
+        if (isFileExists(eBook)) {
+            getWidgetImageView.setVisibility(View.VISIBLE);
+            getWidgetImageView.setImageResource(R.drawable.book_item_get_widget);
+            return;
+        }
+
         boolean showProgress = true;
         BaseDownloadTask task = getDownLoaderManager().getTask(eBook.getGuid());
         if (task == null) {
@@ -539,6 +567,10 @@ public class ContentFragment extends Fragment {
                     getDownLoaderManager().removeTask(eBook.getGuid());
                     break;
             }
+        }
+        getWidgetImageView.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+        if (showProgress) {
+            getWidgetImageView.setImageResource(R.drawable.book_item_download_widget);
         }
     }
 
@@ -662,6 +694,13 @@ public class ContentFragment extends Fragment {
         updatePageIndicator();
     }
 
+    private void updateOnlyContentView() {
+        if (isContentViewInvalid()) {
+            return;
+        }
+        contentPageView.getAdapter().notifyDataSetChanged();
+    }
+
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
         getPagination().resize(getRow(), getCol(), totalCount);
@@ -719,8 +758,14 @@ public class ContentFragment extends Fragment {
         if (!file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(getContext(),
-                MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book));
+
+        Intent intent = MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book);
+        ResolveInfo info = ViewDocumentUtils.getDefaultActivityInfo(getContext(), intent,
+                ViewDocumentUtils.getEduReaderComponentName().getPackageName());
+        if (info == null) {
+            return;
+        }
+        ActivityUtil.startActivitySafely(getContext(), intent, info.activityInfo);
     }
 
     private boolean checkBookMetadataPathValid(Metadata book) {
@@ -768,17 +813,7 @@ public class ContentFragment extends Fragment {
     private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
         DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
-        downloadAction.execute(getDataHolder(), new BaseCallback() {
-
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                updateContentView();
-                openCloudFile(eBook);
-            }
-        });
+        downloadAction.execute(getDataHolder(), null);
     }
 
     private DialogLoading showProgressDialog(final Object object, int resId, DialogProgressHolder.DialogCancelListener listener) {
@@ -988,6 +1023,11 @@ public class ContentFragment extends Fragment {
         processSortSwitch(event.sortBy, event.sortOrder);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        updateOnlyContentView();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -1012,9 +1052,7 @@ public class ContentFragment extends Fragment {
         super.setUserVisibleHint(isVisibleToUser);
         this.isVisibleToUser = isVisibleToUser;
         if (isVisibleToUser) {
-            if (contentPageView != null) {
-                updateContentView();
-            }
+            updateContentView();
         }
     }
 
