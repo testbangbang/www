@@ -108,6 +108,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         menuBack = (LinearLayout) rootView.findViewById(R.id.menu_back);
 
         listAdapter = new BookListAdapter(getActivity(), getDataHolder());
+        listAdapter.setShowName(true);
         titleBar = rootView.findViewById(R.id.bookshelf_title_bar);
     }
 
@@ -156,7 +157,6 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
             }
             QueryArgs queryArgs = getDataHolder().getCloudViewInfo().buildLibraryQuery(library.getIdString());
             queryArgs.fetchPolicy = FetchPolicy.DB_ONLY;
-            queryArgs.libraryUniqueId = library.getIdString();
             queryArgs.conditionGroup.and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
             bookshelfPresenter.getLibrary(queryArgs);
         }

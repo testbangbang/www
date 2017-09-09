@@ -39,7 +39,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private static final String TAG = "AuthTokenAction";
-    private int localLoadRetryCount = 1;
+    private int localLoadRetryCount = 3;
 
     @Override
     public void execute(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {

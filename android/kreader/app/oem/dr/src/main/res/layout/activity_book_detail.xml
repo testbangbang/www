@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_bar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:paddingLeft="@dimen/fragment_content_padding"
+        android:paddingRight="@dimen/fragment_content_padding">
+
+        <ImageView
+            android:id="@+id/book_detail_book_cover"
+            android:layout_width="@dimen/now_reading_book_cover_width"
+            android:layout_height="@dimen/now_reading_book_cover_height"
+            android:layout_centerVertical="true"
+            android:background="@drawable/image_selector_bg"
+            android:scaleType="fitXY" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="@dimen/book_detail_button_margin"
+            android:layout_marginTop="@dimen/book_detail_book_name_margin_top"
+            android:layout_toRightOf="@id/book_detail_book_cover"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/book_detail_book_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/book_detail_text_margin"
+                android:textSize="@dimen/level_two_font_size" />
+
+            <TextView
+                android:id="@+id/book_detail_book_publisher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/book_detail_text_margin"
+                android:textSize="@dimen/level_two_font_size" />
+
+            <TextView
+                android:id="@+id/book_detail_crowd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/book_detail_text_margin"
+                android:textSize="@dimen/level_two_font_size" />
+
+            <TextView
+                android:id="@+id/book_detail_language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/book_detail_text_margin"
+                android:textSize="@dimen/level_two_font_size" />
+
+            <TextView
+                android:id="@+id/book_detail_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/book_detail_text_margin"
+                android:textSize="@dimen/level_two_font_size" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/book_detail_book_name_margin_top"
+            android:layout_toRightOf="@id/book_detail_book_cover"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/book_detail_pay"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/book_detail_button_margin"
+                android:background="@drawable/text_view_background"
+                android:padding="@dimen/book_detail_button_padding"
+                android:text="@string/pay"
+                android:textSize="@dimen/level_two_font_size" />
+
+            <TextView
+                android:id="@+id/book_detail_try_read"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/book_detail_button_margin"
+                android:background="@drawable/text_view_background"
+                android:padding="@dimen/book_detail_button_padding"
+                android:text="@string/try_read"
+                android:textSize="@dimen/level_two_font_size" />
+
+            <TextView
+                android:id="@+id/book_detail_add_to_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/book_detail_button_margin"
+                android:background="@drawable/text_view_background"
+                android:padding="@dimen/book_detail_button_padding"
+                android:text="@string/add_to_shopping_cart"
+                android:textSize="@dimen/level_two_font_size" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/fragment_content_padding"
+        android:paddingRight="@dimen/fragment_content_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/brief_introduction"
+            android:textSize="@dimen/level_one_font_size" />
+
+        <TextView
+            android:id="@+id/book_detail_introduction"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="3"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/fragment_content_padding"
+        android:paddingRight="@dimen/fragment_content_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/catalog"
+            android:textSize="@dimen/level_one_font_size" />
+
+        <TextView
+            android:id="@+id/book_detail_catalog"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+</LinearLayout>

@@ -4,11 +4,36 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/book_list_item_text_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/library_item_textView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:maxLines="1" />
+
+        <TextView
+            android:id="@+id/library_item_textView_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:ellipsize="end"
+            android:maxLines="1" />
+    </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/library_item_cover_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
+        android:layout_above="@id/book_list_item_text_layout"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/image_selector_bg">
 
         <ImageView
@@ -23,7 +48,6 @@
             android:layout_width="@dimen/book_list_item_widget_width"
             android:layout_height="@dimen/book_list_item_widget_height"
             android:layout_marginTop="0dp"
-            android:layout_alignParentRight="true"
             android:src="@drawable/book_item_get_widget"
             android:visibility="gone" />
 
@@ -34,20 +58,6 @@
             android:layout_marginTop="0dp"
             android:background="@drawable/checkbox_selector"
             android:visibility="gone" />
-
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/library_item_textView_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/library_item_cover_panel"
-        android:layout_alignRight="@+id/library_item_cover_panel"
-        android:layout_below="@+id/library_item_cover_panel"
-        android:layout_centerInParent="true"
-        android:layout_marginRight="@dimen/book_list_item_title_margin_right"
-        android:ellipsize="end"
-        android:gravity="center_horizontal"
-        android:lines="2"
-        android:maxLines="2" />
 </RelativeLayout>

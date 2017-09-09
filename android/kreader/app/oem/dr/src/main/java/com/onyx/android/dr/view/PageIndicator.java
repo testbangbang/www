@@ -1,6 +1,7 @@
 package com.onyx.android.dr.view;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
@@ -20,6 +21,8 @@ public class PageIndicator {
     TextView totalText;
     @Bind(R.id.page_indicator)
     TextView currentPageView;
+    @Bind(R.id.refresh)
+    ImageView refresh;
 
     private GPaginator gPaginator;
     private PageChangedListener pageChangedListener;
@@ -120,5 +123,9 @@ public class PageIndicator {
         if (dataRefreshListener != null) {
             dataRefreshListener.onRefresh();
         }
+    }
+
+    public void showRefresh(boolean show) {
+        refresh.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 }

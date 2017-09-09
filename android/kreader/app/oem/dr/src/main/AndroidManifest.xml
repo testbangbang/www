@@ -51,9 +51,9 @@
 
         <activity
             android:name=".activity.LoginActivity"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:launchMode="singleTask"
             android:windowSoftInputMode="stateVisible|adjustPan" />
 
         <activity android:name=".reader.activity.ReaderActivity" />
@@ -202,16 +202,21 @@
 
         <activity
             android:name=".activity.WifiActivity"
-            android:theme="@style/WifiDialogStyle"
             android:exported="true"
             android:launchMode="singleTask"
+            android:theme="@style/WifiDialogStyle"
             android:windowSoftInputMode="adjustNothing">
-        <intent-filter>
-            <action android:name="android.intent.action.WIFI_ENABLE" />
-            <action android:name="com.android.systemui.CONFIGURE_NEW_WIFI_ACTION" />
-            <category android:name="android.intent.category.DEFAULT" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.WIFI_ENABLE" />
+                <action android:name="com.android.systemui.CONFIGURE_NEW_WIFI_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.BookDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>

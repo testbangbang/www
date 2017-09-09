@@ -28,6 +28,7 @@ import com.onyx.android.dr.event.DictMenuEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
 import com.onyx.android.dr.event.LoginFailedEvent;
+import com.onyx.android.dr.event.MoreBooksEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
 import com.onyx.android.dr.event.ToBookshelfV2Event;
@@ -36,7 +37,7 @@ import com.onyx.android.dr.fragment.BaseFragment;
 import com.onyx.android.dr.fragment.BookshelfFragment;
 import com.onyx.android.dr.fragment.BookshelfV2Fragment;
 import com.onyx.android.dr.fragment.ChildViewID;
-import com.onyx.android.dr.fragment.CommonBooksFragment;
+import com.onyx.android.dr.fragment.MoreBooksFragment;
 import com.onyx.android.dr.fragment.MainViewFragment;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.presenter.MainPresenter;
@@ -211,6 +212,11 @@ public class MainActivity extends BaseActivity implements MainView {
         ActivityManager.startEBookStoreActivity(this);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMoreBooksEvent(MoreBooksEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_COMMON_BOOKS);
+    }
+
     private LibraryDataHolder getDataHolder() {
         if (dataHolder == null) {
             dataHolder = new LibraryDataHolder(this);
@@ -251,7 +257,7 @@ public class MainActivity extends BaseActivity implements MainView {
                     baseFragment = new MainViewFragment();
                     break;
                 case ChildViewID.FRAGMENT_COMMON_BOOKS:
-                    baseFragment = new CommonBooksFragment();
+                    baseFragment = new MoreBooksFragment();
                     break;
                 case ChildViewID.FRAGMENT_BOOKSHELF:
                     baseFragment = new BookshelfFragment();

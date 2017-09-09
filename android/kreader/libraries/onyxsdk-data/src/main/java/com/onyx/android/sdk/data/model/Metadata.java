@@ -120,6 +120,9 @@ public class Metadata extends BaseData {
     @Column
     private float discount;
 
+    @Column
+    private boolean paid;
+
     public String getCurrency() {
         return currency;
     }
@@ -386,6 +389,14 @@ public class Metadata extends BaseData {
 
     public static Metadata createFromFile(File file) {
         return createFromFile(file, true);
+    }
+
+    public boolean isPaid() {
+        return paid;
+    }
+
+    public void setPaid(boolean paid) {
+        this.paid = paid;
     }
 
     public static Metadata createFromMetadataPath(Metadata metadata, boolean computeMd5) {
