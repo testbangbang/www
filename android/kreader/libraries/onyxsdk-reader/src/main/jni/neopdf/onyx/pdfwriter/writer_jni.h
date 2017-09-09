@@ -87,6 +87,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_close
   (JNIEnv *, jclass);
 
+/*
+ * Class:     com_onyx_android_sdk_reader_utils_PdfWriterUtils
+ * Method:    setDocumentTitle
+ * Signature: (Ljava/lang/String;Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_setDocumentTitle
+  (JNIEnv *, jclass, jstring, jstring);
+
 #ifdef __cplusplus
 }
 #endif

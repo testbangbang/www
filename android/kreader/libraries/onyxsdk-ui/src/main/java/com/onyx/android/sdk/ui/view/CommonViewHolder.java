@@ -22,6 +22,10 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
         views = new SparseArray<>();
     }
 
+    public View getItemView() {
+        return itemView;
+    }
+
     public <T extends View> T getView(int viewId) {
         View view = views.get(viewId);
         if (view == null) {

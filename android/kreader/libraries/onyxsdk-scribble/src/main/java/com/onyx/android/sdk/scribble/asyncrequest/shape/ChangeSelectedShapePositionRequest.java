@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 
 /**
@@ -30,15 +30,15 @@ public class ChangeSelectedShapePositionRequest extends AsyncBaseNoteRequest {
     private volatile boolean isAddToHistory = false;
 
     @Override
-    public void execute(AsyncNoteViewHelper helper) throws Exception {
+    public void execute(NoteManager helper) throws Exception {
         setResumeInputProcessor(helper.useDFBForCurrentState());
         benchmarkStart();
         helper.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
         if ((Float.compare(targetDx, Float.MIN_VALUE) == 0 || (Float.compare(targetDy, Float.MIN_VALUE) == 0)) && touchPoint != null) {
             targetDx = touchPoint.getX() - helper.getNoteDocument().getCurrentPage(
-                    helper.getView().getContext()).getSelectedRect().centerX();
+                    getContext()).getSelectedRect().centerX();
             targetDy = touchPoint.getY() - helper.getNoteDocument().getCurrentPage(
-                    helper.getView().getContext()).getSelectedRect().centerY();
+                    getContext()).getSelectedRect().centerY();
         }
         helper.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(targetDx, targetDy, isAddToHistory);
         renderCurrentPageInBitmap(helper);

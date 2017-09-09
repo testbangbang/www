@@ -6,7 +6,7 @@ import android.graphics.Rect;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 
 import java.util.List;
 
@@ -23,21 +23,20 @@ public class PageListRenderRequest extends AsyncBaseNoteRequest {
         this.copyBitmap = copyBitmap;
         setDocUniqueId(id);
         setAbortPendingTasks(true);
-        setViewportSize(size);
         setVisiblePages(pages);
         setPauseInputProcessor(true);
         setResumeInputProcessor(resume);
     }
 
-    public void execute(final AsyncNoteViewHelper parent) throws Exception {
-        ensureDocumentOpened(parent);
-        loadShapeData(parent);
-        renderVisiblePagesInBitmap(parent);
-        updateShapeDataInfo(parent);
-        renderBitmap = copyBitmap ? Bitmap.createBitmap(parent.getRenderBitmap()) : parent.getRenderBitmap();
+    public void execute(final NoteManager noteManager) throws Exception {
+        ensureDocumentOpened(noteManager);
+        loadShapeData(noteManager);
+        noteManager.getRendererHelper().renderVisiblePagesInBitmap(noteManager, this);
+        updateShapeDataInfo(noteManager);
+        renderBitmap = copyBitmap ? Bitmap.createBitmap(noteManager.getRenderBitmap()) : noteManager.getRenderBitmap();
     }
 
-    public void loadShapeData(final AsyncNoteViewHelper parent) {
+    public void loadShapeData(final NoteManager parent) {
         try {
             parent.getNoteDocument().loadShapePages(getContext(), getVisiblePages());
         } catch (Exception e) {

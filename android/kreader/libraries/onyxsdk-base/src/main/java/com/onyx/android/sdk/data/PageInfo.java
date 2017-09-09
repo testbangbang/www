@@ -13,6 +13,7 @@ public class PageInfo {
 
     private String name;
     private String position;
+    private int subPage = 0;
 
     private int pageOrientation;      // degree 0, 90, 180, 270.
     private int pageDisplayOrientation = 0;
@@ -167,6 +168,14 @@ public class PageInfo {
 
     public void setPosition(String position) {
         this.position = position;
+    }
+
+    public int getSubPage() {
+        return subPage;
+    }
+
+    public void setSubPage(int subPage) {
+        this.subPage = subPage;
     }
 
     /**

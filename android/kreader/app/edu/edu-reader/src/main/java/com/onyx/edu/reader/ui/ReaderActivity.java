@@ -1005,6 +1005,10 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void onResizeReaderWindow(final ResizeReaderWindowEvent event) {
         Debug.d(getClass(), "onResizeReaderWindow: " + event.width + ", " + event.height);
         getWindow().setLayout(event.width, event.height);
+        getWindow().setGravity(event.gravity);
+
+        getReaderDataHolder().getWindowParameters().update(event.width,
+                event.height, event.gravity);
     }
 
     private void prepareGCUpdateInterval() {

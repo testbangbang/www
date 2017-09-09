@@ -36,6 +36,7 @@ public class ReaderLayerMenuRepository {
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.SHOW_NOTE, null, R.string.reader_layer_menu_show_scribble, "", R.drawable.ic_dialog_reader_menu_note_show),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NOTE_EXPORT, null, R.string.reader_layer_menu_directory_export, "", R.drawable.ic_dialog_reader_menu_browse_export),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NOTE_IMPORT, null, R.string.reader_layer_menu_directory_import, "", R.drawable.ic_dialog_reader_menu_browse_import),
+//            new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.NOTE_SIDE_NOTE, null, R.string.reader_layer_menu_note_side_note, "", R.drawable.ic_dialog_reader_menu_browse_write),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Group, ReaderMenuAction.ROTATION, null, R.string.reader_layer_menu_rotation, "", R.drawable.ic_dialog_reader_menu_revolve),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ROTATION_ROTATE_90, null, 0, "", R.drawable.ic_dialog_reader_menu_revolve_left),
             new ReaderLayerMenuItem(ReaderMenuItem.ItemType.Item, ReaderMenuAction.ROTATION_ROTATE_0, null, 0, "", R.drawable.ic_dialog_reader_menu_revolve_up),

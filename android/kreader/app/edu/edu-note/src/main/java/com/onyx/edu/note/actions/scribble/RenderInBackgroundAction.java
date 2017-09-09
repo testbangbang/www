@@ -1,10 +1,10 @@
 package com.onyx.edu.note.actions.scribble;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.RenderInBackgroundRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.edu.note.actions.BaseNoteAction;
 
 import java.util.List;
@@ -14,6 +14,8 @@ import java.util.List;
  */
 
 public class RenderInBackgroundAction extends BaseNoteAction {
+    private static final String TAG = RenderInBackgroundAction.class.getSimpleName();
+
     @Override
     public void execute(NoteManager noteManager, BaseCallback callback) {
         List<Shape> shapes = noteManager.detachStash();

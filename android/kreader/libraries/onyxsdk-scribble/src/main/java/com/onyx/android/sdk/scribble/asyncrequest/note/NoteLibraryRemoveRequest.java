@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest.note;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 
@@ -25,7 +25,7 @@ public class NoteLibraryRemoveRequest extends AsyncBaseNoteRequest {
     }
 
     @Override
-    public void execute(final AsyncNoteViewHelper shapeManager) throws Exception {
+    public void execute(final NoteManager shapeManager) throws Exception {
         noteList = NoteDataProvider.loadAllNoteLibraryList();
         targetRemoveList = new ArrayList<>();
         for (String id : uniqueIdList) {

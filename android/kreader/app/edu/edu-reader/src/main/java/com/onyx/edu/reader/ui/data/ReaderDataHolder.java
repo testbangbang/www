@@ -14,6 +14,7 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
@@ -25,10 +26,6 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderFormAction;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
-import com.onyx.android.sdk.scribble.formshape.FormValue;
-import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
@@ -39,6 +36,11 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.scribble.formshape.FormValue;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.note.NoteManager;
 import com.onyx.edu.reader.note.actions.CloseNoteMenuAction;
@@ -46,20 +48,50 @@ import com.onyx.edu.reader.note.receiver.DeviceReceiver;
 import com.onyx.edu.reader.tts.ReaderTtsManager;
 import com.onyx.edu.reader.ui.ReaderBroadcastReceiver;
 import com.onyx.edu.reader.ui.actions.AccountLoadFromLocalAction;
-import com.onyx.edu.reader.ui.actions.CloudConfInitAction;
 import com.onyx.edu.reader.ui.actions.ApplyReviewDataFromCloudAction;
+import com.onyx.edu.reader.ui.actions.CloudConfInitAction;
 import com.onyx.edu.reader.ui.actions.ExportAnnotationAction;
 import com.onyx.edu.reader.ui.actions.ShowReaderMenuAction;
+import com.onyx.edu.reader.ui.events.ActivityPauseEvent;
+import com.onyx.edu.reader.ui.events.ActivityResumeEvent;
+import com.onyx.edu.reader.ui.events.AnnotationEvent;
+import com.onyx.edu.reader.ui.events.BatteryStatusChangeEvent;
+import com.onyx.edu.reader.ui.events.ChangeEpdUpdateModeEvent;
+import com.onyx.edu.reader.ui.events.ClearFormFieldControlsEvent;
+import com.onyx.edu.reader.ui.events.CloseFormMenuEvent;
+import com.onyx.edu.reader.ui.events.CloudConfInitEvent;
+import com.onyx.edu.reader.ui.events.DialogUIChangeEvent;
+import com.onyx.edu.reader.ui.events.DictionaryLookupEvent;
+import com.onyx.edu.reader.ui.events.DocumentCloseEvent;
+import com.onyx.edu.reader.ui.events.DocumentFinishEvent;
+import com.onyx.edu.reader.ui.events.DocumentInitRenderedEvent;
+import com.onyx.edu.reader.ui.events.DocumentOpenEvent;
+import com.onyx.edu.reader.ui.events.EventReceiver;
+import com.onyx.edu.reader.ui.events.FormFieldSelectedEvent;
+import com.onyx.edu.reader.ui.events.HomeClickEvent;
+import com.onyx.edu.reader.ui.events.LayoutChangeEvent;
+import com.onyx.edu.reader.ui.events.NetworkChangedEvent;
+import com.onyx.edu.reader.ui.events.PageChangedEvent;
+import com.onyx.edu.reader.ui.events.PinchZoomEvent;
+import com.onyx.edu.reader.ui.events.QuitEvent;
+import com.onyx.edu.reader.ui.events.RequestFinishEvent;
+import com.onyx.edu.reader.ui.events.ResetEpdUpdateModeEvent;
+import com.onyx.edu.reader.ui.events.ShowReaderSettingsEvent;
+import com.onyx.edu.reader.ui.events.SlideshowStartEvent;
+import com.onyx.edu.reader.ui.events.SystemUIChangedEvent;
 import com.onyx.edu.reader.ui.events.TextSelectionEvent;
-import com.onyx.edu.reader.ui.events.*;
+import com.onyx.edu.reader.ui.events.TtsErrorEvent;
+import com.onyx.edu.reader.ui.events.TtsRequestSentenceEvent;
+import com.onyx.edu.reader.ui.events.TtsStateChangedEvent;
+import com.onyx.edu.reader.ui.events.UpdatePagePositionEvent;
+import com.onyx.edu.reader.ui.events.UpdateSlideshowEvent;
 import com.onyx.edu.reader.ui.events.im.CloseSocketIOEvent;
 import com.onyx.edu.reader.ui.events.im.EmitMessageEvent;
+import com.onyx.edu.reader.ui.events.im.IMAdapter;
 import com.onyx.edu.reader.ui.events.im.StartSocketIOEvent;
 import com.onyx.edu.reader.ui.handler.HandlerManager;
 import com.onyx.edu.reader.ui.handler.form.FormBaseHandler;
 import com.onyx.edu.reader.ui.highlight.ReaderSelectionManager;
-import com.onyx.android.sdk.reader.utils.PagePositionUtils;
-import com.onyx.edu.reader.ui.events.im.IMAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -104,6 +136,8 @@ public class ReaderDataHolder {
     private int displayHeight;
     private int optionsSkippedTimes = 0;
     private int lastRequestSequence;
+    private WindowParameters windowParameters = new WindowParameters();
+
 
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
@@ -922,6 +956,10 @@ public class ReaderDataHolder {
 
     public void closeSocketIO() {
         postIMEvent(new CloseSocketIOEvent());
+    }
+
+    public WindowParameters getWindowParameters() {
+        return windowParameters;
     }
 
 }

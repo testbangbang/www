@@ -19,4 +19,6 @@ public class PdfWriterUtils {
     public static native boolean writeCircle(int page, float[] rect, int color, float strokeWidth);
     public static native boolean saveAs(String path, boolean savePagesWithAnnotation);
     public static native void close();
+
+    public static native void setDocumentTitle(String path, String title);
 }
