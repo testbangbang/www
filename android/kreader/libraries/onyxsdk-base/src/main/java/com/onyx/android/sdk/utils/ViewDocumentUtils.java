@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.webkit.MimeTypeMap;
 
 import java.io.File;
+import java.util.List;
 
 /**
  * Created by suicheng on 2016/12/5.
@@ -101,7 +103,7 @@ public class ViewDocumentUtils {
         return getReaderComponentName(context, getKreaderComponentName());
     }
 
-    private static ComponentName getEduReaderComponentName() {
+    public static ComponentName getEduReaderComponentName() {
         String packageName = "com.onyx.edu.reader";
         String className = packageName + ".ui.ReaderTabHostActivity";
         return new ComponentName(packageName, className);
@@ -122,5 +124,26 @@ public class ViewDocumentUtils {
             return null;
         }
         return componentName;
+    }
+
+    static public ResolveInfo getDefaultActivityInfo(Context context, final File file, String defaultPackageName) {
+        Intent intent = viewActionIntent(file);
+        return getDefaultActivityInfo(context, intent, defaultPackageName);
+    }
+
+    static public ResolveInfo getDefaultActivityInfo(Context context, final Intent intent, String defaultPackageName) {
+        List<ResolveInfo> infoList = context.getPackageManager().queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (CollectionUtils.isNullOrEmpty(infoList)) {
+            return null;
+        }
+        if (StringUtils.isNullOrEmpty(defaultPackageName)) {
+            return infoList.get(0);
+        }
+        for (ResolveInfo resolveInfo : infoList) {
+            if (resolveInfo.activityInfo.packageName.equals(defaultPackageName)) {
+                return resolveInfo;
+            }
+        }
+        return infoList.get(0);
     }
 }

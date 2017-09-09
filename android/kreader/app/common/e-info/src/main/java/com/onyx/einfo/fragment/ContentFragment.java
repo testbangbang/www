@@ -1,5 +1,7 @@
 package com.onyx.einfo.fragment;
 
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -737,8 +739,14 @@ public class ContentFragment extends Fragment {
         if (!file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(getContext(),
-                MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book));
+
+        Intent intent = MetadataUtils.putIntentExtraDataMetadata(ViewDocumentUtils.viewActionIntentWithMimeType(file), book);
+        ResolveInfo info = ViewDocumentUtils.getDefaultActivityInfo(getContext(), intent,
+                ViewDocumentUtils.getEduReaderComponentName().getPackageName());
+        if (info == null) {
+            return;
+        }
+        ActivityUtil.startActivitySafely(getContext(), intent, info.activityInfo);
     }
 
     private boolean checkBookMetadataPathValid(Metadata book) {
