@@ -32,7 +32,7 @@
   ],
   "cloud_content_host": "http://oa.o-in.me:9058/",
   "cloud_content_api": "http://oa.o-in.me:9058/api/",
-  "cloud_content_import_json_path": "/mnt/sdcard/books/data.json",
+  "cloud_content_import_json_path": "edu/data.json",
   "leanCloudAppId": "8R59Y6FwRttD7ndEdUe2K2Bn-gzGzoHsz",
   "leanCloudClientKey": "15xpQNiXDr2oW5W8yYuJ60It",
   "cloud_index_server_use": true,
