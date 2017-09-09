@@ -29,6 +29,16 @@ public class ViewDocumentUtils {
         return intent;
     }
 
+    public static Intent viewActionIntent(final File file, int... flags) {
+        final Intent intent = viewActionIntent(file);
+        if (flags != null && flags.length > 0) {
+            for (int flag : flags) {
+                intent.addFlags(flag);
+            }
+        }
+        return intent;
+    }
+
     public static Intent autoSlideShowIntent(final File file, final int maxPageCount,
                                              final int intervalInSeconds) {
         final Intent intent = viewActionIntentWithMimeType(file);
@@ -41,23 +51,32 @@ public class ViewDocumentUtils {
         return intent;
     }
 
-    public static Intent viewActionIntentWithMimeType(final File file, int... flags) {
+    // may use in queryIntentActivities
+    static public Intent mimeTypeIntent(final File file) {
         final Intent intent = viewActionIntent(file);
+        String mimeType = getFileMimeType(file);
+        if (!StringUtils.isNullOrEmpty(mimeType)) {
+            intent.setDataAndType(Uri.fromFile(file), mimeType);
+        } else {
+            intent.setData(Uri.fromFile(new File("dummy." + FileUtils.getFileExtension(file))));
+        }
+        return intent;
+    }
+
+    public static String getFileMimeType(File file) {
         final String extensionName = FileUtils.getFileExtension(file);
         String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extensionName);
         if (StringUtils.isNullOrEmpty(mimeType)) {
             mimeType = MimeTypeUtils.mimeType(extensionName);
         }
+        return mimeType;
+    }
 
-        if (!StringUtils.isNullOrEmpty(mimeType)) {
-            intent.setDataAndType(Uri.fromFile(file), mimeType);
-        } else {
-            intent.setData(Uri.fromFile(new File("dummy." + extensionName)));
-        }
-        if (flags != null && flags.length > 0) {
-            for (int flag : flags) {
-                intent.addFlags(flag);
-            }
+    public static Intent viewActionIntentWithMimeType(final File file, int... flags) {
+        Intent intent = viewActionIntent(file, flags);
+        String mimeType = getFileMimeType(file);
+        if (StringUtils.isNotBlank(mimeType)) {
+            intent.setDataAndType(intent.getData(), mimeType);
         }
         return intent;
     }
