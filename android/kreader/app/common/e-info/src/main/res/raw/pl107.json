@@ -50,5 +50,15 @@
   "content_menu_item_list": [
     "ViewType",
     "SortBy"
+  ],
+  "media_scan_support": true,
+  "music_dir": [
+    "Music",
+    "Movies",
+    "cloud"
+  ],
+  "gallery_dir": [
+    "Pictures",
+    "DCIM"
   ]
 }
