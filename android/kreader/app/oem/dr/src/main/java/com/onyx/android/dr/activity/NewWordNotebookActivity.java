@@ -2,6 +2,8 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -31,10 +33,6 @@ import butterknife.OnClick;
 public class NewWordNotebookActivity extends BaseActivity implements NewWordView, TimePickerDialog.TimePickerDialogInterface {
     @Bind(R.id.new_word_activity_recyclerview)
     PageRecyclerView newWordRecyclerView;
-    @Bind(R.id.new_word_activity_delete)
-    TextView delete;
-    @Bind(R.id.new_word_activity_export)
-    TextView export;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.title_bar_title)
@@ -51,6 +49,14 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     RadioButton minorityLanguageRadioButton;
     @Bind(R.id.new_word_activity_all_number)
     TextView allNumber;
+    @Bind(R.id.title_bar_right_select_time)
+    TextView selectTime;
+    @Bind(R.id.title_bar_right_icon_four)
+    ImageView iconFour;
+    @Bind(R.id.title_bar_right_icon_three)
+    ImageView iconThree;
+    @Bind(R.id.new_word_activity_all_check)
+    CheckBox allCheck;
     private DividerItemDecoration dividerItemDecoration;
     private NewWordAdapter newWordAdapter;
     private NewWordPresenter newWordPresenter;
@@ -88,6 +94,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordList = new ArrayList<NewWordNoteBookEntity>();
         listCheck = new ArrayList<>();
         timePickerDialog = new TimePickerDialog(this);
+        initTitleData();
         loadNewWordData();
         initEvent();
     }
@@ -100,34 +107,38 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     }
 
     private void initTitleData() {
+        selectTime.setVisibility(View.VISIBLE);
+        iconFour.setVisibility(View.VISIBLE);
+        iconThree.setVisibility(View.VISIBLE);
         image.setImageResource(R.drawable.new_word_notebook);
-        if (dictType == Constants.ENGLISH_TYPE) {
-            title.setText(getString(R.string.english_new_word_notebook));
-        } else if (dictType == Constants.CHINESE_TYPE) {
-            title.setText(getString(R.string.chinese_new_word_notebook));
-        } else if (dictType == Constants.OTHER_TYPE) {
-            title.setText(getString(R.string.minority_language_new_word_notebook));
-        }
+        iconFour.setImageResource(R.drawable.ic_reader_note_delet);
+        iconThree.setImageResource(R.drawable.ic_reader_note_export);
+        title.setText(getString(R.string.new_word_notebook));
+        selectTime.setText(getString(R.string.select_time));
     }
 
     @Override
     public void setNewWordData(List<NewWordNoteBookEntity> dataList, ArrayList<Boolean> checkList) {
-        if (dataList == null || dataList.size() <= 0) {
-            return;
-        }
-        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
-        if (dictType == Constants.ENGLISH_TYPE) {
-            englishRadioButton.setText(getString(R.string.english) + "(" + dataList.size() + getString(R.string.new_word_unit) + ")");
-        } else if (dictType == Constants.CHINESE_TYPE) {
-            chineseRadioButton.setText(getString(R.string.chinese) + "(" + dataList.size() + getString(R.string.new_word_unit) + ")");
-        } else if (dictType == Constants.OTHER_TYPE) {
-            minorityLanguageRadioButton.setText(getString(R.string.small_language) + "(" + dataList.size() + getString(R.string.new_word_unit) + ")");
-        }
         newWordList.clear();
-        newWordList = dataList;
-        listCheck = checkList;
+        if (dataList != null || dataList.size() > 0) {
+            newWordList = dataList;
+            listCheck = checkList;
+        }
+        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + newWordList.size() + getString(R.string.data_unit));
+        if (dictType == Constants.ENGLISH_TYPE) {
+            englishRadioButton.setText(getString(R.string.english) + "(" + newWordList.size() + getString(R.string.new_word_unit) + ")");
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            chineseRadioButton.setText(getString(R.string.chinese) + "(" + newWordList.size() + getString(R.string.new_word_unit) + ")");
+        } else if (dictType == Constants.OTHER_TYPE) {
+            minorityLanguageRadioButton.setText(getString(R.string.small_language) + "(" + newWordList.size() + getString(R.string.new_word_unit) + ")");
+        }
+        setRecyclerViewData();
+    }
+
+    private void setRecyclerViewData() {
         newWordAdapter.setDataList(newWordList, listCheck);
         newWordRecyclerView.setAdapter(newWordAdapter);
+        newWordAdapter.notifyDataSetChanged();
     }
 
     public void initEvent() {
@@ -142,6 +153,21 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
                 listCheck.set(position, isCheck);
             }
         });
+        allCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    for (int i = 0, j = newWordList.size(); i < j; i++) {
+                        listCheck.set(i, true);
+                    }
+                } else {
+                    for (int i = 0, j = newWordList.size(); i < j; i++) {
+                        listCheck.set(i, false);
+                    }
+                }
+                newWordAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private class TabCheckedListener implements RadioGroup.OnCheckedChangeListener {
@@ -149,41 +175,69 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         public void onCheckedChanged(RadioGroup group, int checkedId) {
             switch (checkedId) {
                 case R.id.new_word_activity_english:
-                    dictType = Constants.ENGLISH_TYPE;
-                    newWordPresenter.getAllNewWordByType(Constants.ENGLISH_TYPE);
+                    loadEnglishData();
                     break;
                 case R.id.new_word_activity_chinese:
-                    dictType = Constants.CHINESE_TYPE;
-                    newWordPresenter.getAllNewWordByType(Constants.CHINESE_TYPE);
+                    loadChineseData();
                     break;
                 case R.id.new_word_activity_minority_language:
-                    dictType = Constants.OTHER_TYPE;
-                    newWordPresenter.getAllNewWordByType(Constants.OTHER_TYPE);
+                    loadMinorityData();
                     break;
             }
         }
     }
 
-    @OnClick({R.id.new_word_activity_delete,
-            R.id.image_view_back,
-            R.id.new_word_activity_export})
+    private void loadMinorityData() {
+        allCheck.setChecked(false);
+        dictType = Constants.OTHER_TYPE;
+        newWordPresenter.getAllNewWordByType(dictType);
+    }
+
+    private void loadChineseData() {
+        allCheck.setChecked(false);
+        dictType = Constants.CHINESE_TYPE;
+        newWordPresenter.getAllNewWordByType(dictType);
+    }
+
+    private void loadEnglishData() {
+        allCheck.setChecked(false);
+        dictType = Constants.ENGLISH_TYPE;
+        newWordPresenter.getAllNewWordByType(dictType);
+    }
+
+    @OnClick({R.id.image_view_back,
+            R.id.title_bar_right_select_time,
+            R.id.title_bar_right_icon_three,
+            R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
                 break;
-            case R.id.new_word_activity_delete:
-                deleteNewWord();
-                break;
-            case R.id.new_word_activity_export:
+            case R.id.title_bar_right_select_time:
                 timePickerDialog.showDatePickerDialog();
+                break;
+            case R.id.title_bar_right_icon_four:
+                deleteCheckedNewWord();
+                break;
+            case R.id.title_bar_right_icon_three:
+                exportData();
                 break;
         }
     }
 
-    private void deleteNewWord() {
+    private void exportData() {
         if (newWordList.size() > 0) {
-            newWordPresenter.remoteAdapterDatas(listCheck, newWordAdapter);
+            ArrayList<String> htmlTitleData = newWordPresenter.getHtmlTitle();
+            newWordPresenter.exportDataToHtml(this, listCheck, htmlTitleData, newWordList);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        }
+    }
+
+    private void deleteCheckedNewWord() {
+        if (newWordList.size() > 0) {
+            newWordPresenter.remoteAdapterData(listCheck, newWordAdapter, newWordList);
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
@@ -193,16 +247,19 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     public void positiveListener() {
         long startDateMillisecond = timePickerDialog.getStartDateMillisecond();
         long endDateMillisecond = timePickerDialog.getEndDateMillisecond();
-        newWordPresenter.getNewWordByTime(startDateMillisecond, endDateMillisecond);
+        newWordPresenter.getNewWordByTime(dictType, startDateMillisecond, endDateMillisecond);
     }
 
     @Override
-    public void setNewWordByTime(List<NewWordNoteBookEntity> dataList) {
+    public void setNewWordByTime(List<NewWordNoteBookEntity> dataList, ArrayList<Boolean> checkList) {
         if (dataList != null && dataList.size() > 0) {
-            ArrayList<String> htmlTitleData = newWordPresenter.getHtmlTitle();
-            newWordPresenter.exportDataToHtml(this, htmlTitleData, dataList);
+            newWordList = dataList;
+            listCheck = checkList;
+            setRecyclerViewData();
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+            newWordList.clear();
+            newWordAdapter.notifyDataSetChanged();
         }
     }
 

@@ -10,41 +10,44 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <RelativeLayout
-        android:id="@+id/memorandum_activity_buttom"
+    <LinearLayout
+        android:id="@+id/memorandum_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/memorandum_activity_delete"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_alignParentRight="true"
-            android:text="@string/new_word_delete" />
+        <View style="@style/Horizontal_view" />
 
-        <TextView
-            android:id="@+id/memorandum_activity_new"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_toLeftOf="@+id/memorandum_activity_delete"
-            android:text="@string/infromal_essay_activity_new" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top">
 
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/memorandum_activity_all_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/fragment_speech_recording_all_number"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+        </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@id/memorandum_activity_buttom"
         android:layout_below="@id/title_bar"
+        android:layout_above="@id/memorandum_activity_bottom"
         android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/good_sentence_activity_textview"
-                android:layout_weight="1"
-                android:text="@string/good_sentence_activity_check_all" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/new_word_title_padding">
 
             <TextView
                 style="@style/good_sentence_activity_textview"
@@ -52,17 +55,42 @@
                 android:layout_weight="2"
                 android:text="@string/memorandum_activity_time" />
 
+            <View style="@style/vertical_view" />
+
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="2"
                 android:text="@string/memorandum_activity_time_quantum" />
 
+            <View style="@style/vertical_view" />
+
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="4"
                 android:text="@string/memorandum_activity_matter" />
+
+            <View style="@style/vertical_view" />
+
+            <LinearLayout
+                android:layout_width="@dimen/new_word_activity_all_check_width"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/memorandum_activity_all_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:src="@color/white" />
+
+                <TextView
+                    style="@style/good_sentence_activity_textview"
+                    android:layout_weight="1"
+                    android:text="@string/good_sentence_activity_check_all" />
+            </LinearLayout>
         </LinearLayout>
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView

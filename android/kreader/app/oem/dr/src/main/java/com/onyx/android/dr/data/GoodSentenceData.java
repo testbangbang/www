@@ -59,10 +59,11 @@ public class GoodSentenceData {
 
     public ArrayList<String> setHtmlTitle(Context context) {
         htmlTitle = new ArrayList<String>();
-        htmlTitle.add(context.getString(R.string.memorandum_activity_time));
+        htmlTitle.add(context.getString(R.string.order_number));
         htmlTitle.add(context.getString(R.string.good_sentence_activity_good_sentence));
         htmlTitle.add(context.getString(R.string.good_sentence_activity_involved_reading_matter));
         htmlTitle.add(context.getString(R.string.good_sentence_activity_page_number));
+        htmlTitle.add(context.getString(R.string.memorandum_activity_time));
         return htmlTitle;
     }
 }

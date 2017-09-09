@@ -46,7 +46,7 @@
                 android:maxHeight="@dimen/dialog_seek_bar_max_height"
                 android:minHeight="@dimen/dialog_seek_bar_max_height"
                 android:progressDrawable="@drawable/po_seek_bar"
-                android:thumb="@drawable/seek_bar_thumb_style" />
+                android:thumb="@drawable/ic_time_button" />
 
         </LinearLayout>
 

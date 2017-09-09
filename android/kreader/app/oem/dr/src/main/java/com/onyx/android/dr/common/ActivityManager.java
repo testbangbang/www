@@ -99,10 +99,9 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startGoodSentenceNotebookActivity(Context context, int dictType) {
+    public static void startGoodSentenceNotebookActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.DICTTYPE, dictType);
         intent.setClass(context, GoodSentenceNotebookActivity.class);
         context.startActivity(intent);
     }

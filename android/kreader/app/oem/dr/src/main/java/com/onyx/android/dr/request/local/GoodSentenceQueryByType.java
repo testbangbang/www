@@ -13,7 +13,7 @@ import java.util.List;
  * Created by zhouzhiming on 2017/7/5.
  */
 public class GoodSentenceQueryByType extends BaseDataRequest {
-    private List<GoodSentenceNoteEntity> goodSentenceList;
+    private List<GoodSentenceNoteEntity> goodSentenceList = new ArrayList<>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
     private int type;
 

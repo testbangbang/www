@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -402,6 +403,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     private void onPageChanged(int totalPage, int curPage) {
+        if (prevPageButton == null || nextPageButton == null || pageIndicator == null) {
+            return;
+        }
         if (totalPage > 1) {
             if (curPage > 1) {
                 prevPageButton.setVisibility(View.VISIBLE);
@@ -478,11 +482,13 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVocabularyNotebookEvent(VocabularyNotebookEvent event) {
+        DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictionaryLookup);
         NewWordBean bean = new NewWordBean();
         bean.setNewWord(copyText);
         bean.setDictionaryLookup(dictionaryLookup);
         bean.setReadingMatter("");
         bean.setNewWordType(dictType);
+        bean.setParaphrase(dictionaryQueryResult.explanation);
         OperatingDataManager.getInstance().insertNewWord(bean);
     }
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <resources>
     <dimen name="main_menu_tab_height">100dp</dimen>
-    <dimen name="title_bar_right_menu_padding">8dp</dimen>
+    <dimen name="title_bar_right_menu_padding">10dp</dimen>
     <dimen name="title_bar_title_padding">8dp</dimen>
     <dimen name="title_bar_margin">8dp</dimen>
     <dimen name="line_width">1dp</dimen>
@@ -225,4 +225,8 @@
     <dimen name="record_time_activity_progressbar_margin_top">10dp</dimen>
     <dimen name="record_time_activity_min_value_margin_left">20dp</dimen>
     <dimen name="record_time_activity_max_value_margin_right">20dp</dimen>
+    <dimen name="new_word_cutting_line">60dp</dimen>
+    <dimen name="new_word_title_padding">2dp</dimen>
+    <dimen name="new_word_activity_all_check_width">70dp</dimen>
+    <dimen name="title_bar_right_container_margin_right">20dp</dimen>
 </resources>

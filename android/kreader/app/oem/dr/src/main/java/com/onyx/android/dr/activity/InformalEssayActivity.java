@@ -2,8 +2,9 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -11,9 +12,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.InformalEssayAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
-import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.interfaces.InformalEssayView;
 import com.onyx.android.dr.presenter.InformalEssayPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -28,33 +27,30 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class InformalEssayActivity extends BaseActivity implements InformalEssayView, TimePickerDialog.TimePickerDialogInterface {
+public class InformalEssayActivity extends BaseActivity implements InformalEssayView {
     @Bind(R.id.infromal_essay_activity_recyclerview)
     PageRecyclerView recyclerView;
-    @Bind(R.id.infromal_essay_activity_share)
-    TextView shareInformalEssay;
-    @Bind(R.id.infromal_essay_activity_export)
-    TextView exportInformalEssay;
-    @Bind(R.id.infromal_essay_activity_delete)
-    TextView deleteInformalEssay;
-    @Bind(R.id.infromal_essay_activity_new)
-    TextView newInformalEssay;
     @Bind(R.id.image)
     ImageView image;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.title_bar_title)
     TextView title;
-    @Bind(R.id.informal_essay_activity_bottom)
-    RelativeLayout bottomContainer;
+    @Bind(R.id.title_bar_right_icon_four)
+    ImageView iconFour;
+    @Bind(R.id.title_bar_right_icon_three)
+    ImageView iconThree;
+    @Bind(R.id.title_bar_right_icon_two)
+    ImageView iconTwo;
+    @Bind(R.id.good_sentence_activity_all_check)
+    CheckBox allCheck;
+    @Bind(R.id.good_sentence_activity_all_number)
+    TextView allNumber;
     private DividerItemDecoration dividerItemDecoration;
     private InformalEssayAdapter informalEssayAdapter;
     private InformalEssayPresenter informalEssayPresenter;
     private List<InformalEssayEntity> informalEssayList;
     private ArrayList<Boolean> listCheck;
-    private TimePickerDialog timePickerDialog;
-    private int jumpSource = 0;
-    private String informalEssayContent = "";
 
     @Override
     protected Integer getLayoutId() {
@@ -80,24 +76,21 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
 
     @Override
     protected void initData() {
-        informalEssayList = new ArrayList<InformalEssayEntity>();
+        informalEssayList = new ArrayList<>();
         listCheck = new ArrayList<>();
-        timePickerDialog = new TimePickerDialog(this);
         getIntentData();
         initEvent();
     }
 
     private void getIntentData() {
-        jumpSource = getIntent().getIntExtra(Constants.JUMP_SOURCE, -1);
-        if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY) {
-            bottomContainer.setVisibility(View.VISIBLE);
-            image.setImageResource(R.drawable.informal_essay);
-            title.setText(getString(R.string.informal_essay));
-        } else if (jumpSource == Constants.RECORD_TIME_SETTING_TO_INFORMAL_ESSAY) {
-            bottomContainer.setVisibility(View.GONE);
-            image.setImageResource(R.drawable.speech_recording);
-            title.setText(getString(R.string.speech_recording));
-        }
+        image.setImageResource(R.drawable.informal_essay);
+        title.setText(getString(R.string.informal_essay));
+        iconFour.setVisibility(View.VISIBLE);
+        iconThree.setVisibility(View.VISIBLE);
+        iconTwo.setVisibility(View.VISIBLE);
+        iconFour.setImageResource(R.drawable.ic_reader_note_delet);
+        iconThree.setImageResource(R.drawable.ic_reader_note_export);
+        iconTwo.setImageResource(R.drawable.ic_reader_note_diary_set);
     }
 
     @Override
@@ -114,6 +107,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         }
         informalEssayList = dataList;
         listCheck = checkList;
+        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + informalEssayList.size() + getString(R.string.data_unit));
         informalEssayAdapter.setDataList(informalEssayList, listCheck);
         recyclerView.setAdapter(informalEssayAdapter);
     }
@@ -122,65 +116,71 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         informalEssayAdapter.setOnItemListener(new InformalEssayAdapter.OnItemClickListener() {
             @Override
             public void setOnItemClick(int position, boolean isCheck) {
-                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY) {
-                    listCheck.set(position, isCheck);
-                }
+                listCheck.set(position, isCheck);
             }
 
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
-                if (jumpSource == Constants.MY_NOTE_TO_INFORMAL_ESSAY) {
-                    listCheck.set(position, isCheck);
+                listCheck.set(position, isCheck);
+            }
+        });
+        allCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    for (int i = 0, j = informalEssayList.size(); i < j; i++) {
+                        listCheck.set(i, true);
+                    }
+                } else {
+                    for (int i = 0, j = informalEssayList.size(); i < j; i++) {
+                        listCheck.set(i, false);
+                    }
                 }
+                informalEssayAdapter.notifyDataSetChanged();
             }
         });
     }
 
-    @OnClick({R.id.infromal_essay_activity_share,
+    @OnClick({R.id.title_bar_right_icon_four,
             R.id.image_view_back,
-            R.id.infromal_essay_activity_delete,
-            R.id.infromal_essay_activity_new,
-            R.id.infromal_essay_activity_export})
+            R.id.title_bar_right_icon_three,
+            R.id.title_bar_right_icon_two})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
                 break;
-            case R.id.infromal_essay_activity_delete:
-                removeData();
+            case R.id.title_bar_right_icon_four:
+                deleteCheckedData();
                 break;
-            case R.id.infromal_essay_activity_export:
-                timePickerDialog.showDatePickerDialog();
+            case R.id.title_bar_right_icon_three:
+                exportData();
                 break;
-            case R.id.infromal_essay_activity_new:
+            case R.id.title_bar_right_icon_two:
                 ActivityManager.startAddInformalEssayActivity(this);
                 break;
         }
     }
 
-    private void removeData() {
+    private void exportData() {
         if (informalEssayList.size() > 0) {
-            informalEssayPresenter.remoteAdapterDatas(listCheck, informalEssayAdapter);
+            ArrayList<String> htmlTitleData = informalEssayPresenter.getHtmlTitleData();
+            informalEssayPresenter.exportDataToHtml(this, listCheck, htmlTitleData, informalEssayList);
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
     }
 
-    @Override
-    public void positiveListener() {
-        long startDateMillisecond = timePickerDialog.getStartDateMillisecond();
-        long endDateMillisecond = timePickerDialog.getEndDateMillisecond();
-        informalEssayPresenter.getInformalEssayByTime(startDateMillisecond, endDateMillisecond);
+    private void deleteCheckedData() {
+        if (informalEssayList.size() > 0) {
+            informalEssayPresenter.remoteAdapterData(listCheck, informalEssayAdapter, informalEssayList);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        }
     }
 
     @Override
     public void setInformalEssayByTime(List<InformalEssayEntity> dataList) {
-        if (dataList != null && dataList.size() > 0) {
-            ArrayList<String> htmlTitleData = informalEssayPresenter.getHtmlTitleData();
-            informalEssayPresenter.exportDataToHtml(this, htmlTitleData, dataList);
-        } else {
-            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
-        }
     }
 
     @Override

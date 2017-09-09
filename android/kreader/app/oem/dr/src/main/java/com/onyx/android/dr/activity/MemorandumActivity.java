@@ -2,6 +2,8 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -22,22 +24,29 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
+
 /**
  * Created by zhouzhiming on 17-7-11.
  */
 public class MemorandumActivity extends BaseActivity implements MemorandumView {
     @Bind(R.id.memorandum_activity_recyclerview)
     PageRecyclerView recyclerView;
-    @Bind(R.id.memorandum_activity_delete)
-    TextView deleteInfromalEssay;
-    @Bind(R.id.memorandum_activity_new)
-    TextView newInfromalEssay;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
     ImageView image;
+    @Bind(R.id.title_bar_right_icon_four)
+    ImageView iconFour;
+    @Bind(R.id.title_bar_right_icon_three)
+    ImageView iconThree;
+    @Bind(R.id.title_bar_right_icon_two)
+    ImageView iconTwo;
+    @Bind(R.id.memorandum_activity_all_check)
+    CheckBox allCheck;
+    @Bind(R.id.memorandum_activity_all_number)
+    TextView allNumber;
     private DividerItemDecoration dividerItemDecoration;
     private MemorandumAdapter memorandumAdapter;
     private MemorandumPresenter memorandumPresenter;
@@ -77,6 +86,12 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     private void initTitleData() {
         image.setImageResource(R.drawable.memorandum);
         title.setText(getString(R.string.memorandum));
+        iconTwo.setVisibility(View.VISIBLE);
+        iconFour.setVisibility(View.VISIBLE);
+        iconThree.setVisibility(View.VISIBLE);
+        iconFour.setImageResource(R.drawable.ic_reader_note_delet);
+        iconThree.setImageResource(R.drawable.ic_reader_note_export);
+        iconTwo.setImageResource(R.drawable.ic_reader_note_diary_set);
     }
 
     @Override
@@ -93,6 +108,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
         }
         memorandumList = dataList;
         listCheck = checkList;
+        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + memorandumList.size() + getString(R.string.data_unit));
         memorandumAdapter.setDataList(memorandumList, listCheck);
         recyclerView.setAdapter(memorandumAdapter);
     }
@@ -109,28 +125,56 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
                 listCheck.set(position, isCheck);
             }
         });
+        allCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b) {
+                    for (int i = 0, j = memorandumList.size(); i < j; i++) {
+                        listCheck.set(i, true);
+                    }
+                } else {
+                    for (int i = 0, j = memorandumList.size(); i < j; i++) {
+                        listCheck.set(i, false);
+                    }
+                }
+                memorandumAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @OnClick({R.id.image_view_back,
-            R.id.memorandum_activity_delete,
-            R.id.memorandum_activity_new})
+            R.id.title_bar_right_icon_four,
+            R.id.title_bar_right_icon_two,
+            R.id.title_bar_right_icon_three})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
                 break;
-            case R.id.memorandum_activity_delete:
-                removeData();
+            case R.id.title_bar_right_icon_four:
+                deleteCheckedData();
                 break;
-            case R.id.memorandum_activity_new:
+            case R.id.title_bar_right_icon_three:
+                exportData();
+                break;
+            case R.id.title_bar_right_icon_two:
                 ActivityManager.startAddMemorandumActivity(this);
                 break;
         }
     }
 
-    private void removeData() {
+    private void exportData() {
         if (memorandumList.size() > 0) {
-            memorandumPresenter.remoteAdapterDatas(listCheck, memorandumAdapter);
+            ArrayList<String> htmlTitleData = memorandumPresenter.getHtmlTitle();
+            memorandumPresenter.exportDataToHtml(this, listCheck, htmlTitleData, memorandumList);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        }
+    }
+
+    private void deleteCheckedData() {
+        if (memorandumList.size() > 0) {
+            memorandumPresenter.remoteAdapterData(listCheck, memorandumAdapter, memorandumList);
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }

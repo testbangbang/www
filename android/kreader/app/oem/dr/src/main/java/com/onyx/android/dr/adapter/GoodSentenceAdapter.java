@@ -61,6 +61,7 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
         holder.readingMatter.setText(goodSentenceEntity.readingMatter);
         holder.pageNumber.setText(goodSentenceEntity.pageNumber);
         holder.checkBox.setChecked(listCheck.get(position));
+        holder.orderNumber.setText(String.valueOf(position + 1));
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -105,8 +106,8 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
         TextView readingMatter;
         @Bind(R.id.good_sentence_item_page_number)
         TextView pageNumber;
-        @Bind(R.id.good_sentence_item_recitation)
-        TextView recitation;
+        @Bind(R.id.new_word_item_order_number)
+        TextView orderNumber;
         View rootView;
 
         ViewHolder(View view) {

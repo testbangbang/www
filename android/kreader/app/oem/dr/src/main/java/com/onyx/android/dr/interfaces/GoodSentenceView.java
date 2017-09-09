@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface GoodSentenceView {
     void setGoodSentenceData(List<GoodSentenceNoteEntity> goodSentenceList, ArrayList<Boolean> checkList);
-    void setGoodSentenceByTime(List<GoodSentenceNoteEntity> goodSentenceList);
+    void setGoodSentenceByTime(List<GoodSentenceNoteEntity> goodSentenceList, ArrayList<Boolean> checkList);
 }

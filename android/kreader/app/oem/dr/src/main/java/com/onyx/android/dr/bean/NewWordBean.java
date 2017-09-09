@@ -11,6 +11,7 @@ public class NewWordBean implements Serializable {
     private String dictionaryLookup;
     private String readingMatter;
     private String pageNumber;
+    private String paraphrase;
     private int newWordType;
     private boolean tag;
 
@@ -60,5 +61,13 @@ public class NewWordBean implements Serializable {
 
     public void setTag(boolean tag) {
         this.tag = tag;
+    }
+
+    public String getParaphrase() {
+        return paraphrase;
+    }
+
+    public void setParaphrase(String paraphrase) {
+        this.paraphrase = paraphrase;
     }
 }

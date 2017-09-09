@@ -13,7 +13,7 @@ import java.util.List;
  * Created by zhouzhiming on 2017/7/6.
  */
 public class NewWordQueryByType extends BaseDataRequest {
-    private List<NewWordNoteBookEntity> newWordList;
+    private List<NewWordNoteBookEntity> newWordList = new ArrayList<NewWordNoteBookEntity>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
     private int type;
 
