@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,6 +28,7 @@ import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
+import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.action.CloudContentLoadAction;
@@ -53,7 +55,6 @@ import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
-import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
@@ -386,8 +387,26 @@ public class ContentFragment extends Fragment {
         });
     }
 
-    private int getDefaultCover() {
-        return isThumbnailViewType() ? R.drawable.cloud_default_cover : R.drawable.cloud_default_cover_detail;
+    private int getImageResource(Metadata book) {
+        String viewType = getCurrentViewType().name().toLowerCase();
+        if (!isColorDevice) {
+            viewType = ViewType.Thumbnail.name().toLowerCase();
+        }
+        String type = book.getType();
+        Map<String, String> map = DeviceConfig.sharedInstance(getContext()).getCustomizedProductCovers();
+        if (StringUtils.isNullOrEmpty(type) || !map.containsKey(type)) {
+            return getDefaultCover(viewType);
+        }
+        return RawResourceUtil.getDrawableIdByName(getContext(), map.get(type) + "_" + viewType);
+    }
+
+    private int getDefaultCover(String viewType) {
+        Map<String, String> map = DeviceConfig.sharedInstance(getContext()).getCustomizedProductCovers();
+        String coverResName = map.get("default");
+        if (StringUtils.isNotBlank(viewType)) {
+            coverResName += "_" + viewType;
+        }
+        return RawResourceUtil.getDrawableIdByName(getContext(), coverResName);
     }
 
     private void updateListItemView(DetailItemHolder viewHolder, int position) {
@@ -412,7 +431,7 @@ public class ContentFragment extends Fragment {
     private void loadThumbnailCover(ImageView imageView, Metadata eBook, int position) {
         Bitmap bitmap = getBitmap(eBook);
         if (bitmap == null) {
-            imageView.setImageResource(getDefaultCover());
+            imageView.setImageResource(getImageResource(eBook));
             if (newPage) {
                 newPage = false;
                 noThumbnailPosition = position;
