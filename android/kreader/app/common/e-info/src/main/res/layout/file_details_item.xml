@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.widget.ImageView.ScaleType" />
+
+        <import type="android.widget.CheckBox" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.onyx.einfo.model.StorageItemViewModel" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="22dp"
+        android:layout_marginRight="22dp"
+        android:background="@drawable/image_button_bg"
+        android:gravity="center_vertical"
+        android:onClick="@{() ->viewModel.itemClicked()}"
+        android:onLongClick="@{()->viewModel.itemLongClicked()}"
+        android:orientation="horizontal"
+        appCompat:alwaysLayoutImageView="true">
+
+        <ImageView
+            android:id="@+id/imageview_bg"
+            thumbnail="@{viewModel.thumbnail}"
+            android:layout_width="71dp"
+            android:layout_height="120dp"
+            android:scaleType="@{viewModel.isDocument ? ScaleType.FIT_XY : ScaleType.CENTER_INSIDE}" />
+
+        <TextView
+            android:id="@+id/textview_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:layout_toRightOf="@+id/imageview_bg"
+            android:layout_weight="1"
+            android:ellipsize="middle"
+            android:gravity="left|center_vertical"
+            android:singleLine="true"
+            android:text="@{viewModel.documentName}"
+            android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Large"
+            android:textColor="@android:color/black" />
+
+        <CheckBox
+            android:id="@+id/checkbox_multi_select"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="12dp"
+            android:checked="@{viewModel.isSelected}"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="@{viewModel.enableSelection?View.VISIBLE:View.GONE}" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>
