@@ -352,7 +352,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 FileUtils.copyFile(new File("/sdcard/blanknote.pdf"), noteFile);
                 PdfWriterUtils.setDocumentTitle(noteFile.getAbsolutePath(),
                         FileUtils.getBaseName(noteFile.getName()));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 // TODO string res
                 Toast.makeText(this, "creating note file failed!", Toast.LENGTH_LONG).show();
                 return;
