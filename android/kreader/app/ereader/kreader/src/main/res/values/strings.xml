@@ -429,4 +429,11 @@
     <string name="settings_touch_binding_next_ten_page_tittle">Up ten pages</string>
     <string name="settings_touch_binding_prev_ten_page_tittle">Down ten pages</string>
     <string name="settings_touch_binding_toggle_a2_tittle">Toggle A2</string>
+    <string name="dialog_tab_host_menu_recent_files">Recent Files</string>
+    <string name="dialog_tab_host_menu_recent_files_description">(Open two documents in side reading mode)</string>
+    <string name="dialog_tab_host_menu_open_same_doc">Open same doc</string>
+    <string name="dialog_tab_host_menu_open_two_doc">Open both documents</string>
+    <string name="dialog_tab_host_menu_open_side_note">Open note</string>
+    <string name="dialog_tab_host_menu_switch_side">Switch side</string>
+    <string name="dialog_tab_host_menu_quit_side_reading">Quit side reading</string>
 </resources>
