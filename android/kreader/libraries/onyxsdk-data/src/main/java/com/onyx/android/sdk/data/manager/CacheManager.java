@@ -112,6 +112,7 @@ public class CacheManager {
     public static String generateCloudKey(QueryArgs args) {
         String queryKey = args.libraryUniqueId;
         queryKey += args.getOrderByQuery();
+        queryKey += args.fetchPolicy;
         return queryKey;
     }
 
