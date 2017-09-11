@@ -62,6 +62,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -737,7 +738,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
     private void removeScribble(final int page, final int position) {
         PageInfo pageInfo = pageInfoMap.get(page);
         if (pageInfo != null) {
-            new ClearPageAction(pageInfo).execute(readerDataHolder, new BaseCallback() {
+            new ClearPageAction(Arrays.asList(new PageInfo[] { pageInfo })).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     getPageAdapter(currentTab).notifyItemRemoved(position);

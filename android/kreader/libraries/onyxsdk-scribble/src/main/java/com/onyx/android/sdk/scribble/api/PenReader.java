@@ -68,7 +68,7 @@ public class PenReader {
         this.penReaderCallback = callback;
         rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut) {
                 penReaderCallback.onBeginRawData();
             }
 
@@ -78,7 +78,7 @@ public class PenReader {
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut) {
                 penReaderCallback.onBeginErasing();
             }
 
@@ -88,12 +88,12 @@ public class PenReader {
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean releaseOutLimitRegion) {
                 penReaderCallback.onEndErasing();
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean releaseOutLimitRegion) {
                 penReaderCallback.onEndRawData();
             }
         });

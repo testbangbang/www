@@ -38,7 +38,7 @@ public class RawInputManager {
         }
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut) {
                 eventBus.post(new BeginRawDataEvent());
             }
 
@@ -48,7 +48,7 @@ public class RawInputManager {
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut) {
                 eventBus.post(new BeginErasingEvent());
             }
 
@@ -58,11 +58,11 @@ public class RawInputManager {
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean releaseOutLimitRegion) {
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean releaseOutLimitRegion) {
                 eventBus.post(new RawErasePointsReceivedEvent(erasePoints));
             }
         });

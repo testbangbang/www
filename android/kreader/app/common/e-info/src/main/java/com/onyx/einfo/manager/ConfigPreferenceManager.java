@@ -18,6 +18,8 @@ public class ConfigPreferenceManager extends PreferenceManager {
     public static final String VIEW_TYPE_TAG = "viewType";
     public static final String CLOUD_SORT_BY_TAG = "cloud_sort_by";
     public static final String CLOUD_SORT_ORDER_TAG = "cloud_sort_order";
+    public static final String STORAGE_SORT_BY_TAG = "storage_sort_by";
+    public static final String STORAGE_SORT_ORDER_TAG = "storage_sort_order";
 
     public static boolean hasImportContent(Context context) {
         return getBooleanValue(context, Constant.IMPORT_CONTENT_IN_FIRST_BOOT_TAG, false);
@@ -58,5 +60,23 @@ public class ConfigPreferenceManager extends PreferenceManager {
 
     public static void setCloudSortOrder(Context context, SortOrder order) {
         setStringValue(context, CLOUD_SORT_ORDER_TAG, order.toString());
+    }
+
+    public static SortBy getStorageSortBy(Context context) {
+        return SortBy.valueOf(getStringValue(context, STORAGE_SORT_BY_TAG,
+                SortBy.Name.toString()));
+    }
+
+    public static void setStorageSortBy(Context context, SortBy sortBy) {
+        setStringValue(context, STORAGE_SORT_BY_TAG, sortBy.toString());
+    }
+
+    public static SortOrder getStorageSortOrder(Context context) {
+        return SortOrder.valueOf(getStringValue(context, STORAGE_SORT_ORDER_TAG,
+                SortOrder.Asc.toString()));
+    }
+
+    public static void setStorageSortOrder(Context context, SortOrder order) {
+        setStringValue(context, STORAGE_SORT_ORDER_TAG, order.toString());
     }
 }

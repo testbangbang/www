@@ -79,6 +79,7 @@
         </activity>
 
         <activity android:name=".activity.SyllabusActivity" />
+        <activity android:name=".activity.StorageActivity" />
 
         <activity android:name=".activity.MeetingActivity" />
 

@@ -8,16 +8,19 @@ import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by zhuzeng on 9/28/16.
  */
 
 public class ClearPageAction extends BaseAction {
 
-    private PageInfo pageInfo;
+    private List<PageInfo> pageInfo = new ArrayList<>();
 
-    public ClearPageAction(final PageInfo page) {
-        pageInfo = page;
+    public ClearPageAction(final List<PageInfo> pages) {
+        pageInfo.addAll(pages);
     }
 
     @Override

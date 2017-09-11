@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -46,9 +47,11 @@ import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
 import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
 import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
+import com.onyx.kreader.note.actions.AddNoteSubPageAction;
 import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
+import com.onyx.kreader.note.actions.DeleteNoteSubPageAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RedoAction;
 import com.onyx.kreader.note.actions.RestoreShapeAction;
@@ -300,6 +303,9 @@ public class ShowReaderMenuAction extends BaseAction {
                         break;
                     case NOTE_IMPORT:
                         importScribbleData(readerDataHolder);
+                        break;
+                    case NOTE_SIDE_NOTE:
+                        startSideNote(readerDataHolder);
                         break;
                     case SHOW_NOTE:
                         showScribble(readerDataHolder);
@@ -559,6 +565,83 @@ public class ShowReaderMenuAction extends BaseAction {
     private void importScribbleData(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
         new ImportReaderScribbleAction(readerDataHolder).execute(readerDataHolder, null);
+    }
+
+    private void startSideNote(final ReaderDataHolder readerDataHolder) {
+        hideReaderMenu();
+        new StartSideNoteAction().execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                startNoteDrawing(readerDataHolder, readerActivity, false);
+            }
+        });
+    }
+
+    private static void prevSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+        actionChain.addAction(new PreviousSideNotePageAction());
+        actionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                resumeDrawing(readerDataHolder);
+            }
+        });
+    }
+
+    private static void nextSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        final ActionChain actionChain = new ActionChain();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+        actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
+        actionChain.addAction(new NextSideNotePageAction());
+        actionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                resumeDrawing(readerDataHolder);
+            }
+        });
+    }
+
+    private static void addSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        new AddNoteSubPageAction(readerDataHolder.getCurrentPageName(),
+                readerDataHolder.getSideNotePage() + 1).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                nextSideNoteSubPage(readerDataHolder);
+            }
+        });
+    }
+
+    private static void deleteSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        new DeleteNoteSubPageAction(readerDataHolder.getCurrentPageName(),
+                readerDataHolder.getSideNotePage()).execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                int sideNotePage = Math.min(readerDataHolder.getCurrentPage(),
+                        readerDataHolder.getSideNotePageCount() - 1);
+                if (sideNotePage >= 0) {
+                    readerDataHolder.setSideNotePage(sideNotePage);
+                    readerDataHolder.redrawPage();
+                    return;
+                }
+
+                new AddNoteSubPageAction(readerDataHolder.getCurrentPageName(),
+                        0).execute(readerDataHolder, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        readerDataHolder.setSideNotePage(0);
+                        readerDataHolder.redrawPage();
+                    }
+                });
+            }
+        });
     }
 
     private boolean startDictionaryApp(final ReaderDataHolder readerDataHolder) {
@@ -825,6 +908,24 @@ public class ShowReaderMenuAction extends BaseAction {
             case SCRIBBLE_NEXT_PAGE:
                 nextScreen(readerDataHolder);
                 break;
+            case SCRIBBLE_DOC_PREV_PAGE:
+                prevScreen(readerDataHolder);
+                break;
+            case SCRIBBLE_DOC_NEXT_PAGE:
+                nextScreen(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_PREV_PAGE:
+                prevSideNoteSubPage(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_NEXT_PAGE:
+                nextSideNoteSubPage(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_ADD_PAGE:
+                addSideNoteSubPage(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_DELETE_PAGE:
+                deleteSideNoteSubPage(readerDataHolder);
+                break;
             case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
                 break;
@@ -919,7 +1020,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void eraseWholePage(final ReaderDataHolder readerDataHolder) {
-        final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getFirstPageInfo());
+        final ClearPageAction clearPageAction = new ClearPageAction(readerDataHolder.getVisiblePages());
         clearPageAction.execute(readerDataHolder, null);
     }
 
@@ -997,6 +1098,11 @@ public class ShowReaderMenuAction extends BaseAction {
             }
 
             @Override
+            public boolean isSupportingSideNote() {
+                return isLandscapeViewport(readerDataHolder);
+            }
+
+            @Override
             public List<String> getFontFaces() {
                 return fontFaces;
             }
@@ -1005,9 +1111,17 @@ public class ShowReaderMenuAction extends BaseAction {
             public ReaderTextStyle getReaderStyle() {
                 return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
             }
+
+            @Override
+            public WindowParameters getWindowParameters() {
+                return readerDataHolder.getWindowParameters();
+            }
         };
     }
 
+    private static boolean isLandscapeViewport(final ReaderDataHolder readerDataHolder) {
+        return readerDataHolder.getDisplayWidth() > readerDataHolder.getDisplayHeight();
+    }
 
     public static Map<Float, ReaderMenuAction> getStrokeMapping() {
         if (strokeMapping == null) {

@@ -15,6 +15,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.view.ReaderLayerMenuLayout;
@@ -54,13 +55,8 @@ public class DialogReaderMenu extends Dialog {
     }
 
     private void fitDialogToWindow() {
-        Window mWindow = getWindow();
-        WindowManager.LayoutParams mParams = mWindow.getAttributes();
-        mParams.width = WindowManager.LayoutParams.MATCH_PARENT;
-        mParams.gravity = Gravity.BOTTOM;
-        mWindow.setAttributes(mParams);
-        //force use all space in the screen.
-        mWindow.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        updateWindowParameters(new WindowParameters(WindowManager.LayoutParams.MATCH_PARENT,
+                WindowManager.LayoutParams.MATCH_PARENT, Gravity.BOTTOM));
     }
 
     private void initDialogContent() {
@@ -151,6 +147,7 @@ public class DialogReaderMenu extends Dialog {
     public void show(ReaderMenuState state) {
         EpdController.disableRegal();
         updateReaderState(state);
+        updateWindowParameters(state.getWindowParameters());
         show();
     }
 
@@ -164,6 +161,11 @@ public class DialogReaderMenu extends Dialog {
         updatePageProgress(readerMenuState.getPageIndex());
         seekBarProgress.setMax(readerMenuState.getPageCount());
         seekBarProgress.setProgress(currentPage);
+    }
+
+    private void updateWindowParameters(WindowParameters params) {
+        getWindow().setGravity(params.gravity | Gravity.BOTTOM);
+        getWindow().setLayout(params.width, params.height);
     }
 
     private String formatPageProgress(ReaderMenuState state) {

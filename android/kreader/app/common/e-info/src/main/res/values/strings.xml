@@ -129,4 +129,9 @@
     <string name="online_group_load_error">Online grouping got the exception</string>
 
     <string name="text_recommend_person">Recommend Person:</string>
+
+    <string name="file_total_count">Total:%1$d/%2$d</string>
+    <string name="page_count" translatable="false">%1$d/%2$d</string>
+    <string name="storage_go_up">Go Up</string>
+    <string name="storage">Storage</string>
 </resources>

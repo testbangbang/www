@@ -475,7 +475,7 @@ public class NoteViewHelper {
         }
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut) {
                 if (callback != null) {
                     callback.onBeginRawData();
                 }
@@ -487,7 +487,7 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut) {
                 ensureErasing();
             }
 
@@ -496,11 +496,11 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean releaseOutLimitRegion) {
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean releaseOutLimitRegion) {
             }
         });
         startDrawing();

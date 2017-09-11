@@ -123,4 +123,8 @@
     <string name="online_group_load_error">获取分组异常</string>
 
     <string name="text_recommend_person">推荐者：</string>
+
+    <string name="file_total_count">总计:%1$d/%2$d</string>
+    <string name="storage_go_up">向上一级</string>
+    <string name="storage">存储</string>
 </resources>
