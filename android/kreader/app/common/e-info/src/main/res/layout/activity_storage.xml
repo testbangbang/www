@@ -43,9 +43,9 @@
                     android:layout_toRightOf="@+id/imageView_main_title"
                     android:ellipsize="middle"
                     android:gravity="left|center_vertical"
-                    android:maxWidth="208dp"
+                    android:maxWidth="348dp"
                     android:singleLine="true"
-                    android:text="存储" />
+                    android:text="@{viewModel.currentFolderTitle??@string/storage}" />
             </RelativeLayout>
 
             <RelativeLayout
@@ -88,6 +88,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
 
         <RelativeLayout
             android:id="@+id/indicator_layout"

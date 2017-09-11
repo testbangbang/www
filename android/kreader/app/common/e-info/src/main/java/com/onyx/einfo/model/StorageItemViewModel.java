@@ -1,37 +1,31 @@
 package com.onyx.einfo.model;
 
-import android.content.Context;
 import android.databinding.BaseObservable;
 import android.databinding.Observable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.support.annotation.Nullable;
 
-import com.onyx.einfo.BR;
-import com.onyx.einfo.R;
+import com.onyx.einfo.events.StorageItemViewModelClickEvent;
+import com.onyx.einfo.events.StorageItemViewModelLongClickEvent;
 
-import java.lang.ref.WeakReference;
+import org.greenrobot.eventbus.EventBus;
+
 
 /**
  * Created by suicheng on 2017/9/9.
  */
 public class StorageItemViewModel extends BaseObservable {
-    @Nullable
-    private WeakReference<StorageItemNavigator> navigatorImpl;
-
     private final ObservableField<FileModel> fileModelObservable = new ObservableField<>();
     public final ObservableField<String> documentName = new ObservableField<>();
     public final ObservableField<Bitmap> thumbnail = new ObservableField<>();
     public final ObservableBoolean isDocument = new ObservableBoolean();
     public final ObservableBoolean isSelected = new ObservableBoolean();
     public final ObservableBoolean enableSelection = new ObservableBoolean(true);
-    private final Context mContext;
+    private EventBus eventBus;
 
-    public StorageItemViewModel(final Context context, StorageItemNavigator navigator) {
-        mContext = context.getApplicationContext();
-        navigatorImpl = new WeakReference<>(navigator);
+    public StorageItemViewModel(final EventBus eventBus) {
+        setEventBus(eventBus);
         fileModelObservable.addOnPropertyChangedCallback(new OnPropertyChangedCallback() {
             @Override
             public void onPropertyChanged(Observable observable, int i) {
@@ -39,9 +33,10 @@ public class StorageItemViewModel extends BaseObservable {
                 if (fileModel != null) {
                     documentName.set(fileModel.getName());
                     isDocument.set(fileModel.isFileType());
-                    thumbnail.set(BitmapFactory.decodeResource(mContext.getResources(), isDocument.get() ?
-                            R.drawable.unknown_document :
-                            (fileModel.isGoUpType() ? R.drawable.directory_go_up : R.drawable.directory)));
+                    Bitmap coverBitmap = fileModel.getThumbnail();
+                    if (coverBitmap != null) {
+                        thumbnail.set(coverBitmap);
+                    }
                 }
             }
         });
@@ -55,10 +50,7 @@ public class StorageItemViewModel extends BaseObservable {
         if (model == null) {
             return;
         }
-        StorageItemNavigator navigator = getNavigator();
-        if (navigator != null) {
-            navigator.onClick(this);
-        }
+        getEventBus().post(new StorageItemViewModelClickEvent(this));
     }
 
     public boolean itemLongClicked() {
@@ -66,10 +58,7 @@ public class StorageItemViewModel extends BaseObservable {
         if (model == null) {
             return false;
         }
-        StorageItemNavigator navigator = getNavigator();
-        if (navigator != null) {
-            navigator.onLongClick(this);
-        }
+        getEventBus().post(new StorageItemViewModelLongClickEvent(this));
         return true;
     }
 
@@ -81,11 +70,12 @@ public class StorageItemViewModel extends BaseObservable {
         return fileModelObservable.get();
     }
 
-    private StorageItemNavigator getNavigator() {
-        if (navigatorImpl == null || navigatorImpl.get() == null) {
-            return null;
-        }
-        return navigatorImpl.get();
+    public void setEventBus(EventBus bus) {
+        this.eventBus = bus;
+    }
+
+    private EventBus getEventBus() {
+        return eventBus;
     }
 
     public void setEnableSelection(boolean enable) {
@@ -94,5 +84,9 @@ public class StorageItemViewModel extends BaseObservable {
 
     public void setSelected(boolean select) {
         isSelected.set(select);
+    }
+
+    public void setCoverThumbnail(Bitmap bitmap) {
+        thumbnail.set(bitmap);
     }
 }

@@ -1,7 +1,10 @@
 package com.onyx.einfo.activity;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.databinding.DataBindingUtil;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
@@ -9,37 +12,54 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.ViewType;
+import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.einfo.R;
+import com.onyx.einfo.action.StorageDataLoadAction;
 import com.onyx.einfo.adapter.BindingViewHolder;
 import com.onyx.einfo.adapter.PageAdapter;
 import com.onyx.einfo.databinding.ActivityStorageBinding;
 import com.onyx.einfo.databinding.FileDetailsItemBinding;
 import com.onyx.einfo.databinding.FileThumbnailItemBinding;
+import com.onyx.einfo.events.StorageItemViewModelClickEvent;
+import com.onyx.einfo.events.StorageItemViewModelLongClickEvent;
+import com.onyx.einfo.events.ViewTypeEvent;
+import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.model.StorageItemViewModel;
-import com.onyx.einfo.model.StorageNavigator;
 import com.onyx.einfo.model.StorageViewModel;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 import java.util.List;
 
 /**
  * Created by suicheng on 2017/9/9.
  */
 
-public class StorageActivity extends OnyxAppCompatActivity implements StorageNavigator {
+public class StorageActivity extends OnyxAppCompatActivity {
     private static final String TAG = "StorageActivity";
 
     private StorageViewModel storageViewModel;
+    private LibraryDataHolder dataHolder;
     private ActivityStorageBinding binding;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        getEventBus().register(this);
+        loadRootDirData();
     }
 
     private void initView() {
@@ -49,8 +69,7 @@ public class StorageActivity extends OnyxAppCompatActivity implements StorageNav
     }
 
     private void prevBinding() {
-        storageViewModel = new StorageViewModel(this);
-        storageViewModel.setNavigator(this);
+        storageViewModel = new StorageViewModel(getEventBus());
         binding = DataBindingUtil.setContentView(this, R.layout.activity_storage);
         binding.setViewModel(storageViewModel);
     }
@@ -84,7 +103,7 @@ public class StorageActivity extends OnyxAppCompatActivity implements StorageNav
         if (resetPage) {
             paginator.setCurrentPage(0);
         }
-        storageViewModel.setPageStatus(paginator.getVisibleCurrentPage(), paginator.pages());
+        getStorageViewModel().setPageStatus(paginator.getVisibleCurrentPage(), paginator.pages());
     }
 
     private void updateContentView() {
@@ -96,33 +115,100 @@ public class StorageActivity extends OnyxAppCompatActivity implements StorageNav
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        storageViewModel.start();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
-        storageViewModel.onActivityDestroyed();
+        getEventBus().unregister(this);
     }
 
     @Override
     public void onBackPressed() {
-        if (!storageViewModel.goUp()) {
-            super.onBackPressed();
+        if (getStorageViewModel().canGoUp()) {
+            loadData(getStorageViewModel().getParentFile());
+            return;
         }
+        super.onBackPressed();
     }
 
-    @Override
-    public void onGoUp() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLevelGoUpEvent() {
         onBackPressed();
     }
 
-    @Override
-    public void onViewChange() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewTypeEvent(ViewTypeEvent event) {
         PageRecyclerView contentView = binding.contentPageView;
         contentView.setAdapter(contentView.getAdapter());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onItemClickEvent(StorageItemViewModelClickEvent event) {
+        StorageItemViewModel itemModel = event.model;
+        if (itemModel.getFileModel().isGoUpType()) {
+            onLevelGoUpEvent();
+            getStorageViewModel().clearItemSelectedMap();
+            return;
+        }
+        if (getStorageViewModel().isInMultiSelectionMode()) {
+            getStorageViewModel().toggleItemModelSelection(itemModel);
+            return;
+        }
+        processFileClick(itemModel.getFileModel().getFile());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onItemLongClickEvent(StorageItemViewModelLongClickEvent event) {
+    }
+
+    private void processFileClick(File file) {
+        if (file.isDirectory()) {
+            loadData(file);
+        } else if (file.isFile()) {
+            openFile(file);
+        }
+    }
+
+    private void loadRootDirData() {
+        loadData(EnvironmentUtil.getStorageRootDirectory());
+    }
+
+    private void loadData(File dir) {
+        StorageDataLoadAction dataLoadAction = new StorageDataLoadAction(dir, getStorageViewModel().items);
+        dataLoadAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                getStorageViewModel().updateCurrentTitleName(getString(R.string.storage));
+            }
+        });
+    }
+
+    private void loadThumbnail(StorageItemViewModel itemModel) {
+        itemModel.setCoverThumbnail(BitmapFactory.decodeResource(getResources(), itemModel.isDocument.get() ?
+                R.drawable.unknown_document :
+                (itemModel.getFileModel().isGoUpType() ? R.drawable.directory_go_up : R.drawable.directory)));
+    }
+
+    private void openFile(File file) {
+        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(file);
+        ResolveInfo info = ViewDocumentUtils.getDefaultActivityInfo(this, intent,
+                ViewDocumentUtils.getEduReaderComponentName().getPackageName());
+        if (info == null) {
+            return;
+        }
+        ActivityUtil.startActivitySafely(this, intent, info.activityInfo);
+    }
+
+    private EventBus getEventBus() {
+        return getDataHolder().getEventBus();
+    }
+
+    private LibraryDataHolder getDataHolder() {
+        if (dataHolder == null) {
+            dataHolder = new LibraryDataHolder(getApplicationContext());
+        }
+        return dataHolder;
     }
 
     private StorageViewModel getStorageViewModel() {
@@ -133,8 +219,8 @@ public class StorageActivity extends OnyxAppCompatActivity implements StorageNav
         return getStorageViewModel().getCurrentViewType();
     }
 
-    private static class FileItemViewHolder extends BindingViewHolder<FileThumbnailItemBinding, StorageItemViewModel> {
-        FileItemViewHolder(FileThumbnailItemBinding binding) {
+    private static class FileThumbnailItemViewHolder extends BindingViewHolder<FileThumbnailItemBinding, StorageItemViewModel> {
+        FileThumbnailItemViewHolder(FileThumbnailItemBinding binding) {
             super(binding);
         }
 
@@ -188,7 +274,7 @@ public class StorageActivity extends OnyxAppCompatActivity implements StorageNav
         @Override
         public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
             if (viewType == ViewType.Thumbnail.ordinal()) {
-                return new FileItemViewHolder(FileThumbnailItemBinding.inflate(mLayoutInflater, parent, false));
+                return new FileThumbnailItemViewHolder(FileThumbnailItemBinding.inflate(mLayoutInflater, parent, false));
             } else {
                 return new FileDetailsItemViewHolder(FileDetailsItemBinding.inflate(mLayoutInflater, parent, false));
             }
@@ -201,10 +287,11 @@ public class StorageActivity extends OnyxAppCompatActivity implements StorageNav
                 model.setEnableSelection(false);
             } else {
                 model.setEnableSelection(getStorageViewModel().isInMultiSelectionMode());
+                model.setSelected(getStorageViewModel().isItemSelected(model));
             }
-            model.setSelected(getStorageViewModel().isItemSelected(model));
-            if (getItemViewType(position) == 0) {
-                FileItemViewHolder holder = (FileItemViewHolder) viewHolder;
+            loadThumbnail(model);
+            if (getItemViewType(position) == ViewType.Thumbnail.ordinal()) {
+                FileThumbnailItemViewHolder holder = (FileThumbnailItemViewHolder) viewHolder;
                 holder.bindTo(model);
             } else {
                 FileDetailsItemViewHolder holder = (FileDetailsItemViewHolder) viewHolder;
