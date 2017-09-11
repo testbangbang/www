@@ -261,20 +261,6 @@ public class FileUtils {
         return succeed;
     }
 
-    public static void copyFile(File src, File dst) throws IOException {
-        FileChannel srcChannel = null;
-        FileChannel dstChannel = null;
-
-        try {
-            srcChannel = new FileInputStream(src).getChannel();
-            dstChannel = new FileOutputStream(dst).getChannel();
-            srcChannel.transferTo(0, srcChannel.size(), dstChannel);
-        } finally {
-            closeQuietly(srcChannel);
-            closeQuietly(dstChannel);
-        }
-    }
-
     public static String getRealFilePathFromUri(Context context, Uri uri) {
         String filePath = null;
         if (uri != null) {
