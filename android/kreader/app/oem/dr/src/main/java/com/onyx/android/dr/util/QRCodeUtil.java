@@ -80,7 +80,6 @@ public class QRCodeUtil {
         return resultBitmap;
     }
 
-
     protected static Bitmap encodeAsBitmap(String contents,
                                            BarcodeFormat format, int desiredWidth, int desiredHeight) {
         final int WHITE = 0xFFFFFFFF;
@@ -113,7 +112,6 @@ public class QRCodeUtil {
         return bitmap;
     }
 
-
     protected static Bitmap createBitmap(String contents, int width, Context context) {
         TextView tv = new TextView(context);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -132,7 +130,6 @@ public class QRCodeUtil {
         Bitmap bitmapCode = tv.getDrawingCache();
         return bitmapCode;
     }
-
 
     protected static Bitmap mixtureBitmap(Bitmap first, Bitmap second,
                                           PointF fromPoint) {

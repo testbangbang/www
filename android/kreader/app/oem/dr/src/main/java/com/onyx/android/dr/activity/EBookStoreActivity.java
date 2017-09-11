@@ -299,7 +299,6 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         });
     }
 
-
     private void preLoadPrev() {
         int preLoadPage = getPagination().getCurrentPage() - 1;
         if (preLoadPage < 0) {
@@ -327,7 +326,6 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
             }
         });
     }
-
 
     private void preloadNext() {
         int preLoadPage = getPagination().getCurrentPage() + 1;
