@@ -20,6 +20,7 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
@@ -1258,6 +1259,11 @@ public class ShowReaderMenuAction extends BaseAction {
             @Override
             public ReaderTextStyle getReaderStyle() {
                 return readerDataHolder.getReaderViewInfo().getReaderTextStyle();
+            }
+
+            @Override
+            public WindowParameters getWindowParameters() {
+                return null;
             }
         };
     }
