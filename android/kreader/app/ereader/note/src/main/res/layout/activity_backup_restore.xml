@@ -37,19 +37,24 @@
         android:layout_width="match_parent"
         android:layout_height="2dp"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/restore_list"
+    <FrameLayout
+        android:layout_weight="1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="0dp">
 
-    <TextView
-        android:gravity="center"
-        android:textSize="@dimen/settings_title_text_size"
-        android:text="@string/empty_restore_list"
-        android:id="@+id/empty_text"
-        android:layout_width="match_parent"
-        android:layout_height="100dp"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/restore_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
 
+        <TextView
+            android:gravity="center"
+            android:textSize="@dimen/settings_title_text_size"
+            android:text="@string/empty_restore_list"
+            android:id="@+id/empty_text"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
 
     <LinearLayout
         android:layout_margin="20dp"
