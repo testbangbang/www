@@ -36,6 +36,8 @@
     <string name="export_success">Export Succeed</string>
     <string name="exporting_info">Exporting Note…</string>
     <string name="export_location">(Export location: %s)</string>
+    <string name="go_to_page">Go to Page</string>
+    <string name="current_page">Current Page</string>
 
 
 </resources>

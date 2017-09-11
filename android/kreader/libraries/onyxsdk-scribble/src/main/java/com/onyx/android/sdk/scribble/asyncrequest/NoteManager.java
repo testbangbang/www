@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -12,9 +13,9 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutArgsEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutCursorEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
@@ -177,12 +178,16 @@ public class NoteManager {
 
     public void sync(boolean render,
                      boolean resume) {
+        Log.d(TAG, "sync resume:" + resume);
         syncWithCallback(render, resume, null);
     }
 
     public void syncWithCallback(boolean render,
                                  boolean resume,
                                  final BaseCallback callback) {
+        if (callback != null) {
+            Log.d(TAG, "sync with callback resume:" + resume);
+        }
         final List<Shape> stash = detachStash();
         if (inSpanLayoutMode()) {
             stash.clear();

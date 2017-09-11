@@ -9,6 +9,7 @@ import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.data.MenuClickEvent;
 import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.edu.note.actions.scribble.ClearAllFreeShapesAction;
@@ -21,16 +22,14 @@ import com.onyx.edu.note.actions.scribble.NoteBackgroundChangeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
+import com.onyx.edu.note.scribble.event.GoToTargetPageEvent;
 import com.onyx.edu.note.scribble.event.QuitScribbleEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.edu.note.ui.HideSubMenuEvent;
-import com.onyx.android.sdk.ui.data.MenuClickEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -158,6 +157,9 @@ public class ScribbleHandler extends BaseHandler {
             case MenuId.NEXT_PAGE:
                 nextPage();
                 break;
+            case MenuId.PAGE:
+                noteManager.post(new GoToTargetPageEvent());
+                break;
             case MenuId.SHAPE_SELECT:
                 onSetShapeSelectModeChanged();
                 break;
@@ -194,30 +196,6 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     @Override
-    public void handleMainMenuEvent(int functionBarMenuID) {
-        switch (functionBarMenuID) {
-            case ScribbleFunctionBarMenuID.ADD_PAGE:
-                addPage();
-                break;
-            case ScribbleFunctionBarMenuID.DELETE_PAGE:
-                deletePage();
-                break;
-            case ScribbleFunctionBarMenuID.NEXT_PAGE:
-                nextPage();
-                break;
-            case ScribbleFunctionBarMenuID.PREV_PAGE:
-                prevPage();
-                break;
-            case ScribbleFunctionBarMenuID.SHAPE_SELECT:
-                onSetShapeSelectModeChanged();
-                break;
-            default:
-                noteManager.post(new ShowSubMenuEvent(functionBarMenuID));
-                break;
-        }
-    }
-
-    @Override
     public void handleSubMenuEvent(int subMenuID) {
         Log.e(TAG, "handleSubMenuEvent: " + subMenuID);
         if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
@@ -230,28 +208,6 @@ public class ScribbleHandler extends BaseHandler {
             onShapeChanged(subMenuID);
         } else if (ScribbleSubMenuID.isPenColorGroup(subMenuID)) {
 
-        }
-    }
-
-    @Override
-    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
-        switch (toolBarMenuID) {
-            case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
-                switchToSpanLayoutMode();
-                break;
-            case ScribbleToolBarMenuID.EXPORT:
-                break;
-            case ScribbleToolBarMenuID.UNDO:
-                undo();
-                break;
-            case ScribbleToolBarMenuID.REDO:
-                redo();
-                break;
-            case ScribbleToolBarMenuID.SAVE:
-                saveDocument(uniqueID, title, false, null);
-                break;
-            case ScribbleToolBarMenuID.SETTING:
-                break;
         }
     }
 

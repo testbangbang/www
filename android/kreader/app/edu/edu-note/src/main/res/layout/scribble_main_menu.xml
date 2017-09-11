@@ -68,11 +68,11 @@
             android:layout_height="wrap_content"/>
 
         <include
-            bind:item="@{item[MenuId.DELETE_PAGE].setMenuIcon(R.drawable.ic_delete)}"
+            bind:item="@{item[MenuId.ADD_PAGE].setMenuIcon(R.drawable.ic_add)}"
             layout="@layout/main_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.ADD_PAGE].setMenuIcon(R.drawable.ic_add)}"
+            bind:item="@{item[MenuId.DELETE_PAGE].setMenuIcon(R.drawable.ic_delete)}"
             layout="@layout/main_menu_item"/>
 
         <include
@@ -88,6 +88,7 @@
             android:focusable="true"
             android:layout_gravity="center_vertical"
             android:visibility="@{item[MenuId.PAGE].visibility}"
+            android:onClick="@{(v) ->item[MenuId.PAGE].menuClicked(v)}"
             android:text="@{item[MenuId.PAGE].text}" />
 
         <include

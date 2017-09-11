@@ -64,7 +64,6 @@ public class DialogCustomLineWidth extends OnyxBaseDialog {
         });
         initSeerProgress();
         besselCurveView.setSize(currentLineWidth);
-
     }
 
     private void initSeerProgress() {

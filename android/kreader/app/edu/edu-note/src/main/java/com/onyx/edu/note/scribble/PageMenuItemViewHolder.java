@@ -1,7 +1,6 @@
 package com.onyx.edu.note.scribble;
 
 import com.onyx.edu.note.databinding.PageMenuItemBinding;
-import com.onyx.edu.note.databinding.ScribbleFunctionItemBinding;
 import com.onyx.edu.note.ui.BindingViewHolder;
 
 /**

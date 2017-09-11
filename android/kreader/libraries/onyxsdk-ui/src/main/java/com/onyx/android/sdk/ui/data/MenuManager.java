@@ -58,4 +58,22 @@ public class MenuManager {
         return this;
     }
 
+    public MenuManager updateMainMenuDataSet(int menuVariable, EventBus eventBus, SparseArray<MenuItem> menuItemSparseArray) {
+        return updateMenuDataSet(mainMenu, menuVariable, eventBus, menuItemSparseArray);
+    }
+
+    public MenuManager updateSubMenuDataSet(int menuVariable, EventBus eventBus, SparseArray<MenuItem> menuItemSparseArray) {
+        return updateMenuDataSet(subMenu, menuVariable, eventBus, menuItemSparseArray);
+    }
+
+    public MenuManager updateToolbarMenuDataSet(int menuVariable, EventBus eventBus, SparseArray<MenuItem> menuItemSparseArray) {
+        return updateMenuDataSet(toolbarMenu, menuVariable, eventBus, menuItemSparseArray);
+    }
+
+    private MenuManager updateMenuDataSet(Menu menu, int menuVariable, EventBus eventBus, SparseArray<MenuItem> menuItemSparseArray) {
+        if (menu != null) {
+            menu.updateItemMap(menuVariable, eventBus, menuItemSparseArray);
+        }
+        return this;
+    }
 }

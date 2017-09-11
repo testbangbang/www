@@ -14,6 +14,8 @@ import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequ
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.ui.data.MenuClickEvent;
+import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
@@ -24,11 +26,13 @@ import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
 import com.onyx.edu.note.actions.scribble.ShapeSelectionAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
+import com.onyx.edu.note.data.ScribbleSubMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
+import com.onyx.edu.note.scribble.event.GoToTargetPageEvent;
+import com.onyx.edu.note.scribble.event.QuitScribbleEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
+import com.onyx.edu.note.ui.HideSubMenuEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -115,55 +119,85 @@ public class ShapeTransformHandler extends BaseHandler {
 
     @Override
     public List<Integer> buildMainMenuIds() {
-        List<Integer> functionBarMenuIDList = new ArrayList<>();
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SHAPE_SELECT);
-        return functionBarMenuIDList;
+        List<Integer> functionMenuIds = new ArrayList<>();
+        functionMenuIds.add(MenuId.PEN_STYLE);
+        functionMenuIds.add(MenuId.BG);
+        functionMenuIds.add(MenuId.ERASER);
+        functionMenuIds.add(MenuId.PEN_WIDTH);
+        functionMenuIds.add(MenuId.SHAPE_SELECT);
+
+        functionMenuIds.add(MenuId.PREV_PAGE);
+        functionMenuIds.add(MenuId.NEXT_PAGE);
+        functionMenuIds.add(MenuId.PAGE);
+        return functionMenuIds;
     }
 
     @Override
     public List<Integer> buildToolBarMenuIds() {
         List<Integer> toolBarMenuIDList = new ArrayList<>();
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        toolBarMenuIDList.add(MenuId.SCRIBBLE_TITLE);
+        toolBarMenuIDList.add(MenuId.UNDO);
+        toolBarMenuIDList.add(MenuId.REDO);
         return toolBarMenuIDList;
     }
 
     @Override
     public SparseArray<List<Integer>> buildSubMenuIds() {
         SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        functionBarSubMenuIDMap.put(MenuId.PEN_WIDTH, buildSubMenuThicknessIDList());
+        functionBarSubMenuIDMap.put(MenuId.BG, buildSubMenuBGIDList());
+        functionBarSubMenuIDMap.put(MenuId.ERASER, buildSubMenuEraserIDList());
+        functionBarSubMenuIDMap.put(MenuId.PEN_STYLE, buildSubMenuPenStyleIDList());
         return functionBarSubMenuIDMap;
     }
 
-    @Override
-    public void handleMainMenuEvent(int functionBarMenuID) {
-        //TODO:temp restore to normal scribble here.in shape select mode , may have different icon here.
-        switch (functionBarMenuID) {
-            case ScribbleFunctionBarMenuID.ADD_PAGE:
+    @Subscribe
+    public void onMenuClickEvent(MenuClickEvent event) {
+        switch (event.getMenuId()) {
+            case MenuId.ADD_PAGE:
                 addPage();
                 break;
-            case ScribbleFunctionBarMenuID.DELETE_PAGE:
+            case MenuId.DELETE_PAGE:
                 deletePage();
                 break;
-            case ScribbleFunctionBarMenuID.NEXT_PAGE:
-                nextPage();
-                break;
-            case ScribbleFunctionBarMenuID.PREV_PAGE:
+            case MenuId.PREV_PAGE:
                 prevPage();
                 break;
-            case ScribbleFunctionBarMenuID.SHAPE_SELECT:
-                onSetShapeSelectModeChanged();
+            case MenuId.NEXT_PAGE:
+                nextPage();
                 break;
-            default:
-                noteManager.post(new ShowSubMenuEvent(functionBarMenuID));
+            case MenuId.PAGE:
+                noteManager.post(new GoToTargetPageEvent());
                 break;
+            case MenuId.PEN_STYLE:
+            case MenuId.PEN_WIDTH:
+            case MenuId.ERASER:
+            case MenuId.BG:
+                noteManager.post(new ShowSubMenuEvent(event.getMenuId()));
+                break;
+            case MenuId.SHAPE_SELECT:
+                noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
+                break;
+            case MenuId.EXPORT:
+                break;
+            case MenuId.UNDO:
+                undo();
+                break;
+            case MenuId.REDO:
+                redo();
+                break;
+            case MenuId.SAVE:
+//                saveDocument(uniqueID, title, false, null);
+                break;
+            case MenuId.SETTING:
+                break;
+            case MenuId.SCRIBBLE_TITLE:
+                noteManager.post(new QuitScribbleEvent());
+                break;
+        }
+        if (ScribbleSubMenuID.isSubMenuId(event.getMenuId())) {
+            handleSubMenuEvent(event.getMenuId());
+            noteManager.post(new HideSubMenuEvent());
         }
     }
 
@@ -176,8 +210,8 @@ public class ShapeTransformHandler extends BaseHandler {
         noteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                RedoAction reDoAction = new RedoAction(false);
-                reDoAction.execute(noteManager, actionDoneCallback);
+                RedoAction redoAction = new RedoAction(false);
+                redoAction.execute(noteManager, actionDoneCallback);
             }
         });
     }
@@ -186,8 +220,8 @@ public class ShapeTransformHandler extends BaseHandler {
         noteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                UndoAction unDoAction = new UndoAction(false);
-                unDoAction.execute(noteManager, actionDoneCallback);
+                UndoAction undoAction = new UndoAction(false);
+                undoAction.execute(noteManager, actionDoneCallback);
             }
         });
     }
@@ -195,19 +229,6 @@ public class ShapeTransformHandler extends BaseHandler {
     @Override
     public void handleSubMenuEvent(int subMenuID) {
 
-    }
-
-    @Override
-    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
-        Log.e(TAG, "handleToolBarMenuEvent: ");
-        switch (toolBarMenuID) {
-            case ScribbleToolBarMenuID.UNDO:
-                undo();
-                break;
-            case ScribbleToolBarMenuID.REDO:
-                redo();
-                break;
-        }
     }
 
     @Override
@@ -250,7 +271,6 @@ public class ShapeTransformHandler extends BaseHandler {
     }
 
     /**
-     * TODO:test effect only.need design undo/redo scale/drag
      * When switch to shape transform handler.we handle touch event as next procedure.
      * When we receive touch event,detect if we already have select shape or not.
      * if does,we assume next touch event is going for control select shape.

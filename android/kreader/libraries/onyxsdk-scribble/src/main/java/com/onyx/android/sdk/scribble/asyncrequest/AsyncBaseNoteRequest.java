@@ -21,8 +21,8 @@ public class AsyncBaseNoteRequest extends BaseRequest {
     private String parentLibraryId;
     private List<PageInfo> visiblePages = new ArrayList<>();
 
-    private boolean pauseInputProcessor = true;
-    private boolean resumeInputProcessor = false;
+    private volatile boolean pauseInputProcessor = true;
+    private volatile boolean resumeInputProcessor = false;
     private volatile boolean renderToBitmap = true;
     private volatile boolean renderToScreen = true;
 

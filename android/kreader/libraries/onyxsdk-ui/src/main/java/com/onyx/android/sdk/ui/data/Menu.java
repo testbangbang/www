@@ -106,4 +106,15 @@ public class Menu {
     public View getRootView() {
         return getMenuBinding().getRoot();
     }
+
+    public Menu updateItemMap(int menuVariable, EventBus eventBus, SparseArray<MenuItem> map) {
+        this.itemMap = map;
+        int size = itemMap.size();
+        for (int i = 0; i < size; i++) {
+            Integer key = itemMap.keyAt(i);
+            itemMap.get(key).setMenuId(key).setEventBus(eventBus);
+        }
+        menuBinding.setVariable(menuVariable, itemMap);
+        return this;
+    }
 }
