@@ -33,6 +33,7 @@
             android:id="@+id/add_infromal_essay_activity_file"
             style="@style/new_word_notebook_textview_style"
             android:layout_alignParentRight="true"
+            android:visibility="invisible"
             android:text="@string/add_infromal_essay_activity_file" />
 
     </RelativeLayout>

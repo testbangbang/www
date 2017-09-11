@@ -16,6 +16,8 @@ public class NewWordNoteBookEntity extends BaseModel {
     @Column
     public String newWord;
     @Column
+    public String paraphrase;
+    @Column
     public String dictionaryLookup;
     @Column
     public String readingMatter;

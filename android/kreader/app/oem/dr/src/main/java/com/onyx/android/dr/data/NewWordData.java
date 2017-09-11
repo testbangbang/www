@@ -59,10 +59,12 @@ public class NewWordData {
 
     public ArrayList<String> setHtmlTitle(Context context) {
         newWordTitle = new ArrayList<String>();
-        newWordTitle.add(context.getString(R.string.memorandum_activity_time));
+        newWordTitle.add(context.getString(R.string.order_number));
         newWordTitle.add(context.getString(R.string.new_word_activity_new_word));
+        newWordTitle.add(context.getString(R.string.paraphrase));
         newWordTitle.add(context.getString(R.string.new_word_activity_dictionaryLookup));
         newWordTitle.add(context.getString(R.string.good_sentence_activity_involved_reading_matter));
+        newWordTitle.add(context.getString(R.string.memorandum_activity_time));
         return newWordTitle;
     }
 }

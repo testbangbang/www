@@ -515,4 +515,13 @@
     <string name="new_word_activity_hint">Tip: the new word can be saved up to 3,600 words.</string>
     <string name="new_word_unit">individual</string>
     <string name="please_record_again">please record again</string>
+    <string name="order_number">order number</string>
+    <string name="paraphrase">paraphrase</string>
+    <string name="nothing">nothing</string>
+    <string name="export_failed">export failed</string>
+    <string name="please_select_export_data">please select export data</string>
+    <string name="please_select_delete_data">please select delete data</string>
+    <string name="good_sentence_activity_hint">Tips: a good sentence can show up to 500 sentences at most.</string>
+    <string name="memorandum_html">memorandum_form</string>
+    <string name="informal_essay_activity_hint">Tips: storage is limited, please export to local storage.</string>
 </resources>

@@ -9,7 +9,6 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GoodSentenceTypeAdapter;
 import com.onyx.android.dr.bean.GoodSentenceTypeBean;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.ChineseGoodSentenceEvent;
 import com.onyx.android.dr.event.EnglishGoodSentenceEvent;
@@ -106,17 +105,14 @@ public class GoodSentenceTypeActivity extends BaseActivity implements GoodSenten
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEnglishGoodSentenceEvent(EnglishGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.ENGLISH_TYPE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChineseGoodSentenceEvent(ChineseGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.CHINESE_TYPE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMinorityLanguageGoodSentenceEvent(MinorityLanguageGoodSentenceEvent event) {
-        ActivityManager.startGoodSentenceNotebookActivity(this, Constants.OTHER_TYPE);
     }
 
     @Override

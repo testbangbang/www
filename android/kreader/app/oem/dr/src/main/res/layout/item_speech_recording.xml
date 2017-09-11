@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginLeft="@dimen/item_speech_recording_start_speech_margin_left"
-            android:background="@drawable/ic_play" />
+            android:background="@drawable/ic_listen_speak" />
     </LinearLayout>
 
 </LinearLayout>

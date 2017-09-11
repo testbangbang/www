@@ -76,6 +76,7 @@ public class Constants {
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
     public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";
+    public static final String MEMORANDUM_HTML = MY_NOTES_FOLDER + "/memorandum.html";
     public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay.html";
     public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence.html";
 

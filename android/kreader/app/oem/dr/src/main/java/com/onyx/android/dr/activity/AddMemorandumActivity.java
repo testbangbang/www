@@ -30,8 +30,6 @@ import butterknife.OnClick;
 public class AddMemorandumActivity extends BaseActivity implements AddMemorandumView, TimePickerDialog.TimePickerDialogInterface {
     @Bind(R.id.add_memorandum_activity_start_time)
     TextView time;
-    @Bind(R.id.title_bar_right_menu)
-    TextView rightMenu;
     @Bind(R.id.add_memorandum_activity_content)
     DefaultEditText contentEditText;
     @Bind(R.id.image_view_back)
@@ -40,6 +38,8 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     TextView title;
     @Bind(R.id.image)
     ImageView image;
+    @Bind(R.id.title_bar_right_icon_four)
+    ImageView iconFour;
     private AddMemorandumPresenter addMemorandumPresenter;
     private TimePickerDialog timePickerDialog;
     private String timeHorizon;
@@ -71,9 +71,8 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     }
 
     private void setTitleData() {
-        rightMenu.setVisibility(View.VISIBLE);
-        rightMenu.setText(R.string.save_button);
-        rightMenu.setTextSize(getResources().getDimension(R.dimen.level_two_font_size));
+        iconFour.setVisibility(View.VISIBLE);
+        iconFour.setImageResource(R.drawable.ic_reader_note_diary_save);
         image.setImageResource(R.drawable.memorandum);
         title.setText(getString(R.string.memorandum));
     }
@@ -91,13 +90,13 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
 
     @OnClick({R.id.add_memorandum_activity_start_time,
             R.id.image_view_back,
-            R.id.title_bar_right_menu})
+            R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
                 break;
-            case R.id.title_bar_right_menu:
+            case R.id.title_bar_right_icon_four:
                 insertData();
                 break;
             case R.id.add_memorandum_activity_start_time:

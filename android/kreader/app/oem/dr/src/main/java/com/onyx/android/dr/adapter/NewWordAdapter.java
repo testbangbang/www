@@ -11,9 +11,11 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -56,12 +58,22 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        NewWordNoteBookEntity bean = dataList.get(position);
+        final NewWordNoteBookEntity bean = dataList.get(position);
         long currentTime = bean.currentTime;
         holder.time.setText(TimeUtils.getDate(currentTime));
         holder.content.setText(bean.newWord);
-        holder.readingMatter.setText(bean.readingMatter);
-        holder.dictionaryLookup.setText(bean.dictionaryLookup);
+        if (StringUtils.isNullOrEmpty(bean.readingMatter)) {
+            holder.readingMatter.setText(R.string.nothing);
+        } else {
+            holder.readingMatter.setText(bean.readingMatter);
+        }
+        if (StringUtils.isNullOrEmpty(bean.dictionaryLookup)) {
+            holder.dictionaryLookup.setText(R.string.nothing);
+        } else {
+            holder.dictionaryLookup.setText(bean.dictionaryLookup);
+        }
+        holder.orderNumber.setText(String.valueOf(position + 1));
+        holder.paraphrase.setText(bean.paraphrase);
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -85,10 +97,17 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
                 }
             }
         });
+        holder.paraphrase.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ActivityManager.startNewWordQueryActivity(DRApplication.getInstance(), bean.newWord);
+            }
+        });
     }
 
     public interface OnItemClickListener {
         void setOnItemClick(int position, boolean isCheck);
+
         void setOnItemCheckedChanged(int position, boolean isCheck);
     }
 
@@ -107,6 +126,10 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         TextView readingMatter;
         @Bind(R.id.new_word_item_dictionaryLookup)
         TextView dictionaryLookup;
+        @Bind(R.id.new_word_item_paraphrase)
+        TextView paraphrase;
+        @Bind(R.id.new_word_item_order_number)
+        TextView orderNumber;
         @Bind(R.id.item_new_word_linearlayout)
         LinearLayout itemLinearLayout;
         View rootView;

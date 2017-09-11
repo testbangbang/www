@@ -507,4 +507,13 @@
     <string name="new_word_activity_hint">小提示：生词本最多可存3600个词，超出部分自动清除。</string>
     <string name="new_word_unit">个</string>
     <string name="please_record_again">请重新录音</string>
+    <string name="order_number">序号</string>
+    <string name="paraphrase">释义</string>
+    <string name="nothing">无</string>
+    <string name="export_failed">导出失败</string>
+    <string name="please_select_export_data">请选择要导出数据</string>
+    <string name="please_select_delete_data">请选择要删除数据</string>
+    <string name="good_sentence_activity_hint">小提示：好句本最多可显示500句，超出部分不显示。</string>
+    <string name="memorandum_html">备忘报表</string>
+    <string name="informal_essay_activity_hint">小提示：存储有限，请及时导出保存到本地存储。</string>
 </resources>

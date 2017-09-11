@@ -93,7 +93,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/new_word_title_padding">
 
             <TextView
                 style="@style/good_sentence_activity_textview"
@@ -101,11 +103,15 @@
                 android:layout_weight="2"
                 android:text="@string/infromal_essay_activity_time" />
 
+            <View style="@style/vertical_view" />
+
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="@dimen/title_interval_margin_left"
                 android:layout_weight="2"
                 android:text="@string/infromal_essay_activity_title" />
+
+            <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/good_sentence_activity_textview"
@@ -113,11 +119,15 @@
                 android:layout_weight="2"
                 android:text="@string/infromal_essay_activity_word_number" />
 
+            <View style="@style/vertical_view" />
+
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="@dimen/title_interval_margin_left"
                 android:layout_weight="4"
                 android:text="@string/infromal_essay_activity_content" />
+
+            <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/good_sentence_activity_textview"

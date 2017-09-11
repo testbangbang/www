@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface NewWordView {
     void setNewWordData(List<NewWordNoteBookEntity> dataList, ArrayList<Boolean> checkList);
-    void setNewWordByTime(List<NewWordNoteBookEntity> dataList);
+    void setNewWordByTime(List<NewWordNoteBookEntity> dataList, ArrayList<Boolean> checkList);
 }

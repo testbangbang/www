@@ -127,7 +127,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoodSentenceNoteEntity(GoodSentenceNotebookEvent event) {
-        ActivityManager.startGoodSentenceTypeActivity(this);
+        ActivityManager.startGoodSentenceNotebookActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
