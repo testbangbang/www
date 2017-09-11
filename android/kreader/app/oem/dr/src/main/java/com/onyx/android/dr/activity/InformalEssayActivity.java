@@ -126,8 +126,8 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         });
         allCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+                if (isCheck) {
                     for (int i = 0, j = informalEssayList.size(); i < j; i++) {
                         listCheck.set(i, true);
                     }

@@ -155,8 +155,8 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         });
         allCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (b) {
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+                if (isCheck) {
                     for (int i = 0, j = newWordList.size(); i < j; i++) {
                         listCheck.set(i, true);
                     }
