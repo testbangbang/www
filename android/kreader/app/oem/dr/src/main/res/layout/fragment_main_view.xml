@@ -3,7 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="@dimen/fragment_content_padding">
+    android:paddingLeft="@dimen/fragment_content_padding"
+    android:paddingRight="@dimen/fragment_content_padding"
+    android:paddingTop="@dimen/fragment_content_padding_top">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,6 +15,9 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:drawableLeft="@drawable/ic_reader_line"
+            android:drawablePadding="@dimen/fragment_content_title_drawable_padding"
+            android:gravity="center_vertical"
             android:text="@string/now_reading"
             android:textSize="@dimen/level_one_heading_font" />
 
@@ -20,6 +25,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/popular_recommendation_title_margin_left"
+            android:drawableLeft="@drawable/ic_reader_line"
+            android:drawablePadding="@dimen/fragment_content_title_drawable_padding"
+            android:gravity="center_vertical"
             android:text="@string/popular_recommendation"
             android:textSize="@dimen/level_one_heading_font" />
 
@@ -106,6 +114,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:drawableLeft="@drawable/ic_reader_line"
+                android:drawablePadding="@dimen/fragment_content_title_drawable_padding"
                 android:text="@string/recent_add"
                 android:textSize="@dimen/level_one_heading_font" />
 
@@ -125,6 +135,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/page_count_margin"
                 android:layout_toLeftOf="@id/image_next"
+                android:gravity="center_vertical"
                 android:text="@string/more_books"
                 android:textSize="@dimen/level_one_heading_font" />
         </RelativeLayout>

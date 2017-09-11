@@ -107,6 +107,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     TextView forgetPassword;
     @Bind(R.id.confirm_password_password)
     EditText confirmPasswordPassword;
+    @Bind(R.id.login_wifi_settings)
+    ImageView loginWifiSettings;
 
     private LoginPresenter loginPresenter;
     private View identity_layout;
@@ -296,7 +298,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         readingInfo.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button})
+    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button, R.id.login_wifi_settings})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_register:
@@ -310,6 +312,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 break;
             case R.id.login_prev_button:
                 prevStep();
+                break;
+            case R.id.login_wifi_settings:
+                ActivityManager.startWifiActivity(this);
                 break;
         }
     }

@@ -122,4 +122,13 @@
             android:visibility="gone" />
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/login_wifi_settings"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/login_settings_margin"
+        android:layout_marginRight="@dimen/login_settings_margin"
+        android:src="@drawable/settings"/>
+
 </RelativeLayout>
