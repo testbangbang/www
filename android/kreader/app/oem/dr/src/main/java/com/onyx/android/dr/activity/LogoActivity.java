@@ -32,7 +32,6 @@ public class LogoActivity extends BaseActivity implements MainView {
 
     @Override
     protected void initConfig() {
-        StopBootAnimation();
     }
 
     @Override
@@ -55,12 +54,14 @@ public class LogoActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLoginFailedEvent(LoginFailedEvent event) {
         ActivityManager.startLoginActivity(this);
+        stopBootAnimation();
         finish();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
         ActivityManager.startMainActivity(this);
+        stopBootAnimation();
         finish();
     }
 
@@ -77,7 +78,7 @@ public class LogoActivity extends BaseActivity implements MainView {
         return super.dispatchKeyEvent(event);
     }
 
-    private void StopBootAnimation() {
+    private void stopBootAnimation() {
         try {
             Method method = View.class.getDeclaredMethod("requestStopBootAnimation", null);
             method.setAccessible(true);

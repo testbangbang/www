@@ -8,7 +8,6 @@ import java.util.List;
 public class ProductOrder<T extends BaseData> {
 
     public List<T> product;
-    public int __v;
     public String updatedAt;
     public String createdAt;
     public String user;
