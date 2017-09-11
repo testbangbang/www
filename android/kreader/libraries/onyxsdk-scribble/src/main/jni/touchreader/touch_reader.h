@@ -7,13 +7,14 @@ public:
     static const int ON_PRESS = 0;
     static const int ON_MOVE = 1;
     static const int ON_RELEASE = 2;
+    static const int ON_RELEASE_OUT_LIMIT_REGION = 3;
 
 public:
     TouchReader();
     ~TouchReader();
 
 public:
-    typedef void(*onTouchPointReceived)(void * userData, int, int, int, long, bool, int);
+    typedef void(*onTouchPointReceived)(void * userData, int, int, int, long, bool, bool, bool, int);
 
 public:
     int openDevice(const std::string& devicePath, std::string& deviceName);
@@ -39,6 +40,8 @@ private:
     bool pressed;
     bool lastPressed;
     bool volatile erasing;
+    bool shortcutDrawing;
+    bool shortcutErasing;
     float *limitArray;
     int limitArrayLength;
     float strokeWidth;

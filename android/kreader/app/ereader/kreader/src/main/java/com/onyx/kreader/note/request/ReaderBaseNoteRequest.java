@@ -36,6 +36,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private volatile boolean render = true;
     private volatile boolean transfer = true;
     private volatile boolean resetNoteDataInfo = true;
+    private volatile boolean applyGCIntervalUpdate = false;
     private volatile int associatedUniqueId;
 
     public ReaderBaseNoteRequest() {
@@ -164,7 +165,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     synchronized (parent) {
                         updateShapeDataInfo(parent);
                         if (isRender() && isTransfer()) {
-                            parent.copyBitmap();
+                            parent.enableScreenPost(true);
+                            parent.renderToSurfaceView(applyGCIntervalUpdate);
                         }
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());
@@ -204,7 +206,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             for (PageInfo page : getVisiblePages()) {
                 updateMatrix(renderMatrix, page);
                 renderContext.update(bitmap, canvas, paint, renderMatrix);
-                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), 0);
+                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), page.getSubPage());
                 if (notePage != null) {
                     notePage.render(renderContext, null);
                     rendered = true;
@@ -337,6 +339,14 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void setResetNoteDataInfo(boolean resetNoteDataInfo) {
         this.resetNoteDataInfo = resetNoteDataInfo;
+    }
+
+    public boolean isApplyGCIntervalUpdate() {
+        return applyGCIntervalUpdate;
+    }
+
+    public void setApplyGCIntervalUpdate(boolean applyGCIntervalUpdate) {
+        this.applyGCIntervalUpdate = applyGCIntervalUpdate;
     }
 
     public int getAssociatedUniqueId() {

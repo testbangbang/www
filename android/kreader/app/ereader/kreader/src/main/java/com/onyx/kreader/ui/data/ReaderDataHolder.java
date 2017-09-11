@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -13,7 +12,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
@@ -30,13 +29,13 @@ import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
-import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
 import com.onyx.kreader.note.receiver.DeviceReceiver;
 import com.onyx.kreader.tts.ReaderTtsManager;
 import com.onyx.kreader.ui.ReaderBroadcastReceiver;
+import com.onyx.kreader.ui.ReaderPainter;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.events.TextSelectionEvent;
@@ -82,6 +81,14 @@ public class ReaderDataHolder {
     private int displayHeight;
     private int optionsSkippedTimes = 0;
     private int lastRequestSequence;
+
+    private boolean sideNoting = false;
+    private int sideNotePage = 0;
+    private int sideNotePageCount = 1;
+
+    private ReaderPainter readerPainter = new ReaderPainter();
+
+    private WindowParameters windowParameters = new WindowParameters();
 
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
@@ -150,7 +157,25 @@ public class ReaderDataHolder {
     }
 
     public final List<PageInfo> getVisiblePages() {
-        return getReaderViewInfo().getVisiblePages();
+        ArrayList<PageInfo> pages = new ArrayList<>();
+
+        PageInfo firstPage = getFirstPageInfo();
+        if (firstPage == null) {
+            return pages;
+        }
+
+        pages.addAll(getReaderViewInfo().getVisiblePages());
+
+        if (sideNoting) {
+            PageInfo subNotePage = new PageInfo(firstPage.getName(), firstPage.getPosition(),
+                    displayWidth / 2, displayHeight);
+            subNotePage.setSubPage(sideNotePage + 1);
+            subNotePage.setPosition(displayWidth / 2, 0);
+            subNotePage.updateDisplayRect(subNotePage.getPositionRect());
+            pages.add(subNotePage);
+        }
+
+        return pages;
     }
 
     public final ReaderUserDataInfo getReaderUserDataInfo() {
@@ -405,6 +430,12 @@ public class ReaderDataHolder {
     public void submitRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
         beforeSubmitRequest();
         reader.submitRequest(context, renderRequest, new BaseCallback() {
+
+            @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                BaseCallback.invokeBeforeDone(callback, request, e);
+            }
+
             @Override
             public void done(BaseRequest request, Throwable e) {
                 onRenderRequestFinished(renderRequest, e);
@@ -489,6 +520,14 @@ public class ReaderDataHolder {
 
     public void showReaderSettings() {
         getEventBus().post(new ShowReaderSettingsEvent());
+    }
+
+    public WindowParameters getWindowParameters() {
+        return windowParameters;
+    }
+
+    public ReaderPainter getReaderPainter() {
+        return readerPainter;
     }
 
     private void addActiveDialog(Dialog dialog) {
@@ -586,6 +625,42 @@ public class ReaderDataHolder {
 
     public void setLastRequestSequence(int lastRequestSequence) {
         this.lastRequestSequence = lastRequestSequence;
+    }
+
+    public boolean isSideNoting() {
+        return sideNoting;
+    }
+
+    public void setSideNoting(boolean sideNoting) {
+        this.sideNoting = sideNoting;
+        if (!sideNoting) {
+            sideNotePage = 0;
+        }
+    }
+
+    public int getSideNotePage() {
+        return sideNotePage;
+    }
+
+    public void setSideNotePage(int sideNotePage) {
+        this.sideNotePage = sideNotePage;
+    }
+
+    public int getSideNotePageCount() {
+        int count = noteManager.getNoteDocument().getSubPageCount(getCurrentPageName()) - 1;
+        return count <= 0 ? 1 : count;
+    }
+
+    public void previousSideNotePage() {
+        if (sideNotePage > 0) {
+            sideNotePage--;
+        }
+    }
+
+    public void nextSideNotePage() {
+        if (sideNotePage < getSideNotePageCount()) {
+            sideNotePage++;
+        }
     }
 
     public void prepareEventReceiver() {
