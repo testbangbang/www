@@ -39,10 +39,82 @@
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/menu_back"
                 android:background="@android:color/white"
-                android:textSize="@dimen/level_one_font_size"
-                android:padding="@dimen/title_bar_title_padding" />
+                android:padding="@dimen/title_bar_title_padding"
+                android:textSize="@dimen/level_one_font_size" />
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/title_bar_right_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="right"
+            android:visibility="visible">
+
+            <TextView
+                android:id="@+id/title_bar_right_select_time"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/title_bar_right_menu_padding"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/title_bar_right_icon_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/title_bar_right_icon_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/title_bar_right_icon_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/title_bar_right_icon_four"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/title_bar_right_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/title_bar_right_image_margin_right"
+            android:background="@drawable/ic_search"
+            android:visibility="gone" />
+
+        <EditText
+            android:id="@+id/title_bar_right_edit_text"
+            android:layout_width="@dimen/title_bar_right_edit_text_width"
+            android:layout_height="@dimen/title_bar_right_edit_text_height"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/title_bar_right_image_margin_right"
+            android:layout_toLeftOf="@id/title_bar_right_image"
+            android:background="@drawable/rectangle_stroke"
+            android:hint="@string/input_keyword"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/title_bar_right_menu"

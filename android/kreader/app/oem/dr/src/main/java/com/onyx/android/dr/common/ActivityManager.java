@@ -104,10 +104,9 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startGoodSentenceNotebookActivity(Context context, int dictType) {
+    public static void startGoodSentenceNotebookActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.DICTTYPE, dictType);
         intent.setClass(context, GoodSentenceNotebookActivity.class);
         context.startActivity(intent);
     }
@@ -126,10 +125,9 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startNewWordNotebookActivity(Context context, int dictType) {
+    public static void startNewWordNotebookActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.DICTTYPE, dictType);
         intent.setClass(context, NewWordNotebookActivity.class);
         context.startActivity(intent);
     }
@@ -208,9 +206,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startSpeechRecordingActivity(Context context, String content) {
+    public static void startSpeechRecordingActivity(Context context, String title, String content) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.INFORMAL_ESSAY_TITLE, title);
         intent.putExtra(Constants.INFORMAL_ESSAY_CONTENT, content);
         intent.setClass(context, SpeechRecordingActivity.class);
         context.startActivity(intent);

@@ -46,6 +46,7 @@ public class Constants {
     public static final String SPEECH_TIME = "speechTime";
     public static final String JUMP_SOURCE = "jumpSource";
     public static final String INFORMAL_ESSAY_CONTENT = "informalEssayContent";
+    public static final String INFORMAL_ESSAY_TITLE = "informalEssayTitle";
 
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
@@ -75,6 +76,7 @@ public class Constants {
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
     public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";
+    public static final String MEMORANDUM_HTML = MY_NOTES_FOLDER + "/memorandum.html";
     public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay.html";
     public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence.html";
 
@@ -101,6 +103,7 @@ public class Constants {
     public static final String GROUP_NAME = "group_name";
     public static final String AUTO_LOGIN_FLAG = "auto_login_flag";
     public static final String BOOKSHELF_TYPE = "bookshelf_type";
+    public static final String SEARCH_KEYWORD = "search_keyword";
     public static final String LANGUAGE_BOOKSHELF = "language_bookshelf";
     public static final String GRADED_BOOKSHELF = "graded_bookshelf";
     public static final String ORDER_ID = "order_id";

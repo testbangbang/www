@@ -13,13 +13,16 @@ import java.util.List;
  * Created by zhouzhiming on 2017/7/6.
  */
 public class GoodSentenceQueryByTime extends BaseDataRequest {
+    private final int type;
     private List<GoodSentenceNoteEntity> goodSentenceList = new ArrayList<>();
+    private ArrayList<Boolean> listCheck = new ArrayList<>();
     private long startDateMillisecond;
     private long endDateMillisecond;
 
-    public GoodSentenceQueryByTime(long startDateMillisecond, long endDateMillisecond) {
+    public GoodSentenceQueryByTime(int type, long startDateMillisecond, long endDateMillisecond) {
         this.startDateMillisecond = startDateMillisecond;
         this.endDateMillisecond = endDateMillisecond;
+        this.type = type;
     }
 
     @Override
@@ -28,19 +31,26 @@ public class GoodSentenceQueryByTime extends BaseDataRequest {
         queryGoodSentenceList();
     }
 
+    public ArrayList<Boolean> getCheckList() {
+        return listCheck;
+    }
+
     public List<GoodSentenceNoteEntity> getData() {
         return goodSentenceList;
     }
 
     public void queryGoodSentenceList() {
-        List<GoodSentenceNoteEntity> essayList = new Select().from(GoodSentenceNoteEntity.class).orderBy(GoodSentenceNoteEntity_Table.currentTime, false).queryList();
+        List<GoodSentenceNoteEntity> essayList = new Select().from(GoodSentenceNoteEntity.class).
+                where(GoodSentenceNoteEntity_Table.goodSentenceType.eq(type)).orderBy(GoodSentenceNoteEntity_Table.currentTime, false).queryList();
         if (essayList != null && essayList.size() > 0) {
+            listCheck.clear();
             for (int i = 0; i < essayList.size(); i++) {
                 GoodSentenceNoteEntity bean = essayList.get(i);
                 if (bean.currentTime >= startDateMillisecond &&
                         bean.currentTime <= endDateMillisecond) {
                     if (!goodSentenceList.contains(bean)){
                         goodSentenceList.add(bean);
+                        listCheck.add(false);
                     }
                 }
             }

@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -89,6 +90,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView image;
     @Bind(R.id.dict_result_activity_function_container)
     LinearLayout functionContainer;
+    @Bind(R.id.dict_result_activity_result_container)
+    LinearLayout resultContainer;
     private DictFunctionPresenter dictPresenter;
     private DictFunctionAdapter dictFunctionAdapter;
     private DictionaryManager dictionaryManager;
@@ -201,7 +204,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             title.setText(getString(R.string.dict_query_language));
         } else if (dictType == Constants.CHINESE_TYPE) {
             title.setText(getString(R.string.dict_query_chinese_language));
-        }else if (dictType == Constants.OTHER_TYPE) {
+        } else if (dictType == Constants.OTHER_TYPE) {
             title.setText(getString(R.string.Japanese));
         }
     }
@@ -400,6 +403,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     private void onPageChanged(int totalPage, int curPage) {
+        if (prevPageButton == null || nextPageButton == null || pageIndicator == null) {
+            return;
+        }
         if (totalPage > 1) {
             if (curPage > 1) {
                 prevPageButton.setVisibility(View.VISIBLE);
@@ -476,11 +482,13 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onVocabularyNotebookEvent(VocabularyNotebookEvent event) {
+        DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictionaryLookup);
         NewWordBean bean = new NewWordBean();
         bean.setNewWord(copyText);
         bean.setDictionaryLookup(dictionaryLookup);
         bean.setReadingMatter("");
         bean.setNewWordType(dictType);
+        bean.setParaphrase(dictionaryQueryResult.explanation);
         OperatingDataManager.getInstance().insertNewWord(bean);
     }
 
@@ -537,6 +545,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDictFunctionVisibleEvent(DictFunctionVisibleEvent event) {
         functionContainer.setVisibility(View.VISIBLE);
+        testWordDictQuery();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

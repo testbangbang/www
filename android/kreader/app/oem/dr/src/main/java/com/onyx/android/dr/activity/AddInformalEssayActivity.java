@@ -29,8 +29,8 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     EditText titleEditText;
     @Bind(R.id.add_infromal_essay_activity_file)
     TextView correctFile;
-    @Bind(R.id.title_bar_right_menu)
-    TextView rightMenu;
+    @Bind(R.id.title_bar_right_icon_four)
+    ImageView iconFour;
     @Bind(R.id.add_infromal_essay_activity_content)
     DefaultEditText contentEditText;
     @Bind(R.id.image_view_back)
@@ -61,9 +61,8 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     }
 
     private void setTitleData() {
-        rightMenu.setVisibility(View.VISIBLE);
-        rightMenu.setText(R.string.save_button);
-        rightMenu.setTextSize(getResources().getDimension(R.dimen.level_two_font_size));
+        iconFour.setVisibility(View.VISIBLE);
+        iconFour.setImageResource(R.drawable.ic_reader_note_diary_save);
         image.setImageResource(R.drawable.informal_essay);
         title.setText(getString(R.string.informal_essay));
     }
@@ -76,15 +75,19 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     public void setInformalEssayByTime(List<InformalEssayEntity> dataList) {
     }
 
+    @Override
+    public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
+    }
+
     @OnClick({R.id.add_infromal_essay_activity_file,
             R.id.image_view_back,
-            R.id.title_bar_right_menu})
+            R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
                 break;
-            case R.id.title_bar_right_menu:
+            case R.id.title_bar_right_icon_four:
                 insertData();
                 break;
             case R.id.add_infromal_essay_activity_file:

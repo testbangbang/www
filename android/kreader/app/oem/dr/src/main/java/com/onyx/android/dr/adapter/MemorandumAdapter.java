@@ -60,7 +60,6 @@ public class MemorandumAdapter extends PageRecyclerView.PageAdapter<MemorandumAd
         holder.matter.setText(bean.matter);
         holder.time.setText(TimeUtils.getDate(currentTime));
         holder.timeQuantum.setText(bean.timeQuantum);
-
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override

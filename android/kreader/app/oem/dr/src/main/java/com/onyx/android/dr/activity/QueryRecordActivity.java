@@ -340,6 +340,9 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     }
 
     private void onPageChanged(int totalPage, int curPage) {
+        if (prevPageButton == null || nextPageButton == null || pageIndicator == null) {
+            return;
+        }
         if (totalPage > 1) {
             if (curPage > 1) {
                 prevPageButton.setVisibility(View.VISIBLE);

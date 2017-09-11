@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/fragment_speech_recording_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/fragment_speech_recording_hint"
+            android:textColor="@android:color/black"
+            android:layout_margin="10dp"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <View style="@style/Horizontal_view" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_margin="10dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/fragment_speech_recording_all_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/fragment_speech_recording_all_number"
+                android:layout_centerVertical="true"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <LinearLayout
+                android:id="@+id/button_function_panel"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dict_result_sound_height"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/button_function_panel_margin_right"
+                android:orientation="horizontal"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/activity_dict_button_previous"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/dict_result_previous_margin_left"
+                    android:background="@drawable/image_btn_bg"
+                    android:clickable="true"
+                    android:contentDescription="@string/hint"
+                    android:focusable="true"
+                    android:src="@drawable/dict_page_left"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/activity_dict_page_size_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:clickable="true"
+                    android:gravity="center"
+                    android:text="1/1"
+                    android:textColor="@android:color/primary_text_light"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <ImageView
+                    android:id="@+id/activity_dict_button_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@drawable/image_btn_bg"
+                    android:clickable="true"
+                    android:contentDescription="@string/hint"
+                    android:focusable="true"
+                    android:src="@drawable/dict_page_right"
+                    android:visibility="visible" />
+            </LinearLayout>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/fragment_speech_recording_bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/new_word_title_padding">
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="@dimen/title_interval_margin_left"
+                android:layout_weight="2"
+                android:text="@string/infromal_essay_activity_time" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="@dimen/title_interval_margin_left"
+                android:layout_weight="2"
+                android:text="@string/infromal_essay_activity_title" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="@dimen/title_interval_margin_left"
+                android:layout_weight="2"
+                android:text="@string/infromal_essay_activity_word_number" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="@dimen/title_interval_margin_left"
+                android:layout_weight="4"
+                android:text="@string/infromal_essay_activity_content" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_width="@dimen/good_sentence_activity_text_view_width"
+                android:layout_marginLeft="@dimen/title_interval_margin_left"
+                android:text="@string/start_record" />
+
+        </LinearLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/fragment_speech_recording_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</RelativeLayout>

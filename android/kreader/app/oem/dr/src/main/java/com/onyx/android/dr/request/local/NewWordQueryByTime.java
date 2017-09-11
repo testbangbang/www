@@ -13,13 +13,16 @@ import java.util.List;
  * Created by zhouzhiming on 2017/7/6.
  */
 public class NewWordQueryByTime extends BaseDataRequest {
+    private final int type;
     private List<NewWordNoteBookEntity> list = new ArrayList<>();
+    private ArrayList<Boolean> listCheck = new ArrayList<>();
     private long startDateMillisecond;
     private long endDateMillisecond;
 
-    public NewWordQueryByTime(long startDateMillisecond, long endDateMillisecond) {
+    public NewWordQueryByTime(int type, long startDateMillisecond, long endDateMillisecond) {
         this.startDateMillisecond = startDateMillisecond;
         this.endDateMillisecond = endDateMillisecond;
+        this.type = type;
     }
 
     @Override
@@ -28,19 +31,26 @@ public class NewWordQueryByTime extends BaseDataRequest {
         queryGoodSentenceList();
     }
 
+    public ArrayList<Boolean> getCheckList() {
+        return listCheck;
+    }
+
     public List<NewWordNoteBookEntity> getData() {
         return list;
     }
 
     public void queryGoodSentenceList() {
-        List<NewWordNoteBookEntity> essayList = new Select().from(NewWordNoteBookEntity.class).orderBy(NewWordNoteBookEntity_Table.currentTime, false).queryList();
+        List<NewWordNoteBookEntity> essayList = new Select().from(NewWordNoteBookEntity.class).
+                where(NewWordNoteBookEntity_Table.newWordType.eq(type)).orderBy(NewWordNoteBookEntity_Table.currentTime, false).queryList();
         if (essayList != null && essayList.size() > 0) {
+            listCheck.clear();
             for (int i = 0; i < essayList.size(); i++) {
                 NewWordNoteBookEntity bean = essayList.get(i);
                 if (bean.currentTime >= startDateMillisecond &&
                         bean.currentTime <= endDateMillisecond) {
                     if (!list.contains(bean)){
                         list.add(bean);
+                        listCheck.add(false);
                     }
                 }
             }

@@ -10,37 +10,39 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/informal_essay_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/infromal_essay_activity_share"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_alignParentRight="true"
-            android:text="@string/infromal_essay_activity_share" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top"
+            android:text="@string/informal_essay_activity_hint"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
 
-        <TextView
-            android:id="@+id/infromal_essay_activity_export"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_toLeftOf="@+id/infromal_essay_activity_share"
-            android:text="@string/export" />
+        <View style="@style/Horizontal_view" />
 
-        <TextView
-            android:id="@+id/infromal_essay_activity_delete"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_toLeftOf="@+id/infromal_essay_activity_export"
-            android:text="@string/new_word_delete" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top">
 
-        <TextView
-            android:id="@+id/infromal_essay_activity_new"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_toLeftOf="@+id/infromal_essay_activity_delete"
-            android:text="@string/infromal_essay_activity_new" />
+            <TextView
+                android:id="@+id/good_sentence_activity_all_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/fragment_speech_recording_all_number"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
 
-    </RelativeLayout>
+        </RelativeLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -51,12 +53,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                style="@style/good_sentence_activity_textview"
-                android:layout_weight="1"
-                android:text="@string/good_sentence_activity_check_all" />
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/new_word_title_padding">
 
             <TextView
                 style="@style/good_sentence_activity_textview"
@@ -64,11 +63,15 @@
                 android:layout_weight="2"
                 android:text="@string/infromal_essay_activity_time" />
 
+            <View style="@style/vertical_view" />
+
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="2"
                 android:text="@string/infromal_essay_activity_title" />
+
+            <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/good_sentence_activity_textview"
@@ -76,17 +79,39 @@
                 android:layout_weight="2"
                 android:text="@string/infromal_essay_activity_word_number" />
 
+            <View style="@style/vertical_view" />
+
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="4"
                 android:text="@string/infromal_essay_activity_content" />
+
+            <View style="@style/vertical_view" />
+
+            <LinearLayout
+                android:layout_width="@dimen/new_word_activity_all_check_width"
+                android:layout_height="wrap_content">
+
+                <CheckBox
+                    android:id="@+id/good_sentence_activity_all_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:scaleX="1.2"
+                    android:scaleY="1.2"
+                    android:src="@color/white" />
+
+                <TextView
+                    style="@style/good_sentence_activity_textview"
+                    android:layout_weight="1"
+                    android:text="@string/good_sentence_activity_check_all" />
+            </LinearLayout>
         </LinearLayout>
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/infromal_essay_activity_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-
     </LinearLayout>
 </RelativeLayout>

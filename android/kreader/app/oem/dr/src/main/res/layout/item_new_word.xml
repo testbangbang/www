@@ -5,18 +5,11 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <CheckBox
-        android:id="@+id/new_word_item_check"
-        style="@style/checkbox_style"/>
-
-    <View style="@style/good_sentence_item_view" />
-
     <TextView
-        android:id="@+id/new_word_item_time"
+        android:id="@+id/new_word_item_order_number"
         style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        android:layout_weight="2"
-        android:text="@string/memorandum_activity_time" />
+        android:layout_weight="1"
+        android:text="@string/order_number" />
 
     <View style="@style/good_sentence_item_view" />
 
@@ -26,6 +19,15 @@
         android:layout_marginLeft="@dimen/title_interval_margin_left"
         android:layout_weight="2"
         android:text="@string/new_word_activity_new_word" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/new_word_item_paraphrase"
+        android:layout_width="0dp"
+        style="@style/good_sentence_item_textview"
+        android:layout_weight="3"
+        android:text="@string/paraphrase" />
 
     <View style="@style/good_sentence_item_view" />
 
@@ -45,4 +47,29 @@
         android:layout_weight="3"
         android:text="@string/good_sentence_activity_involved_reading_matter" />
 
+    <View style="@style/good_sentence_item_view" />
+
+    <TextView
+        android:id="@+id/new_word_item_time"
+        style="@style/good_sentence_item_textview"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
+        android:layout_weight="2"
+        android:text="@string/memorandum_activity_time" />
+
+    <View style="@style/good_sentence_item_view" />
+
+    <LinearLayout
+        android:layout_width="@dimen/new_word_activity_all_check_width"
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:id="@+id/new_word_item_check"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:src="@color/white" />
+    </LinearLayout>
 </LinearLayout>

@@ -18,9 +18,9 @@ import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
+import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
 import com.onyx.android.dr.util.DictPreference;
-import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -270,6 +270,9 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     }
 
     private void onPageChanged(int totalPage, int curPage) {
+        if (prevPageButton == null || nextPageButton == null || pageIndicator == null) {
+            return;
+        }
         if (totalPage > 1) {
             if (curPage > 1) {
                 prevPageButton.setVisibility(View.VISIBLE);

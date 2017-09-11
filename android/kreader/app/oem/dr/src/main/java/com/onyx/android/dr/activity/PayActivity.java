@@ -100,7 +100,7 @@ public class PayActivity extends BaseActivity implements PayActivityView {
         Bitmap qrImage = QRCodeUtil.createQRImage(payBean.code_url, getResources().getInteger(R.integer.pay_qr_code_width), getResources().getInteger(R.integer.pay_qr_code_width));
         payQrCode.setImageBitmap(qrImage);
         loadingLayout.setVisibility(View.GONE);
-        orderNumber.setText(String.format(getString(R.string.order_number), orderId));
+        orderNumber.setText(String.format(getString(R.string.order_num), orderId));
         orderPrice.setText(String.format(getString(R.string.order_price), Float.valueOf(payBean.total)));
     }
 

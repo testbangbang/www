@@ -9,6 +9,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -69,16 +70,22 @@ public class ExportToHtmlUtils {
             NewWordNoteBookEntity bean = dataList.get(i);
             long currentTime = bean.currentTime;
             sb.append("<th>");
-            sb.append(TimeUtils.getDate(currentTime));
+            sb.append(i + 1);
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.newWord);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.paraphrase);
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.dictionaryLookup);
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.readingMatter);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(TimeUtils.getDate(currentTime));
             sb.append("</th>");
             sb.append("</tr>");
         }
@@ -91,7 +98,6 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            CommonNotices.showMessage(context, context.getString(R.string.export_success));
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
@@ -137,6 +143,7 @@ public class ExportToHtmlUtils {
             printStream.println(sb.toString());
             CommonNotices.showMessage(context, context.getString(R.string.export_success));
         } catch (Exception e) {
+            CommonNotices.showMessage(context, context.getString(R.string.export_failed));
             e.printStackTrace();
         } finally {
             FileUtils.closeQuietly(printStream);
@@ -157,7 +164,7 @@ public class ExportToHtmlUtils {
             GoodSentenceNoteEntity bean = dataList.get(i);
             long currentTime = bean.currentTime;
             sb.append("<th>");
-            sb.append(TimeUtils.getDate(currentTime));
+            sb.append(i + 1);
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.details);
@@ -167,6 +174,9 @@ public class ExportToHtmlUtils {
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.pageNumber);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(TimeUtils.getDate(currentTime));
             sb.append("</th>");
             sb.append("</tr>");
         }
@@ -179,7 +189,45 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            CommonNotices.showMessage(context, context.getString(R.string.export_success));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            FileUtils.closeQuietly(printStream);
+        }
+    }
+
+    public static void exportMemorandumToHtml(Context context, List<String> newWordTitle, String title, List<MemorandumEntity> dataList) {
+        StringBuilder sb = getTitleStringBuilder(title);
+        sb.append("<table border=\"1\"><tr>");
+        for (int i = 0; i < newWordTitle.size(); i++) {
+            sb.append("<th>");
+            sb.append(newWordTitle.get(i));
+            sb.append("</th>");
+        }
+        sb.append("</tr>");
+        for (int i = 0; i < dataList.size(); i++) {
+            sb.append("<tr>");
+            MemorandumEntity bean = dataList.get(i);
+            long currentTime = bean.currentTime;
+            sb.append("<th>");
+            sb.append(TimeUtils.getDate(currentTime));
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.timeQuantum);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.matter);
+            sb.append("</th>");
+            sb.append("</tr>");
+        }
+        sb.append("</table>");
+        PrintStream printStream = null;
+        try {
+            createCatalogue();
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.MEMORANDUM_HTML);
+            file.createNewFile();
+            printStream = new PrintStream(new FileOutputStream(file));
+            printStream.println(sb.toString());
         } catch (Exception e) {
             e.printStackTrace();
         }finally {

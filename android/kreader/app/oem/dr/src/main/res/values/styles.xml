@@ -157,6 +157,12 @@
         <item name="android:background">@android:color/black</item>
     </style>
 
+    <style name="vertical_view">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">@dimen/new_word_cutting_line</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+
     <style name="dict_query_type">
         <item name="android:layout_width">@dimen/dict_type_query_width</item>
         <item name="android:layout_height">wrap_content</item>
@@ -225,15 +231,15 @@
     <style name="good_sentence_activity_textview">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">60dp</item>
-        <item name="android:background">@android:color/black</item>
+        <item name="android:background">@android:color/white</item>
         <item name="android:gravity">center</item>
-        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
     </style>
 
     <style name="good_sentence_item_textview">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_height">@dimen/new_word_cutting_line</item>
         <item name="android:background">@android:color/white</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/black</item>
@@ -244,7 +250,7 @@
 
     <style name="good_sentence_item_view">
         <item name="android:layout_width">1dp</item>
-        <item name="android:layout_height">60dp</item>
+        <item name="android:layout_height">@dimen/new_word_cutting_line</item>
         <item name="android:background">@android:color/black</item>
     </style>
 
@@ -475,5 +481,46 @@
     <style name="Animations.PopUpMenu.Reflect">
         <item name="@android:windowEnterAnimation">@anim/pump_bottom</item>
         <item name="@android:windowExitAnimation">@anim/disappear</item>
+    </style>
+
+    <style name="TabSecondStyle">
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:button">@null</item>
+        <item name="android:background">@drawable/tab_radio_selector</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/tab_text_color_selector</item>
+        <item name="android:padding">@dimen/new_word_activity_radio_group_padding</item>
+    </style>
+
+    <style name="CustomDialogTheme" parent="@android:style/Theme.Dialog">
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:fitsSystemWindows">true</item>
+    </style>
+
+    <style name="dialog_button_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/dialog_button_style_height</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:layout_marginRight">@dimen/dialog_button_style_margin_right</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:layout_margin">@dimen/dialog_button_style_margin</item>
+        <item name="android:background">@drawable/rectangle_stroke</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="text_view_third_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/level_one_font_size</item>
+        <item name="android:textColor">@android:color/black</item>
     </style>
 </resources>

@@ -61,7 +61,8 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         if (!DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
             return;
         }
-        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(createIndexService(dataHolder.getContext()));
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(DeviceConfig.sharedInstance(dataHolder.getContext()).getCloudMainIndexServerApi(),
+                createIndexService(dataHolder.getContext()));
         indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
         requestChain.addRequest(indexServiceRequest, new BaseCallback() {
             @Override

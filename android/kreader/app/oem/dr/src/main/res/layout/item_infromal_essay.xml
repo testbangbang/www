@@ -5,12 +5,6 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <CheckBox
-        android:id="@+id/infromal_essay_item_check"
-        style="@style/checkbox_style" />
-
-    <View style="@style/good_sentence_item_view" />
-
     <TextView
         android:id="@+id/infromal_essay_item_time"
         android:layout_marginLeft="@dimen/title_interval_margin_left"
@@ -45,4 +39,20 @@
         android:layout_weight="4"
         android:text="@string/infromal_essay_activity_content" />
 
+    <View style="@style/good_sentence_item_view" />
+
+    <LinearLayout
+        android:layout_width="@dimen/new_word_activity_all_check_width"
+        android:layout_height="match_parent">
+
+        <CheckBox
+            android:id="@+id/infromal_essay_item_check"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:src="@color/white" />
+    </LinearLayout>
 </LinearLayout>

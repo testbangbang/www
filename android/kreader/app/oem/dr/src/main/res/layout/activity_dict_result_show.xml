@@ -18,6 +18,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/dict_result_activity_result_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@id/dict_result_activity_function_container"
