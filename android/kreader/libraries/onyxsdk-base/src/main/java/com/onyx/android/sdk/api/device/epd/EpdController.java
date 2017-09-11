@@ -165,6 +165,10 @@ public abstract class EpdController
         Device.currentDevice().setScreenHandWritingRegionLimit(view, regions);
     }
 
+    public static void setScreenHandWritingRegionExclude(View view, Rect[] regions) {
+        Device.currentDevice().setScreenHandWritingRegionExclude(view, regions);
+    }
+
     public static float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
         return Device.currentDevice().startStroke(baseWidth, x, y, pressure, size, time);
     }

@@ -330,6 +330,12 @@ public class BaseDevice {
     public void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
     }
 
+    public void setScreenHandWritingRegionExclude(View view, int[] array) {
+    }
+
+    public void setScreenHandWritingRegionExclude(View view, Rect[] regions) {
+    }
+
     public void postInvalidate(View view, UpdateMode mode) {
         view.postInvalidate();
     }
