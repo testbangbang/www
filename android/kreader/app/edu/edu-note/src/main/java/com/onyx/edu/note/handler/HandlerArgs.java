@@ -17,4 +17,15 @@ public class HandlerArgs {
     }
 
     private Uri editPicUri;
+
+    public String getNoteTitle() {
+        return noteTitle;
+    }
+
+    public HandlerArgs setNoteTitle(String noteTitle) {
+        this.noteTitle = noteTitle;
+        return this;
+    }
+
+    private String noteTitle;
 }

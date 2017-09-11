@@ -51,6 +51,10 @@ public class HandlerManager {
             providerMap.get(activeProviderName).onDeactivate();
         }
         activeProviderName = providerName;
+        if (args == null) {
+            args = new HandlerArgs();
+        }
+        args.setNoteTitle(mViewModel.mNoteTitle.get());
         providerMap.get(activeProviderName).onActivate(args);
     }
 
@@ -88,15 +92,6 @@ public class HandlerManager {
 
     public void handleSubMenuFunction(int subMenuID) {
         getActiveProvider().handleSubMenuEvent(subMenuID);
-    }
-
-    public void handleToolBarMenuFunction(int toolBarMenuID) {
-        getActiveProvider().handleToolBarMenuEvent(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
-                toolBarMenuID);
-    }
-
-    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
-        getActiveProvider().handleMainMenuEvent(functionBarMenuID);
     }
 
     public void saveDocument(boolean closeAfterSave, BaseCallback callback) {

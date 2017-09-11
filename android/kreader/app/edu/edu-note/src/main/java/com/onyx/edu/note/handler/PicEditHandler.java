@@ -12,6 +12,8 @@ import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.ui.data.MenuClickEvent;
+import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -22,13 +24,15 @@ import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.RenderInBackgroundAction;
 import com.onyx.edu.note.actions.scribble.SetBackgroundAsLocalFileAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
 import com.onyx.edu.note.scribble.event.CustomWidthEvent;
+import com.onyx.edu.note.scribble.event.QuitScribbleEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
+import com.onyx.edu.note.ui.HideSubMenuEvent;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,38 +111,62 @@ public class PicEditHandler extends BaseHandler {
     @Override
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionBarMenuIDList = new ArrayList<>();
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ERASER);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_WIDTH);
+        functionBarMenuIDList.add(MenuId.PEN_STYLE);
+        functionBarMenuIDList.add(MenuId.ERASER);
+        functionBarMenuIDList.add(MenuId.PEN_WIDTH);
         return functionBarMenuIDList;
     }
 
     @Override
     public List<Integer> buildToolBarMenuIds() {
         List<Integer> toolBarMenuIDList = new ArrayList<>();
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        toolBarMenuIDList.add(MenuId.SCRIBBLE_TITLE);
+        toolBarMenuIDList.add(MenuId.UNDO);
+        toolBarMenuIDList.add(MenuId.REDO);
         return toolBarMenuIDList;
     }
 
     @Override
     public SparseArray<List<Integer>> buildSubMenuIds() {
         SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_WIDTH, buildSubMenuThicknessIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.ERASER, buildSubMenuEraserIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
+        functionBarSubMenuIDMap.put(MenuId.PEN_WIDTH, buildSubMenuThicknessIDList());
+        functionBarSubMenuIDMap.put(MenuId.ERASER, buildSubMenuEraserIDList());
+        functionBarSubMenuIDMap.put(MenuId.PEN_STYLE, buildSubMenuPenStyleIDList());
         return functionBarSubMenuIDMap;
     }
 
-    @Override
-    public void handleMainMenuEvent(int functionBarMenuID) {
-        switch (functionBarMenuID) {
-            case ScribbleFunctionBarMenuID.SHAPE_SELECT:
+    @Subscribe
+    public void onMenuClickEvent(MenuClickEvent event) {
+        switch (event.getMenuId()) {
+            case MenuId.SHAPE_SELECT:
                 onSetShapeSelectModeChanged();
                 break;
-            default:
-                noteManager.post(new ShowSubMenuEvent(functionBarMenuID));
+            case MenuId.PEN_STYLE:
+            case MenuId.PEN_WIDTH:
+            case MenuId.ERASER:
+                noteManager.post(new ShowSubMenuEvent(event.getMenuId()));
                 break;
+            case MenuId.UNDO:
+                undo();
+                break;
+            case MenuId.REDO:
+                redo();
+                break;
+            case MenuId.SAVE:
+//                saveDocument(uniqueID, title, false, null);
+                break;
+            case MenuId.SETTING:
+                break;
+            case MenuId.SCRIBBLE_TITLE:
+                noteManager.post(new QuitScribbleEvent());
+                break;
+            case MenuId.SWITCH_TO_SPAN_SCRIBBLE_MODE:
+                switchToSpanLayoutMode();
+                break;
+        }
+        if (ScribbleSubMenuID.isSubMenuId(event.getMenuId())) {
+            handleSubMenuEvent(event.getMenuId());
+            noteManager.post(new HideSubMenuEvent());
         }
     }
 
@@ -153,26 +181,6 @@ public class PicEditHandler extends BaseHandler {
             onShapeChanged(subMenuID);
         } else if (ScribbleSubMenuID.isPenColorGroup(subMenuID)) {
 
-        }
-    }
-
-    @Override
-    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
-        switch (toolBarMenuID) {
-            case ScribbleToolBarMenuID.SWITCH_TO_SPAN_SCRIBBLE_MODE:
-                switchToSpanLayoutMode();
-                break;
-            case ScribbleToolBarMenuID.UNDO:
-                undo();
-                break;
-            case ScribbleToolBarMenuID.REDO:
-                redo();
-                break;
-            case ScribbleToolBarMenuID.SAVE:
-                saveDocument(uniqueID, title, false, null);
-                break;
-            case ScribbleToolBarMenuID.SETTING:
-                break;
         }
     }
 

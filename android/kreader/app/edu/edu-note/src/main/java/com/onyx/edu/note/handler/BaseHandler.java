@@ -8,15 +8,16 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.edu.note.scribble.event.HandlerActivateEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -42,7 +43,8 @@ public abstract class BaseHandler {
         buildMainMenuIds();
         buildToolBarMenuIds();
         buildSubMenuIds();
-//        noteManager.post(new HandlerActivateEvent(functionBarMenuIDList, toolBarMenuIDList, functionBarSubMenuIDMap));
+        noteManager.post(new HandlerActivateEvent(args.getNoteTitle(), noteManager.getShapeDataInfo().getHumanReadableCurPageIndex(),
+                noteManager.getShapeDataInfo().getPageCount()));
     }
 
     public void onDeactivate() {
@@ -57,11 +59,7 @@ public abstract class BaseHandler {
 
     public abstract SparseArray<List<Integer>> buildSubMenuIds();
 
-    public abstract void handleMainMenuEvent(int functionBarMenuID);
-
     public abstract void handleSubMenuEvent(int subMenuID);
-
-    public abstract void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID);
 
     public abstract void saveDocument(String uniqueID, String title, boolean closeAfterSave, BaseCallback callback);
 

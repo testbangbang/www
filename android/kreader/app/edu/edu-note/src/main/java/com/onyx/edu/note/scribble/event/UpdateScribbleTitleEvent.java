@@ -4,7 +4,7 @@ package com.onyx.edu.note.scribble.event;
  * Created by lxm on 2017/9/7.
  */
 
-public class UpdateScibbleTitleEvent {
+public class UpdateScribbleTitleEvent {
 
     private String title;
 
@@ -12,7 +12,7 @@ public class UpdateScibbleTitleEvent {
         return title;
     }
 
-    public UpdateScibbleTitleEvent(String title) {
+    public UpdateScribbleTitleEvent(String title) {
         this.title = title;
     }
 }

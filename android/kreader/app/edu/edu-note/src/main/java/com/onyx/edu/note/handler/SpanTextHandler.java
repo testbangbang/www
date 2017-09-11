@@ -10,6 +10,7 @@ import android.util.SparseArray;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildLineBreakShapeEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BuildTextShapeEvent;
@@ -20,15 +21,16 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEv
 import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByGroupIdRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
+import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.shape.ShapeSpan;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-import com.onyx.android.sdk.scribble.utils.SpanUtils;
 import com.onyx.android.sdk.scribble.view.LinedEditText;
+import com.onyx.android.sdk.ui.data.MenuClickEvent;
+import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.note.actions.scribble.DocumentAddNewPageAction;
@@ -39,15 +41,15 @@ import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
 import com.onyx.edu.note.actions.scribble.NoteLineLayoutBackgroundChangeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.UndoAction;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
-import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.scribble.event.ChangeScribbleModeEvent;
+import com.onyx.edu.note.scribble.event.GoToTargetPageEvent;
+import com.onyx.edu.note.scribble.event.QuitScribbleEvent;
 import com.onyx.edu.note.scribble.event.RequestInfoUpdateEvent;
 import com.onyx.edu.note.scribble.event.ShowInputKeyBoardEvent;
 import com.onyx.edu.note.scribble.event.ShowSubMenuEvent;
 import com.onyx.edu.note.scribble.event.SpanLineBreakerEvent;
+import com.onyx.edu.note.ui.HideSubMenuEvent;
 
 import org.apache.commons.collections4.MapUtils;
 import org.greenrobot.eventbus.Subscribe;
@@ -122,64 +124,101 @@ public class SpanTextHandler extends BaseHandler {
     @Override
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionBarMenuIDList = new ArrayList<>();
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.PEN_STYLE);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.BG);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.DELETE);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.SPACE);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.ENTER);
-        functionBarMenuIDList.add(ScribbleFunctionBarMenuID.KEYBOARD);
+        functionBarMenuIDList.add(MenuId.PEN_STYLE);
+        functionBarMenuIDList.add(MenuId.BG);
+        functionBarMenuIDList.add(MenuId.DELETE);
+        functionBarMenuIDList.add(MenuId.SPACE);
+        functionBarMenuIDList.add(MenuId.ENTER);
+        functionBarMenuIDList.add(MenuId.KEYBOARD);
+        functionBarMenuIDList.add(MenuId.SHAPE_SELECT);
+
+        functionBarMenuIDList.add(MenuId.ADD_PAGE);
+        functionBarMenuIDList.add(MenuId.DELETE_PAGE);
+        functionBarMenuIDList.add(MenuId.PREV_PAGE);
+        functionBarMenuIDList.add(MenuId.NEXT_PAGE);
+        functionBarMenuIDList.add(MenuId.PAGE);
         return functionBarMenuIDList;
     }
 
     @Override
     public List<Integer> buildToolBarMenuIds() {
         List<Integer> toolBarMenuIDList = new ArrayList<>();
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.UNDO);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.SAVE);
-        toolBarMenuIDList.add(ScribbleToolBarMenuID.REDO);
+        toolBarMenuIDList.add(MenuId.SCRIBBLE_TITLE);
+        toolBarMenuIDList.add(MenuId.SWITCH_TO_NORMAL_SCRIBBLE_MODE);
+        toolBarMenuIDList.add(MenuId.UNDO);
+        toolBarMenuIDList.add(MenuId.SAVE);
+        toolBarMenuIDList.add(MenuId.REDO);
         return toolBarMenuIDList;
     }
 
     @Override
     public SparseArray<List<Integer>> buildSubMenuIds() {
         SparseArray<List<Integer>> functionBarSubMenuIDMap = new SparseArray<>();
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.PEN_STYLE, buildSubMenuPenStyleIDList());
-        functionBarSubMenuIDMap.put(ScribbleFunctionBarMenuID.BG, buildSubMenuBGIDList());
+        functionBarSubMenuIDMap.put(MenuId.PEN_STYLE, buildSubMenuPenStyleIDList());
+        functionBarSubMenuIDMap.put(MenuId.BG, buildSubMenuBGIDList());
         return functionBarSubMenuIDMap;
     }
 
-    @Override
-    public void handleMainMenuEvent(int functionBarMenuID) {
-        Log.e(TAG, "handleMainMenuEvent: " + functionBarMenuID);
-        switch (functionBarMenuID) {
-            case ScribbleFunctionBarMenuID.DELETE:
-                deleteSpan(true);
-                break;
-            case ScribbleFunctionBarMenuID.SPACE:
-                buildSpaceShape();
-                break;
-            case ScribbleFunctionBarMenuID.ENTER:
-                noteManager.post(new SpanLineBreakerEvent());
-                break;
-            case ScribbleFunctionBarMenuID.KEYBOARD:
-                noteManager.post(new ShowInputKeyBoardEvent());
-                break;
-            case ScribbleFunctionBarMenuID.ADD_PAGE:
+    @Subscribe
+    public void onMenuClickEvent(MenuClickEvent event) {
+        switch (event.getMenuId()) {
+            case MenuId.ADD_PAGE:
                 addPage();
                 break;
-            case ScribbleFunctionBarMenuID.DELETE_PAGE:
+            case MenuId.DELETE_PAGE:
                 deletePage();
                 break;
-            case ScribbleFunctionBarMenuID.NEXT_PAGE:
-                nextPage();
-                break;
-            case ScribbleFunctionBarMenuID.PREV_PAGE:
+            case MenuId.PREV_PAGE:
                 prevPage();
                 break;
-            default:
-                noteManager.post(new ShowSubMenuEvent(functionBarMenuID));
+            case MenuId.NEXT_PAGE:
+                nextPage();
                 break;
+            case MenuId.PAGE:
+                Log.e(TAG, "onMenuClickEvent: PAGE" );
+                noteManager.post(new GoToTargetPageEvent());
+                break;
+            case MenuId.PEN_STYLE:
+            case MenuId.PEN_WIDTH:
+            case MenuId.ERASER:
+            case MenuId.BG:
+                noteManager.post(new ShowSubMenuEvent(event.getMenuId()));
+                break;
+            case MenuId.SWITCH_TO_NORMAL_SCRIBBLE_MODE:
+                noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
+                break;
+            case MenuId.EXPORT:
+                break;
+            case MenuId.UNDO:
+                undo();
+                break;
+            case MenuId.REDO:
+                redo();
+                break;
+            case MenuId.SAVE:
+//                saveDocument(uniqueID, title, false, null);
+                break;
+            case MenuId.SETTING:
+                break;
+            case MenuId.ENTER:
+                noteManager.post(new SpanLineBreakerEvent());
+                break;
+            case MenuId.KEYBOARD:
+                noteManager.post(new ShowInputKeyBoardEvent());
+                break;
+            case MenuId.DELETE:
+                deleteSpan(true);
+                break;
+            case MenuId.SPACE:
+                buildSpaceShape();
+                break;
+            case MenuId.SCRIBBLE_TITLE:
+                noteManager.post(new QuitScribbleEvent());
+                break;
+        }
+        if (ScribbleSubMenuID.isSubMenuId(event.getMenuId())) {
+            handleSubMenuEvent(event.getMenuId());
+            noteManager.post(new HideSubMenuEvent());
         }
     }
 
@@ -190,26 +229,6 @@ public class SpanTextHandler extends BaseHandler {
             onBackgroundChanged(subMenuID);
         } else if (ScribbleSubMenuID.isPenStyleGroup(subMenuID)) {
             onShapeChanged(subMenuID);
-        }
-    }
-
-    @Override
-    public void handleToolBarMenuEvent(String uniqueID, String title, int toolBarMenuID) {
-        switch (toolBarMenuID) {
-            case ScribbleToolBarMenuID.SWITCH_TO_NORMAL_SCRIBBLE_MODE:
-                noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
-                break;
-            case ScribbleToolBarMenuID.SAVE:
-                saveDocument(uniqueID, title, false, null);
-                break;
-            case ScribbleToolBarMenuID.UNDO:
-                unDo();
-                break;
-            case ScribbleToolBarMenuID.REDO:
-                reDo();
-                break;
-            case ScribbleToolBarMenuID.SETTING:
-                break;
         }
     }
 
@@ -285,7 +304,7 @@ public class SpanTextHandler extends BaseHandler {
         return resultList;
     }
 
-    private void reDo() {
+    private void redo() {
         noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -295,7 +314,7 @@ public class SpanTextHandler extends BaseHandler {
         });
     }
 
-    private void unDo() {
+    private void undo() {
         noteManager.syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

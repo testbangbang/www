@@ -21,10 +21,10 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
-import com.onyx.edu.note.NoteAppConfig;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.R;
 import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
+import com.onyx.edu.note.actions.manager.ImportScribbleAction;
 import com.onyx.edu.note.actions.manager.NoteLoadMovableLibraryAction;
 import com.onyx.edu.note.actions.manager.NoteMoveAction;
 import com.onyx.edu.note.actions.manager.RenameNoteOrLibraryAction;
@@ -35,6 +35,7 @@ import com.onyx.edu.note.ui.ViewModelHolder;
 import com.onyx.edu.note.ui.dialog.DialogMoveFolder;
 import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
 import com.onyx.edu.note.util.Constant;
+import com.onyx.edu.note.util.NotePreference;
 import com.onyx.edu.note.util.Utils;
 
 import java.util.ArrayList;
@@ -137,7 +138,8 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
             case R.id.move:
                 final ArrayList<String> targetList = new ArrayList<>();
                 targetList.addAll(mPendingOperationIDList);
-                NoteLoadMovableLibraryAction action = new NoteLoadMovableLibraryAction(mViewModel.getCurrentNoteModelUniqueID(), targetList);
+                NoteLoadMovableLibraryAction action = new NoteLoadMovableLibraryAction(mViewModel.getCurrentNoteModelUniqueID(),
+                        targetList);
                 action.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -152,6 +154,7 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
             case R.id.export:
                 break;
             case R.id.import_scribble:
+                importScribbleData();
                 break;
             case R.id.setting:
                 break;
@@ -182,11 +185,11 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
         return super.onPrepareOptionsMenu(menu);
     }
 
-    private boolean isIDDocument(String uniqueID){
+    private boolean isIDDocument(String uniqueID) {
         return NoteDataProvider.load(uniqueID).isDocument();
     }
 
-    private boolean isIDFolder(String uniqueID){
+    private boolean isIDFolder(String uniqueID) {
         return NoteDataProvider.load(uniqueID).isLibrary();
     }
 
@@ -223,6 +226,19 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
                     getSupportFragmentManager(), noteFragment, R.id.contentFrame);
         }
         return noteFragment;
+    }
+
+    private void importScribbleData() {
+        NotePreference.setBooleanValue(NotePreference.KEY_HAS_IMPORT_OLD_SCRIBBLE, true);
+        final ImportScribbleAction scribbleAction = new ImportScribbleAction(this);
+        scribbleAction.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    mViewModel.loadData();
+                }
+            }
+        });
     }
 
     private void showMovableFolderDialog(List<NoteModel> curLibSubContList, final List<String> targetList) {
