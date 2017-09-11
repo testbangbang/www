@@ -33,7 +33,7 @@ public class BookshelfData {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 QueryResult<Metadata> productResult = req.getProductResult();
-                EBookStoreData.organizeData(languageCategoryMap,productResult);
+                organizeData(languageCategoryMap, productResult);
                 invoke(baseCallback, request, e);
             }
         });
@@ -77,5 +77,33 @@ public class BookshelfData {
         languageList.add(Constants.ENGLISH);
         languageList.add(Constants.SMALL_LANGUAGE);
         return languageList;
+    }
+
+    public static void organizeData(Map<String, List<Metadata>> languageCategoryMap, QueryResult<Metadata> productResult) {
+        List<Metadata> chineseList = new ArrayList<>();
+        List<Metadata> englishList = new ArrayList<>();
+        List<Metadata> smallList = new ArrayList<>();
+        languageCategoryMap.clear();
+        if (productResult != null && productResult.list != null) {
+            List<Metadata> list = productResult.list;
+            for (Metadata metadata : list) {
+                if (Constants.CHINESE.equals(metadata.getLanguage())) {
+                    chineseList.add(metadata);
+                } else if (Constants.ENGLISH.equals(metadata.getLanguage())) {
+                    englishList.add(metadata);
+                } else {
+                    smallList.add(metadata);
+                }
+            }
+            if (chineseList.size() > 0) {
+                languageCategoryMap.put(Constants.CHINESE, chineseList);
+            }
+            if (englishList.size() > 0) {
+                languageCategoryMap.put(Constants.ENGLISH, englishList);
+            }
+            if (smallList.size() > 0) {
+                languageCategoryMap.put(Constants.SMALL_LANGUAGE, smallList);
+            }
+        }
     }
 }

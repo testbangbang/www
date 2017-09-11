@@ -16,9 +16,9 @@ import com.onyx.android.dr.bean.CityBean;
 import com.onyx.android.dr.bean.InterestBean;
 import com.onyx.android.dr.bean.ProvinceBean;
 import com.onyx.android.dr.bean.SignUpInfo;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.event.AccountAvailableEvent;
 import com.onyx.android.dr.presenter.LoginPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.RegularUtil;
@@ -30,8 +30,6 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -208,7 +206,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             CommonNotices.showMessage(this, getString(R.string.login_succeed));
             DRPreferenceManager.saveLibraryParentId(this, accountInfo.library);
             DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
-            EventBus.getDefault().post(new AccountAvailableEvent());
+            ActivityManager.startMainActivity(this);
             finish();
         } else {
             CommonNotices.showMessage(this, getString(R.string.username_or_password_error));

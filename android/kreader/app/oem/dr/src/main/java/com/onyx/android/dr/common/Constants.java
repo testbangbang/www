@@ -103,6 +103,7 @@ public class Constants {
     public static final String BOOKSHELF_TYPE = "bookshelf_type";
     public static final String LANGUAGE_BOOKSHELF = "language_bookshelf";
     public static final String GRADED_BOOKSHELF = "graded_bookshelf";
+    public static final String ORDER_ID = "order_id";
     public static String STANDBY_PIC_DIRECTORY = "/data/local/assets/images/";
     public static final String APK_NAME = "dr.apk";
     public static final String APK_DOWNLOAD_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + Constants.APK_NAME;

@@ -15,7 +15,9 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.device.DeviceConfig;
+import com.onyx.android.dr.event.BookDetailEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
+import com.onyx.android.dr.event.PayForEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -102,10 +104,9 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         viewHolder.itemView.setTag(position);
 
         final Metadata eBook = getEBookList().get(position);
-        viewHolder.getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         viewHolder.titleView.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.price_format), eBook.getPrice()));
-
+        viewHolder.paid.setText(isFileExists(eBook) ? DRApplication.getInstance().getResources().getString(R.string.read) : DRApplication.getInstance().getResources().getString(R.string.download));
         Bitmap bitmap = getBitmap(eBook.getAssociationId());
         if (bitmap == null) {
             viewHolder.coverImage.setImageResource(R.drawable.book_cover);
@@ -128,7 +129,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         viewHolder.buy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 17-8-3 buy
+                EventBus.getDefault().post(new PayForEvent(eBook.getCloudId()));
             }
         });
         viewHolder.paid.setOnClickListener(new View.OnClickListener() {
@@ -159,7 +160,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         }
         int position = (int) v.getTag();
         Metadata book = getEBookList().get(position);
-        ActivityManager.startBookDetailActivity(DRApplication.getInstance(), book.getCloudId());
+        EventBus.getDefault().post(new BookDetailEvent(book.getCloudId()));
     }
 
     private void startDownload(final Metadata eBook) {
@@ -174,6 +175,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     setCloudMetadataNativeAbsolutePath(eBook, filePath);
+                    notifyDataSetChanged();
                 }
             }
 
@@ -192,8 +194,6 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     static class LibraryItemViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.ebook_library_image_cover)
         ImageView coverImage;
-        @Bind(R.id.ebook_library_image_get_widget)
-        ImageView getWidgetImage;
         @Bind(R.id.ebook_library_price)
         TextView titleView;
         View rootView;

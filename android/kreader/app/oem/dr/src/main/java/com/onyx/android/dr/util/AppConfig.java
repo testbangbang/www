@@ -53,6 +53,10 @@ public class AppConfig {
         public static final String WIFI_SETTINGS_PAGE_VIEW_SIZE_TAG = "wifi_settings_page_view_size";
         public static final float WIFI_SETTINGS_PAGE_VIEW_SIZE_WIDTH = 0.65f;
         public static final float WIFI_SETTINGS_PAGE_VIEW_SIZE_HEIGHT = 0.8f;
+
+        public static final String PAY_PAGE_VIEW_SIZE_TAG = "pay_page_view_size";
+        public static final float PAY_PAGE_VIEW_SIZE_WIDTH = 0.6f;
+        public static final float PAY_PAGE_VIEW_SIZE_HEIGHT = 0.4f;
     }
 
     public static class MainMenuInfo {
@@ -234,6 +238,24 @@ public class AppConfig {
     public float getWifiSettingsPageViewSizeHeight() {
         float height = DeviceSettingInfo.WIFI_SETTINGS_PAGE_VIEW_SIZE_HEIGHT;
         JSONObject languageSettingsInfo = gitViewObject(DeviceSettingInfo.WIFI_SETTINGS_PAGE_VIEW_SIZE_TAG);
+        if (languageSettingsInfo != null) {
+            height = languageSettingsInfo.getFloat(HEIGHT_TAG);
+        }
+        return height;
+    }
+
+    public float getPayPageViewSizeWidth() {
+        float width = DeviceSettingInfo.PAY_PAGE_VIEW_SIZE_WIDTH;
+        JSONObject languageSettingsInfo = gitViewObject(DeviceSettingInfo.PAY_PAGE_VIEW_SIZE_TAG);
+        if (languageSettingsInfo != null) {
+            width = languageSettingsInfo.getFloat(WIDTH_TAG);
+        }
+        return width;
+    }
+
+    public float getPayPageViewSizeHeight() {
+        float height = DeviceSettingInfo.PAY_PAGE_VIEW_SIZE_HEIGHT;
+        JSONObject languageSettingsInfo = gitViewObject(DeviceSettingInfo.PAY_PAGE_VIEW_SIZE_TAG);
         if (languageSettingsInfo != null) {
             height = languageSettingsInfo.getFloat(HEIGHT_TAG);
         }

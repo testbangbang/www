@@ -20,7 +20,6 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 
-
 /**
  * Created by zhouzhiming on 2017/8/16.
  */
@@ -70,7 +69,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void initTitleData() {
-        image.setImageResource(R.drawable.app_setting);
+        image.setImageResource(R.drawable.ic_settings);
         title.setText(getString(R.string.menu_settings));
     }
 

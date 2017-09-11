@@ -1,13 +1,17 @@
 package com.onyx.android.dr.request.cloud;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.ApkDownloadSucceedEvent;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.download.onyxdownloadservice.DownloadCallback;
-import com.onyx.download.onyxdownloadservice.DownloadRequest;
-import com.onyx.download.onyxdownloadservice.DownloadTaskManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by hehai on 17-5-31.
@@ -23,13 +27,15 @@ public class RequestDownloadAPK extends BaseCloudRequest {
     @Override
     public void execute(CloudManager helper) throws Exception {
         FileUtils.deleteFile(Constants.APK_DOWNLOAD_PATH);
-        DownloadRequest downloadRequest = DownloadTaskManager.getInstance().createDownloadRequest(url, Constants.APK_DOWNLOAD_PATH, Constants.APK_NAME);
-        int reference = DownloadTaskManager.getInstance().addDownloadCallback(downloadRequest, new DownloadCallback() {
+        OnyxDownloadManager downloadManager = OnyxDownloadManager.getInstance();
+        BaseDownloadTask download = downloadManager.download(DRApplication.getInstance(), url, Constants.APK_DOWNLOAD_PATH, Constants.APK_NAME, new BaseCallback() {
             @Override
-            public void progressChanged(int reference, String title, String remoteUri, String localUri, int state, long finished, long total, long percentage) {
-
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    EventBus.getDefault().post(new ApkDownloadSucceedEvent());
+                }
             }
         });
-        DRApplication.getInstance().setApkDownloadReference(reference);
+        downloadManager.startDownload(download);
     }
 }

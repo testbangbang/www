@@ -10,6 +10,7 @@ import android.text.TextUtils;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
@@ -17,11 +18,13 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.HaveNewVersionApkEvent;
 import com.onyx.android.dr.event.HaveNewVersionEvent;
+import com.onyx.android.dr.event.UpdateDownloadSucceedEvent;
 import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.request.cloud.RequestDownloadAPK;
 import com.onyx.android.dr.request.cloud.RequestFirmwareLocalCheck;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Device;
@@ -98,12 +101,12 @@ public class ApkUtils {
         final CustomDialog.Builder builder = new CustomDialog.Builder(context);
         builder.setTitle(context.getString(R.string.find_a_new_version));
         builder.setMessage(message);
-        builder.setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
+        CustomDialog dialog = builder.setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
                 CommonNotices.showMessage(context, context.getString(R.string.start_updating));
-                ActivityManager.startOtaUpdateActivity(context, url);
+                downloadUpdate(url);
             }
         }).setNegativeButton(context.getString(R.string.cancel_updating), new DialogInterface.OnClickListener() {
             @Override
@@ -111,7 +114,12 @@ public class ApkUtils {
                 CommonNotices.showMessage(context, context.getString(R.string.cancel_updating));
                 dialog.dismiss();
             }
-        }).create().show();
+        }).create();
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        dialog.show();
     }
 
     public static void firmwareLocal() {
@@ -225,5 +233,18 @@ public class ApkUtils {
 
             }
         });
+    }
+
+    private static void downloadUpdate(String url) {
+        OnyxDownloadManager downloadManager = OnyxDownloadManager.getInstance();
+        BaseDownloadTask download = downloadManager.download(DRApplication.getInstance(), url, ApkUtils.getUpdateZipFile().getAbsolutePath(), Constants.UPDATE_ZIP, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    EventBus.getDefault().post(new UpdateDownloadSucceedEvent());
+                }
+            }
+        });
+        downloadManager.startDownload(download);
     }
 }
