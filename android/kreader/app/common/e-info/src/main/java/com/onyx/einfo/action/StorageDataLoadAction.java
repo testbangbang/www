@@ -4,6 +4,8 @@ import android.databinding.ObservableList;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.request.data.fs.StorageFileListLoadRequest;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -23,10 +25,17 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
 
     private final ObservableList<StorageItemViewModel> resultDataItemList;
     private final File parentFile;
+    private SortBy sortBy;
+    private SortOrder sortOrder;
 
     public StorageDataLoadAction(final File parentFile, final ObservableList<StorageItemViewModel> resultDataItemList) {
         this.parentFile = parentFile;
         this.resultDataItemList = resultDataItemList;
+    }
+
+    public void setSort(SortBy sortBy, SortOrder sortOrder) {
+        this.sortBy = sortBy;
+        this.sortOrder = sortOrder;
     }
 
     @Override
@@ -35,13 +44,14 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void loadData(final LibraryDataHolder dataHolder, final File parentFile, final BaseCallback baseCallback) {
-        List<String> filterList = null;
+        List<String> filterList = new ArrayList<>();
+        final StorageFileListLoadRequest fileListLoadRequest = new StorageFileListLoadRequest(parentFile, filterList);
         if (isStorageRoot(parentFile)) {
-            filterList = new ArrayList<>();
             filterList.add(EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath());
             filterList.add(EnvironmentUtil.getRemovableSDCardDirectory().getAbsolutePath());
+        } else {
+            fileListLoadRequest.setSort(sortBy, sortOrder);
         }
-        final StorageFileListLoadRequest fileListLoadRequest = new StorageFileListLoadRequest(parentFile, filterList);
         dataHolder.getDataManager().submitToMulti(dataHolder.getContext(), fileListLoadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

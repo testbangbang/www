@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 
 import java.io.BufferedReader;
@@ -24,6 +25,8 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -259,20 +262,6 @@ public class FileUtils {
             closeQuietly(out);
         }
         return succeed;
-    }
-
-    public static void copyFile(File src, File dst) throws IOException {
-        FileChannel srcChannel = null;
-        FileChannel dstChannel = null;
-
-        try {
-            srcChannel = new FileInputStream(src).getChannel();
-            dstChannel = new FileOutputStream(dst).getChannel();
-            srcChannel.transferTo(0, srcChannel.size(), dstChannel);
-        } finally {
-            closeQuietly(srcChannel);
-            closeQuietly(dstChannel);
-        }
     }
 
     public static String getRealFilePathFromUri(Context context, Uri uri) {
@@ -589,5 +578,60 @@ public class FileUtils {
             FileUtils.closeQuietly(source);
             FileUtils.closeQuietly(destination);
         }
+    }
+
+    public static void sortListByName(final List<File> fileList, final SortOrder sortOrder) {
+        Collections.sort(fileList, new Comparator<File>() {
+            @Override
+            public int compare(File lhs, File rhs) {
+                int i = ComparatorUtils.booleanComparator(lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
+                if (i == 0) {
+                    return ComparatorUtils.stringComparator(lhs.getName(), rhs.getName(), sortOrder);
+                }
+                return i;
+            }
+        });
+    }
+
+    public static void sortListByCreationTime(final List<File> fileList, final SortOrder sortOrder) {
+        //Todo:Java 6 and belows seems could only get file's last modified time,could not get creation time.
+        //reference site:http://stackoverflow.com/questions/6885269/getting-date-time-of-creation-of-a-file
+        Collections.sort(fileList, new Comparator<File>() {
+            @Override
+            public int compare(File lhs, File rhs) {
+                int i = ComparatorUtils.booleanComparator(lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
+                if (i == 0) {
+                    return ComparatorUtils.longComparator(lhs.lastModified(), rhs.lastModified(), sortOrder);
+                }
+                return i;
+            }
+        });
+    }
+
+    public static void sortListBySize(final List<File> fileList, final SortOrder sortOrder) {
+        Collections.sort(fileList, new Comparator<File>() {
+            @Override
+            public int compare(File lhs, File rhs) {
+                int i = ComparatorUtils.booleanComparator(lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
+                if (i == 0) {
+                    return ComparatorUtils.longComparator(lhs.length(), rhs.length(), sortOrder);
+                }
+                return i;
+            }
+        });
+    }
+
+    public static void sortListByFileType(final List<File> fileList, final SortOrder sortOrder) {
+        Collections.sort(fileList, new Comparator<File>() {
+            @Override
+            public int compare(File lhs, File rhs) {
+                int i = ComparatorUtils.booleanComparator(lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
+                if (i == 0) {
+                    return ComparatorUtils.stringComparator(FileUtils.getFileExtension(lhs),
+                            FileUtils.getFileExtension(rhs), sortOrder);
+                }
+                return i;
+            }
+        });
     }
 }
