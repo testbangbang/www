@@ -10,11 +10,14 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.ViewType;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -23,6 +26,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.einfo.R;
+import com.onyx.einfo.action.SortByProcessAction;
 import com.onyx.einfo.action.StorageDataLoadAction;
 import com.onyx.einfo.adapter.BindingViewHolder;
 import com.onyx.einfo.adapter.PageAdapter;
@@ -33,6 +37,7 @@ import com.onyx.einfo.events.StorageItemViewModelClickEvent;
 import com.onyx.einfo.events.StorageItemViewModelLongClickEvent;
 import com.onyx.einfo.events.ViewTypeEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
+import com.onyx.einfo.manager.ConfigPreferenceManager;
 import com.onyx.einfo.model.StorageItemViewModel;
 import com.onyx.einfo.model.StorageViewModel;
 
@@ -66,6 +71,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         prevBinding();
         initToolbar();
         initRecyclerView();
+        initSortByView();
     }
 
     private void prevBinding() {
@@ -90,6 +96,33 @@ public class StorageActivity extends OnyxAppCompatActivity {
             }
         });
         contentPageView.gotoPage(0);
+    }
+
+    private void initSortByView() {
+        binding.buttonSortBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortByDialog();
+            }
+        });
+    }
+
+    private void saveSortConfig(SortBy sortBy, SortOrder sortOrder) {
+        ConfigPreferenceManager.setStorageSortBy(getApplicationContext(), sortBy);
+        ConfigPreferenceManager.setStorageSortOrder(getApplicationContext(), sortOrder);
+    }
+
+    private void showSortByDialog() {
+        final SortByProcessAction sortByAction = new SortByProcessAction(this,
+                ConfigPreferenceManager.getStorageSortBy(this),
+                ConfigPreferenceManager.getStorageSortOrder(this));
+        sortByAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                saveSortConfig(sortByAction.getResultSortBy(), sortByAction.getResultSortOrder());
+                loadData(getStorageViewModel().getCurrentFile());
+            }
+        });
     }
 
     private void updatePageStatus(boolean resetPage) {
@@ -173,6 +206,8 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     private void loadData(File dir) {
         StorageDataLoadAction dataLoadAction = new StorageDataLoadAction(dir, getStorageViewModel().items);
+        dataLoadAction.setSort(ConfigPreferenceManager.getStorageSortBy(getApplicationContext()),
+                ConfigPreferenceManager.getStorageSortOrder(getApplicationContext()));
         dataLoadAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
