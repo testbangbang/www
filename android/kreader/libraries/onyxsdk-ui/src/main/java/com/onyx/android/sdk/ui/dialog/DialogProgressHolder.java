@@ -12,11 +12,11 @@ import java.util.Map;
  */
 public class DialogProgressHolder {
     private static final String TAG = DialogProgressHolder.class.getSimpleName();
-    
+
     private Map<Object, DialogLoading> dialogLoadingMap = new HashMap<>();
     private Map<Object, DialogCancelListener> cancelListenerMap = new HashMap<>();
 
-    public interface DialogCancelListener{
+    public interface DialogCancelListener {
         void onCancel();
     }
 
@@ -25,9 +25,13 @@ public class DialogProgressHolder {
     }
 
     public DialogLoading getProgressDialog(final Context context, final Object object, int resId, DialogCancelListener listener) {
+        return getProgressDialog(context, object, context.getString(resId), listener);
+    }
+
+    public DialogLoading getProgressDialog(final Context context, final Object object, String msg, DialogCancelListener listener) {
         DialogLoading dialogLoading = getProgressDialogFromRequest(object);
         if (dialogLoading == null) {
-            dialogLoading = new DialogLoading(context, resId, true);
+            dialogLoading = new DialogLoading(context, msg, true);
             dialogLoading.setCancelButtonClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -41,10 +45,14 @@ public class DialogProgressHolder {
         return dialogLoading;
     }
 
-    public DialogLoading showProgressDialog(final Context context, final Object object, int resId, DialogCancelListener listener) {
-        DialogLoading dialogLoading = getProgressDialog(context, object, resId, listener);
+    public DialogLoading showProgressDialog(final Context context, final Object object, String msg, DialogCancelListener listener) {
+        DialogLoading dialogLoading = getProgressDialog(context, object, msg, listener);
         dialogLoading.show();
         return dialogLoading;
+    }
+
+    public DialogLoading showProgressDialog(final Context context, final Object object, int resId, DialogCancelListener listener) {
+        return showProgressDialog(context, object, context.getString(resId), listener);
     }
 
     public void setMessage(final Object request, final String text) {
@@ -75,7 +83,7 @@ public class DialogProgressHolder {
     }
 
     public void dismissAllProgressDialog() {
-        for(Map.Entry<Object, DialogLoading> entry : dialogLoadingMap.entrySet()) {
+        for (Map.Entry<Object, DialogLoading> entry : dialogLoadingMap.entrySet()) {
             entry.getValue().dismiss();
         }
         dialogLoadingMap.clear();

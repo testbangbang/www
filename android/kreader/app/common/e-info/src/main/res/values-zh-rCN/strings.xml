@@ -122,4 +122,5 @@
     <string name="online_library_load_error">获取书库异常</string>
     <string name="online_group_load_error">获取分组异常</string>
 
+    <string name="text_recommend_person">推荐者：</string>
 </resources>
