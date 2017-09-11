@@ -58,7 +58,7 @@ public abstract class BaseHandler {
 
     private float SINGLE_TAP_MOVE_TOLERANCE = 15;  //dp
 
-    private static final float IGNORE_PROPORTIONS_ADJUST = 0.85f;
+    private static final float IGNORE_PROPORTIONS_ADJUST = 0.95f;
     private static final float IGNORE_PROPORTIONS_WIDTH = 0.95f;
     private static final float IGNORE_PROPORTIONS_HEIGHT_START = 0.50f;
     private static final float IGNORE_PROPORTIONS_HEIGHT_END = 0.60f;
@@ -338,8 +338,10 @@ public abstract class BaseHandler {
         if(readerDataHolder.getReaderViewInfo().canPan()) {
             return false;
         }
-        float startX = e2.getX();
-        if (startX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST) {
+        float startX = e1.getX();
+        float endX = e2.getX();
+        if (startX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST
+                && endX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST) {
             if (distanceY < 0 && Math.abs(distanceY) > 4) {
                 readerDataHolder.adjustLowerBrightness();
             } else if ( Math.abs(distanceY) > 4 ){
