@@ -2,6 +2,7 @@ package com.onyx.android.sdk.device;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
@@ -88,6 +89,7 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodResetEpdPost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
+    private static Method sMethodSetScreenHandWritingRegionExclude = null;
     private static Method sMethodApplyGammaCorrection = null;
     private static Method sMethodStartStroke = null;
     private static Method sMethodAddStrokePoint = null;
@@ -591,6 +593,32 @@ public class RK32XXDevice extends BaseDevice {
         }
     }
 
+    @Override
+    public void setScreenHandWritingRegionExclude(View view, int[] array) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionExclude, view, view, array);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setScreenHandWritingRegionExclude(View view, Rect[] regions) {
+        int array[] = new int[regions.length * 4];
+        for (int i = 0; i < regions.length; i++) {
+            Rect region = regions[i];
+            int left = Math.min(region.left, region.right);
+            int top = Math.min(region.top, region.bottom);
+            int right = Math.max(region.left, region.right);
+            int bottom = Math.max(region.top, region.bottom);
+            array[4 * i] = left;
+            array[4 * i + 1] = top;
+            array[4 * i + 2] = right;
+            array[4 * i + 3] = bottom;
+        }
+        setScreenHandWritingRegionExclude(view, array);
+    }
+
     public void applyGammaCorrection(boolean apply, int value) {
         ReflectUtil.invokeMethodSafely(sMethodApplyGammaCorrection, null, apply, value);
     }
@@ -703,6 +731,7 @@ public class RK32XXDevice extends BaseDevice {
             sMethodResetEpdPost = ReflectUtil.getMethodSafely(cls, "resetEpdPost");
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
+            sMethodSetScreenHandWritingRegionExclude = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionExclude", View.class, int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);
