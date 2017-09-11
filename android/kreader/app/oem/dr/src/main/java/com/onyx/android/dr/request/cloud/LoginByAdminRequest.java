@@ -8,7 +8,6 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
-import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -20,7 +19,7 @@ import retrofit2.Response;
  * Created by hehai on 2017/6/30.
  */
 
-public class LoginByAdminRequest extends BaseCloudRequest {
+public class LoginByAdminRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private BaseAuthAccount authAccount;
     private NeoAccountBase neoAccount;
 

@@ -17,7 +17,7 @@ import retrofit2.Response;
  * Created by hehai on 2017/6/30.
  */
 
-public class SignUpRequest extends BaseCloudRequest {
+public class SignUpRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private SignUpInfo signUpInfo;
     private AuthToken authToken;
 

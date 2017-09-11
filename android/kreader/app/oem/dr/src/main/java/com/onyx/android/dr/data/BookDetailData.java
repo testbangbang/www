@@ -1,7 +1,9 @@
 package com.onyx.android.dr.data;
 
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.request.cloud.RequestCreateOrders;
 import com.onyx.android.dr.request.cloud.RequestGetBookDetail;
+import com.onyx.android.dr.request.cloud.RequestPayForOrder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 
 /**
@@ -10,6 +12,14 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 
 public class BookDetailData {
     public void loadBookDetail(RequestGetBookDetail req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void createOrder(RequestCreateOrders req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void pay(RequestPayForOrder req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 }

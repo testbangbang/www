@@ -108,4 +108,6 @@ dependencies {
     }
     compile "org.jsoup:jsoup:$rootProject.jsoupVersion"
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile "com.google.zxing:core:$rootProject.zxingVersion"
+    compile "com.google.zxing:android-core:$rootProject.zxingVersion"
 }

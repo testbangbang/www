@@ -35,6 +35,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/book_detail_text_margin"
+                android:ellipsize="end"
+                android:lines="1"
                 android:textSize="@dimen/level_two_font_size" />
 
             <TextView
@@ -67,6 +69,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/book_detail_buy_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -104,6 +107,19 @@
                 android:text="@string/add_to_shopping_cart"
                 android:textSize="@dimen/level_two_font_size" />
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/book_detail_read"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/book_detail_book_name_margin_top"
+            android:layout_marginLeft="@dimen/book_detail_button_margin"
+            android:layout_toRightOf="@id/book_detail_book_cover"
+            android:background="@drawable/text_view_background"
+            android:padding="@dimen/book_detail_button_padding"
+            android:textSize="@dimen/level_two_font_size"
+            android:visibility="gone" />
     </RelativeLayout>
 
     <LinearLayout

@@ -494,6 +494,12 @@
     <string name="paid">paid</string>
     <string name="chart">Chart</string>
     <string name="system_update">system update</string>
+    <string name="read">read</string>
+    <string name="download">download</string>
+    <string name="pay_qr_code_title">Please use WeChat to scan QR code to pay</string>
+    <string name="order_num">Order：%s</string>
+    <string name="order_price">Price：￥%.2f</string>
+    <string name="please_connect_to_the_network_first">Please connect to the network first</string>
     <string name="pronounce_evaluation_hint">Third party App, to be provided.</string>
     <string name="start_record">start_record</string>
     <string name="fragment_speech_recording_hint">hint: You can only call your own essay file.</string>

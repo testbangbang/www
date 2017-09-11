@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rectangle_stroke"
+    android:gravity="center"
+    android:orientation="vertical"
+    android:padding="@dimen/pay_activity_padding">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pay_qr_code_title"
+        android:textSize="@dimen/level_one_font_size" />
+
+    <RelativeLayout
+        android:layout_width="@dimen/pay_qr_code_width"
+        android:layout_height="@dimen/pay_qr_code_width">
+
+        <ImageView
+            android:id="@+id/pay_qr_code"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/loading_layout"
+            android:layout_width="@dimen/pay_activity_loading_progress_width"
+            android:layout_height="@dimen/pay_activity_loading_progress_width"
+            android:layout_centerInParent="true"
+            android:src="@anim/loading_animation" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/order_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/level_two_font_size" />
+
+        <TextView
+            android:id="@+id/order_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/level_two_font_size" />
+    </LinearLayout>
+
+</LinearLayout>

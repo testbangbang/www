@@ -21,6 +21,7 @@ import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudQueryBuilder;
 import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.LibraryViewInfo;
 import com.onyx.android.sdk.data.QueryArgs;
@@ -119,7 +120,7 @@ public class MoreBooksFragment extends BaseFragment {
         viewInfo = getDataHolder().getCloudViewInfo();
         viewInfo.updateSortBy(SortBy.CreationTime, SortOrder.Desc);
         viewInfo.getQueryPagination().setCurrentPage(0);
-        args = QueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
+        args = CloudQueryBuilder.allBooksQuery(SortBy.CreationTime, SortOrder.Desc);
         args.conditionGroup.and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
         args.fetchPolicy = FetchPolicy.DB_ONLY;
         args.sortBy = SortBy.RecentlyRead;

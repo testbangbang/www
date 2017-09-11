@@ -1,5 +1,6 @@
 package com.onyx.android.dr.common;
 
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,13 +25,14 @@ import com.onyx.android.dr.activity.HearAndSpeakActivity;
 import com.onyx.android.dr.activity.InformalEssayActivity;
 import com.onyx.android.dr.activity.JoinGroupActivity;
 import com.onyx.android.dr.activity.LoginActivity;
+import com.onyx.android.dr.activity.MainActivity;
 import com.onyx.android.dr.activity.MemorandumActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
 import com.onyx.android.dr.activity.NewWordNotebookActivity;
 import com.onyx.android.dr.activity.NewWordQueryActivity;
 import com.onyx.android.dr.activity.NewWordQueryDialogActivity;
 import com.onyx.android.dr.activity.NewWordTypeActivity;
-import com.onyx.android.dr.activity.OTAUpdateActivity;
+import com.onyx.android.dr.activity.PayActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
@@ -40,7 +42,6 @@ import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
 import com.onyx.android.dr.activity.WifiActivity;
 import com.onyx.android.dr.bean.NewWordBean;
-import com.onyx.android.dr.data.database.BookDetailEntity;
 import com.onyx.android.dr.event.MenuWifiSettingEvent;
 import com.onyx.android.dr.reader.activity.AfterReadingActivity;
 import com.onyx.android.dr.reader.activity.ReadSummaryActivity;
@@ -48,6 +49,7 @@ import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.dr.reader.view.CustomDialog;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.device.Device;
@@ -299,14 +301,22 @@ public class ActivityManager {
     }
 
     public static void startEBookStoreActivity(Context context) {
+        if (enableWifiOpenAndDetect(context)) {
+            CommonNotices.showMessage(context, context.getString(R.string.network_not_connected));
+            return;
+        }
         Intent intent = new Intent(context, EBookStoreActivity.class);
         context.startActivity(intent);
     }
 
     private static boolean enableWifiOpenAndDetect(Context context) {
         if (!NetworkUtil.isWiFiConnected(context)) {
-            Device.currentDevice().enableWifiDetect(context);
-            NetworkUtil.enableWiFi(context, true);
+            if (0 == Utils.getConfiguredNetworks(context)) {
+                ActivityManager.startWifiActivity(context);
+            } else {
+                Device.currentDevice().enableWifiDetect(context);
+                NetworkUtil.enableWiFi(context, true);
+            }
             return true;
         }
         return false;
@@ -354,13 +364,6 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startOtaUpdateActivity(Context context, String url) {
-        Intent intent = new Intent(context, OTAUpdateActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.UPDATE_URL, url);
-        context.startActivity(intent);
-    }
-
     public static void startInstallAPKActivity(Context context, File apkFile) {
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -383,10 +386,28 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startBookDetailActivity(Context context,String bookId) {
+    public static void startBookDetailActivity(Activity context, String bookId) {
+        if (enableWifiOpenAndDetect(context)) {
+            CommonNotices.showMessage(context, context.getString(R.string.network_not_connected));
+            return;
+        }
         Intent intent = new Intent(context, BookDetailActivity.class);
-        intent.putExtra(Constant.ID_TAG,bookId);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constant.ID_TAG, bookId);
+        context.startActivityForResult(intent, 0);
+    }
+
+    public static void startPayActivity(final Activity context, String orderId) {
+        if (enableWifiOpenAndDetect(context)) {
+            CommonNotices.showMessage(context, context.getString(R.string.network_not_connected));
+            return;
+        }
+        Intent intent = new Intent(context, PayActivity.class);
+        intent.putExtra(Constants.ORDER_ID, orderId);
+        context.startActivityForResult(intent, 0);
+    }
+
+    public static void startMainActivity(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
 }

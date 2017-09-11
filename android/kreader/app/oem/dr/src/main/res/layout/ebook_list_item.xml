@@ -68,13 +68,5 @@
             android:layout_height="@dimen/library_item_cover_height"
             android:scaleType="fitXY"
             android:src="@drawable/book_cover" />
-
-        <ImageView
-            android:id="@+id/ebook_library_image_get_widget"
-            android:layout_width="@dimen/book_list_item_widget_width"
-            android:layout_height="@dimen/book_list_item_widget_height"
-            android:layout_marginTop="0dp"
-            android:src="@drawable/book_item_get_widget"
-            android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>
