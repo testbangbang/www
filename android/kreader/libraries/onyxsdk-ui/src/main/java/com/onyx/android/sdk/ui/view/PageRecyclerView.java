@@ -2,6 +2,7 @@ package com.onyx.android.sdk.ui.view;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +20,9 @@ import com.onyx.android.sdk.ui.utils.PageTurningDirection;
 
 import java.util.Hashtable;
 import java.util.Map;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
 /**
  * Created by suicheng on 2016/6/27.
@@ -427,14 +431,24 @@ public class PageRecyclerView extends RecyclerView {
         }
 
         protected void adjustParentViewLayout(final VH holder) {
+            if (pageRecyclerView.getLayoutParams().height == WRAP_CONTENT) {
+                return;
+            }
             final int paddingBottom = pageRecyclerView.getOriginPaddingBottom();
             final int paddingTop = pageRecyclerView.getPaddingTop();
-            int parentHeight = pageRecyclerView.getMeasuredHeight() - paddingBottom - paddingTop - getRowCount() * pageRecyclerView.getItemDecorationHeight();
+            final int parentViewHeight;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                parentViewHeight = pageRecyclerView.getLayoutParams().height > 0 ?
+                        pageRecyclerView.getLayoutParams().height : pageRecyclerView.getHeight();
+            } else {
+                parentViewHeight = pageRecyclerView.getMeasuredHeight();
+            }
+            int parentHeight = parentViewHeight - paddingBottom - paddingTop - getRowCount() * pageRecyclerView.getItemDecorationHeight();
             double itemHeight =  ((double)parentHeight) / getRowCount();
             if (itemHeight > 0) {
                 int actualHeight = (int)Math.floor(itemHeight);
                 int deviation = parentHeight - actualHeight * getRowCount();
-                holder.itemView.setLayoutParams(new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, actualHeight));
+                holder.itemView.setLayoutParams(new AbsListView.LayoutParams(MATCH_PARENT, actualHeight));
                 setParentHeightDeviation(deviation);
             }
         }
@@ -507,7 +521,7 @@ public class PageRecyclerView extends RecyclerView {
             return pageRecyclerView;
         }
 
-        private GPaginator getPagePaginator() {
+        public GPaginator getPagePaginator() {
             return getPageRecyclerView().getPaginator();
         }
 

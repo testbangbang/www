@@ -195,7 +195,7 @@ public class NoteManager {
         return shapeDataInfo;
     }
 
-    public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
+    public void saveShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
     }
 
@@ -227,6 +227,10 @@ public class NoteManager {
     @Subscribe
     public void updateLineLayoutArgsEvent(UpdateLineLayoutArgsEvent event) {
         updateLineLayoutArgs(event.getSpanTextView());
+    }
+
+    public void setCustomLimitRect(Rect targetRect){
+        getTouchHelper().setCustomLimitRect(getHostView(), targetRect);
     }
 
     @Subscribe

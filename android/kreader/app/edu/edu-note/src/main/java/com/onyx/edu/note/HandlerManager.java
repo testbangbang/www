@@ -1,16 +1,14 @@
 package com.onyx.edu.note;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.edu.note.data.ScribbleFunctionBarMenuID;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
-import com.onyx.edu.note.data.ScribbleSubMenuID;
-import com.onyx.edu.note.data.ScribbleToolBarMenuID;
 import com.onyx.edu.note.handler.BaseHandler;
+import com.onyx.edu.note.handler.HandlerArgs;
+import com.onyx.edu.note.handler.PicEditHandler;
 import com.onyx.edu.note.handler.ScribbleHandler;
 import com.onyx.edu.note.handler.ShapeTransformHandler;
 import com.onyx.edu.note.handler.SpanTextHandler;
@@ -25,33 +23,35 @@ public class HandlerManager {
     public static final String SCRIBBLE_PROVIDER = "scribble";
     public static final String SPAN_TEXT_PROVIDER = "span_text";
     public static final String SHAPE_TRANSFORM_PROVIDER = "shape_transform";
+    public static final String PIC_EDIT_PROVIDER = "pic_edit";
 
     private String activeProviderName;
     private Map<String, BaseHandler> providerMap = new HashMap<>();
     private ScribbleViewModel mViewModel;
 
-    public HandlerManager(Context context, ScribbleViewModel viewModel) {
+    public HandlerManager(ScribbleViewModel viewModel) {
         mViewModel = viewModel;
-        initProviderMap(context);
+        initProviderMap();
     }
 
-    private void initProviderMap(Context context) {
+    private void initProviderMap() {
         NoteManager manager = NoteApplication.getInstance().getNoteManager();
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(manager));
         providerMap.put(SPAN_TEXT_PROVIDER, new SpanTextHandler(manager));
         providerMap.put(SHAPE_TRANSFORM_PROVIDER, new ShapeTransformHandler(manager));
+        providerMap.put(PIC_EDIT_PROVIDER, new PicEditHandler(manager));
     }
 
     public void resetToDefaultProvider() {
-        setActiveProvider(SCRIBBLE_PROVIDER);
+        setActiveProvider(SCRIBBLE_PROVIDER, null);
     }
 
-    public void setActiveProvider(String providerName) {
+    public void setActiveProvider(String providerName, HandlerArgs args) {
         if (!TextUtils.isEmpty(activeProviderName) && providerMap.get(activeProviderName) != null) {
             providerMap.get(activeProviderName).onDeactivate();
         }
         activeProviderName = providerName;
-        providerMap.get(activeProviderName).onActivate();
+        providerMap.get(activeProviderName).onActivate(args);
     }
 
     @NonNull
@@ -64,6 +64,10 @@ public class HandlerManager {
     }
 
     public void changeScribbleMode(@ScribbleMode.ScribbleModeDef int targetMode) {
+        changeScribbleMode(targetMode, null);
+    }
+
+    public void changeScribbleMode(@ScribbleMode.ScribbleModeDef int targetMode, HandlerArgs args) {
         String targetProviderName = null;
         switch (targetMode) {
             case ScribbleMode.MODE_NORMAL_SCRIBBLE:
@@ -75,21 +79,24 @@ public class HandlerManager {
             case ScribbleMode.MODE_SHAPE_TRANSFORM:
                 targetProviderName = SHAPE_TRANSFORM_PROVIDER;
                 break;
+            case ScribbleMode.MODE_PIC_EDIT:
+                targetProviderName = PIC_EDIT_PROVIDER;
+                break;
         }
-        setActiveProvider(targetProviderName);
+        setActiveProvider(targetProviderName, args);
     }
 
-    public void handleSubMenuFunction(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
-        getActiveProvider().handleSubMenuFunction(subMenuID);
+    public void handleSubMenuFunction(int subMenuID) {
+        getActiveProvider().handleSubMenuEvent(subMenuID);
     }
 
-    public void handleToolBarMenuFunction(@ScribbleToolBarMenuID.ScribbleToolBarMenuDef int toolBarMenuID) {
-        getActiveProvider().handleToolBarMenuFunction(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
+    public void handleToolBarMenuFunction(int toolBarMenuID) {
+        getActiveProvider().handleToolBarMenuEvent(mViewModel.getCurrentDocumentUniqueID(), mViewModel.mNoteTitle.get(),
                 toolBarMenuID);
     }
 
-    public void handleFunctionBarMenuFunction(@ScribbleFunctionBarMenuID.ScribbleFunctionBarMenuDef int functionBarMenuID) {
-        getActiveProvider().handleFunctionBarMenuFunction(functionBarMenuID);
+    public void handleFunctionBarMenuFunction(int functionBarMenuID) {
+        getActiveProvider().handleMainMenuEvent(functionBarMenuID);
     }
 
     public void saveDocument(boolean closeAfterSave, BaseCallback callback) {
@@ -97,7 +104,7 @@ public class HandlerManager {
                 closeAfterSave, callback);
     }
 
-    public void quit(){
+    public void quit() {
         getActiveProvider().onDeactivate();
     }
 }

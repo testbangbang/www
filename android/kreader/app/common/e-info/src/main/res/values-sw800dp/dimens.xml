@@ -2,12 +2,15 @@
     <dimen name="home_item_divider">8dp</dimen>
     <dimen name="home_layout_padding">8dp</dimen>
 
-    <dimen name="home_normal_item_category_image_size">105dp</dimen>
-    <dimen name="home_normal_item_category_text_size">28sp</dimen>
+    <dimen name="home_normal_item_category_image_size">96dp</dimen>
+    <dimen name="home_normal_item_category_text_size">26sp</dimen>
     <dimen name="home_normal_item_category_margin">18dp</dimen>
 
     <dimen name="home_item_background_normal_stroke_width">3dp</dimen>
     <dimen name="home_item_background_select_stroke_width">4dp</dimen>
+
+    <dimen name="application_item_image_size">102dp</dimen>
+    <dimen name="application_item_text_size">22sp</dimen>
 
     <dimen name="library_item_get_widget_margin_top">0dp</dimen>
     <dimen name="library_item_get_widget_width">55dp</dimen>
@@ -15,5 +18,35 @@
     <dimen name="library_item_progress_height">14dp</dimen>
     <dimen name="library_item_progress_margin_top">8dp</dimen>
     <dimen name="library_item_progress_padding_left_right">2dp</dimen>
+
+    <dimen name="tab_item_text_size">27sp</dimen>
+    <dimen name="tab_item_text_padding_right">8dp</dimen>
+    <dimen name="tab_item_text_padding_bottom">8dp</dimen>
+    <dimen name="book_item_text_size">24sp</dimen>
+    <dimen name="book_item_text_margin_right">19dp</dimen>
+    <dimen name="book_item_cover_image_width">203dp</dimen>
+    <dimen name="book_item_cover_image_height">280dp</dimen>
+    <dimen name="book_item_get_image_width">55dp</dimen>
+    <dimen name="book_item_get_image_height">32dp</dimen>
+    <dimen name="book_item_notification_image_margin_top">-16dp</dimen>
+    <dimen name="book_item_notification_image_margin_right">12dp</dimen>
+
+    <dimen name="tab_layout_tab_max_width">216dp</dimen>
+    <dimen name="tab_layout_tab_text_max_width">130dp</dimen>
+    <dimen name="tab_layout_tab_text_margin">20dp</dimen>
+    <dimen name="tab_layout_tab_image_margin">16dp</dimen>
+
+    <dimen name="menu_item_text_size">25sp</dimen>
+
+    <dimen name="book_list_item_cover_image_width">118dp</dimen>
+    <dimen name="book_list_item_cover_image_height">144dp</dimen>
+    <dimen name="book_list_item_get_image_width">35dp</dimen>
+    <dimen name="book_list_item_get_image_height">21dp</dimen>
+    <dimen name="book_list_item_notification_image_margin_top">-15dp</dimen>
+    <dimen name="book_list_item_notification_image_margin_right">-16dp</dimen>
+    <dimen name="book_list_item_text_size">24sp</dimen>
+    <dimen name="book_list_item_text_margin_left">26dp</dimen>
+    <dimen name="book_list_item_author_text_margin_left">8dp</dimen>
+    <dimen name="book_list_item_padding">14dp</dimen>
 
 </resources>

@@ -568,4 +568,26 @@ public class FileUtils {
         String file2Md5 = FileUtils.computeFullMD5Checksum(new File(file2));
         return file1Md5.equals(file2Md5);
     }
+
+    public static boolean copyFile(File sourceFile, File targetFile) {
+        FileChannel source = null;
+        FileChannel destination = null;
+        try {
+            if (!targetFile.exists()) {
+                if (!targetFile.createNewFile()) {
+                    return false;
+                }
+            }
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(targetFile).getChannel();
+            source.transferTo(0, source.size(), destination);
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            FileUtils.closeQuietly(source);
+            FileUtils.closeQuietly(destination);
+        }
+    }
 }

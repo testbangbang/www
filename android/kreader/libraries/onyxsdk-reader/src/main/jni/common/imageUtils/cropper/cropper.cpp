@@ -679,8 +679,10 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_emb
 
     if (!filter.doFilterInPlace((AndroidBitmapFormat)info.format, (unsigned char *)pixels, info.width, info.height)) {
         LOGE("embolden glyph failed");
+        AndroidBitmap_unlockPixels(env, bitmap);
         return false;
     }
+    AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }
 
@@ -708,21 +710,13 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_gam
     imgfilter::ImageGammaFilter filter;
     filter.setGamma(gamma);
 
-    int length = 0;
-    if (regions != NULL) {
-        length = env->GetArrayLength(regions);
-    }
-    if (regions == NULL || length <= 0) {
-        return true;
-        //return filter.doFilterInPlace((AndroidBitmapFormat)info.format, (unsigned char *)pixels, info.width, info.height);
-    }
-
-    jboolean isCopy = false;
-    jfloat * temp = env->GetFloatArrayElements(regions, &isCopy);
+    JNIFloatArray array(env, regions);
+    const jfloat * temp = array.getLocalArray();
     if (temp == NULL) {
+        AndroidBitmap_unlockPixels(env, bitmap);
         return false;
     }
-    for(int i = 0; i < length / 4; ++i) {
+    for(int i = 0; i < array.getLength() / 4; ++i) {
         filter.doRegionFilterInPlace((AndroidBitmapFormat)info.format,
                 (unsigned char *)pixels,
                 temp[i * 4],
@@ -731,6 +725,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_gam
                 temp[i * 4 + 3],
                 info.stride);
     }
+    AndroidBitmap_unlockPixels(env, bitmap);
     return true;
 }
 
@@ -764,12 +759,14 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_ImageUtils_ref
     KOPTContext kctx = {0};
     if (!convertToKoptContext(env, settings, &kctx)) {
         LOGE("convertToKoptContext failed");
+        AndroidBitmap_unlockPixels(env, bitmap);
         return false;
     }
 
     LOGI("Java_com_onyx_reader_ReaderImageUtils_reflowPage: %d %d %d", info.width, info.height, info.stride);
     if (!convertToWillusBmp(env, pixels, info.width, info.height, info.stride, &kctx.src)) {
         LOGE("convertToWillusBmp failed");
+        AndroidBitmap_unlockPixels(env, bitmap);
         return false;
     }
     return k2pdfopt_reflow_bmp(pageName.getLocalString(), &kctx);

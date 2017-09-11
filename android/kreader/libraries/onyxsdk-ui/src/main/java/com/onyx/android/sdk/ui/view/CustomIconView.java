@@ -91,6 +91,9 @@ public class CustomIconView extends android.support.v7.widget.AppCompatImageView
 
     @Override
     public void setImageResource(@DrawableRes int resId) {
+        if (resId <= 0) {
+            return;
+        }
         Drawable d;
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             d = getResources().getDrawable(resId);

@@ -1,8 +1,12 @@
 package com.onyx.android.sdk.data.converter;
 
+import android.graphics.Canvas;
+
 import com.alibaba.fastjson.serializer.ValueFilter;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
+import com.raizlabs.android.dbflow.sql.language.property.BaseProperty;
+import com.raizlabs.android.dbflow.sql.language.property.IntProperty;
 import com.raizlabs.android.dbflow.sql.language.property.LongProperty;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 
@@ -35,16 +39,14 @@ public class QueryArgsFilter implements ValueFilter {
                 return getName(CloudMetadata_Table.publisher);
             case Size:
                 return getName(CloudMetadata_Table.size);
+            case Ordinal:
+                return getName(CloudMetadata_Table.ordinal);
             default:
                 return sortBy.name();
         }
     }
 
-    private String getName(Property property) {
-        return property.getNameAlias().newBuilder().shouldAddIdentifierToName(false).build().name();
-    }
-
-    private String getName(LongProperty property) {
+    private String getName(BaseProperty property) {
         return property.getNameAlias().newBuilder().shouldAddIdentifierToName(false).build().name();
     }
 }

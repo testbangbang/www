@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.GAdapter;
 import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.dataprovider.BuildConfig;
 import com.onyx.android.sdk.dataprovider.R;
@@ -63,6 +64,13 @@ public class CloudUtils {
             return null;
         }
         return new File(imageCacheDirectory(context, idString), "cover.png");
+    }
+
+    static public File imageCachePath(final Context context, final String idString, final String name) {
+        if (StringUtils.isNullOrEmpty(idString) || StringUtils.isNullOrEmpty(name)) {
+            return null;
+        }
+        return new File(imageCacheDirectory(context, idString), name + ".png");
     }
 
     static public File dataCachePath(final Context context, final String idString, final String title, final String ext) {

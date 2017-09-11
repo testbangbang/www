@@ -7,9 +7,8 @@ import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -127,6 +126,13 @@ public class RawInputManager {
         getRawInputProcessor().setLimitRect(new RectF(limitRect));
         EpdController.setScreenHandWritingRegionLimit(view,
                 limitRect.left, limitRect.top, limitRect.right, limitRect.bottom);
+        return this;
+    }
+
+    public RawInputManager setCustomLimitRect(final View view, Rect rect) {
+        getRawInputProcessor().setLimitRect(new RectF(rect.left, rect.top, rect.right, rect.bottom));
+        EpdController.setScreenHandWritingRegionLimit(view,
+                rect.left, rect.top, rect.right, rect.bottom);
         return this;
     }
 

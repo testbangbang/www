@@ -21,11 +21,13 @@ import java.util.Map;
  * Created by suicheng on 2017/4/23.
  */
 public class LibraryViewInfo implements Serializable {
+
     private int queryLimit = 9;
     private QueryArgs queryArgs;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
     private LibraryDataModel libraryDataModel = new LibraryDataModel();
     private List<Library> libraryPath = new ArrayList<>();
+    private ViewType viewType = ViewType.Thumbnail;
 
     public LibraryViewInfo() {
         queryArgs = new QueryArgs();
@@ -38,7 +40,7 @@ public class LibraryViewInfo implements Serializable {
     }
 
     public LibraryViewInfo(int row, int col, SortBy sortBy, SortOrder sortOrder) {
-        queryArgs = new QueryArgs();
+        this();
         queryArgs.limit = queryLimit = row * col;
         queryPagination.resize(row, col, 0);
         queryPagination.setCurrentPage(0);
@@ -74,13 +76,8 @@ public class LibraryViewInfo implements Serializable {
     }
 
     public QueryArgs pageQueryArgs(int page) {
-        QueryArgs args = new QueryArgs(queryArgs.sortBy, queryArgs.order);
-        args.limit = queryArgs.limit;
+        QueryArgs args = queryArgs.copyPart();
         args.offset = getOffset(page);
-        args.orderByList.addAll(queryArgs.orderByList);
-        args.conditionGroup = queryArgs.conditionGroup;
-        args.libraryUniqueId = queryArgs.libraryUniqueId;
-        args.category = queryArgs.category;
         return args;
     }
 
@@ -187,6 +184,7 @@ public class LibraryViewInfo implements Serializable {
         pageDataModel.bookCount = libraryDataModel.bookCount;
         pageDataModel.libraryCount = libraryDataModel.libraryCount;
         pageDataModel.thumbnailMap = libraryDataModel.thumbnailMap;
+        pageDataModel.notificationMap = libraryDataModel.notificationMap;
         return pageDataModel;
     }
 
@@ -221,9 +219,18 @@ public class LibraryViewInfo implements Serializable {
         return queryArgs.order;
     }
 
+    public SortBy getCurrentSortBy() {
+        return queryArgs.sortBy;
+    }
+
     public void updateSortBy(SortBy sortBy, SortOrder sortOrder) {
         queryArgs.sortBy = sortBy;
         queryArgs.order = sortOrder;
+    }
+
+    public void updateSortBy(SortBy sortBy, SortOrder sortOrder, int page){
+        updateSortBy(sortBy, sortOrder);
+        getQueryPagination().setCurrentPage(page);
     }
 
     public void updateFilterBy(BookFilter filter, SortOrder sortOrder) {
@@ -237,6 +244,22 @@ public class LibraryViewInfo implements Serializable {
 
     public int getQueryLimit() {
         return queryLimit;
+    }
+
+    public void resizePagination(int row, int col, int count) {
+        getQueryPagination().resize(row, col, count);
+    }
+
+    public void toggleViewType() {
+        viewType = viewType == ViewType.Thumbnail ? ViewType.Details : ViewType.Thumbnail;
+    }
+
+    public ViewType getCurrentViewType() {
+        return viewType;
+    }
+
+    public void setCurrentViewType(ViewType viewType) {
+        this.viewType = viewType;
     }
 
     public void clearThumbnailMap(LibraryDataModel dataModel) {
