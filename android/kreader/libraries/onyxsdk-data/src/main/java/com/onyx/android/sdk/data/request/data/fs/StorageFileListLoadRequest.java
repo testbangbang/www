@@ -81,57 +81,16 @@ public class StorageFileListLoadRequest extends BaseDataRequest {
         Benchmark benchmark = new Benchmark();
         switch (sortBy) {
             case Name:
-                Collections.sort(fileList, new Comparator<File>() {
-                    @Override
-                    public int compare(File lhs, File rhs) {
-                        int i = ComparatorUtils.booleanComparator(lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
-                        if (i == 0) {
-                            return ComparatorUtils.stringComparator(lhs.getName(), rhs.getName(), sortOrder);
-                        }
-                        return i;
-                    }
-                });
+                FileUtils.sortListByName(fileList, sortOrder);
                 break;
             case CreationTime:
-                //Todo:Java 6 and belows seems could only get file's last modified time,could not get creation time.
-                //reference site:http://stackoverflow.com/questions/6885269/getting-date-time-of-creation-of-a-file
-                Collections.sort(fileList, new Comparator<File>() {
-                    @Override
-                    public int compare(File lhs, File rhs) {
-                        int i = ComparatorUtils.booleanComparator(
-                                lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
-                        if (i == 0) {
-                            return ComparatorUtils.longComparator(lhs.lastModified(), rhs.lastModified(), sortOrder);
-                        }
-                        return i;
-                    }
-                });
+                FileUtils.sortListByCreationTime(fileList, sortOrder);
                 break;
             case FileType:
-                Collections.sort(fileList, new Comparator<File>() {
-                    @Override
-                    public int compare(File lhs, File rhs) {
-                        int i = ComparatorUtils.booleanComparator(lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
-                        if (i == 0) {
-                            return ComparatorUtils.stringComparator(FileUtils.getFileExtension(lhs),
-                                    FileUtils.getFileExtension(rhs), sortOrder);
-                        }
-                        return i;
-                    }
-                });
+                FileUtils.sortListByFileType(fileList, sortOrder);
                 break;
             case Size:
-                Collections.sort(fileList, new Comparator<File>() {
-                    @Override
-                    public int compare(File lhs, File rhs) {
-                        int i = ComparatorUtils.booleanComparator(lhs.isDirectory(), rhs.isDirectory(), SortOrder.Desc);
-                        if (i == 0) {
-                            return ComparatorUtils.longComparator(lhs.length(),
-                                    rhs.length(), sortOrder);
-                        }
-                        return i;
-                    }
-                });
+                FileUtils.sortListBySize(fileList, sortOrder);
                 break;
         }
         Log.w(TAG, "Sort duration:" + benchmark.duration() + "ms");
