@@ -12,14 +12,28 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLoadMovableLibraryRequest;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.edu.note.NoteAppConfig;
+import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.R;
+import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
+import com.onyx.edu.note.actions.manager.NoteLoadMovableLibraryAction;
+import com.onyx.edu.note.actions.manager.NoteMoveAction;
+import com.onyx.edu.note.actions.manager.RenameNoteOrLibraryAction;
 import com.onyx.edu.note.data.ScribbleAction;
 import com.onyx.edu.note.databinding.ActivityManagerBinding;
 import com.onyx.edu.note.scribble.ScribbleActivity;
 import com.onyx.edu.note.ui.ViewModelHolder;
+import com.onyx.edu.note.ui.dialog.DialogMoveFolder;
+import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
 import com.onyx.edu.note.util.Constant;
 import com.onyx.edu.note.util.Utils;
 
@@ -43,13 +57,19 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
+        resetEpd();
     }
 
     @Override
     protected void onDestroy() {
         mViewModel.onActivityDestroyed();
         cleanUpAllDialog();
+        resetEpd();
         super.onDestroy();
+    }
+
+    private void resetEpd() {
+        EpdController.resetEpdPost();
     }
 
     private void initView() {
@@ -115,6 +135,25 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
                 mViewModel.deleteNote(mPendingOperationIDList);
                 break;
             case R.id.move:
+                final ArrayList<String> targetList = new ArrayList<>();
+                targetList.addAll(mPendingOperationIDList);
+                NoteLoadMovableLibraryAction action = new NoteLoadMovableLibraryAction(mViewModel.getCurrentNoteModelUniqueID(), targetList);
+                action.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        NoteLoadMovableLibraryRequest req = (NoteLoadMovableLibraryRequest) request;
+                        showMovableFolderDialog(req.getNoteList(), targetList);
+                    }
+                });
+                break;
+            case R.id.rename:
+                renameNoteOrLibrary(mPendingOperationIDList.get(0));
+                break;
+            case R.id.export:
+                break;
+            case R.id.import_scribble:
+                break;
+            case R.id.setting:
                 break;
         }
         return true;
@@ -124,6 +163,31 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.manager_activity_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (mPendingOperationIDList.size() <= 0 ||
+                mPendingOperationIDList.get(0).equalsIgnoreCase(Long.toString(Long.MIN_VALUE))) {
+            menu.findItem(R.id.delete).setVisible(false);
+            menu.findItem(R.id.move).setVisible(false);
+            menu.findItem(R.id.export).setVisible(false);
+            menu.findItem(R.id.rename).setVisible(false);
+        } else {
+            menu.findItem(R.id.move).setVisible(true);
+            menu.findItem(R.id.delete).setVisible(true);
+            menu.findItem(R.id.export).setVisible(isIDDocument(mPendingOperationIDList.get(0)));
+            menu.findItem(R.id.rename).setVisible(true);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    private boolean isIDDocument(String uniqueID){
+        return NoteDataProvider.load(uniqueID).isDocument();
+    }
+
+    private boolean isIDFolder(String uniqueID){
+        return NoteDataProvider.load(uniqueID).isLibrary();
     }
 
     private ManagerViewModel findOrCreateViewModel() {
@@ -161,6 +225,96 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
         return noteFragment;
     }
 
+    private void showMovableFolderDialog(List<NoteModel> curLibSubContList, final List<String> targetList) {
+        final DialogMoveFolder dialogMoveFolder = new DialogMoveFolder();
+        dialogMoveFolder.setDataSet(curLibSubContList);
+        dialogMoveFolder.setCallback(new DialogMoveFolder.DialogMoveFolderCallback() {
+            @Override
+            public void onMove(String targetParentId) {
+                NoteMoveAction noteMoveAction = new NoteMoveAction(targetParentId,
+                        targetList, false, false, false);
+                noteMoveAction.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e == null) {
+                            mViewModel.loadData();
+                            dialogMoveFolder.dismiss();
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onDismiss() {
+            }
+        });
+        dialogMoveFolder.show(getFragmentManager());
+    }
+
+    protected void renameNoteOrLibrary(final String operationID) {
+        final NoteModel targetModel = NoteDataProvider.load(operationID);
+        final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
+        Bundle bundle = new Bundle();
+        bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.rename));
+        bundle.putString(DialogNoteNameInput.ARGS_HINT, targetModel.getTitle());
+        bundle.putBoolean(DialogNoteNameInput.ARGS_ENABLE_NEUTRAL_OPTION, false);
+        dialogNoteNameInput.setArguments(bundle);
+        dialogNoteNameInput.setCallBack(new DialogNoteNameInput.ActionCallBack() {
+            @Override
+            public boolean onConfirmAction(final String input) {
+                //TODO:we trust upper method would only pass doc or lib to here.
+                int itemType = targetModel.isDocument() ? NoteModel.TYPE_DOCUMENT : NoteModel.TYPE_LIBRARY;
+                final CheckNoteNameLegalityAction action =
+                        new CheckNoteNameLegalityAction(input, mViewModel.getCurrentNoteModelUniqueID(), itemType,
+                                true, false);
+                action.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (action.isLegal()) {
+                            RenameNoteOrLibraryAction reNameAction = new RenameNoteOrLibraryAction(operationID, input);
+                            reNameAction.execute(NoteApplication.getInstance().getNoteManager(), new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    dialogNoteNameInput.dismiss();
+                                    mViewModel.loadData();
+                                }
+                            });
+                        } else {
+                            showNoteNameIllegal();
+                        }
+                    }
+                });
+                return false;
+            }
+
+            @Override
+            public void onCancelAction() {
+                dialogNoteNameInput.dismiss();
+            }
+
+            @Override
+            public void onDiscardAction() {
+
+            }
+        });
+        dialogNoteNameInput.show(getFragmentManager());
+    }
+
+    private void showNoteNameIllegal() {
+        OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
+        OnyxAlertDialog.Params params = new OnyxAlertDialog.Params().setTittleString(getString(R.string.noti))
+                .setAlertMsgString(getString(R.string.note_name_already_exist))
+                .setEnableNegativeButton(false).setCanceledOnTouchOutside(false);
+        illegalDialog.setParams(params);
+        illegalDialog.show(getFragmentManager(), "illegalDialog");
+    }
+
+    private void cleanUpAllDialog() {
+        if (dlgCreateFolder != null && dlgCreateFolder.isVisible()) {
+            dlgCreateFolder.dismiss();
+        }
+    }
+
     @Override
     public void showNewFolderTitleIllegal() {
         final OnyxAlertDialog illegalDialog = new OnyxAlertDialog();
@@ -193,7 +347,7 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
     @Override
     public void addNewNote() {
         Log.e(TAG, "addNewNote: ");
-        Intent intent = new Intent(this,ScribbleActivity.class);
+        Intent intent = new Intent(this, ScribbleActivity.class);
         intent.putExtra(Constant.SCRIBBLE_ACTION_TAG, ScribbleAction.CREATE);
         intent.putExtra(Constant.NOTE_ID_TAG, ShapeUtils.generateUniqueId());
         intent.putExtra(Constant.NOTE_PARENT_ID_TAG, mViewModel.getCurrentNoteModelUniqueID());
@@ -203,7 +357,7 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
     @Override
     public void editNote(String uniqueID) {
         Log.e(TAG, "editNote: " + uniqueID);
-        Intent intent = new Intent(this,ScribbleActivity.class);
+        Intent intent = new Intent(this, ScribbleActivity.class);
         intent.putExtra(Constant.SCRIBBLE_ACTION_TAG, ScribbleAction.EDIT);
         intent.putExtra(Constant.NOTE_ID_TAG, uniqueID);
         intent.putExtra(Constant.NOTE_PARENT_ID_TAG, mViewModel.getCurrentNoteModelUniqueID());
@@ -230,11 +384,5 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
         mPendingOperationIDList.clear();
         mPendingOperationIDList.add(uniqueID);
         actionBar.openOptionsMenu();
-    }
-
-    void cleanUpAllDialog() {
-        if (dlgCreateFolder != null && dlgCreateFolder.isVisible()) {
-            dlgCreateFolder.dismiss();
-        }
     }
 }

@@ -4,11 +4,16 @@ import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.google.android.flexbox.FlexboxLayout;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.edu.note.ui.BaseMenuViewModel;
+import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.edu.note.ui.PageAdapter;
+import com.onyx.edu.note.ui.PageDataBindingAdapter;
 
 import java.util.List;
 
@@ -17,9 +22,33 @@ import java.util.List;
  */
 
 public class OnyxDataBindingUtil {
+
+    @BindingAdapter({"viewModel", "menuId"})
+    public static void bindMenu(View view, BaseMenuViewModel viewModel, int menuId) {
+        viewModel.bindMenu(menuId, view);
+    }
+
+    @BindingAdapter({"layoutColumns"})
+    public static void setLayoutColumns(View view, int layoutColumns) {
+        ViewGroup parent = (ViewGroup) view.getParent();
+        if (parent instanceof FlexboxLayout) {
+            FlexboxLayout.LayoutParams lp = (FlexboxLayout.LayoutParams)view.getLayoutParams();
+            float flexBasisPercent = (float) 1/layoutColumns;
+            lp.setFlexBasisPercent(flexBasisPercent);
+            view.setLayoutParams(lp);
+        }
+    }
+
     @BindingAdapter({"android:src"})
     public static void setImageViewResource(ImageView imageView, int resource) {
         imageView.setImageResource(resource);
+    }
+
+    @BindingAdapter("android:layout_width")
+    public static void setLayoutWidth(View view, int width) {
+        ViewGroup.LayoutParams layoutParams = view.getLayoutParams();
+        layoutParams.width = width;
+        view.setLayoutParams(layoutParams);
     }
 
     @BindingAdapter({"imageState"})
@@ -38,6 +67,15 @@ public class OnyxDataBindingUtil {
         PageAdapter adapter = (PageAdapter) recyclerView.getAdapter();
         if (adapter != null) {
             adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @BindingAdapter("menuActions")
+    public static void setMenuActions(PageRecyclerView recyclerView, List menuActions) {
+        PageDataBindingAdapter adapter = (PageDataBindingAdapter) recyclerView.getAdapter();
+        if (adapter != null) {
+            adapter.setRawData(recyclerView, menuActions);
         }
     }
 

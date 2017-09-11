@@ -4,7 +4,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.AsyncNoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 
 /**
@@ -31,7 +31,7 @@ public class ChangeSelectedShapeScaleRequest extends AsyncBaseNoteRequest {
     private volatile TouchPoint touchPoint = null;
 
     @Override
-    public void execute(final AsyncNoteViewHelper parent) throws Exception {
+    public void execute(final NoteManager parent) throws Exception {
         setResumeInputProcessor(parent.useDFBForCurrentState());
         benchmarkStart();
         parent.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();

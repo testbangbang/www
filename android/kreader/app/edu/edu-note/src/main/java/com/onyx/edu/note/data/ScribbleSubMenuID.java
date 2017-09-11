@@ -66,12 +66,12 @@ import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA
 public class ScribbleSubMenuID {
 
     public class Thickness {
-        public static final int THICKNESS_ULTRA_LIGHT = 0;
-        public static final int THICKNESS_LIGHT = 1;
-        public static final int THICKNESS_NORMAL = 2;
-        public static final int THICKNESS_BOLD = 3;
-        public static final int THICKNESS_ULTRA_BOLD = 4;
-        public static final int THICKNESS_CUSTOM_BOLD = 5;
+        public static final int THICKNESS_ULTRA_LIGHT = 500;
+        public static final int THICKNESS_LIGHT = 501;
+        public static final int THICKNESS_NORMAL = 502;
+        public static final int THICKNESS_BOLD = 503;
+        public static final int THICKNESS_ULTRA_BOLD = 504;
+        public static final int THICKNESS_CUSTOM_BOLD = 505;
     }
 
     public class PenStyle {
@@ -244,6 +244,10 @@ public class ScribbleSubMenuID {
             return map.get(width);
         }
         return THICKNESS_CUSTOM_BOLD;
+    }
+
+    public static boolean isSubMenuId(int menuID) {
+        return menuID >= NORMAL_PEN_STYLE && menuID <= THICKNESS_CUSTOM_BOLD;
     }
 
     public static boolean isThicknessGroup(@ScribbleSubMenuIDDef int menuID) {

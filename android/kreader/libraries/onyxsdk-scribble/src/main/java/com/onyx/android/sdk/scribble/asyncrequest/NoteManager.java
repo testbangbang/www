@@ -2,118 +2,141 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Looper;
-import android.text.Layout;
-import android.text.SpannableStringBuilder;
-import android.util.Log;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchDownEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchMoveEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchUpEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EraseTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawDataReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanFinishedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.SpanTextShowOutOfRangeEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutArgsEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutCursorEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageFlushRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.note.NotePageShapesRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.SelectShapeByPointListRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByGroupIdRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeRemoveByPointListRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.ShapeSelectionRequest;
-import com.onyx.android.sdk.scribble.asyncrequest.shape.SpannableRequest;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
+import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
+import com.onyx.android.sdk.scribble.data.SpanLayoutData;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.shape.ShapeSpan;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
-import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.scribble.view.LinedEditText;
-import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.Debug;
 
-import org.apache.commons.collections4.MapUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by solskjaer49 on 2017/2/11 18:44.
  */
 
 public class NoteManager {
+
     private static final String TAG = NoteManager.class.getSimpleName();
 
+    private RendererHelper rendererHelper;
+    private DocumentHelper documentHelper;
+    private ViewHelper viewHelper;
+    private TouchHelper touchHelper;
 
-    private AsyncNoteViewHelper noteViewHelper;
-    private static NoteManager instance;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
+    private SpanLayoutData spanLayoutData = new SpanLayoutData();
     private Context appContext;
-
-    private TouchPoint mErasePoint = null;
-
-    //TODO:Span Function Relative
-    // use ascII code to define WHITESPACE.
-    private static final String SPACE_TEXT = Character.toString((char) 32);
-    private static final int SPAN_TIME_OUT = 1000;
-    private static final int SPACE_WIDTH = 40;
-    private Handler mSpanTextHandler;
-    private Map<String, List<Shape>> mSubPageSpanTextShapeMap;
-    private Runnable mSpanRunnable;
-    private long lastUpTime = -1;
-    private int mSpanTextFontHeight = 0;
-
+    private RequestManager requestManager = new RequestManager();
+    private EventBus eventBus = new EventBus();
+    private List<Shape> dirtyStash = new ArrayList<>();
+    private boolean drawing = false;
     private @ScribbleMode.ScribbleModeDef
-    int mCurrentScribbleMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
-
-
-    private TouchPoint mShapeSelectStartPoint = null;
-    private TouchPoint mShapeSelectPoint = null;
+    int currentLayoutMode = ScribbleMode.MODE_NORMAL_SCRIBBLE;
 
     public int getCurrentScribbleMode() {
-        return mCurrentScribbleMode;
+        return currentLayoutMode;
     }
 
     public void setCurrentScribbleMode(int currentScribbleMode) {
-        mCurrentScribbleMode = currentScribbleMode;
-        setLineLayoutMode(mCurrentScribbleMode == ScribbleMode.MODE_SPAN_SCRIBBLE);
+        currentLayoutMode = currentScribbleMode;
     }
 
-    private NoteManager(Context context) {
+    public void resetScribbleMode() {
+        setCurrentScribbleMode(ScribbleMode.MODE_NORMAL_SCRIBBLE);
+    }
+
+    public NoteManager(Context context) {
         appContext = context.getApplicationContext();
-        if (noteViewHelper == null) {
-            noteViewHelper = new AsyncNoteViewHelper();
-        }
-        mSpanTextHandler = new Handler(Looper.getMainLooper());
+        ConfigManager.init(appContext);
     }
 
-    static public NoteManager sharedInstance(Context context) {
-        if (instance == null) {
-            instance = new NoteManager(context);
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
+    public void post(Object event) {
+        getEventBus().post(event);
+    }
+
+    public void registerEventBus(Object subscriber) {
+        getEventBus().register(subscriber);
+    }
+
+    public void unregisterEventBus(Object subscriber) {
+        getEventBus().unregister(subscriber);
+    }
+
+    public DeviceConfig getDeviceConfig() {
+        return ConfigManager.getInstance().getDeviceConfig();
+    }
+
+    public MappingConfig getMappingConfig() {
+        return ConfigManager.getInstance().getMappingConfig();
+    }
+
+    public Context getAppContext() {
+        return appContext;
+    }
+
+    public RendererHelper getRendererHelper() {
+        if (rendererHelper == null) {
+            rendererHelper = new RendererHelper();
         }
-        return instance;
+        return rendererHelper;
+    }
+
+    public DocumentHelper getDocumentHelper() {
+        if (documentHelper == null) {
+            documentHelper = new DocumentHelper();
+        }
+        return documentHelper;
+    }
+
+    public ViewHelper getViewHelper() {
+        if (viewHelper == null) {
+            viewHelper = new ViewHelper(eventBus);
+        }
+        return viewHelper;
+    }
+
+    public TouchHelper getTouchHelper() {
+        if (touchHelper == null) {
+            touchHelper = new TouchHelper(eventBus);
+        }
+        return touchHelper;
     }
 
     private Runnable generateRunnable(final AsyncBaseNoteRequest request) {
@@ -121,12 +144,12 @@ public class NoteManager {
             @Override
             public void run() {
                 try {
-                    request.beforeExecute(noteViewHelper);
-                    request.execute(noteViewHelper);
+                    request.beforeExecute(NoteManager.this);
+                    request.execute(NoteManager.this);
                 } catch (Throwable tr) {
                     request.setException(tr);
                 } finally {
-                    request.postExecute(noteViewHelper);
+                    request.postExecute(NoteManager.this);
                     getRequestManager().dumpWakelocks();
                     getRequestManager().removeRequest(request);
                 }
@@ -135,10 +158,6 @@ public class NoteManager {
     }
 
     private void beforeSubmit(AsyncBaseNoteRequest request) {
-        final Rect rect = noteViewHelper.getViewportSize();
-        if (rect != null) {
-            request.setViewportSize(rect);
-        }
     }
 
     public boolean submitRequest(final AsyncBaseNoteRequest request, final BaseCallback callback) {
@@ -165,7 +184,7 @@ public class NoteManager {
                                  boolean resume,
                                  final BaseCallback callback) {
         final List<Shape> stash = detachStash();
-        if (isLineLayoutMode()) {
+        if (inSpanLayoutMode()) {
             stash.clear();
         }
         PageFlushRequest flushRequest = new PageFlushRequest(stash, render, resume, shapeDataInfo.getDrawingArgs());
@@ -176,7 +195,7 @@ public class NoteManager {
         return shapeDataInfo;
     }
 
-    public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
+    public void saveShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
     }
 
@@ -188,395 +207,86 @@ public class NoteManager {
         syncWithCallback(true, true, callback);
     }
 
-    public void deleteSpan(boolean resume) {
-        String groupId = getLastGroupId();
-        if (StringUtils.isNullOrEmpty(groupId)) {
-            sync(false, resume);
-            return;
-        }
-        ShapeRemoveByGroupIdRequest changeRequest = new ShapeRemoveByGroupIdRequest(groupId, resume);
-        submitRequest(changeRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                loadPageShapes();
-            }
-        });
-    }
-
-    public void updateLineLayoutArgs(LinedEditText spanTextView) {
-        int height = spanTextView.getHeight();
-        int lineHeight = spanTextView.getLineHeight();
-        int lineCount = spanTextView.getLineCount();
-        int count = height / lineHeight;
-        if (lineCount <= count) {
-            lineCount = count;
-        }
-        Rect r = new Rect();
-        spanTextView.getLineBounds(0, r);
-        int baseLine = r.bottom;
-        LineLayoutArgs args = LineLayoutArgs.create(baseLine, lineCount, lineHeight);
-        noteViewHelper.setLineLayoutArgs(args);
-        mSpanTextFontHeight = calculateSpanTextFontHeight(spanTextView);
-    }
-
-    private int calculateSpanTextFontHeight(LinedEditText spanTextView) {
-        float bottom = spanTextView.getPaint().getFontMetrics().bottom;
-        float top = spanTextView.getPaint().getFontMetrics().top;
-        return (int) Math.ceil(bottom - top - 2 * ShapeSpan.SHAPE_SPAN_MARGIN);
-    }
-
-    public void updateLineLayoutCursor(LinedEditText spanTextView) {
-        int pos = spanTextView.getSelectionStart();
-        Layout layout = spanTextView.getLayout();
-        int line = layout.getLineForOffset(pos);
-        int x = (int) layout.getPrimaryHorizontal(pos);
-        LineLayoutArgs args = noteViewHelper.getLineLayoutArgs();
-        int top = args.getLineTop(line);
-        int bottom = args.getLineBottom(line);
-        noteViewHelper.updateCursorShape(x, top + 1, x, bottom);
+    public LineLayoutArgs getLineLayoutArgs() {
+        return spanLayoutData.getLineLayoutArgs();
     }
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
-        if (shapes == null || shapes.size() == 0) {
-            return false;
-        }
-        for (Shape shape : shapes) {
-            TouchPointList pointList = shape.getPoints();
-            if (!noteViewHelper.checkTouchPointList(pointList)) {
-                return true;
-            }
-        }
-        return false;
+        return getTouchHelper().checkShapesOutOfRange(shapes);
     }
 
-    public void openSpanTextFunc() {
-        if (mSubPageSpanTextShapeMap == null) {
-            loadPageShapes();
-        }
+    private void updateLineLayoutArgs(LinedEditText spanTextView) {
+        spanLayoutData.updateLineLayoutArgs(spanTextView);
     }
 
-    public void loadPageShapes() {
-        NotePageShapesRequest notePageShapesRequest = new NotePageShapesRequest(getNoteDocument().getCurrentPageUniqueId());
-        submitRequest(notePageShapesRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                List<Shape> subPageAllShapeList = ((NotePageShapesRequest) request).getPageShapes();
-                mSubPageSpanTextShapeMap = ShapeFactory.getSubPageSpanShapeList(subPageAllShapeList);
-                spanShape(mSubPageSpanTextShapeMap, null);
-            }
-        });
+    @Subscribe
+    public void updateLineLayoutCursorEvent(UpdateLineLayoutCursorEvent event) {
+        spanLayoutData.updateLineLayoutCursor(event.getSpanTextView());
     }
 
-    public void buildSpan() {
-        long curTime = System.currentTimeMillis();
-        if (lastUpTime != -1 && (curTime - lastUpTime <= SPAN_TIME_OUT) && (mSpanRunnable != null)) {
-            removeSpanRunnable();
-        }
-        lastUpTime = curTime;
-        mSpanRunnable = buildSpanRunnable();
-        mSpanTextHandler.postDelayed(mSpanRunnable, SPAN_TIME_OUT);
+    @Subscribe
+    public void updateLineLayoutArgsEvent(UpdateLineLayoutArgsEvent event) {
+        updateLineLayoutArgs(event.getSpanTextView());
     }
 
-    public void removeSpanRunnable() {
-        if (mSpanTextHandler != null && mSpanRunnable != null) {
-            mSpanTextHandler.removeCallbacks(mSpanRunnable);
-        }
-    }
-
-    private Runnable buildSpanRunnable() {
-        return new Runnable() {
-            @Override
-            public void run() {
-                buildSpanImpl();
-            }
-        };
-    }
-
-    private void buildSpanImpl() {
-        if (isDrawing()) {
-            return;
-        }
-        final List<Shape> newAddShapeList = detachStash();
-        String groupId = ShapeUtils.generateUniqueId();
-        for (Shape shape : newAddShapeList) {
-            shape.setGroupId(groupId);
-        }
-        spanShape(mSubPageSpanTextShapeMap, newAddShapeList);
-    }
-
-    private void spanShape(final Map<String, List<Shape>> subPageSpanTextShapeMap, final List<Shape> newAddShapeList) {
-        SpannableRequest spannableRequest = new SpannableRequest(subPageSpanTextShapeMap, newAddShapeList);
-        submitRequest(spannableRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                SpannableRequest req = (SpannableRequest) request;
-                final SpannableStringBuilder builder = req.getSpannableStringBuilder();
-                if (newAddShapeList != null && newAddShapeList.size() > 0) {
-                    subPageSpanTextShapeMap.put(newAddShapeList.get(0).getGroupId(), newAddShapeList);
-                }
-                EventBus.getDefault().post(new SpanFinishedEvent(builder, newAddShapeList, req.getLastShapeSpan()));
-            }
-        });
-    }
-
-    public void exitSpanTextFunc() {
-        if (mSubPageSpanTextShapeMap != null) {
-            mSubPageSpanTextShapeMap.clear();
-            mSubPageSpanTextShapeMap = null;
-        }
-        if (mSpanRunnable != null) {
-            mSpanTextHandler.removeCallbacks(mSpanRunnable);
-        }
-    }
-
-    private String getLastGroupId() {
-        String groupId = null;
-        if (MapUtils.isEmpty(mSubPageSpanTextShapeMap)) {
-            return null;
-        }
-        for (String s : mSubPageSpanTextShapeMap.keySet()) {
-            groupId = s;
-        }
-        return groupId;
-    }
-
-    public void buildTextShape(String text, LinedEditText spanTextView) {
-        int width = (int) spanTextView.getPaint().measureText(text);
-        buildTextShape(text, width, mSpanTextFontHeight);
-    }
-
-    private void buildTextShape(String text, int width, int height) {
-        Shape spaceShape = createTextShape(text);
-        addShapePoints(spaceShape, width, height);
-
-        List<Shape> newAddShapeList = new ArrayList<>();
-        newAddShapeList.add(spaceShape);
-        spanShape(mSubPageSpanTextShapeMap, newAddShapeList);
-    }
-
-    public void buildSpaceShape(final int width, int height) {
-        Shape spaceShape = createTextShape(SPACE_TEXT);
-        addShapePoints(spaceShape, width, height);
-
-        List<Shape> newAddShapeList = new ArrayList<>();
-        newAddShapeList.add(spaceShape);
-        spanShape(mSubPageSpanTextShapeMap, newAddShapeList);
-    }
-
-    public void buildSpaceShape() {
-        buildSpaceShape(SPACE_WIDTH, mSpanTextFontHeight);
-    }
-
-    public void buildLineBreakShape(LinedEditText spanTextView) {
-        float spaceWidth = (int) spanTextView.getPaint().measureText(SPACE_TEXT);
-        int pos = spanTextView.getSelectionStart();
-        Layout layout = spanTextView.getLayout();
-        int line = layout.getLineForOffset(pos);
-        if (line == (noteViewHelper.getLineLayoutArgs().getLineCount() - 1)) {
-            EventBus.getDefault().post(new SpanTextShowOutOfRangeEvent());
-            sync(true, true);
-            return;
-        }
-        int width = spanTextView.getMeasuredWidth();
-        float x = layout.getPrimaryHorizontal(pos) - spaceWidth;
-        x = x >= width ? 0 : x;
-        buildSpaceShape((int) Math.ceil(spanTextView.getMeasuredWidth() - x) - 2 * ShapeSpan.SHAPE_SPAN_MARGIN,
-                mSpanTextFontHeight);
-    }
-
-    private Shape createTextShape(String text) {
-        Shape shape = ShapeFactory.createShape(ShapeFactory.SHAPE_TEXT);
-        shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
-        shape.setColor(getNoteDocument().getStrokeColor());
-        shape.setLayoutType(ShapeFactory.POSITION_LINE_LAYOUT);
-        shape.setGroupId(ShapeUtils.generateUniqueId());
-        shape.getShapeExtraAttributes().setTextContent(text);
-        return shape;
-    }
-
-    private void addShapePoints(final Shape shape, final int width, final int height) {
-        TouchPointList touchPointList = new TouchPointList();
-        TouchPoint downPoint = new TouchPoint();
-        downPoint.offset(0, 0);
-        TouchPoint currentPoint = new TouchPoint();
-        currentPoint.offset(width, height);
-        touchPointList.add(downPoint);
-        touchPointList.add(currentPoint);
-        shape.addPoints(touchPointList);
+    public void setCustomLimitRect(Rect targetRect){
+        getTouchHelper().setCustomLimitRect(getHostView(), targetRect);
     }
 
     @Subscribe
     public void onBeginRawDataEvent(BeginRawDataEvent event) {
-        Log.e(TAG, "onBeginRawDataEvent");
-        removeSpanRunnable();
-    }
-
-    @Subscribe
-    public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
-        Log.e(TAG, "onRawTouchPointListReceivedEvent");
-        if (isLineLayoutMode()) {
-            buildSpan();
-        }
-        EventBus.getDefault().post(new RawDataReceivedEvent());
+        Debug.e(getClass(), "onBeginRawDataEvent");
     }
 
     @Subscribe
     public void onBeginErasingEvent(BeginErasingEvent event) {
-        Log.e(TAG, "onBeginErasingEvent");
+        Debug.i(getClass(), "onBeginErasingEvent");
         onBeginErasing();
     }
 
     @Subscribe
     public void onErasingEvent(ErasingEvent event) {
-        Log.e(TAG, "onErasingEvent: ");
-        onErasing(event.getMotionEvent());
+        onErasing(event.getTouchPoint(), event.isShowIndicator());
     }
 
     @Subscribe
-    public void onEraseTouchPointListReceivedEvent(EraseTouchPointListReceivedEvent event) {
-        Log.e(TAG, "onEraseTouchPointListReceivedEvent: ");
+    public void onTouchErasePointsReceivedEvent(TouchErasePointsReceivedEvent event) {
+        Debug.i(getClass(), "onTouchErasePointsReceivedEvent: ");
         onFinishErasing(event.getTouchPointList());
     }
 
     @Subscribe
-    public void onDrawingTouchDownEvent(DrawingTouchDownEvent event) {
-        Log.e(TAG, "onDrawingTouchDownEvent: ");
-        if (!event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
+    public void onRawErasePointsReceivedEvent(RawErasePointsReceivedEvent event) {
+        Debug.i(getClass(), "onRawErasePointsReceivedEvent: ");
+        onFinishErasing(event.getTouchPointList());
     }
 
-    @Subscribe
-    public void onDrawingTouchMoveEvent(DrawingTouchMoveEvent event) {
-        Log.e(TAG, "onDrawingTouchMoveEvent: ");
-        if (event.isLast() && !event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
+    public SurfaceView getHostView() {
+        return getViewHelper().getHostView();
     }
 
-    @Subscribe
-    public void onDrawingTouchUpEvent(DrawingTouchUpEvent event) {
-        Log.e(TAG, "onDrawingTouchUpEvent: ");
-        if (!event.getShape().supportDFB()) {
-            drawCurrentPage();
-        }
-        if (isLineLayoutMode()) {
-            buildSpan();
-        }
-    }
-
-    private void drawErasingIndicator(final SurfaceView view, final Paint paint) {
-        if (mErasePoint == null || mErasePoint.getX() <= 0 || mErasePoint.getY() <= 0) {
-            return;
-        }
-
-        float x = mErasePoint.getX();
-        float y = mErasePoint.getY();
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setAntiAlias(true);
-        paint.setStrokeWidth(2.0f);
-        Canvas canvas = view.getHolder().lockCanvas();
-        canvas.drawCircle(x, y, shapeDataInfo.getEraserRadius(), paint);
-        view.getHolder().unlockCanvasAndPost(canvas);
-    }
-
-    private void drawShapeSelectIndicator(final SurfaceView view, final Paint paint) {
-        if (mShapeSelectStartPoint == null || mShapeSelectStartPoint.getX() <= 0 || mShapeSelectStartPoint.getY() <= 0) {
-            return;
-        }
-
-        RectF selectRect = new RectF(mShapeSelectStartPoint.getX(), mShapeSelectStartPoint.getY(),
-                mShapeSelectPoint.getX(), mShapeSelectPoint.getY());
-        paint.setColor(Color.BLACK);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(2.0f);
-        paint.setPathEffect(noteViewHelper.selectedDashPathEffect);
-        Canvas canvas = view.getHolder().lockCanvas();
-        canvas.drawRect(selectRect, paint);
-        view.getHolder().unlockCanvasAndPost(canvas);
-    }
-
-    //TODO:avoid direct obtain note view helper,because we plan to remove this class.
-
-    public void reset(View view) {
-        noteViewHelper.reset(view);
-    }
-
-    public SurfaceView getView() {
-        return noteViewHelper.getView();
-    }
-
-    public void setView(Context context, SurfaceView surfaceView) {
-        EventBus.getDefault().register(this);
-        noteViewHelper.setView(context, surfaceView);
+    public void setView(SurfaceView surfaceView) {
+        getViewHelper().setHostView(surfaceView);
+        getTouchHelper().setup(surfaceView);
+        registerEventBus(this);
     }
 
     protected void onBeginErasing() {
-        syncWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                mErasePoint = new TouchPoint();
-            }
-        });
+        syncWithCallback(true, false, null);
     }
 
-    protected void onErasing(final MotionEvent touchPoint) {
-        if (mErasePoint == null) {
-            return;
+    protected void onErasing(final TouchPoint touchPoint, final boolean showIndicator) {
+        if (showIndicator) {
+            getRendererHelper().drawErasingIndicator(getHostView(), new Paint(), touchPoint, shapeDataInfo.getEraserRadius());
         }
-        mErasePoint.x = touchPoint.getX();
-        mErasePoint.y = touchPoint.getY();
-        //TODO:temp disable indicator.
-//        drawErasingIndicator(getView(), new Paint());
     }
 
     protected void onFinishErasing(TouchPointList pointList) {
-        mErasePoint = null;
         if (pointList == null) {
             return;
         }
         ShapeRemoveByPointListRequest changeRequest = new ShapeRemoveByPointListRequest(pointList);
         submitRequest(changeRequest, null);
-    }
-
-    protected void onBeginShapeSelecting(final MotionEvent event) {
-        syncWithCallback(true, false, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                mShapeSelectStartPoint = new TouchPoint();
-                mShapeSelectPoint = new TouchPoint();
-            }
-        });
-    }
-
-    protected void onShapeSelecting(final MotionEvent touchPoint) {
-        if (mShapeSelectStartPoint == null) {
-            return;
-        }
-        if (mShapeSelectStartPoint.x == 0 && mShapeSelectStartPoint.y == 0) {
-            mShapeSelectStartPoint.x = touchPoint.getX();
-            mShapeSelectStartPoint.y = touchPoint.getY();
-        }
-        mShapeSelectPoint.x = touchPoint.getX();
-        mShapeSelectPoint.y = touchPoint.getY();
-        final ShapeSelectionRequest shapeSelectionRequest = new ShapeSelectionRequest(mShapeSelectStartPoint, mShapeSelectPoint);
-        submitRequest(shapeSelectionRequest, null);
-    }
-
-    protected void onFinishShapeSelecting(TouchPointList pointList) {
-        mShapeSelectStartPoint = null;
-        mShapeSelectPoint = null;
-        SelectShapeByPointListRequest changeRequest = new SelectShapeByPointListRequest(pointList);
-        submitRequest(changeRequest,new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                SelectShapeByPointListRequest req = (SelectShapeByPointListRequest) request;
-                for (Shape shape : req.getSelectResultList()) {
-                    Log.e(TAG, "shape:" + shape);
-                }
-            }
-        });
     }
 
     private void drawCurrentPage() {
@@ -585,20 +295,29 @@ public class NoteManager {
     }
 
     public void quit() {
-        EventBus.getDefault().unregister(this);
-        noteViewHelper.quit();
+        unregisterEventBus(this);
+        getTouchHelper().quit();
+        getViewHelper().quit();
+        resetScribbleMode();
     }
 
-    public void setLineLayoutMode(boolean isLineLayoutMode) {
-        noteViewHelper.setLineLayoutMode(isLineLayoutMode);
+    public boolean inSpanLayoutMode() {
+        return currentLayoutMode == ScribbleMode.MODE_SPAN_SCRIBBLE;
     }
 
-    public boolean isLineLayoutMode() {
-        return noteViewHelper.isLineLayoutMode();
+    public Shape getSpanCursorShape() {
+        return spanLayoutData.getCursorShape();
     }
 
     public List<Shape> detachStash() {
-        return noteViewHelper.detachStash();
+        final List<Shape> temp = new ArrayList<>();
+        temp.addAll(dirtyStash);
+        dirtyStash = new ArrayList<>();
+        return temp;
+    }
+
+    public void onNewShape(Shape shape) {
+        dirtyStash.add(shape);
     }
 
     public void clearSurfaceView(SurfaceView surfaceView) {
@@ -606,46 +325,150 @@ public class NoteManager {
     }
 
     public void setDrawing(boolean drawing) {
-        noteViewHelper.setDrawing(drawing);
+        this.drawing = drawing;
     }
 
     public boolean isDrawing() {
-        return noteViewHelper.isDrawing();
+        return drawing;
     }
 
     public boolean inUserErasing() {
-        return noteViewHelper.inUserErasing();
+        return getDocumentHelper().inUserErasing();
     }
 
     public NoteDocument getNoteDocument() {
-        return noteViewHelper.getNoteDocument();
+        return getDocumentHelper().getNoteDocument();
     }
 
-    public void pauseDrawing() {
-        noteViewHelper.pauseDrawing();
+    public void pauseRawDrawing() {
+        getTouchHelper().pauseRawDrawing();
     }
 
-    public void resumeDrawing() {
-        noteViewHelper.resumeDrawing();
+    public void resumeRawDrawing() {
+        getDocumentHelper().setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
+        getTouchHelper().resumeRawDrawing();
+        updateInUserErasingState();
     }
 
     public Bitmap getRenderBitmap() {
-        return noteViewHelper.getRenderBitmap();
+        return getRendererHelper().getRenderBitmap();
     }
 
-    public List<Shape> getDirtyShape() {
-        return noteViewHelper.getDirtyStash();
+    public List<Shape> getDirtyStash() {
+        return dirtyStash;
     }
 
     public void clearPageUndoRedo(Context context) {
-        noteViewHelper.clearPageUndoRedo(context);
+        getDocumentHelper().clearPageUndoRedo(context);
     }
 
     public void clearShapeSelectRecord(){
-        noteViewHelper.clearPageSelectRecord();
+        for (int i = 0; i < getNoteDocument().getPageCount(); i++) {
+            NotePage page = getNoteDocument().getPageByIndex(i);
+            if (page != null) {
+                page.clearShapeSelectRecord();
+            }
+        }
     }
 
     public RequestManager getRequestManager() {
-        return noteViewHelper.getRequestManager();
+        return requestManager;
+    }
+
+    public void enableScreenPost(boolean enable) {
+        if (getHostView() != null) {
+            EpdController.enablePost(getHostView(), enable ? 1 : 0);
+        }
+    }
+
+    public void renderToSurfaceView() {
+        getRendererHelper().renderToSurfaceView(getDirtyStash(), getHostView());
+    }
+
+    public Rect getViewportSize() {
+        return getViewHelper().getViewportSize();
+    }
+
+    public RectF getViewportSizeF() {
+        return getViewHelper().getViewportSizeF();
+    }
+
+    public void updateShapeDataInfo(final Context context, final ShapeDataInfo shapeDataInfo) {
+        getDocumentHelper().updateShapeDataInfo(context, shapeDataInfo);
+    }
+
+    public void renderCurrentPageInBitmap(final AsyncBaseNoteRequest request) {
+        rendererHelper.renderCurrentPageInBitmap(this, request);
+    }
+
+    public void renderSelectionRectangle(final TouchPoint start, final TouchPoint end) {
+        rendererHelper.renderSelectionRectangle(this, start, end);
+    }
+
+    public int getCurrentShapeType() {
+        return getNoteDocument().getNoteDrawingArgs().getCurrentShapeType();
+    }
+
+    public boolean useDFBForCurrentState() {
+        return ShapeFactory.isDFBShape(getCurrentShapeType()) && !inUserErasing();
+    }
+
+    public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
+        getDocumentHelper().updateDrawingArgs(drawingArgs);
+        updateRenderByFrameworkState();
+        updateInUserErasingState();
+    }
+
+    public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+        getDocumentHelper().openDocument(this, context, documentUniqueId, parentUniqueId);
+        getRendererHelper().init();
+    }
+
+    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
+        getDocumentHelper().createDocument(this, context, documentUniqueId, parentUniqueId);
+        getRendererHelper().init();
+    }
+
+    public void setStrokeColor(int color) {
+        getDocumentHelper().setStrokeColor(color);
+    }
+
+    public void setBackground(int type) {
+        getDocumentHelper().setBackground(NoteBackgroundType.FILE);
+    }
+
+    public void setBackgroundFilePath(final String path) {
+        getDocumentHelper().setBackgroundFilePath(path);
+    }
+
+    public void setLineLayoutBackground(int type) {
+        getDocumentHelper().setLineLayoutBackground(type);
+    }
+
+    public void setCurrentShapeType(int type) {
+        getDocumentHelper().setCurrentShapeType(type);
+        updateRenderByFrameworkState();
+        updateInUserErasingState();
+    }
+
+    public void save(final Context context, final String title , boolean closeAfterSave) {
+        getDocumentHelper().save(context, title, closeAfterSave);
+    }
+
+    public void undo(final Context context) {
+        getDocumentHelper().undo(context, inSpanLayoutMode());
+    }
+
+    public void redo(final Context context) {
+        getDocumentHelper().redo(context, inSpanLayoutMode());
+    }
+
+    private void updateInUserErasingState() {
+        getTouchHelper().setInUserErasing(inUserErasing());
+    }
+
+    private void updateRenderByFrameworkState() {
+        boolean renderByFramework = ShapeFactory.isDFBShape(getDocumentHelper().getCurrentShapeType());
+        getTouchHelper().setRenderByFramework(renderByFramework);
     }
 }
