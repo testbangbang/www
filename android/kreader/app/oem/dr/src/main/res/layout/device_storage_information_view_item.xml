@@ -18,6 +18,7 @@
             android:layout_height="wrap_content"
             android:maxLines="1"
             android:text="@string/device_setting_stores_information"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
@@ -27,6 +28,7 @@
             android:layout_marginTop="@dimen/device_setting_padding_top"
             android:maxLines="1"
             android:text="@string/device_setting_stores_information"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_three_heading_font" />
     </LinearLayout>
 </RelativeLayout>

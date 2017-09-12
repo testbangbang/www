@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/forget_password_text_margin_left"
             android:text="@string/forget_password"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_two_font_size" />
 
     </LinearLayout>

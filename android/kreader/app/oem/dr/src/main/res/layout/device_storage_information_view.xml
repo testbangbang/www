@@ -13,6 +13,7 @@
         android:paddingBottom="@dimen/page_refresh_item_padding_top"
         android:paddingTop="@dimen/page_refresh_item_padding_top"
         android:text="@string/device_setting_stores_information"
+        android:textColor="@color/black"
         android:textSize="@dimen/level_one_heading_font"
         android:textStyle="bold" />
 

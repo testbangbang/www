@@ -14,6 +14,7 @@
         android:paddingBottom="@dimen/page_refresh_item_padding_top"
         android:paddingTop="@dimen/page_refresh_item_padding_top"
         android:text="@string/device_setting_system_update"
+        android:textColor="@color/black"
         android:textSize="@dimen/level_one_heading_font"
         android:textStyle="bold" />
 
@@ -52,7 +53,7 @@
         android:background="@drawable/text_view_background"
         android:paddingLeft="@dimen/system_update_check_padding_left"
         android:paddingRight="@dimen/system_update_check_padding_left"
-        android:visibility="gone"
         android:text="@string/system_update_check"
-        android:textSize="@dimen/level_one_heading_font" />
+        android:textSize="@dimen/level_one_heading_font"
+        android:visibility="gone" />
 </LinearLayout>
