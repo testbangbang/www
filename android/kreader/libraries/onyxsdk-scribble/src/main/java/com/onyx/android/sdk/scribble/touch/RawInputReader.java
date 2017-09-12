@@ -20,13 +20,13 @@ import java.util.concurrent.Executors;
  * - change state according to pen button state
  * - framework automatically change epd controller state when it detects pen state changed.
  */
-public class RawInputProcessor {
+public class RawInputReader {
 
     static{
         System.loadLibrary("touch_reader");
     }
 
-    private static final String TAG = RawInputProcessor.class.getSimpleName();
+    private static final String TAG = RawInputReader.class.getSimpleName();
 
     private static final int PEN_SIZE = 0;
 

@@ -7,7 +7,7 @@ import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
 /**
@@ -30,7 +30,7 @@ public class PenReader {
         void onEraseTouchPointListReceived(final TouchPointList pointList);
     }
 
-    private RawInputProcessor rawInputProcessor = new RawInputProcessor();
+    private RawInputReader rawInputReader = new RawInputReader();
     private DeviceConfig deviceConfig;
     private PenReaderCallback penReaderCallback;
 
@@ -40,29 +40,29 @@ public class PenReader {
 
     private void init(final Context context, final View view) {
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        rawInputProcessor.setHostView(view);
-        rawInputProcessor.setLimitRect(new RectF(0, 0, getTouchHeight(), getTouchWidth()));
+        rawInputReader.setHostView(view);
+        rawInputReader.setLimitRect(new RectF(0, 0, getTouchHeight(), getTouchWidth()));
     }
 
     public void start() {
-        rawInputProcessor.start();
+        rawInputReader.start();
     }
 
     public void resume() {
-        rawInputProcessor.resume();
+        rawInputReader.resume();
     }
 
     public void pause() {
-        rawInputProcessor.pause();
+        rawInputReader.pause();
     }
 
     public void stop() {
-        rawInputProcessor.quit();
+        rawInputReader.quit();
     }
 
     public void setPenReaderCallback(final PenReaderCallback callback) {
         this.penReaderCallback = callback;
-        rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
+        rawInputReader.setRawInputCallback(new RawInputReader.RawInputCallback() {
             @Override
             public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 penReaderCallback.onBeginRawData();
