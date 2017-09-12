@@ -401,7 +401,10 @@ public class ReaderActivity extends OnyxBaseActivity {
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View view, MotionEvent event) {
-                ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(ReaderActivity.this, ReaderActivity.this.getClass());
+                if (event.getAction() == MotionEvent.ACTION_DOWN ||
+                        event.getAction() == MotionEvent.ACTION_UP) {
+                    ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(ReaderActivity.this, ReaderActivity.this.getClass());
+                }
 
                 getHandlerManager().setTouchStartEvent(event);
                 scaleDetector.onTouchEvent(event);
