@@ -61,7 +61,6 @@ public class DRApplication extends MultiDexApplication {
             initFrescoLoader();
             initDatabases(this, databaseHolderList());
             SingletonSharedPreference.init(this);
-            initDictDatas();
         } catch (Exception e) {
             e.printStackTrace();
         }
