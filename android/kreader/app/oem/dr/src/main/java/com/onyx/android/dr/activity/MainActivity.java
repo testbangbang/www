@@ -90,6 +90,7 @@ public class MainActivity extends BaseActivity implements MainView {
         mainPresenter = new MainPresenter(this);
         MainTabMenuConfig.loadMenuInfo(this);
         mainPresenter.getMyGroup();
+        DRApplication.getInstance().initDictDatas();
     }
 
     @Override
