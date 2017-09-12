@@ -549,6 +549,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     }
                 });
             }
+
+            @Override
+            public void dismiss() {
+            }
         });
         dlg.show(getFragmentManager());
     }
