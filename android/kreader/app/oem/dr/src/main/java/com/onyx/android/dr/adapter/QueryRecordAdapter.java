@@ -52,7 +52,7 @@ public class QueryRecordAdapter extends PageRecyclerView.PageAdapter implements 
 
     @Override
     public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_dict_query, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_query_record, null);
         return new ViewHolder(inflate);
     }
 
@@ -60,7 +60,9 @@ public class QueryRecordAdapter extends PageRecyclerView.PageAdapter implements 
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         QueryRecordEntity bean = list.get(position);
-        viewHolder.tabMenuTitle.setText(bean.word);
+        viewHolder.keyword.setText(bean.word);
+        viewHolder.paraphrase.setText(bean.paraphrase);
+        viewHolder.sourceDictionary.setText(bean.dictionaryLookup);
         viewHolder.rootView.setTag(position);
         viewHolder.rootView.setOnClickListener(this);
     }
@@ -77,8 +79,12 @@ public class QueryRecordAdapter extends PageRecyclerView.PageAdapter implements 
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tab_dict_title)
-        TextView tabMenuTitle;
+        @Bind(R.id.query_record_item_keyword)
+        TextView keyword;
+        @Bind(R.id.query_record_item_paraphrase)
+        TextView paraphrase;
+        @Bind(R.id.query_record_item_source_dictionary)
+        TextView sourceDictionary;
         View rootView;
 
         ViewHolder(View view) {

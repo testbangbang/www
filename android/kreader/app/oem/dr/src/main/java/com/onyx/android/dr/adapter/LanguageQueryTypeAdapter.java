@@ -23,6 +23,7 @@ import butterknife.ButterKnife;
 public class LanguageQueryTypeAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private List<DictTypeBean> dictDatas;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
+    public int selectedPosition = 0;
 
     public interface OnRecyclerViewItemClickListener {
         void onItemClick(View view, int position);
@@ -53,16 +54,23 @@ public class LanguageQueryTypeAdapter extends PageRecyclerView.PageAdapter imple
 
     @Override
     public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_dict_query, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_language_query_type, null);
         return new ViewHolder(inflate);
     }
 
     @Override
-    public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onPageBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
         DictTypeBean dictData = dictDatas.get(position);
         viewHolder.tabMenuTitle.setText(dictData.getTabName());
         viewHolder.rootView.setTag(position);
+        if (selectedPosition == position) {
+            viewHolder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke_focused);
+            viewHolder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.white));
+        } else {
+            viewHolder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke);
+            viewHolder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.black));
+        }
         viewHolder.rootView.setOnClickListener(this);
     }
 
@@ -72,11 +80,13 @@ public class LanguageQueryTypeAdapter extends PageRecyclerView.PageAdapter imple
             return;
         }
         int position = (int) v.getTag();
+        selectedPosition = position;
+        notifyDataSetChanged();
         EventBus.getDefault().post(dictDatas.get(position).getEventBean());
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.tab_dict_title)
+        @Bind(R.id.language_query_type_item_title)
         TextView tabMenuTitle;
         View rootView;
 

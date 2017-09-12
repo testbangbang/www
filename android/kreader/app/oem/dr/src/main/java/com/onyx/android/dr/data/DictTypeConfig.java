@@ -22,10 +22,10 @@ public class DictTypeConfig {
         DictTypeBean dictData = new DictTypeBean(context.getResources().getString(R.string.english_query), new EnglishQueryEvent());
         dictLanguageData.add(dictData);
 
-        dictData = new DictTypeBean(context.getResources().getString(R.string.chinese_query), new ChineseQueryEvent());
+        dictData = new DictTypeBean(context.getResources().getString(R.string.chinese_query_content), new ChineseQueryEvent());
         dictLanguageData.add(dictData);
 
-        dictData = new DictTypeBean(context.getResources().getString(R.string.japanese_query), new JapaneseQueryEvent());
+        dictData = new DictTypeBean(context.getResources().getString(R.string.japanese_query_content), new JapaneseQueryEvent());
         dictLanguageData.add(dictData);
     }
 

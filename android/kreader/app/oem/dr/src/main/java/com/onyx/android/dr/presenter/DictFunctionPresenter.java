@@ -33,18 +33,11 @@ public class DictFunctionPresenter {
         dictTypeConfig.loadDictInfo(context);
     }
 
-    public void loadTabMenu(int userType) {
-        dictView.setDictResultData(functionConfig.getDictData(userType));
-    }
-
     public void loadDictType(int userType) {
         dictView.setDictTypeData(dictTypeConfig.getDictTypeData(userType));
     }
 
-    public void insertQueryRecord(String word, long time) {
-        QueryRecordEntity bean = new QueryRecordEntity();
-        bean.word = word;
-        bean.time = time;
+    public void insertQueryRecord(QueryRecordEntity bean) {
         final QueryRecordInsert req = new QueryRecordInsert(bean);
         queryRecordData.insertQueryRecord(DRApplication.getInstance(), req, new BaseCallback() {
             @Override

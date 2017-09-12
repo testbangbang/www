@@ -132,7 +132,7 @@
     <string name="dict_query_language">english</string>
     <string name="word_query">word query:</string>
     <string name="dim_query">fuzzy query:</string>
-    <string name="phrase_query">phrase query:</string>
+    <string name="phrase_query">match query:</string>
     <string name="example_query">example query:</string>
     <string name="activity_query_search">search</string>
     <string name="vocabulary_notebook">income vocabulary notebook</string>
@@ -140,8 +140,10 @@
     <string name="query_record">query record</string>
     <string name="okxford_advanced">okxford_advanced</string>
     <string name="english_query">english query</string>
-    <string name="chinese_query">chinese query</string>
-    <string name="japanese_query">japanese query</string>
+    <string name="chinese_query">Chinese characters query:</string>
+    <string name="chinese_query_content">Chinese characters query</string>
+    <string name="japanese_query">japanese query:</string>
+    <string name="japanese_query_content">japanese query</string>
     <string name="french_query">french query</string>
     <string name="hint">hint</string>
     <string name="webview_default_font_size" format="float" type="dimen">1.5</string>
@@ -181,7 +183,7 @@
     <string name="webview_action_copy">copy</string>
     <string name="webview_action_cancel">cancel</string>
     <string name="webview_toast_cancel_copy">cancel copy</string>
-    <string name="webview_toast_copy_success">copy success</string>
+    <string name="webview_toast_copy_failed">Gets the value that does not drag and drop.</string>
     <string name="good_sentence_already_exist">good sentence already exist</string>
     <string name="already_add_good_sentence_notebook">add good sentence notebook success</string>
     <string name="baidu_baike">Baidu_Baike</string>
@@ -530,4 +532,7 @@
     <string name="good_sentence_activity_hint">Tips: a good sentence can show up to 500 sentences at most.</string>
     <string name="memorandum_html">memorandum_form</string>
     <string name="informal_essay_activity_hint">Tips: storage is limited, please export to local storage.</string>
+    <string name="query_record_activity_keyword">keyword</string>
+    <string name="query_record_activity_source_dictionary">source dictionary</string>
+    <string name="query_record_activity_hint">Tip: the query record can be checked in 800 words recently, the excess of automatic clearance.</string>
 </resources>
