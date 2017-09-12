@@ -68,13 +68,19 @@ public class RawInputProcessor {
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[2];
     private volatile TouchPointList touchPointList;
+    private boolean postCallbackOnUiThread;
     private RawInputCallback rawInputCallback;
     private Handler handler = new Handler(Looper.getMainLooper());
     private ExecutorService singleThreadPool = null;
     private volatile View hostView;
 
     public void setRawInputCallback(final RawInputCallback callback) {
+        setRawInputCallback(callback, true);
+    }
+
+    public void setRawInputCallback(final RawInputCallback callback, boolean postCallbackOnUiThread) {
         rawInputCallback = callback;
+        this.postCallbackOnUiThread = postCallbackOnUiThread;
     }
 
     public void setHostView(final View view) {
@@ -233,16 +239,24 @@ public class RawInputProcessor {
             return;
         }
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (erasing) {
-                    rawInputCallback.onBeginErasing(shortcutErasing);
-                } else {
-                    rawInputCallback.onBeginRawData(shortcutDrawing);
+        if (!postCallbackOnUiThread) {
+            onTouchPointListBegin(erasing, shortcutDrawing, shortcutErasing);
+        } else {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onTouchPointListBegin(erasing, shortcutDrawing, shortcutErasing);
                 }
-            }
-        });
+            });
+        }
+    }
+
+    private void onTouchPointListBegin(final boolean erasing, final boolean shortcutDrawing, final boolean shortcutErasing) {
+        if (erasing) {
+            rawInputCallback.onBeginErasing(shortcutErasing);
+        } else {
+            rawInputCallback.onBeginRawData(shortcutDrawing);
+        }
     }
 
     private void invokeTouchPointListEnd(final boolean erasing, final boolean releaseOutLimitRegion) {
@@ -250,16 +264,24 @@ public class RawInputProcessor {
             return;
         }
 
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (erasing) {
-                    rawInputCallback.onEndErasing(releaseOutLimitRegion);
-                } else {
-                    rawInputCallback.onEndRawData(releaseOutLimitRegion);
+        if (!postCallbackOnUiThread) {
+            onTouchPointListEnd(erasing, releaseOutLimitRegion);
+        } else {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onTouchPointListEnd(erasing, releaseOutLimitRegion);
                 }
-            }
-        });
+            });
+        }
+    }
+
+    private void onTouchPointListEnd(final boolean erasing, final boolean releaseOutLimitRegion) {
+        if (erasing) {
+            rawInputCallback.onEndErasing(releaseOutLimitRegion);
+        } else {
+            rawInputCallback.onEndRawData(releaseOutLimitRegion);
+        }
     }
 
     private void invokeTouchPointListReceived(final TouchPointList touchPointList, final boolean erasing) {
@@ -269,16 +291,25 @@ public class RawInputProcessor {
         if (isMoveFeedback()) {
             resetPointList();
         }
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (erasing) {
-                    rawInputCallback.onEraseTouchPointListReceived(touchPointList);
-                } else {
-                    rawInputCallback.onRawTouchPointListReceived(null, touchPointList);
+
+        if (!postCallbackOnUiThread) {
+            onTouchPointListReceived(touchPointList, erasing);
+        } else {
+            handler.post(new Runnable() {
+                @Override
+                public void run() {
+                    onTouchPointListReceived(touchPointList, erasing);
                 }
-            }
-        });
+            });
+        }
+    }
+
+    private void onTouchPointListReceived(final TouchPointList touchPointList, final boolean erasing) {
+        if (erasing) {
+            rawInputCallback.onEraseTouchPointListReceived(touchPointList);
+        } else {
+            rawInputCallback.onRawTouchPointListReceived(null, touchPointList);
+        }
     }
 
     public TouchPointList detachTouchPointList() {
