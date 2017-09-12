@@ -4,10 +4,10 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.os.Bundle;
 
-import com.onyx.einfo.R;
-import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
+import com.onyx.einfo.R;
+import com.onyx.einfo.holder.LibraryDataHolder;
 
 /**
  * Created by suicheng on 2017/4/25.
@@ -48,6 +48,10 @@ public class LibraryGotoPageAction extends BaseAction<LibraryDataHolder> {
                 }
                 selectPage = newValue;
                 BaseCallback.invoke(baseCallback, null, null);
+            }
+
+            @Override
+            public void dismiss() {
             }
         });
         dlg.show(fragmentManager);

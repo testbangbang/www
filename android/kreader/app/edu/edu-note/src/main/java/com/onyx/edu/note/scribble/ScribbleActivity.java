@@ -743,13 +743,22 @@ public class ScribbleActivity extends OnyxAppCompatActivity{
                         if (e == null) {
                             AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
                             noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
-                            afterDialogDismiss();
                         }
                     }
                 });
             }
+
+            @Override
+            public void dismiss() {
+                afterDialogDismiss();
+            }
         });
-        dlg.show(getFragmentManager());
+        noteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dlg.show(getFragmentManager());
+            }
+        });
     }
 
     private void afterDialogDismiss() {
