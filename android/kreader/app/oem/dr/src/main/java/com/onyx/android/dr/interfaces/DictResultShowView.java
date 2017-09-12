@@ -8,6 +8,5 @@ import java.util.List;
  * Created by zhouzhiming on 17-6-28.
  */
 public interface DictResultShowView {
-//    void setDictResultData(List<DictFunctionBean> functionData);
     void setDictTypeData(List<DictTypeBean> dictData);
 }
