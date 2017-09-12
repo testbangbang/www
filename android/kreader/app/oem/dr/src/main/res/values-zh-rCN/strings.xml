@@ -128,18 +128,20 @@
     <string name="menu_app_npi_clear">清除测试应用</string>
     <string name="enter_bookstore">进入书城</string>
     <string name="dict_query_language">英文</string>
-    <string name="word_query">单词查询：</string>
-    <string name="dim_query">模糊查询：</string>
-    <string name="phrase_query">惯用语查询：</string>
-    <string name="example_query">例句查询：</string>
+    <string name="word_query">单词查询:</string>
+    <string name="dim_query">模糊查询:</string>
+    <string name="phrase_query">搭配查询:</string>
+    <string name="example_query">例句查询:</string>
     <string name="activity_query_search">搜索</string>
     <string name="vocabulary_notebook">收入生词本</string>
     <string name="good_sentence_excerpt">好句摘录</string>
     <string name="query_record">查询记录</string>
     <string name="okxford_advanced">牛津高阶</string>
     <string name="english_query">英文查询</string>
-    <string name="chinese_query">中文查询</string>
-    <string name="japanese_query">日文查询</string>
+    <string name="chinese_query">汉字查询:</string>
+    <string name="chinese_query_content">中文查询</string>
+    <string name="japanese_query">日文查询:</string>
+    <string name="japanese_query_content">日文查询</string>
     <string name="french_query">法文查询</string>
     <string name="headword_search_empty">查询结果为0</string>
     <string name="dict_query_bracket_left">[</string>
@@ -181,7 +183,7 @@
     <string name="webview_action_copy">复制</string>
     <string name="webview_action_cancel">取消</string>
     <string name="webview_toast_cancel_copy">取消复制</string>
-    <string name="webview_toast_copy_success">复制成功</string>
+    <string name="webview_toast_copy_failed">获取不了拖黑的值</string>
     <string name="good_sentence_already_exist">好句已存在</string>
     <string name="already_add_good_sentence_notebook">好句摘录成功</string>
     <string name="baidu_baike">百度百科</string>
@@ -516,4 +518,7 @@
     <string name="good_sentence_activity_hint">小提示：好句本最多可显示500句，超出部分不显示。</string>
     <string name="memorandum_html">备忘报表</string>
     <string name="informal_essay_activity_hint">小提示：存储有限，请及时导出保存到本地存储。</string>
+    <string name="query_record_activity_keyword">关键字</string>
+    <string name="query_record_activity_source_dictionary">来源词典</string>
+    <string name="query_record_activity_hint">小提示：查询记录可查最近800个词，超出部分自动清除</string>
 </resources>

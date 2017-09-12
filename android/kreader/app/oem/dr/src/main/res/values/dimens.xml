@@ -129,15 +129,15 @@
     <dimen name="dict_tab_margin_left">30dp</dimen>
     <dimen name="query_lang_show_margin">40dp</dimen>
     <dimen name="dict_query_bracket_margin_left">20dp</dimen>
-    <dimen name="dict_query_edittext_width">200dp</dimen>
+    <dimen name="dict_query_edittext_width">400dp</dimen>
     <dimen name="dict_query_search_margin_left">100dp</dimen>
     <dimen name="dict_query_search_margin_top">20dp</dimen>
     <dimen name="dict_query_search_padding">20dp</dimen>
     <dimen name="dict_query_function_height">60dp</dimen>
-    <dimen name="dict_query_function_margin">20dp</dimen>
-    <dimen name="dict_type_query_width">120dp</dimen>
+    <dimen name="dict_query_function_margin">10dp</dimen>
+    <dimen name="dict_type_query_width">160dp</dimen>
     <dimen name="dict_type_query_margin_left">80dp</dimen>
-    <dimen name="dict_result_dict_type_height">80dp</dimen>
+    <dimen name="dict_result_dict_type_height">120dp</dimen>
     <dimen name="dict_result_dict_type_margin">20dp</dimen>
     <dimen name="dict_result_sound_height">40dp</dimen>
     <dimen name="dict_result_america_sound_margin_left">30dp</dimen>
@@ -145,7 +145,7 @@
     <dimen name="dict_result_previous_margin_left">20dp</dimen>
     <dimen name="dict_result_function_height">120dp</dimen>
     <dimen name="activity_query_search_margin_left">30dp</dimen>
-    <dimen name="item_dict_query_padding">10dp</dimen>
+    <dimen name="item_dict_query_padding">20dp</dimen>
     <dimen name="reader_page_indicator_padding">10dp</dimen>
     <dimen name="dialog_quick_preview_padding">10dp</dimen>
     <dimen name="dialog_quick_preview_seek_bar_height">20dp</dimen>
@@ -322,4 +322,8 @@
     <dimen name="new_word_title_padding">2dp</dimen>
     <dimen name="new_word_activity_all_check_width">70dp</dimen>
     <dimen name="title_bar_right_container_margin_right">20dp</dimen>
+    <dimen name="activity_query_word_padding">10dp</dimen>
+    <dimen name="dict_query_activity_view_height">2dp</dimen>
+    <dimen name="button_function_panel_margin_top">10dp</dimen>
+    <dimen name="language_query_type_item_title_padding">10dp</dimen>
 </resources>

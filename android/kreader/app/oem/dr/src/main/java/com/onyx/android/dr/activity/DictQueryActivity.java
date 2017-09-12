@@ -1,9 +1,7 @@
 package com.onyx.android.dr.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.KeyEvent;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -11,9 +9,8 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.adapter.DictTypeAdapter;
 import com.onyx.android.dr.adapter.LanguageQueryTypeAdapter;
-import com.onyx.android.dr.bean.DictFunctionBean;
+import com.onyx.android.dr.adapter.QueryDictTypeAdapter;
 import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
@@ -39,14 +36,11 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 17-6-26.
  */
-
 public class DictQueryActivity extends BaseActivity implements DictResultShowView, View.OnClickListener {
-    @Bind(R.id.tab_menu)
+    @Bind(R.id.dict_query_activity_view)
     PageRecyclerView tabMenu;
     @Bind(R.id.activity_query_word)
     EditText wordQuery;
-    @Bind(R.id.activity_query_fuzzy)
-    EditText fuzzyQuery;
     @Bind(R.id.activity_query_phrase)
     EditText phraseQuery;
     @Bind(R.id.activity_query_example)
@@ -55,32 +49,24 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     EditText spellQuery;
     @Bind(R.id.activity_query_japanese_query)
     EditText japaneseQuery;
-    @Bind(R.id.activity_query_radical_strokes)
-    EditText radicalStrokesQuery;
-    @Bind(R.id.activity_query_total_strokes)
-    EditText totalStrokesQuery;
     @Bind(R.id.activity_word_query_search)
-    Button wordQuerySearch;
-    @Bind(R.id.activity_fuzzy_query_search)
-    Button fuzzyQuerySearch;
+    ImageView wordQuerySearch;
     @Bind(R.id.activity_phrase_query_search)
-    Button phraseQuerySearch;
+    ImageView phraseQuerySearch;
     @Bind(R.id.activity_example_query_search)
-    Button exampleQuerySearch;
-    @Bind(R.id.activity_strokes_search)
-    Button strokeSearch;
+    ImageView exampleQuerySearch;
     @Bind(R.id.activity_word_spell_search)
-    Button spellSearch;
+    ImageView spellSearch;
     @Bind(R.id.activity_word_japanese_search)
-    Button japaneseSearch;
+    ImageView japaneseSearch;
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
     ImageView image;
-    @Bind(R.id.tab_menu_next)
-    ImageView menuNext;
+    @Bind(R.id.title_bar_right_icon_four)
+    ImageView iconFour;
     @Bind(R.id.activity_query_chinese_linearlayout)
     LinearLayout chineseLinearLayout;
     @Bind(R.id.activity_query_english_linearlayout)
@@ -89,10 +75,9 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     LinearLayout japaneseLinearLayout;
     @Bind(R.id.activity_query_dict_view)
     PageRecyclerView dictTypeRecyclerView;
-    private DividerItemDecoration dividerItemDecoration;
     private LanguageQueryTypeAdapter languageQueryTypeAdapter;
     private DictFunctionPresenter dictPresenter;
-    private DictTypeAdapter dictTypeAdapter;
+    private QueryDictTypeAdapter queryDictTypeAdapter;
     private List<DictTypeBean> englishDictName;
     private List<DictTypeBean> chineseDictName;
     private List<DictTypeBean> japaneseDictName;
@@ -113,10 +98,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     }
 
     private void initDictTypeView() {
-        dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         tabMenu.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
-        tabMenu.addItemDecoration(dividerItemDecoration);
         languageQueryTypeAdapter = new LanguageQueryTypeAdapter();
         tabMenu.setAdapter(languageQueryTypeAdapter);
         dictTypeRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
@@ -127,7 +109,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         dictPresenter = new DictFunctionPresenter(this);
         dictPresenter.loadData(this);
         dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
-        menuNext.setVisibility(View.GONE);
         initTitleData();
         loadDictData();
         initEvent();
@@ -136,25 +117,22 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     private void initTitleData() {
         image.setImageResource(R.drawable.dictionary);
         title.setText(getString(R.string.dictionary));
+        iconFour.setVisibility(View.VISIBLE);
+        iconFour.setImageResource(R.drawable.ic_reader_dic_setting);
     }
 
     private void loadDictData() {
-        dictTypeRecyclerView.addItemDecoration(dividerItemDecoration);
-        dictTypeAdapter = new DictTypeAdapter();
+        queryDictTypeAdapter = new QueryDictTypeAdapter();
         englishDictName = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
         chineseDictName = Utils.getDictName(Constants.CHINESE_DICTIONARY);
         japaneseDictName = Utils.getDictName(Constants.OTHER_DICTIONARY);
-        dictTypeAdapter.setMenuDatas(englishDictName);
-        dictTypeRecyclerView.setAdapter(dictTypeAdapter);
+        queryDictTypeAdapter.setMenuDatas(englishDictName);
+        dictTypeRecyclerView.setAdapter(queryDictTypeAdapter);
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-    }
-
-    @Override
-    public void setDictResultData(List<DictFunctionBean> functionData) {
     }
 
     @Override
@@ -164,7 +142,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     public void initEvent() {
         startSoftKeyboardSearch(wordQuery);
-        startSoftKeyboardSearch(fuzzyQuery);
         startSoftKeyboardSearch(phraseQuery);
         startSoftKeyboardSearch(exampleQuery);
         startSoftKeyboardSearch(spellQuery);
@@ -189,8 +166,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         englishLinearLayout.setVisibility(View.VISIBLE);
         chineseLinearLayout.setVisibility(View.GONE);
         japaneseLinearLayout.setVisibility(View.GONE);
-        dictTypeAdapter.setMenuDatas(englishDictName);
-        dictTypeAdapter.notifyDataSetChanged();
+        queryDictTypeAdapter.setMenuDatas(englishDictName);
+        queryDictTypeAdapter.notifyDataSetChanged();
         dictType = Constants.ENGLISH_TYPE;
     }
 
@@ -199,8 +176,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         chineseLinearLayout.setVisibility(View.VISIBLE);
         englishLinearLayout.setVisibility(View.GONE);
         japaneseLinearLayout.setVisibility(View.GONE);
-        dictTypeAdapter.setMenuDatas(chineseDictName);
-        dictTypeAdapter.notifyDataSetChanged();
+        queryDictTypeAdapter.setMenuDatas(chineseDictName);
+        queryDictTypeAdapter.notifyDataSetChanged();
         dictType = Constants.CHINESE_TYPE;
     }
 
@@ -209,18 +186,17 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         japaneseLinearLayout.setVisibility(View.VISIBLE);
         englishLinearLayout.setVisibility(View.GONE);
         chineseLinearLayout.setVisibility(View.GONE);
-        dictTypeAdapter.setMenuDatas(japaneseDictName);
-        dictTypeAdapter.notifyDataSetChanged();
+        queryDictTypeAdapter.setMenuDatas(japaneseDictName);
+        queryDictTypeAdapter.notifyDataSetChanged();
         dictType = Constants.OTHER_TYPE;
     }
 
     @OnClick({R.id.activity_word_query_search,
-            R.id.activity_fuzzy_query_search,
             R.id.activity_phrase_query_search,
             R.id.image_view_back,
-            R.id.activity_strokes_search,
             R.id.activity_word_spell_search,
             R.id.activity_word_japanese_search,
+            R.id.title_bar_right_icon_four,
             R.id.activity_example_query_search})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -229,9 +205,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
                 break;
             case R.id.activity_word_query_search:
                 startDictResultShowActivity(wordQuery);
-                break;
-            case R.id.activity_fuzzy_query_search:
-                startDictResultShowActivity(fuzzyQuery);
                 break;
             case R.id.activity_phrase_query_search:
                 startDictResultShowActivity(phraseQuery);
@@ -244,6 +217,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
                 break;
             case R.id.activity_word_spell_search:
                 startDictResultShowActivity(spellQuery);
+                break;
+            case R.id.title_bar_right_icon_four:
                 break;
         }
     }

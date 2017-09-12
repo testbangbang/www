@@ -1,17 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <include
+        android:id="@+id/title_bar"
         layout="@layout/title_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <com.onyx.android.sdk.ui.view.PageRecyclerView
-        android:id="@+id/query_record_activity_recyclerview"
+    <LinearLayout
+        android:id="@+id/query_record_activity_bottom"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
-</LinearLayout>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top"
+            android:text="@string/query_record_activity_hint"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <View style="@style/Horizontal_view" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top">
+
+            <TextView
+                android:id="@+id/query_record_activity_all_number"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="@string/fragment_speech_recording_all_number"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/title_bar"
+        android:layout_above="@id/query_record_activity_bottom"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/new_word_title_padding">
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="1"
+                android:text="@string/query_record_activity_keyword" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="2"
+                android:text="@string/query_record_activity_source_dictionary" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="4"
+                android:text="@string/paraphrase" />
+
+            <View style="@style/vertical_view" />
+
+        </LinearLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/query_record_activity_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</RelativeLayout>

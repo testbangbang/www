@@ -722,8 +722,8 @@ public class Utils {
 
     public static List<String> loadItemData(Context context) {
         List<String> itemList = new ArrayList<>();
-        itemList.add(context.getString(R.string.webview_action_copy));
-        itemList.add(context.getString(R.string.webview_action_cancel));
+        itemList.add(context.getString(R.string.new_word_query));
+        itemList.add(context.getString(R.string.good_sentence_excerpt));
         return itemList;
     }
 

@@ -22,8 +22,8 @@ import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
-import com.onyx.android.dr.presenter.QueryRecordPresenter;
 import com.onyx.android.dr.manager.OperatingDataManager;
+import com.onyx.android.dr.presenter.QueryRecordPresenter;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
@@ -58,6 +58,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     TextView title;
     @Bind(R.id.image)
     ImageView image;
+    @Bind(R.id.query_record_activity_all_number)
+    TextView allNumber;
     private DividerItemDecoration dividerItemDecoration;
     private QueryRecordPresenter queryRecordPresenter;
     private QueryRecordAdapter queryRecordAdapter;
@@ -132,10 +134,14 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     }
 
     @Override
-    public void setQueryRecordData(List<QueryRecordEntity> list) {
-        queryRecordAdapter.setDatas(list);
+    public void setQueryRecordData(List<QueryRecordEntity> dataList) {
+        if (dataList == null || dataList.size() <= 0) {
+            return;
+        }
+        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
+        queryRecordAdapter.setDatas(dataList);
         queryRecordRecyclerView.setAdapter(queryRecordAdapter);
-        queryRecordList = list;
+        queryRecordList = dataList;
     }
 
     @Override

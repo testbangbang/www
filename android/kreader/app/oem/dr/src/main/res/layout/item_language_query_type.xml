@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/language_query_type_item_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/level_two_heading_font"
+        android:padding="@dimen/item_dict_query_padding"
+        android:gravity="center"
+        android:textColor="@color/tab_text_color_selector"
+        android:background="@drawable/rectangle_stroke"/>
+</LinearLayout>

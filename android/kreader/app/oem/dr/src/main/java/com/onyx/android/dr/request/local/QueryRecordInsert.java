@@ -27,6 +27,8 @@ public class QueryRecordInsert extends BaseDataRequest {
                 QueryRecordEntity queryRecordEntity = queryRecordList.get(i);
                 if (queryRecordInfo.word.equals(queryRecordEntity.word)) {
                     queryRecordEntity.time = queryRecordInfo.time;
+                    queryRecordEntity.paraphrase = queryRecordInfo.paraphrase;
+                    queryRecordEntity.dictionaryLookup = queryRecordInfo.dictionaryLookup;
                     queryRecordEntity.update();
                     weatherInsert = false;
                     break;

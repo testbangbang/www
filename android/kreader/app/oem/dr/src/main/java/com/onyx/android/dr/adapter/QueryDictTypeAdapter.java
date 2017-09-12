@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-6-28.
  */
-public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
+public class QueryDictTypeAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     private List<DictTypeBean> dictDatas;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
     public int selectedPosition = 0;
@@ -52,7 +52,7 @@ public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements Vie
 
     @Override
     public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_dict_type, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_query_dict_type, null);
         return new ViewHolder(inflate);
     }
 
@@ -62,13 +62,6 @@ public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements Vie
         DictTypeBean dictData = dictDatas.get(position);
         viewHolder.tabMenuTitle.setText(dictData.getTabName());
         viewHolder.rootView.setTag(position);
-        if (selectedPosition == position) {
-            viewHolder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke_focused);
-            viewHolder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.white));
-        } else {
-            viewHolder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke);
-            viewHolder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.black));
-        }
         viewHolder.rootView.setOnClickListener(this);
     }
 
@@ -78,15 +71,13 @@ public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements Vie
             return;
         }
         int position = (int) v.getTag();
-        selectedPosition = position;
-        notifyDataSetChanged();
         if (onRecyclerViewItemClickListener != null) {
             onRecyclerViewItemClickListener.onItemClick(v, position);
         }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.dict_type_item_title)
+        @Bind(R.id.language_query_type_item_title)
         TextView tabMenuTitle;
         View rootView;
         ViewHolder(View view) {

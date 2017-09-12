@@ -16,5 +16,9 @@ public class QueryRecordEntity extends BaseModel {
     @Column
     public long time;
     @Column
+    public String paraphrase;
+    @Column
+    public String dictionaryLookup;
+    @Column
     public String word;
 }
