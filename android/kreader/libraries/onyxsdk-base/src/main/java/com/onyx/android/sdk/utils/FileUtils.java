@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
-import com.onyx.android.sdk.data.ProcessValue;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 
@@ -33,6 +32,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Set;
 import java.util.Stack;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by zhuzeng on 10/16/15.
@@ -114,7 +114,7 @@ public class FileUtils {
      * @param rootFile
      * @param flattenedFileList
      */
-    public static void collectFileTree(final File rootFile, final List<File> flattenedFileList, ProcessValue processValue) {
+    public static void collectFileTree(final File rootFile, final List<File> flattenedFileList, AtomicBoolean abortHolder) {
         if (!rootFile.exists()) {
             return;
         }
@@ -128,7 +128,7 @@ public class FileUtils {
         Stack<File> stack = new Stack<>();
         stack.push(rootFile);
         while (!stack.isEmpty()) {
-            if (processValue.isAbort()) {
+            if (abortHolder.get()) {
                 return;
             }
 

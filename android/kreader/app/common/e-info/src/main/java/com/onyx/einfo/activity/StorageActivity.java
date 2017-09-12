@@ -133,7 +133,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
                 updatePageStatus(false);
             }
         });
-        contentPageView.gotoPage(0);
+        gotoPage(0);
     }
 
     private void initSortByView() {
@@ -172,10 +172,14 @@ public class StorageActivity extends OnyxAppCompatActivity {
         GPaginator paginator = contentPageView.getPaginator();
         paginator.resize(getRowCountBasedViewType(), getColCountBasedViewType(), contentPageView.getAdapter().getItemCount());
         if (resetPage) {
-            paginator.setCurrentPage(0);
-            contentPageView.gotoPage(0);
+            gotoPage(0);
         }
         getStorageViewModel().setPageStatus(paginator.getVisibleCurrentPage(), paginator.pages());
+    }
+
+    private void gotoPage(int page) {
+        PageRecyclerView contentPageView = binding.contentPageView;
+        contentPageView.gotoPage(page);
     }
 
     private void updateContentView() {
@@ -325,10 +329,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
                     reloadData();
                     return;
                 }
-                if (copyAction.processFileException(StorageActivity.this, dataHolder, (Exception) e)) {
-                    return;
-                }
-                copyAction.dismissCopyDialog();
+                copyAction.processFileException(StorageActivity.this, dataHolder, (Exception) e);
             }
         });
     }

@@ -3,9 +3,7 @@ package com.onyx.android.sdk.data.request.data.fs;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.FileErrorPolicy;
 import com.onyx.android.sdk.data.FileReplacePolicy;
-import com.onyx.android.sdk.data.ProcessValue;
 import com.onyx.android.sdk.data.common.ContentException;
-import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -13,11 +11,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by suicheng on 2017/9/12.
  */
-public class FileCopyRequest extends BaseDataRequest {
+public class FileCopyRequest extends BaseFSRequest {
 
     private File sourceDir, targetDir;
     private List<File> sourceFlattenedFileList;
@@ -27,7 +26,7 @@ public class FileCopyRequest extends BaseDataRequest {
     private boolean isCut;
 
     private File replaceFile, errorFile;
-    private ProcessValue processValue = new ProcessValue();
+    private AtomicBoolean abortHolder = new AtomicBoolean();
 
     public FileReplacePolicy replacePolicy = FileReplacePolicy.Ask;
     public FileErrorPolicy errorPolicy = FileErrorPolicy.Retry;
@@ -103,7 +102,7 @@ public class FileCopyRequest extends BaseDataRequest {
             return flattenedFiles;
         }
         for (File file : pathFileList) {
-            FileUtils.collectFileTree(file, flattenedFiles, processValue);
+            FileUtils.collectFileTree(file, flattenedFiles, abortHolder);
         }
         Collections.reverse(flattenedFiles);
         return flattenedFiles;
@@ -308,6 +307,6 @@ public class FileCopyRequest extends BaseDataRequest {
     @Override
     public void setAbort() {
         super.setAbort();
-        processValue.setAbort(isAbort());
+        abortHolder.set(isAbort());
     }
 }

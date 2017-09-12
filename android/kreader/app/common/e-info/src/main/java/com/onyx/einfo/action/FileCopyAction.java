@@ -81,7 +81,7 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
                 BaseCallback.invoke(baseCallback, request, e);
             }
         };
-        dataHolder.getDataManager().submitToMulti(dataHolder.getContext().getApplicationContext(),
+        dataHolder.getDataManager().submit(dataHolder.getContext().getApplicationContext(),
                 request, requestCallback);
     }
 
@@ -118,7 +118,7 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
 
     private void reSendRequest(LibraryDataHolder dataHolder) {
         request.setException(null);
-        dataHolder.getDataManager().submitToMulti(dataHolder.getContext().getApplicationContext(), request, requestCallback);
+        dataHolder.getDataManager().submit(dataHolder.getContext().getApplicationContext(), request, requestCallback);
     }
 
     public void showReplaceAlertDialog(final Context activityContext, final LibraryDataHolder dataHolder, File toReplaceFile) {
@@ -169,6 +169,7 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
             }
             return true;
         }
+        dismissCopyDialog();
         return false;
     }
 }
