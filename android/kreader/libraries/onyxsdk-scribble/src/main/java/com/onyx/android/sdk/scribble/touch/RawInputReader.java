@@ -9,6 +9,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -39,6 +40,7 @@ public class RawInputReader {
     private native void nativeRawClose();
     private native void nativeSetStrokeWidth(float strokeWidth);
     private native void nativeSetLimitRegion(float[] limitRegion);
+    private native void nativeSetExcludeRegion(float[] excludeRegion);
 
     public static abstract class RawInputCallback {
 
@@ -127,10 +129,27 @@ public class RawInputReader {
         nativeSetLimitRegion(mapToRawTouchRect(rect));
     }
 
+    public void setExcludeRect(final List<RectF> rectList) {
+        nativeSetExcludeRegion(mapToRawTouchRect(rectList));
+    }
+
     private float[] mapToRawTouchRect(final RectF rect) {
         RectF dst = EpdController.mapToRawTouchPoint(hostView, rect);
         float[] limit = new float[] {dst.left, dst.top, dst.right, dst.bottom};
         return limit;
+    }
+
+    private float[] mapToRawTouchRect(final List<RectF> rectList) {
+        float[] result = new float[rectList.size() * 4];
+        for (int i = 0; i < rectList.size(); i++) {
+            RectF dst = EpdController.mapToRawTouchPoint(hostView, rectList.get(i));
+            int index = 4 * i;
+            result[index] = dst.left;
+            result[index + 1] = dst.top;
+            result[index + 2] = dst.right;
+            result[index + 3] = dst.bottom;
+        }
+        return result;
     }
 
     private void shutdown() {

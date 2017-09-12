@@ -106,6 +106,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
         rawInputReader.setHostView(view);
         rawInputReader.setLimitRect(new RectF(rect));
+        rawInputReader.setExcludeRect(excludeRect);
     }
 
     public void start() {
