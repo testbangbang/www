@@ -9,7 +9,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
@@ -29,7 +29,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
     private volatile TouchPointList touchPointList;
 
-    RawInputProcessor processor = new RawInputProcessor();
+    RawInputReader rawInputReader = new RawInputReader();
 
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[4];
@@ -37,7 +37,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     public RawEventProcessor(final NoteManager p) {
         super(p);
 
-        processor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
+        rawInputReader.setRawInputCallback(new RawInputReader.RawInputCallback() {
 
             @Override
             public void onBeginRawData(boolean shortcut, TouchPoint point) {
@@ -104,24 +104,24 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     }
 
     public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
-        processor.setHostView(view);
-        processor.setLimitRect(new RectF(rect));
+        rawInputReader.setHostView(view);
+        rawInputReader.setLimitRect(new RectF(rect));
     }
 
     public void start() {
-        processor.start();
+        rawInputReader.start();
     }
 
     public void resume() {
-        processor.resume();
+        rawInputReader.resume();
     }
 
     public void pause() {
-        processor.pause();
+        rawInputReader.pause();
     }
 
     public void quit() {
-        processor.quit();
+        rawInputReader.quit();
     }
 
     private boolean addToList(final TouchPoint touchPoint, boolean create) {
@@ -232,7 +232,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private void collectShapePoint(PageInfo page, TouchPoint touchPoint, boolean finished) {
         srcPoint[0] = touchPoint.x;
         srcPoint[1] = touchPoint.y;
-        EpdController.mapToEpd(processor.getHostView(), srcPoint, dstPoint);
+        EpdController.mapToEpd(rawInputReader.getHostView(), srcPoint, dstPoint);
         final TouchPoint screenTouch = new TouchPoint(dstPoint[0], dstPoint[1],
                 touchPoint.getPressure(), touchPoint.getSize(),
                 touchPoint.getTimestamp());
