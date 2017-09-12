@@ -128,4 +128,24 @@
     <string name="file_total_count">总计:%1$d/%2$d</string>
     <string name="storage_go_up">向上一级</string>
     <string name="storage">存储</string>
+
+    <string name="copying">正在复制</string>
+    <string name="replace">替换</string>
+    <string name="skip">跳过</string>
+    <string name="moving">正在移动</string>
+    <string name="skip_all">跳过全部</string>
+    <string name="retry">重试</string>
+    <string name="replace_all">覆盖全部</string>
+    <string name="cannot_cut_here">不能剪切至此</string>
+    <string name="cannot_copy_here">不能复制至此</string>
+    <string name="cancel_cut">剪切已取消</string>
+    <string name="cancel_copy">复制已取消</string>
+    <string name="deleting">正在删除</string>
+    <string name="cancel_delete">删除已取消</string>
+    <string name="delete_success">删除成功</string>
+    <string name="copy_file_failed">复制失败</string>
+    <string name="folder_already_exists">文件夹已存在于:</string>
+    <string name="file_already_exists">文件已存在于:</string>
+    <string name="no_item_select">当前没选中条目，请重试</string>
+
 </resources>

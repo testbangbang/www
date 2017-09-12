@@ -18,6 +18,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.FileOperateMode;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
@@ -32,6 +33,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.einfo.R;
+import com.onyx.einfo.action.FileCopyAction;
 import com.onyx.einfo.action.SortByProcessAction;
 import com.onyx.einfo.action.StorageDataLoadAction;
 import com.onyx.einfo.adapter.BindingViewHolder;
@@ -67,6 +69,8 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private StorageViewModel storageViewModel;
     private LibraryDataHolder dataHolder;
     private ActivityStorageBinding binding;
+
+    private FileOperateMode fileOperateMode = FileOperateMode.ReadOnly;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,6 +173,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         paginator.resize(getRowCountBasedViewType(), getColCountBasedViewType(), contentPageView.getAdapter().getItemCount());
         if (resetPage) {
             paginator.setCurrentPage(0);
+            contentPageView.gotoPage(0);
         }
         getStorageViewModel().setPageStatus(paginator.getVisibleCurrentPage(), paginator.pages());
     }
@@ -201,8 +206,8 @@ public class StorageActivity extends OnyxAppCompatActivity {
         viewModel.setSelectionMode(SelectionMode.MULTISELECT_MODE);
         viewModel.clearItemSelectedMap();
         viewModel.switchOperationPanel(false, OperationEvent.OPERATION_PASTE);
-        viewModel.toggleShowOperationFunc();
-        notifyContentChanged();
+        viewModel.setShowOperationFunc(true);
+        updateContentView();
     }
 
     private void quitMultiSelectionMode(boolean showOperationPanel, int nextMode) {
@@ -210,8 +215,8 @@ public class StorageActivity extends OnyxAppCompatActivity {
         viewModel.setSelectionMode(nextMode);
         if (!showOperationPanel) {
             viewModel.clearItemSelectedMap();
-            viewModel.toggleShowOperationFunc();
         }
+        viewModel.setShowOperationFunc(showOperationPanel);
     }
 
     @Override
@@ -265,7 +270,6 @@ public class StorageActivity extends OnyxAppCompatActivity {
         StorageItemViewModel itemModel = event.model;
         if (itemModel.getFileModel().isGoUpType()) {
             onLevelGoUpEvent();
-            getStorageViewModel().clearItemSelectedMap();
             return;
         }
         if (getStorageViewModel().isInMultiSelectionMode()) {
@@ -283,18 +287,50 @@ public class StorageActivity extends OnyxAppCompatActivity {
     public void onOperationEvent(OperationEvent event) {
         switch (event.getOperation()) {
             case OperationEvent.OPERATION_COPY:
+                processFileCopyOrCut(FileOperateMode.Copy);
                 break;
             case OperationEvent.OPERATION_CUT:
+                processFileCopyOrCut(FileOperateMode.Cut);
                 break;
             case OperationEvent.OPERATION_PASTE:
+                processFilePaste();
                 break;
             case OperationEvent.OPERATION_DELETE:
                 break;
             case OperationEvent.OPERATION_CANCEL:
-                quitMultiSelectionMode(false, SelectionMode.NORMAL_MODE);
-                notifyContentChanged();
+                switchToNormalMode();
                 break;
         }
+    }
+
+    private void processFileCopyOrCut(FileOperateMode mode) {
+        if (CollectionUtils.isNullOrEmpty(getStorageViewModel().getItemSelectedMap())) {
+            ToastUtils.showToast(getApplicationContext(), R.string.no_item_select);
+            return;
+        }
+        setFileOperateMode(mode);
+        getStorageViewModel().switchOperationPanel(true, OperationEvent.OPERATION_PASTE, OperationEvent.OPERATION_CANCEL);
+        quitMultiSelectionMode(true, SelectionMode.PASTE_MODE);
+        updateContentView();
+    }
+
+    private void processFilePaste() {
+        final FileCopyAction copyAction = new FileCopyAction(this, getStorageViewModel().getItemSelectedFileList(),
+                getStorageViewModel().getCurrentFile(), isFileOperationCut());
+        copyAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e == null) {
+                    switchToNormalMode();
+                    reloadData();
+                    return;
+                }
+                if (copyAction.processFileException(StorageActivity.this, dataHolder, (Exception) e)) {
+                    return;
+                }
+                copyAction.dismissCopyDialog();
+            }
+        });
     }
 
     private void processFileClick(File file) {
@@ -305,8 +341,26 @@ public class StorageActivity extends OnyxAppCompatActivity {
         }
     }
 
+    private boolean isFileOperationCut() {
+        return fileOperateMode == FileOperateMode.Cut;
+    }
+
+    private void setFileOperateMode(FileOperateMode mode) {
+        fileOperateMode = mode;
+    }
+
+    private void switchToNormalMode() {
+        setFileOperateMode(FileOperateMode.ReadOnly);
+        quitMultiSelectionMode(false, SelectionMode.NORMAL_MODE);
+        updateContentView();
+    }
+
     private void loadRootDirData() {
         loadData(EnvironmentUtil.getStorageRootDirectory());
+    }
+
+    private void reloadData() {
+        loadData(getStorageViewModel().getCurrentFile());
     }
 
     private void loadData(File dir) {
@@ -320,6 +374,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
                     return;
                 }
                 getStorageViewModel().updateCurrentTitleName(getString(R.string.storage));
+                notifyContentChanged();
             }
         });
     }

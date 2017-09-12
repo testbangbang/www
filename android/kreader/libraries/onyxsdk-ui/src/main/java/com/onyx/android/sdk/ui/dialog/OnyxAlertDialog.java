@@ -3,6 +3,7 @@ package com.onyx.android.sdk.ui.dialog;
 import android.app.DialogFragment;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -157,6 +158,9 @@ public class OnyxAlertDialog extends DialogFragment {
             ViewGroup viewGroup = (ViewGroup) parentView.findViewById(R.id.layout_dialog);
             viewGroup.setBackgroundResource(params.customLayoutBackgroundResId);
         }
+        if (params.keyAction != null) {
+            getDialog().setOnKeyListener(params.keyAction);
+        }
     }
 
     private void setCustomContentLayout(View parentView, int layoutID, int layoutHeight, int layoutWidth) {
@@ -260,6 +264,7 @@ public class OnyxAlertDialog extends DialogFragment {
             }
         };
         View.OnClickListener positiveAction, negativeAction, neutralAction;
+        DialogInterface.OnKeyListener keyAction;
 
         public boolean isEnableTittle() {
             return enableTittle;
@@ -465,6 +470,14 @@ public class OnyxAlertDialog extends DialogFragment {
             return this;
         }
 
+        public DialogInterface.OnKeyListener getKeyAction(){
+            return keyAction;
+        }
+
+        public Params setKeyAction(DialogInterface.OnKeyListener keyAction) {
+            this.keyAction = keyAction;
+            return this;
+        }
     }
 
     public void setAlertMsg(String alertMsg) {

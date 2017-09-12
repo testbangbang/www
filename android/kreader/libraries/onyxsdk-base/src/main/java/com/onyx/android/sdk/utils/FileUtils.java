@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
+import com.onyx.android.sdk.data.ProcessValue;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 
@@ -24,12 +25,14 @@ import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.Stack;
 
 /**
  * Created by zhuzeng on 10/16/15.
@@ -101,6 +104,47 @@ public class FileUtils {
                 }
             } else if (file.isDirectory() && recursive) {
                 collectFiles(absolutePath, extensionFilters, recursive, fileList);
+            }
+        }
+    }
+
+    /**
+     * get file list of tree of path by depth first,contains the hide file or folder
+     *
+     * @param rootFile
+     * @param flattenedFileList
+     */
+    public static void collectFileTree(final File rootFile, final List<File> flattenedFileList, ProcessValue processValue) {
+        if (!rootFile.exists()) {
+            return;
+        }
+        Comparator<File> comparator = new Comparator<File>() {
+            @Override
+            public int compare(File lhs, File rhs) {
+                return -lhs.getName().compareToIgnoreCase(rhs.getName());
+            }
+        };
+
+        Stack<File> stack = new Stack<>();
+        stack.push(rootFile);
+        while (!stack.isEmpty()) {
+            if (processValue.isAbort()) {
+                return;
+            }
+
+            File parent = stack.pop();
+            flattenedFileList.add(parent);
+            if (parent.isDirectory()) {
+                File[] files = parent.listFiles();
+                if (files == null) {
+                    continue;
+                }
+                Arrays.sort(files, comparator);
+                for (File f : files) {
+                    if (!f.getName().equals(".") && !f.getName().equals("..")) {
+                        stack.push(f);
+                    }
+                }
             }
         }
     }
@@ -403,12 +447,34 @@ public class FileUtils {
     }
 
     public static boolean deleteFile(final String path) {
-        File file = new File(path);
+        return deleteFile(new File(path));
+    }
+
+    public static boolean deleteFile(File file) {
         if (file.exists()) {
             file.delete();
             return true;
         }
         return false;
+    }
+
+    public static boolean deleteFile(final File file, boolean recursive) {
+        if (file.isFile()) {
+            return deleteFile(file);
+        } else {
+            File[] childFile = file.listFiles();
+            if (childFile == null || childFile.length <= 0) {
+                return deleteFile(file);
+            }
+            for (File f : childFile) {
+                if (recursive) {
+                    deleteFile(f, true);
+                } else {
+                    deleteFile(f);
+                }
+            }
+            return deleteFile(file);
+        }
     }
 
     public static boolean ensureFileExists(String path) {
@@ -633,5 +699,26 @@ public class FileUtils {
                 return i;
             }
         });
+    }
+
+    /**
+     * Because file.renameTo Cannot use while crossing 2 different sd.For example Internal Flash to Removable SD.
+     * So use the method to judge if source and target files were on same sd.
+     * This method may only use in storage,so we assume file is only on internal flash or removable sd.
+     * @param a
+     * @param b
+     * @return is on same SDCard or not.
+     */
+    public static boolean onSameSDCard(File a, File b) {
+        if (a.getAbsolutePath().contains(EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath())) {
+            if (b.getAbsolutePath().contains(EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath())) {
+                return true;
+            }
+        } else {
+            if (!b.getAbsolutePath().contains(EnvironmentUtil.getExternalStorageDirectory().getAbsolutePath())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
