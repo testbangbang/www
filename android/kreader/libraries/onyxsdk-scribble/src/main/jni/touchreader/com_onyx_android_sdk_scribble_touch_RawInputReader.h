@@ -49,6 +49,14 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_n
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeSetLimitRegion
   (JNIEnv *, jobject, jfloatArray);
 
+/*
+ * Class:     com_onyx_android_sdk_scribble_touch_RawInputReader
+ * Method:    nativeSetExcludeRegion
+ * Signature: ([F)V
+ */
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeSetExcludeRegion
+  (JNIEnv *, jobject, jfloatArray);
+
 #ifdef __cplusplus
 }
 #endif

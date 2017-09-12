@@ -21,7 +21,7 @@
 #include <errno.h>
 
 TouchReader::TouchReader() :
-    limitArray(nullptr), shortcutDrawing(false), shortcutErasing(false)
+    limitArray(nullptr), excludeArray(nullptr), shortcutDrawing(false), shortcutErasing(false)
 {
 
 }
@@ -29,12 +29,20 @@ TouchReader::TouchReader() :
 TouchReader::~TouchReader() {
     closeDevice();
     clearLimitArray();
+    clearExcludeArray();
 }
 
 void TouchReader::clearLimitArray() {
     if (limitArray) {
         free(limitArray);
         limitArray = NULL;
+    }
+}
+
+void TouchReader::clearExcludeArray() {
+    if (excludeArray) {
+        free(excludeArray);
+        excludeArray = NULL;
     }
 }
 
@@ -54,6 +62,29 @@ bool TouchReader::inLimitRegion(float x, float y) {
         float topLimit = limitArray[i + 1];
         float rightLimit = limitArray[i + 2];
         float bottomLimit = limitArray[i + 3];
+
+        if (leftLimit <= (x - detectStrokeWidth) &&
+            (x + detectStrokeWidth) <= rightLimit &&
+            topLimit <= (y - detectStrokeWidth) &&
+            (y + detectStrokeWidth) <= bottomLimit) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool TouchReader::inExcludeRegion(float x, float y) {
+    if (!excludeArray) {
+        return false;
+    }
+
+    float detectStrokeWidth = strokeWidth / 2;
+
+    for (int i = 0; i < excludeArrayLength; i += 4) {
+        float leftLimit = excludeArray[i];
+        float topLimit = excludeArray[i + 1];
+        float rightLimit = excludeArray[i + 2];
+        float bottomLimit = excludeArray[i + 3];
 
         if (leftLimit <= (x - detectStrokeWidth) &&
             (x + detectStrokeWidth) <= rightLimit &&
@@ -115,14 +146,14 @@ void TouchReader::processEvent(void *userData, onTouchPointReceived callback, in
     } else if (type == EV_SYN) {
         if (pressed) {
             if (!lastPressed) {
-                if(!inLimitRegion(px, py)) {
+                if(!inLimitRegion(px, py) || inExcludeRegion(px, py)) {
                     return;
                 }
                 lastPressed = true;
                 state = ON_PRESS;
                 lastState = state;
             } else {
-                state = inLimitRegion(px, py) ? ON_MOVE : ON_RELEASE_OUT_LIMIT_REGION;
+                state = (inLimitRegion(px, py) && !inExcludeRegion(px, py)) ? ON_MOVE : ON_RELEASE_OUT_LIMIT_REGION;
             }
         } else {
             state = ON_RELEASE;
@@ -219,4 +250,25 @@ void TouchReader::setLimitRegion(float *array, int len) {
     }
 }
 
+void TouchReader::setExcludeRegion(float *array, int len) {
+    clearExcludeArray();
+    excludeArray = array;
+    excludeArrayLength = len;
 
+    for (int i = 0; i < excludeArrayLength; i += 4) {
+        float left = excludeArray[i];
+        float top = excludeArray[i + 1];
+        float right = excludeArray[i + 2];
+        float bottom = excludeArray[i + 3];
+
+        float leftLimit = left <= right ? left : right;
+        float topLimit = top <= bottom ? top : bottom;
+        float rightLimit = right >= left ? right : left;
+        float bottomLimit = bottom >= top ? bottom : top;
+
+        excludeArray[i] = leftLimit;
+        excludeArray[i + 1] = topLimit;
+        excludeArray[i + 2] = rightLimit;
+        excludeArray[i + 3] = bottomLimit;
+    }
+}

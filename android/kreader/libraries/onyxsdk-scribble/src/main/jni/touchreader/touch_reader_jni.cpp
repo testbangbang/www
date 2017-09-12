@@ -53,3 +53,14 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_n
     env->ReleaseFloatArrayElements(limitRegion, array, 0);
     touchReader.setLimitRegion(buf, len);
 }
+
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeSetExcludeRegion
+  (JNIEnv *env, jobject, jfloatArray excludeRegion) {
+    int len = env->GetArrayLength(excludeRegion);
+    jfloat *buf = (jfloat *)calloc(len, sizeof(jfloat));
+    jboolean isCopy = false;
+    jfloat *array = env->GetFloatArrayElements(excludeRegion, &isCopy);
+    memcpy(buf, array, len * sizeof(jfloat));
+    env->ReleaseFloatArrayElements(excludeRegion, array, 0);
+    touchReader.setExcludeRegion(buf, len);
+}

@@ -22,12 +22,15 @@ public:
     void closeDevice();
     void setStrokeWidth(float width);
     void setLimitRegion(float *array, int len);
+    void setExcludeRegion(float *array, int len);
     void readTouchEventLoop(void *userData, onTouchPointReceived callback);
 
 private:
     void processEvent(void *userData, onTouchPointReceived callback, int type, int code, int value, long ts);
     bool inLimitRegion(float x, float y);
+    bool inExcludeRegion(float x, float y);
     void clearLimitArray();
+    void clearExcludeArray();
 
 private:
     bool debug = true;
@@ -44,6 +47,8 @@ private:
     bool shortcutErasing;
     float *limitArray;
     int limitArrayLength;
+    float *excludeArray;
+    int excludeArrayLength;
     float strokeWidth;
 
 };
