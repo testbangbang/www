@@ -8,19 +8,13 @@ import com.onyx.android.sdk.scribble.shape.Shape;
  */
 
 public class RawTouchPointListReceivedEvent {
-    public RawTouchPointListReceivedEvent(Shape shape, TouchPointList touchPointList) {
-        this.shape = shape;
+    public RawTouchPointListReceivedEvent(TouchPointList touchPointList) {
         this.touchPointList = touchPointList;
-    }
-
-    public Shape getShape() {
-        return shape;
     }
 
     public TouchPointList getTouchPointList() {
         return touchPointList;
     }
 
-    private Shape shape;
     private TouchPointList touchPointList;
 }

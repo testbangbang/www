@@ -57,6 +57,7 @@ public class EpdDemoActivity extends AppCompatActivity implements View.OnClickLi
             EpdDeviceManager.applyWithGCIntervalWitRegal(textView, true);
         } else if (v.equals(button_screen_refresh)) {
             updateTextView();
+            //EpdController.setViewDefaultUpdateMode(textView, UpdateMode.GC);
             EpdController.invalidate(textView, UpdateMode.GC);
         } else if (v.equals(button_enter_fast_mode)) {
             EpdDeviceManager.enterAnimationUpdate(true);

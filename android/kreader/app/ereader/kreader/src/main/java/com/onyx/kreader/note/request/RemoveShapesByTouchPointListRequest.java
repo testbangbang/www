@@ -21,11 +21,12 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        final PageInfo pageInfo = getVisiblePages().get(0);
-        final float radius = noteManager.getNoteDrawingArgs().eraserRadius / pageInfo.getActualScale();
-        final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), pageInfo.getName(), 0);
-        if (notePage != null) {
-            notePage.removeShapesByTouchPointList(touchPointList, radius);
+        for (PageInfo pageInfo : getVisiblePages()) {
+            final float radius = noteManager.getNoteDrawingArgs().eraserRadius / pageInfo.getActualScale();
+            final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), pageInfo.getName(), pageInfo.getSubPage());
+            if (notePage != null) {
+                notePage.removeShapesByTouchPointList(touchPointList, radius);
+            }
         }
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());

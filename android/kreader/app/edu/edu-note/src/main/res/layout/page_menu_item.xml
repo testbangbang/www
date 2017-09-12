@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.note.scribble.PageMenuItemViewModel" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="@dimen/onyx_main_note_menu_height"
+        android:background="@drawable/image_button_bg"
+        android:onClick="@{(v) ->viewModel.itemClicked(v)}"
+        appCompat:alwaysLayoutImageView="true">
+
+        <ImageView
+            android:id="@+id/function_item_image_view"
+            android:layout_width="@dimen/note_function_item_img_size"
+            android:layout_height="@dimen/note_function_item_img_size"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="@{!viewModel.showIndicator}"
+            android:layout_marginTop="@{!viewModel.showIndicator? (float)0 :@dimen/note_function_item_img_top_margin}"
+            android:src="@{viewModel.iconRes}" />
+
+        <RadioButton
+            android:id="@+id/function_item_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/function_item_image_view"
+            android:layout_centerHorizontal="true"
+            android:button="@drawable/note_check_indicator"
+            android:checked="@{viewModel.isChecked}"
+            android:clickable="false"
+            android:focusable="false"
+            android:visibility="@{viewModel.showIndicator?View.VISIBLE:View.GONE}" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+</layout>

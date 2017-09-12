@@ -1,34 +1,33 @@
 package com.onyx.edu.note.scribble.event;
 
-import android.util.SparseArray;
-
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * Created by solskjaer49 on 2017/7/20 15:18.
  */
 
 public class HandlerActivateEvent {
-    public List<Integer> getFunctionBarMenuFunctionIDList() {
-        return mFunctionBarMenuFunctionIDList;
+    private static final String TAG = HandlerActivateEvent.class.getSimpleName();
+
+    public HandlerActivateEvent(String noteTitle, int currentPage, int totalPage) {
+        this.noteTitle = noteTitle;
+        this.currentPage = currentPage;
+        this.totalPage = totalPage;
     }
 
-    public List<Integer> getToolBarMenuFunctionIDList() {
-        return mToolBarMenuFunctionIDList;
+    public String getNoteTitle() {
+        return noteTitle;
     }
 
-    public SparseArray<List<Integer>> getFunctionBarMenuSubMenuIDListSparseArray() {
-        return mFunctionBarMenuSubMenuIDListSparseArray;
+    public int getCurrentPage() {
+        return currentPage;
     }
 
-    public HandlerActivateEvent(List<Integer> functionBarMenuFunctionIDList, List<Integer> toolBarMenuFunctionIDList, SparseArray<List<Integer>> functionBarMenuSubMenuIDListSparseArray) {
-        mFunctionBarMenuFunctionIDList = functionBarMenuFunctionIDList;
-        mToolBarMenuFunctionIDList = toolBarMenuFunctionIDList;
-        mFunctionBarMenuSubMenuIDListSparseArray = functionBarMenuSubMenuIDListSparseArray;
+    public int getTotalPage() {
+        return totalPage;
     }
 
-    private List<Integer> mFunctionBarMenuFunctionIDList = new ArrayList<>();
-    private List<Integer> mToolBarMenuFunctionIDList = new ArrayList<>();
-    private SparseArray<List<Integer>> mFunctionBarMenuSubMenuIDListSparseArray = new SparseArray<>();
+    private String noteTitle;
+    private int currentPage;
+    private int totalPage;
+
+
 }

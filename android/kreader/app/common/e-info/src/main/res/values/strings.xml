@@ -95,6 +95,9 @@
     <string name="menu_library_add">Add to the library</string>
     <string name="menu_library_remove">Remove from the library</string>
     <string name="menu_library_delete">Delete the library</string>
+    <string name="menu_view_switch">View Switch</string>
+    <string name="menu_group_select">Group Select</string>
+    <string name="menu_select_multiple">Multiple Selection Mode</string>
 
     <string name="go_to_page">Go To Page</string>
     <string name="current_page">Current Page</string>
@@ -125,4 +128,11 @@
     <string name="online_library_id_error">Online library ID has exception</string>
     <string name="online_library_load_error">Online library got the exception</string>
     <string name="online_group_load_error">Online grouping got the exception</string>
+
+    <string name="text_recommend_person">Recommend Person:</string>
+
+    <string name="file_total_count">Total:%1$d/%2$d</string>
+    <string name="page_count" translatable="false">%1$d/%2$d</string>
+    <string name="storage_go_up">Go Up</string>
+    <string name="storage">Storage</string>
 </resources>

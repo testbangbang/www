@@ -12,7 +12,6 @@
     "com.android.speechrecorder",
     "com.android.vpndialogs",
     "com.android.settings",
-    "com.android.browser",
     "com.android.email",
     "com.android.calendar",
     "com.android.deskclock",
@@ -20,7 +19,6 @@
     "com.android.quicksearchbox",
     "com.onyx.appmarket",
     "com.onyx.android.edu",
-    "com.android.music",
     "com.android.providers.downloads.ui",
     "com.onyx.kreader",
     "com.android.soundrecorder"
@@ -32,7 +30,7 @@
   ],
   "cloud_content_host": "http://oa.o-in.me:9058/",
   "cloud_content_api": "http://oa.o-in.me:9058/api/",
-  "cloud_content_import_json_path": "/mnt/sdcard/books/data.json",
+  "cloud_content_import_json_path": "edu/data.json",
   "leanCloudAppId": "8R59Y6FwRttD7ndEdUe2K2Bn-gzGzoHsz",
   "leanCloudClientKey": "15xpQNiXDr2oW5W8yYuJ60It",
   "cloud_index_server_use": true,
@@ -48,5 +46,19 @@
     "startX": 225,
     "startY": 930
   },
-  "support_color" : true
+  "support_color" : true,
+  "content_menu_item_list": [
+    "ViewType",
+    "SortBy"
+  ],
+  "media_scan_support": true,
+  "music_dir": [
+    "Music",
+    "Movies",
+    "cloud"
+  ],
+  "gallery_dir": [
+    "Pictures",
+    "DCIM"
+  ]
 }

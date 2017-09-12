@@ -5,6 +5,7 @@ import android.view.View;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.einfo.R;
+import com.onyx.einfo.events.DownloadingEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -13,6 +14,8 @@ import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by suicheng on 2017/5/23.
@@ -51,22 +54,35 @@ public class DownloadAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void startDownload(final Context context, final BaseCallback baseCallback) {
-        final DialogLoading loadingDialog = showDownloadingDialog(context, FileUtils.getBaseName(filePath), tag);
         BaseDownloadTask task = getDownLoaderManager().download(context, url, filePath,
                 tag, new BaseCallback() {
+
+                    @Override
+                    public void start(BaseRequest request) {
+                        BaseCallback.invokeStart(baseCallback, request);
+                        if (baseCallback == null) {
+                            EventBus.getDefault().post(new DownloadingEvent());
+                        }
+                    }
+
                     @Override
                     public void progress(BaseRequest request, ProgressInfo info) {
-                        loadingDialog.setProgressMessage(String.valueOf((int) info.progress) + "%");
+                        BaseCallback.invokeProgress(baseCallback, request, info);
+                        if (baseCallback == null) {
+                            EventBus.getDefault().post(new DownloadingEvent(tag, (int) info.progress));
+                        }
                     }
 
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        loadingDialog.dismiss();
                         removeDownloadingTask(tag);
                         if (e != null) {
                             ToastUtils.showToast(request.getContext(), R.string.download_fail);
                         }
                         BaseCallback.invoke(baseCallback, request, e);
+                        if (baseCallback == null) {
+                            EventBus.getDefault().post(new DownloadingEvent());
+                        }
                     }
                 });
         getDownLoaderManager().addTask(tag, task);

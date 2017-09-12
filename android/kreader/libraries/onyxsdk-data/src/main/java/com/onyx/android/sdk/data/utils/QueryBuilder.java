@@ -183,6 +183,10 @@ public class QueryBuilder {
         return Metadata_Table.lastAccess;
     }
 
+    public static IntProperty getMetadataOrdinalProperty() {
+        return Metadata_Table.ordinal;
+    }
+
     public static Property<String> getMetadataCollectionDocIdProperty() {
         return MetadataCollection_Table.documentUniqueId;
     }
@@ -385,7 +389,7 @@ public class QueryBuilder {
         return args;
     }
 
-    private static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
+    public static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
         if (asc) {
             orderBy.ascending();
         } else {
@@ -432,6 +436,9 @@ public class QueryBuilder {
                 break;
             case InstallTime:
                 property = getMetadataLastAccessProperty();
+                break;
+            case Ordinal:
+                property = getMetadataOrdinalProperty();
                 break;
         }
         return property;

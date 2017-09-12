@@ -33,6 +33,8 @@ public:
 
     bool writeAnnotation(const PageAnnotation &annotation);
 
+    bool setDocumentTitle(const std::string &path, const std::string &title);
+
 private:
     class Impl;
     std::unique_ptr<Impl> impl;

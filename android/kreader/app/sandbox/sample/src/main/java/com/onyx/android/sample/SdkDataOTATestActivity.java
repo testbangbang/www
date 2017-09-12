@@ -53,7 +53,7 @@ public class SdkDataOTATestActivity extends AppCompatActivity {
     }
 
     private void downloadFile(String url, final String filePath) {
-        BaseDownloadTask task = OnyxDownloadManager.getInstance().download(url, filePath, url, new BaseCallback() {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().download(this, url, filePath, url, new BaseCallback() {
             @Override
             public void start(BaseRequest request) {
             }

@@ -31,6 +31,13 @@
     <string name="import_scribble">Import</string>
     <string name="remove_failed">Remove Failed.</string>
     <string name="name_length_illegal">20 Character Only.</string>
+    <string name="save_and_exit">Save And Exit.</string>
+    <string name="export_fail">Export failure</string>
+    <string name="export_success">Export Succeed</string>
+    <string name="exporting_info">Exporting Note…</string>
+    <string name="export_location">(Export location: %s)</string>
+    <string name="go_to_page">Go to Page</string>
+    <string name="current_page">Current Page</string>
 
 
 </resources>

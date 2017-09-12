@@ -36,15 +36,23 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     private String associationId;
     private OnyxThumbnail.ThumbnailKind thumbnailKind = OnyxThumbnail.ThumbnailKind.Large;
     private CloseableReference<Bitmap> refBitmap;
+    private int reqWidth = ViewTarget.SIZE_ORIGINAL;
+    private int reqHeight = ViewTarget.SIZE_ORIGINAL;
 
     public CloudThumbnailLoadRequest(final String coverUrl, final String associateId) {
         this.coverUrl = coverUrl;
         this.associationId = associateId;
     }
 
-    public CloudThumbnailLoadRequest(final String coverUrl, final String associateId, OnyxThumbnail.ThumbnailKind thumbnailKind) {
+    public CloudThumbnailLoadRequest(final String coverUrl, final String associateId,
+                                     OnyxThumbnail.ThumbnailKind thumbnailKind) {
         this(coverUrl, associateId);
         this.thumbnailKind = thumbnailKind;
+    }
+
+    public void setReqWidthHeight(int[] widthHeight) {
+        this.reqWidth = widthHeight[0];
+        this.reqHeight = widthHeight[1];
     }
 
     public CloseableReference<Bitmap> getRefBitmap() {
@@ -90,7 +98,7 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private File thumbnailFileSystemCachePathWidthId() {
-        return CloudUtils.imageCachePath(getContext(), associationId);
+        return CloudUtils.imageCachePath(getContext(), associationId, thumbnailKind.toString().toLowerCase());
     }
 
     private boolean loadFromMemoryCache(final CloudManager cloudManager) {
@@ -116,7 +124,8 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private boolean loadFromDatabase(final CloudManager cloudManager) {
-        String path = loadThumbnailFilePathFromDatabase(getContext(), cloudManager.getCloudDataProvider(), associationId, thumbnailKind);
+        String path = loadThumbnailFilePathFromDatabase(getContext(), cloudManager.getCloudDataProvider(),
+                associationId, thumbnailKind);
         if (StringUtils.isNullOrEmpty(path) || !FileUtils.fileExist(path)) {
             return false;
         }
@@ -147,11 +156,7 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private boolean writeBitmapToFile(File file, Bitmap originBitmap)  {
-        Bitmap newBitmap = originBitmap;
-        if (thumbnailKind != OnyxThumbnail.ThumbnailKind.Original) {
-            newBitmap = ThumbnailUtils.createLargeThumbnail(originBitmap);
-        }
-        return ThumbnailUtils.writeBitmapToThumbnailFile(file, newBitmap);
+        return ThumbnailUtils.writeBitmapToThumbnailFile(file, originBitmap);
     }
 
     private boolean loadRefBitmap(File file) {
@@ -169,11 +174,7 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private Bitmap loadBitmapFromCloudImpl(String url) {
-        if (thumbnailKind == OnyxThumbnail.ThumbnailKind.Original) {
-            return loadOriginBitmapFromCloudImpl(url);
-        } else {
-            return loadLargeBitmapFromCloudImpl(url);
-        }
+        return loadOriginBitmapFromCloudImpl(url);
     }
 
     private Bitmap loadLargeBitmapFromCloudImpl(String url)  {
@@ -189,12 +190,12 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
         }
     }
 
-    private Bitmap loadOriginBitmapFromCloudImpl(String url)  {
+    private Bitmap loadOriginBitmapFromCloudImpl(String url) {
         try {
             return Glide.with(getContext())
                     .load(url)
                     .asBitmap()
-                    .into(ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL)
+                    .into(reqWidth, reqHeight)
                     .get();
         } catch (Exception e) {
             return null;
@@ -232,6 +233,6 @@ public class CloudThumbnailLoadRequest extends BaseCloudRequest {
     }
 
     private String getCacheKey() {
-        return CacheManager.generateCloudThumbnailKey(associationId, coverUrl);
+        return CacheManager.generateCloudThumbnailKey(associationId, coverUrl, thumbnailKind.toString().toLowerCase());
     }
 }

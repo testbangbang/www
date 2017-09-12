@@ -190,6 +190,14 @@ public class GPaginator {
         return index;
     }
 
+    public int getCurrentPageBeginRow() {
+        return rowInCurrentPage(getCurrentPageBegin());
+    }
+
+    public int getCurrentPageEndRow() {
+        return rowInCurrentPage(getCurrentPageEnd());
+    }
+
     public int nextColumn(int index) {
         return index + 1;
     }

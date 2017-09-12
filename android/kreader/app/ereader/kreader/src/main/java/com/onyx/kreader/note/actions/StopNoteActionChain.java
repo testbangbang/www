@@ -2,6 +2,7 @@ package com.onyx.kreader.note.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.kreader.ui.actions.ActionChain;
+import com.onyx.kreader.ui.actions.StopSideNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
@@ -36,6 +37,9 @@ public class StopNoteActionChain  {
         actionChain.addAction(new FlushNoteAction(readerDataHolder.getVisiblePages(), render, transfer, save, show));
         if (closeMenu) {
             actionChain.addAction(new CloseNoteMenuAction());
+        }
+        if (readerDataHolder.isSideNoting()) {
+            actionChain.addAction(new StopSideNoteAction());
         }
         actionChain.execute(readerDataHolder, callback);
     }

@@ -9,5 +9,21 @@
     <string name="create_folder_failed">文件夹创建失败.</string>
     <string name="remove_failed">删除失败.</string>
     <string name="name_length_illegal">文件名不多于20个字符.</string>
+    <string name="note_name">标题:</string>
+    <string name="save_note">保存笔记</string>
     <string name="discard">丢弃</string>
+    <string name="save_and_exit">保存并退出.</string>
+    <string name="export_fail">导出失败</string>
+    <string name="export_success">导出成功</string>
+    <string name="exporting_info">正在导出手写数据…</string>
+    <string name="export_location" formatted="false">(导出位置: %s)</string>
+    <string name="rename">重命名</string>
+    <string name="action_settings">设置</string>
+    <string name="export">导出</string>
+    <string name="import_scribble">导入</string>
+    <string name="move">移动</string>
+    <string name="go_to_page">页面跳转</string>
+    <string name="current_page">当前页面</string>
+
+
 </resources>

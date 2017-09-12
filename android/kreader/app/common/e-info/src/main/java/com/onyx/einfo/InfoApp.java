@@ -4,8 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.action.ActionContext;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.im.IMConfig;
@@ -15,6 +18,7 @@ import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.einfo.action.ContentImportAction;
 import com.onyx.einfo.action.FileSystemScanAction;
+import com.onyx.einfo.action.MediaScanAction;
 import com.onyx.einfo.device.DeviceConfig;
 import com.onyx.einfo.events.DataRefreshEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
@@ -37,7 +41,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 
 
@@ -45,6 +52,8 @@ import java.util.Map;
  * Created by zhuzeng on 14/11/2016.
  */
 public class InfoApp extends MultiDexApplication {
+    private static final String TAG = "InfoApp";
+
     public static boolean checkedOnBootComplete = false;
     static private final String MMC_STORAGE_ID = "flash";
 
@@ -55,6 +64,7 @@ public class InfoApp extends MultiDexApplication {
     private EventManager eventManager;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private HashSet<String> mediaFilesSet = new LinkedHashSet<>();
 
     @Override
     public void onCreate() {
@@ -114,15 +124,20 @@ public class InfoApp extends MultiDexApplication {
 
     private void initEventListener() {
         deviceReceiver.setMediaStateListener(new DeviceReceiver.MediaStateListener() {
+
+            @Override
+            public void onMediaScanStarted(Intent intent) {
+                if (DeviceConfig.sharedInstance(getApplicationContext()).supportMediaScan()) {
+                    processMediaScan();
+                }
+            }
+
             @Override
             public void onMediaMounted(Intent intent) {
+                Log.w(TAG, "onMediaMounted " + intent.getData().toString());
                 if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
-                    String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
-                    if (StringUtils.isNullOrEmpty(sdcardCid)) {
-                        return;
-                    }
-                    FileSystemScanAction systemScanAction = new FileSystemScanAction(sdcardCid, false);
-                    systemScanAction.execute(getLibraryDataHolder(), null);
+                    //processRemovableSDCardScan();
+                    processRemovableSDCardContentImport();
                 }
             }
 
@@ -150,6 +165,35 @@ public class InfoApp extends MultiDexApplication {
             }
         });
         deviceReceiver.enable(getApplicationContext(), true);
+    }
+
+    private void processRemovableSDCardScan() {
+        String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
+        if (StringUtils.isNullOrEmpty(sdcardCid)) {
+            return;
+        }
+        FileSystemScanAction systemScanAction = new FileSystemScanAction(sdcardCid, false);
+        systemScanAction.execute(getLibraryDataHolder(), null);
+    }
+
+    private void processRemovableSDCardContentImport() {
+        String jsonFilePath = DeviceConfig.sharedInstance(getApplicationContext()).getCloudContentImportJsonFilePath();
+        if (StringUtils.isNullOrEmpty(jsonFilePath)) {
+            return;
+        }
+        final File file = new File(EnvironmentUtil.getRemovableSDCardDirectory(), jsonFilePath);
+        if (!file.exists()) {
+            return;
+        }
+        ContentImportAction importAction = new ContentImportAction(file.getAbsolutePath(), true);
+        importAction.execute(getLibraryDataHolder(), null);
+    }
+
+    private void processMediaScan() {
+        MediaScanAction mediaScanAction = new MediaScanAction(
+                DeviceConfig.sharedInstance(getApplicationContext()).getMediaDir(),
+                mediaFilesSet, true);
+        mediaScanAction.execute(getLibraryDataHolder(), null);
     }
 
     public void turnOffLed() {
@@ -236,10 +280,18 @@ public class InfoApp extends MultiDexApplication {
     }
 
     private void cloudContentImportFirstBoot() {
-        if (checkedOnBootComplete) {
+        if (checkedOnBootComplete || ConfigPreferenceManager.hasImportContent(this)) {
             return;
         }
-        ContentImportAction importAction = new ContentImportAction();
-        importAction.execute(InfoApp.getLibraryDataHolder(), null);
+        String jsonFilePath = DeviceConfig.sharedInstance(getApplicationContext()).getCloudContentImportJsonFilePath();
+        if (StringUtils.isNullOrEmpty(jsonFilePath)) {
+            return;
+        }
+        File file = new File(EnvironmentUtil.getExternalStorageDirectory(), jsonFilePath);
+        if (!file.exists()) {
+            return;
+        }
+        ContentImportAction importAction = new ContentImportAction(file.getAbsolutePath());
+        importAction.execute(getLibraryDataHolder(), null);
     }
 }

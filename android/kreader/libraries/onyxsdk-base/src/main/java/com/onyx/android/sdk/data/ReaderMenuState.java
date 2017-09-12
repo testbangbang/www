@@ -15,7 +15,10 @@ public abstract class ReaderMenuState {
 
     public abstract boolean isFixedPagingMode();
     public abstract boolean isShowingNotes();
+    public abstract boolean isSupportingSideNote();
 
     public abstract List<String> getFontFaces();
     public abstract ReaderTextStyle getReaderStyle();
+
+    public abstract WindowParameters getWindowParameters();
 }

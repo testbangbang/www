@@ -33,12 +33,14 @@ public class DeviceConfig {
     static private Locale currentLocale = null;
 
     static private Map<String, String> defaultCustomizedIconAppsMap;
+    static private Map<String, String> defaultCustomizedProductCoverMap;
 
     private GObject backend;
 
     static public final String APP_FILTERS = "app_filters";
     static public final String TEST_APPS = "test_apps";
     static public final String CUSTOMIZED_ICON_APPS_MAPS = "customized_icon_apps_maps";
+    static public final String CUSTOMIZED_COVER_PRODUCTS_MAPS = "customized_cover_products_maps";
 
     static public final String VERIFY_DICTIONARY_TAG = "verify_dictionary";
     static public final String VERIFY_BOOKS_TAG = "verify_books";
@@ -61,6 +63,12 @@ public class DeviceConfig {
 
     static public final String BOOKS_EXCLUDE_DIR_TAG = "books_exclude_dir";
     static public final String DEVICE_SUPPORT_COLOR = "support_color";
+
+    static public final String CONTENT_MENU_ITEM_LIST = "content_menu_item_list";
+
+    static public final String MEDIA_SCAN_SUPPORT = "media_scan_support";
+    static public final String GALLERY_DIR = "gallery_dir";
+    static public final String MUSIC_DIR = "music_dir";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -189,6 +197,20 @@ public class DeviceConfig {
         return defaultCustomizedIconAppsMap;
     }
 
+    public Map<String, String> getCustomizedProductCovers() {
+        if (defaultCustomizedProductCoverMap == null) {
+            defaultCustomizedProductCoverMap = new HashMap<>();
+            defaultCustomizedProductCoverMap.put("default", "cover_default");
+            defaultCustomizedProductCoverMap.put("mp3", "cover_mp3");
+            defaultCustomizedProductCoverMap.put("wav", "cover_wav");
+            defaultCustomizedProductCoverMap.put("apk", "cover_apk");
+        }
+        if (backend.hasKey(CUSTOMIZED_COVER_PRODUCTS_MAPS)) {
+            defaultCustomizedProductCoverMap.putAll((Map<String, String>) (backend.getObject(CUSTOMIZED_COVER_PRODUCTS_MAPS)));
+        }
+        return defaultCustomizedProductCoverMap;
+    }
+
     public String getCloudContentHost() {
         return backend.getString(CLOUD_CONTENT_HOST, CLOUD_CONTENT_DEFAULT_HOST);
     }
@@ -258,5 +280,41 @@ public class DeviceConfig {
 
     public boolean isDeviceSupportColor() {
         return backend.getBoolean(DEVICE_SUPPORT_COLOR);
+    }
+
+    public List<String> getContentMenuItemList() {
+        if (backend.hasKey(CONTENT_MENU_ITEM_LIST)) {
+            return backend.getList(CONTENT_MENU_ITEM_LIST);
+        }
+        return new ArrayList<>();
+    }
+
+    public boolean supportMediaScan() {
+        return backend.getBoolean(MEDIA_SCAN_SUPPORT, true);
+    }
+
+    public List<String> getMusicDir() {
+        if (backend.hasKey(MUSIC_DIR)) {
+            return backend.getList(MUSIC_DIR);
+        }
+        return null;
+    }
+
+    public List<String> getGalleryDir() {
+        if (backend.hasKey(GALLERY_DIR)) {
+            return backend.getList(GALLERY_DIR);
+        }
+        return null;
+    }
+
+    public List<String> getMediaDir() {
+        List<String> list = new ArrayList<>();
+        if (!CollectionUtils.isNullOrEmpty(getMusicDir())) {
+            list.addAll(getMusicDir());
+        }
+        if (!CollectionUtils.isNullOrEmpty(getGalleryDir())) {
+            list.addAll(getGalleryDir());
+        }
+        return list;
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -281,7 +282,7 @@ public class NoteViewHelper {
         softwareLimitRect = new Rect();
         surfaceView.getLocalVisibleRect(softwareLimitRect);
         getRawInputProcessor().setHostView(surfaceView);
-        getRawInputProcessor().setLimitRect(softwareLimitRect);
+        getRawInputProcessor().setLimitRect(new RectF(softwareLimitRect));
         EpdController.setScreenHandWritingRegionLimit(surfaceView);
     }
 
@@ -474,7 +475,7 @@ public class NoteViewHelper {
         }
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut) {
                 if (callback != null) {
                     callback.onBeginRawData();
                 }
@@ -486,7 +487,7 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut) {
                 ensureErasing();
             }
 
@@ -495,11 +496,11 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean releaseOutLimitRegion) {
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean releaseOutLimitRegion) {
             }
         });
         startDrawing();

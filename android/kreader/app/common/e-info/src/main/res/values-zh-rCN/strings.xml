@@ -90,6 +90,9 @@
     <string name="menu_library_add">加入书库</string>
     <string name="menu_library_remove">移出书库</string>
     <string name="menu_library_delete">删除书库</string>
+    <string name="menu_view_switch">视图切换</string>
+    <string name="menu_group_select">组别选择</string>
+    <string name="menu_select_multiple">多选模式</string>
 
     <string name="go_to_page">页面跳转</string>
     <string name="current_page">当前页面</string>
@@ -120,4 +123,9 @@
     <string name="online_library_load_error">获取书库异常</string>
     <string name="online_group_load_error">获取分组异常</string>
 
+    <string name="text_recommend_person">推荐者：</string>
+
+    <string name="file_total_count">总计:%1$d/%2$d</string>
+    <string name="storage_go_up">向上一级</string>
+    <string name="storage">存储</string>
 </resources>

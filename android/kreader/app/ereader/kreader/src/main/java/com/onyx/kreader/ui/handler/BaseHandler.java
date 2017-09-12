@@ -16,6 +16,7 @@ import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.kreader.R;
+import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
@@ -343,7 +344,9 @@ public abstract class BaseHandler {
             for (ReaderSelection link : links) {
                 for (RectF rect : link.getRectangles()) {
                     if (rect.contains(x, y)) {
-                        new GotoPositionAction(link.getPagePosition()).execute(readerDataHolder);
+//                        new GotoPositionAction(link.getPagePosition()).execute(readerDataHolder);
+                        ReaderTabHostBroadcastReceiver.sendGotoPageLinkIntent(readerDataHolder.getContext(),
+                                link.getPagePosition());
                         return true;
                     }
                 }

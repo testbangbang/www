@@ -63,7 +63,9 @@ public class ApplicationsActivity extends BaseActivity {
     }
 
     private void fullUpdateView() {
-        EpdController.postInvalidate(getWindow().getDecorView().getRootView(), UpdateMode.GC);
+        if (DeviceConfig.sharedInstance(this).enableFullRefresh()) {
+            EpdController.postInvalidate(getWindow().getDecorView().getRootView(), UpdateMode.GC);
+        }
     }
 
     @Override

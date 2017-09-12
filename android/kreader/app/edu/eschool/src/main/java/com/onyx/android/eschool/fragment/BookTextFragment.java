@@ -24,6 +24,7 @@ import com.onyx.android.eschool.action.LibraryGotoPageAction;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
 import com.onyx.android.eschool.events.BookLibraryEvent;
+import com.onyx.android.eschool.events.DownloadingEvent;
 import com.onyx.android.eschool.events.HardwareErrorEvent;
 import com.onyx.android.eschool.events.PushNotificationEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
@@ -48,6 +49,7 @@ import com.onyx.android.sdk.data.request.cloud.v2.PushNotificationDeleteRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -93,6 +95,8 @@ public class BookTextFragment extends Fragment {
 
     private String fragmentName;
     private boolean isVisibleToUser = false;
+
+    private DialogProgressHolder progressDialogHolder = new DialogProgressHolder();
 
     public static BookTextFragment newInstance(String fragmentName, String libraryId) {
         BookTextFragment fragment = new BookTextFragment();
@@ -258,12 +262,11 @@ public class BookTextFragment extends Fragment {
             }
 
             @Override
-            public void onPageBindViewHolder(BookItemHolder viewHolder, int position) {
+            public void onPageBindViewHolder(final BookItemHolder viewHolder, int position) {
                 viewHolder.itemView.setTag(position);
 
                 Metadata eBook = getEBookList().get(position);
-                viewHolder.getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
-                //updateDownloadPanel(viewHolder, eBook);
+                updateDownloadPanel(viewHolder, eBook);
                 viewHolder.titleView.setVisibility(View.VISIBLE);
                 viewHolder.titleView.setText(String.valueOf(eBook.getName()));
 
@@ -345,6 +348,12 @@ public class BookTextFragment extends Fragment {
     }
 
     private void updateDownloadPanel(BookItemHolder holder, Metadata eBook) {
+        if (isFileExists(eBook)) {
+            holder.getWidgetImage.setVisibility(View.VISIBLE);
+            holder.getWidgetImage.setImageResource(R.drawable.book_item_get_widget);
+            return;
+        }
+
         boolean showProgress = true;
         BaseDownloadTask task = getDownLoaderManager().getTask(eBook.getGuid());
         if (task == null) {
@@ -362,6 +371,10 @@ public class BookTextFragment extends Fragment {
                     getDownLoaderManager().removeTask(eBook.getGuid());
                     break;
             }
+        }
+        holder.getWidgetImage.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+        if (showProgress) {
+            holder.getWidgetImage.setImageResource(R.drawable.book_item_download_widget);
         }
     }
 
@@ -477,6 +490,13 @@ public class BookTextFragment extends Fragment {
         updatePageIndicator();
     }
 
+    private void updateOnlyContentView() {
+        if (isContentViewInvalid()) {
+            return;
+        }
+        contentPageView.getAdapter().notifyDataSetChanged();
+    }
+
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
         getPagination().resize(row, col, totalCount);
@@ -579,32 +599,28 @@ public class BookTextFragment extends Fragment {
         return true;
     }
 
-    private BaseCallback baseCallback = new BaseCallback() {
+    private BaseCallback downloadCallback = new BaseCallback() {
+
+        @Override
+        public void start(BaseRequest request) {
+            updateOnlyContentView();
+        }
+
         @Override
         public void progress(BaseRequest request, ProgressInfo info) {
-            contentPageView.notifyDataSetChanged();
+            updateOnlyContentView();
         }
 
         @Override
         public void done(BaseRequest request, Throwable e) {
-            contentPageView.notifyDataSetChanged();
+            updateOnlyContentView();
         }
     };
 
     private void startDownload(final Metadata eBook) {
         String filePath = getDataSaveFilePath(eBook);
         DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
-        downloadAction.execute(getDataHolder(), new BaseCallback() {
-
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                updateContentView();
-                openCloudFile(eBook);
-            }
-        });
+        downloadAction.execute(getDataHolder(), null);
     }
 
     private void processProductItemClick(final int position) {
@@ -614,6 +630,7 @@ public class BookTextFragment extends Fragment {
             return;
         }
         if (enableWifiOpenAndDetect()) {
+            ToastUtils.showToast(getContext(), R.string.open_wifi);
             return;
         }
         startDownload(book);
@@ -668,6 +685,26 @@ public class BookTextFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        dismissAllProgressDialog();
+    }
+
+    private void showProgressDialog(final Object object, int resId, DialogProgressHolder.DialogCancelListener listener) {
+        if (progressDialogHolder == null) {
+            return;
+        }
+        progressDialogHolder.showProgressDialog(getActivity(), object, resId, listener);
+    }
+
+    private void dismissProgressDialog(final Object object) {
+        if (progressDialogHolder != null) {
+            progressDialogHolder.dismissProgressDialog(object);
+        }
+    }
+
+    private void dismissAllProgressDialog() {
+        if (progressDialogHolder != null) {
+            progressDialogHolder.dismissAllProgressDialog();
+        }
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
@@ -710,6 +747,11 @@ public class BookTextFragment extends Fragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        updateOnlyContentView();
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -742,6 +784,7 @@ public class BookTextFragment extends Fragment {
         refreshAction.execute(getDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dismissProgressDialog(refreshAction);
                 if (e != null) {
                     return;
                 }
@@ -750,5 +793,6 @@ public class BookTextFragment extends Fragment {
                 preloadNext();
             }
         });
+        showProgressDialog(refreshAction, R.string.refreshing, null);
     }
 }

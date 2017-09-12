@@ -69,7 +69,7 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
 
     public PenReader getPenReader() {
         if (penReader == null) {
-            penReader = new PenReader(this);
+            penReader = new PenReader(this, surfaceView);
         }
         return penReader;
     }

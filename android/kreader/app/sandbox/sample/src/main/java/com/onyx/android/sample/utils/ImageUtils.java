@@ -78,6 +78,32 @@ public class ImageUtils {
         return result;
     }
 
+    static public Bitmap merge(final Bitmap lut,
+                               final Bitmap collision,
+                               final Bitmap mergedUpd,
+                               final Bitmap originWb,
+                               final Bitmap mergedWb) {
+        int width = lut.getWidth();
+        int height = lut.getHeight();
+        Bitmap result = Bitmap.createBitmap(width * 5, lut.getHeight(), lut.getConfig());
+        result.setHasAlpha(true);
+        Canvas canvas = new Canvas(result);
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+        paint.setColor(Color.RED);
+
+        canvas.drawBitmap(lut, 0f, 0f, null);
+        canvas.drawBitmap(collision, width, 0, null);
+        canvas.drawBitmap(mergedUpd, width * 2, 0, null);
+        canvas.drawBitmap(originWb, width * 3, 0, null);
+        canvas.drawBitmap(mergedWb, width * 4, 0, null);
+        for(int i = 1; i <5; ++i) {
+            canvas.drawLine(width * i, 0, width * i, height, paint);
+        }
+        return result;
+    }
+
     static public void nextFrame(final Bitmap mcu, int maxFrame, int step) {
         for(int y = 0; y < mcu.getHeight(); ++y) {
             for(int x = 0; x < mcu.getWidth(); ++x) {
@@ -216,5 +242,6 @@ public class ImageUtils {
         result.setHasAlpha(true);
         return result;
     }
+
 
 }

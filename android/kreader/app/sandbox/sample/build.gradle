@@ -14,6 +14,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
 
         sourceSets.main {
             jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
@@ -85,10 +86,18 @@ dependencies {
     compile "com.android.support:gridlayout-v7:$rootProject.gridlayoutVersion"
 
     //dependencies for others
-    compile 'com.onyx.android.sdk:onyxsdk-base:1.3.3'
-    compile 'com.onyx.android.sdk:onyxsdk-scribble:1.0.4'
+    compile project(':libraries:onyxsdk-base')
+    compile project(':libraries:onyxsdk-statistics')
+    compile project(':libraries:onyxsdk-ui')
+    compile project(':libraries:cropimage')
+    compile project(':libraries:onyxsdk-data')
+    compile (project(':libraries:onyxsdk-scribble')) {
+        ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
+            exclude group: it
+        }
+    }
+
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.onyx.android.sdk:onyxsdk-data:1.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
 }

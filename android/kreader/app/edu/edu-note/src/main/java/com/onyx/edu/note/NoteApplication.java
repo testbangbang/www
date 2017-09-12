@@ -3,8 +3,8 @@ package com.onyx.edu.note;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
@@ -22,14 +22,14 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class NoteApplication extends Application {
-    private static NoteManager sNoteManager;
+    private NoteManager noteManager;
     private static NoteApplication sInstance;
 
-    public static NoteManager getNoteManager() {
-        if (sNoteManager == null) {
-            sNoteManager = NoteManager.sharedInstance(sInstance);
+    public NoteManager getNoteManager() {
+        if (noteManager == null) {
+            noteManager = new NoteManager(sInstance);
         }
-        return sNoteManager;
+        return noteManager;
     }
 
     public static void initWithAppConfig(final Activity activity) {
@@ -51,6 +51,13 @@ public class NoteApplication extends Application {
         installExceptionHandler();
         initCompatColorImageConfig();
         initEventBusIndex();
+        resetEpd();
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        resetEpd();
     }
 
     public static NoteApplication getInstance() {
@@ -70,8 +77,7 @@ public class NoteApplication extends Application {
             @Override
             public void uncaughtException(Thread thread, Throwable e) {
                 e.printStackTrace();
-                final View view = getNoteManager().getView();
-                getNoteManager().reset(view);
+                resetEpd();
             }
         });
     }
@@ -82,5 +88,9 @@ public class NoteApplication extends Application {
 
     private void initEventBusIndex(){
         EventBus.builder().addIndex(new OnyxEventBusIndex()).installDefaultEventBus();
+    }
+
+    private void resetEpd() {
+        EpdController.resetEpdPost();
     }
 }

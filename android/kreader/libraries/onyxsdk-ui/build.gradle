@@ -23,7 +23,7 @@ android {
             minifyEnabled false
         }
     }
-    
+
     lintOptions {
         abortOnError false
     }
@@ -38,6 +38,7 @@ dependencies {
     compile "com.android.support:preference-v14:$rootProject.compatibleSupportLibraryVersion"
     compile "com.android.support:percent:$rootProject.supportLibraryVersion"
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
 }
 

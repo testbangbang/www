@@ -2,6 +2,7 @@ package com.onyx.android.sdk.device;
 
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Surface;
@@ -78,11 +79,17 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodQuadToView = null;
     private static Method sMethodGetTouchWidth = null;
     private static Method sMethodGetTouchHeight = null;
+    private static Method sMethodGetEpdWidth = null;
+    private static Method sMethodGetEpdHeight = null;
     private static Method sMethodMapToView = null;
     private static Method sMethodMapToEpd = null;
+    private static Method sMethodMapFromRawTouchPoint = null;
+    private static Method sMethodMapToRawTouchPoint = null;
     private static Method sMethodEnablePost = null;
+    private static Method sMethodResetEpdPost = null;
     private static Method sMethodSetScreenHandWritingPenState = null;
     private static Method sMethodSetScreenHandWritingRegionLimit = null;
+    private static Method sMethodSetScreenHandWritingRegionExclude = null;
     private static Method sMethodApplyGammaCorrection = null;
     private static Method sMethodStartStroke = null;
     private static Method sMethodAddStrokePoint = null;
@@ -434,9 +441,49 @@ public class RK32XXDevice extends BaseDevice {
     }
 
     @Override
+    public float getEpdHeight() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetEpdHeight, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public float getEpdWidth() {
+        try {
+            Float value = (Float)ReflectUtil.invokeMethodSafely(sMethodGetEpdWidth, null);
+            return value.floatValue();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
     public void mapToEpd(View view, float[] src, float[] dst) {
         try {
             ReflectUtil.invokeMethodSafely(sMethodMapToEpd, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapFromRawTouchPoint, null, view, src, dst);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodMapToRawTouchPoint, null, view, src, dst);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -508,6 +555,15 @@ public class RK32XXDevice extends BaseDevice {
         }
     }
 
+    @Override
+    public void resetEpdPost() {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodResetEpdPost, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public boolean supportScreenHandWriting() {
         return (sMethodSetScreenHandWritingPenState != null);
     }
@@ -535,6 +591,32 @@ public class RK32XXDevice extends BaseDevice {
             ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionLimit, view, view, array);
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    public void setScreenHandWritingRegionExclude(View view, int[] array) {
+        try {
+            ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionExclude, view, view, array);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void setScreenHandWritingRegionExclude(View view, Rect[] regions) {
+        int array[] = new int[regions.length * 4];
+        for (int i = 0; i < regions.length; i++) {
+            Rect region = regions[i];
+            int left = Math.min(region.left, region.right);
+            int top = Math.min(region.top, region.bottom);
+            int right = Math.max(region.left, region.right);
+            int bottom = Math.max(region.top, region.bottom);
+            array[4 * i] = left;
+            array[4 * i + 1] = top;
+            array[4 * i + 2] = right;
+            array[4 * i + 3] = bottom;
+        }
+        setScreenHandWritingRegionExclude(view, array);
     }
 
     public void applyGammaCorrection(boolean apply, int value) {
@@ -639,11 +721,17 @@ public class RK32XXDevice extends BaseDevice {
             sMethodQuadToView = ReflectUtil.getMethodSafely(cls, "quadTo", View.class, float.class, float.class, int.class);
             sMethodGetTouchWidth = ReflectUtil.getMethodSafely(cls, "getTouchWidth");
             sMethodGetTouchHeight = ReflectUtil.getMethodSafely(cls, "getTouchHeight");
+            sMethodGetEpdWidth = ReflectUtil.getMethodSafely(cls, "getEpdWidth");
+            sMethodGetEpdHeight = ReflectUtil.getMethodSafely(cls, "getEpdHeight");
             sMethodMapToView = ReflectUtil.getMethodSafely(cls, "mapToView", View.class, float[].class, float[].class);
             sMethodMapToEpd = ReflectUtil.getMethodSafely(cls, "mapToEpd", View.class, float[].class, float[].class);
+            sMethodMapFromRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapFromRawTouchPoint", View.class, float[].class, float[].class);
+            sMethodMapToRawTouchPoint = ReflectUtil.getMethodSafely(cls, "mapToRawTouchPoint", View.class, float[].class, float[].class);
             sMethodEnablePost = ReflectUtil.getMethodSafely(cls, "enablePost", int.class);
+            sMethodResetEpdPost = ReflectUtil.getMethodSafely(cls, "resetEpdPost");
             sMethodSetScreenHandWritingPenState = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingPenState", int.class);
             sMethodSetScreenHandWritingRegionLimit = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionLimit", View.class, int[].class);
+            sMethodSetScreenHandWritingRegionExclude = ReflectUtil.getMethodSafely(cls, "setScreenHandWritingRegionExclude", View.class, int[].class);
             sMethodApplyGammaCorrection = ReflectUtil.getMethodSafely(cls, "applyGammaCorrection", boolean.class, int.class);
 
             sMethodStartStroke = ReflectUtil.getMethodSafely(cls, "startStroke", float.class, float.class, float.class, float.class, float.class, float.class);
