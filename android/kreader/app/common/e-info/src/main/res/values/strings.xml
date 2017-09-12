@@ -135,4 +135,24 @@
     <string name="page_count" translatable="false">%1$d/%2$d</string>
     <string name="storage_go_up">Go Up</string>
     <string name="storage">Storage</string>
+
+    <string name="copying">Copying,wait a minute</string>
+    <string name="replace">replace</string>
+    <string name="skip">Skip</string>
+    <string name="moving">Moving</string>
+    <string name="skip_all">Skip all</string>
+    <string name="retry">Retry</string>
+    <string name="replace_all">Replace all</string>
+    <string name="cannot_cut_here">Can not move here</string>
+    <string name="cannot_copy_here">Can not copy here</string>
+    <string name="cancel_cut">Cut canceled</string>
+    <string name="cancel_copy">Copy canceled</string>
+    <string name="deleting">Deleting</string>
+    <string name="cancel_delete">Delete canceled</string>
+    <string name="delete_success">was deleted successfully!</string>
+    <string name="copy_file_failed">Copy file failed</string>
+    <string name="folder_already_exists">Folder already exists: </string>
+    <string name="file_already_exists">File already exists: </string>
+    <string name="no_item_select">No Selection,Please Retry again</string>
+
 </resources>

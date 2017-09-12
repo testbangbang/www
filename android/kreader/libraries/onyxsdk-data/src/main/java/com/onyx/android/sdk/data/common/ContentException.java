@@ -2,6 +2,8 @@ package com.onyx.android.sdk.data.common;
 
 import com.onyx.android.sdk.data.utils.ResultCode;
 
+import java.io.File;
+
 
 /**
  * Created by suicheng on 2017/5/23.
@@ -13,9 +15,12 @@ public class ContentException extends Exception {
     public static final int FILE_PATH_EXCEPTION = 2;
     public static final int NETWORK_EXCEPTION = 3;
     public static final int TOKEN_EXCEPTION = 4;
+    public static final int IO_EXCEPTION = 5;
     public static final int UNKNOWN_EXCEPTION = 0xffff;
 
+    public static final int CLOUD_TOKEN_EXCEPTION = 401;
     public static final int CLOUD_NO_FOUND = 404;
+    public static final int CLOUD_INTERNAL_SERVER_ERROR = 500;
 
     public static final String URL_INVALID_EXCEPTION_MESSAGE = "Url is invalid.";
     public static final String FILE_PATH_EXCEPTION_MESSAGE = "File path is invalid.";
@@ -59,7 +64,7 @@ public class ContentException extends Exception {
         String exceptionMessage = resultCode.message;
         int code = resultCode.code;
         if (exceptionMessage == null) {
-            exceptionMessage = NETWORK_EXCEPTION_MESSAGE;
+            exceptionMessage = code + "," + NETWORK_EXCEPTION_MESSAGE;
         }
         return exceptionFromCode(code, exceptionMessage);
     }
@@ -94,6 +99,50 @@ public class ContentException extends Exception {
         }
     }
 
+    public static class FileException extends ContentException {
+        public FileException(int code, String msg) {
+            super(code, msg);
+        }
+    }
+
+    public static class FileAskForReplaceException extends FileException {
+        public File from, to;
+
+        public FileAskForReplaceException(File from, File to) {
+            super(IO_EXCEPTION, "FileAskForReplaceException");
+
+            this.from = from;
+            this.to = to;
+        }
+    }
+
+    public static class FileCopyException extends FileException {
+        public File from, to;
+
+        public FileCopyException(File from, File to) {
+            super(IO_EXCEPTION, "FileCopyException");
+
+            this.from = from;
+            this.to = to;
+        }
+    }
+
+    public static class FileDeleteException extends FileException {
+        public File file;
+        public FileDeleteException(File file) {
+            super(IO_EXCEPTION, "FileDeleteException");
+            this.file = file;
+        }
+    }
+
+    public static class FileCreateException extends FileException {
+        public File file;
+        public FileCreateException(File file) {
+            super(IO_EXCEPTION, "FileCreateException");
+            this.file = file;
+        }
+    }
+
     public static boolean isNetworkException(Throwable throwable) {
         return throwable instanceof NetworkException;
     }
@@ -104,5 +153,13 @@ public class ContentException extends Exception {
 
     public boolean isCloudNotFound() {
         return getCode() == CLOUD_NO_FOUND;
+    }
+
+    public boolean isCloudServerError() {
+        return getCode() == CLOUD_INTERNAL_SERVER_ERROR;
+    }
+
+    public boolean isCloudTokenException() {
+        return getCode() == CLOUD_TOKEN_EXCEPTION;
     }
 }
