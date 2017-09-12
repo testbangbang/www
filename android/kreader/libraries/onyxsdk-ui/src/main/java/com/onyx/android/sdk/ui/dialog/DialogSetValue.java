@@ -36,6 +36,8 @@ public class DialogSetValue extends OnyxAlertDialog {
         void valueChange(int newValue);
 
         void done(boolean isValueChange, int newValue);
+
+        void dismiss();
     }
 
     private static final String TAG = DialogSetValue.class.getSimpleName();
@@ -254,6 +256,7 @@ public class DialogSetValue extends OnyxAlertDialog {
     @Override
     public void onDismiss(DialogInterface dialogInterface) {
         super.onDismiss(dialogInterface);
+        callback.dismiss();
     }
 
     public void show(FragmentManager manager) {

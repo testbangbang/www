@@ -120,10 +120,6 @@ public class ShapeTransformHandler extends BaseHandler {
     @Override
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionMenuIds = new ArrayList<>();
-        functionMenuIds.add(MenuId.PEN_STYLE);
-        functionMenuIds.add(MenuId.BG);
-        functionMenuIds.add(MenuId.ERASER);
-        functionMenuIds.add(MenuId.PEN_WIDTH);
         functionMenuIds.add(MenuId.SHAPE_SELECT);
 
         functionMenuIds.add(MenuId.PREV_PAGE);
