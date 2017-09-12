@@ -40,6 +40,7 @@
                 android:layout_toRightOf="@id/menu_back"
                 android:background="@android:color/white"
                 android:padding="@dimen/title_bar_title_padding"
+                android:textColor="@color/black"
                 android:textSize="@dimen/level_one_font_size" />
         </LinearLayout>
 
@@ -124,6 +125,7 @@
             android:layout_centerVertical="true"
             android:background="@drawable/text_view_bg"
             android:padding="@dimen/title_bar_right_menu_padding"
+            android:textColor="@color/black"
             android:visibility="gone" />
     </RelativeLayout>
 

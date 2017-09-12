@@ -40,6 +40,7 @@ import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -164,7 +165,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
                 loadBookshelf(languageList.get(position));
                 break;
             case Constants.GRADED_BOOKSHELF:
-                loadLibrary(libraryList.get(position));
+                loadLibrary(position);
                 break;
         }
     }
@@ -176,15 +177,18 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         }
     }
 
-    private void loadLibrary(Library library) {
-        if (library != null) {
-            if (titleBarTitle != null) {
-                titleBarTitle.setText(library.getName());
+    private void loadLibrary(int position) {
+        if (!CollectionUtils.isNullOrEmpty(libraryList)) {
+            Library library = libraryList.get(position);
+            if (library != null) {
+                if (titleBarTitle != null) {
+                    titleBarTitle.setText(library.getName());
+                }
+                QueryArgs queryArgs = getDataHolder().getCloudViewInfo().buildLibraryQuery(library.getIdString());
+                queryArgs.fetchPolicy = FetchPolicy.DB_ONLY;
+                queryArgs.conditionGroup.and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
+                bookshelfPresenter.getLibrary(queryArgs);
             }
-            QueryArgs queryArgs = getDataHolder().getCloudViewInfo().buildLibraryQuery(library.getIdString());
-            queryArgs.fetchPolicy = FetchPolicy.DB_ONLY;
-            queryArgs.conditionGroup.and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
-            bookshelfPresenter.getLibrary(queryArgs);
         }
     }
 
@@ -265,7 +269,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
             bookshelfTab.addTab(bookshelfTab.newTab().setText(lib.getName()));
         }
         int selectedTabPosition = bookshelfTab.getSelectedTabPosition();
-        loadLibrary(libraryList.get(selectedTabPosition));
+        loadLibrary(selectedTabPosition);
     }
 
     @Override
