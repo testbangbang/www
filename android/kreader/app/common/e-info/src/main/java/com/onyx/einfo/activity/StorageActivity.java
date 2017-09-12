@@ -10,6 +10,9 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -21,9 +24,12 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.ViewType;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.utils.SelectionMode;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.einfo.R;
 import com.onyx.einfo.action.SortByProcessAction;
@@ -33,11 +39,13 @@ import com.onyx.einfo.adapter.PageAdapter;
 import com.onyx.einfo.databinding.ActivityStorageBinding;
 import com.onyx.einfo.databinding.FileDetailsItemBinding;
 import com.onyx.einfo.databinding.FileThumbnailItemBinding;
+import com.onyx.einfo.events.OperationEvent;
 import com.onyx.einfo.events.StorageItemViewModelClickEvent;
 import com.onyx.einfo.events.StorageItemViewModelLongClickEvent;
 import com.onyx.einfo.events.ViewTypeEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.manager.ConfigPreferenceManager;
+import com.onyx.einfo.model.OperationItem;
 import com.onyx.einfo.model.StorageItemViewModel;
 import com.onyx.einfo.model.StorageViewModel;
 
@@ -46,6 +54,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -76,8 +85,33 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     private void prevBinding() {
         storageViewModel = new StorageViewModel(getEventBus());
+        prevAddOperationItems();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_storage);
         binding.setViewModel(storageViewModel);
+    }
+
+    private String getOperationText(int operation) {
+        switch (operation) {
+            case OperationEvent.OPERATION_COPY:
+                return getString(android.R.string.copy);
+            case OperationEvent.OPERATION_PASTE:
+                return getString(R.string.paste);
+            case OperationEvent.OPERATION_DELETE:
+                return getString(R.string.delete);
+            case OperationEvent.OPERATION_CANCEL:
+                return getString(R.string.cancel);
+            case OperationEvent.OPERATION_CUT:
+                return getString(R.string.cut);
+        }
+        return null;
+    }
+
+    private void prevAddOperationItems() {
+        List<OperationItem> itemList = new ArrayList<>();
+        for (OperationEvent event : OperationEvent.createAll()) {
+            itemList.add(new OperationItem(getEventBus(), event).setText(getOperationText(event.getOperation())));
+        }
+        getStorageViewModel().setOperationItemArray(itemList);
     }
 
     private void initToolbar() {
@@ -162,6 +196,59 @@ public class StorageActivity extends OnyxAppCompatActivity {
         super.onBackPressed();
     }
 
+    private void getIntoMultiSelectionMode() {
+        StorageViewModel viewModel = getStorageViewModel();
+        viewModel.setSelectionMode(SelectionMode.MULTISELECT_MODE);
+        viewModel.clearItemSelectedMap();
+        viewModel.switchOperationPanel(false, OperationEvent.OPERATION_PASTE);
+        viewModel.toggleShowOperationFunc();
+        notifyContentChanged();
+    }
+
+    private void quitMultiSelectionMode(boolean showOperationPanel, int nextMode) {
+        StorageViewModel viewModel = getStorageViewModel();
+        viewModel.setSelectionMode(nextMode);
+        if (!showOperationPanel) {
+            viewModel.clearItemSelectedMap();
+            viewModel.toggleShowOperationFunc();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.storage_option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        switch (getStorageViewModel().getSelectionMode()) {
+            case SelectionMode.NORMAL_MODE:
+                for (int i = 0; i < menu.size(); i++) {
+                    menu.getItem(i).setVisible(true);
+                }
+                break;
+            default:
+                for (int i = 0; i < menu.size(); i++) {
+                    menu.getItem(i).setVisible(false);
+                }
+                break;
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_select_multiple:
+                getIntoMultiSelectionMode();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLevelGoUpEvent() {
         onBackPressed();
@@ -190,6 +277,24 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onItemLongClickEvent(StorageItemViewModelLongClickEvent event) {
+    }
+
+    @Subscribe(threadMode = ThreadMode.POSTING)
+    public void onOperationEvent(OperationEvent event) {
+        switch (event.getOperation()) {
+            case OperationEvent.OPERATION_COPY:
+                break;
+            case OperationEvent.OPERATION_CUT:
+                break;
+            case OperationEvent.OPERATION_PASTE:
+                break;
+            case OperationEvent.OPERATION_DELETE:
+                break;
+            case OperationEvent.OPERATION_CANCEL:
+                quitMultiSelectionMode(false, SelectionMode.NORMAL_MODE);
+                notifyContentChanged();
+                break;
+        }
     }
 
     private void processFileClick(File file) {

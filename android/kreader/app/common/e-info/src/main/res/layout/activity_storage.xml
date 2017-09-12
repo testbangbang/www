@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
 
     <data>
 
@@ -12,6 +13,7 @@
         <variable
             name="viewModel"
             type="com.onyx.einfo.model.StorageViewModel" />
+
     </data>
 
     <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
@@ -88,6 +90,10 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />
+
+        <include
+            layout="@layout/file_operation_function_layout"
+            bind:viewModel="@{viewModel}" />
 
         <View
             android:layout_width="match_parent"

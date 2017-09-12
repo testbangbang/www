@@ -92,6 +92,7 @@
     <string name="menu_library_delete">删除书库</string>
     <string name="menu_view_switch">视图切换</string>
     <string name="menu_group_select">组别选择</string>
+    <string name="menu_select_multiple">多选模式</string>
 
     <string name="go_to_page">页面跳转</string>
     <string name="current_page">当前页面</string>
