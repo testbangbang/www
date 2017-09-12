@@ -1,13 +1,11 @@
 package com.onyx.android.sdk.scribble.api;
 
 import android.content.Context;
-import android.graphics.Matrix;
-import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
@@ -42,7 +40,6 @@ public class PenReader {
     }
 
     private void init(final Context context, final View view) {
-        rawInputProcessor.setMoveFeedback(true);
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
         rawInputProcessor.setHostView(view);
         rawInputProcessor.setLimitRect(new RectF(0, 0, getTouchHeight(), getTouchWidth()));
@@ -68,8 +65,13 @@ public class PenReader {
         this.penReaderCallback = callback;
         rawInputProcessor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData(boolean shortcut) {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 penReaderCallback.onBeginRawData();
+            }
+
+            @Override
+            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
+
             }
 
             @Override
@@ -78,8 +80,13 @@ public class PenReader {
             }
 
             @Override
-            public void onBeginErasing(boolean shortcut) {
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 penReaderCallback.onBeginErasing();
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+
             }
 
             @Override
@@ -88,12 +95,12 @@ public class PenReader {
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion) {
+            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
                 penReaderCallback.onEndErasing();
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion) {
+            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
                 penReaderCallback.onEndRawData();
             }
         });
