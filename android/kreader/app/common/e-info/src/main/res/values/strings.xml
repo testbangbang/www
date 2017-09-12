@@ -97,6 +97,7 @@
     <string name="menu_library_delete">Delete the library</string>
     <string name="menu_view_switch">View Switch</string>
     <string name="menu_group_select">Group Select</string>
+    <string name="menu_select_multiple">Multiple Selection Mode</string>
 
     <string name="go_to_page">Go To Page</string>
     <string name="current_page">Current Page</string>
