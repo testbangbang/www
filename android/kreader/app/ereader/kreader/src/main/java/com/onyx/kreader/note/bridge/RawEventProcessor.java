@@ -58,7 +58,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             }
 
             @Override
-            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
                 if (!isReportData()) {
                     return;
                 }
@@ -67,7 +67,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             }
 
             @Override
-            public void onRawTouchPointListReceived(Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
             }
 
             @Override
