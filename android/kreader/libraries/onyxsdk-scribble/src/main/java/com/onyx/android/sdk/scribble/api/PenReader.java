@@ -7,7 +7,6 @@ import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 
@@ -70,12 +69,12 @@ public class PenReader {
             }
 
             @Override
-            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
 
             }
 
             @Override
-            public void onRawTouchPointListReceived(Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
                 penReaderCallback.onRawTouchPointListReceived(pointList);
             }
 

@@ -479,12 +479,12 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
 
             }
 
             @Override
-            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 

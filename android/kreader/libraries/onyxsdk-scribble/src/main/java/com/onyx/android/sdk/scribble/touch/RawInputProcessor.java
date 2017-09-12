@@ -3,14 +3,11 @@ package com.onyx.android.sdk.scribble.touch;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.utils.Debug;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -51,10 +48,10 @@ public class RawInputProcessor {
         public abstract void onEndRawData(boolean releaseOutLimitRegion, TouchPoint point);
 
         // when pen moving.
-        public abstract void onRawTouchPointMoveReceived(final Shape shape, final TouchPoint point);
+        public abstract void onRawTouchPointMoveReceived(final TouchPoint point);
 
         // when pen released.
-        public abstract void onRawTouchPointListReceived(final Shape shape, final TouchPointList pointList);
+        public abstract void onRawTouchPointListReceived(final TouchPointList pointList);
 
         // caller should render the page here.
         public abstract void onBeginErasing(boolean shortcutErasing, TouchPoint point);
@@ -312,7 +309,7 @@ public class RawInputProcessor {
         if (erasing) {
             rawInputCallback.onEraseTouchPointMoveReceived(touchPoint);
         } else {
-            rawInputCallback.onRawTouchPointMoveReceived(null, touchPoint);
+            rawInputCallback.onRawTouchPointMoveReceived(touchPoint);
         }
     }
 
@@ -337,7 +334,7 @@ public class RawInputProcessor {
         if (erasing) {
             rawInputCallback.onEraseTouchPointListReceived(touchPointList);
         } else {
-            rawInputCallback.onRawTouchPointListReceived(null, touchPointList);
+            rawInputCallback.onRawTouchPointListReceived(touchPointList);
         }
     }
 

@@ -12,7 +12,6 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEv
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,12 +43,12 @@ public class RawInputManager {
             }
 
             @Override
-            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
 
             }
 
             @Override
-            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
                 onNewTouchPointListReceived(pointList);
             }
 
