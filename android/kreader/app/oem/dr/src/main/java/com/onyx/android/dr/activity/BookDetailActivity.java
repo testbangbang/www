@@ -79,6 +79,10 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
     TextView bookDetailIntroduction;
     @Bind(R.id.book_detail_catalog)
     TextView bookDetailCatalog;
+    @Bind(R.id.book_detail_buy_layout)
+    LinearLayout bookDetailBuyLayout;
+    @Bind(R.id.book_detail_read)
+    TextView bookDetailRead;
     private String bookId;
     private BookDetailPresenter bookDetailPresenter;
     private LibraryDataHolder dataHolder;
@@ -104,7 +108,9 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
 
     @Override
     protected void initData() {
-        bookDetailPresenter = new BookDetailPresenter(this);
+        if (bookDetailPresenter == null) {
+            bookDetailPresenter = new BookDetailPresenter(this);
+        }
         bookDetailPresenter.loadBookDetail(bookId);
     }
 
@@ -116,9 +122,17 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         bookDetailBookPublisher.setText(String.format(getString(R.string.book_detail_book_publisher), metadata.getPublisher()));
         bookDetailLanguage.setText(String.format(getString(R.string.book_detail_book_language), metadata.getLanguage()));
         bookDetailPrice.setText(String.format(getString(R.string.book_detail_book_price), metadata.getPrice()));
+        bookDetailBuyLayout.setVisibility(metadata.isPaid() ? View.GONE : View.VISIBLE);
+        bookDetailRead.setVisibility(metadata.isPaid() ? View.VISIBLE : View.GONE);
+        bookDetailRead.setText(isFileExists(metadata) ? getString(R.string.read) : getString(R.string.download));
     }
 
-    @OnClick({R.id.menu_back, R.id.title_bar_right_menu, R.id.book_detail_pay, R.id.book_detail_try_read, R.id.book_detail_add_to_cart})
+    @Override
+    public void setOrderId(String id) {
+        ActivityManager.startPayActivity(this, id);
+    }
+
+    @OnClick({R.id.menu_back, R.id.title_bar_right_menu, R.id.book_detail_pay, R.id.book_detail_try_read, R.id.book_detail_add_to_cart, R.id.book_detail_read})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -127,16 +141,20 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
             case R.id.title_bar_right_menu:
                 break;
             case R.id.book_detail_pay:
+                bookDetailPresenter.createOrder(metadata.getCloudId());
                 break;
             case R.id.book_detail_try_read:
-                tryRead();
+                read();//// TODO: 17-9-8 try read
                 break;
             case R.id.book_detail_add_to_cart:
+                break;
+            case R.id.book_detail_read:
+                read();
                 break;
         }
     }
 
-    private void tryRead() {
+    private void read() {
         if (isFileExists(metadata)) {
             openCloudFile(metadata);
             return;
@@ -256,5 +274,11 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
             return true;
         }
         return false;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        initData();
     }
 }

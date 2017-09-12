@@ -12,14 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/bookshelf_tab_height"
         android:orientation="horizontal"
-        android:visibility="gone"
+        app:tabGravity="fill"
         app:tabIndicatorHeight="@dimen/bookshelf_tab_indicator_height"
         app:tabTextAppearance="@android:style/TextAppearance.Holo.Large" />
 
-    <com.onyx.android.sdk.ui.view.PageRecyclerView
+    <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
         android:id="@+id/ebook_store_groups_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="@dimen/fragment_content_padding" />
+        android:paddingLeft="@dimen/fragment_content_padding"
+        android:paddingRight="@dimen/fragment_content_padding" />
+
+    <include layout="@layout/page_indicator_layout" />
 </LinearLayout>

@@ -16,9 +16,9 @@ import com.onyx.android.dr.bean.CityBean;
 import com.onyx.android.dr.bean.InterestBean;
 import com.onyx.android.dr.bean.ProvinceBean;
 import com.onyx.android.dr.bean.SignUpInfo;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.event.AccountAvailableEvent;
 import com.onyx.android.dr.presenter.LoginPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.RegularUtil;
@@ -30,8 +30,6 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,6 +107,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     TextView forgetPassword;
     @Bind(R.id.confirm_password_password)
     EditText confirmPasswordPassword;
+    @Bind(R.id.login_wifi_settings)
+    ImageView loginWifiSettings;
 
     private LoginPresenter loginPresenter;
     private View identity_layout;
@@ -208,7 +208,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             CommonNotices.showMessage(this, getString(R.string.login_succeed));
             DRPreferenceManager.saveLibraryParentId(this, accountInfo.library);
             DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
-            EventBus.getDefault().post(new AccountAvailableEvent());
+            ActivityManager.startMainActivity(this);
             finish();
         } else {
             CommonNotices.showMessage(this, getString(R.string.username_or_password_error));
@@ -298,7 +298,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         readingInfo.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button})
+    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button, R.id.login_wifi_settings})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_register:
@@ -312,6 +312,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 break;
             case R.id.login_prev_button:
                 prevStep();
+                break;
+            case R.id.login_wifi_settings:
+                ActivityManager.startWifiActivity(this);
                 break;
         }
     }

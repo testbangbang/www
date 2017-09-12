@@ -23,12 +23,10 @@ import com.onyx.android.dr.adapter.DeviceSettingSystemUpdateAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.database.DeviceVersionEntity;
 import com.onyx.android.dr.dialog.CustomEditDialog;
 import com.onyx.android.dr.event.DeviceSettingViewBaseEvent;
 import com.onyx.android.dr.interfaces.DeviceSettingView;
 import com.onyx.android.dr.presenter.DeviceSettingPresenter;
-import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.util.ApkUtils;
 import com.onyx.android.dr.util.SystemLanguage;
 import com.onyx.android.dr.util.SystemUtils;
@@ -36,13 +34,10 @@ import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.download.onyxdownloadservice.DownloadCallback;
-import com.onyx.download.onyxdownloadservice.DownloadRequest;
-import com.onyx.download.onyxdownloadservice.DownloadTaskManager;
-import com.onyx.download.onyxdownloadservice.ReportDownloadProcessEvent;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -182,8 +177,14 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
 
     private void onCheckAPKUpdateClick() {
         CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.device_setting_check_system_update));
-        if (!Utils.isNetworkConnected(DRApplication.getInstance())) {
-            ActivityManager.showWifiDialog(DRApplication.getInstance());
+        if (!NetworkUtil.isWiFiConnected(getActivity())) {
+            if (0 == Utils.getConfiguredNetworks(getActivity())) {
+                ActivityManager.startWifiActivity(getActivity());
+            } else {
+                Device.currentDevice().enableWifiDetect(getActivity());
+                NetworkUtil.enableWiFi(getActivity(), true);
+            }
+            CommonNotices.showMessage(getActivity(), getString(R.string.please_connect_to_the_network_first));
             return;
         }
         ApkUtils.updateApk(true);
@@ -444,52 +445,6 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     public void loadConfigDataFinish() {
     }
 
-    @Override
-    public void setLatestVersionMessage(DeviceVersionEntity entity) {
-        if (entity == null || StringUtils.isNullOrEmpty(entity.Ver) || entity.Ver.equals(ApkUtils.getSoftwareVersionName())) {
-            CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.without_new_version));
-            return;
-        }
-        showUpdateDialog(entity);
-    }
-
-    private void showUpdateDialog(final DeviceVersionEntity entity) {
-        final CustomDialog.Builder builder = new CustomDialog.Builder(DRApplication.getInstance());
-        builder.setTitle(getString(R.string.find_a_new_version));
-        builder.setMessage(getString(R.string.download_url) + entity.APKDownUrl);
-        builder.setPositiveButton(getString(R.string.start_updating), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.start_updating));
-                downloadNewVersion(entity.APKDownUrl);
-                dialog.dismiss();
-            }
-        }).setNegativeButton(getString(R.string.cancel_updating), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.cancel_updating));
-                dialog.dismiss();
-            }
-        }).create().show();
-    }
-
-    private void downloadNewVersion(String url) {
-        if (testUpdate()) {
-            url = testUpdateUrl();
-        }
-        path = Environment.getExternalStorageDirectory().getAbsolutePath();
-        apkName = Constants.APK_NAME;
-        deleteUpdateFile(path, apkName);
-        DownloadRequest req = DownloadTaskManager.getInstance().createDownloadRequest(url, path + File.separator + apkName, apkName);
-        reference = DownloadTaskManager.getInstance().addDownloadCallback(req, new DownloadCallback() {
-            @Override
-            public void progressChanged(int reference, String title, String remoteUri, String localUri, int state, long finished, long total, long percentage) {
-            }
-        });
-
-        DRApplication.getInstance().setApkDownloadReference(reference);
-    }
-
     private void deleteUpdateFile(String path, String apkName) {
         File file = new File(path, apkName);
         FileUtils.deleteFile(file.getAbsolutePath());
@@ -519,13 +474,6 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
             }
         }
         return updateUrl;
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onEventMainThread(ReportDownloadProcessEvent event) {
-        if (reference == event.getReference() && DownloadTaskManager.getInstance().isDownloaded(event.getState())) {
-            ApkUtils.installApk(getActivity(), path);
-        }
     }
 
     @Override
@@ -578,8 +526,14 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
 
     public void onCheckSystemUpdateClick() {
         CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.device_setting_check_system_update));
-        if (!Utils.isNetworkConnected(DRApplication.getInstance())) {
-            ActivityManager.showWifiDialog(DRApplication.getInstance());
+        if (!NetworkUtil.isWiFiConnected(getActivity())) {
+            if (0 == Utils.getConfiguredNetworks(getActivity())) {
+                ActivityManager.startWifiActivity(getActivity());
+            } else {
+                Device.currentDevice().enableWifiDetect(getActivity());
+                NetworkUtil.enableWiFi(getActivity(), true);
+            }
+            CommonNotices.showMessage(getActivity(), getString(R.string.please_connect_to_the_network_first));
             return;
         }
         ApkUtils.firmwareCloudCheck(true);

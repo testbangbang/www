@@ -41,11 +41,14 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".activity.LogoActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 
@@ -218,6 +221,16 @@
             android:name=".activity.BookDetailActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".activity.PayActivity"
+            android:theme="@style/WifiDialogStyle" />
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/OnyxAppCompat">
+
+        </activity>
+
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>
                 <action android:name="com.onyx.android.dr.CLEAR_FILE" />
@@ -252,5 +265,7 @@
         <meta-data
             android:name="UMENG_CHANNEL"
             android:value="DR" />
+
+        <service android:name=".service.QueryPayResultService" />
     </application>
 </manifest>

@@ -16,8 +16,10 @@ import com.onyx.android.dr.adapter.TabMenuAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.data.MainTabMenuConfig;
 import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.dr.event.AccountAvailableEvent;
+import com.onyx.android.dr.event.ApkDownloadSucceedEvent;
 import com.onyx.android.dr.event.ApplicationEvent;
 import com.onyx.android.dr.event.ArticlePushMenuEvent;
 import com.onyx.android.dr.event.BackToBookshelfEvent;
@@ -26,30 +28,37 @@ import com.onyx.android.dr.event.BookshelfMenuEvent;
 import com.onyx.android.dr.event.BookstoreMenuEvent;
 import com.onyx.android.dr.event.DictMenuEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
+import com.onyx.android.dr.event.HaveNewVersionApkEvent;
+import com.onyx.android.dr.event.HaveNewVersionEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
 import com.onyx.android.dr.event.LoginFailedEvent;
 import com.onyx.android.dr.event.MoreBooksEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
 import com.onyx.android.dr.event.ToBookshelfV2Event;
-import com.onyx.android.dr.event.WifiConnectedEvent;
+import com.onyx.android.dr.event.UpdateDownloadSucceedEvent;
 import com.onyx.android.dr.fragment.BaseFragment;
 import com.onyx.android.dr.fragment.BookshelfFragment;
 import com.onyx.android.dr.fragment.BookshelfV2Fragment;
 import com.onyx.android.dr.fragment.ChildViewID;
-import com.onyx.android.dr.fragment.MoreBooksFragment;
 import com.onyx.android.dr.fragment.MainViewFragment;
+import com.onyx.android.dr.fragment.MoreBooksFragment;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.presenter.MainPresenter;
+import com.onyx.android.dr.util.ApkUtils;
 import com.onyx.android.dr.util.DRPreferenceManager;
-import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.ApplicationUpdate;
+import com.onyx.android.sdk.data.model.Firmware;
+import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
+import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -69,7 +78,6 @@ public class MainActivity extends BaseActivity implements MainView {
     private Fragment currentFragment;
     private int currentPageID = ChildViewID.BASE_VIEW;
     private SparseArray<BaseFragment> childViewList = new SparseArray<>();
-    private List<Library> libraryList;
     private LibraryDataHolder dataHolder;
 
     @Override
@@ -80,7 +88,9 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     protected void initConfig() {
         mainPresenter = new MainPresenter(this);
-        mainPresenter.loadData(this);
+        MainTabMenuConfig.loadMenuInfo(this);
+        mainPresenter.getMyGroup();
+        DRApplication.getInstance().initDictDatas();
     }
 
     @Override
@@ -112,7 +122,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected void initData() {
-        mainPresenter.authToken();
+        mainPresenter.loadTabMenu(DRPreferenceManager.getUserType(DRApplication.getInstance(), ""));
     }
 
     @Override
@@ -123,18 +133,8 @@ public class MainActivity extends BaseActivity implements MainView {
         tabMenuNext.setVisibility(menuData.size() > tabMenuAdapter.getColumnCount() ? View.VISIBLE : View.GONE);
     }
 
-    @Override
-    public void setLibraryList(List<Library> libraryList) {
-        this.libraryList = libraryList;
-    }
-
     private String getLibraryParentId() {
         return DRPreferenceManager.loadLibraryParentId(this, null);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onWifiConnectedEvent(WifiConnectedEvent event) {
-        initData();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -217,6 +217,39 @@ public class MainActivity extends BaseActivity implements MainView {
         switchCurrentFragment(ChildViewID.FRAGMENT_COMMON_BOOKS);
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHaveNewVersionEvent(HaveNewVersionEvent event) {
+        FirmwareUpdateRequest request = event.getRequest();
+        Firmware resultFirmware = request.getResultFirmware();
+        String changeLog = resultFirmware.getChangeLog();
+        if (StringUtils.isNullOrEmpty(changeLog)) {
+            changeLog = resultFirmware.buildDisplayId;
+        }
+        String downloadUrl = resultFirmware.getUrl();
+        if (StringUtils.isNotBlank(downloadUrl)) {
+            ApkUtils.showLocalCheckDialog(DRApplication.getInstance(), changeLog, downloadUrl);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHaveNewVersionApkEvent(HaveNewVersionApkEvent event) {
+        ApplicationUpdate applicationUpdate = event.getApplicationUpdate();
+        Map<String, List<String>> changeLogs = applicationUpdate.changeLogs;
+        String[] downloadUrlList = applicationUpdate.downloadUrlList;
+        String language = getResources().getConfiguration().locale.toString();
+        ApkUtils.showNewApkDialog(DRApplication.getInstance(), changeLogs.get(language).get(0), downloadUrlList[0]);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onApkDownloadSucceedEvent(ApkDownloadSucceedEvent event) {
+        ApkUtils.installApk(DRApplication.getInstance(), Constants.APK_DOWNLOAD_PATH);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateDownloadSucceedEvent(UpdateDownloadSucceedEvent event) {
+        ApkUtils.firmwareLocal();
+    }
+
     private LibraryDataHolder getDataHolder() {
         if (dataHolder == null) {
             dataHolder = new LibraryDataHolder(this);
@@ -284,6 +317,7 @@ public class MainActivity extends BaseActivity implements MainView {
             if (currentFragment != null && currentFragment.onKeyBack()) {
                 return true;
             }
+            return true;
         }
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_PAGE_UP) {
             if (currentFragment != null && currentFragment.onKeyPageUp()) {

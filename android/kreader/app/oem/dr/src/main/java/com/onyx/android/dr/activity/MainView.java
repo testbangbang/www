@@ -11,6 +11,4 @@ import java.util.List;
 
 public interface MainView {
     void setTabMenuData(List<MenuBean> menuData);
-
-    void setLibraryList(List<Library> libraryList);
 }

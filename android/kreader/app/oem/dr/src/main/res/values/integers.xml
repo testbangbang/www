@@ -71,4 +71,5 @@
     <integer name="item_group_info_row">15</integer>
     <integer name="group_member_tab_row">15</integer>
     <integer name="group_member_tab_column">4</integer>
+    <integer name="pay_qr_code_width">250</integer>
 </resources>

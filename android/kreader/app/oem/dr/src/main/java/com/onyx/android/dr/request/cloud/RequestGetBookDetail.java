@@ -11,7 +11,7 @@ import retrofit2.Response;
  * Created by hehai on 17-7-31.
  */
 
-public class RequestGetBookDetail extends BaseCloudRequest {
+public class RequestGetBookDetail extends AutoNetWorkConnectionBaseCloudRequest {
     private String idString;
     private CloudMetadata cloudMetadata;
 
@@ -25,10 +25,10 @@ public class RequestGetBookDetail extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        getMyGroup(parent);
+        getBookDetail(parent);
     }
 
-    private void getMyGroup(CloudManager parent) {
+    private void getBookDetail(CloudManager parent) {
         try {
             Response<CloudMetadata> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
                     .loadBook(idString));

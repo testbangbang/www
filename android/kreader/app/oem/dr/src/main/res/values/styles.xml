@@ -447,6 +447,7 @@
         <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
         <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="windowNoTitle">true</item>
     </style>
 
     <style name="Animations" />

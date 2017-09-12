@@ -33,7 +33,6 @@ public class MainPresenter {
     }
 
     public void loadData(Context context) {
-        MainTabMenuConfig.loadMenuInfo(context);
         RequestLoadLocalDB req = new RequestLoadLocalDB();
         mainData.loadLocalDB(req, new BaseCallback() {
             @Override
@@ -48,7 +47,6 @@ public class MainPresenter {
     }
 
     public void authToken() {
-        loadTabMenu(DRPreferenceManager.getUserType(DRApplication.getInstance(), ""));
         AuthTokenAction authTokenAction = new AuthTokenAction();
         mainData.authToken(authTokenAction, new BaseCallback() {
             @Override
