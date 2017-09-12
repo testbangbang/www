@@ -1,9 +1,7 @@
 package com.onyx.android.sdk.scribble;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -26,7 +24,6 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
@@ -475,10 +472,15 @@ public class NoteViewHelper {
         }
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData(boolean shortcut) {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 if (callback != null) {
                     callback.onBeginRawData();
                 }
+            }
+
+            @Override
+            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
+
             }
 
             @Override
@@ -487,8 +489,13 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onBeginErasing(boolean shortcut) {
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 ensureErasing();
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+
             }
 
             @Override
@@ -496,11 +503,11 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion) {
+            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion) {
+            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
             }
         });
         startDrawing();

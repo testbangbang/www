@@ -2,8 +2,6 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -30,7 +28,6 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean shortcutErasing = false;
 
     private volatile TouchPointList touchPointList;
-    private Handler handler = new Handler(Looper.getMainLooper());
 
     RawInputProcessor processor = new RawInputProcessor();
 
@@ -42,106 +39,73 @@ public class RawEventProcessor extends NoteEventProcessorBase {
 
         processor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
 
-            private boolean begin = false;
-            private TouchPoint lastPoint;
-
             @Override
-            public void onBeginRawData(boolean shortcut) {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 Debug.d(getClass(), "onBeginRawData: " + shortcut);
                 shortcutErasing = false;
                 shortcutDrawing = shortcut;
-                lastPoint = null;
-                begin = true;
+                drawingPressReceived(point);
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion) {
+            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
                 Debug.d(getClass(), "onEndRawData: " + releaseOutLimitRegion);
                 shortcutDrawing = false;
                 if (!isReportData()) {
                     return;
                 }
-                drawingReleaseReceived(lastPoint);
+                drawingReleaseReceived(point);
             }
 
             @Override
-            public void onRawTouchPointListReceived(Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
                 if (!isReportData()) {
                     return;
                 }
 
-                if (pointList.getPoints().size() <= 0) {
-                    return;
-                }
-                if (begin) {
-                    TouchPoint point = pointList.getPoints().remove(0);
-                    drawingPressReceived(point);
-                    begin = false;
-                }
-
-                if (lastPoint != null) {
-                    drawingMoveReceived(lastPoint);
-                    lastPoint = null;
-                }
-                for (int i = 0; i < pointList.getPoints().size() - 1; i++) {
-                    drawingMoveReceived(pointList.get(i));
-                }
-
-                if (pointList.size() > 0) {
-                    lastPoint = pointList.get(pointList.getPoints().size() - 1);
-                }
+                drawingMoveReceived(point);
             }
 
             @Override
-            public void onBeginErasing(boolean shortcut) {
+            public void onRawTouchPointListReceived(Shape shape, TouchPointList pointList) {
+            }
+
+            @Override
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 Debug.d(getClass(), "onBeginErasing: " + shortcut);
                 shortcutDrawing = false;
                 shortcutErasing = shortcut;
-                lastPoint = null;
-                begin = true;
+                erasingPressReceived(point);
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion) {
+            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
                 Debug.d(getClass(), "onEndErasing: " + releaseOutLimitRegion);
                 shortcutErasing = false;
                 if (!isReportData()) {
                     return;
                 }
-                erasingReleaseReceived(lastPoint);
+                erasingReleaseReceived(point);
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+                if (!isReportData()) {
+                    return;
+                }
+
+                erasingMoveReceived(point);
             }
 
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
-                if (!isReportData()) {
-                    return;
-                }
-                if (pointList.getPoints().size() <= 0) {
-                    return;
-                }
-                if (begin) {
-                    TouchPoint point = pointList.getPoints().remove(0);
-                    erasingPressReceived(point);
-                    begin = false;
-                }
-
-                if (lastPoint != null) {
-                    erasingMoveReceived(lastPoint);
-                    lastPoint = null;
-                }
-                for (int i = 0; i < pointList.getPoints().size() - 1; i++) {
-                    erasingMoveReceived(pointList.get(i));
-                }
-
-                lastPoint = pointList.get(pointList.getPoints().size() - 1);
             }
-        });
+        }, false);
     }
 
     public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
         processor.setHostView(view);
         processor.setLimitRect(new RectF(rect));
-        processor.setMoveFeedback(true);
     }
 
     public void start() {

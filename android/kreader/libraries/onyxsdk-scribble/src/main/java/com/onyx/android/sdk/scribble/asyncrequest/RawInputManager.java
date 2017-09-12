@@ -10,6 +10,7 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
@@ -38,8 +39,13 @@ public class RawInputManager {
         }
         getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
             @Override
-            public void onBeginRawData(boolean shortcut) {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 eventBus.post(new BeginRawDataEvent());
+            }
+
+            @Override
+            public void onRawTouchPointMoveReceived(Shape shape, TouchPoint point) {
+
             }
 
             @Override
@@ -48,8 +54,13 @@ public class RawInputManager {
             }
 
             @Override
-            public void onBeginErasing(boolean shortcut) {
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 eventBus.post(new BeginErasingEvent());
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+
             }
 
             @Override
@@ -58,11 +69,11 @@ public class RawInputManager {
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion) {
+            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion) {
+            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
                 eventBus.post(new RawErasePointsReceivedEvent(erasePoints));
             }
         });
