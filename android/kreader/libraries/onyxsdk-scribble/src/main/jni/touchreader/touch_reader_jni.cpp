@@ -1,9 +1,9 @@
-#include "com_onyx_android_sdk_scribble_touch_RawInputProcessor.h"
+#include "com_onyx_android_sdk_scribble_touch_RawInputReader.h"
 #include "JNIUtils.h"
 #include "touch_reader.h"
 #include "log.h"
 
-static const char * rawTouchClassName = "com/onyx/android/sdk/scribble/touch/RawInputProcessor";
+static const char * rawTouchClassName = "com/onyx/android/sdk/scribble/touch/RawInputReader";
 
 TouchReader touchReader;
 static jobject readerObject;
@@ -23,7 +23,7 @@ static void onTouchPointReceived(void * userData, int px, int py, int pressure, 
     reportTouchPoint(readerEnv, readerObject, px, py, pressure, erasing, shortcutDrawing, shortcutErasing, state, ts);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawReader
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeRawReader
   (JNIEnv *env, jobject thiz) {
     readerObject = thiz;
     std::string path = touchReader.findDevice();
@@ -33,17 +33,17 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcesso
     touchReader.readTouchEventLoop(env, callback);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeRawClose
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeRawClose
   (JNIEnv *env, jobject) {
     touchReader.closeDevice();
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetStrokeWidth
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeSetStrokeWidth
   (JNIEnv *env, jobject, jfloat strokeWidth) {
     touchReader.setStrokeWidth(strokeWidth);
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputProcessor_nativeSetLimitRegion
+JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeSetLimitRegion
   (JNIEnv *env, jobject, jfloatArray limitRegion) {
     int len = env->GetArrayLength(limitRegion);
     jfloat *buf = (jfloat *)calloc(len, sizeof(jfloat));

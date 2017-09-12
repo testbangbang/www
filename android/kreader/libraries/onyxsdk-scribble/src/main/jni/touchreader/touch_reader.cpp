@@ -1,4 +1,4 @@
-#include "com_onyx_android_sdk_scribble_touch_RawInputProcessor.h"
+#include "com_onyx_android_sdk_scribble_touch_RawInputReader.h"
 #include "log.h"
 #include "JNIUtils.h"
 #include "touch_reader.h"
