@@ -18,34 +18,28 @@
             android:ellipsize="end"
             android:singleLine="true"
             android:id="@+id/name"
-            android:layout_weight="3"
+            android:layout_weight="2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/settings_title_text_size"/>
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_weight="2"
+        <TextView
+            android:textColor="@android:color/darker_gray"
+            android:id="@+id/time"
+            android:layout_weight="1.5"
             android:layout_width="0dp"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/backup_restore_list_item_padding"
+            android:textSize="@dimen/backup_restore_list_item_text_small_size"/>
 
-            <TextView
-                android:textColor="@android:color/darker_gray"
-                android:id="@+id/size"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/backup_restore_list_item_padding"
-                android:textSize="@dimen/backup_restore_list_item_text_small_size"/>
-
-            <TextView
-                android:textColor="@android:color/darker_gray"
-                android:id="@+id/time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/backup_restore_list_item_padding"
-                android:textSize="@dimen/backup_restore_list_item_text_small_size"/>
-        </LinearLayout>
-
+        <TextView
+            android:textColor="@android:color/darker_gray"
+            android:id="@+id/size"
+            android:layout_weight="0.5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/backup_restore_list_item_padding"
+            android:textSize="@dimen/backup_restore_list_item_text_small_size"/>
 
         <LinearLayout
             android:gravity="center"

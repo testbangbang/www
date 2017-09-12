@@ -55,6 +55,12 @@
 
             </RelativeLayout>
 
+            <View
+                android:id="@+id/divider"
+                android:background="@android:color/darker_gray"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"/>
+
             <FrameLayout
                 android:id="@android:id/tabcontent"
                 android:layout_width="match_parent"

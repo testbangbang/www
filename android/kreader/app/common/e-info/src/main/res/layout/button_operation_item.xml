@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.onyx.einfo.model.OperationItem" />
+    </data>
+
+    <Button
+        style="@style/func_button_style"
+        android:text="@{item.text}"
+        android:onClick="@{() ->item.itemClicked()}"
+        android:visibility="@{item.visibility}" />
+</layout>

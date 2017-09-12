@@ -10,9 +10,9 @@ import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -23,7 +23,7 @@ import org.greenrobot.eventbus.EventBus;
 public class RawInputManager {
     private static final String TAG = RawInputManager.class.getSimpleName();
 
-    private RawInputProcessor rawInputProcessor = null;
+    private RawInputReader rawInputReader = null;
     private boolean useRawInput = true;
     private TouchPointList erasePoints;
     private EventBus eventBus;
@@ -36,20 +36,30 @@ public class RawInputManager {
         if (!isUseRawInput()) {
             return;
         }
-        getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
+        getRawInputReader().setRawInputCallback(new RawInputReader.RawInputCallback() {
             @Override
-            public void onBeginRawData(boolean shortcut) {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 eventBus.post(new BeginRawDataEvent());
             }
 
             @Override
-            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
+
+            }
+
+            @Override
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
                 onNewTouchPointListReceived(pointList);
             }
 
             @Override
-            public void onBeginErasing(boolean shortcut) {
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 eventBus.post(new BeginErasingEvent());
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+
             }
 
             @Override
@@ -58,11 +68,11 @@ public class RawInputManager {
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion) {
+            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion) {
+            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
                 eventBus.post(new RawErasePointsReceivedEvent(erasePoints));
             }
         });
@@ -80,7 +90,7 @@ public class RawInputManager {
         if (!isUseRawInput()) {
             return;
         }
-        getRawInputProcessor().start();
+        getRawInputReader().start();
     }
 
     public void resumeRawDrawing() {
@@ -88,7 +98,7 @@ public class RawInputManager {
             return;
         }
 
-        getRawInputProcessor().resume();
+        getRawInputReader().resume();
     }
 
     public void pauseRawDrawing() {
@@ -96,14 +106,14 @@ public class RawInputManager {
             return;
         }
 
-        getRawInputProcessor().pause();
+        getRawInputReader().pause();
     }
 
     public void quitRawDrawing() {
         if (!isUseRawInput()) {
             return;
         }
-        getRawInputProcessor().quit();
+        getRawInputReader().quit();
     }
 
     public boolean isUseRawInput() {
@@ -116,31 +126,31 @@ public class RawInputManager {
     }
 
     public RawInputManager setHostView(final View view) {
-        getRawInputProcessor().setHostView(view);
+        getRawInputReader().setHostView(view);
         return this;
     }
 
     public RawInputManager setLimitRect(final View view) {
         Rect limitRect = new Rect();
         view.getLocalVisibleRect(limitRect);
-        getRawInputProcessor().setLimitRect(new RectF(limitRect));
+        getRawInputReader().setLimitRect(new RectF(limitRect));
         EpdController.setScreenHandWritingRegionLimit(view,
                 limitRect.left, limitRect.top, limitRect.right, limitRect.bottom);
         return this;
     }
 
     public RawInputManager setCustomLimitRect(final View view, Rect rect) {
-        getRawInputProcessor().setLimitRect(new RectF(rect.left, rect.top, rect.right, rect.bottom));
+        getRawInputReader().setLimitRect(new RectF(rect.left, rect.top, rect.right, rect.bottom));
         EpdController.setScreenHandWritingRegionLimit(view,
                 rect.left, rect.top, rect.right, rect.bottom);
         return this;
     }
 
-    private RawInputProcessor getRawInputProcessor() {
-        if (rawInputProcessor == null) {
-            rawInputProcessor = new RawInputProcessor();
+    private RawInputReader getRawInputReader() {
+        if (rawInputReader == null) {
+            rawInputReader = new RawInputReader();
         }
-        return rawInputProcessor;
+        return rawInputReader;
     }
 
 }

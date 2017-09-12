@@ -2,8 +2,6 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -11,7 +9,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
@@ -30,9 +28,8 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private volatile boolean shortcutErasing = false;
 
     private volatile TouchPointList touchPointList;
-    private Handler handler = new Handler(Looper.getMainLooper());
 
-    RawInputProcessor processor = new RawInputProcessor();
+    RawInputReader rawInputReader = new RawInputReader();
 
     private volatile float[] srcPoint = new float[2];
     private volatile float[] dstPoint = new float[4];
@@ -40,124 +37,91 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     public RawEventProcessor(final NoteManager p) {
         super(p);
 
-        processor.setRawInputCallback(new RawInputProcessor.RawInputCallback() {
-
-            private boolean begin = false;
-            private TouchPoint lastPoint;
+        rawInputReader.setRawInputCallback(new RawInputReader.RawInputCallback() {
 
             @Override
-            public void onBeginRawData(boolean shortcut) {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 Debug.d(getClass(), "onBeginRawData: " + shortcut);
                 shortcutErasing = false;
                 shortcutDrawing = shortcut;
-                lastPoint = null;
-                begin = true;
+                drawingPressReceived(point);
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion) {
+            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
                 Debug.d(getClass(), "onEndRawData: " + releaseOutLimitRegion);
                 shortcutDrawing = false;
                 if (!isReportData()) {
                     return;
                 }
-                drawingReleaseReceived(lastPoint);
+                drawingReleaseReceived(point);
             }
 
             @Override
-            public void onRawTouchPointListReceived(Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
                 if (!isReportData()) {
                     return;
                 }
 
-                if (pointList.getPoints().size() <= 0) {
-                    return;
-                }
-                if (begin) {
-                    TouchPoint point = pointList.getPoints().remove(0);
-                    drawingPressReceived(point);
-                    begin = false;
-                }
-
-                if (lastPoint != null) {
-                    drawingMoveReceived(lastPoint);
-                    lastPoint = null;
-                }
-                for (int i = 0; i < pointList.getPoints().size() - 1; i++) {
-                    drawingMoveReceived(pointList.get(i));
-                }
-
-                if (pointList.size() > 0) {
-                    lastPoint = pointList.get(pointList.getPoints().size() - 1);
-                }
+                drawingMoveReceived(point);
             }
 
             @Override
-            public void onBeginErasing(boolean shortcut) {
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
+            }
+
+            @Override
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 Debug.d(getClass(), "onBeginErasing: " + shortcut);
                 shortcutDrawing = false;
                 shortcutErasing = shortcut;
-                lastPoint = null;
-                begin = true;
+                erasingPressReceived(point);
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion) {
+            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
                 Debug.d(getClass(), "onEndErasing: " + releaseOutLimitRegion);
                 shortcutErasing = false;
                 if (!isReportData()) {
                     return;
                 }
-                erasingReleaseReceived(lastPoint);
+                erasingReleaseReceived(point);
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+                if (!isReportData()) {
+                    return;
+                }
+
+                erasingMoveReceived(point);
             }
 
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
-                if (!isReportData()) {
-                    return;
-                }
-                if (pointList.getPoints().size() <= 0) {
-                    return;
-                }
-                if (begin) {
-                    TouchPoint point = pointList.getPoints().remove(0);
-                    erasingPressReceived(point);
-                    begin = false;
-                }
-
-                if (lastPoint != null) {
-                    erasingMoveReceived(lastPoint);
-                    lastPoint = null;
-                }
-                for (int i = 0; i < pointList.getPoints().size() - 1; i++) {
-                    erasingMoveReceived(pointList.get(i));
-                }
-
-                lastPoint = pointList.get(pointList.getPoints().size() - 1);
             }
-        });
+        }, false);
     }
 
     public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
-        processor.setHostView(view);
-        processor.setLimitRect(new RectF(rect));
-        processor.setMoveFeedback(true);
+        rawInputReader.setHostView(view);
+        rawInputReader.setLimitRect(new RectF(rect));
     }
 
     public void start() {
-        processor.start();
+        rawInputReader.start();
     }
 
     public void resume() {
-        processor.resume();
+        rawInputReader.resume();
     }
 
     public void pause() {
-        processor.pause();
+        rawInputReader.pause();
     }
 
     public void quit() {
-        processor.quit();
+        rawInputReader.quit();
     }
 
     private boolean addToList(final TouchPoint touchPoint, boolean create) {
@@ -268,7 +232,7 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private void collectShapePoint(PageInfo page, TouchPoint touchPoint, boolean finished) {
         srcPoint[0] = touchPoint.x;
         srcPoint[1] = touchPoint.y;
-        EpdController.mapToEpd(processor.getHostView(), srcPoint, dstPoint);
+        EpdController.mapToEpd(rawInputReader.getHostView(), srcPoint, dstPoint);
         final TouchPoint screenTouch = new TouchPoint(dstPoint[0], dstPoint[1],
                 touchPoint.getPressure(), touchPoint.getSize(),
                 touchPoint.getTimestamp());

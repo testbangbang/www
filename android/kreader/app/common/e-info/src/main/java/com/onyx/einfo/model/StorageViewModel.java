@@ -2,18 +2,25 @@ package com.onyx.einfo.model;
 
 import android.databinding.BaseObservable;
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
+import android.util.SparseArray;
+import android.view.View;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.ViewType;
 import com.onyx.android.sdk.device.EnvironmentUtil;
+import com.onyx.android.sdk.ui.utils.SelectionMode;
+import com.onyx.einfo.events.OperationEvent;
 import com.onyx.einfo.events.ViewTypeEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,11 +36,13 @@ public class StorageViewModel extends BaseObservable {
     public final ObservableInt totalPage = new ObservableInt();
     public final ObservableField<String> currentFolderTitle = new ObservableField<>();
     public final ObservableField<ViewType> viewType = new ObservableField<>();
+    public final ObservableBoolean showOperationFunc = new ObservableBoolean();
+    public final SparseArray<OperationItem> operationItemArray = new SparseArray<>();
 
     private final EventBus eventBus;
 
     private Map<StorageItemViewModel, Boolean> mapSelected = new HashMap<>();
-    private boolean multiSelectionMode = false;
+    private int selectionMode = SelectionMode.NORMAL_MODE;
 
     public StorageViewModel(EventBus bus) {
         eventBus = bus;
@@ -112,6 +121,10 @@ public class StorageViewModel extends BaseObservable {
         getEventBus().post(ViewTypeEvent.create(type));
     }
 
+    public void onCopyClick() {
+        getEventBus().post(OperationEvent.create(OperationEvent.OPERATION_COPY));
+    }
+
     private EventBus getEventBus() {
         return eventBus;
     }
@@ -145,14 +158,15 @@ public class StorageViewModel extends BaseObservable {
     }
 
     public boolean isInMultiSelectionMode() {
-        return multiSelectionMode;
+        return selectionMode == SelectionMode.MULTISELECT_MODE;
     }
 
-    public void setMultiSelection(boolean beIn) {
-        multiSelectionMode = beIn;
-        if (!beIn) {
-            mapSelected.clear();
-        }
+    public void setSelectionMode(int mode) {
+        selectionMode = mode;
+    }
+
+    public int getSelectionMode() {
+        return selectionMode;
     }
 
     public Map<StorageItemViewModel, Boolean> getItemSelectedMap() {
@@ -177,5 +191,43 @@ public class StorageViewModel extends BaseObservable {
             name = defaultName;
         }
         currentFolderTitle.set(name);
+    }
+
+    public void toggleShowOperationFunc() {
+        showOperationFunc.set(!showOperationFunc.get());
+    }
+
+    public void setOperationItemArray(List<OperationItem> list) {
+        operationItemArray.clear();
+        for (int i = 0; i < list.size(); i++) {
+            operationItemArray.put(i, list.get(i));
+        }
+    }
+
+    public SparseArray<OperationItem> getOperationItemArray() {
+        return operationItemArray;
+    }
+
+    private void hideAllOperationItems() {
+        for (int i = 0; i < getOperationItemArray().size(); i++) {
+            getOperationItemArray().valueAt(i).setVisibility(View.GONE);
+        }
+    }
+
+    private void showAllOperationItems() {
+        for (int i = 0; i < getOperationItemArray().size(); i++) {
+            getOperationItemArray().valueAt(i).setVisibility(View.VISIBLE);
+        }
+    }
+
+    public void switchOperationPanel(boolean show, int... operations) {
+        if (show) {
+            hideAllOperationItems();
+        } else {
+            showAllOperationItems();
+        }
+        for (int operation : operations) {
+            getOperationItemArray().valueAt(operation).setVisibility(show ? View.VISIBLE : View.GONE);
+        }
     }
 }

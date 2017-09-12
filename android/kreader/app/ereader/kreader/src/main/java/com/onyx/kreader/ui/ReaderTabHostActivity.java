@@ -77,6 +77,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private RelativeLayout layoutMenu;
     private ImageView btnMenu;
     private ImageView btnSwitch;
+    private View divider;
     private String pathToContinueOpenAfterRotation;
 
     private boolean insideTabChanging = false;
@@ -211,6 +212,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
+        divider = findViewById(R.id.divider);
         btnSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -717,7 +719,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         if (!isShowingTabWidget()) {
             return tabHost.getHeight();
         }
-        return tabHost.getHeight() - tabHost.getTabWidget().getHeight();
+        return tabHost.getHeight() - tabHost.getTabWidget().getHeight() - divider.getHeight();
     }
 
     private void acquireStartupWakeLock() {
