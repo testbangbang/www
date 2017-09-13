@@ -24,6 +24,13 @@
     <string name="move">移动</string>
     <string name="go_to_page">页面跳转</string>
     <string name="current_page">当前页面</string>
+    <string name="sort">排序</string>
+    <string name="asc">升序</string>
+    <string name="desc">降序</string>
+    <string name="updated_at">最后更新时间</string>
+    <string name="title">标题</string>
+    <string name="created_at">创建时间</string>
+    <string name="type">类型</string>
 
 
 </resources>

@@ -11,14 +11,17 @@ import android.text.TextUtils;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLibraryLoadRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLibraryLoadRequest;
+import com.onyx.android.sdk.scribble.data.AscDescOrder;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.SortBy;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.edu.note.actions.manager.CreateLibraryAction;
 import com.onyx.edu.note.actions.manager.LoadNoteListAction;
 import com.onyx.edu.note.actions.manager.NoteLibraryRemoveAction;
+import com.onyx.edu.note.util.NotePreference;
 import com.onyx.edu.note.util.Utils;
 
 import java.util.List;
@@ -47,6 +50,15 @@ public class ManagerViewModel extends BaseObservable {
     public final ObservableField<String> currentFolderTitle = new ObservableField<>();
     private NoteManager mNoteManager;
 
+    public int getCurrentSortBy() {
+        return currentSortBy;
+    }
+
+    private @SortBy.SortByDef
+    int currentSortBy = SortBy.UPDATED_AT;
+    private @AscDescOrder.AscDescOrderDef
+    int ascOrder = AscDescOrder.DESC;
+
     void setNavigator(ManagerNavigator navigator) {
         this.mNavigator = navigator;
     }
@@ -54,6 +66,7 @@ public class ManagerViewModel extends BaseObservable {
     private ManagerNavigator mNavigator;
 
     public void start() {
+        loadSortByAndAsc();
         loadData(true, getCurrentNoteModelUniqueID());
     }
 
@@ -136,7 +149,7 @@ public class ManagerViewModel extends BaseObservable {
     void loadData(boolean forceUpdate, String id) {
         if (forceUpdate) {
             items.clear();
-            LoadNoteListAction action = new LoadNoteListAction(id);
+            LoadNoteListAction action = new LoadNoteListAction(id, currentSortBy, ascOrder);
             action.execute(mNoteManager, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -187,6 +200,18 @@ public class ManagerViewModel extends BaseObservable {
                 mNavigator.updateNoteRemoveStatus(e == null);
             }
         });
+    }
+
+    public void saveSortByAscArgs(@SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {
+        currentSortBy = sortBy;
+        this.ascOrder = ascOrder;
+        NotePreference.setIntValue(NotePreference.KEY_NOTE_SORT_BY, sortBy);
+        NotePreference.setIntValue(NotePreference.KEY_NOTE_ASC_ORDER, ascOrder);
+    }
+
+    private void loadSortByAndAsc() {
+        currentSortBy = SortBy.translate(NotePreference.getIntValue(mContext, NotePreference.KEY_NOTE_SORT_BY, SortBy.CREATED_AT));
+        ascOrder = AscDescOrder.translate(NotePreference.getIntValue(mContext, NotePreference.KEY_NOTE_ASC_ORDER, AscDescOrder.DESC));
     }
 
 }
