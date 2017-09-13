@@ -308,4 +308,5 @@
   <string name="dialog_tab_host_menu_open_side_note">Open note</string>
   <string name="dialog_tab_host_menu_switch_side">Switch side</string>
   <string name="dialog_tab_host_menu_quit_side_reading">Quit side reading</string>
+    <string name="dialog_tab_host_menu_open_doc">Open doc</string>
 </resources>
