@@ -15,6 +15,7 @@ import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.data.DictTypeConfig;
 import com.onyx.android.dr.event.ChineseQueryEvent;
 import com.onyx.android.dr.event.EnglishQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
@@ -106,11 +107,11 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     @Override
     protected void initData() {
+        queryDictTypeAdapter = new QueryDictTypeAdapter();
         dictPresenter = new DictFunctionPresenter(this);
-        dictPresenter.loadData(this);
-        dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
+        dictTypeRecyclerView.setAdapter(queryDictTypeAdapter);
+        dictPresenter.getDictMapData();
         initTitleData();
-        loadDictData();
         initEvent();
     }
 
@@ -121,23 +122,59 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         iconFour.setImageResource(R.drawable.ic_reader_dic_setting);
     }
 
-    private void loadDictData() {
-        queryDictTypeAdapter = new QueryDictTypeAdapter();
-        englishDictName = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
-        chineseDictName = Utils.getDictName(Constants.CHINESE_DICTIONARY);
-        japaneseDictName = Utils.getDictName(Constants.OTHER_DICTIONARY);
-        queryDictTypeAdapter.setMenuDatas(englishDictName);
-        dictTypeRecyclerView.setAdapter(queryDictTypeAdapter);
-    }
-
     @Override
     protected void onStart() {
         super.onStart();
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        List<DictTypeBean> dictLanguageData = DictTypeConfig.dictLanguageData;
+        if (dictLanguageData == null || dictLanguageData.size() <= 0) {
+            dictPresenter.loadData(this);
+            dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
+        } else {
+            intContainerVisible(dictLanguageData);
+            languageQueryTypeAdapter.setMenuDatas(dictLanguageData);
+            languageQueryTypeAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     public void setDictTypeData(List<DictTypeBean> dictData) {
+        if (dictData == null || dictData.size() <= 0) {
+            return;
+        }
+        intContainerVisible(dictData);
         languageQueryTypeAdapter.setMenuDatas(dictData);
+        languageQueryTypeAdapter.notifyDataSetChanged();
+    }
+
+    public void intContainerVisible(List<DictTypeBean> dictLanguageData) {
+        int type = dictLanguageData.get(0).getType();
+        englishDictName = Utils.getEnglishDictData();
+        chineseDictName = Utils.getChineseDictData();
+        japaneseDictName = Utils.getMinorityDictData();
+        if (type == Constants.ENGLISH_TYPE) {
+            englishLinearLayout.setVisibility(View.VISIBLE);
+            chineseLinearLayout.setVisibility(View.GONE);
+            japaneseLinearLayout.setVisibility(View.GONE);
+            queryDictTypeAdapter.setMenuDatas(englishDictName);
+            queryDictTypeAdapter.notifyDataSetChanged();
+        } else if (type == Constants.CHINESE_TYPE) {
+            chineseLinearLayout.setVisibility(View.VISIBLE);
+            englishLinearLayout.setVisibility(View.GONE);
+            japaneseLinearLayout.setVisibility(View.GONE);
+            queryDictTypeAdapter.setMenuDatas(chineseDictName);
+            queryDictTypeAdapter.notifyDataSetChanged();
+        } else if (type == Constants.OTHER_TYPE) {
+            japaneseLinearLayout.setVisibility(View.VISIBLE);
+            englishLinearLayout.setVisibility(View.GONE);
+            chineseLinearLayout.setVisibility(View.GONE);
+            queryDictTypeAdapter.setMenuDatas(japaneseDictName);
+            queryDictTypeAdapter.notifyDataSetChanged();
+        }
     }
 
     public void initEvent() {
@@ -219,6 +256,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
                 startDictResultShowActivity(spellQuery);
                 break;
             case R.id.title_bar_right_icon_four:
+                ActivityManager.startDictSettingActivity(this, Constants.DICT_QUERY);
                 break;
         }
     }

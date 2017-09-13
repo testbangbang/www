@@ -197,9 +197,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     private void loadDictionary() {
         pathList = new ArrayList<>();
+        pathList = Utils.getDictPathListByMap(dictType);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
         dictionaryManager.newProviderMap.clear();
-        pathList = Utils.getPathList(dictType);
         DictPreference.setIntValue(this, Constants.DICTTYPE, dictType);
     }
 
@@ -274,7 +274,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
                 if (!StringUtils.isNullOrEmpty(copyText)) {
                     if (title.equals(getString(R.string.new_word_query))) {
                         EventBus.getDefault().post(new NewWordQueryEvent());
-                    } else if(title.equals(getString(R.string.good_sentence_excerpt))) {
+                    } else if (title.equals(getString(R.string.good_sentence_excerpt))) {
                         insertGoodSentence();
                     }
                 } else {
@@ -359,6 +359,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
+                ActivityManager.startDictQueryActivity(this);
                 break;
             case R.id.activity_dict_iv_voice_one:
                 onVoiceOneClick();
@@ -558,6 +559,12 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             default:
                 break;
         }
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        ActivityManager.startDictQueryActivity(this);
+        return super.dispatchKeyEvent(event);
     }
 
     @Override

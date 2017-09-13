@@ -10,6 +10,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -19,7 +20,7 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-6-28.
  */
 public class QueryDictTypeAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
-    private List<DictTypeBean> dictDatas;
+    private List<DictTypeBean> dictDatas = new ArrayList<>();
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
     public int selectedPosition = 0;
 

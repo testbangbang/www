@@ -58,4 +58,5 @@
     <integer name="shopping_cart_col">1</integer>
     <integer name="search_result_row">5</integer>
     <integer name="search_result_col">1</integer>
+    <integer name="select_dict_row">6</integer>
 </resources>

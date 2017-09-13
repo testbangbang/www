@@ -9,6 +9,8 @@
     <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
     <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
     <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
+    <string name="dict_select_dialog_height" format="float" type="dimen">0.5</string>
+    <string name="dict_select_dialog_width" format="float" type="dimen">0.6</string>
     <string name="wheel_view_paint_color">#83cde6</string>
     <string name="wheel_view_itemview_color_one">#0288ce</string>
     <string name="wheel_view_itemview_color_two">#bbbbbb</string>

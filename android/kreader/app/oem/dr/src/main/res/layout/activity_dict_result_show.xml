@@ -20,7 +20,7 @@
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/activity_dict_result_type"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dict_result_dict_type_height" />
+            android:layout_height="wrap_content" />
 
     </LinearLayout>
 
