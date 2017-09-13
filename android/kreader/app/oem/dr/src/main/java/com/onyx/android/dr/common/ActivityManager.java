@@ -15,6 +15,7 @@ import com.onyx.android.dr.activity.BookDetailActivity;
 import com.onyx.android.dr.activity.CreateGroupActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
+import com.onyx.android.dr.activity.DictSettingActivity;
 import com.onyx.android.dr.activity.EBookStoreActivity;
 import com.onyx.android.dr.activity.ExitGroupActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
@@ -247,6 +248,14 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, GroupMemberManageActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startDictSettingActivity(Context context, int jumpSource) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.JUMP_SOURCE, jumpSource);
+        intent.setClass(context, DictSettingActivity.class);
         context.startActivity(intent);
     }
 

@@ -29,8 +29,11 @@ public class DictFunctionPresenter {
     }
 
     public void loadData(Context context) {
-        functionConfig.loadDictInfo(context);
         dictTypeConfig.loadDictInfo(context);
+    }
+
+    public void getDictMapData() {
+        dictTypeConfig.loadDictMap();
     }
 
     public void loadDictType(int userType) {

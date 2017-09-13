@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="@dimen/item_select_dict_padding">
+
+    <TextView
+        android:id="@+id/select_dict_item_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/select_dict_item_name_margin_left"
+        android:text="@string/first_sequence"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/level_two_heading_font" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/select_dict_item_check_margin_right">
+
+        <CheckBox
+            android:id="@+id/select_dict_item_check"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:src="@color/white" />
+    </LinearLayout>
+</RelativeLayout>
