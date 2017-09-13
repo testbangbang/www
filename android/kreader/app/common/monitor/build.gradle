@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 
+apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
@@ -23,6 +25,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
