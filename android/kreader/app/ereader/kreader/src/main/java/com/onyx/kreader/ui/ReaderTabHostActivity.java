@@ -1239,6 +1239,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     }
 
                     @Override
+                    public void onOpenDoc(String path) {
+                        ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
+                        if (tab != null) {
+                            reopenReaderTab(tab);
+                            return;
+                        }
+                        openDocWithTab(getCurrentTabInHost(), path);
+                    }
+
+                    @Override
                     public void onSideSwitch() {
                         switchSideReadingTab();
                     }
