@@ -2,7 +2,6 @@ package com.onyx.android.sdk.scribble.asyncrequest.shape;
 
 import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
@@ -15,11 +14,6 @@ import com.onyx.android.sdk.utils.MathUtils;
 
 public class ChangeSelectedShapeRotationRequest extends AsyncBaseNoteRequest {
     private static final String TAG = ChangeSelectedShapeRotationRequest.class.getSimpleName();
-
-    public float getTargetRotationAngle() {
-        Log.e(TAG, "getTargetRotationAngle: "+targetRotationAngle);
-        return targetRotationAngle;
-    }
 
     private volatile float targetRotationAngle = Float.MIN_VALUE;
     private volatile TouchPoint touchPoint = null;
@@ -49,13 +43,9 @@ public class ChangeSelectedShapeRotationRequest extends AsyncBaseNoteRequest {
         float centerY = selectedRect.centerY();
         PointF extendedPoint = helper.getNoteDocument().getCurrentPage(
                 getContext()).getRotateExtendPoint();
-        Log.d(TAG, "selectedRect:" + selectedRect);
-        Log.d(TAG, "extendedPoint:" + extendedPoint);
         if ((Float.compare(targetRotationAngle, Float.MIN_VALUE) == 0 && touchPoint != null)) {
             targetRotationAngle = MathUtils.calculateAngle(new PointF(centerX, centerY), new PointF(extendedPoint.x, extendedPoint.y), new PointF(touchPoint.x, touchPoint.y));
         }
-        Log.d(TAG, "targetRotationAngle:" + targetRotationAngle);
-//        targetRotationAngle = 45;
         helper.getNoteDocument().getCurrentPage(getContext()).
                 setRotationAngleToSelectShapeList(targetRotationAngle, new PointF(centerX, centerY), isAddToHistory);
         renderCurrentPageInBitmap(helper);
