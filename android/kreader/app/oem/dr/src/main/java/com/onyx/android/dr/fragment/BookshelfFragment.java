@@ -172,7 +172,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
 
     private void loadBookshelf(String language) {
         if (titleBarTitle != null) {
-            titleBarTitle.setText(String.format(getString(R.string.bookshelf), language));
+            titleBarTitle.setText(String.format(getString(R.string.bookshelf_format), language));
             bookshelfPresenter.getBookshelf(language, getDataHolder());
         }
     }
@@ -221,7 +221,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
                 back();
                 break;
             case R.id.bookshelf_book_search:
-                search(Constants.NAME_SEARCH);
+                search();
                 break;
             case R.id.bookshelf_type_toggle:
                 toggleBookshelfMode();
@@ -241,8 +241,8 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         DRPreferenceManager.saveBookshelfType(DRApplication.getInstance(), mode);
     }
 
-    private void search(String type) {
-        ActivityManager.startSearchBookActivity(getActivity(), type);
+    private void search() {
+        ActivityManager.startSearchBookActivity(getActivity());
     }
 
     @Override

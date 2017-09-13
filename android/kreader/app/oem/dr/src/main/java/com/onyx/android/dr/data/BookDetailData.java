@@ -1,6 +1,7 @@
 package com.onyx.android.dr.data;
 
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.request.cloud.RequestAddProduct;
 import com.onyx.android.dr.request.cloud.RequestCreateOrders;
 import com.onyx.android.dr.request.cloud.RequestGetBookDetail;
 import com.onyx.android.dr.request.cloud.RequestPayForOrder;
@@ -19,7 +20,7 @@ public class BookDetailData {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 
-    public void pay(RequestPayForOrder req, BaseCallback baseCallback) {
+    public void addToCart(RequestAddProduct req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 }

@@ -3,6 +3,7 @@ package com.onyx.android.dr.presenter;
 import com.onyx.android.dr.data.SearchBookData;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.SearchBookView;
+import com.onyx.android.dr.request.cloud.RequestSearchProduct;
 import com.onyx.android.dr.request.local.RequestSearchHistoryDelete;
 import com.onyx.android.dr.request.local.RequestSearchHistoryInsert;
 import com.onyx.android.dr.request.local.RequestSearchHistoryQuery;
@@ -13,7 +14,8 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Created by hehai on 17-8-15.
@@ -23,13 +25,13 @@ public class SearchBookPresenter {
     private SearchBookView searchBookView;
     private SearchBookData searchBookData;
 
-    public SearchBookPresenter(SearchBookView searchBookView, String type) {
+    public SearchBookPresenter(SearchBookView searchBookView) {
         this.searchBookView = searchBookView;
-        this.searchBookData = new SearchBookData(type);
+        this.searchBookData = new SearchBookData();
     }
 
-    public void getHistory(String type) {
-        final RequestSearchHistoryQuery req = new RequestSearchHistoryQuery(type);
+    public void getHistory() {
+        final RequestSearchHistoryQuery req = new RequestSearchHistoryQuery();
         searchBookData.getHistory(req, new BaseCallback() {
 
             @Override
@@ -41,26 +43,46 @@ public class SearchBookPresenter {
     }
 
     public void searchBook(LibraryDataHolder holder, String text, final boolean showResult) {
-        QueryArgs queryArgs = holder.getCloudViewInfo().libraryQuery();
+        QueryArgs queryArgs = new QueryArgs();
         queryArgs.query = text;
         queryArgs.filter = BookFilter.SEARCH;
         queryArgs.fetchPolicy = FetchPolicy.DB_ONLY;
-        queryArgs.conditionGroup = ConditionGroup.clause().and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
+        queryArgs = holder.getCloudViewInfo().generateQueryArgs(queryArgs);
+        queryArgs.conditionGroup.and(CloudMetadata_Table.nativeAbsolutePath.isNotNull());
+        final CountDownLatch countDownLatch = new CountDownLatch(2);
         final CloudContentListRequest req = new CloudContentListRequest(queryArgs);
-        searchBookData.searchBook(text, req, new BaseCallback() {
+        searchBookData.searchLocalBook(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (showResult) {
-                    searchBookView.setResult(req.getProductResult());
-                } else {
-                    searchBookView.setHint(searchBookData.getHints());
+                countDownLatch.countDown();
+                if (countDownLatch.getCount() == 0) {
+                    setResult(showResult);
+                }
+            }
+        });
+
+        final RequestSearchProduct reqCloud = new RequestSearchProduct(text);
+        searchBookData.searchCloudBook(reqCloud, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                countDownLatch.countDown();
+                if (countDownLatch.getCount() == 0) {
+                    setResult(showResult);
                 }
             }
         });
     }
 
-    public void insertHistory(String text, String type) {
-        RequestSearchHistoryInsert req = new RequestSearchHistoryInsert(text, type);
+    private void setResult(boolean showResult) {
+        if (showResult) {
+            searchBookView.setResult(searchBookData.getResult());
+        } else {
+            searchBookView.setHint(searchBookData.getHints());
+        }
+    }
+
+    public void insertHistory(String text) {
+        RequestSearchHistoryInsert req = new RequestSearchHistoryInsert(text);
         searchBookData.insertHistory(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -69,12 +91,12 @@ public class SearchBookPresenter {
         });
     }
 
-    public void clearHistory(final String type) {
-        RequestSearchHistoryDelete req = new RequestSearchHistoryDelete(type);
+    public void clearHistory() {
+        RequestSearchHistoryDelete req = new RequestSearchHistoryDelete();
         searchBookData.clearHistory(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                getHistory(type);
+                getHistory();
             }
         });
     }

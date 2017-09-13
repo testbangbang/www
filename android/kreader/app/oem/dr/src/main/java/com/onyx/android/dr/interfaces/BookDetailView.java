@@ -12,4 +12,6 @@ public interface BookDetailView {
     void setBookDetail(CloudMetadata metadata);
 
     void setOrderId(String id);
+
+    void setCartCount(int count);
 }

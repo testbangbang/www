@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.dict.DictDatasInit;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
 import com.raizlabs.android.dbflow.config.DRGeneratedDatabaseHolder;
@@ -35,6 +36,7 @@ public class DRApplication extends MultiDexApplication {
     private static DRApplication sInstance;
     private static CloudStore cloudStore;
     private static LibraryDataHolder libraryDataHolder;
+    private int cartCount;
     private DictionaryManager dictionaryManager;
     private int apkDownloadReference;
 
@@ -61,6 +63,7 @@ public class DRApplication extends MultiDexApplication {
             initFrescoLoader();
             initDatabases(this, databaseHolderList());
             SingletonSharedPreference.init(this);
+            turnOffLed();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -147,5 +150,17 @@ public class DRApplication extends MultiDexApplication {
 
     public static DataManager getDataManager() {
         return getLibraryDataHolder().getDataManager();
+    }
+
+    public int getCartCount() {
+        return cartCount;
+    }
+
+    public void setCartCount(int cartCount) {
+        this.cartCount = cartCount;
+    }
+
+    private void turnOffLed() {
+        Device.currentDevice.led(this, false);
     }
 }

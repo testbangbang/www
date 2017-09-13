@@ -124,7 +124,7 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
     }
 
     private void search() {
-        ActivityManager.startSearchBookActivity(getActivity(), Constants.NAME_SEARCH);
+        ActivityManager.startSearchBookActivity(getActivity());
     }
 
     private void openCloudFile(final Metadata book) {

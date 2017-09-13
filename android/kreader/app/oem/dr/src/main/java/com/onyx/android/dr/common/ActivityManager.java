@@ -38,6 +38,7 @@ import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
 import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
+import com.onyx.android.dr.activity.ShoppingCartActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
 import com.onyx.android.dr.activity.WifiActivity;
@@ -328,9 +329,8 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startSearchBookActivity(Context context, String type) {
+    public static void startSearchBookActivity(Context context) {
         Intent intent = new Intent(context, SearchBookActivity.class);
-        intent.putExtra(Constants.SEARCH_TYPE, type);
         context.startActivity(intent);
     }
 
@@ -408,6 +408,11 @@ public class ActivityManager {
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startShoppingCartActivity(Context context) {
+        Intent intent = new Intent(context, ShoppingCartActivity.class);
         context.startActivity(intent);
     }
 }
