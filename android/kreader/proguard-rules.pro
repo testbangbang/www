@@ -43,6 +43,8 @@
 -dontwarn com.onyx.android.sdk.ui.dialog.DialogReaderMenu
 -dontwarn com.onyx.android.sdk.scribble.request.shape.PenStateChangeRequest
 
+-keepnames class com.onyx.android.sdk.scribble.touch.RawInputReader* { *; }
+
 -keepclasseswithmembernames class * {
     native <methods>;
 }
