@@ -199,8 +199,8 @@ public class ReaderPainter {
         }
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(context, hasBookmark(userDataInfo, viewInfo));
         final Point point = BookmarkIconFactory.bookmarkPosition(canvas.getWidth(), bitmap);
-        float left = AppCompatUtils.calculateEvenDigital(point.x);
-        float top = AppCompatUtils.calculateEvenDigital(point.y);
+        float left = AppCompatUtils.calculateEvenDigital(point.x - 10);
+        float top = AppCompatUtils.calculateEvenDigital(point.y + 10);
         canvas.drawBitmap(bitmap, left, top, null);
     }
 
