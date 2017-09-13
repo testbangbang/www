@@ -77,6 +77,9 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
     private ArrayList<Boolean> listCheck;
     private DividerItemDecoration dividerItemDecoration;
     private int jumpSource;
+    public static final int FIRST = 0;
+    public static final int SECOND = 1;
+    public static final int THIRD = 2;
 
     @Override
     protected Integer getLayoutId() {
@@ -139,12 +142,12 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
     }
 
     private void initSpinnerData() {
-        firstSpinner.setSelection(0);
-        secondSpinner.setSelection(1);
-        thirdSpinner.setSelection(2);
-        firstBean = languageData.get(0);
-        secondBean = languageData.get(1);
-        thirdBean = languageData.get(2);
+        firstSpinner.setSelection(FIRST);
+        secondSpinner.setSelection(SECOND);
+        thirdSpinner.setSelection(THIRD);
+        firstBean = languageData.get(FIRST);
+        secondBean = languageData.get(SECOND);
+        thirdBean = languageData.get(THIRD);
     }
 
     public void initEvent() {
