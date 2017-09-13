@@ -5,6 +5,19 @@
     android:orientation="horizontal"
     android:background="@drawable/reader_host_tab_indicator_selector">
 
+
+        <ImageView
+            android:id="@+id/image_button_menu"
+            android:layout_width="@dimen/activity_multiple_reader_tab_height"
+            android:layout_height="@dimen/activity_multiple_reader_tab_height"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:padding="5dp"
+            android:scaleType="fitCenter"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_settings"
+            android:visibility="gone"/>
+
         <ImageView
             android:id="@+id/image_button_close"
             android:layout_width="@dimen/activity_multiple_reader_tab_height"
@@ -16,13 +29,14 @@
             android:src="@drawable/reader_tab_close_image_selector" />
 
         <TextView
-            android:layout_marginLeft="5dp"
             android:id="@+id/text_view_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_toLeftOf="@id/image_button_close"
             android:layout_alignTop="@id/image_button_close"
             android:layout_alignBottom="@id/image_button_close"
+            android:layout_toRightOf="@id/image_button_menu"
+            android:layout_marginLeft="5dp"
             android:textSize="20sp"
             android:textColor="@drawable/tab_text_selector"
             android:ellipsize="middle"

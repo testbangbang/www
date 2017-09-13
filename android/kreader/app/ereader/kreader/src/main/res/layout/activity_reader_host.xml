@@ -40,18 +40,11 @@
                     android:src="@drawable/ic_unfold"
                     android:layout_toRightOf="@id/btn_menu"/>
 
-                <View
-                    android:id="@+id/view_placeholder"
-                    android:layout_width="@dimen/activity_multiple_reader_tab_height"
-                    android:layout_height="@dimen/activity_multiple_reader_tab_height"
-                    android:layout_alignParentRight="true" />
-
                 <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/btn_switch"
-                    android:layout_toLeftOf="@id/view_placeholder"/>
+                    android:layout_toRightOf="@id/btn_switch" />
 
             </RelativeLayout>
 
