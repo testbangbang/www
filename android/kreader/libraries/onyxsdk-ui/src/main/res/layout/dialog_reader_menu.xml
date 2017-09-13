@@ -54,7 +54,8 @@
             android:nextFocusLeft="@id/layout_back_area"
             android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
             android:scaleType="fitCenter"
-            android:src="@drawable/prebtn_bg"/>
+            android:src="@drawable/prebtn_bg"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/next_button"
@@ -65,7 +66,8 @@
             android:nextFocusLeft="@id/layout_back_area"
             android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
             android:scaleType="fitCenter"
-            android:src="@drawable/nextbtn_bg"/>
+            android:src="@drawable/nextbtn_bg"
+            android:visibility="gone"/>
 
         <ImageButton
             android:id="@+id/button_dict"
