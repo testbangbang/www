@@ -305,7 +305,7 @@
     <string name="download_link_invalid">下载链接为空或者有误</string>
     <string name="file_path_invalid">文件路径无效</string>
     <string name="download_fail">下载失败</string>
-    <string name="bookshelf">%s书架</string>
+    <string name="bookshelf_format">%s书架</string>
     <string name="add_to_shopping_cart">加入购物车</string>
     <string name="buy">购买</string>
     <string name="select_time">选择时间</string>
@@ -529,6 +529,12 @@
     <string name="query_record_activity_keyword">关键字</string>
     <string name="query_record_activity_source_dictionary">来源词典</string>
     <string name="query_record_activity_hint">小提示：查询记录可查最近800个词，超出部分自动清除</string>
+    <string name="shopping_total_price_format">共%1$d本,合计%2$.2f元</string>
+    <string name="select_all">全选</string>
+    <string name="shopping_cart_count_format">(%d)</string>
+    <string name="shopping_cart">购物车</string>
+    <string name="search_hint">(请输入书名或作者进行搜索)</string>
+    <string name="bookshelf">书架</string>
     <string name="lexical_language_sort">词典语种排序(备注:每个序列选择语言不能相同)</string>
     <string name="first_sequence">第一序列</string>
     <string name="select_dict">选择词典</string>

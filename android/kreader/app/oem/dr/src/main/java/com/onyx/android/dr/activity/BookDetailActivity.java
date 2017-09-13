@@ -57,6 +57,8 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
     LinearLayout menuBack;
     @Bind(R.id.title_bar_right_menu)
     TextView titleBarRightMenu;
+    @Bind(R.id.title_bar_right_shopping_cart)
+    TextView shoppingCart;
     @Bind(R.id.book_detail_book_cover)
     ImageView bookDetailBookCover;
     @Bind(R.id.book_detail_book_name)
@@ -104,6 +106,8 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
     @Override
     protected void initView() {
         titleBarTitle.setText(getString(R.string.bookstore));
+        shoppingCart.setVisibility(View.VISIBLE);
+        shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
     }
 
     @Override
@@ -132,7 +136,13 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         ActivityManager.startPayActivity(this, id);
     }
 
-    @OnClick({R.id.menu_back, R.id.title_bar_right_menu, R.id.book_detail_pay, R.id.book_detail_try_read, R.id.book_detail_add_to_cart, R.id.book_detail_read})
+    @Override
+    public void setCartCount(int count) {
+        DRApplication.getInstance().setCartCount(count);
+        shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
+    }
+
+    @OnClick({R.id.menu_back, R.id.title_bar_right_menu, R.id.book_detail_pay, R.id.book_detail_try_read, R.id.book_detail_add_to_cart, R.id.book_detail_read, R.id.title_bar_right_shopping_cart})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -147,9 +157,13 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
                 read();//// TODO: 17-9-8 try read
                 break;
             case R.id.book_detail_add_to_cart:
+                bookDetailPresenter.addToCart(metadata.getCloudId());
                 break;
             case R.id.book_detail_read:
                 read();
+                break;
+            case R.id.title_bar_right_shopping_cart:
+                ActivityManager.startShoppingCartActivity(BookDetailActivity.this);
                 break;
         }
     }

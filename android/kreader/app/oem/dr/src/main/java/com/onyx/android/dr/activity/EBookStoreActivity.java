@@ -19,6 +19,7 @@ import com.onyx.android.dr.adapter.EBookLanguageGroupAdapter;
 import com.onyx.android.dr.adapter.EBookListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.AddToCartEvent;
 import com.onyx.android.dr.event.BookDetailEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.event.PayForEvent;
@@ -60,12 +61,16 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     ImageView image;
     @Bind(R.id.title_bar_title)
     TextView titleBarTitle;
+    @Bind(R.id.title_bar_right_icon_one)
+    ImageView search;
     @Bind(R.id.menu_back)
     LinearLayout menuBack;
     @Bind(R.id.ebook_store_groups_recycler)
     SinglePageRecyclerView ebookStoreGroupsRecycler;
     @Bind(R.id.title_bar_right_menu)
     TextView titleBarRightMenu;
+    @Bind(R.id.title_bar_right_shopping_cart)
+    TextView shoppingCart;
     @Bind(R.id.ebook_store_tab)
     TabLayout ebookStoreTab;
     @Bind(R.id.prev)
@@ -95,6 +100,10 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Override
     protected void initView() {
         titleBarTitle.setText(getString(R.string.ebook_store));
+        shoppingCart.setVisibility(View.VISIBLE);
+        search.setVisibility(View.VISIBLE);
+        search.setImageResource(R.drawable.ic_search);
+        shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
         ebookStoreGroupsRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
@@ -138,13 +147,20 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     protected void initData() {
         eBookStorePresenter = new EBookStorePresenter(this);
         eBookStorePresenter.getRootLibraryList(getParentLibraryId());
+        eBookStorePresenter.getCartCount();
     }
 
-    @OnClick(R.id.menu_back)
+    @OnClick({R.id.menu_back, R.id.title_bar_right_shopping_cart, R.id.title_bar_right_icon_one})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
                 back();
+                break;
+            case R.id.title_bar_right_shopping_cart:
+                ActivityManager.startShoppingCartActivity(EBookStoreActivity.this);
+                break;
+            case R.id.title_bar_right_icon_one:
+                ActivityManager.startSearchBookActivity(EBookStoreActivity.this);
                 break;
         }
     }
@@ -175,6 +191,12 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Override
     public void setOrderId(String id) {
         ActivityManager.startPayActivity(this, id);
+    }
+
+    @Override
+    public void setCartCount(int count) {
+        DRApplication.getInstance().setCartCount(count);
+        shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
     }
 
     private void loadBooks(String language, LibraryDataHolder holder) {
@@ -375,5 +397,10 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPayForEvent(PayForEvent event) {
         eBookStorePresenter.createOrder(event.getBookId());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAddToCartEvent(AddToCartEvent event) {
+        eBookStorePresenter.addToCart(event.getBookId());
     }
 }

@@ -2,10 +2,12 @@ package com.onyx.android.dr.presenter;
 
 import com.onyx.android.dr.data.BookDetailData;
 import com.onyx.android.dr.interfaces.BookDetailView;
+import com.onyx.android.dr.request.cloud.RequestAddProduct;
 import com.onyx.android.dr.request.cloud.RequestCreateOrders;
 import com.onyx.android.dr.request.cloud.RequestGetBookDetail;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.ProductCart;
 import com.onyx.android.sdk.data.model.ProductOrder;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
@@ -32,7 +34,10 @@ public class BookDetailPresenter {
         bookDetailData.loadBookDetail(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                bookDetailView.setBookDetail(req.getCloudMetadata());
+                CloudMetadata cloudMetadata = req.getCloudMetadata();
+                if (cloudMetadata != null) {
+                    bookDetailView.setBookDetail(req.getCloudMetadata());
+                }
             }
         });
     }
@@ -48,6 +53,22 @@ public class BookDetailPresenter {
                 ProductOrder<CloudMetadata> order = req.getOrder();
                 if (order != null && StringUtils.isNotBlank(order._id)) {
                     bookDetailView.setOrderId(order._id);
+                }
+            }
+        });
+    }
+
+    public void addToCart(String cloudId) {
+        List<String> list = new ArrayList<>();
+        list.add(cloudId);
+        ProductRequestBean productRequestBean = new ProductRequestBean(list);
+        final RequestAddProduct req = new RequestAddProduct(productRequestBean);
+        bookDetailData.addToCart(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ProductCart<CloudMetadata> order = req.getCart();
+                if (order != null) {
+                    bookDetailView.setCartCount(order.totalCount);
                 }
             }
         });

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/title_bar" />
+
+    <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
+        android:id="@+id/shopping_cart_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <View style="@style/HorizontalLineStyle" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/shopping_cart_bottom_layout_padding">
+
+        <TextView
+            android:id="@+id/shopping_cart_select_all"
+            android:layout_width="@dimen/shopping_cart_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/shopping_cart_bottom_layout_margin_left"
+            android:background="@drawable/text_view_background"
+            android:gravity="center"
+            android:padding="@dimen/edit_text_margin_top"
+            android:text="@string/select_all"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_two_font_size" />
+
+        <TextView
+            android:id="@+id/shopping_cart_total_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:padding="@dimen/edit_text_margin_top"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_two_font_size" />
+
+        <TextView
+            android:id="@+id/shopping_cart_buy"
+            android:layout_width="@dimen/shopping_cart_button_width"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/shopping_cart_bottom_layout_margin_left"
+            android:background="@drawable/text_view_black_background"
+            android:gravity="center"
+            android:padding="@dimen/edit_text_margin_top"
+            android:text="@string/buy"
+            android:textColor="@color/white"
+            android:textSize="@dimen/level_two_font_size" />
+
+    </LinearLayout>
+</LinearLayout>
