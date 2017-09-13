@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -178,16 +177,12 @@ public class NoteManager {
 
     public void sync(boolean render,
                      boolean resume) {
-        Log.d(TAG, "sync resume:" + resume);
         syncWithCallback(render, resume, null);
     }
 
     public void syncWithCallback(boolean render,
                                  boolean resume,
                                  final BaseCallback callback) {
-        if (callback != null) {
-            Log.d(TAG, "sync with callback resume:" + resume);
-        }
         final List<Shape> stash = detachStash();
         if (inSpanLayoutMode()) {
             stash.clear();

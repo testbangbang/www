@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.scribble.shape;
 
+import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
@@ -85,6 +86,8 @@ public interface Shape {
     void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
 
     void onTranslate(final float dx, final float dy);
+
+    void onRotate(final float angle, PointF originPoint);
 
     void onScale(final float scale);
 

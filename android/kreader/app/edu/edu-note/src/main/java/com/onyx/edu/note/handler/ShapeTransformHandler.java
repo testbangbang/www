@@ -17,6 +17,7 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.ui.data.MenuClickEvent;
 import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
+import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeRotationAction;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
@@ -96,7 +97,7 @@ public class ShapeTransformHandler extends BaseHandler {
 
     private enum ControlMode {SelectMode, OperatingMode}
 
-    private enum TransformAction {Undefined, Zoom, Move}
+    private enum TransformAction {Undefined, Zoom, Move, Rotation}
 
     public ShapeTransformHandler(NoteManager noteManager) {
         super(noteManager);
@@ -279,7 +280,6 @@ public class ShapeTransformHandler extends BaseHandler {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSelectedShapeListRequest req = (GetSelectedShapeListRequest) request;
-                Log.e(TAG, "req.getSelectedShapeList().size():" + req.getSelectedShapeList().size());
                 if (req.getSelectedShapeList().size() > 0) {
                     currentControlMode = ControlMode.OperatingMode;
                     selectedRectF = req.getSelectedRectF();
@@ -348,6 +348,9 @@ public class ShapeTransformHandler extends BaseHandler {
                     case Zoom:
                         new ChangeSelectedShapeScaleAction(mShapeSelectPoint, false).execute(noteManager, null);
                         break;
+                    case Rotation:
+                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        break;
                 }
                 break;
         }
@@ -375,6 +378,9 @@ public class ShapeTransformHandler extends BaseHandler {
                         break;
                     case Zoom:
                         new ChangeSelectedShapeScaleAction(mShapeSelectPoint, true).execute(noteManager, null);
+                        break;
+                    case Rotation:
+                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint, true).execute(noteManager, null);
                         break;
                 }
                 selectedRectF = null;

@@ -232,6 +232,11 @@ public class BaseShape implements Shape {
         updatePoints();
     }
 
+    public void onRotate(final float angle,PointF pointF){
+        normalizedPoints.rotateAllPoints(angle,pointF);
+        updatePoints();
+    }
+
     @Override
     public void updatePoints() {
         if (normalizedPoints.size() > 0) {
