@@ -2,7 +2,7 @@
   "defaultFontSizeIndex" : 3,
   "defaultLineSpacingIndex" : 2,
   "ttsEnabled" : true,
-  "hasFrontLight" : false,
+  "hasFrontLight" : true,
   "disableNoteFunc" : false,
   "supportBrushPen": true,
   "supportMultipleTabs": true,
