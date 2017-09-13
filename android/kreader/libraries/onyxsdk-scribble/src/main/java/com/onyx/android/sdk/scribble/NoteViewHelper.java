@@ -1,9 +1,7 @@
 package com.onyx.android.sdk.scribble;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -26,13 +24,12 @@ import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.math.OnyxMatrix;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
@@ -45,7 +42,7 @@ import java.util.List;
  * View delegate, connect ShapeManager and view.
  * It receives commands from toolbar or view and convert the command to request and send to ShapeManager
  * to process. Broadcast notification to view through callback.
- * By using rawInputProcessor, it could
+ * By using rawInputReader, it could
  * * ignore touch points from certain input device.
  * * faster than onTouchEvent.
  */
@@ -93,7 +90,7 @@ public class NoteViewHelper {
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private RawInputProcessor rawInputProcessor = null;
+    private RawInputReader rawInputReader = null;
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
@@ -148,8 +145,8 @@ public class NoteViewHelper {
     }
 
     public void flushTouchPointList() {
-        TouchPointList touchPointList = getRawInputProcessor().detachTouchPointList();
-        boolean erasing = getRawInputProcessor().isErasing();
+        TouchPointList touchPointList = getRawInputReader().detachTouchPointList();
+        boolean erasing = getRawInputReader().isErasing();
         if (touchPointList == null || erasing) {
             return;
         }
@@ -257,7 +254,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        getRawInputProcessor().setHostView(surfaceView);
+        getRawInputReader().setHostView(surfaceView);
     }
 
     // consider view offset to screen.
@@ -266,7 +263,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        getRawInputProcessor().setHostView(surfaceView);
+        getRawInputReader().setHostView(surfaceView);
     }
 
     public void setCustomLimitRect(Rect targetRect){
@@ -274,15 +271,15 @@ public class NoteViewHelper {
         updateLimitRect();
     }
 
-    private void resetRawInputProcessor() {
-        rawInputProcessor = null;
+    private void resetRawInputReader() {
+        rawInputReader = null;
     }
 
     private void updateLimitRect() {
         softwareLimitRect = new Rect();
         surfaceView.getLocalVisibleRect(softwareLimitRect);
-        getRawInputProcessor().setHostView(surfaceView);
-        getRawInputProcessor().setLimitRect(new RectF(softwareLimitRect));
+        getRawInputReader().setHostView(surfaceView);
+        getRawInputReader().setLimitRect(new RectF(softwareLimitRect));
         EpdController.setScreenHandWritingRegionLimit(surfaceView);
     }
 
@@ -290,7 +287,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        getRawInputProcessor().start();
+        getRawInputReader().start();
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_START);
     }
 
@@ -300,7 +297,7 @@ public class NoteViewHelper {
             return;
         }
 
-        getRawInputProcessor().resume();
+        getRawInputReader().resume();
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_DRAWING);
     }
 
@@ -309,7 +306,7 @@ public class NoteViewHelper {
             return;
         }
 
-        getRawInputProcessor().pause();
+        getRawInputReader().pause();
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_PAUSE);
     }
 
@@ -325,8 +322,8 @@ public class NoteViewHelper {
             return;
         }
         callback = null;
-        getRawInputProcessor().quit();
-        resetRawInputProcessor();
+        getRawInputReader().quit();
+        resetRawInputReader();
     }
 
     public void setBackground(int bgType) {
@@ -410,11 +407,11 @@ public class NoteViewHelper {
         return requestManager;
     }
 
-    public final RawInputProcessor getRawInputProcessor() {
-        if (rawInputProcessor == null) {
-            rawInputProcessor = new RawInputProcessor();
+    public final RawInputReader getRawInputReader() {
+        if (rawInputReader == null) {
+            rawInputReader = new RawInputReader();
         }
-        return rawInputProcessor;
+        return rawInputReader;
     }
 
     public final NoteDocument getNoteDocument() {
@@ -473,22 +470,32 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
+        getRawInputReader().setRawInputCallback(new RawInputReader.RawInputCallback() {
             @Override
-            public void onBeginRawData(boolean shortcut) {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 if (callback != null) {
                     callback.onBeginRawData();
                 }
             }
 
             @Override
-            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
+
+            }
+
+            @Override
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 
             @Override
-            public void onBeginErasing(boolean shortcut) {
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 ensureErasing();
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+
             }
 
             @Override
@@ -496,11 +503,11 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion) {
+            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion) {
+            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
             }
         });
         startDrawing();

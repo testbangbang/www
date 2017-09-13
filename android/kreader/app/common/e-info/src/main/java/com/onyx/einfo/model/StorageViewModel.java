@@ -19,6 +19,7 @@ import com.onyx.einfo.events.ViewTypeEvent;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -153,7 +154,11 @@ public class StorageViewModel extends BaseObservable {
     public void toggleItemModelSelection(StorageItemViewModel itemModel) {
         boolean isSelected = !itemModel.isSelected.get();
         itemModel.setSelected(isSelected);
-        getItemSelectedMap().put(itemModel, isSelected);
+        if (!isSelected) {
+            getItemSelectedMap().remove(itemModel);
+        } else {
+            getItemSelectedMap().put(itemModel, true);
+        }
         itemModel.notifyChange();
     }
 
@@ -177,6 +182,14 @@ public class StorageViewModel extends BaseObservable {
         getItemSelectedMap().clear();
     }
 
+    public List<File> getItemSelectedFileList() {
+        List<File> fileList = new ArrayList<>();
+        for (StorageItemViewModel model : getItemSelectedMap().keySet()) {
+            fileList.add(model.getFileModel().getFile());
+        }
+        return fileList;
+    }
+
     public boolean isItemSelected(StorageItemViewModel key) {
         Boolean selected = getItemSelectedMap().get(key);
         if (selected == null) {
@@ -195,6 +208,10 @@ public class StorageViewModel extends BaseObservable {
 
     public void toggleShowOperationFunc() {
         showOperationFunc.set(!showOperationFunc.get());
+    }
+
+    public void setShowOperationFunc(boolean show) {
+        showOperationFunc.set(show);
     }
 
     public void setOperationItemArray(List<OperationItem> list) {

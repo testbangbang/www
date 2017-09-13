@@ -82,7 +82,7 @@
 
         <Button
             android:id="@+id/button_page_progress"
-            android:layout_width="@dimen/wrap_content"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/imagebtn_bg"
             android:focusable="true"

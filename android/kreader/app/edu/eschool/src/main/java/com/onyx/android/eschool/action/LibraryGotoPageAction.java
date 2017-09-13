@@ -49,6 +49,10 @@ public class LibraryGotoPageAction extends BaseAction<LibraryDataHolder> {
                 selectPage = newValue;
                 BaseCallback.invoke(baseCallback, null, null);
             }
+
+            @Override
+            public void dismiss() {
+            }
         });
         dlg.show(fragmentManager);
     }

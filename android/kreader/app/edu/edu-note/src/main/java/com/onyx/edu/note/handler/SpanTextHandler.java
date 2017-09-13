@@ -130,7 +130,6 @@ public class SpanTextHandler extends BaseHandler {
         functionBarMenuIDList.add(MenuId.SPACE);
         functionBarMenuIDList.add(MenuId.ENTER);
         functionBarMenuIDList.add(MenuId.KEYBOARD);
-        functionBarMenuIDList.add(MenuId.SHAPE_SELECT);
 
         functionBarMenuIDList.add(MenuId.ADD_PAGE);
         functionBarMenuIDList.add(MenuId.DELETE_PAGE);
@@ -175,7 +174,6 @@ public class SpanTextHandler extends BaseHandler {
                 nextPage();
                 break;
             case MenuId.PAGE:
-                Log.e(TAG, "onMenuClickEvent: PAGE" );
                 noteManager.post(new GoToTargetPageEvent());
                 break;
             case MenuId.PEN_STYLE:

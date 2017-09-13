@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
+import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_ENGLISH;
@@ -66,6 +67,7 @@ import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_BOLD;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_CUSTOM_BOLD;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_LIGHT;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_NORMAL;
+import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_BOLD;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_LIGHT;
 
 /**
@@ -92,6 +94,7 @@ public class ScribbleHandler extends BaseHandler {
     public void onActivate(HandlerArgs args) {
         super.onActivate(args);
         noteManager.registerEventBus(this);
+        noteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_PENCIL_SCRIBBLE);
         noteManager.sync(true, true);
     }
 
@@ -297,6 +300,7 @@ public class ScribbleHandler extends BaseHandler {
         resultList.add(THICKNESS_LIGHT);
         resultList.add(THICKNESS_NORMAL);
         resultList.add(THICKNESS_BOLD);
+        resultList.add(THICKNESS_ULTRA_BOLD);
         resultList.add(THICKNESS_CUSTOM_BOLD);
         return resultList;
     }
@@ -354,7 +358,6 @@ public class ScribbleHandler extends BaseHandler {
     }
 
     private void onSetShapeSelectModeChanged(){
-        Log.e(TAG, "onSetShapeSelectModeChanged: ");
         noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_SHAPE_TRANSFORM));
     }
 

@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import com.google.android.flexbox.FlexboxLayout;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.edu.note.ui.BaseMenuViewModel;
-import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.edu.note.ui.PageAdapter;
 import com.onyx.edu.note.ui.PageDataBindingAdapter;
 
@@ -30,6 +29,9 @@ public class OnyxDataBindingUtil {
 
     @BindingAdapter({"layoutColumns"})
     public static void setLayoutColumns(View view, int layoutColumns) {
+        if (layoutColumns == 0){
+            return;
+        }
         ViewGroup parent = (ViewGroup) view.getParent();
         if (parent instanceof FlexboxLayout) {
             FlexboxLayout.LayoutParams lp = (FlexboxLayout.LayoutParams)view.getLayoutParams();

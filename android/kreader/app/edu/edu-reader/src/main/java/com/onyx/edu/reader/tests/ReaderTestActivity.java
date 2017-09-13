@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelXorXfermode;
 import android.graphics.PointF;
@@ -23,7 +22,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
@@ -106,7 +105,7 @@ public class ReaderTestActivity extends Activity {
     }
 
    private void test() {
-        final RawInputProcessor input = new RawInputProcessor();
+        final RawInputReader input = new RawInputReader();
         input.start();
     }
 
