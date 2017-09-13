@@ -91,6 +91,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private boolean isDoubleLinked = false;
 
     private ReaderTabManager.ReaderTab tabBeforeSideReading;
+    private int orientationBeforeSideReading;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
@@ -313,6 +314,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         findViewById(R.id.btn_menu).setVisibility(View.GONE);
         findViewById(R.id.btn_switch).setVisibility(View.GONE);
 
+        orientationBeforeSideReading = getRequestedOrientation();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
     }
 
@@ -338,6 +340,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         openDocWithTab(tabBeforeSideReading, tabManager.getOpenedTabs().get(tabBeforeSideReading));
         tabBeforeSideReading = null;
+
+        setRequestedOrientation(orientationBeforeSideReading);
     }
 
     private void startSideNote(String path) {
