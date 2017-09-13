@@ -52,13 +52,13 @@
     <dimen name="level_three_heading_font">16sp</dimen>
     <dimen name="query_lang_show_margin">40dp</dimen>
     <dimen name="dict_query_bracket_margin_left">20dp</dimen>
-    <dimen name="dict_query_edittext_width">400dp</dimen>
+    <dimen name="dict_query_edittext_width">500dp</dimen>
     <dimen name="dict_query_search_margin_left">200dp</dimen>
     <dimen name="dict_query_search_margin_top">20dp</dimen>
     <dimen name="dict_query_search_padding">20dp</dimen>
     <dimen name="dict_query_function_height">60dp</dimen>
     <dimen name="dict_query_function_margin">10dp</dimen>
-    <dimen name="dict_type_query_width">160dp</dimen>
+    <dimen name="dict_type_query_width">100dp</dimen>
     <dimen name="dict_result_dict_type_height">120dp</dimen>
     <dimen name="dict_result_dict_type_margin">20dp</dimen>
     <dimen name="dict_result_sound_height">40dp</dimen>
@@ -68,7 +68,7 @@
     <dimen name="dict_result_previous_margin_left">20dp</dimen>
     <dimen name="dict_result_function_height">120dp</dimen>
     <dimen name="activity_query_search_margin_left">30dp</dimen>
-    <dimen name="item_dict_query_padding">20dp</dimen>
+    <dimen name="item_dict_query_padding">10dp</dimen>
     <dimen name="reader_page_indicator_padding">10dp</dimen>
     <dimen name="dialog_quick_preview_padding">10dp</dimen>
     <dimen name="dialog_quick_preview_list_item_shadow_height">4dp</dimen>
@@ -248,4 +248,17 @@
     <dimen name="fragment_content_padding_top">10dp</dimen>
     <dimen name="fragment_content_title_drawable_padding">5dp</dimen>
     <dimen name="login_settings_margin">80dp</dimen>
+    <dimen name="dict_setting_activity_hint_margin">40dp</dimen>
+    <dimen name="dict_setting_activity_first_sequence_margin_left">160dp</dimen>
+    <dimen name="dict_setting_activity_spinner">60dp</dimen>
+    <dimen name="dict_setting_activity_first_select_dict_padding">10dp</dimen>
+    <dimen name="dict_setting_activity_spinner_container_width">120dp</dimen>
+    <dimen name="dict_setting_activity_spinner_margin">8dp</dimen>
+    <dimen name="select_dict_item_name_margin_left">20dp</dimen>
+    <dimen name="select_dict_item_check_margin_right">20dp</dimen>
+    <dimen name="item_select_dict_padding">10dp</dimen>
+    <dimen name="dict_setting_activity_spinner_offset">45dp</dimen>
+    <dimen name="dict_setting_activity_margin_top">40dp</dimen>
+    <dimen name="dict_select_dialog_recycler_view_margin">10dp</dimen>
+    <dimen name="query_dict_activity_view_height">65dp</dimen>
 </resources>

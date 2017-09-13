@@ -201,6 +201,10 @@
             android:name=".activity.GroupMemberManageActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".activity.DictSettingActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity android:name=".reader.activity.ReadSummaryActivity" />
 
         <activity

@@ -291,6 +291,8 @@
     <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.38</string>
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
+    <string name="dict_select_dialog_height" format="float" type="dimen">0.5</string>
+    <string name="dict_select_dialog_width" format="float" type="dimen">0.6</string>
     <string name="speech_recording_activity_dialog_height" format="float" type="dimen">0.25</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
     <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
@@ -535,4 +537,12 @@
     <string name="query_record_activity_keyword">keyword</string>
     <string name="query_record_activity_source_dictionary">source dictionary</string>
     <string name="query_record_activity_hint">Tip: the query record can be checked in 800 words recently, the excess of automatic clearance.</string>
+    <string name="lexical_language_sort">Lexical language sort(note: each sequence selection language cannot be the same)</string>
+    <string name="first_sequence">first sequence</string>
+    <string name="select_dict">select dict</string>
+    <string name="dictionary_key_lists">dictionary key lists</string>
+    <string name="second_sequence">second_sequence</string>
+    <string name="third_sequence">third_sequence</string>
+    <string name="select_language_hint">each sequence selection language cannot be the same</string>
+    <string name="please_select_dict">please select dict</string>
 </resources>

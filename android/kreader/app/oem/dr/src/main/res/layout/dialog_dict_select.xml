@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:background="@drawable/rectangle_stroke"
+    android:fillViewport="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dict_select_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/dialog_title_padding"
+        android:text="@string/dialog_title"
+        android:textColor="@color/black"
+        android:textSize="@dimen/level_one_font_size" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/dict_select_dialog_title"
+        android:orientation="vertical">
+
+        <View style="@style/Horizontal_view" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/dict_select_dialog_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dict_select_dialog_recycler_view_margin" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <View style="@style/Horizontal_view" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/dialog_title_padding">
+
+            <Button
+                android:id="@+id/dict_select_dialog_confirm"
+                style="@style/dialog_button_style"
+                android:text="@string/dialog_button_confirm"
+                android:textSize="@dimen/level_one_font_size" />
+
+            <Button
+                android:id="@+id/dict_select_dialog_cancel"
+                style="@style/dialog_button_style"
+                android:text="@string/dialog_button_cancel"
+                android:textSize="@dimen/level_one_font_size" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

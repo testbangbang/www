@@ -6,12 +6,11 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/language_query_type_item_title"
+        android:id="@+id/dict_language_type_item_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/level_two_font_size"
-        android:padding="@dimen/item_dict_query_padding"
         android:gravity="center"
+        android:padding="@dimen/item_dict_query_padding"
         android:textColor="@color/tab_text_color_selector"
-        android:background="@drawable/rectangle_stroke"/>
+        android:textSize="@dimen/level_two_font_size" />
 </LinearLayout>
