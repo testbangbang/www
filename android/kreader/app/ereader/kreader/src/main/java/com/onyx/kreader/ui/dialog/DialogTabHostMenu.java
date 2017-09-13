@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -145,30 +146,21 @@ public class DialogTabHostMenu extends DialogBase {
     }
 
     private void init() {
-        PageRecyclerView recyclerView = (PageRecyclerView)findViewById(R.id.recycler_view_tab);
-        recyclerView.setAdapter(new PageRecyclerView.PageAdapter() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_tab);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             @Override
-            public int getRowCount() {
-                return 8;
+            public int getItemCount() {
+                return Math.min(8, files.size());
             }
 
             @Override
-            public int getColumnCount() {
-                return 1;
-            }
-
-            @Override
-            public int getDataCount() {
-                return files.size();
-            }
-
-            @Override
-            public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new TabViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.dialog_tab_host_menu_item_view, parent, false));
             }
 
             @Override
-            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 ((TabViewHolder)holder).bindView(files.get(position));
             }
 
