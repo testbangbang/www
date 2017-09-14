@@ -51,7 +51,9 @@ import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
+import com.onyx.kreader.note.actions.RenderStashShapesInBackgroundAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
+import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
@@ -509,14 +511,14 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
         prepareUpdateMode(event);
 
-//        if (event != null && !event.isWaitForShapeData()) {
-//            beforeDrawPage();
-//            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
-//            afterDrawPage();
-//        }
+        if (event != null && !event.isWaitForShapeData()) {
+            beforeDrawPage();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            afterDrawPage();
+        }
 
         if (event != null && event.isRenderShapeData()) {
-            renderPageWithShapeDataInBackground(true);
+            renderShapeDataInBackground(true);
         }
     }
 
@@ -554,20 +556,21 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
-        renderPageWithShapeDataInBackground(true);
-//        final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
-//        if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
-//            return;
-//        }
-//        if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
-//            return;
-//        }
-//        if (event.isUseFullUpdate()) {
-//            ReaderDeviceManager.applyWithGcUpdate(getSurfaceView());
-//        }
-//        if (event.isUseFullUpdate()) {
-//            ReaderDeviceManager.disableRegal();
-//        }
+        final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
+        if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
+            return;
+        }
+        if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
+            return;
+        }
+        if (event.isUseFullUpdate()) {
+            ReaderDeviceManager.applyWithGcUpdate(getSurfaceView());
+        }
+        beforeDrawPage();
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        if (event.isUseFullUpdate()) {
+            ReaderDeviceManager.disableRegal();
+        }
     }
 
     private boolean verifyReader() {
@@ -629,7 +632,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
-        renderPageWithShapeDataInBackground();
+        renderShapeDataInBackground();
     }
 
     @Subscribe
@@ -707,7 +710,9 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onDFBShapeFinished(final ShapeAddedEvent event) {
         if (new Date().getTime() - lastActivated < 5000) {
-            renderPageWithShapeDataInBackground();
+            renderShapeDataInBackground();
+        } else {
+            new RenderStashShapesInBackgroundAction(getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
         }
     }
 
@@ -1045,24 +1050,18 @@ public class ReaderActivity extends OnyxBaseActivity {
                     pageBitmap,
                     getReaderDataHolder().getReaderUserDataInfo(),
                     getReaderDataHolder().getReaderViewInfo(),
-                    getReaderDataHolder().getSelectionManager());
+                    getReaderDataHolder().getSelectionManager(),
+                    getReaderDataHolder().getNoteManager());
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
     }
 
-    private void renderPageWithShapeDataInBackground() {
-        renderPageWithShapeDataInBackground(false);
+    private void renderShapeDataInBackground() {
+        renderShapeDataInBackground(false);
     }
 
-    private void renderPageWithShapeDataInBackground(boolean applyGCInterval) {
-        if (!getReaderDataHolder().supportScalable()) {
-            beforeDrawPage();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
-            afterDrawPage();
-            return;
-        }
-
+    private void renderShapeDataInBackground(boolean applyGCInterval) {
         List<PageInfo> pages = getReaderDataHolder().getVisiblePages();
         final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
@@ -1072,15 +1071,13 @@ public class ReaderActivity extends OnyxBaseActivity {
                 false);
         int uniqueId = getReaderDataHolder().getLastRequestSequence();
 
-        beforeDrawPage();
         getReaderDataHolder().getNoteManager().submitWithUniqueId(this, uniqueId, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                afterDrawPage();
                 if (e != null || request.isAbort() ) {
                     return;
                 }
-//                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
+                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
             }
         });
     }

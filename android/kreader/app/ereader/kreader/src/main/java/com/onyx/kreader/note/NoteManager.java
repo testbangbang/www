@@ -353,47 +353,6 @@ public class NoteManager {
         return runnable;
     }
 
-    public void renderToSurfaceView(boolean applyGCIntervalUpdate) {
-        if (visiblePages.size() <= 0) {
-            return;
-        }
-
-        Rect rect = checkSurfaceView();
-        if (rect == null) {
-            return;
-        }
-
-        if (applyGCIntervalUpdate) {
-            ReaderDeviceManager.applyWithGCInterval(surfaceView, getParent().getReaderViewInfo().isTextPages());
-        } else {
-            applyUpdateMode();
-        }
-        Canvas canvas = surfaceView.getHolder().lockCanvas(rect);
-        if (canvas == null) {
-            return;
-        }
-
-        try {
-            PageInfo page = visiblePages.get(0);
-            final Matrix renderMatrix = new Matrix();
-            updateMatrix(renderMatrix, page);
-
-            Paint paint = new Paint();
-            clearBackground(canvas, paint, rect);
-            getParent().getReaderPainter().drawPage(getParent().getContext(),
-                    canvas, getParent().getReader().getViewportBitmap().getBitmap(),
-                    getParent().getReaderUserDataInfo(), getParent().getReaderViewInfo(),
-                    getParent().getSelectionManager());
-            canvas.drawBitmap(getRenderBitmap(), 0, 0, paint);
-            RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
-            for (Shape shape : getShapeStash()) {
-                shape.render(renderContext);
-            }
-        } finally {
-            surfaceView.getHolder().unlockCanvasAndPost(canvas);
-        }
-    }
-
     private Rect checkSurfaceView() {
         if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
             Log.e(TAG, "surfaceView is not valid");
