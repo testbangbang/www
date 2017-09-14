@@ -828,12 +828,35 @@ public class Utils {
         return dictList;
     }
 
-    public static ArrayList<Boolean> getCheckedList(List<DictTypeBean> pathList) {
+    public static ArrayList<Boolean> getCheckedList(int dictType, List<DictTypeBean> pathList) {
+        List<DictTypeBean> list = new ArrayList<>();
         ArrayList<Boolean> listCheck = new ArrayList<>();
-        if (pathList != null && pathList.size() >= 0) {
-            for (int i = 0; i < pathList.size(); i++) {
-                listCheck.add(true);
+        ArrayList<String> positionList = new ArrayList<>();
+        if (dictType == Constants.ENGLISH_TYPE) {
+            list = Utils.getEnglishDictData();
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            list = Utils.getChineseDictData();
+        } else if (dictType == Constants.OTHER_TYPE) {
+            list = Utils.getMinorityDictData();
+        }
+        if (list != null && list.size() > 0) {
+            if (pathList != null && pathList.size() >= 0) {
+                for (int i = 0; i < pathList.size(); i++) {
+                    DictTypeBean dictTypeBean = pathList.get(i);
+                    listCheck.add(false);
+                    for (int j = 0; j < list.size(); j++) {
+                        if (dictTypeBean.getTabName().equals(list.get(j).getTabName())){
+                            if (!positionList.contains(String.valueOf(i))) {
+                                positionList.add(String.valueOf(i));
+                            }
+                        }
+                    }
+                }
             }
+        }
+        for (int i = 0; i < positionList.size(); i++) {
+            String position = positionList.get(i);
+            listCheck.set(Integer.valueOf(position), true);
         }
         return listCheck;
     }

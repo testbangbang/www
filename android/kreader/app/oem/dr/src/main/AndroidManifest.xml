@@ -69,6 +69,7 @@
             android:name=".activity.DictQueryActivity"
             android:exported="true"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
@@ -203,6 +204,7 @@
 
         <activity
             android:name=".activity.DictSettingActivity"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity android:name=".reader.activity.ReadSummaryActivity" />

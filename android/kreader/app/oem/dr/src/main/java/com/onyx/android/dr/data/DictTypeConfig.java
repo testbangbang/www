@@ -38,13 +38,46 @@ public class DictTypeConfig {
 
     public void loadDictMap() {
         if (englishDictMap == null || englishDictMap.size() <= 0) {
-            englishDictMap.put(Constants.ENGLISH_TYPE, Utils.getDictName(Constants.ENGLISH_DICTIONARY));
+            List<DictTypeBean> dictName = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
+            List<DictTypeBean> newDictName = new ArrayList<>();
+            if (dictName != null && dictName.size() > Constants.FOUR) {
+                for (int i = 0; i < Constants.FOUR; i++) {
+                    if (!newDictName.contains(dictName.get(i))){
+                        newDictName.add(dictName.get(i));
+                    }
+                }
+                englishDictMap.put(Constants.ENGLISH_TYPE, newDictName);
+            }else{
+                englishDictMap.put(Constants.ENGLISH_TYPE, Utils.getDictName(Constants.ENGLISH_DICTIONARY));
+            }
         }
         if (chineseDictMap == null || chineseDictMap.size() <= 0) {
-            chineseDictMap.put(Constants.CHINESE_TYPE, Utils.getDictName(Constants.CHINESE_DICTIONARY));
+            List<DictTypeBean> dictName = Utils.getDictName(Constants.CHINESE_DICTIONARY);
+            List<DictTypeBean> newDictName = new ArrayList<>();
+            if (dictName != null && dictName.size() > Constants.FOUR) {
+                for (int i = 0; i < Constants.FOUR; i++) {
+                    if (!newDictName.contains(dictName.get(i))){
+                        newDictName.add(dictName.get(i));
+                    }
+                }
+                chineseDictMap.put(Constants.CHINESE_TYPE, newDictName);
+            }else{
+                chineseDictMap.put(Constants.CHINESE_TYPE, Utils.getDictName(Constants.CHINESE_DICTIONARY));
+            }
         }
         if (minorityDictMap == null || minorityDictMap.size() <= 0) {
-            minorityDictMap.put(Constants.OTHER_TYPE, Utils.getDictName(Constants.OTHER_DICTIONARY));
+            List<DictTypeBean> dictName = Utils.getDictName(Constants.OTHER_DICTIONARY);
+            List<DictTypeBean> newDictName = new ArrayList<>();
+            if (dictName != null && dictName.size() > Constants.FOUR) {
+                for (int i = 0; i < Constants.FOUR; i++) {
+                    if (!newDictName.contains(dictName.get(i))){
+                        newDictName.add(dictName.get(i));
+                    }
+                }
+                minorityDictMap.put(Constants.OTHER_TYPE, newDictName);
+            }else{
+                minorityDictMap.put(Constants.OTHER_TYPE, Utils.getDictName(Constants.OTHER_DICTIONARY));
+            }
         }
     }
 

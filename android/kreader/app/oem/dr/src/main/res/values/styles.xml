@@ -281,7 +281,7 @@
     <style name="good_sentence_activity_spinner_second">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:dropDownVerticalOffset">55dp</item>
+        <item name="android:dropDownVerticalOffset">@dimen/good_sentence_activity_spinner_second_offset</item>
         <item name="android:layout_margin">@dimen/dialog_result_spinner_margin</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>
@@ -293,6 +293,7 @@
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_margin">@dimen/dict_setting_activity_spinner_margin</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:layout_centerVertical">true</item>
     </style>
 
     <style name="new_word_notebook_textview_style">

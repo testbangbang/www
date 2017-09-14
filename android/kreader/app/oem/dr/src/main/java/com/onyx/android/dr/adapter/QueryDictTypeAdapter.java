@@ -43,7 +43,7 @@ public class QueryDictTypeAdapter extends PageRecyclerView.PageAdapter implement
 
     @Override
     public int getColumnCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.dict_tab_menu_column);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.query_dict_type_menu_column);
     }
 
     @Override

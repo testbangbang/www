@@ -265,6 +265,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         String editQueryString = editText.getText().toString();
         editQueryString = Utils.trim(editQueryString);
         if (!StringUtils.isNullOrEmpty(editQueryString)) {
+            finish();
             ActivityManager.startDictResultShowActivity(this, editQueryString, dictType);
         } else {
             CommonNotices.showMessage(this, getString(R.string.illegalInput));

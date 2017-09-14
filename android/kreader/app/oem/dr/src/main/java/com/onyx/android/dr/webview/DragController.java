@@ -171,6 +171,7 @@ public class DragController {
         this.dragInfo = dragInfo;
         DragView dragView = dragView = new DragView(context, b, registrationX, registrationY,
                 textureLeft, textureTop, textureWidth, textureHeight);
+        Log.i("@@@","motionDownX:" + motionDownX + ",motionDownY:" + motionDownY);
         dragView.show(windowToken, (int)motionDownX, (int)motionDownY);
     }
 

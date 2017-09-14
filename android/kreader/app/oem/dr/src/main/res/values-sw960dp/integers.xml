@@ -54,5 +54,7 @@
     <integer name="group_member_tab_row">15</integer>
     <integer name="group_member_tab_column">4</integer>
     <integer name="pay_qr_code_width">250</integer>
-    <integer name="select_dict_row">6</integer>
+    <integer name="select_dict_row">5</integer>
+    <integer name="query_dict_type_menu_column">4</integer>
+    <integer name="dict_type_column">4</integer>
 </resources>

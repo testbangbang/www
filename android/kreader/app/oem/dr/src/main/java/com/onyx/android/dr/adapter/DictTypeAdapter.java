@@ -42,7 +42,7 @@ public class DictTypeAdapter extends PageRecyclerView.PageAdapter implements Vie
 
     @Override
     public int getColumnCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.dict_tab_menu_column);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.dict_type_column);
     }
 
     @Override
