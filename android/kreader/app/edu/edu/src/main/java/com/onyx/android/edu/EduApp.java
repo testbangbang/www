@@ -20,9 +20,12 @@ public class EduApp extends Application{
     private long endTime;
     private String bookName;
     private String bookId;
-    private List<PaperQuestionAndAnswer> answerPaperList = new ArrayList<>();
+    private List<PaperQuestionAndAnswer> answerPaperList;
 
     public void setStartTime(long startTime) {
+        if(answerPaperList != null && answerPaperList.size() > 0) {
+            answerPaperList.clear();
+        }
         this.startTime = startTime;
     }
 
@@ -39,6 +42,7 @@ public class EduApp extends Application{
         super.onCreate();
         checkDeviceConfig();
         instance = this;
+        answerPaperList = new ArrayList<>();
     }
 
     public static EduApp instance() {
