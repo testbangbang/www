@@ -551,4 +551,6 @@
     <string name="third_sequence">third_sequence</string>
     <string name="select_language_hint">each sequence selection language cannot be the same</string>
     <string name="please_select_dict">please select dict</string>
+    <string name="font">font</string>
+    <string name="remove_from_cart_message">Whether remove books from cart?</string>
 </resources>

@@ -57,7 +57,7 @@ public class ShoppingCartPresenter {
     public void buy(List<ProductBean> selectList) {
         List<String> orderIdList = new ArrayList<>();
         for (ProductBean productBean : selectList) {
-            orderIdList.add(productBean.getProductCart()._id);
+            orderIdList.add(productBean.getProductCart().product.getCloudId());
         }
         ProductRequestBean productRequestBean = new ProductRequestBean(orderIdList);
         final RequestCreateOrders req = new RequestCreateOrders(productRequestBean);
