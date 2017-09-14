@@ -1,5 +1,6 @@
 package com.onyx.android.dr.bean;
 
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ProductCart;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 
@@ -7,10 +8,10 @@ import com.onyx.android.sdk.data.model.v2.CloudMetadata;
  * Created by hehai on 17-9-12.
  */
 
-public class ProductBean {
+public class SearchResultBean {
     private boolean isFirst;
     private boolean isChecked;
-    private ProductCart<CloudMetadata> productCart;
+    private Metadata metadata;
 
     public boolean isFirst() {
         return isFirst;
@@ -28,11 +29,11 @@ public class ProductBean {
         isChecked = checked;
     }
 
-    public ProductBean(ProductCart<CloudMetadata> productCart) {
-        this.productCart = productCart;
+    public SearchResultBean(Metadata metadata) {
+        this.metadata = metadata;
     }
 
-    public ProductCart<CloudMetadata> getProductCart() {
-        return productCart;
+    public Metadata getMetadata() {
+        return metadata;
     }
 }

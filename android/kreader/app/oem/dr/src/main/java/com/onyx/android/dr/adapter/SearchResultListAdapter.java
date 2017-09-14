@@ -12,6 +12,7 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.ProductBean;
+import com.onyx.android.dr.bean.SearchResultBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.event.BookDetailEvent;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -41,7 +42,7 @@ public class SearchResultListAdapter extends PageRecyclerView.PageAdapter<Search
     private static final String TAG = SearchResultListAdapter.class.getSimpleName();
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.search_result_row);
     private int col = DRApplication.getInstance().getResources().getInteger(R.integer.search_result_col);
-    private List<ProductBean> list;
+    private List<SearchResultBean> list;
 
     public SearchResultListAdapter() {
 
@@ -52,7 +53,7 @@ public class SearchResultListAdapter extends PageRecyclerView.PageAdapter<Search
         this.col = col;
     }
 
-    public void setList(List<ProductBean> list) {
+    public void setList(List<SearchResultBean> list) {
         this.list = list;
         notifyDataSetChanged();
     }
@@ -84,7 +85,7 @@ public class SearchResultListAdapter extends PageRecyclerView.PageAdapter<Search
 
     @Override
     public void onPageBindViewHolder(LibraryItemViewHolder viewHolder, int position) {
-        ProductBean productBean = list.get(position);
+        SearchResultBean productBean = list.get(position);
         viewHolder.nameView.setText(String.valueOf(productBean.getMetadata().getName()));
         viewHolder.titleView.setVisibility(productBean.isFirst() ? View.VISIBLE : View.GONE);
         viewHolder.titleView.setText(StringUtils.isNotBlank(productBean.getMetadata().getNativeAbsolutePath()) ? DRApplication.getInstance().getString(R.string.bookshelf) : DRApplication.getInstance().getString(R.string.bookstore));

@@ -43,7 +43,7 @@ public class ShoppingCartData {
         smallLanguageList.clear();
         if (cartResult != null && !CollectionUtils.isNullOrEmpty(cartResult.list)) {
             for (ProductCart<CloudMetadata> product : cartResult.list) {
-                ProductBean productBean = new ProductBean(product.product);
+                ProductBean productBean = new ProductBean(product);
                 if (Constants.CHINESE.equals(product.product.getLanguage())) {
                     productBean.setFirst(chineseList.isEmpty());
                     chineseList.add(productBean);
