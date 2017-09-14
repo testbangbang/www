@@ -9,6 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:maxLines="1"
+        android:textColor="@color/black"
         android:textSize="@dimen/level_two_heading_font" />
 
     <ImageView

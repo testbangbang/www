@@ -10,6 +10,7 @@
         android:layout_centerVertical="true"
         android:maxLines="1"
         android:text="@string/device_setting_page_refresh_rate"
+        android:textColor="@color/black"
         android:textSize="@dimen/level_two_heading_font" />
 
     <ImageView

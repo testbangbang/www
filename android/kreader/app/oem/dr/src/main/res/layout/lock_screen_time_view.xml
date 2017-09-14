@@ -2,8 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="@dimen/device_information_view_padding_bottom"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/device_information_view_padding_bottom">
 
     <TextView
         android:id="@+id/lock_screen_time_title"
@@ -14,6 +14,7 @@
         android:paddingBottom="@dimen/page_refresh_item_padding_top"
         android:paddingTop="@dimen/page_refresh_item_padding_top"
         android:text="@string/device_setting_lock_screen_time_title"
+        android:textColor="@color/black"
         android:textSize="@dimen/level_one_heading_font"
         android:textStyle="bold" />
 
@@ -36,15 +37,15 @@
             android:id="@+id/lock_screen_time_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
             android:layout_marginLeft="@dimen/device_setting_page_margin_left"
-            android:layout_marginRight="@dimen/device_setting_page_margin_left" />
+            android:layout_marginRight="@dimen/device_setting_page_margin_left"
+            android:layout_weight="1" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@android:color/black"
             android:layout_marginLeft="@dimen/device_setting_page_margin_left"
-            android:layout_marginRight="@dimen/device_setting_page_margin_left" />
+            android:layout_marginRight="@dimen/device_setting_page_margin_left"
+            android:background="@android:color/black" />
     </LinearLayout>
 </RelativeLayout>

@@ -13,6 +13,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/login_layout_title_margin_top"
         android:text="@string/login_title"
+        android:textColor="@color/black"
         android:textSize="@dimen/level_one_heading_font" />
 
     <View
@@ -105,6 +106,7 @@
             android:gravity="center"
             android:padding="@dimen/edit_text_margin_top"
             android:text="@string/prev_step"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_one_heading_font"
             android:visibility="gone" />
 
@@ -118,6 +120,7 @@
             android:gravity="center"
             android:padding="@dimen/edit_text_margin_top"
             android:text="@string/next_step"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_one_heading_font"
             android:visibility="gone" />
     </LinearLayout>
@@ -127,8 +130,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/login_settings_margin"
         android:layout_marginRight="@dimen/login_settings_margin"
-        android:src="@drawable/settings"/>
+        android:layout_marginTop="@dimen/login_settings_margin"
+        android:src="@drawable/settings" />
 
 </RelativeLayout>

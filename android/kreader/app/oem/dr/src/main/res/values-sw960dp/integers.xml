@@ -57,4 +57,8 @@
     <integer name="select_dict_row">5</integer>
     <integer name="query_dict_type_menu_column">4</integer>
     <integer name="dict_type_column">4</integer>
+    <integer name="shopping_cart_row">4</integer>
+    <integer name="shopping_cart_col">1</integer>
+    <integer name="search_result_row">5</integer>
+    <integer name="search_result_col">1</integer>
 </resources>

@@ -3,13 +3,17 @@ package com.onyx.android.dr.data;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.holder.LibraryDataHolder;
+import com.onyx.android.dr.request.cloud.RequestAddProduct;
 import com.onyx.android.dr.request.cloud.RequestCreateOrders;
+import com.onyx.android.dr.request.cloud.RequestGetProducts;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.ProductOrder;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudChildLibraryListLoadRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
@@ -82,6 +86,14 @@ public class EBookStoreData {
     }
 
     public void createOrder(RequestCreateOrders req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void addToCart(RequestAddProduct req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void getProducts(final RequestGetProducts req, final BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 }

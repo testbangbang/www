@@ -40,6 +40,7 @@
                 android:layout_toRightOf="@id/menu_back"
                 android:background="@android:color/white"
                 android:padding="@dimen/title_bar_title_padding"
+                android:textColor="@color/black"
                 android:textSize="@dimen/level_one_font_size" />
         </LinearLayout>
 
@@ -93,6 +94,18 @@
                 android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
                 android:visibility="gone" />
 
+            <TextView
+                android:id="@+id/title_bar_right_shopping_cart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:drawableLeft="@drawable/ic_reader_cart"
+                android:textSize="@dimen/level_two_font_size"
+                android:textColor="@color/black"
+                android:text="(0)"
+                android:visibility="gone" />
+
         </LinearLayout>
 
         <ImageView
@@ -124,6 +137,7 @@
             android:layout_centerVertical="true"
             android:background="@drawable/text_view_bg"
             android:padding="@dimen/title_bar_right_menu_padding"
+            android:textColor="@color/black"
             android:visibility="gone" />
     </RelativeLayout>
 

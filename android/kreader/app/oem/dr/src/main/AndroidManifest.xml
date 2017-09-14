@@ -233,9 +233,11 @@
 
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/OnyxAppCompat">
+            android:theme="@style/OnyxAppCompat" />
 
-        </activity>
+        <activity
+            android:name=".activity.ShoppingCartActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>

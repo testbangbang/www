@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudChildLibraryListLoadRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -74,7 +75,9 @@ public class BookshelfPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 List<Library> libraryList = req.getLibraryList();
-                bookshelfView.setLibraryList(libraryList);
+                if (!CollectionUtils.isNullOrEmpty(libraryList)) {
+                    bookshelfView.setLibraryList(libraryList);
+                }
             }
         });
     }

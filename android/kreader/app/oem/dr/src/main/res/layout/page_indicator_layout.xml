@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:text="0"
+        android:textColor="@color/black"
         android:textSize="@dimen/level_two_font_size" />
 
     <LinearLayout
@@ -38,6 +39,7 @@
             android:layout_marginRight="@dimen/page_indicator_margin"
             android:gravity="center_vertical"
             android:text="@string/page_indicator_initial_data"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_two_font_size" />
 
         <ImageView
