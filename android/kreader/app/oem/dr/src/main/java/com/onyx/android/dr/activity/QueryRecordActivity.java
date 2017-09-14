@@ -17,7 +17,9 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.DictSpinnerAdapter;
 import com.onyx.android.dr.adapter.QueryRecordAdapter;
 import com.onyx.android.dr.bean.NewWordBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
@@ -60,6 +62,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     ImageView image;
     @Bind(R.id.query_record_activity_all_number)
     TextView allNumber;
+    @Bind(R.id.title_bar_right_icon_four)
+    ImageView iconFour;
     private DividerItemDecoration dividerItemDecoration;
     private QueryRecordPresenter queryRecordPresenter;
     private QueryRecordAdapter queryRecordAdapter;
@@ -125,6 +129,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private void initTitleData() {
         image.setImageResource(R.drawable.query_record);
         title.setText(getString(R.string.query_record));
+        iconFour.setVisibility(View.VISIBLE);
+        iconFour.setImageResource(R.drawable.ic_reader_dic_setting);
     }
 
     private void loadDictionary() {
@@ -385,11 +391,15 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         resultView.loadUrl("javascript:" + "showDict(\"" + dictName + "\",\"" + dictPath + "\")");
     }
 
-    @OnClick({R.id.image_view_back})
+    @OnClick({R.id.image_view_back,
+            R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
+                break;
+            case R.id.title_bar_right_icon_four:
+                ActivityManager.startDictSettingActivity(this, Constants.DICT_OTHER);
                 break;
         }
     }

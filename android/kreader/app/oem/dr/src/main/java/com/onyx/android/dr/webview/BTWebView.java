@@ -38,7 +38,11 @@ import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
+import com.onyx.android.dr.event.NewWordQueryEvent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -54,7 +58,7 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
     /** The logging tag. */
     private static final String TAG = "BTWebView";
     /** Context. */
-    protected	Context context;
+    protected Context context;
     /** The context menu. */
     protected QuickAction contextMenu;
     /** The drag layer for selection. */
@@ -96,6 +100,14 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
     private float lastTouchY = 0;
     private float scrollDiffX = 0;
     private float lastTouchX = 0;
+    private int menuBoundRight = 30;
+    private int menuBoundLeft = 0;
+    private int menuBoundTop = 50;
+    private int menuBoundBottom = 25;
+    private int selectionBoundRight = 0;
+    private int selectionBoundLeft = 35;
+    private int selectionBoundTop = 32;
+    private int selectionBoundBottom = 30;
 
     public BTWebView(Context context) {
         super(context);
@@ -338,13 +350,12 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
      * Start dragging a view.
      *
      */
-    private boolean startDrag (View v) {
+    protected boolean startDrag (View v) {
         dragging = true;
         Object dragInfo = v;
         dragController.startDrag (v, selectionDragLayer, dragInfo, DragController.DRAG_ACTION_MOVE);
         return true;
     }
-
 
     @Override
     public void onDragStart(DragSource source, Object info, int dragAction) {
@@ -413,40 +424,29 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
         }
         //Copy action item
         ActionItem buttonOne = new ActionItem();
-        buttonOne.setTitle("Button 1");
-        buttonOne.setActionId(1);
-        buttonOne.setIcon(getResources().getDrawable(R.drawable.menu_search));
+        buttonOne.setTitle(context.getString(R.string.new_word_query));
+        buttonOne.setActionId(Constants.ACTION_ONE);
         //Highlight action item
         ActionItem buttonTwo = new ActionItem();
-        buttonTwo.setTitle("Button 2");
-        buttonTwo.setActionId(2);
-        buttonTwo.setIcon(getResources().getDrawable(R.drawable.menu_info));
-        ActionItem buttonThree = new ActionItem();
-        buttonThree.setTitle("Button 3");
-        buttonThree.setActionId(3);
-        buttonThree.setIcon(getResources().getDrawable(R.drawable.menu_eraser));
+        buttonTwo.setTitle(context.getString(R.string.good_sentence_excerpt));
+        buttonTwo.setActionId(Constants.ACTION_TWO);
         // The action menu
         contextMenu  = new QuickAction(getContext());
         contextMenu.setOnDismissListener(this);
         // Add buttons
         contextMenu.addActionItem(buttonOne);
         contextMenu.addActionItem(buttonTwo);
-        contextMenu.addActionItem(buttonThree);
         //setup the action item click listener
         contextMenu.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
             @Override
-            public void onItemClick(QuickAction source, int pos,
-                                    int actionId) {
-                if (actionId == 1) {
-                    // Do Button 1 stuff
-                } else if (actionId == 2) {
-                    // Do Button 2 stuff
-                } else if (actionId == 3) {
-                    // Do Button 3 stuff
+            public void onItemClick(QuickAction source, int pos, int actionId) {
+                if (actionId == Constants.ACTION_ONE) {
+                    EventBus.getDefault().post(new NewWordQueryEvent(selectedText));
+                } else if (actionId == Constants.ACTION_TWO) {
+                    EventBus.getDefault().post(new GoodSentenceNotebookEvent(selectedText));
                 }
                 contextMenuVisible = false;
             }
-
         });
         contextMenuVisible = true;
         contextMenu.show(this, displayRect);
@@ -456,7 +456,6 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
      * Clears the selection when the context menu is dismissed.
      */
     public void onDismiss(){
-        //clearSelection();
         contextMenuVisible = false;
     }
 
@@ -519,10 +518,10 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
             JSONObject selectionBoundsObject = new JSONObject(handleBounds);
             float scale = getDensityIndependentValue(getScale(), context);
             Rect handleRect = new Rect();
-            handleRect.left = (int) (getDensityDependentValue(selectionBoundsObject.getInt("left"), getContext()) * scale);
-            handleRect.top = (int) (getDensityDependentValue(selectionBoundsObject.getInt("top"), getContext()) * scale);
-            handleRect.right = (int) (getDensityDependentValue(selectionBoundsObject.getInt("right"), getContext()) * scale);
-            handleRect.bottom = (int) (getDensityDependentValue(selectionBoundsObject.getInt("bottom"), getContext()) * scale);
+            handleRect.left = (int) (getDensityDependentValue(selectionBoundsObject.getInt("left") + selectionBoundLeft , getContext()) * scale);
+            handleRect.top = (int) (getDensityDependentValue(selectionBoundsObject.getInt("top") + selectionBoundTop, getContext()) * scale);
+            handleRect.right = (int) (getDensityDependentValue(selectionBoundsObject.getInt("right") + selectionBoundRight, getContext()) * scale);
+            handleRect.bottom = (int) (getDensityDependentValue(selectionBoundsObject.getInt("bottom") + selectionBoundBottom, getContext()) * scale);
             selectionBounds = handleRect;
             selectedRange = range;
             selectedText = text;
@@ -546,9 +545,9 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
             float scale = getDensityIndependentValue(getScale(), context);
             Rect displayRect = new Rect();
             displayRect.left = (int) (getDensityDependentValue(menuBoundsObject.getInt("left"), getContext()) * scale);
-            displayRect.top = (int) (getDensityDependentValue(menuBoundsObject.getInt("top") - 25, getContext()) * scale);
-            displayRect.right = (int) (getDensityDependentValue(menuBoundsObject.getInt("right"), getContext()) * scale);
-            displayRect.bottom = (int) (getDensityDependentValue(menuBoundsObject.getInt("bottom") + 25, getContext()) * scale);
+            displayRect.top = (int) (getDensityDependentValue(menuBoundsObject.getInt("top") - menuBoundTop, getContext()) * scale);
+            displayRect.right = (int) (getDensityDependentValue(menuBoundsObject.getInt("right") + menuBoundRight, getContext()) * scale);
+            displayRect.bottom = (int) (getDensityDependentValue(menuBoundsObject.getInt("bottom") - menuBoundBottom, getContext()) * scale);
             return displayRect;
         } catch (JSONException e) {
             e.printStackTrace();
