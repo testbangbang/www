@@ -153,6 +153,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     public void intContainerVisible(List<DictTypeBean> dictLanguageData) {
         int type = dictLanguageData.get(0).getType();
+        languageQueryTypeAdapter.setSelectedPosition(type);
         englishDictName = Utils.getEnglishDictData();
         chineseDictName = Utils.getChineseDictData();
         japaneseDictName = Utils.getMinorityDictData();
@@ -265,7 +266,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         String editQueryString = editText.getText().toString();
         editQueryString = Utils.trim(editQueryString);
         if (!StringUtils.isNullOrEmpty(editQueryString)) {
-            finish();
             ActivityManager.startDictResultShowActivity(this, editQueryString, dictType);
         } else {
             CommonNotices.showMessage(this, getString(R.string.illegalInput));

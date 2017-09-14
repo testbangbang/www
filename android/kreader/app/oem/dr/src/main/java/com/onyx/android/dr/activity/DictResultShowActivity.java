@@ -340,7 +340,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
-                ActivityManager.startDictQueryActivity(this);
                 break;
             case R.id.activity_dict_iv_voice_one:
                 onVoiceOneClick();
@@ -542,12 +541,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             default:
                 break;
         }
-    }
-
-    @Override
-    public boolean dispatchKeyEvent(KeyEvent event) {
-        ActivityManager.startDictQueryActivity(this);
-        return super.dispatchKeyEvent(event);
     }
 
     @Override
