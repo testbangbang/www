@@ -51,6 +51,11 @@ public class NotePage {
         }
     }
 
+    public void saveCurrentSelectPointRotationInitialPoint(){
+        rotateCacheRectTopLeft = new PointF(getSelectedRect().left, getSelectedRect().top);
+        rotateCacheRectTopRight = new PointF(getSelectedRect().right, getSelectedRect().top);
+    }
+
     private void deepCopyShapeList(List<Shape> sourceList, List<Shape> destinationList) {
         for (Shape shape : sourceList) {
             Shape newShape = ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape));
@@ -65,8 +70,6 @@ public class NotePage {
             }
             destinationList.add(newShape);
         }
-        rotateCacheRectTopLeft = new PointF(getSelectedRect().left, getSelectedRect().top);
-        rotateCacheRectTopRight = new PointF(getSelectedRect().right, getSelectedRect().top);
     }
 
     public static abstract class RenderCallback {
