@@ -69,12 +69,12 @@ public class ShoppingCartAdapter extends PageRecyclerView.PageAdapter<ShoppingCa
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, int position) {
         final ProductBean productBean = list.get(position);
-        holder.itemShoppingCartTitle.setText(StringUtils.isNullOrEmpty(productBean.getMetadata().getLanguage()) ? Constants.EMPTY_STRING : productBean.getMetadata().getLanguage());
+        holder.itemShoppingCartTitle.setText(StringUtils.isNullOrEmpty(productBean.getProductCart().product.getLanguage()) ? Constants.EMPTY_STRING : productBean.getProductCart().product.getLanguage());
         holder.itemShoppingCartTitle.setVisibility(productBean.isFirst() ? View.VISIBLE : View.GONE);
         loadThumbnailRequest(holder.itemShoppingCartBookCover, productBean);
-        holder.itemShoppingCartBookName.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.book_detail_book_name), productBean.getMetadata().getName()));
-        holder.itemShoppingCartBookPublisher.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.book_detail_book_publisher), productBean.getMetadata().getPublisher()));
-        holder.itemShoppingCartBookPrice.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.book_detail_book_price), productBean.getMetadata().getPrice()));
+        holder.itemShoppingCartBookName.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.book_detail_book_name), productBean.getProductCart().product.getName()));
+        holder.itemShoppingCartBookPublisher.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.book_detail_book_publisher), productBean.getProductCart().product.getPublisher()));
+        holder.itemShoppingCartBookPrice.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.book_detail_book_price), productBean.getProductCart().product.getPrice()));
         holder.itemShoppingCartCheckbox.setChecked(productBean.isChecked());
         holder.itemShoppingCartCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -91,7 +91,7 @@ public class ShoppingCartAdapter extends PageRecyclerView.PageAdapter<ShoppingCa
         for (ProductBean productBean : list) {
             if (productBean.isChecked()) {
                 selectList.add(productBean);
-                totalPrice += productBean.getMetadata().getPrice();
+                totalPrice += productBean.getProductCart().product.getPrice();
             }
         }
         if (onCheckedChangeListener != null) {
@@ -147,8 +147,8 @@ public class ShoppingCartAdapter extends PageRecyclerView.PageAdapter<ShoppingCa
 
     private void loadThumbnailRequest(final ImageView imageView, final ProductBean productBean) {
         final CloudThumbnailLoadRequest loadRequest = new CloudThumbnailLoadRequest(
-                productBean.getMetadata().getCoverUrl(),
-                productBean.getMetadata().getAssociationId(), OnyxThumbnail.ThumbnailKind.Original);
+                productBean.getProductCart().product.getCoverUrl(),
+                productBean.getProductCart().product.getAssociationId(), OnyxThumbnail.ThumbnailKind.Original);
         DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

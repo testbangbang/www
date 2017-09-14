@@ -35,6 +35,8 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
     ImageView image;
     @Bind(R.id.title_bar_title)
     TextView titleBarTitle;
+    @Bind(R.id.title_bar_right_icon_one)
+    ImageView delete;
     @Bind(R.id.menu_back)
     LinearLayout menuBack;
     @Bind(R.id.shopping_cart_recycler)
@@ -76,6 +78,8 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
         titleBarTitle.setText(getString(R.string.shopping_cart));
         image.setImageResource(R.drawable.ic_reader_cart);
         shoppingCartTotalPrice.setText(String.format(getString(R.string.shopping_total_price_format), 0, 0f));
+        delete.setImageResource(R.drawable.ic_reader_choose_delet);
+        delete.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -88,6 +92,7 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
 
     @Override
     public void setProducts(List<ProductBean> products) {
+        DRApplication.getInstance().setCartCount(products.size());
         shoppingCartAdapter.setList(products);
     }
 
@@ -96,7 +101,7 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
         ActivityManager.startPayActivity(this, id);
     }
 
-    @OnClick({R.id.menu_back, R.id.shopping_cart_select_all, R.id.shopping_cart_buy})
+    @OnClick({R.id.menu_back, R.id.shopping_cart_select_all, R.id.shopping_cart_buy, R.id.title_bar_right_icon_one})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -109,6 +114,11 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
             case R.id.shopping_cart_buy:
                 if (!CollectionUtils.isNullOrEmpty(shoppingCartAdapter.getSelectList())) {
                     shoppingCartPresenter.buy(shoppingCartAdapter.getSelectList());
+                }
+                break;
+            case R.id.title_bar_right_icon_one:
+                if (!CollectionUtils.isNullOrEmpty(shoppingCartAdapter.getSelectList())) {
+                    shoppingCartPresenter.removeProduct(shoppingCartAdapter.getSelectList());
                 }
                 break;
         }

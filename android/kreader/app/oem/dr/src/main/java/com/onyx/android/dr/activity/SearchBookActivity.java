@@ -13,6 +13,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SearchResultListAdapter;
 import com.onyx.android.dr.bean.ProductBean;
+import com.onyx.android.dr.bean.SearchResultBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.event.BookDetailEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
@@ -123,7 +124,7 @@ public class SearchBookActivity extends BaseActivity implements SearchBookView {
     }
 
     @Override
-    public void setResult(List<ProductBean> result) {
+    public void setResult(List<SearchResultBean> result) {
         searchResultListAdapter.setList(result);
     }
 

@@ -2,6 +2,7 @@ package com.onyx.android.dr.data;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.bean.ProductBean;
+import com.onyx.android.dr.bean.SearchResultBean;
 import com.onyx.android.dr.request.cloud.RequestSearchProduct;
 import com.onyx.android.dr.request.local.RequestSearchHistoryDelete;
 import com.onyx.android.dr.request.local.RequestSearchHistoryInsert;
@@ -24,9 +25,9 @@ import java.util.List;
 
 public class SearchBookData {
     private List<String> hints = new ArrayList<>();
-    private List<ProductBean> localList = new ArrayList<>();
-    private List<ProductBean> cloudList = new ArrayList<>();
-    private List<ProductBean> result = new ArrayList<>();
+    private List<SearchResultBean> localList = new ArrayList<>();
+    private List<SearchResultBean> cloudList = new ArrayList<>();
+    private List<SearchResultBean> result = new ArrayList<>();
 
     public void searchLocalBook(final CloudContentListRequest req, final BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {
@@ -37,7 +38,7 @@ public class SearchBookData {
                 localList.clear();
                 if (productResult != null && !CollectionUtils.isNullOrEmpty(productResult.list)) {
                     for (Metadata metadata : productResult.list) {
-                        ProductBean productBean = new ProductBean(metadata);
+                        SearchResultBean productBean = new SearchResultBean(metadata);
                         if (localList.isEmpty()) {
                             productBean.setFirst(true);
                         }
@@ -80,7 +81,7 @@ public class SearchBookData {
                 cloudList.clear();
                 if (productResult != null && !CollectionUtils.isNullOrEmpty(productResult.list)) {
                     for (Metadata metadata : productResult.list) {
-                        ProductBean productBean = new ProductBean(metadata);
+                        SearchResultBean productBean = new SearchResultBean(metadata);
                         if (cloudList.isEmpty()) {
                             productBean.setFirst(true);
                         }
@@ -93,7 +94,7 @@ public class SearchBookData {
         });
     }
 
-    public List<ProductBean> getResult() {
+    public List<SearchResultBean> getResult() {
         result.clear();
         result.addAll(localList);
         result.addAll(cloudList);

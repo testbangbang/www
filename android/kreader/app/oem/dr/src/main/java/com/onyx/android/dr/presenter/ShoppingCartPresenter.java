@@ -39,13 +39,17 @@ public class ShoppingCartPresenter {
         });
     }
 
-    public void removeProduct(List<String> list) {
-        ProductRequestBean productRequestBean = new ProductRequestBean(list);
+    public void removeProduct(List<ProductBean> list) {
+        List<String> orderIdList = new ArrayList<>();
+        for (ProductBean productBean : list) {
+            orderIdList.add(productBean.getProductCart()._id);
+        }
+        ProductRequestBean productRequestBean = new ProductRequestBean(orderIdList);
         RequestRemoveProduct req = new RequestRemoveProduct(productRequestBean);
         shoppingCartData.removeProducts(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-
+                getProducts();
             }
         });
     }
@@ -53,7 +57,7 @@ public class ShoppingCartPresenter {
     public void buy(List<ProductBean> selectList) {
         List<String> orderIdList = new ArrayList<>();
         for (ProductBean productBean : selectList) {
-            orderIdList.add(productBean.getMetadata().getCloudId());
+            orderIdList.add(productBean.getProductCart()._id);
         }
         ProductRequestBean productRequestBean = new ProductRequestBean(orderIdList);
         final RequestCreateOrders req = new RequestCreateOrders(productRequestBean);
