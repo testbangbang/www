@@ -1,5 +1,6 @@
 package com.onyx.android.dr.activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
@@ -14,6 +15,7 @@ import com.onyx.android.dr.bean.ProductBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.interfaces.ShoppingCartView;
 import com.onyx.android.dr.presenter.ShoppingCartPresenter;
+import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -117,10 +119,32 @@ public class ShoppingCartActivity extends BaseActivity implements ShoppingCartVi
                 }
                 break;
             case R.id.title_bar_right_icon_one:
-                if (!CollectionUtils.isNullOrEmpty(shoppingCartAdapter.getSelectList())) {
-                    shoppingCartPresenter.removeProduct(shoppingCartAdapter.getSelectList());
-                }
+                delete();
                 break;
+        }
+    }
+
+    private void showDeleteDialog() {
+        CustomDialog.Builder builder = new CustomDialog.Builder(this);
+        builder.setTitle(getString(R.string.prompt))
+                .setMessage(getString(R.string.remove_from_cart_message))
+                .setPositiveButton(getString(R.string.confirm), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        shoppingCartPresenter.removeProduct(shoppingCartAdapter.getSelectList());
+                        dialog.dismiss();
+                    }
+                }).setNegativeButton(getString(R.string.cancel), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        }).create().show();
+    }
+
+    private void delete() {
+        if (!CollectionUtils.isNullOrEmpty(shoppingCartAdapter.getSelectList())) {
+            showDeleteDialog();
         }
     }
 
