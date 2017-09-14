@@ -44,7 +44,8 @@ public class ChangeSelectedShapeRotationRequest extends AsyncBaseNoteRequest {
         PointF extendedPoint = helper.getNoteDocument().getCurrentPage(
                 getContext()).getRotateExtendPoint();
         if ((Float.compare(targetRotationAngle, Float.MIN_VALUE) == 0 && touchPoint != null)) {
-            targetRotationAngle = MathUtils.calculateAngle(new PointF(centerX, centerY), new PointF(extendedPoint.x, extendedPoint.y), new PointF(touchPoint.x, touchPoint.y));
+            targetRotationAngle = MathUtils.calculateAngle(new PointF(centerX, centerY),
+                    new PointF(extendedPoint.x, extendedPoint.y), new PointF(touchPoint.x, touchPoint.y));
         }
         helper.getNoteDocument().getCurrentPage(getContext()).
                 setRotationAngleToSelectShapeList(targetRotationAngle, new PointF(centerX, centerY), isAddToHistory);

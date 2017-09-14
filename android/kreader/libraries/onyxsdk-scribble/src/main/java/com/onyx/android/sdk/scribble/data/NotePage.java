@@ -565,4 +565,18 @@ public class NotePage {
             preTransformShapeList.clear();
         }
     }
+
+    public void setMirrorEffectToSelectShapeList(MirrorType type, int translateDistance,boolean addToActionHistory) {
+        if (selectedShapeList.size() <= 0) {
+            return;
+        }
+        for (Shape shape : selectedShapeList) {
+            shape.onMirror(type, translateDistance);
+        }
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            preTransformShapeList.clear();
+        }
+    }
 }

@@ -3,6 +3,7 @@ package com.onyx.android.sdk.scribble.shape;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -90,6 +91,8 @@ public interface Shape {
     void onRotate(final float angle, PointF originPoint);
 
     void onScale(final float scale);
+
+    void onMirror(final MirrorType type,int translateDistance);
 
     void updatePoints();
 

@@ -11,6 +11,7 @@ import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
+import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -23,6 +24,7 @@ import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
 import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
 import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.edu.note.actions.scribble.MirrorSelectedShapeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
 import com.onyx.edu.note.actions.scribble.ShapeSelectionAction;
@@ -40,7 +42,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_SELECTOR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
@@ -97,7 +98,7 @@ public class ShapeTransformHandler extends BaseHandler {
 
     private enum ControlMode {SelectMode, OperatingMode}
 
-    private enum TransformAction {Undefined, Zoom, Move, Rotation}
+    private enum TransformAction {Undefined, Zoom, Move, Rotation, XAxisMirror, YAxisMirror}
 
     public ShapeTransformHandler(NoteManager noteManager) {
         super(noteManager);
@@ -196,11 +197,6 @@ public class ShapeTransformHandler extends BaseHandler {
             handleSubMenuEvent(event.getMenuId());
             noteManager.post(new HideSubMenuEvent());
         }
-    }
-
-    private void onSetShapeSelectModeChanged() {
-        noteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_PENCIL_SCRIBBLE);
-        noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
     }
 
     private void redo() {
@@ -365,6 +361,7 @@ public class ShapeTransformHandler extends BaseHandler {
         }
     }
 
+    //TODO:X/Y mirror is single tap function.no need to handle when get point move event.
     private void onFinishShapeSelecting() {
         Log.e(TAG, "onShapeSelectTouchPointListReceived: ");
         switch (currentControlMode) {
@@ -381,6 +378,12 @@ public class ShapeTransformHandler extends BaseHandler {
                         break;
                     case Rotation:
                         new ChangeSelectedShapeRotationAction(mShapeSelectPoint, true).execute(noteManager, null);
+                        break;
+                    case XAxisMirror:
+                        new MirrorSelectedShapeAction(MirrorType.XAxisMirror,true).execute(noteManager,null);
+                        break;
+                    case YAxisMirror:
+                        new MirrorSelectedShapeAction(MirrorType.YAxisMirror,true).execute(noteManager,null);
                         break;
                 }
                 selectedRectF = null;
