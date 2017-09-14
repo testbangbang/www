@@ -13,6 +13,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -23,7 +24,7 @@ import butterknife.ButterKnife;
  */
 public class SelectDictAdapter extends PageRecyclerView.PageAdapter<SelectDictAdapter.ViewHolder> {
     private List<DictTypeBean> dataList;
-    private List<Boolean> listCheck;
+    private List<Boolean> listCheck = new ArrayList<>();
     private OnItemClickListener onItemClickListener;
 
     public void setDataList(List<DictTypeBean> dataList, List<Boolean> listCheck) {
@@ -55,7 +56,9 @@ public class SelectDictAdapter extends PageRecyclerView.PageAdapter<SelectDictAd
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         holder.name.setText(dataList.get(position).getTabName());
-        holder.checkBox.setChecked(listCheck.get(position));
+        if (listCheck.size() > 0) {
+            holder.checkBox.setChecked(listCheck.get(position));
+        }
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

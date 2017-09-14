@@ -226,12 +226,16 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
         selectDictAdapter.setOnItemListener(new SelectDictAdapter.OnItemClickListener() {
             @Override
             public void setOnItemClick(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
+                if (pathList.size() > 0) {
+                    listCheck.set(position, isCheck);
+                }
             }
 
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
+                if (pathList.size() > 0) {
+                    listCheck.set(position, isCheck);
+                }
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {

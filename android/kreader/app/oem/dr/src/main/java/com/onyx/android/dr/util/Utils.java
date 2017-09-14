@@ -767,7 +767,7 @@ public class Utils {
         for (int i = 0; i < pathList.size(); i++) {
             for (int j = 0; j < dictList.size(); j++) {
                 if (pathList.get(i).contains(dictList.get(j))) {
-                    if (!dictPathList.contains(pathList.get(i))){
+                    if (!dictPathList.contains(pathList.get(i))) {
                         dictPathList.add(pathList.get(i));
                     }
                 }
@@ -839,19 +839,24 @@ public class Utils {
         } else if (dictType == Constants.OTHER_TYPE) {
             list = Utils.getMinorityDictData();
         }
+        if (pathList == null && pathList.size() <= 0) {
+            return listCheck;
+        }
         if (list != null && list.size() > 0) {
-            if (pathList != null && pathList.size() >= 0) {
-                for (int i = 0; i < pathList.size(); i++) {
-                    DictTypeBean dictTypeBean = pathList.get(i);
-                    listCheck.add(false);
-                    for (int j = 0; j < list.size(); j++) {
-                        if (dictTypeBean.getTabName().equals(list.get(j).getTabName())){
-                            if (!positionList.contains(String.valueOf(i))) {
-                                positionList.add(String.valueOf(i));
-                            }
+            for (int i = 0; i < pathList.size(); i++) {
+                DictTypeBean dictTypeBean = pathList.get(i);
+                listCheck.add(false);
+                for (int j = 0; j < list.size(); j++) {
+                    if (dictTypeBean.getTabName().equals(list.get(j).getTabName())) {
+                        if (!positionList.contains(String.valueOf(i))) {
+                            positionList.add(String.valueOf(i));
                         }
                     }
                 }
+            }
+        } else {
+            for (int i = 0; i < pathList.size(); i++) {
+                listCheck.add(false);
             }
         }
         for (int i = 0; i < positionList.size(); i++) {

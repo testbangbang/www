@@ -50,9 +50,6 @@ public class DictSettingPresenter {
     }
 
     public void saveSelectDict(int type, ArrayList<Boolean> listCheck, List<DictTypeBean> list) {
-        DictTypeConfig.englishDictMap.clear();
-        DictTypeConfig.chineseDictMap.clear();
-        DictTypeConfig.minorityDictMap.clear();
         int length = listCheck.size();
         List<DictTypeBean> dictList = new ArrayList<>();
         for (int i = length - 1; i >= 0; i--) {
