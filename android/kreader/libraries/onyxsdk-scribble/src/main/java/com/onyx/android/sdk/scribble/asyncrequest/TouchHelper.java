@@ -160,7 +160,7 @@ public class TouchHelper {
 
     public RawInputManager getRawInputManager() {
         if (rawInputManager == null) {
-            rawInputManager = new RawInputManager(eventBus);
+            rawInputManager = new RawInputManager();
         }
         return rawInputManager;
     }
