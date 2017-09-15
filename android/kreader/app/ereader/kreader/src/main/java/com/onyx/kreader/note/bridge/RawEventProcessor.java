@@ -11,6 +11,7 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
 import com.onyx.kreader.note.event.DFBShapeStartEvent;
@@ -100,13 +101,13 @@ public class RawEventProcessor extends NoteEventProcessorBase {
             @Override
             public void onEraseTouchPointListReceived(TouchPointList pointList) {
             }
-        }, false);
+        });
     }
 
     public void update(final View view, final Rect rect, final List<RectF> excludeRect) {
         rawInputReader.setHostView(view);
-        rawInputReader.setLimitRect(new RectF(rect));
-        rawInputReader.setExcludeRect(excludeRect);
+        rawInputReader.setLimitRect(rect);
+        rawInputReader.setExcludeRect(RectUtils.toRectList(excludeRect));
     }
 
     public void start() {
