@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.graphics.Rect;
+import android.text.method.Touch;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
@@ -29,6 +30,10 @@ public class TouchReader {
     private Rect limitRect = new Rect();
     private boolean inUserErasing = false;
     private boolean renderByFramework = false;
+    private boolean useRawInput = false;
+    private boolean supportBigPen = false;
+    private boolean enableFingerErasing = false;
+    private boolean singleTouch = false;
 
     public TouchReader() {
     }
@@ -124,23 +129,35 @@ public class TouchReader {
     }
 
     private boolean isSingleTouch() {
-        return getDeviceConfig().isSingleTouch();
+        return singleTouch;
     }
 
     private boolean supportBigPen() {
-        return getDeviceConfig().supportBigPen();
+        return supportBigPen;
     }
 
     private boolean isEnableFingerErasing() {
-        return getDeviceConfig().isEnableFingerErasing();
+        return enableFingerErasing;
     }
 
     private boolean isUseRawInput() {
-        return getDeviceConfig().useRawInput();
+        return useRawInput;
     }
 
-    private DeviceConfig getDeviceConfig() {
-        return ConfigManager.getInstance().getDeviceConfig();
+    public TouchReader setUseRawInput(boolean use) {
+        useRawInput = use;
+        return this;
     }
+
+    public TouchReader setSupportBigPen(boolean support) {
+        supportBigPen = support;
+        return this;
+    }
+
+    public TouchReader setSingleTouch(boolean single) {
+        singleTouch = single;
+        return this;
+    }
+
 
 }
