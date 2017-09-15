@@ -205,11 +205,6 @@ public class TouchHelper {
         quitRawDrawing();
     }
 
-    // TODO find a better place to place this method
-    public TouchPoint getEraserPoint() {
-        return null;
-    }
-
     public void setCustomLimitRect(View view, Rect rect) {
         setCustomLimitRect(view, rect, null);
     }
