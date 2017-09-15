@@ -115,6 +115,7 @@ public class TouchHelper {
 
     public void setUseRawInput(boolean use) {
         getRawInputManager().setUseRawInput(use);
+        getTouchReader().setUseRawInput(use);
     }
 
     private void setupEpdPenManager(final View view) {
