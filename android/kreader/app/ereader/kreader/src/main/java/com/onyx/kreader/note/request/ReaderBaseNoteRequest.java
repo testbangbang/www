@@ -165,8 +165,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     synchronized (parent) {
                         updateShapeDataInfo(parent);
                         if (isRender() && isTransfer()) {
-                            parent.enableScreenPost(true);
-                            parent.renderToSurfaceView(applyGCIntervalUpdate);
+                            parent.copyBitmap();
                         }
                     }
                     BaseCallback.invoke(getCallback(), ReaderBaseNoteRequest.this, getException());

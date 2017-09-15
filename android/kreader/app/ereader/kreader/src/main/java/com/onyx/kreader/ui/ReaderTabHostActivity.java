@@ -91,6 +91,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private boolean isDoubleLinked = false;
 
     private ReaderTabManager.ReaderTab tabBeforeSideReading;
+    private int orientationBeforeSideReading;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
@@ -199,16 +200,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
-
-                final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
-                DataManager dataManager = new DataManager();
-                dataManager.submit(ReaderTabHostActivity.this, metadataRequest, new BaseCallback() {
-                    @Override
-                    public void done(BaseRequest request, Throwable e) {
-                        showTabHostMenuDialog(getRecentFiles(metadataRequest.getList()));
-                    }
-                });
+                showTabHostMenuDialog(btnMenu);
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
@@ -319,8 +311,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         bringReaderTabToFront(getSideReadingRight());
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.VISIBLE);
+        findViewById(R.id.btn_menu).setVisibility(View.GONE);
         findViewById(R.id.btn_switch).setVisibility(View.GONE);
 
+        orientationBeforeSideReading = getRequestedOrientation();
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
     }
 
@@ -333,6 +327,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.INVISIBLE);
+        findViewById(R.id.btn_menu).setVisibility(View.VISIBLE);
         findViewById(R.id.btn_switch).setVisibility(View.VISIBLE);
 
         closeReaderTab(getSideReadingLeft(), true, false);
@@ -345,6 +340,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         openDocWithTab(tabBeforeSideReading, tabManager.getOpenedTabs().get(tabBeforeSideReading));
         tabBeforeSideReading = null;
+
+        setRequestedOrientation(orientationBeforeSideReading);
     }
 
     private void startSideNote(String path) {
@@ -611,17 +608,36 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         for (int i = 0; i < tabWidget.getTabCount(); i++) {
             if (tabWidget.getChildTabViewAt(i).getTag() == tab) {
                 ((TextView)tabWidget.getChildAt(i).findViewById(R.id.text_view_title)).setText(name);
+                if (isSideReading) {
+                    tabWidget.getChildAt(i).findViewById(R.id.image_button_menu).setVisibility(View.VISIBLE);
+                } else {
+                    tabWidget.getChildAt(i).findViewById(R.id.image_button_menu).setVisibility(View.GONE);
+                }
                 return;
             }
         }
 
         View tabIndicator = LayoutInflater.from(this).inflate(R.layout.view_reader_host_tab_indicator, null);
         ((TextView)tabIndicator.findViewById(R.id.text_view_title)).setText(name);
+        if (isSideReading) {
+            tabIndicator.findViewById(R.id.image_button_menu).setVisibility(View.VISIBLE);
+        } else {
+            tabIndicator.findViewById(R.id.image_button_menu).setVisibility(View.GONE);
+        }
 
         tabHost.addTab(tabHost.newTabSpec(tab.toString())
                 .setIndicator(tabIndicator)
                 .setContent(android.R.id.tabcontent));
         tabWidget.getChildTabViewAt(tabWidget.getTabCount() - 1).setTag(tab);
+
+        tabIndicator.findViewById(R.id.image_button_menu).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bringReaderTabToFront(tab);
+                showTabHostMenuDialog(v);
+            }
+        });
+
         tabIndicator.findViewById(R.id.image_button_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1216,7 +1232,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return files;
     }
 
-    private void showTabHostMenuDialog(List<String> files) {
+    private void showTabHostMenuDialog(final View menuButton) {
+        final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
+
+        final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+        DataManager dataManager = new DataManager();
+        dataManager.submit(ReaderTabHostActivity.this, metadataRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                showTabHostMenuDialog(menuButton, getRecentFiles(metadataRequest.getList()));
+            }
+        });
+    }
+
+    private void showTabHostMenuDialog(View menuButton, List<String> files) {
         DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, files, isSideReading,
                 new DialogTabHostMenu.Callback() {
 
@@ -1239,6 +1268,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     }
 
                     @Override
+                    public void onOpenDoc(String path) {
+                        ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
+                        if (tab != null) {
+                            reopenReaderTab(tab);
+                            return;
+                        }
+                        openDocWithTab(getCurrentTabInHost(), path);
+                    }
+
+                    @Override
                     public void onSideSwitch() {
                         switchSideReadingTab();
                     }
@@ -1253,7 +1292,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 });
 
         int[] location = new int[2];
-        btnMenu.getLocationOnScreen(location);
+        menuButton.getLocationOnScreen(location);
 
         dlg.getWindow().setGravity(Gravity.LEFT | Gravity.TOP);
         WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();

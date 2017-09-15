@@ -58,7 +58,8 @@ public class ReaderPainter {
                          final Bitmap bitmap,
                          final ReaderUserDataInfo userDataInfo,
                          final ReaderViewInfo viewInfo,
-                         ReaderSelectionManager selectionManager) {
+                         ReaderSelectionManager selectionManager,
+                         NoteManager noteManager) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
@@ -69,6 +70,7 @@ public class ReaderPainter {
         drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
         drawPageLinks(context, canvas, paint, userDataInfo, viewInfo);
+        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -177,6 +179,20 @@ public class ReaderPainter {
         }
     }
 
+    private void drawShapeContents(Context context,
+                                   Canvas canvas,
+                                   Paint paint,
+                                   final ReaderUserDataInfo userDataInfo,
+                                   final ReaderViewInfo viewInfo,
+                                   final NoteManager noteManager) {
+        if (!viewInfo.supportScalable) {
+            return;
+        }
+        drawShapes(context, canvas, paint, userDataInfo, noteManager);
+        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
+        drawShapeEraser(context, canvas, paint, noteManager);
+    }
+
     private void drawBookmark(Context context, Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         if (!SingletonSharedPreference.isShowBookmark(context)) {
             return;
@@ -251,6 +267,64 @@ public class ReaderPainter {
         selectionManager.draw(canvas, paint, xor);
     }
 
+    private void drawShapes(final Context context,
+                            final Canvas canvas,
+                            final Paint paint,
+                            final ReaderUserDataInfo userDataInfo,
+                            final NoteManager noteManager) {
+        boolean showNote = SingletonSharedPreference.isShowNote(context);
+        if (!showNote || userDataInfo.hasHighlightResult()) {
+            return;
+        }
+        final ReaderNoteDataInfo noteDataInfo = noteManager.getNoteDataInfo();
+        if (!noteDataInfo.isRequestFinished() || !isShapeBitmapReady(noteManager, noteDataInfo) || !noteDataInfo.isContentRendered()) {
+            return;
+        }
+        final Bitmap bitmap = noteManager.getViewBitmap();
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+    }
+
+    private void drawStashShapes(final Context context,
+                            final Canvas canvas,
+                            final Paint paint,
+                            final NoteManager noteManager,
+                            final ReaderViewInfo viewInfo) {
+        if (!SingletonSharedPreference.isShowNote(context)) {
+            return;
+        }
+        if (noteManager.isDFBForCurrentShape()) {
+            return;
+        }
+        final PageInfo pageInfo = viewInfo.getFirstVisiblePage();
+        final Matrix renderMatrix = new Matrix();
+        renderMatrix.reset();
+        renderMatrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+        renderMatrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+        RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
+        if (!CollectionUtils.isNullOrEmpty(noteManager.getShapeStash())) {
+            for (Shape shape : noteManager.getShapeStash()) {
+                shape.render(renderContext);
+            }
+        }
+        if (noteManager.getCurrentShape() != null) {
+            noteManager.getCurrentShape().render(renderContext);
+        }
+    }
+
+    private void drawShapeEraser(final Context context,
+                                 final Canvas canvas,
+                                 final Paint paint,
+                                 final NoteManager noteManager) {
+        final TouchPoint touchPoint = noteManager.getNoteEventProcessorManager().getEraserPoint();
+        if (touchPoint == null) {
+            return;
+        }
+        paint.setColor(Color.BLACK);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(2.0f);
+        canvas.drawCircle(touchPoint.x, touchPoint.y, noteManager.getNoteDataInfo().getEraserRadius(), paint);
+    }
+
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
         for (PageInfo pageInfo : viewInfo.getVisiblePages()) {
             if (userDataInfo.hasBookmark(pageInfo)) {
@@ -258,6 +332,14 @@ public class ReaderPainter {
             }
         }
         return false;
+    }
+
+    private boolean isShapeBitmapReady(NoteManager noteManager, ReaderNoteDataInfo shapeDataInfo) {
+        final Bitmap bitmap = noteManager.getViewBitmap();
+        if (bitmap == null) {
+            return false;
+        }
+        return true;
     }
 
     private void drawTestTouchPointCircle(Context context, Canvas canvas, Paint paint, final ReaderUserDataInfo userDataInfo) {

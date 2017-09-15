@@ -1,6 +1,7 @@
 package com.onyx.kreader.ui.dialog;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,10 +11,8 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.ui.ReaderTabManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +30,7 @@ public class DialogTabHostMenu extends DialogBase {
         public abstract void onLinkedOpen(String path);
         public abstract void onSideOpen(String left, String right);
         public abstract void onSideNote(String path);
+        public abstract void onOpenDoc(String path);
         public abstract void onSideSwitch();
         public abstract void onClosing();
     }
@@ -59,7 +59,7 @@ public class DialogTabHostMenu extends DialogBase {
                     disableButtons();
                     if (selectedFiles.size() == 1) {
                         buttonDoubleLink.setEnabled(true);
-                        buttonSideNote.setEnabled(true);
+                        buttonOpenDoc.setEnabled(true);
                     }
                     if (selectedFiles.size() == 2) {
                         buttonSideOpen.setEnabled(true);
@@ -78,8 +78,8 @@ public class DialogTabHostMenu extends DialogBase {
     Button buttonDoubleLink;
     @Bind(R.id.button_side_open)
     Button buttonSideOpen;
-    @Bind(R.id.button_side_note)
-    Button buttonSideNote;
+    @Bind(R.id.button_open_doc)
+    Button buttonOpenDoc;
     @Bind(R.id.button_side_switch)
     Button buttonSideSwitch;
     @Bind(R.id.button_close)
@@ -120,11 +120,11 @@ public class DialogTabHostMenu extends DialogBase {
         }
     }
 
-    @OnClick(R.id.button_side_note)
-    void onButtonSideNoteClicked() {
+    @OnClick(R.id.button_open_doc)
+    void onButtonOpenDocClicked() {
         DialogTabHostMenu.this.dismiss();
         if (callback != null) {
-            callback.onSideNote(selectedFiles.get(0));
+            callback.onOpenDoc(selectedFiles.get(0));
         }
     }
 
@@ -145,30 +145,21 @@ public class DialogTabHostMenu extends DialogBase {
     }
 
     private void init() {
-        PageRecyclerView recyclerView = (PageRecyclerView)findViewById(R.id.recycler_view_tab);
-        recyclerView.setAdapter(new PageRecyclerView.PageAdapter() {
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view_tab);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(new RecyclerView.Adapter<RecyclerView.ViewHolder>() {
             @Override
-            public int getRowCount() {
-                return 8;
+            public int getItemCount() {
+                return Math.min(8, files.size());
             }
 
             @Override
-            public int getColumnCount() {
-                return 1;
-            }
-
-            @Override
-            public int getDataCount() {
-                return files.size();
-            }
-
-            @Override
-            public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+            public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
                 return new TabViewHolder(LayoutInflater.from(getContext()).inflate(R.layout.dialog_tab_host_menu_item_view, parent, false));
             }
 
             @Override
-            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+            public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
                 ((TabViewHolder)holder).bindView(files.get(position));
             }
 
@@ -180,7 +171,7 @@ public class DialogTabHostMenu extends DialogBase {
     private void disableButtons() {
         buttonDoubleLink.setEnabled(false);
         buttonSideOpen.setEnabled(false);
-        buttonSideNote.setEnabled(false);
+        buttonOpenDoc.setEnabled(false);
 
         if (!isSideReading) {
             buttonSideSwitch.setEnabled(false);
