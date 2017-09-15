@@ -236,7 +236,7 @@ public class NoteManager {
     }
 
     public void setCustomLimitRect(Rect targetRect){
-        getTouchHelper().setCustomLimitRect(getHostView(), targetRect);
+        getTouchHelper().setCustomLimitRect(targetRect);
     }
 
     @Subscribe

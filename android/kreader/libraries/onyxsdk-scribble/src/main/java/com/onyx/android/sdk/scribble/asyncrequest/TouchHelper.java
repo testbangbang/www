@@ -210,19 +210,30 @@ public class TouchHelper {
         return null;
     }
 
-    public void setCustomLimitRect(View view, Rect rect) {
-        setCustomLimitRect(view, rect, null);
+    public void setCustomLimitRect(Rect rect) {
+        setCustomLimitRect(rect, null);
     }
 
-    public void setCustomLimitRect(View view, Rect limitRect, List<Rect> excludeRectList) {
+    public TouchHelper setCustomLimitRect(Rect limitRect, List<Rect> excludeRectList) {
         customLimitRect = limitRect;
         getTouchReader().setLimitRect(limitRect);
-        getRawInputManager().setCustomLimitRect(view, limitRect, excludeRectList);
+        getRawInputManager().setCustomLimitRect(limitRect, excludeRectList);
+        return this;
     }
-
 
     public TouchHelper setStrokeWidth(float w) {
         getRawInputManager().setStrokeWidth(w);
         return this;
+    }
+
+    public Rect getRelativeRect(final View parentView, final View childView) {
+        int [] parent = new int[2];
+        int [] child = new int[2];
+        parentView.getLocationOnScreen(parent);
+        childView.getLocationOnScreen(child);
+        Rect rect = new Rect();
+        childView.getLocalVisibleRect(rect);
+        rect.offset(child[0] - parent[0], child[1] - parent[1]);
+        return rect;
     }
 }
