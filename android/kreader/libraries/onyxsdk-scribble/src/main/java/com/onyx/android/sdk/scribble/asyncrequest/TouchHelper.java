@@ -1,16 +1,18 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.graphics.Rect;
-import android.text.method.Touch;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointMoveReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointMoveReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -30,8 +32,6 @@ public class TouchHelper {
 
     private class ReaderCallback implements TouchReader.TouchInputCallback, RawInputReader.RawInputCallback {
 
-        private TouchPointList erasePoints;
-
         @Override
         public void onErasingTouchEvent(MotionEvent event) {
             eventBus.post(new ErasingTouchEvent(event));
@@ -44,17 +44,17 @@ public class TouchHelper {
 
         @Override
         public void onBeginRawData(boolean shortcutDrawing, TouchPoint point) {
-            eventBus.post(new BeginRawDataEvent());
+            eventBus.post(new BeginRawDataEvent(shortcutDrawing, point));
         }
 
         @Override
         public void onEndRawData(boolean outLimitRegion, TouchPoint point) {
-
+            eventBus.post(new EndRawDataEvent(outLimitRegion, point));
         }
 
         @Override
         public void onRawTouchPointMoveReceived(TouchPoint point) {
-
+            eventBus.post(new RawTouchPointMoveReceivedEvent(point));
         }
 
         @Override
@@ -64,24 +64,22 @@ public class TouchHelper {
 
         @Override
         public void onBeginErasing(boolean shortcutErasing, TouchPoint point) {
-            erasePoints = new TouchPointList();
-            eventBus.post(new BeginErasingEvent());
+            eventBus.post(new BeginRawErasingEvent(shortcutErasing, point));
         }
 
         @Override
         public void onEndErasing(boolean outLimitRegion, TouchPoint point) {
-            eventBus.post(new RawErasePointsReceivedEvent(erasePoints));
-            erasePoints = null;
+            eventBus.post(new EndRawErasingEvent(outLimitRegion, point));
         }
 
         @Override
         public void onEraseTouchPointMoveReceived(TouchPoint point) {
-            erasePoints.add(point);
+            eventBus.post(new RawErasePointMoveReceivedEvent(point));
         }
 
         @Override
         public void onEraseTouchPointListReceived(TouchPointList pointList) {
-            eventBus.post(new ErasingEvent(null, false));
+            eventBus.post(new RawErasePointListReceivedEvent(pointList));
         }
     }
 

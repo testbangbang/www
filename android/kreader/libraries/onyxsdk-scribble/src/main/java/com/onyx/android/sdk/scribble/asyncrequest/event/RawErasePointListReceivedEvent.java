@@ -6,8 +6,8 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
  * Created by solskjaer49 on 2017/8/2 18:16.
  */
 
-public class RawErasePointsReceivedEvent {
-    public RawErasePointsReceivedEvent(TouchPointList touchPointList) {
+public class RawErasePointListReceivedEvent {
+    public RawErasePointListReceivedEvent(TouchPointList touchPointList) {
         this.touchPointList = touchPointList;
     }
 
