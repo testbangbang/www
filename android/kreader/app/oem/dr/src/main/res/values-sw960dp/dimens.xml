@@ -274,4 +274,6 @@
     <dimen name="dict_setting_activity_margin_top">40dp</dimen>
     <dimen name="dict_select_dialog_recycler_view_margin">10dp</dimen>
     <dimen name="query_dict_activity_view_height">65dp</dimen>
+    <dimen name="reader_menu_tab_height">100dp</dimen>
+    <dimen name="reader_reading_setting_menu_margin">100dp</dimen>
 </resources>

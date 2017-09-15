@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.dialog.DialogAnnotation;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 import com.onyx.android.sdk.data.model.Annotation;
@@ -79,7 +78,6 @@ public class PostilListAdapter extends PageRecyclerView.PageAdapter<PostilListAd
         int position = (int) v.getTag();
         PageAnnotation pageAnnotation = list.get(position);
         readerPresenter.setPageAnnotation(pageAnnotation);
-        ShowReaderBottomMenuDialogAction.showAnnotationDialog(readerPresenter, DialogAnnotation.AnnotationAction.update);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

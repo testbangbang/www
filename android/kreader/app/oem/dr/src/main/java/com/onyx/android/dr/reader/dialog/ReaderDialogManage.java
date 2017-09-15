@@ -1,7 +1,7 @@
 package com.onyx.android.dr.reader.dialog;
 
 
-import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
+import com.onyx.android.dr.reader.activity.ReaderActivity;
 import com.onyx.android.dr.reader.event.DisplayStatusBarEvent;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 
@@ -12,9 +12,11 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ReaderDialogManage {
-    public static void onShowMainMenu(ReaderPresenter readerPresenter, boolean isWord, DialogAnnotation.AnnotationAction action) {
+    public static void onShowMainMenu(ReaderPresenter readerPresenter) {
         EventBus.getDefault().post(new DisplayStatusBarEvent(false));
-        ShowReaderBottomMenuDialogAction.showReaderBottomDialog(readerPresenter, isWord, action);
+        ReaderActivity readerActivity = (ReaderActivity) readerPresenter.getReaderView().getViewContext();
+        ReaderBottomDialog readerBottomDialog = new ReaderBottomDialog(readerPresenter, readerActivity, -1, null);
+        readerBottomDialog.show();
     }
 
     public static void onShowBookInfoDialog(ReaderPresenter readerPresenter, int mode) {

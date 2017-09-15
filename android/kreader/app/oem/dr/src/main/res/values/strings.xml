@@ -553,4 +553,7 @@
     <string name="please_select_dict">please select dict</string>
     <string name="font">font</string>
     <string name="remove_from_cart_message">Whether remove books from cart?</string>
+    <string name="write_remarks">scribble</string>
+    <string name="add_new_word">add new word</string>
+    <string name="delete_mark">delete mark</string>
 </resources>
