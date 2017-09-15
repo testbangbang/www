@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.graphics.Rect;
+import android.text.method.Touch;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -107,15 +108,17 @@ public class TouchHelper {
         return epdPenManager;
     }
 
-    public void setup(View view) {
+    public TouchHelper setup(View view) {
         setupTouchReader(view);
         setupRawInputManager(view);
         setupEpdPenManager(view);
+        return this;
     }
 
-    public void setUseRawInput(boolean use) {
+    public TouchHelper setUseRawInput(boolean use) {
         getRawInputManager().setUseRawInput(use);
         getTouchReader().setUseRawInput(use);
+        return this;
     }
 
     private void setupEpdPenManager(final View view) {
@@ -164,17 +167,20 @@ public class TouchHelper {
         return rawInputManager;
     }
 
-    public void setInUserErasing(boolean inUserErasing) {
+    public TouchHelper setInUserErasing(boolean inUserErasing) {
         getTouchReader().setInUserErasing(inUserErasing);
+        return this;
     }
 
-    public void setRenderByFramework(boolean renderByFramework) {
+    public TouchHelper setRenderByFramework(boolean renderByFramework) {
         getTouchReader().setRenderByFramework(renderByFramework);
+        return this;
     }
 
-    public void startRawDrawing() {
+    public TouchHelper startRawDrawing() {
         getRawInputManager().startRawInputReader();
         getEpdPenManager().startDrawing();
+        return this;
     }
 
     public void pauseRawDrawing() {
@@ -217,7 +223,8 @@ public class TouchHelper {
     }
 
 
-    public void setStrokeWidth(float w) {
+    public TouchHelper setStrokeWidth(float w) {
         getRawInputManager().setStrokeWidth(w);
+        return this;
     }
 }
