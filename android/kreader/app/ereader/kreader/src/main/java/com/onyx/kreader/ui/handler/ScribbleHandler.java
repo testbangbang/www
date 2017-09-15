@@ -4,13 +4,10 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
-import com.onyx.kreader.note.request.StopNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 
@@ -74,7 +71,9 @@ public class ScribbleHandler extends BaseHandler {
             return false;
         }
 
-        return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
+        // TODO can ignore?
+//        return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
+        return true;
     }
 
     private boolean inSelection(final ReaderDataHolder readerDataHolder) {

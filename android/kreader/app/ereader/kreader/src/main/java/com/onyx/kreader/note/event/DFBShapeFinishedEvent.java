@@ -8,10 +8,10 @@ import com.onyx.android.sdk.scribble.shape.Shape;
 
 public class DFBShapeFinishedEvent {
     public Shape shape;
-    public boolean triggerByButton;
+    public boolean shortcut;
 
-    public DFBShapeFinishedEvent(final Shape shape, boolean triggerByButton) {
+    public DFBShapeFinishedEvent(final Shape shape, boolean shortcut) {
         this.shape = shape;
-        this.triggerByButton = triggerByButton;
+        this.shortcut = shortcut;
     }
 }

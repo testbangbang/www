@@ -2,24 +2,28 @@ package com.onyx.kreader.note;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
-import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
+import com.onyx.android.sdk.scribble.asyncrequest.TouchHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointMoveReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointMoveReceivedEvent;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -31,23 +35,17 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.utils.Debug;
-import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.kreader.note.bridge.NoteEventProcessorBase;
-import com.onyx.kreader.note.bridge.NoteEventProcessorManager;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
-import com.onyx.kreader.note.event.DFBShapeFinishedEvent;
-import com.onyx.kreader.note.event.DFBShapeStartEvent;
-import com.onyx.kreader.note.event.RawErasingFinishEvent;
-import com.onyx.kreader.note.event.RawErasingStartEvent;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
-import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
+import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
@@ -65,7 +63,7 @@ public class NoteManager {
 
     private static final String TAG = NoteManager.class.getSimpleName();
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private NoteEventProcessorManager noteEventProcessorManager;
+    private TouchHelper touchHelper;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
@@ -88,10 +86,13 @@ public class NoteManager {
     private volatile boolean enableShortcutErasing = false;
     private boolean useWakeLock = true;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder(false);
+    private TouchPoint eraserPoint;
 
     public NoteManager(final ReaderDataHolder p) {
         parent = p;
         p.getEventBus().register(this);
+        ConfigManager.init(p.getContext().getApplicationContext());
+        getTouchHelper().setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
     }
 
     public final RequestManager getRequestManager() {
@@ -103,7 +104,7 @@ public class NoteManager {
     }
 
     public void startRawEventProcessor() {
-        getNoteEventProcessorManager().start();
+        getTouchHelper().startRawDrawing();
     }
 
     public void enableRawEventProcessor(boolean enable) {
@@ -115,19 +116,19 @@ public class NoteManager {
 
     public void stopRawEventProcessor() {
         releaseWakeLock();
-        getNoteEventProcessorManager().stop();
+        getTouchHelper().quitRawDrawing();
     }
 
     public void pauseRawEventProcessor() {
         releaseWakeLock();
-        getNoteEventProcessorManager().pause();
+        getTouchHelper().pauseRawDrawing();
     }
 
     public void resumeRawEventProcessor(final Context context) {
         if (enableRawEventProcessor) {
             acquireWakeLock(context);
         }
-        getNoteEventProcessorManager().resume();
+        getTouchHelper().resumeRawDrawing();
     }
 
     private void acquireWakeLock(final Context context) {
@@ -155,14 +156,16 @@ public class NoteManager {
             initNoteArgs(context);
         }
         surfaceView = sv;
-        getNoteEventProcessorManager().update(surfaceView, visibleDrawRect, excludeRect);
+        getTouchHelper().setup(surfaceView);
+        getTouchHelper().setCustomLimitRect(surfaceView, visibleDrawRect,
+                RectUtils.toRectList(excludeRect));
     }
 
-    public final NoteEventProcessorManager getNoteEventProcessorManager() {
-        if (noteEventProcessorManager == null) {
-            noteEventProcessorManager = new NoteEventProcessorManager(this);
+    public final TouchHelper getTouchHelper() {
+        if (touchHelper == null) {
+            touchHelper = new TouchHelper(parent.getEventBus());
         }
-        return noteEventProcessorManager;
+        return touchHelper;
     }
 
     public final DeviceConfig getNoteConfig() {
@@ -178,95 +181,6 @@ public class NoteManager {
 
     public ReaderDataHolder getParent() {
         return parent;
-    }
-
-    public final NoteEventProcessorBase.InputCallback getInputCallback() {
-        NoteEventProcessorBase.InputCallback inputCallback = new NoteEventProcessorBase.InputCallback() {
-
-            @Override
-            public void onDrawingTouchDown(MotionEvent motionEvent, Shape shape) {
-                if (shape != null && !shape.supportDFB()) {
-                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
-                }
-            }
-
-            @Override
-            public void onDrawingTouchMove(MotionEvent motionEvent, Shape shape, boolean last) {
-                if (shape != null && !shape.supportDFB() && last) {
-                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
-                }
-            }
-
-            @Override
-            public void onDrawingTouchUp(MotionEvent motionEvent, Shape shape) {
-                if (shape == null) {
-                    return;
-                }
-                onNewStash(shape);
-                if (!shape.supportDFB()) {
-                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
-                }
-            }
-
-            public void onErasingTouchDown(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(true, false, list));
-            }
-
-            public void onErasingTouchMove(final MotionEvent motionEvent, final TouchPointList list, boolean last) {
-                if (last) {
-                    getParent().getEventBus().post(new ShapeErasingEvent(false, false, list));
-                }
-            }
-
-            public void onErasingTouchUp(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(false, true, list));
-            }
-
-            public void onRawErasingStart() {
-                getParent().getEventBus().post(new ShortcutErasingStartEvent());
-            }
-
-            public void onRawErasingFinished(final TouchPointList list) {
-                getParent().getEventBus().post(new ShortcutErasingFinishEvent(list));
-            }
-
-            public void onDFBShapeStart(boolean shortcut) {
-                if (shortcut) {
-                    getParent().getEventBus().post(new ShortcutDrawingStartEvent());
-                }
-            }
-
-            public void onDFBShapeFinished(final Shape shape, boolean shortcut) {
-                Debug.e(getClass(), "onDFBShapeFinished");
-                onNewStash(shape);
-                if (shortcut) {
-                    getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
-                } else {
-                    getParent().getEventBus().post(new ShapeAddedEvent());
-                }
-            }
-
-            public boolean enableShortcutDrawing() {
-                if (getNoteDataInfo() == null) {
-                    return enableShortcutDrawing;
-                }
-                return enableShortcutDrawing && !isInSelection();
-            }
-
-            public boolean enableShortcutErasing() {
-                return enableShortcutErasing;
-            }
-
-            public boolean enableRawEventProcessor() {
-                return enableRawEventProcessor;
-            }
-
-            public void enableTouchInput(boolean enable) {
-                getParent().getHandlerManager().setEnableTouch(enable);
-            }
-
-        };
-        return inputCallback;
     }
 
     public void enableScreenPost(boolean enable) {
@@ -353,38 +267,6 @@ public class NoteManager {
         return runnable;
     }
 
-    private Rect checkSurfaceView() {
-        if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
-            Log.e(TAG, "surfaceView is not valid");
-            return null;
-        }
-        return getViewportSize();
-    }
-
-    private void updateMatrix(final Matrix matrix, final PageInfo pageInfo) {
-        matrix.reset();
-        matrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
-        matrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
-    }
-
-    private void applyUpdateMode() {
-        if (false) {
-            EpdController.setViewDefaultUpdateMode(surfaceView, UpdateMode.GC);
-        } else {
-            EpdController.resetUpdateMode(surfaceView);
-        }
-    }
-
-    private Canvas getCanvasForDraw(SurfaceView surfaceView, Rect rect) {
-        return surfaceView.getHolder().lockCanvas(rect);
-    }
-
-    private void clearBackground(final Canvas canvas, final Paint paint, final Rect rect) {
-        paint.setStyle(Paint.Style.FILL);
-        paint.setColor(Color.WHITE);
-        canvas.drawRect(rect, paint);
-    }
-
     private Rect getViewportSize() {
         if (surfaceView != null) {
             return new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight());
@@ -414,6 +296,7 @@ public class NoteManager {
 
     public void setCurrentStrokeWidth(float w) {
         getNoteDrawingArgs().strokeWidth = w;
+        getTouchHelper().setStrokeWidth(w);
     }
 
     public Shape createNewShape(final PageInfo pageInfo) {
@@ -552,21 +435,32 @@ public class NoteManager {
         return visibleDrawRectF.contains(x, y);
     }
 
-    public Shape collectPoint(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean createShape, boolean up) {
+    public Shape collectPoint(final PageInfo pageInfo, final TouchPoint point, boolean createShape, boolean up) {
+        float[] srcPoint = new float[2];
+        float[] dstPoint = new float[2];
+
+        srcPoint[0] = point.x;
+        srcPoint[1] = point.y;
+        EpdController.mapToEpd(surfaceView, srcPoint, dstPoint);
+        final TouchPoint screen = new TouchPoint(dstPoint[0], dstPoint[1],
+                point.getPressure(), point.getSize(),
+                point.getTimestamp());
+
+
         if (pageInfo == null) {
-            return onShapeUp(pageInfo, normal, screen);
+            return onShapeUp(pageInfo, point, screen);
         }
-        normal.normalize(pageInfo);
+        point.normalize(pageInfo);
         if (getCurrentShape() == null) {
             if (createShape) {
-                return onShapeDown(pageInfo, normal, screen);
+                return onShapeDown(pageInfo, point, screen);
             }
             return null;
         }
         if (!up) {
-            return onShapeMove(pageInfo, normal, screen);
+            return onShapeMove(pageInfo, point, screen);
         }
-        return onShapeUp(pageInfo, normal, screen);
+        return onShapeUp(pageInfo, point, screen);
     }
 
     private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
@@ -619,35 +513,204 @@ public class NoteManager {
         }
     }
 
-    @Subscribe
-    public void onRawErasingStartEvent(RawErasingStartEvent e) {
-        Debug.e(getClass(), "onRawErasingStartEvent");
-        getParent().getEventBus().post(new ShortcutErasingStartEvent());
+    private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
+        final TouchPoint normalized = new TouchPoint(motionEvent.getHistoricalX(i),
+                motionEvent.getHistoricalY(i),
+                motionEvent.getHistoricalPressure(i),
+                motionEvent.getHistoricalSize(i),
+                motionEvent.getHistoricalEventTime(i));
+        return normalized;
+    }
+
+    private PageInfo lastPageInfo = null;
+
+    public void onDrawingTouchDown(MotionEvent motionEvent) {
+        final TouchPoint touchPoint = new TouchPoint(motionEvent);
+        lastPageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
+        if (lastPageInfo == null) {
+            return;
+        }
+        final Shape shape = collectPoint(lastPageInfo, touchPoint, true, false);
+        getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+    }
+
+    public void onDrawingTouchMove(MotionEvent motionEvent) {
+        if (lastPageInfo == null) {
+            return;
+        }
+
+        int n = motionEvent.getHistorySize();
+        for (int i = 0; i < n; i++) {
+            final TouchPoint touchPoint = fromHistorical(motionEvent, i);
+            PageInfo pageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
+            if (pageInfo != lastPageInfo) {
+                 continue;
+            }
+            collectPoint(lastPageInfo, touchPoint, true, false);
+        }
+
+        TouchPoint touchPoint = new TouchPoint(motionEvent);
+        PageInfo pageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
+        if (pageInfo != lastPageInfo) {
+            return;
+        }
+        final Shape shape = collectPoint(lastPageInfo, touchPoint, true, false);
+        getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+    }
+
+    public void onDrawingTouchUp(MotionEvent motionEvent) {
+        if (lastPageInfo == null) {
+            return;
+        }
+        finishCurrentShape();
+    }
+
+    public void onErasingTouchDown(final MotionEvent motionEvent) {
+    }
+
+    public void onErasingTouchMove(final MotionEvent motionEvent) {
+        TouchPointList list = new TouchPointList();
+        int n = motionEvent.getHistorySize();
+        for (int i = 0; i < n; i++) {
+            list.add(fromHistorical(motionEvent, i));
+        }
+        list.add(new TouchPoint(motionEvent));
+        getParent().getEventBus().post(new ShapeErasingEvent(false, true, list));
+
+        eraserPoint = list.get(list.size() - 1);
+    }
+
+    public void onErasingTouchUp(final MotionEvent motionEvent) {
+        eraserPoint = null;
     }
 
     @Subscribe
-    public void onRawErasingFinishEvent(RawErasingFinishEvent e) {
-        Debug.e(getClass(), "onRawErasingFinishEvent");
-        getParent().getEventBus().post(new ShortcutErasingFinishEvent(e.list));
+    public void onErasingTouchEvent(ErasingTouchEvent e) {
+        if (isDFBForCurrentShape()) {
+            return;
+        }
+        switch (e.getMotionEvent().getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                onErasingTouchDown(e.getMotionEvent());
+                break;
+            case MotionEvent.ACTION_MOVE:
+                onErasingTouchMove(e.getMotionEvent());
+                break;
+            case MotionEvent.ACTION_UP:
+                onErasingTouchUp(e.getMotionEvent());
+                break;
+            default:
+                break;
+        }
     }
 
     @Subscribe
-    public void onDFBShapeStart(DFBShapeStartEvent e) {
-        Debug.e(getClass(), "onDFBShapeStart");
-        if (e.shortcut) {
+    public void onDrawingTouchEvent(DrawingTouchEvent e) {
+        if (isDFBForCurrentShape()) {
+            return;
+        }
+        switch (e.getMotionEvent().getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                if (isEraser()) {
+                    onErasingTouchDown(e.getMotionEvent());
+                } else {
+                    onDrawingTouchDown(e.getMotionEvent());
+                }
+                break;
+            case MotionEvent.ACTION_MOVE:
+                if (isEraser()) {
+                    onErasingTouchMove(e.getMotionEvent());
+                } else {
+                    onDrawingTouchMove(e.getMotionEvent());
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (isEraser()) {
+                    onErasingTouchUp(e.getMotionEvent());
+                } else {
+                    onDrawingTouchUp(e.getMotionEvent());
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    private boolean shortcutDrawing = false;
+
+    @Subscribe
+    public void onBeginRawDataEvent(BeginRawDataEvent e) {
+        Debug.e(getClass(), "onBeginRawDataEvent");
+        if (e.isShortcutDrawing()) {
+            shortcutDrawing = true;
             getParent().getEventBus().post(new ShortcutDrawingStartEvent());
         }
     }
 
     @Subscribe
-    public void onDFBShapeFinished(DFBShapeFinishedEvent e) {
-        Debug.e(getClass(), "onDFBShapeFinished");
-        onNewStash(e.shape);
-        if (e.triggerByButton) {
+    public void onEndRawDataEvent(EndRawDataEvent e) {
+        Debug.e(getClass(), "onEndRawDataEvent");
+//        onNewStash(e.shape);
+    }
+
+    private void finishCurrentShape() {
+        onNewStash(currentShape);
+        resetCurrentShape();
+        if (shortcutDrawing) {
             getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
         } else {
             getParent().getEventBus().post(new ShapeAddedEvent());
         }
     }
 
+    @Subscribe
+    public void onRawTouchPointMoveReceivedEvent(RawTouchPointMoveReceivedEvent e) {
+    }
+
+    @Subscribe
+    public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent e) {
+        Debug.e(getClass(), "onRawTouchPointListReceivedEvent");
+        PageInfo lastPageInfo = null;
+        for (TouchPoint p : e.getTouchPointList().getPoints()) {
+            PageInfo pageInfo = hitTest(p.getX(), p.getY());
+            if (pageInfo == null || (lastPageInfo != null && pageInfo != lastPageInfo)) {
+                if (currentShape != null) {
+                    finishCurrentShape();
+                }
+                continue;
+            }
+
+            collectPoint(pageInfo, p, true, false);
+        }
+        if (currentShape != null) {
+            finishCurrentShape();
+        }
+    }
+
+    @Subscribe
+    public void onRawErasingStartEvent(BeginRawErasingEvent e) {
+        Debug.e(getClass(), "onRawErasingStartEvent");
+        getParent().getEventBus().post(new ShortcutErasingStartEvent());
+    }
+
+    @Subscribe
+    public void onRawErasingFinishEvent(RawErasePointListReceivedEvent e) {
+        Debug.e(getClass(), "onRawErasingFinishEvent");
+        getParent().getEventBus().post(new ShortcutErasingFinishEvent(e.getTouchPointList()));
+    }
+
+    @Subscribe
+    public void onRawErasePointMoveReceivedEvent(RawErasePointMoveReceivedEvent e) {
+
+    }
+
+    @Subscribe
+    public void onRawErasePointListReceivedEvent(RawErasePointListReceivedEvent e) {
+        Debug.e(getClass(), "onRawErasePointListReceivedEvent");
+
+    }
+
+    public TouchPoint getEraserPoint() {
+        return eraserPoint;
+    }
 }

@@ -315,7 +315,7 @@ public class ReaderPainter {
                                  final Canvas canvas,
                                  final Paint paint,
                                  final NoteManager noteManager) {
-        final TouchPoint touchPoint = noteManager.getNoteEventProcessorManager().getEraserPoint();
+        final TouchPoint touchPoint = noteManager.getEraserPoint();
         if (touchPoint == null) {
             return;
         }
