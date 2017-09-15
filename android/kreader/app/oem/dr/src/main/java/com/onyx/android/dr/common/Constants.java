@@ -126,4 +126,9 @@ public class Constants {
     public static final int IDENTITY = 1;
 
     public static final int DICT_QUERY = 0;
+    public static final int DICT_OTHER = 1;
+
+    public static final int ACTION_ONE = 0;
+    public static final int ACTION_TWO = 1;
+    public static final int FOUR = 4;
 }

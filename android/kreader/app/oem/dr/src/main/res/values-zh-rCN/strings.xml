@@ -543,6 +543,7 @@
     <string name="third_sequence">第三序列</string>
     <string name="select_language_hint">每个序列选择语言不能相同</string>
     <string name="please_select_dict">请选择词典</string>
+    <string name="select_most_dict">最多可选择四本字典</string>
     <string name="font">字体</string>
     <string name="remove_from_cart_message">是否从购物车中删除书籍?</string>
     <string name="write_remarks">手写备注</string>

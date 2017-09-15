@@ -23,7 +23,7 @@ public class DictFunctionConfig {
         DictFunctionBean functionData = new DictFunctionBean(context.getResources().getString(R.string.vocabulary_notebook), R.drawable.new_word_notebook, new VocabularyNotebookEvent());
         dictFunctionData.add(functionData);
 
-        functionData = new DictFunctionBean(context.getResources().getString(R.string.new_word_query), R.drawable.new_word_query, new NewWordQueryEvent());
+        functionData = new DictFunctionBean(context.getResources().getString(R.string.new_word_query), R.drawable.new_word_query, new NewWordQueryEvent(""));
         dictFunctionData.add(functionData);
 
         functionData = new DictFunctionBean(context.getResources().getString(R.string.good_sentence_excerpt), R.drawable.good_sentence_notebook, new GoodExcerptEvent());

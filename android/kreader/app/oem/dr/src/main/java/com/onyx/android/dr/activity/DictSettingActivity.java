@@ -220,18 +220,22 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
             pathList = Utils.getDictName(Constants.OTHER_DICTIONARY);
             dialogTitle.setText(getString(R.string.Japanese) + getString(R.string.dictionary_key_lists));
         }
-        listCheck = Utils.getCheckedList(pathList);
+        listCheck = Utils.getCheckedList(type, pathList);
         selectDictAdapter.setDataList(pathList, listCheck);
         resultView.setAdapter(selectDictAdapter);
         selectDictAdapter.setOnItemListener(new SelectDictAdapter.OnItemClickListener() {
             @Override
             public void setOnItemClick(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
+                if (pathList.size() > 0) {
+                    listCheck.set(position, isCheck);
+                }
             }
 
             @Override
             public void setOnItemCheckedChanged(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
+                if (pathList.size() > 0) {
+                    listCheck.set(position, isCheck);
+                }
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {
@@ -248,6 +252,10 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
                 List<DictTypeBean> data = getData(listCheck, pathList);
                 if (data == null || data.isEmpty()) {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_select_dict));
+                    return;
+                }
+                if (data.size() > Constants.FOUR) {
+                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.select_most_dict));
                     return;
                 }
                 dictSettingPresenter.saveSelectDict(type, listCheck, pathList);

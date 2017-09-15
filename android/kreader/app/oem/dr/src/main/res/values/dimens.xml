@@ -354,10 +354,13 @@
     <dimen name="select_dict_item_name_margin_left">20dp</dimen>
     <dimen name="select_dict_item_check_margin_right">20dp</dimen>
     <dimen name="item_select_dict_padding">10dp</dimen>
-    <dimen name="dict_setting_activity_spinner_offset">45dp</dimen>
+    <dimen name="dict_setting_activity_spinner_offset">40dp</dimen>
+    <dimen name="good_sentence_activity_spinner_second_offset">50dp</dimen>
     <dimen name="dict_setting_activity_margin_top">40dp</dimen>
     <dimen name="dict_select_dialog_recycler_view_margin">10dp</dimen>
     <dimen name="query_dict_activity_view_height">65dp</dimen>
     <dimen name="reader_menu_tab_height">100dp</dimen>
     <dimen name="reader_reading_setting_menu_margin">100dp</dimen>
+    <dimen name="new_word_query_activity_bottom_padding_bottom">20dp</dimen>
+    <dimen name="dialog_result_bottom_padding_bottom">20dp</dimen>
 </resources>

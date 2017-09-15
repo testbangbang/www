@@ -153,6 +153,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     public void intContainerVisible(List<DictTypeBean> dictLanguageData) {
         int type = dictLanguageData.get(0).getType();
+        languageQueryTypeAdapter.setSelectedPosition(type);
         englishDictName = Utils.getEnglishDictData();
         chineseDictName = Utils.getChineseDictData();
         japaneseDictName = Utils.getMinorityDictData();

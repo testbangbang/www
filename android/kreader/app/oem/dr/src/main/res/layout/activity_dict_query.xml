@@ -213,6 +213,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_margin="@dimen/dict_query_function_margin">
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
