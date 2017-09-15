@@ -269,6 +269,7 @@ public class NoteManager {
     public void setView(SurfaceView surfaceView) {
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().setup(surfaceView);
+        getTouchHelper().startRawDrawing();
         registerEventBus(this);
     }
 
