@@ -364,6 +364,8 @@ public class NotePage {
                     } else {
                         selectRect = shape.getBoundingRect();
                     }
+                }else {
+                    selectRect = shape.getBoundingRect();
                 }
                 selectShapeRectList.add(selectRect);
             }
