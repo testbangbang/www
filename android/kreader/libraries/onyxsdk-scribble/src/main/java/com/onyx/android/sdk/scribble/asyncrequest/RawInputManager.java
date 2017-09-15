@@ -3,11 +3,6 @@ package com.onyx.android.sdk.scribble.asyncrequest;
 import android.graphics.Rect;
 import android.view.View;
 
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.touch.RawInputReader;

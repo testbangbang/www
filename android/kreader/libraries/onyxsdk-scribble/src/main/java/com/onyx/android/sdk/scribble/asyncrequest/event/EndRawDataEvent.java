@@ -6,17 +6,17 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
  * Created by solskjaer49 on 2017/8/2 17:49.
  */
 
-public class BeginRawDataEvent {
-    private boolean shortcutDrawing;
+public class EndRawDataEvent {
+    private boolean outLimitRegion;
     private TouchPoint point;
 
-    public BeginRawDataEvent(boolean shortcutDrawing, TouchPoint point) {
-        this.shortcutDrawing = shortcutDrawing;
+    public EndRawDataEvent(boolean outLimitRegion, TouchPoint point) {
+        this.outLimitRegion = outLimitRegion;
         this.point = point;
     }
 
-    public boolean isShortcutDrawing() {
-        return shortcutDrawing;
+    public boolean isOutLimitRegion() {
+        return outLimitRegion;
     }
 
     public TouchPoint getPoint() {
