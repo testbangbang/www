@@ -82,6 +82,7 @@ public class NoteManager {
     public NoteManager(Context context) {
         appContext = context.getApplicationContext();
         ConfigManager.init(appContext);
+        getTouchHelper().setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
     }
 
     public EventBus getEventBus() {
