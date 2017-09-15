@@ -30,7 +30,7 @@ public class EPDShape extends BaseShape {
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         setPenDown();
         super.onDown(normalizedPoint, screenPoint);
-        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getDisplayStrokeWidth());
+//        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getDisplayStrokeWidth());
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
@@ -39,13 +39,13 @@ public class EPDShape extends BaseShape {
         }
         setPenMove();
         super.onMove(normalizedPoint, screenPoint);
-        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+//        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         if (isPenMove()) {
             super.onUp(normalizedPoint, screenPoint);
-            EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+//            EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
         }
         setPenNull();
     }
