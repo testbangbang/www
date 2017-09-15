@@ -77,12 +77,13 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
     @Override
     protected void onDestroy() {
         leaveScribbleMode();
+        touchHelper.quit();
         super.onDestroy();
     }
 
     @Override
     protected void onPause() {
-        touchHelper.quit();
+        touchHelper.pauseRawDrawing();
         super.onPause();
     }
 
