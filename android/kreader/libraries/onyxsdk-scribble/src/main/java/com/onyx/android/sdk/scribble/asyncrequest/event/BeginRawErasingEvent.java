@@ -3,14 +3,14 @@ package com.onyx.android.sdk.scribble.asyncrequest.event;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 
 /**
- * Created by solskjaer49 on 2017/8/2 17:49.
+ * Created by solskjaer49 on 2017/8/2 18:13.
  */
 
-public class BeginRawDataEvent {
+public class BeginRawErasingEvent {
     private boolean shortcutDrawing;
     private TouchPoint point;
 
-    public BeginRawDataEvent(boolean shortcutDrawing, TouchPoint point) {
+    public BeginRawErasingEvent(boolean shortcutDrawing, TouchPoint point) {
         this.shortcutDrawing = shortcutDrawing;
         this.point = point;
     }

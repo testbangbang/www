@@ -10,10 +10,10 @@ import android.view.SurfaceView;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointsReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.TouchErasePointsReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutArgsEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.UpdateLineLayoutCursorEvent;
@@ -81,6 +81,7 @@ public class NoteManager {
     public NoteManager(Context context) {
         appContext = context.getApplicationContext();
         ConfigManager.init(appContext);
+        getTouchHelper().setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
     }
 
     public EventBus getEventBus() {
@@ -239,7 +240,7 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onBeginErasingEvent(BeginErasingEvent event) {
+    public void onBeginErasingEvent(BeginRawErasingEvent event) {
         Debug.i(getClass(), "onBeginErasingEvent");
         onBeginErasing();
     }
@@ -256,7 +257,7 @@ public class NoteManager {
     }
 
     @Subscribe
-    public void onRawErasePointsReceivedEvent(RawErasePointsReceivedEvent event) {
+    public void onRawErasePointsReceivedEvent(RawErasePointListReceivedEvent event) {
         Debug.i(getClass(), "onRawErasePointsReceivedEvent: ");
         onFinishErasing(event.getTouchPointList());
     }

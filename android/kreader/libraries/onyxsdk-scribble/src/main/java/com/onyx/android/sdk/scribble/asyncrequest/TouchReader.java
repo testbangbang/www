@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.graphics.Rect;
+import android.text.method.Touch;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
@@ -20,13 +21,25 @@ import java.util.List;
 
 public class TouchReader {
 
+    public interface TouchInputCallback {
+        void onErasingTouchEvent(MotionEvent event);
+        void onDrawingTouchEvent(MotionEvent event);
+    }
+
+    private TouchInputCallback callback;
     private Rect limitRect = new Rect();
-    private EventBus eventBus;
     private boolean inUserErasing = false;
     private boolean renderByFramework = false;
+    private boolean useRawInput = false;
+    private boolean supportBigPen = false;
+    private boolean enableFingerErasing = false;
+    private boolean singleTouch = false;
 
-    public TouchReader(EventBus eventBus) {
-        this.eventBus = eventBus;
+    public TouchReader() {
+    }
+
+    public void setTouchInputCallback(TouchInputCallback callback) {
+        this.callback = callback;
     }
 
     public TouchReader setLimitRect(Rect softwareLimitRect) {
@@ -62,16 +75,22 @@ public class TouchReader {
         if ((supportBigPen() && toolType == MotionEvent.TOOL_TYPE_ERASER) || isInUserErasing()) {
             if (isFingerTouch(toolType)) {
                 if (isEnableFingerErasing()) {
-                    eventBus.post(new ErasingTouchEvent(motionEvent));
+                    if (callback != null) {
+                        callback.onErasingTouchEvent(motionEvent);
+                    }
                     return;
                 }
                 return;
             }
-            eventBus.post(new ErasingTouchEvent(motionEvent));
+            if (callback != null) {
+                callback.onErasingTouchEvent(motionEvent);
+            }
             return;
         }
         if (!(isUseRawInput() && isRenderByFramework())) {
-            eventBus.post(new DrawingTouchEvent(motionEvent));
+            if (callback != null) {
+                callback.onDrawingTouchEvent(motionEvent);
+            }
         }
     }
 
@@ -110,23 +129,35 @@ public class TouchReader {
     }
 
     private boolean isSingleTouch() {
-        return getDeviceConfig().isSingleTouch();
+        return singleTouch;
     }
 
     private boolean supportBigPen() {
-        return getDeviceConfig().supportBigPen();
+        return supportBigPen;
     }
 
     private boolean isEnableFingerErasing() {
-        return getDeviceConfig().isEnableFingerErasing();
+        return enableFingerErasing;
     }
 
     private boolean isUseRawInput() {
-        return getDeviceConfig().useRawInput();
+        return useRawInput;
     }
 
-    private DeviceConfig getDeviceConfig() {
-        return ConfigManager.getInstance().getDeviceConfig();
+    public TouchReader setUseRawInput(boolean use) {
+        useRawInput = use;
+        return this;
     }
+
+    public TouchReader setSupportBigPen(boolean support) {
+        supportBigPen = support;
+        return this;
+    }
+
+    public TouchReader setSingleTouch(boolean single) {
+        singleTouch = single;
+        return this;
+    }
+
 
 }

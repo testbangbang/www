@@ -4,9 +4,20 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawErasingEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointMoveReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointMoveReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -19,15 +30,73 @@ import java.util.List;
 public class TouchHelper {
     private static final String TAG = TouchHelper.class.getSimpleName();
 
+    private class ReaderCallback implements TouchReader.TouchInputCallback, RawInputReader.RawInputCallback {
+
+        @Override
+        public void onErasingTouchEvent(MotionEvent event) {
+            eventBus.post(new ErasingTouchEvent(event));
+        }
+
+        @Override
+        public void onDrawingTouchEvent(MotionEvent event) {
+            eventBus.post(new DrawingTouchEvent(event));
+        }
+
+        @Override
+        public void onBeginRawData(boolean shortcutDrawing, TouchPoint point) {
+            eventBus.post(new BeginRawDataEvent(shortcutDrawing, point));
+        }
+
+        @Override
+        public void onEndRawData(boolean outLimitRegion, TouchPoint point) {
+            eventBus.post(new EndRawDataEvent(outLimitRegion, point));
+        }
+
+        @Override
+        public void onRawTouchPointMoveReceived(TouchPoint point) {
+            eventBus.post(new RawTouchPointMoveReceivedEvent(point));
+        }
+
+        @Override
+        public void onRawTouchPointListReceived(TouchPointList pointList) {
+            eventBus.post(new RawTouchPointListReceivedEvent(pointList));
+        }
+
+        @Override
+        public void onBeginErasing(boolean shortcutErasing, TouchPoint point) {
+            eventBus.post(new BeginRawErasingEvent(shortcutErasing, point));
+        }
+
+        @Override
+        public void onEndErasing(boolean outLimitRegion, TouchPoint point) {
+            eventBus.post(new EndRawErasingEvent(outLimitRegion, point));
+        }
+
+        @Override
+        public void onEraseTouchPointMoveReceived(TouchPoint point) {
+            eventBus.post(new RawErasePointMoveReceivedEvent(point));
+        }
+
+        @Override
+        public void onEraseTouchPointListReceived(TouchPointList pointList) {
+            eventBus.post(new RawErasePointListReceivedEvent(pointList));
+        }
+    }
+
     private EpdPenManager epdPenManager;
     private TouchReader touchReader;
     private RawInputManager rawInputManager;
+
+    private ReaderCallback callback = new ReaderCallback();
 
     private EventBus eventBus;
     private Rect customLimitRect;
 
     public TouchHelper(EventBus eventBus) {
         this.eventBus = eventBus;
+
+        getTouchReader().setTouchInputCallback(callback);
+        getRawInputManager().setRawInputCallback(callback);
     }
 
     public EpdPenManager getEpdPenManager() {
@@ -37,15 +106,21 @@ public class TouchHelper {
         return epdPenManager;
     }
 
-    public void setup(View view) {
+    public TouchHelper setup(View view) {
         setupTouchReader(view);
         setupRawInputManager(view);
         setupEpdPenManager(view);
+        return this;
+    }
+
+    public TouchHelper setUseRawInput(boolean use) {
+        getRawInputManager().setUseRawInput(use);
+        getTouchReader().setUseRawInput(use);
+        return this;
     }
 
     private void setupEpdPenManager(final View view) {
         getEpdPenManager().setHostView(view);
-        getEpdPenManager().startDrawing();
     }
 
     private void setupTouchReader(final View view) {
@@ -69,9 +144,7 @@ public class TouchHelper {
     private void setupRawInputManager(final View view) {
         getRawInputManager()
                 .setHostView(view)
-                .setUseRawInput(getDeviceConfig().useRawInput())
-                .setLimitRect(view)
-                .startRawInputProcessor();
+                .setLimitRect(view);
     }
 
     public boolean checkTouchPoint(final TouchPoint touchPoint) {
@@ -80,7 +153,7 @@ public class TouchHelper {
 
     public TouchReader getTouchReader() {
         if (touchReader == null) {
-            touchReader = new TouchReader(eventBus);
+            touchReader = new TouchReader();
         }
         return touchReader;
     }
@@ -92,26 +165,34 @@ public class TouchHelper {
         return rawInputManager;
     }
 
-    public void setInUserErasing(boolean inUserErasing) {
+    public TouchHelper setInUserErasing(boolean inUserErasing) {
         getTouchReader().setInUserErasing(inUserErasing);
+        return this;
     }
 
-    public void setRenderByFramework(boolean renderByFramework) {
+    public TouchHelper setRenderByFramework(boolean renderByFramework) {
         getTouchReader().setRenderByFramework(renderByFramework);
+        return this;
+    }
+
+    public TouchHelper startRawDrawing() {
+        getRawInputManager().startRawInputReader();
+        getEpdPenManager().startDrawing();
+        return this;
     }
 
     public void pauseRawDrawing() {
-        getRawInputManager().pauseRawDrawing();
+        getRawInputManager().pauseRawInputReader();
         getEpdPenManager().pauseDrawing();
     }
 
     public void resumeRawDrawing() {
-        getRawInputManager().resumeRawDrawing();
+        getRawInputManager().resumeRawInputReader();
         getEpdPenManager().resumeDrawing();
     }
 
     public void quitRawDrawing() {
-        getRawInputManager().quitRawDrawing();
+        getRawInputManager().quitRawInputReader();
         getEpdPenManager().quitDrawing();
     }
 
@@ -124,13 +205,24 @@ public class TouchHelper {
         quitRawDrawing();
     }
 
-    private DeviceConfig getDeviceConfig() {
-        return ConfigManager.getInstance().getDeviceConfig();
+    // TODO find a better place to place this method
+    public TouchPoint getEraserPoint() {
+        return null;
     }
 
-    public void setCustomLimitRect(View view,Rect rect) {
-        customLimitRect = rect;
-        getTouchReader().setLimitRect(rect);
-        getRawInputManager().setCustomLimitRect(view,rect);
+    public void setCustomLimitRect(View view, Rect rect) {
+        setCustomLimitRect(view, rect, null);
+    }
+
+    public void setCustomLimitRect(View view, Rect limitRect, List<Rect> excludeRectList) {
+        customLimitRect = limitRect;
+        getTouchReader().setLimitRect(limitRect);
+        getRawInputManager().setCustomLimitRect(view, limitRect, excludeRectList);
+    }
+
+
+    public TouchHelper setStrokeWidth(float w) {
+        getRawInputManager().setStrokeWidth(w);
+        return this;
     }
 }

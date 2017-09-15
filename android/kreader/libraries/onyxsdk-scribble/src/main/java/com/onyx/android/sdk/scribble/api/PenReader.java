@@ -1,7 +1,7 @@
 package com.onyx.android.sdk.scribble.api;
 
 import android.content.Context;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -41,7 +41,7 @@ public class PenReader {
     private void init(final Context context, final View view) {
         deviceConfig = DeviceConfig.sharedInstance(context, "note");
         rawInputReader.setHostView(view);
-        rawInputReader.setLimitRect(new RectF(0, 0, getTouchHeight(), getTouchWidth()));
+        rawInputReader.setLimitRect(new Rect(0, 0, (int)getTouchHeight(), (int)getTouchWidth()));
     }
 
     public void start() {
@@ -94,12 +94,12 @@ public class PenReader {
             }
 
             @Override
-            public void onEndErasing(final boolean releaseOutLimitRegion, TouchPoint point) {
+            public void onEndErasing(final boolean outLimitRegion, TouchPoint point) {
                 penReaderCallback.onEndErasing();
             }
 
             @Override
-            public void onEndRawData(final boolean releaseOutLimitRegion, TouchPoint point) {
+            public void onEndRawData(final boolean outLimitRegion, TouchPoint point) {
                 penReaderCallback.onEndRawData();
             }
         });
