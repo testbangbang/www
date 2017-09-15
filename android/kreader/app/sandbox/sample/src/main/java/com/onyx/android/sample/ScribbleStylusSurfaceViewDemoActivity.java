@@ -21,6 +21,9 @@ import com.onyx.android.sdk.scribble.data.TouchPointList;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -56,10 +59,14 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
         surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
+                List<Rect> exclude = new ArrayList<>();
+                exclude.add(touchHelper.getRelativeRect(surfaceView, buttonEraser));
+                exclude.add(touchHelper.getRelativeRect(surfaceView, buttonPen));
                 cleanSurfaceView();
                 touchHelper.setup(surfaceView)
                     .setStrokeWidth(3.0f)
                     .setUseRawInput(true)
+                    .setCustomLimitRect(null, exclude)
                     .startRawDrawing();
             }
 
@@ -117,7 +124,6 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
     }
 
     private void penStart() {
-        enterScribbleMode();
         touchHelper.resumeRawDrawing();
     }
 
