@@ -57,10 +57,10 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
             @Override
             public void surfaceCreated(SurfaceHolder holder) {
                 cleanSurfaceView();
-                touchHelper.setup(surfaceView);
-                touchHelper.setStrokeWidth(3.0f);
-                touchHelper.setUseRawInput(true);
-                touchHelper.startRawDrawing();
+                touchHelper.setup(surfaceView)
+                    .setStrokeWidth(3.0f)
+                    .setUseRawInput(true)
+                    .startRawDrawing();
             }
 
             @Override
