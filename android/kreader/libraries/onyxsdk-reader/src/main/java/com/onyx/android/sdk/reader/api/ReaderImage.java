@@ -19,4 +19,6 @@ public interface ReaderImage {
      * @return
      */
     Bitmap getBitmap();
+
+    String getName();
 }

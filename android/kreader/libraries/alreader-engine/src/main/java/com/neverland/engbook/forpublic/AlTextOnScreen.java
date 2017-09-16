@@ -56,11 +56,13 @@ public class AlTextOnScreen {
         public int pos;
         public final AlRect rect = new AlRect();
         public final Bitmap bitmap;
+        public final String name;
 
-        public AlPieceOfImage(int p, AlRect r, Bitmap b) {
+        public AlPieceOfImage(int p, AlRect r, Bitmap b,String name) {
             pos = p;
             rect.set(r.x0, r.y0, r.x1, r.y1);
             bitmap = b;
+            this.name = name;
         }
     }
 
@@ -98,9 +100,9 @@ public class AlTextOnScreen {
         }
     }
 
-    public void addImage(int p, AlRect rect, Bitmap bitmap) {
+    public void addImage(int p, AlRect rect, Bitmap bitmap,String name) {
         if (p >= 0) {
-            imageList.add(new AlPieceOfImage(p, rect, bitmap));
+            imageList.add(new AlPieceOfImage(p, rect, bitmap,name));
         }
     }
 

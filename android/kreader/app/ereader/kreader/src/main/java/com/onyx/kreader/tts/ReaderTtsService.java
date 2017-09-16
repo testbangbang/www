@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.speech.tts.UtteranceProgressListener;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.utils.Benchmark;
@@ -24,7 +25,7 @@ import java.util.Locale;
 public class ReaderTtsService {
 
     private static final Class TAG = ReaderTtsService.class;
-
+    private static final int PLAY_DELAYED_TIME = 1000;
     public enum TtsState { Ready, SynthesizeTtsPrepare, SynthesizeTtsStart, SynthesizeTtsDone, MediaPlayStart, MediaPaused, MediaResume, MediaPlayDone, Stopped, Error}
 
     public static abstract class Callback {
@@ -48,6 +49,7 @@ public class ReaderTtsService {
     private MediaPlayer mediaPlayer = new MediaPlayer();
 
     private String text = null;
+    private String audioPath = null;
     private TtsState ttsState = TtsState.Ready;
 
     Handler handler = new Handler();
@@ -144,8 +146,9 @@ public class ReaderTtsService {
      *
      * @param text
      */
-    public void startTts(String text) {
+    public void startTts(String text,String audioPath) {
         this.text = text;
+        this.audioPath = audioPath;
         handleState(TtsState.SynthesizeTtsPrepare);
     }
 
@@ -251,7 +254,20 @@ public class ReaderTtsService {
         }
     }
 
+    private boolean isAudioPlay(){
+        return StringUtils.isNotBlank(audioPath);
+    }
+
     private boolean synthesizeTts(String text) {
+        if(isAudioPlay()){
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    handleState(TtsState.SynthesizeTtsDone);
+                }
+            },PLAY_DELAYED_TIME);
+            return true;
+        }
         Benchmark benchmark = new Benchmark();
         HashMap<String, String> callbackMap = new HashMap<String, String>();
         callbackMap.put(TextToSpeech.Engine.KEY_PARAM_UTTERANCE_ID, UTTERANCE_ID);
@@ -272,11 +288,9 @@ public class ReaderTtsService {
                 Debug.w(TAG, "tts wave file not exists: " + getTempWaveFile().getAbsolutePath());
                 return false;
             }
-
             if (mediaPlayer != null) {
                 closeMediaPlayer();
             }
-
             mediaPlayer = new MediaPlayer();
             mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
 
@@ -291,9 +305,12 @@ public class ReaderTtsService {
                     });
                 }
             });
-
             Debug.d("play wave file: " + ttsState);
-            mediaPlayer.setDataSource(getTempWaveFile().getAbsolutePath());
+            if(StringUtils.isNotBlank(audioPath)){
+                mediaPlayer.setDataSource(getAudioPath());
+            }else {
+                mediaPlayer.setDataSource(getTempWaveFile().getAbsolutePath());
+            }
             mediaPlayer.prepare();
             if (mediaPlayer.getDuration() <= 64) {
                 // even pico tts failed, it may still synthesize a blank wav file with 64ms duration
@@ -337,12 +354,21 @@ public class ReaderTtsService {
     }
 
     private File getTempWaveFile() {
+        if(isAudioPlay()){
+            return new File(getAudioPath());
+        }
         File cache_folder = new File("/mnt/ramdisk");
         if (!cache_folder.exists()) {
             cache_folder = context.getExternalCacheDir();
         }
 
         return new File(cache_folder, "tts_temp.wav");
+    }
+
+    private String getAudioPath(){
+        String path = context.getFilesDir().getAbsolutePath() + File.separator + "audio";
+        String name = audioPath.substring(audioPath.lastIndexOf(File.separator),audioPath.length());
+        return path + name;
     }
 
     private void setTtsState(TtsState state) {

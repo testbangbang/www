@@ -13,15 +13,21 @@ import com.onyx.kreader.ui.handler.TtsHandler;
 public class StartTtsAction extends BaseAction {
 
     private String startPosition;
+    private String audioPath;
+
+    public void setAudioPath(String audioPath) {
+        this.audioPath = audioPath;
+    }
 
     public StartTtsAction(final String startPosition) {
         this.startPosition = startPosition;
+        audioPath = null;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.TTS_PROVIDER,
-                TtsHandler.createInitialState(startPosition));
+                TtsHandler.createInitialState(startPosition,audioPath));
         BaseCallback.invoke(callback, null, null);
     }
 }
