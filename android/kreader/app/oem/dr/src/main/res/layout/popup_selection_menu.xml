@@ -2,8 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:orientation="vertical">
+    android:layout_margin="100dp"
+    android:background="@drawable/rectangle_stroke"
+    android:orientation="vertical"
+    android:padding="1dp">
 
     <View
         android:id="@+id/top_divider_line"
@@ -47,7 +49,8 @@
                 android:layout_toLeftOf="@+id/pronounce_1"
                 android:background="@drawable/image_btn_bg"
                 android:padding="5dp"
-                android:src="@drawable/ic_dialog_reader_dic_i_search" />
+                android:src="@drawable/ic_dialog_reader_dic_i_search"
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/pronounce_1"
@@ -58,7 +61,8 @@
                 android:layout_toLeftOf="@+id/pronounce_2"
                 android:background="@drawable/image_btn_bg"
                 android:padding="5dp"
-                android:src="@drawable/pronounce_1_imageview_bg" />
+                android:src="@drawable/pronounce_1_imageview_bg"
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/pronounce_2"
@@ -69,8 +73,8 @@
                 android:layout_toLeftOf="@+id/dict_name"
                 android:background="@drawable/image_btn_bg"
                 android:padding="5dp"
-                android:src="@drawable/pronounce_2_imageview_bg" />
-
+                android:src="@drawable/pronounce_2_imageview_bg"
+                android:visibility="invisible" />
 
             <TextView
                 android:id="@+id/dict_name"
@@ -109,20 +113,17 @@
 
         </RelativeLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="@android:color/black" />
-
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/line_width">
 
             <com.onyx.android.dr.reader.view.HTMLReaderWebView
                 android:id="@+id/explain"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="match_parent"
+                android:layout_height="220dp" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/dict_list"
@@ -131,7 +132,7 @@
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp"
                 android:background="@drawable/no_top_line_bg"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
         </FrameLayout>
 
@@ -151,7 +152,7 @@
                 android:focusableInTouchMode="false"
                 android:padding="5dp"
                 android:src="@drawable/ic_dialog_reader_arrow_left_black"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
 
             <TextView
@@ -165,7 +166,7 @@
                 android:text="@string/popup_selection_menu_page_indicator_default_value"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/control_panel_floating_tittle_text_size"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/dict_next_page"
@@ -180,7 +181,7 @@
                 android:focusableInTouchMode="false"
                 android:padding="5dp"
                 android:src="@drawable/ic_dialog_reader_arrow_right_black"
-                android:visibility="invisible" />
+                android:visibility="visible" />
 
         </RelativeLayout>
 
@@ -213,12 +214,17 @@
             android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reader_choose_highlight" />
 
             <TextView
                 android:id="@+id/text_view_lineation"
                 style="@style/popup_selection_menu_text_view"
-                android:text="@string/lineation" />
+                android:text="@string/annotation" />
 
         </LinearLayout>
 
@@ -230,12 +236,17 @@
             android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reader_choose_postil" />
 
             <TextView
                 android:id="@+id/noteText"
                 style="@style/popup_selection_menu_text_view"
-                android:text="@string/note" />
+                android:text="@string/postil" />
         </LinearLayout>
 
         <LinearLayout
@@ -246,7 +257,8 @@
             android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 style="@style/popup_selection_menu_text_view"
@@ -261,7 +273,8 @@
             android:background="@drawable/popup_selection_menu_item_right_background"
             android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 style="@style/popup_selection_menu_text_view"
@@ -276,11 +289,92 @@
             android:background="@drawable/popup_selection_menu_item_background"
             android:clickable="true"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:visibility="gone">
 
             <TextView
                 style="@style/popup_selection_menu_text_view"
                 android:text="@string/search" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imagebutton_add_word"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reader_choose_add" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/add_new_word" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imagebutton_bai_du"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reader_choose_baidu" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/baidu_baike" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imagebutton_add_good_sentence"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reader_choose_sentence" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/good_sentence_excerpt" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/imagebutton_delete_mark"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1"
+            android:background="@drawable/popup_selection_menu_item_right_background"
+            android:clickable="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_reader_choose_delet" />
+
+            <TextView
+                style="@style/popup_selection_menu_text_view"
+                android:text="@string/delete_mark" />
         </LinearLayout>
 
         <View

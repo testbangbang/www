@@ -25,12 +25,17 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.bean.GoodSentenceBean;
+import com.onyx.android.dr.bean.NewWordBean;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
-import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.base.ReaderView;
 import com.onyx.android.dr.reader.common.ReadPageInfo;
 import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.common.ReaderDeviceManager;
+import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.reader.data.BookInfo;
 import com.onyx.android.dr.reader.data.SingletonSharedPreference;
 import com.onyx.android.dr.reader.dialog.DialogSearch;
@@ -39,9 +44,11 @@ import com.onyx.android.dr.reader.event.BookReadRecordUpdateEvent;
 import com.onyx.android.dr.reader.event.DisplayStatusBarEvent;
 import com.onyx.android.dr.reader.event.DocumentOpenEvent;
 import com.onyx.android.dr.reader.event.FinishReaderEvent;
+import com.onyx.android.dr.reader.event.GotoPageAndRedrawPageEvent;
 import com.onyx.android.dr.reader.event.ManagePostilDialogEvent;
 import com.onyx.android.dr.reader.event.NewFileCreatedEvent;
 import com.onyx.android.dr.reader.event.PostilManageDialogDismissEvent;
+import com.onyx.android.dr.reader.event.ReaderGoodSentenceMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBackEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBookStoreEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopBrightnessEvent;
@@ -50,7 +57,7 @@ import com.onyx.android.dr.reader.event.ReaderMainMenuTopSearchEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopShelfEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopUserEvent;
 import com.onyx.android.dr.reader.event.ReaderMenuMorePressEvent;
-import com.onyx.android.dr.reader.event.GotoPageAndRedrawPageEvent;
+import com.onyx.android.dr.reader.event.ReaderWordQueryMenuEvent;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.event.ScreenshotsSucceedEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
@@ -70,6 +77,7 @@ import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
 import org.greenrobot.eventbus.EventBus;
@@ -408,7 +416,6 @@ public class ReaderActivity extends Activity implements ReaderView {
             dialog.dismiss();
         }
         EventBus.getDefault().unregister(this);
-        ShowReaderBottomMenuDialogAction.resetReaderBottomDialog();
     }
 
     @Subscribe
@@ -503,5 +510,46 @@ public class ReaderActivity extends Activity implements ReaderView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRedrawPageEvent(RedrawPageEvent event){
         readerPresenter.getBookOperate().redrawPage();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnReaderGoodSentenceMenuEvent(ReaderGoodSentenceMenuEvent event) {
+        addGoodSentence();
+    }
+
+    private void addGoodSentence() {
+        String selectionText = readerPresenter.getBookOperate().getSelectionText();
+        if (StringUtils.isNotBlank(selectionText)) {
+            GoodSentenceBean bean = new GoodSentenceBean();
+            bean.setDetails(selectionText);
+            bean.setReadingMatter(readerPresenter.getBookInfo().getBookName());
+            bean.setPageNumber(String.valueOf(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName()));
+            bean.setGoodSentenceType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
+            OperatingDataManager.getInstance().insertGoodSentence(bean);
+        } else {
+            ToastManage.showMessage(this, getString(R.string.Please_press_to_select_the_sentence_you_want_to_include));
+        }
+        readerPresenter.getBookOperate().redrawPage();
+        readerPresenter.getHandlerManger().updateActionProviderType(HandlerManger.READING_PROVIDER);
+        readerPresenter.getReaderSelectionManager().clear();
+    }
+
+    private int getGoodSentenceType(String language) {
+        int type;
+        if (StringUtils.isNotBlank(language)) {
+            switch (language) {
+                case Constants.CHINESE:
+                    type = Constants.CHINESE_TYPE;
+                    break;
+                case Constants.ENGLISH:
+                    type = Constants.ENGLISH_TYPE;
+                    break;
+                default:
+                    type = Constants.OTHER_TYPE;
+            }
+        } else {
+            type = Constants.OTHER_TYPE;
+        }
+        return type;
     }
 }
