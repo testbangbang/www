@@ -131,9 +131,4 @@ public class Constants {
     public static final int ACTION_ONE = 0;
     public static final int ACTION_TWO = 1;
     public static final int FOUR = 4;
-
-    public static final String PRIMARY_AND_SECONDARY_SCHOOL_STUDENTS = "中小学生";
-    public static final String UNDERGRADUATE = "大学生";
-    public static final String TEACHER = "老师";
-    public static final String SOCIAL_MAN = "社会人";
 }
