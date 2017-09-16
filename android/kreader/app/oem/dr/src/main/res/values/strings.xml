@@ -575,4 +575,7 @@
     <string name="group_owner">group owner</string>
     <string name="join">join</string>
     <string name="input_group_name_hint">Please enter group name or group manager name.</string>
+    <string name="write_remarks">scribble</string>
+    <string name="add_new_word">add new word</string>
+    <string name="delete_mark">delete mark</string>
 </resources>

@@ -87,7 +87,7 @@
     <string name="jump">跳转</string>
     <string name="delete">删除</string>
     <string name="edit">编辑</string>
-    <string name="annotation">标注</string>
+    <string name="annotation">标记</string>
     <string name="Cancel">取消</string>
     <string name="save_annotation">保存</string>
     <string name="update">更新</string>
@@ -192,7 +192,7 @@
     <string name="pinyin_query">拼音查询:</string>
     <string name="radical_strokes">部首笔画:</string>
     <string name="total_strokes">总笔画:</string>
-    <string name="listen_books">听文章</string>
+    <string name="listen_books">听书</string>
     <string name="after_reading">读后感</string>
     <string name="dialog_quick_view_enter_page_number">请输入页码</string>
     <string name="dialog_quick_view_enter_page_number_out_of_range_error">此页码超出范围</string>
@@ -567,4 +567,7 @@
     <string name="join">加入</string>
     <string name="input_group_name_hint">请输入群名或群主名</string>
     <string name="go_back">返回</string>
+    <string name="write_remarks">手写备注</string>
+    <string name="add_new_word">添加生词</string>
+    <string name="delete_mark">删除标记</string>
 </resources>

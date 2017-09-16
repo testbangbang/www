@@ -138,7 +138,7 @@ public class WordSelectionHandler extends BaseHandler {
 
     private void showSelectionMenu(boolean isWord) {
         getReaderPresenter().setPageAnnotation(null);
-        ReaderDialogManage.onShowMainMenu(getReaderPresenter(), true, DialogAnnotation.AnnotationAction.add);
+        ShowTextSelectionMenuAction.showTextSelectionPopupMenu(getReaderPresenter(), isWord, DialogAnnotation.AnnotationAction.add);
         enableSelectionCursor(selectWordRequest);
     }
 

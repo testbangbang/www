@@ -25,14 +25,14 @@
             android:src="@drawable/ic_dialog_empty_view" />
     </LinearLayout>
 
-    <com.onyx.android.dr.reader.view.TreeRecyclerView
+    <com.onyx.android.sdk.ui.view.TreeRecyclerView
         android:id="@+id/book_info_catalog_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="8"
         android:visibility="visible" />
 
-    <com.onyx.android.dr.reader.view.TreeRecyclerView
+    <com.onyx.android.sdk.ui.view.TreeRecyclerView
         android:id="@+id/book_info_bookmark_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"

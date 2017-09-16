@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.adapter.PostilListAdapter;
 import com.onyx.android.dr.reader.event.AnnotationsChangeEvent;
 import com.onyx.android.dr.reader.event.PostilManageDialogDismissEvent;
@@ -64,7 +63,6 @@ public class PostilManageDialog extends Dialog implements View.OnClickListener {
     }
 
     private void initPostilList() {
-        annotations = ShowReaderBottomMenuDialogAction.getAnnotations(readerPresenter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
