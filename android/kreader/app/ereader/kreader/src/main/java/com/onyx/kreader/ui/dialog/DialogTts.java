@@ -122,8 +122,10 @@ public class DialogTts extends OnyxBaseDialog implements View.OnClickListener, C
 
     public void show() {
         if(StringUtils.isNotBlank(ttsHandler.getAudioPath())){
+            ttsSpeed.setVisibility(View.GONE);
             ttsHandler.ttsPlay();
         }else {
+            ttsSpeed.setVisibility(View.VISIBLE);
             readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {

@@ -300,7 +300,11 @@ public class ReaderTtsService {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            handleState(TtsState.MediaPlayDone);
+                            if(isAudioPlay()){
+                                handleState(TtsState.Stopped);
+                            }else {
+                                handleState(TtsState.MediaPlayDone);
+                            }
                         }
                     });
                 }
