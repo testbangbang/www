@@ -34,7 +34,7 @@ public class MyNotesTypeConfig {
         dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_READER_RESPONSE, context.getResources().getString(R.string.reader_response), R.drawable.reader_response, new ReaderResponseEvent());
         myCreationData.add(dictData);
 
-        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_GOOD_SENTENCE_NOTEBOOK, context.getResources().getString(R.string.good_sentence_notebook), R.drawable.good_sentence_notebook, new GoodSentenceNotebookEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_GOOD_SENTENCE_NOTEBOOK, context.getResources().getString(R.string.good_sentence_notebook), R.drawable.good_sentence_notebook, new GoodSentenceNotebookEvent(""));
         myTracksData.add(dictData);
         dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_READ_SUMMARY, context.getResources().getString(R.string.read_summary), R.drawable.read_summary, new ReadSummaryEvent());
         myThinkData.add(dictData);

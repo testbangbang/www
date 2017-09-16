@@ -121,7 +121,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         int dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
         dictionaryManager.newProviderMap.clear();
-        pathList = Utils.getPathList(dictType);
+        pathList = Utils.getDictPathListByMap(dictType);
     }
 
     @Override

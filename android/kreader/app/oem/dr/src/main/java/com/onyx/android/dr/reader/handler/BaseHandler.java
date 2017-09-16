@@ -3,12 +3,10 @@ package com.onyx.android.dr.reader.handler;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.onyx.android.dr.reader.action.ShowReaderBottomMenuDialogAction;
 import com.onyx.android.dr.reader.action.ShowTextSelectionMenuAction;
 import com.onyx.android.dr.reader.data.BookmarkIconFactory;
 import com.onyx.android.dr.reader.dialog.DialogAnnotation;
@@ -273,7 +271,7 @@ public class BaseHandler {
         } else if (action.equals(TouchAction.PREV_PAGE)) {
             readerPresenter.prevScreen();
         } else if (action.equals(TouchAction.SHOW_MENU)) {
-            ReaderDialogManage.onShowMainMenu(readerPresenter, StringUtils.isNotBlank(readerPresenter.getBookOperate().getSelectionText()), getAction(readerPresenter));
+            ReaderDialogManage.onShowMainMenu(readerPresenter);
         } else if (action.equals(TouchAction.INCREASE_BRIGHTNESS)) {
             //increaseBrightness(readerDataHolder);
         } else if (action.equals(TouchAction.DECREASE_BRIGHTNESS)) {
@@ -390,7 +388,7 @@ public class BaseHandler {
                 for (RectF rect : annotation.getRectangles()) {
                     if (rect.contains(x, y)) {
                         getReaderPresenter().setPageAnnotation(annotation);
-                        ReaderDialogManage.onShowMainMenu(readerPresenter, false, DialogAnnotation.AnnotationAction.update);
+                        ShowTextSelectionMenuAction.showTextSelectionPopupMenu(getReaderPresenter(), false, DialogAnnotation.AnnotationAction.update);
                         return true;
                     }
                 }

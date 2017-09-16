@@ -22,6 +22,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.data.DictTypeConfig;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -45,6 +46,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.GZIPInputStream;
@@ -739,6 +741,131 @@ public class Utils {
         return pathList;
     }
 
+    public static List<String> getDictListByMap(int dictType) {
+        List<String> pathList = new ArrayList<>();
+        List<DictTypeBean> dictTypeList = new ArrayList<>();
+        if (dictType == Constants.ENGLISH_TYPE) {
+            dictTypeList = getEnglishDictData();
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            dictTypeList = getChineseDictData();
+        } else if (dictType == Constants.OTHER_TYPE) {
+            dictTypeList = getMinorityDictData();
+        }
+        for (int i = 0; i < dictTypeList.size(); i++) {
+            String dictName = dictTypeList.get(i).getTabName();
+            if (!pathList.contains(dictName)) {
+                pathList.add(dictName);
+            }
+        }
+        return pathList;
+    }
+
+    public static List<String> getDictPathListByMap(int dictType) {
+        List<String> dictPathList = new ArrayList<>();
+        List<String> pathList = getPathList(dictType);
+        List<String> dictList = getDictListByMap(dictType);
+        for (int i = 0; i < pathList.size(); i++) {
+            for (int j = 0; j < dictList.size(); j++) {
+                if (pathList.get(i).contains(dictList.get(j))) {
+                    if (!dictPathList.contains(pathList.get(i))) {
+                        dictPathList.add(pathList.get(i));
+                    }
+                }
+            }
+        }
+        return dictPathList;
+    }
+
+    public static List<DictTypeBean> getEnglishDictData() {
+        List<DictTypeBean> englishDictName = new ArrayList<>();
+        for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.englishDictMap.entrySet()) {
+            Integer key = entry.getKey();
+            if (key == Constants.ENGLISH_TYPE) {
+                englishDictName = entry.getValue();
+            }
+        }
+        return englishDictName;
+    }
+
+    public static List<DictTypeBean> getChineseDictData() {
+        List<DictTypeBean> englishDictName = new ArrayList<>();
+        for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.chineseDictMap.entrySet()) {
+            Integer key = entry.getKey();
+            if (key == Constants.CHINESE_TYPE) {
+                englishDictName = entry.getValue();
+            }
+        }
+        return englishDictName;
+    }
+
+    public static List<DictTypeBean> getMinorityDictData() {
+        List<DictTypeBean> englishDictName = new ArrayList<>();
+        for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.minorityDictMap.entrySet()) {
+            Integer key = entry.getKey();
+            if (key == Constants.OTHER_TYPE) {
+                englishDictName = entry.getValue();
+            }
+        }
+        return englishDictName;
+    }
+
+    public static List<String> getDictList(int dictType) {
+        List<String> pathList = new ArrayList<>();
+        List<String> dictList = new ArrayList<>();
+        if (dictType == Constants.ENGLISH_TYPE) {
+            pathList = loadLocalDict(Constants.ENGLISH_DICTIONARY);
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            pathList = loadLocalDict(Constants.CHINESE_DICTIONARY);
+        } else if (dictType == Constants.OTHER_TYPE) {
+            pathList = loadLocalDict(Constants.OTHER_DICTIONARY);
+        }
+        for (int i = 0; i < pathList.size(); i++) {
+            String content = pathList.get(i);
+            int index = content.lastIndexOf("/");
+            String substring = content.substring(index + 1);
+            dictList.add(substring);
+        }
+        return dictList;
+    }
+
+    public static ArrayList<Boolean> getCheckedList(int dictType, List<DictTypeBean> pathList) {
+        List<DictTypeBean> list = new ArrayList<>();
+        ArrayList<Boolean> listCheck = new ArrayList<>();
+        ArrayList<String> positionList = new ArrayList<>();
+        if (dictType == Constants.ENGLISH_TYPE) {
+            list = Utils.getEnglishDictData();
+        } else if (dictType == Constants.CHINESE_TYPE) {
+            list = Utils.getChineseDictData();
+        } else if (dictType == Constants.OTHER_TYPE) {
+            list = Utils.getMinorityDictData();
+        }
+        if (pathList == null && pathList.size() <= 0) {
+            return listCheck;
+        }
+        if (list != null && list.size() > 0) {
+            for (int i = 0; i < pathList.size(); i++) {
+                DictTypeBean dictTypeBean = pathList.get(i);
+                listCheck.add(false);
+                for (int j = 0; j < list.size(); j++) {
+                    if (dictTypeBean.getTabName().equals(list.get(j).getTabName())) {
+                        if (!positionList.contains(String.valueOf(i))) {
+                            positionList.add(String.valueOf(i));
+                        }
+                    }
+                }
+            }
+        } else {
+            for (int i = 0; i < pathList.size(); i++) {
+                listCheck.add(false);
+            }
+        }
+        for (int i = 0; i < positionList.size(); i++) {
+            String position = positionList.get(i);
+            listCheck.set(Integer.valueOf(position), true);
+        }
+        return listCheck;
+    }
+
     public static List<String> getAllDictPathList() {
         List<String> pathList = new ArrayList<>();
         pathList.addAll(loadLocalDict(Constants.CHINESE_DICTIONARY));
@@ -812,5 +939,18 @@ public class Utils {
             }
         }
         return true;
+    }
+
+    public static boolean compareWhetherEqual(int firstValue, int secondValue, int thirdValue) {
+        if (firstValue == secondValue) {
+            return true;
+        }
+        if (firstValue == thirdValue) {
+            return true;
+        }
+        if (secondValue == thirdValue) {
+            return true;
+        }
+        return false;
     }
 }

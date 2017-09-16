@@ -32,7 +32,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/ebook_library_add_to_shopping_cart_margin_right"
-                android:background="@drawable/rounded_rectangle_stroke"
+                android:background="@drawable/text_view_background"
                 android:padding="@dimen/edit_text_padding"
                 android:text="@string/add_to_shopping_cart"
                 android:textColor="@color/black" />
@@ -41,7 +41,7 @@
                 android:id="@+id/ebook_library_item_buy"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/rounded_rectangle_stroke"
+                android:background="@drawable/text_view_background"
                 android:padding="@dimen/edit_text_padding"
                 android:textColor="@color/black"
                 android:text="@string/buy" />
@@ -51,7 +51,7 @@
             android:id="@+id/ebook_library_item_paid"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/rounded_rectangle_stroke"
+            android:background="@drawable/text_view_background"
             android:padding="@dimen/edit_text_padding"
             android:textColor="@color/black"
             android:text="@string/paid"

@@ -15,6 +15,7 @@ import com.onyx.android.dr.activity.BookDetailActivity;
 import com.onyx.android.dr.activity.CreateGroupActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
+import com.onyx.android.dr.activity.DictSettingActivity;
 import com.onyx.android.dr.activity.EBookStoreActivity;
 import com.onyx.android.dr.activity.ExitGroupActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
@@ -38,6 +39,7 @@ import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
 import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
+import com.onyx.android.dr.activity.ShoppingCartActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
 import com.onyx.android.dr.activity.WifiActivity;
@@ -250,6 +252,14 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
+    public static void startDictSettingActivity(Context context, int jumpSource) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.JUMP_SOURCE, jumpSource);
+        intent.setClass(context, DictSettingActivity.class);
+        context.startActivity(intent);
+    }
+
     public static void startScribbleActivity(Context context) {
         try {
             Intent intent = context.getPackageManager().getLaunchIntentForPackage(
@@ -328,9 +338,8 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startSearchBookActivity(Context context, String type) {
+    public static void startSearchBookActivity(Context context) {
         Intent intent = new Intent(context, SearchBookActivity.class);
-        intent.putExtra(Constants.SEARCH_TYPE, type);
         context.startActivity(intent);
     }
 
@@ -408,6 +417,11 @@ public class ActivityManager {
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startShoppingCartActivity(Context context) {
+        Intent intent = new Intent(context, ShoppingCartActivity.class);
         context.startActivity(intent);
     }
 }

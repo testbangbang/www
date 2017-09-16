@@ -14,4 +14,5 @@ public class ProductOrder<T extends BaseData> {
     public double total;
     public String _id;
     public int status;
+    public int count;
 }

@@ -69,6 +69,7 @@
             android:name=".activity.DictQueryActivity"
             android:exported="true"
             android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
@@ -201,6 +202,11 @@
             android:name=".activity.GroupMemberManageActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".activity.DictSettingActivity"
+            android:launchMode="singleTask"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <activity android:name=".reader.activity.ReadSummaryActivity" />
 
         <activity
@@ -227,9 +233,11 @@
 
         <activity
             android:name=".activity.MainActivity"
-            android:theme="@style/OnyxAppCompat">
+            android:theme="@style/OnyxAppCompat" />
 
-        </activity>
+        <activity
+            android:name=".activity.ShoppingCartActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>

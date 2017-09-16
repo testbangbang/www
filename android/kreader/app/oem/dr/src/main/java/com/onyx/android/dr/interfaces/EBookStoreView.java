@@ -14,4 +14,6 @@ public interface EBookStoreView {
     void setLanguageList(List<String> languageList);
 
     void setOrderId(String id);
+
+    void setCartCount(int count);
 }

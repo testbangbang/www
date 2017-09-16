@@ -29,6 +29,14 @@ public class LanguageQueryTypeAdapter extends PageRecyclerView.PageAdapter imple
         void onItemClick(View view, int position);
     }
 
+    public int getSelectedPosition() {
+        return selectedPosition;
+    }
+
+    public void setSelectedPosition(int selectedPosition) {
+        this.selectedPosition = selectedPosition;
+    }
+
     public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
         this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
     }

@@ -50,6 +50,7 @@
 
         <Spinner
             android:id="@+id/dialog_result_spinner"
+            android:layout_centerVertical="true"
             style="@style/good_sentence_activity_spinner_second" />
 
     </RelativeLayout>
@@ -74,6 +75,7 @@
         android:id="@+id/dialog_result_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/dialog_result_bottom_padding_bottom"
         android:layout_alignParentBottom="true">
 
         <TextView

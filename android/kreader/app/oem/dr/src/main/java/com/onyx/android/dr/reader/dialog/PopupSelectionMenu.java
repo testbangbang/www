@@ -2,8 +2,10 @@ package com.onyx.android.dr.reader.dialog;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -17,16 +19,28 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.reader.action.DictionaryQueryAction;
-import com.onyx.android.dr.reader.data.DictionaryQuery;
+import com.onyx.android.dr.bean.NewWordBean;
+import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.manager.OperatingDataManager;
+import com.onyx.android.dr.reader.event.ReaderGoodSentenceMenuEvent;
 import com.onyx.android.dr.reader.highlight.HighlightCursor;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 import com.onyx.android.dr.reader.view.HTMLReaderWebView;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.dr.util.Utils;
+import com.onyx.android.sdk.dict.data.DictionaryQueryResult;
+import com.onyx.android.sdk.dict.request.QueryWordRequest;
+import com.onyx.android.sdk.dict.request.common.DictBaseCallback;
+import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
+import com.onyx.android.sdk.ui.wifi.NetworkHelper;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,6 +50,14 @@ public class PopupSelectionMenu extends LinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
     private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
     private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
+    private QueryWordRequest queryWordRequest;
+    private List<String> pathList;
+    private View addWordButton;
+    private View baiduButton;
+    private View addSentenceButton;
+    private View deleteMarkButton;
+    public static final String BAIDU_BAIKE = "https://wapbaike.baidu.com/item/";
+    public static final String WIKTIONARY_URL = "https://en.wiktionary.org/wiki/";
 
     public enum SelectionType {
         SingleWordType,
@@ -66,8 +88,7 @@ public class PopupSelectionMenu extends LinearLayout {
 
     private final Activity mActivity;
     private List<String> dicts = new ArrayList<>();
-    private List<DictionaryQuery> textDictionaryQueries = new ArrayList<>();
-    private List<DictionaryQuery> soundDictionaryQueries = new ArrayList<>();
+    private List<DictionaryQueryResult> dictionaryQueries = new ArrayList<>();
     private TextView mDictTitle;
     private HTMLReaderWebView mWebView;
     private TextView mPageIndicator;
@@ -102,7 +123,7 @@ public class PopupSelectionMenu extends LinearLayout {
         throw new IllegalAccessError();
     }
 
-    public PopupSelectionMenu(ReaderPresenter readerPresenter, RelativeLayout layout, final DialogAnnotation.AnnotationAction action, MenuCallback menuCallback) {
+    public PopupSelectionMenu(final ReaderPresenter readerPresenter, RelativeLayout layout, final DialogAnnotation.AnnotationAction action, MenuCallback menuCallback) {
         super(readerPresenter.getReaderView().getViewContext());
         mActivity = (Activity) readerPresenter.getReaderView().getViewContext();
         this.action = action;
@@ -115,7 +136,7 @@ public class PopupSelectionMenu extends LinearLayout {
 
         int heightDenominator = getResources().getInteger(R.integer.dict_height_absolutely_value);
         dictViewWidth = layout.getMeasuredWidth();
-        dictViewHeight = (layout.getMeasuredHeight() * heightDenominator / 100);
+        dictViewHeight = (layout.getMeasuredHeight() * heightDenominator / 85);
         layout.addView(this);
         noteText = (TextView) findViewById(R.id.noteText);
         mDictTitle = (TextView) findViewById(R.id.dict_title);
@@ -227,7 +248,7 @@ public class PopupSelectionMenu extends LinearLayout {
             public void onClick(View v) {
                 mMenuCallback.showDictionary();
                 mMenuCallback.resetSelection();
-                PopupSelectionMenu.this.hide();
+                mMenuCallback.closeMenu();
             }
         });
 
@@ -236,20 +257,20 @@ public class PopupSelectionMenu extends LinearLayout {
             public void onClick(View v) {
                 mMenuCallback.resetSelection();
                 mMenuCallback.startTts();
-                PopupSelectionMenu.this.hide();
+                mMenuCallback.closeMenu();
             }
         });
 
         pronounce1.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                playSoundDictionary(soundDictionaryQueries, 0);
+                playSoundDictionary(dictionaryQueries, 0);
             }
         });
         pronounce2.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                playSoundDictionary(soundDictionaryQueries, 1);
+                playSoundDictionary(dictionaryQueries, 1);
             }
         });
         webSearch.setOnClickListener(new OnClickListener() {
@@ -273,14 +294,57 @@ public class PopupSelectionMenu extends LinearLayout {
                 hideDictListView();
             }
         });
+
+        addWordButton = findViewById(R.id.imagebutton_add_word);
+        baiduButton = findViewById(R.id.imagebutton_bai_du);
+        addSentenceButton = findViewById(R.id.imagebutton_add_good_sentence);
+        deleteMarkButton = findViewById(R.id.imagebutton_delete_mark);
+
+        addWordButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewWord(readerPresenter);
+                mMenuCallback.closeMenu();
+            }
+        });
+        baiduButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                webSearchWord();
+                mMenuCallback.closeMenu();
+            }
+        });
+        addSentenceButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                EventBus.getDefault().post(new ReaderGoodSentenceMenuEvent());
+                mMenuCallback.closeMenu();
+            }
+        });
+        deleteMarkButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMenuCallback.deleteAnnotation();
+            }
+        });
         setVisibility(View.GONE);
-        initDictList();
+        initDictList(readerPresenter);
+    }
+
+    private void addNewWord(ReaderPresenter readerPresenter) {
+        NewWordBean newWordBean = new NewWordBean();
+        newWordBean.setReadingMatter(readerPresenter.getBookInfo().getBookName());
+        newWordBean.setPageNumber(String.valueOf(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName()));
+        newWordBean.setNewWordType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
+        newWordBean.setTag(true);
+        newWordBean.setNewWord(readerPresenter.getBookOperate().getSelectionText());
+        OperatingDataManager.getInstance().insertNewWord(newWordBean);
     }
 
     private void updateButtonName(ReaderPresenter readerPresenter) {
         String buttonName;
         if (action == DialogAnnotation.AnnotationAction.add) {
-            buttonName = readerPresenter.getReaderView().getViewContext().getString(R.string.lineation);
+            buttonName = readerPresenter.getReaderView().getViewContext().getString(R.string.annotation);
         } else {
             buttonName = readerPresenter.getReaderView().getViewContext().getString(R.string.delete);
         }
@@ -288,7 +352,17 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     private void webSearchWord() {
+        if (!NetworkHelper.requestWifi(getActivity())) {
+            return;
+        }
 
+        String headWord = mDictTitle.getText().toString();
+        Intent intent = new Intent();
+        intent.setAction("android.intent.action.VIEW");
+        String uriString = DeviceUtils.isChinese(getContext()) ? BAIDU_BAIKE : WIKTIONARY_URL;
+        Uri content_url = Uri.parse(uriString + headWord);
+        intent.setData(content_url);
+        getActivity().startActivity(intent);
     }
 
     private void toggleDictList() {
@@ -319,7 +393,7 @@ public class PopupSelectionMenu extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    private void initDictList() {
+    private void initDictList(ReaderPresenter readerPresenter) {
         dicts.clear();
         dictListView.setLayoutManager(new LinearLayoutManager(getContext()));
         dictListView.setAdapter(new RecyclerView.Adapter() {
@@ -331,11 +405,11 @@ public class PopupSelectionMenu extends LinearLayout {
             @Override
             public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
                 DictViewHolder dictViewHolder = (DictViewHolder) holder;
-                dictViewHolder.dictName.setText(textDictionaryQueries.get(position).getDictName());
+                dictViewHolder.dictName.setText(dictionaryQueries.get(position).getDictionary().name);
                 dictViewHolder.dictName.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showExplanation(textDictionaryQueries.get(position));
+                        showExplanation(dictionaryQueries.get(position));
                         hideDictListView();
                     }
                 });
@@ -343,9 +417,11 @@ public class PopupSelectionMenu extends LinearLayout {
 
             @Override
             public int getItemCount() {
-                return textDictionaryQueries.size();
+                return dictionaryQueries.size();
             }
         });
+
+        updateTranslation(readerPresenter, readerPresenter.getBookOperate().getSelectionText());
     }
 
     private class DictViewHolder extends RecyclerView.ViewHolder {
@@ -368,7 +444,7 @@ public class PopupSelectionMenu extends LinearLayout {
     }
 
     public void show(final ReaderPresenter readerPresenter, boolean isWord) {
-        hideTranslation();
+        hideTranslation(isWord);
         updateButtonName(readerPresenter);
         requestLayoutView(readerPresenter);
     }
@@ -404,7 +480,6 @@ public class PopupSelectionMenu extends LinearLayout {
             endCursorRectF = pageAnnotation.getRectangles().get(pageAnnotation.getRectangles().size() - 1);
         }
 
-        dictListView.setVisibility(VISIBLE);
         float dividerHeight = readerPresenter.getReaderView().getViewContext().getResources().getDimension(R.dimen.popup_selection_menu_divider_height);
 
         int w = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
@@ -441,10 +516,16 @@ public class PopupSelectionMenu extends LinearLayout {
         return (getVisibility() == View.VISIBLE);
     }
 
-    public void hideTranslation() {
+    public void hideTranslation(boolean isWord) {
         setLayoutParams((int) (dictViewWidth * 0.9), ViewGroup.LayoutParams.WRAP_CONTENT);
-        this.webViewDividerLine.setVisibility(GONE);
-        dictLayout.setVisibility(View.GONE);
+        if (!isWord) {
+            this.webViewDividerLine.setVisibility(GONE);
+            dictLayout.setVisibility(View.GONE);
+        }
+        addWordButton.setVisibility(isWord ? VISIBLE : GONE);
+        baiduButton.setVisibility(isWord ? VISIBLE : GONE);
+        addSentenceButton.setVisibility(isWord ? GONE : VISIBLE);
+        deleteMarkButton.setVisibility(isWord ? GONE : VISIBLE);
         toolsPlateLeftDividerLine.setVisibility(VISIBLE);
         toolsPlateRightDividerLine.setVisibility(VISIBLE);
     }
@@ -466,80 +547,78 @@ public class PopupSelectionMenu extends LinearLayout {
     private void updateTranslation(final ReaderPresenter readerPresenter, String token) {
         token = StringUtils.trimPunctuation(token);
         mDictTitle.setText(token);
+        pathList = Utils.getDictPathListByMap(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
         dictionaryQuery(readerPresenter, token);
     }
 
     private void dictionaryQuery(final ReaderPresenter readerPresenter, final String token) {
-        final DictionaryQueryAction dictionaryQueryAction = new DictionaryQueryAction(token);
-        dictionaryQueryAction.execute(readerPresenter, new BaseCallback() {
+        queryWordRequest = new QueryWordRequest(token);
+        boolean bRet = DRApplication.getInstance().getDictionaryManager().sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
             @Override
-            public void done(BaseRequest request, Throwable e) {
-                textDictionaryQueries = dictionaryQueryAction.getTextDictionaryQueries();
-                soundDictionaryQueries = dictionaryQueryAction.getSoundDictionaryQueries();
-                handleDictionaryQuery(readerPresenter, textDictionaryQueries, soundDictionaryQueries, token, dictionaryQueryAction.getErrorInfo());
+            public void done(DictBaseRequest request, Exception e) {
+                if (queryWordRequest.queryResult == null) {
+                    return;
+                }
+                dictionaryQueries.clear();
+                for (String key : queryWordRequest.queryResult.keySet()) {
+                    dicts.add(key);
+                    dictionaryQueries.add(queryWordRequest.queryResult.get(key));
+                }
+                if (!CollectionUtils.isNullOrEmpty(dictionaryQueries)) {
+                    showExplanation(dictionaryQueries.get(0));
+                }
             }
         });
-    }
-
-    private void handleDictionaryQuery(final ReaderPresenter readerPresenter, List<DictionaryQuery> textDictionaryQueries, List<DictionaryQuery> soundDictionaryQueries, final String token, final String error) {
-        if (textDictionaryQueries.size() > 0 || soundDictionaryQueries.size() > 0) {
-            DictionaryQuery query = textDictionaryQueries.size() > 0 ? textDictionaryQueries.get(0) : soundDictionaryQueries.get(0);
-            int state = query.getState();
-            if (state == DictionaryQuery.DICT_STATE_LOADING) {
-                if (dictionaryLoadCount < MAX_DICTIONARY_LOAD_COUNT) {
-                    dictionaryLoadCount++;
-                    PopupSelectionMenu.this.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            dictionaryQuery(readerPresenter, token);
-                        }
-                    }, DELAY_DICTIONARY_LOAD_TIME);
-                } else {
-                    String content = readerPresenter.getReaderView().getViewContext().getString(R.string.load_fail);
-                    query.setExplanation(content);
-                }
-            } else {
-                dictListView.getAdapter().notifyDataSetChanged();
-            }
-            if (state == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL && textDictionaryQueries.size() > 0) {
-                query = textDictionaryQueries.get(0);
-            }
-            if (state == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL && soundDictionaryQueries.size() > 0) {
-                enableSoundDictionary(soundDictionaryQueries);
-            }
-            showExplanation(query);
-        } else {
-            mWebView.setLoadCssStyle(false);
-            mWebView.loadDataWithBaseURL(null, error, "text/html", "utf-8", "about:blank");
+        if (!bRet) {
+            CommonNotices.showMessage(readerPresenter.getReaderView().getApplicationContext(), readerPresenter.getReaderView().getApplicationContext().getResources().getString(R.string.headword_search_empty));
         }
     }
 
-    private void enableSoundDictionary(final List<DictionaryQuery> soundDictionaryQueries) {
+    private int getGoodSentenceType(String language) {
+        int type;
+        if (StringUtils.isNotBlank(language)) {
+            switch (language) {
+                case Constants.CHINESE:
+                    type = Constants.CHINESE_TYPE;
+                    break;
+                case Constants.ENGLISH:
+                    type = Constants.ENGLISH_TYPE;
+                    break;
+                default:
+                    type = Constants.OTHER_TYPE;
+            }
+        } else {
+            type = Constants.OTHER_TYPE;
+        }
+        return type;
+    }
+
+    private void enableSoundDictionary(final List<DictionaryQueryResult> soundDictionaryQueries) {
         pronounce1.setEnabled(soundDictionaryQueries.size() > 0);
         pronounce2.setEnabled(soundDictionaryQueries.size() > 1);
     }
 
-    private void showExplanation(DictionaryQuery dictionaryQuery) {
-        String dict = dictionaryQuery.getDictPath();
+    private void showExplanation(DictionaryQueryResult dictionaryQuery) {
+        String dict = dictionaryQuery.getDictionary().dictPath;
         String url = "file:///";
         if (!StringUtils.isNullOrEmpty(dict)) {
             url += dict.substring(0, dict.lastIndexOf("/"));
         }
-        String dictName = dictionaryQuery.getDictName();
+        String dictName = dictionaryQuery.getDictionary().name;
         if (!StringUtils.isNullOrEmpty(dictName)) {
             dictNameText.setText(dictName);
             markerView.setVisibility(VISIBLE);
         }
 
-        mWebView.setLoadCssStyle(dictionaryQuery.getState() == DictionaryQuery.DICT_STATE_QUERY_SUCCESSFUL);
+        mWebView.setLoadCssStyle(true);
         mWebView.loadDataWithBaseURL(url, dictionaryQuery.getExplanation(), "text/html", "utf-8", "about:blank");
     }
 
-    private void playSoundDictionary(final List<DictionaryQuery> soundDictionaryQueries, final int index) {
+    private void playSoundDictionary(final List<DictionaryQueryResult> soundDictionaryQueries, final int index) {
         if (soundDictionaryQueries.size() <= index) {
             return;
         }
-        DictionaryQuery query = soundDictionaryQueries.get(index);
+        DictionaryQueryResult query = soundDictionaryQueries.get(index);
         String soundPath = query.getSoundPath();
         if (StringUtils.isNullOrEmpty(soundPath)) {
             return;

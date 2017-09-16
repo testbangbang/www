@@ -15,6 +15,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.device.DeviceConfig;
+import com.onyx.android.dr.event.AddToCartEvent;
 import com.onyx.android.dr.event.BookDetailEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.event.PayForEvent;
@@ -123,7 +124,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         viewHolder.addToShoppingCart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: 17-8-3 add to shopping cart
+                EventBus.getDefault().post(new AddToCartEvent(eBook.getCloudId()));
             }
         });
         viewHolder.buy.setOnClickListener(new View.OnClickListener() {

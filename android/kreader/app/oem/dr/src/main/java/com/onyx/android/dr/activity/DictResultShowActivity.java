@@ -18,6 +18,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.event.DictFunctionVisibleEvent;
+import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
 import com.onyx.android.dr.event.NewWordQueryEvent;
 import com.onyx.android.dr.event.PlaySoundEvent;
 import com.onyx.android.dr.event.RefreshWebviewEvent;
@@ -25,7 +26,6 @@ import com.onyx.android.dr.event.ReloadDictImageEvent;
 import com.onyx.android.dr.event.UpdateSoundIconEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.event.WebviewPageChangedEvent;
-import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
@@ -154,16 +154,10 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         dictPresenter = new DictFunctionPresenter(this);
         DictPreference.init(this);
         dictPresenter.loadData(this);
-        initItemData();
         getIntentData();
         initSound();
         settingDictionaryFunction();
         initEvent();
-    }
-
-    private void initItemData() {
-        itemList = Utils.loadItemData(this);
-        resultView.setActionList(itemList);
     }
 
     @Override
@@ -197,9 +191,11 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     private void loadDictionary() {
         pathList = new ArrayList<>();
+        pathList = Utils.getDictPathListByMap(dictType);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
-        dictionaryManager.newProviderMap.clear();
-        pathList = Utils.getPathList(dictType);
+        if (dictionaryManager != null) {
+            dictionaryManager.newProviderMap.clear();
+        }
         DictPreference.setIntValue(this, Constants.DICTTYPE, dictType);
     }
 
@@ -267,21 +263,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             }
         });
 
-        resultView.setActionSelectListener(new ActionSelectListener() {
-            @Override
-            public void onClick(String title, String selectText) {
-                copyText = selectText;
-                if (!StringUtils.isNullOrEmpty(copyText)) {
-                    if (title.equals(getString(R.string.new_word_query))) {
-                        EventBus.getDefault().post(new NewWordQueryEvent());
-                    } else if(title.equals(getString(R.string.good_sentence_excerpt))) {
-                        insertGoodSentence();
-                    }
-                } else {
-                    CommonNotices.showMessage(DictResultShowActivity.this, getString(R.string.webview_toast_copy_failed));
-                }
-            }
-        });
     }
 
     public void testWordDictQuery() {
@@ -367,6 +348,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
                 onVoiceTwoClick();
                 break;
             case R.id.title_bar_right_icon_four:
+                ActivityManager.startDictSettingActivity(this, Constants.DICT_OTHER);
                 break;
             case R.id.title_bar_right_icon_three:
                 ActivityManager.startQueryRecordActivity(this);
@@ -500,12 +482,13 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNewWordQueryEvent(NewWordQueryEvent event) {
-        ActivityManager.startNewWordQueryActivity(this, copyText);
+        ActivityManager.startNewWordQueryActivity(this, event.getContent());
     }
 
-    public void insertGoodSentence() {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGoodSentenceNotebookEvent(GoodSentenceNotebookEvent event) {
         GoodSentenceBean bean = new GoodSentenceBean();
-        bean.setDetails(copyText);
+        bean.setDetails(event.getContent());
         bean.setReadingMatter(dictionaryLookup);
         bean.setPageNumber("");
         bean.setGoodSentenceType(dictType);
@@ -563,9 +546,6 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Override
     protected void onStop() {
         super.onStop();
-        if (resultView != null) {
-            resultView.dismissAction();
-        }
     }
 
     @Override

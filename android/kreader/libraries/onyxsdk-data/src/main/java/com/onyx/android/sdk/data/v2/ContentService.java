@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.model.ProductCart;
 import com.onyx.android.sdk.data.model.ProductOrder;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
@@ -74,4 +75,16 @@ public interface ContentService {
 
     @GET("orders/{id}")
     Call<ProductOrder<CloudMetadata>> getOrder(@Path(Constant.ID_TAG) final String id);
+
+    @POST("carts")
+    Call<ProductCart<CloudMetadata>> addProduct(@Body final ProductRequestBean product);
+
+    @GET("carts")
+    Call<QueryResult<ProductCart<CloudMetadata>>> getCartProducts();
+
+    @POST("carts/remove")
+    Call<ProductOrder<CloudMetadata>> removeProduct(@Body final ProductRequestBean product);
+
+    @GET("books/search")
+    Call<QueryResult<CloudMetadata>> search(@Query(Constant.TEXT_TAG) final String text);
 }

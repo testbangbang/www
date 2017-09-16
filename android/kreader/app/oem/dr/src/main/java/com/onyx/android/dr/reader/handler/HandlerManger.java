@@ -101,4 +101,8 @@ public class HandlerManger {
         handlerList.get(activeProviderType).onStop();
         updateActionProviderType(READING_PROVIDER);
     }
+
+    public void close(){
+        handlerList.get(activeProviderType).close();
+    }
 }
