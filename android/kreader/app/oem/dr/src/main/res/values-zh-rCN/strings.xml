@@ -50,6 +50,7 @@
     <string name="grade">年级</string>
     <string name="grade_class">*年　级:</string>
     <string name="school">*学　校:</string>
+    <string name="designation">*组　名:</string>
     <string name="textbook_publishing_house">*教　材:</string>
     <string name="english_subject">英　　语:</string>
     <string name="clazz">班级</string>
@@ -234,6 +235,16 @@
     <string name="secondary_school_sophomore">中专一年级</string>
     <string name="secondary_school_second_grade">中专二年级</string>
     <string name="secondary_school_third_grade">中专三年级</string>
+    <string name="first_year">2014年</string>
+    <string name="second_year">2015年</string>
+    <string name="third_year">2016年</string>
+    <string name="fourth_year">2017年</string>
+    <string name="fifth_year">2018年</string>
+    <string name="first_class">1班</string>
+    <string name="second_class">2班</string>
+    <string name="third_class">3班</string>
+    <string name="fourth_class">4班</string>
+    <string name="fifth_class">5班</string>
     <string name="military">军事</string>
     <string name="celebrity_biography">名人传记</string>
     <string name="science">科学</string>
@@ -437,13 +448,17 @@
     <string name="group_home_page_activity_manage">群组成员管理</string>
     <string name="group">群组</string>
     <string name="Japanese">日文</string>
-    <string name="recommend_group_name">*推荐群组名:</string>
-    <string name="custom_group_name">*自定义群组名:</string>
+    <string name="recommend_group_name">推荐群组名</string>
+    <string name="custom_group_name">自定义群组名</string>
     <string name="hint_school">学校</string>
     <string name="back_to_previous_page">回到上一页</string>
     <string name="create">创建</string>
-    <string name="year_grade_class">*年度/年级/班级:</string>
+    <string name="year_grade_class">班　级:</string>
+    <string name="annual">*年　度:</string>
+    <string name="create_group_grade">*年　级:</string>
+    <string name="create_group_school">*学校:</string>
     <string name="create_group_success">创建群组成功</string>
+    <string name="create_group_failed">创建群组失败</string>
     <string name="select_vintage">选择年份</string>
     <string name="select_grade">选择年纪</string>
     <string name="select_class">选择班级</string>
@@ -500,6 +515,7 @@
     <string name="start_record">开始录音</string>
     <string name="fragment_speech_recording_hint">小提示：仅可调用自己的随笔文件</string>
     <string name="fragment_speech_recording_all_number">共计:</string>
+    <string name="join_group_activity_all_number">搜索结果: 共</string>
     <string name="data_unit">条</string>
     <string name="hint_input_search_word">请输入搜索的关键字</string>
     <string name="input_keyword">输入关键字</string>
@@ -546,4 +562,9 @@
     <string name="select_most_dict">最多可选择四本字典</string>
     <string name="font">字体</string>
     <string name="remove_from_cart_message">是否从购物车中删除书籍?</string>
+    <string name="join_group_name">群组名</string>
+    <string name="group_owner">群主</string>
+    <string name="join">加入</string>
+    <string name="input_group_name_hint">请输入群名或群主名</string>
+    <string name="go_back">返回</string>
 </resources>

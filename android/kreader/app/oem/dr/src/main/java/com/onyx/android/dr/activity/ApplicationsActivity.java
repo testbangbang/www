@@ -66,7 +66,7 @@ public class ApplicationsActivity extends BaseActivity {
     private boolean showCleanTestAppMenu = false;
     private List<CustomAppInfo> customAppInfoList = new ArrayList<CustomAppInfo>() {
         {
-            new CustomAppInfo(GroupHomePageActivity.class, R.string.group, R.drawable.ic_reader_group);
+            add(new CustomAppInfo(GroupHomePageActivity.class, R.string.group, R.drawable.ic_reader_group));
         }
     };
 

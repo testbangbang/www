@@ -51,6 +51,22 @@
         <item>@string/secondary_school_third_grade</item>
     </string-array>
 
+    <string-array name="AnnualDataList">
+        <item>@string/first_year</item>
+        <item>@string/second_year</item>
+        <item>@string/third_year</item>
+        <item>@string/fourth_year</item>
+        <item>@string/fifth_year</item>
+    </string-array>
+
+    <string-array name="ClassDataList">
+        <item>@string/first_class</item>
+        <item>@string/second_class</item>
+        <item>@string/third_class</item>
+        <item>@string/fourth_class</item>
+        <item>@string/fifth_class</item>
+    </string-array>
+
     <string-array name="Interest">
         <item>@string/english</item>
         <item>@string/military</item>

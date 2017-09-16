@@ -3,8 +3,10 @@ package com.onyx.android.dr.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.onyx.android.dr.DRApplication;
@@ -21,20 +23,18 @@ import java.util.List;
  * Created by zhouzhiming on 2017/8/29.
  */
 public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupAdapter.OnItemClickListener {
-
-    private final int height = 620;
+    private int height;
     private int width;
     private List<String> datas = new ArrayList<>();
     private View contentView;
     private PageRecyclerView popupWindowRecycler;
     private SecondPopupAdapter popupAdapter;
     public static final float secondProportion = 0.6f;
-    public static final float firstProportion  = 0.18f;
+    public static final float firstProportion  = 0.3f;
     private int offsetY;
     private OnItemClickListener listener;
-
-
     private int type;
+    private DividerItemDecoration dividerItemDecoration;
 
     public void setOffsetY(int offsetY) {
         this.offsetY = offsetY;
@@ -51,10 +51,12 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
     private void initView() {
         popupWindowRecycler = (PageRecyclerView) contentView.findViewById(R.id.popup_window_recycler);
         popupWindowRecycler.setLayoutManager(new DisableScrollLinearManager(DRApplication.getInstance().getBaseContext()));
+        dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         popupAdapter = new SecondPopupAdapter();
         popupAdapter.setOnItemClickListener(this);
         popupAdapter.setList(datas);
         popupWindowRecycler.setAdapter(popupAdapter);
+        popupWindowRecycler.addItemDecoration(dividerItemDecoration);
     }
 
     private void initData() {
@@ -63,7 +65,7 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
         }else if (type == Constants.IDENTITY) {
             setWidth((int) (secondProportion * width));
         }
-        setHeight(height);
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setOutsideTouchable(true);
         setBackgroundDrawable(new ColorDrawable(00000000));
