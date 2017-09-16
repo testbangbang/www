@@ -10,25 +10,86 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <include
-        layout="@layout/layout_search_group"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible"
-        android:orientation="vertical" />
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/join_group_activity_group_name_container_margin">
 
-    <include
-        layout="@layout/layout_group_result"
+        <EditText
+            android:id="@+id/join_group_activity_group_name"
+            style="@style/CreateGroupEditTextStyle"
+            android:layout_width="@dimen/join_group_activity_group_name_width"
+            android:layout_marginLeft="@dimen/join_group_activity_group_name_margin_left"
+            android:hint="@string/input_group_name_hint" />
+
+        <ImageView
+            android:id="@+id/join_group_activity_search_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/join_group_activity_search_group_margin_left"
+            android:background="@drawable/ic_reader_search" />
+
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical" />
+        android:orientation="vertical">
 
-    <include
-        layout="@layout/layout_confirm_real_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="vertical" />
+        <TextView
+            android:id="@+id/join_group_activity_all_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="10dp"
+            android:text="@string/join_group_activity_all_number"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/new_word_title_padding">
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="3"
+                android:text="@string/join_group_name" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="3"
+                android:text="@string/group_owner" />
+
+            <View style="@style/vertical_view" />
+
+            <LinearLayout
+                android:layout_width="@dimen/info_item_group_join_container_width"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="1dp">
+
+                <TextView
+                    style="@style/good_sentence_activity_textview"
+                    android:layout_marginLeft="1dp"
+                    android:layout_weight="2"
+                    android:text="@string/join" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/join_group_activity_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
 </LinearLayout>

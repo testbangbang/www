@@ -79,4 +79,5 @@
     <integer name="shopping_cart_col">1</integer>
     <integer name="search_result_row">4</integer>
     <integer name="search_result_col">1</integer>
+    <integer name="second_popup_adapter_row">16</integer>
 </resources>

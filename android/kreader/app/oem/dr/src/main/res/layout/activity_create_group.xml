@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:orientation="vertical">
 
     <include
@@ -13,36 +12,119 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/recommend_group_name_margin_top">
+        android:layout_marginLeft="@dimen/recommend_group_name_margin_top_margin_left"
+        android:layout_marginTop="@dimen/recommend_group_name_margin_top"
+        android:visibility="gone">
+
+        <CheckBox
+            android:id="@+id/create_group_activity_recommend_check"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginRight="@dimen/check_box_margin_right"
+            android:scaleX="1.5"
+            android:scaleY="1.5" />
+
+        <TextView
+            style="@style/text_view_third_style"
+            android:text="@string/recommend_group_name" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/create_group_activity_recommend_group_name_margin_top">
 
         <LinearLayout
-            android:layout_width="@dimen/user_info_text_view_width"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/login_text_margin_right"
-            android:gravity="right">
-
-            <CheckBox
-                android:id="@+id/create_group_activity_recommend_check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/check_box_margin_right"
-                android:scaleX="1.5"
-                android:scaleY="1.5" />
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/create_group_activity_recommend_group_name_margin_left">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/recommend_group_name" />
-
+                style="@style/CreateGroupTextViewStyle"
+                android:layout_marginTop="@dimen/edit_text_padding"
+                android:text="@string/school"
+                android:visibility="visible" />
         </LinearLayout>
 
         <EditText
-            android:id="@+id/create_group_activity_recommend_group_name"
-            style="@style/CreateGroupEditTextStyle"
-            android:hint="@string/hint_school" />
+            android:id="@+id/create_group_activity_recommend_school"
+            style="@style/CreateGroupEditTextStyle" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/grade_margin_top">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/create_group_activity_recommend_group_name_margin_left">
+
+            <TextView
+                style="@style/CreateGroupTextViewStyle"
+                android:layout_marginTop="@dimen/edit_text_padding"
+                android:gravity="center_vertical"
+                android:text="@string/annual"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/create_group_activity_year_container"
+            android:layout_width="@dimen/create_group_edit_text_width"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/create_group_activity_year"
+                style="@style/CreateGroupEditTextStyle"
+                android:gravity="left"
+                android:textSize="@dimen/level_three_font_size" />
+
+            <ImageView style="@style/create_group_activity_image_style" />
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/grade_margin_top">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/create_group_activity_recommend_group_name_margin_left">
+
+            <TextView
+                style="@style/CreateGroupTextViewStyle"
+                android:layout_marginTop="@dimen/edit_text_padding"
+                android:gravity="center_vertical"
+                android:text="@string/create_group_grade"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/create_group_activity_grade_container"
+            android:layout_width="@dimen/create_group_edit_text_width"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/create_group_activity_grade"
+                style="@style/CreateGroupEditTextStyle"
+                android:gravity="left"
+                android:textSize="@dimen/level_three_font_size" />
+
+            <ImageView style="@style/create_group_activity_image_style" />
+
+        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -51,100 +133,113 @@
         android:layout_gravity="center_vertical"
         android:layout_marginTop="@dimen/grade_margin_top">
 
-        <TextView
-            style="@style/CreateGroupTextViewStyle"
-            android:layout_marginTop="@dimen/edit_text_padding"
-            android:text="@string/year_grade_class"
-            android:visibility="visible" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="130dp">
+
+            <TextView
+                style="@style/CreateGroupTextViewStyle"
+                android:layout_marginTop="@dimen/edit_text_padding"
+                android:gravity="center_vertical"
+                android:text="@string/year_grade_class"
+                android:visibility="visible" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="@dimen/create_group_edit_text_width"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/create_group_activity_year"
-                style="@style/CreateGroupEditTextStyle"
+            <RelativeLayout
+                android:id="@+id/create_group_activity_class_container"
                 android:layout_width="0dp"
-                android:layout_marginRight="@dimen/user_info_edit_text_margin_right"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:textSize="@dimen/level_three_font_size" />
+                android:layout_height="wrap_content"
+                android:layout_weight="1">
 
-            <TextView
-                android:id="@+id/create_group_activity_grade"
-                style="@style/CreateGroupEditTextStyle"
-                android:layout_width="0dp"
-                android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
-                android:layout_marginRight="@dimen/user_info_edit_text_margin_right"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:textSize="@dimen/level_three_font_size" />
+                <TextView
+                    android:id="@+id/create_group_activity_class"
+                    style="@style/CreateGroupEditTextStyle"
+                    android:gravity="left"
+                    android:textSize="@dimen/level_three_font_size" />
 
-            <TextView
-                android:id="@+id/create_group_activity_class"
-                style="@style/CreateGroupEditTextStyle"
-                android:layout_width="0dp"
-                android:layout_marginLeft="@dimen/user_info_edit_text_margin_right"
-                android:layout_weight="1"
-                android:gravity="left"
-                android:textSize="@dimen/level_three_font_size" />
+                <ImageView style="@style/create_group_activity_image_style" />
+
+            </RelativeLayout>
         </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="@dimen/custom_group_margin_top">
+        android:layout_marginLeft="@dimen/recommend_group_name_margin_top_margin_left"
+        android:layout_marginTop="@dimen/custom_group_margin_top"
+        android:visibility="gone">
 
-        <LinearLayout
-            android:layout_width="@dimen/user_info_text_view_width"
+        <CheckBox
+            android:id="@+id/create_group_activity_custom_check"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginRight="@dimen/login_text_margin_right"
-            android:gravity="right">
+            android:scaleX="1.5"
+            android:scaleY="1.5" />
 
-            <CheckBox
-                android:id="@+id/create_group_activity_custom_check"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="@dimen/login_text_margin_right"
-                android:scaleX="1.5"
-                android:scaleY="1.5" />
+        <TextView
+            style="@style/text_view_third_style"
+            android:text="@string/custom_group_name" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginTop="@dimen/grade_margin_top">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/create_group_activity_recommend_group_name_margin_left">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/custom_group_name" />
-
+                style="@style/CreateGroupTextViewStyle"
+                android:layout_marginTop="@dimen/edit_text_padding"
+                android:text="@string/designation"
+                android:visibility="visible" />
         </LinearLayout>
 
         <EditText
             android:id="@+id/create_group_activity_custom_group_name"
-            style="@style/CreateGroupEditTextStyle"
-            android:hint="@string/hint_school" />
+            style="@style/CreateGroupEditTextStyle" />
+
+        <ImageView
+            android:id="@+id/create_group_activity_whether_exist"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/create_group_activity_whether_exist_margin_left"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/create_group_activity_margin_top">
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/create_group_activity_cancel_container_margin_top"
+        android:gravity="center_horizontal">
 
         <TextView
-            android:id="@+id/create_group_activity_rollback"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_alignParentRight="true"
-            android:text="@string/back_to_previous_page" />
+            android:id="@+id/create_group_activity_cancel"
+            style="@style/create_group_activity_text_view_style"
+            android:layout_marginLeft="@dimen/create_group_activity_cancel_margin_left"
+            android:text="@string/go_back" />
 
         <TextView
             android:id="@+id/create_group_activity_create"
-            style="@style/new_word_notebook_textview_style"
-            android:layout_toLeftOf="@+id/create_group_activity_rollback"
-            android:text="@string/create" />
+            style="@style/create_group_activity_text_view_style"
+            android:layout_marginLeft="@dimen/create_group_activity_create_marin_left"
+            android:text="@string/time_selector_dialog_confirm" />
 
-    </RelativeLayout>
+    </LinearLayout>
 </LinearLayout>

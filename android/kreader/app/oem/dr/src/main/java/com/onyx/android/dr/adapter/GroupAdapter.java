@@ -3,9 +3,6 @@ package com.onyx.android.dr.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -57,27 +54,9 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
         GroupInfoBean bean = dataList.get(position);
         holder.groupName.setText(bean.getGroupName());
         holder.groupOwnerName.setText(bean.getGroupOwnerName());
-        holder.checkBox.setChecked(listCheck.get(position));
-        holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.setOnItemCheckedChanged(position, b);
-                }
-            }
-        });
-        holder.rootView.setOnClickListener(new View.OnClickListener() {
+        holder.joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        onItemClickListener.setOnItemClick(position, false);
-                    } else {
-                        holder.checkBox.setChecked(true);
-                        onItemClickListener.setOnItemClick(position, true);
-                    }
-                }
             }
         });
     }
@@ -92,12 +71,12 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.group_info_item_check)
-        CheckBox checkBox;
-        @Bind(R.id.group_info_item_group_name)
+        @Bind(R.id.info_item_group_name)
         TextView groupName;
-        @Bind(R.id.group_info_item_owner_name)
+        @Bind(R.id.info_item_group_owner_name)
         TextView groupOwnerName;
+        @Bind(R.id.info_item_group_join)
+        TextView joinGroup;
         View rootView;
 
         ViewHolder(View view) {
