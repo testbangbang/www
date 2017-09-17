@@ -71,9 +71,7 @@ public class ScribbleHandler extends BaseHandler {
             return false;
         }
 
-        // TODO can ignore?
-//        return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
-        return true;
+        return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
     }
 
     private boolean inSelection(final ReaderDataHolder readerDataHolder) {
