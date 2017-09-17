@@ -594,6 +594,25 @@ public class RK32XXDevice extends BaseDevice {
     }
 
     @Override
+    public void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
+        int array[] = new int[regions.length * 4];
+        for (int i = 0; i < regions.length; i++) {
+            Rect region = regions[i];
+
+            int left = Math.min(region.left, region.right);
+            int top = Math.min(region.top, region.bottom);
+            int right = Math.max(region.left, region.right);
+            int bottom = Math.max(region.top, region.bottom);
+
+            array[4 * i] = left;
+            array[4 * i + 1] = top;
+            array[4 * i + 2] = right;
+            array[4 * i + 3] = bottom;
+        }
+        setScreenHandWritingRegionLimit(view, array);
+    }
+
+    @Override
     public void setScreenHandWritingRegionExclude(View view, int[] array) {
         try {
             ReflectUtil.invokeMethodSafely(sMethodSetScreenHandWritingRegionExclude, view, view, array);
