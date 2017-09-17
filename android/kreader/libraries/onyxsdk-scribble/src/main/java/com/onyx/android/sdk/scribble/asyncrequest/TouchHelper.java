@@ -212,7 +212,7 @@ public class TouchHelper {
     public TouchHelper setCustomLimitRect(Rect limitRect, List<Rect> excludeRectList) {
         customLimitRect = limitRect;
         getTouchReader().setLimitRect(limitRect);
-        getRawInputManager().setCustomLimitRect(limitRect, excludeRectList);
+        getRawInputManager().setLimitRect(limitRect, excludeRectList);
         return this;
     }
 

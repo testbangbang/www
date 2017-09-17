@@ -157,7 +157,7 @@ public class RawInputManager {
         return this;
     }
 
-    public RawInputManager setCustomLimitRect(Rect limitRect, List<Rect> excludeRectList) {
+    public RawInputManager setLimitRect(Rect limitRect, List<Rect> excludeRectList) {
         getRawInputReader().setLimitRect(limitRect);
         getRawInputReader().setExcludeRect(excludeRectList);
         return this;
