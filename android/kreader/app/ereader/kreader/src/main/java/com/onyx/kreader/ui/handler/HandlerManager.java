@@ -13,25 +13,26 @@ import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.KeyBinding;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.TouchAction;
 import com.onyx.android.sdk.data.TouchBinding;
-import com.onyx.android.sdk.reader.host.request.RenderRequest;
-import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.kreader.ui.actions.DecreaseFontSizeAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.actions.IncreaseFontSizeAction;
-import com.onyx.kreader.ui.actions.RefreshCurrentPageAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.actions.StartTtsAction;
 import com.onyx.kreader.ui.actions.ToggleAnimationUpdateAction;
 import com.onyx.kreader.ui.actions.ToggleBookmarkAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.device.DeviceConfig;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -63,6 +64,19 @@ public class HandlerManager {
     static private boolean enableScrollAfterLongPress = false;
     private DeviceConfig deviceConfig;
     private ReaderDataHolder readerDataHolder;
+    private static final List<String> AUDIO_TYPE_LIST = new ArrayList<>();
+    static {
+        AUDIO_TYPE_LIST.add(".mp3");
+    }
+
+    public static boolean isAudio(String name){
+        for(String type : AUDIO_TYPE_LIST){
+            if(name.endsWith(type)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public HandlerManager(final ReaderDataHolder holder) {
         super();
@@ -257,10 +271,34 @@ public class HandlerManager {
         if (!isEnableTouch()) {
             return false;
         }
+        String audioName = tryPageImage(readerDataHolder,e.getX(),e.getY());
+        if(StringUtils.isNotBlank(audioName)){
+            StartTtsAction action = new StartTtsAction(null);
+            action.setAudioPath(audioName);
+            action.execute(readerDataHolder, null);
+            return true;
+        }
         if (getActiveProvider().onSingleTapUp(readerDataHolder, e)) {
             return true;
         }
         return processSingleTapUpEvent(readerDataHolder, e);
+    }
+
+    private String tryPageImage(ReaderDataHolder readerDataHolder, final float x, final float y) {
+        for (PageInfo pageInfo : readerDataHolder.getReaderViewInfo().getVisiblePages()) {
+            if (!readerDataHolder.getReaderUserDataInfo().hasPageImages(pageInfo)) {
+                continue;
+            }
+            List<ReaderImage> images = readerDataHolder.getReaderUserDataInfo().getPageImages(pageInfo);
+            for (ReaderImage image : images) {
+                if (image.getRectangle().contains(x, y)) {
+                    if(isAudio(image.getName())) {
+                        return image.getName();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {

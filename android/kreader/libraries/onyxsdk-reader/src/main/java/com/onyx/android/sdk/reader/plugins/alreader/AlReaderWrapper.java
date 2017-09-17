@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Log;
 import android.util.Pair;
 
 import com.neverland.engbook.bookobj.AlBookEng;
@@ -379,6 +380,11 @@ public class AlReaderWrapper {
                 @Override
                 public Bitmap getBitmap() {
                     return image.bitmap;
+                }
+
+                @Override
+                public String getName() {
+                    return image.name;
                 }
             });
         }

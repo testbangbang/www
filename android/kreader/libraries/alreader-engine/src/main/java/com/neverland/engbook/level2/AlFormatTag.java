@@ -172,6 +172,7 @@ public class AlFormatTag {
 	protected final static int TAG_TEXT = 					3556653;	
 	protected final static int TAG_TYPE = 					3575610;
 	protected final static int TAG_YEAR = 					3704893;
+	protected final static int TAG_AUDIO =					93166550;
 
 	protected final static int TAG_CATEGORY =			   50511102;
 	protected final static int TAG_NICKNAME = 			   70690926;

@@ -269,6 +269,7 @@ public class AlBookEng{
 		
 		calc.init(engOptions, fontParam);
 		fonts.init(engOptions, calc, fontParam);
+		images.setAudioImagePath(engOptions.appInstance);
 		images.init(engOptions);
 		hyphen.init(engOptions);
 		
@@ -6371,7 +6372,7 @@ public class AlBookEng{
 
 								AlRect rect = new AlRect();
 								rect.set(x, y - h, x + w, y);
-								textOnScreen.addImage(oi.pos[i], rect, b.bmp.copy(Bitmap.Config.ARGB_8888, false));
+								textOnScreen.addImage(oi.pos[i], rect, b.bmp.copy(Bitmap.Config.ARGB_8888, false),ai.name);
 							}
 						}
 					}

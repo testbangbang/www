@@ -57,7 +57,7 @@ public class ReaderTtsManager {
         this.text = text;
     }
 
-    public void play() {
+    public void play(String audioPath) {
         if (ttsService.isPaused()) {
             ttsService.resume();
             return;
@@ -65,10 +65,14 @@ public class ReaderTtsManager {
 
         reset();
         if (StringUtils.isNotBlank(text)) {
-            ttsService.startTts(text);
+            ttsService.startTts(text,null);
             text = null;
         } else {
-            readerDataHolder.notifyTtsRequestSentence();
+            if(StringUtils.isNotBlank(audioPath)){
+                ttsService.startTts("good",audioPath);
+            }else {
+                readerDataHolder.notifyTtsRequestSentence();
+            }
         }
     }
 

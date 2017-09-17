@@ -170,7 +170,9 @@ public abstract class AlAXML extends AlFormat {
 
 	@Override
 	protected void doTextChar(char ch, boolean addSpecial) {
-		
+		if(tag.tag == AlFormatTag.TAG_AUDIO && addSpecial){
+			ch = 0x20;
+		}
 		
 		if (allState.state_skipped_flag) {
 			
@@ -504,6 +506,7 @@ public abstract class AlAXML extends AlFormat {
 	protected void parser(final int start_pos, final int stop_posRequest) {
 		dinamicSize = stop_posRequest == -1;
 		stop_posUsed = dinamicSize ? aFiles.getSize() : stop_posRequest;
+		tag.clearTag();
 
 		// this code must be in any parser without change!!!
 		int 	buf_cnt, i, j;
