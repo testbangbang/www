@@ -329,7 +329,7 @@ public class ReaderDataHolder {
 
     public NoteManager getNoteManager() {
         if (noteManager == null) {
-            noteManager = new NoteManager(this);
+            noteManager = new NoteManager(getContext(), getEventBus());
         }
         return noteManager;
     }

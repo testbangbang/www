@@ -230,8 +230,8 @@ public class NoteManager {
         updateLineLayoutArgs(event.getSpanTextView());
     }
 
-    public void setCustomLimitRect(Rect targetRect){
-        getTouchHelper().setCustomLimitRect(targetRect);
+    public void setLimitRect(Rect targetRect){
+        getTouchHelper().setLimitRect(targetRect);
     }
 
     @Subscribe

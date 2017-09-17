@@ -86,11 +86,8 @@ public class TouchHelper {
     private EpdPenManager epdPenManager;
     private TouchReader touchReader;
     private RawInputManager rawInputManager;
-
     private ReaderCallback callback = new ReaderCallback();
-
     private EventBus eventBus;
-    private Rect customLimitRect;
 
     public TouchHelper(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -124,13 +121,10 @@ public class TouchHelper {
     }
 
     private void setupTouchReader(final View view) {
-        if (customLimitRect == null) {
-            Rect limitRect = new Rect();
-            view.getLocalVisibleRect(limitRect);
-            getTouchReader().setLimitRect(limitRect);
-        }else {
-            getTouchReader().setLimitRect(customLimitRect);
-        }
+        Rect limitRect = new Rect();
+        view.getLocalVisibleRect(limitRect);
+        getTouchReader().setLimitRect(limitRect);
+
     }
 
     public boolean onTouchEvent(final MotionEvent motionEvent) {
@@ -202,12 +196,11 @@ public class TouchHelper {
         quitRawDrawing();
     }
 
-    public void setCustomLimitRect(Rect rect) {
-        setCustomLimitRect(rect, null);
+    public void setLimitRect(Rect rect) {
+        setLimitRect(rect, null);
     }
 
-    public TouchHelper setCustomLimitRect(Rect limitRect, List<Rect> excludeRectList) {
-        customLimitRect = limitRect;
+    public TouchHelper setLimitRect(Rect limitRect, List<Rect> excludeRectList) {
         getTouchReader().setLimitRect(limitRect);
         getRawInputManager().setLimitRect(limitRect, excludeRectList);
         return this;

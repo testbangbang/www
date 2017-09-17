@@ -88,7 +88,7 @@ public class PicEditHandler extends BaseHandler {
             public void done(BaseRequest request, Throwable e) {
                 AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest) request;
                 noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
-                noteManager.setCustomLimitRect(getPicCustomLimitRect(path));
+                noteManager.setLimitRect(getPicCustomLimitRect(path));
             }
         });
     }

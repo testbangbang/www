@@ -41,7 +41,6 @@ import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
-import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.ShapeAddedEvent;
 import com.onyx.kreader.ui.events.ShapeDrawingEvent;
 import com.onyx.kreader.ui.events.ShapeErasingEvent;
@@ -50,6 +49,7 @@ import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -70,14 +70,13 @@ public class NoteManager {
     private volatile SurfaceView surfaceView;
 
     private volatile Shape currentShape = null;
-    private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
     private RenderContext renderContext = new RenderContext();
 
     private List<Shape> shapeStash = new ArrayList<>();
     private DeviceConfig noteConfig;
     private MappingConfig mappingConfig;
     private List<PageInfo> visiblePages = new ArrayList<>();
-    private ReaderDataHolder parent;
+    private EventBus eventBus;
     private ReaderNoteDataInfo noteDataInfo = new ReaderNoteDataInfo();
     private RectF visibleDrawRectF;
     private volatile boolean enableRawEventProcessor = false;
@@ -88,10 +87,10 @@ public class NoteManager {
     private WakeLockHolder wakeLockHolder = new WakeLockHolder(false);
     private TouchPoint eraserPoint;
 
-    public NoteManager(final ReaderDataHolder p) {
-        parent = p;
-        p.getEventBus().register(this);
-        ConfigManager.init(p.getContext().getApplicationContext());
+    public NoteManager(final Context context, final EventBus bus) {
+        eventBus = bus;
+        eventBus.register(this);
+        ConfigManager.init(context.getApplicationContext());
         getTouchHelper().setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
     }
 
@@ -141,6 +140,10 @@ public class NoteManager {
         wakeLockHolder.releaseWakeLock();
     }
 
+    public EventBus getEventBus() {
+        return eventBus;
+    }
+
     private void initNoteArgs(final Context context) {
         noteConfig = DeviceConfig.sharedInstance(context, "note");
         mappingConfig = MappingConfig.sharedInstance(context, "note");
@@ -157,12 +160,12 @@ public class NoteManager {
         }
         surfaceView = sv;
         getTouchHelper().setup(surfaceView);
-        getTouchHelper().setCustomLimitRect(visibleDrawRect, RectUtils.toRectList(excludeRect));
+        getTouchHelper().setLimitRect(visibleDrawRect, RectUtils.toRectList(excludeRect));
     }
 
     public final TouchHelper getTouchHelper() {
         if (touchHelper == null) {
-            touchHelper = new TouchHelper(parent.getEventBus());
+            touchHelper = new TouchHelper(getEventBus());
         }
         return touchHelper;
     }
@@ -176,10 +179,6 @@ public class NoteManager {
 //        shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
 //        shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
         shapeDataInfo.setDocumentUniqueId(getNoteDocument().getDocumentUniqueId());
-    }
-
-    public ReaderDataHolder getParent() {
-        return parent;
     }
 
     public void enableScreenPost(boolean enable) {
@@ -530,7 +529,7 @@ public class NoteManager {
             return;
         }
         final Shape shape = collectPoint(lastPageInfo, touchPoint, true, false);
-        getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+        getEventBus().post(new ShapeDrawingEvent(shape));
     }
 
     public void onDrawingTouchMove(MotionEvent motionEvent) {
@@ -554,7 +553,7 @@ public class NoteManager {
             return;
         }
         final Shape shape = collectPoint(lastPageInfo, touchPoint, true, false);
-        getParent().getEventBus().post(new ShapeDrawingEvent(shape));
+        getEventBus().post(new ShapeDrawingEvent(shape));
     }
 
     public void onDrawingTouchUp(MotionEvent motionEvent) {
@@ -574,7 +573,7 @@ public class NoteManager {
             list.add(fromHistorical(motionEvent, i));
         }
         list.add(new TouchPoint(motionEvent));
-        getParent().getEventBus().post(new ShapeErasingEvent(false, true, list));
+        getEventBus().post(new ShapeErasingEvent(false, true, list));
 
         eraserPoint = list.get(list.size() - 1);
     }
@@ -642,7 +641,7 @@ public class NoteManager {
         Debug.e(getClass(), "onBeginRawDataEvent");
         if (e.isShortcutDrawing()) {
             shortcutDrawing = true;
-            getParent().getEventBus().post(new ShortcutDrawingStartEvent());
+            getEventBus().post(new ShortcutDrawingStartEvent());
         }
     }
 
@@ -656,9 +655,9 @@ public class NoteManager {
         onNewStash(currentShape);
         resetCurrentShape();
         if (shortcutDrawing) {
-            getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
+            getEventBus().post(new ShortcutDrawingFinishedEvent());
         } else {
-            getParent().getEventBus().post(new ShapeAddedEvent());
+            getEventBus().post(new ShapeAddedEvent());
         }
     }
 
@@ -689,13 +688,13 @@ public class NoteManager {
     @Subscribe
     public void onRawErasingStartEvent(BeginRawErasingEvent e) {
         Debug.e(getClass(), "onRawErasingStartEvent");
-        getParent().getEventBus().post(new ShortcutErasingStartEvent());
+        getEventBus().post(new ShortcutErasingStartEvent());
     }
 
     @Subscribe
     public void onRawErasingFinishEvent(RawErasePointListReceivedEvent e) {
         Debug.e(getClass(), "onRawErasingFinishEvent");
-        getParent().getEventBus().post(new ShortcutErasingFinishEvent(e.getTouchPointList()));
+        getEventBus().post(new ShortcutErasingFinishEvent(e.getTouchPointList()));
     }
 
     @Subscribe
