@@ -3,6 +3,7 @@ package com.onyx.android.sample;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -14,6 +15,7 @@ import android.widget.Button;
 
 import com.onyx.android.sample.device.DeviceConfig;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.scribble.api.PenReader;
 import com.onyx.android.sdk.scribble.asyncrequest.TouchHelper;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -23,6 +25,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.WeakHashMap;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -34,11 +37,12 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
     @Bind(R.id.button_eraser)
     Button buttonEraser;
     @Bind(R.id.surfaceview)
-    SurfaceView surfaceView;
+    MyView surfaceView;
 
     boolean scribbleMode = false;
     private EventBus eventBus = new EventBus();
     private TouchHelper touchHelper;
+    private int color = Color.LTGRAY;
 
 
     @Override
@@ -55,28 +59,21 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
 
     private void initSurfaceView() {
         touchHelper = new TouchHelper(eventBus);
-
-        surfaceView.getHolder().addCallback(new SurfaceHolder.Callback() {
+        surfaceView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
             @Override
-            public void surfaceCreated(SurfaceHolder holder) {
+            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
                 List<Rect> exclude = new ArrayList<>();
                 exclude.add(touchHelper.getRelativeRect(surfaceView, buttonEraser));
                 exclude.add(touchHelper.getRelativeRect(surfaceView, buttonPen));
+
+                Rect limit = new Rect();
+                surfaceView.getLocalVisibleRect(limit);
                 cleanSurfaceView();
                 touchHelper.setup(surfaceView)
-                    .setStrokeWidth(3.0f)
-                    .setUseRawInput(true)
-                    .setCustomLimitRect(null, exclude)
-                    .startRawDrawing();
-            }
-
-            @Override
-            public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-                cleanSurfaceView();
-            }
-
-            @Override
-            public void surfaceDestroyed(SurfaceHolder holder) {
+                        .setStrokeWidth(3.0f)
+                        .setUseRawInput(true)
+                        .setCustomLimitRect(limit, exclude)
+                        .startRawDrawing();
             }
         });
     }
@@ -107,15 +104,8 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
     }
 
     private void cleanSurfaceView() {
-        if (surfaceView.getHolder() == null) {
-            return;
-        }
-        Canvas canvas = surfaceView.getHolder().lockCanvas();
-        if (canvas == null) {
-            return;
-        }
-        canvas.drawColor(Color.WHITE);
-        surfaceView.getHolder().unlockCanvasAndPost(canvas);
+        surfaceView.setBkColor(Color.WHITE);
+        EpdController.invalidate(surfaceView, UpdateMode.GC);
     }
 
     private void enterScribbleMode() {
