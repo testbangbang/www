@@ -46,7 +46,7 @@ public class ManagerItemViewModel extends BaseObservable {
             public void onPropertyChanged(Observable observable, int i) {
                 NoteModel note = mNoteObservable.get();
                 if (note != null) {
-                    documentName.set(note.getTitle());
+                    documentName.set(note.isLibrary() ? Utils.getLibraryTitleWithSize(note) : note.getTitle());
                     lastModifiedDate.set(Utils.isValidNote(note) ?
                             DateFormat.format("yyyy-MM-dd", note.getUpdatedAt()).toString() : null);
                     thumbnail.set(note.isLibrary() ?

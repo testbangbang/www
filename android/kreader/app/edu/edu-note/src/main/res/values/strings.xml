@@ -38,6 +38,12 @@
     <string name="export_location">(Export location: %s)</string>
     <string name="go_to_page">Go to Page</string>
     <string name="current_page">Current Page</string>
-
+    <string name="sort">Sort</string>
+    <string name="asc">Asc</string>
+    <string name="desc">Desc</string>
+    <string name="updated_at">Last Updated Time</string>
+    <string name="title">Title</string>
+    <string name="created_at">Created Time</string>
+    <string name="type">Type</string>
 
 </resources>

@@ -24,9 +24,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.view.View;
 
-import com.onyx.android.sdk.scribble.data.NoteModel;
-import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.PageNameList;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.edu.note.NoteApplication;
 import com.onyx.edu.note.R;
 
@@ -88,5 +89,14 @@ public class Utils {
                 });
         illegalDialog.setParams(params);
         illegalDialog.show(fragmentManager, "illegalDialog");
+    }
+
+    public static String getLibraryTitleWithSize(final NoteModel noteModel) {
+        StringBuilder builder = new StringBuilder(noteModel.getTitle());
+        PageNameList pageNameList = noteModel.getPageNameList();
+        builder.append("(");
+        builder.append(noteModel.getSubDocCount());
+        builder.append(")");
+        return builder.toString();
     }
 }

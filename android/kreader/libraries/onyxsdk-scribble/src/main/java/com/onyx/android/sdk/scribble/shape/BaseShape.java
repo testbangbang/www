@@ -1,7 +1,12 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.*;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PointF;
+import android.graphics.RectF;
 
+import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -222,13 +227,27 @@ public class BaseShape implements Shape {
         addUpPoint(normalizedPoint, screenPoint);
     }
 
+    @Override
     public void onTranslate(final float dx, final float dy) {
         normalizedPoints.translateAllPoints(dx, dy);
         updatePoints();
     }
 
+    @Override
     public void onScale(final float scale) {
         normalizedPoints.scaleAllPoints(scale);
+        updatePoints();
+    }
+
+    @Override
+    public void onRotate(final float angle,PointF pointF){
+        normalizedPoints.rotateAllPoints(angle,pointF);
+        updatePoints();
+    }
+
+    @Override
+    public void onMirror(final MirrorType type, int translateDistance) {
+        normalizedPoints.mirrorAllPoints(type, translateDistance);
         updatePoints();
     }
 

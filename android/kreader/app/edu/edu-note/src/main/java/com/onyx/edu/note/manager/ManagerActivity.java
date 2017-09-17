@@ -16,8 +16,10 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.note.NoteLoadMovableLibraryRequest;
+import com.onyx.android.sdk.scribble.data.AscDescOrder;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.SortBy;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -34,6 +36,7 @@ import com.onyx.edu.note.scribble.ScribbleActivity;
 import com.onyx.edu.note.ui.ViewModelHolder;
 import com.onyx.edu.note.ui.dialog.DialogMoveFolder;
 import com.onyx.edu.note.ui.dialog.DialogNoteNameInput;
+import com.onyx.edu.note.ui.dialog.DialogSortBy;
 import com.onyx.edu.note.util.Constant;
 import com.onyx.edu.note.util.NotePreference;
 import com.onyx.edu.note.util.Utils;
@@ -104,6 +107,12 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
             @Override
             public void onClick(View v) {
                 showAddFolderDialog();
+            }
+        });
+        mBinding.buttonSortBy.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSortByDialog();
             }
         });
     }
@@ -314,6 +323,21 @@ public class ManagerActivity extends OnyxAppCompatActivity implements ManagerNav
             }
         });
         dialogNoteNameInput.show(getFragmentManager());
+    }
+
+    private void showSortByDialog() {
+        DialogSortBy dialogSortBy = new DialogSortBy();
+        Bundle bundle = new Bundle();
+        bundle.putInt(DialogSortBy.ARGS_SORT_BY, mViewModel.getCurrentSortBy());
+        dialogSortBy.setArguments(bundle);
+        dialogSortBy.setCallBack(new DialogSortBy.Callback() {
+            @Override
+            public void onSortBy(@SortBy.SortByDef int sortBy, @AscDescOrder.AscDescOrderDef int ascOrder) {
+                mViewModel.saveSortByAscArgs(sortBy, ascOrder);
+                mViewModel.loadData();
+            }
+        });
+        dialogSortBy.show(getFragmentManager());
     }
 
     private void showNoteNameIllegal() {

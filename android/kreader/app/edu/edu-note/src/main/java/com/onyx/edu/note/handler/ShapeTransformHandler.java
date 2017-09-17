@@ -11,17 +11,20 @@ import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
+import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.ui.data.MenuClickEvent;
 import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapePositionAction;
+import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeRotationAction;
 import com.onyx.edu.note.actions.scribble.ChangeSelectedShapeScaleAction;
 import com.onyx.edu.note.actions.scribble.DocumentSaveAction;
 import com.onyx.edu.note.actions.scribble.GetSelectedShapeListAction;
 import com.onyx.edu.note.actions.scribble.GotoNextPageAction;
 import com.onyx.edu.note.actions.scribble.GotoPrevPageAction;
+import com.onyx.edu.note.actions.scribble.MirrorSelectedShapeAction;
 import com.onyx.edu.note.actions.scribble.RedoAction;
 import com.onyx.edu.note.actions.scribble.SelectShapeByPointListAction;
 import com.onyx.edu.note.actions.scribble.ShapeSelectionAction;
@@ -39,7 +42,6 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
 import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_SELECTOR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_CALENDAR;
 import static com.onyx.edu.note.data.ScribbleSubMenuID.Background.BG_EMPTY;
@@ -96,7 +98,7 @@ public class ShapeTransformHandler extends BaseHandler {
 
     private enum ControlMode {SelectMode, OperatingMode}
 
-    private enum TransformAction {Undefined, Zoom, Move}
+    private enum TransformAction {Undefined, Zoom, Move, Rotation, XAxisMirror, YAxisMirror}
 
     public ShapeTransformHandler(NoteManager noteManager) {
         super(noteManager);
@@ -197,11 +199,6 @@ public class ShapeTransformHandler extends BaseHandler {
         }
     }
 
-    private void onSetShapeSelectModeChanged() {
-        noteManager.getShapeDataInfo().setCurrentShapeType(SHAPE_PENCIL_SCRIBBLE);
-        noteManager.post(new ChangeScribbleModeEvent(ScribbleMode.MODE_NORMAL_SCRIBBLE));
-    }
-
     private void redo() {
         noteManager.syncWithCallback(true, false, new BaseCallback() {
             @Override
@@ -279,7 +276,6 @@ public class ShapeTransformHandler extends BaseHandler {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSelectedShapeListRequest req = (GetSelectedShapeListRequest) request;
-                Log.e(TAG, "req.getSelectedShapeList().size():" + req.getSelectedShapeList().size());
                 if (req.getSelectedShapeList().size() > 0) {
                     currentControlMode = ControlMode.OperatingMode;
                     selectedRectF = req.getSelectedRectF();
@@ -348,6 +344,9 @@ public class ShapeTransformHandler extends BaseHandler {
                     case Zoom:
                         new ChangeSelectedShapeScaleAction(mShapeSelectPoint, false).execute(noteManager, null);
                         break;
+                    case Rotation:
+                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        break;
                 }
                 break;
         }
@@ -362,6 +361,7 @@ public class ShapeTransformHandler extends BaseHandler {
         }
     }
 
+    //TODO:X/Y mirror is single tap function.no need to handle when get point move event.
     private void onFinishShapeSelecting() {
         Log.e(TAG, "onShapeSelectTouchPointListReceived: ");
         switch (currentControlMode) {
@@ -375,6 +375,15 @@ public class ShapeTransformHandler extends BaseHandler {
                         break;
                     case Zoom:
                         new ChangeSelectedShapeScaleAction(mShapeSelectPoint, true).execute(noteManager, null);
+                        break;
+                    case Rotation:
+                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint, true).execute(noteManager, null);
+                        break;
+                    case XAxisMirror:
+                        new MirrorSelectedShapeAction(MirrorType.XAxisMirror,true).execute(noteManager,null);
+                        break;
+                    case YAxisMirror:
+                        new MirrorSelectedShapeAction(MirrorType.YAxisMirror,true).execute(noteManager,null);
                         break;
                 }
                 selectedRectF = null;

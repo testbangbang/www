@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
 
@@ -10,6 +11,7 @@ import com.onyx.android.sdk.scribble.shape.EPDShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.utils.MathUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -41,25 +43,34 @@ public class NotePage {
     private Shape currentShape;
     private boolean loaded = false;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
+    private PointF rotateCacheRectTopLeft,rotateCacheRectTopRight;
 
     public void saveCurrentSelectShape() {
         if (preTransformShapeList.size() == 0) {
-            for (Shape shape : selectedShapeList) {
-                Shape newShape = ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape));
-                //TODO: we need deep copy here.
-                newShape.getPoints().getPoints().clear();
-                for (TouchPoint point:shape.getPoints().getPoints()){
-                    try {
-                        newShape.getPoints().getPoints().add(point.clone());
-                    } catch (CloneNotSupportedException e) {
-                        e.printStackTrace();
-                    }
-                }
-                preTransformShapeList.add(newShape);
-            }
+            deepCopyShapeList(selectedShapeList, preTransformShapeList);
         }
     }
 
+    public void saveCurrentSelectPointRotationInitialPoint(){
+        rotateCacheRectTopLeft = new PointF(getSelectedRect().left, getSelectedRect().top);
+        rotateCacheRectTopRight = new PointF(getSelectedRect().right, getSelectedRect().top);
+    }
+
+    private void deepCopyShapeList(List<Shape> sourceList, List<Shape> destinationList) {
+        for (Shape shape : sourceList) {
+            Shape newShape = ShapeFactory.shapeFromModel(ShapeFactory.modelFromShape(shape));
+            //TODO: we need deep copy here.
+            newShape.getPoints().getPoints().clear();
+            for (TouchPoint point : shape.getPoints().getPoints()) {
+                try {
+                    newShape.getPoints().getPoints().add(point.clone());
+                } catch (CloneNotSupportedException e) {
+                    e.printStackTrace();
+                }
+            }
+            destinationList.add(newShape);
+        }
+    }
 
     public static abstract class RenderCallback {
         public abstract boolean isRenderAbort();
@@ -353,6 +364,8 @@ public class NotePage {
                     } else {
                         selectRect = shape.getBoundingRect();
                     }
+                }else {
+                    selectRect = shape.getBoundingRect();
                 }
                 selectShapeRectList.add(selectRect);
             }
@@ -366,6 +379,11 @@ public class NotePage {
             }
             return resultSelectRectF;
         }
+    }
+
+    public PointF getRotateExtendPoint() {
+        return MathUtils.calculateMiddlePointFromTwoPoint(rotateCacheRectTopLeft.x, rotateCacheRectTopLeft.y,
+                rotateCacheRectTopRight.x, rotateCacheRectTopRight.y);
     }
 
     public void prepareShapePool(int shapeType) {
@@ -511,6 +529,52 @@ public class NotePage {
         }
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            preTransformShapeList.clear();
+        }
+    }
+
+    public void setRotationAngleToSelectShapeList(float angle, PointF originPoint, boolean addToActionHistory) {
+        if (selectedShapeList.size() <= 0) {
+            return;
+        }
+        for (Shape shape : selectedShapeList) {
+            shape.onRotate(angle, originPoint);
+        }
+        Matrix m = new Matrix();
+        m.setRotate(angle, originPoint.x, originPoint.y);
+        float[] leftTopPointArray = new float[2];
+        leftTopPointArray[0] = rotateCacheRectTopLeft.x;
+        leftTopPointArray[1] = rotateCacheRectTopLeft.y;
+        float[] rightTopPointArray = new float[2];
+        rightTopPointArray[0] = rotateCacheRectTopRight.x;
+        rightTopPointArray[1] = rotateCacheRectTopRight.y;
+        m.mapPoints(leftTopPointArray);
+        m.mapPoints(rightTopPointArray);
+        rotateCacheRectTopLeft.x = leftTopPointArray[0];
+        rotateCacheRectTopLeft.y = leftTopPointArray[1];
+
+        rotateCacheRectTopRight.x = rightTopPointArray[0];
+        rotateCacheRectTopRight.y = rightTopPointArray[1];
+
+        dirtyShapeList.clear();
+        dirtyShapeList.addAll(selectedShapeList);
+        if (addToActionHistory) {
+            undoRedoManager.addToHistory(ShapeActions.
+                    transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
+            preTransformShapeList.clear();
+        }
+    }
+
+    public void setMirrorEffectToSelectShapeList(MirrorType type, int translateDistance,boolean addToActionHistory) {
+        if (selectedShapeList.size() <= 0) {
+            return;
+        }
+        for (Shape shape : selectedShapeList) {
+            shape.onMirror(type, translateDistance);
+        }
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);

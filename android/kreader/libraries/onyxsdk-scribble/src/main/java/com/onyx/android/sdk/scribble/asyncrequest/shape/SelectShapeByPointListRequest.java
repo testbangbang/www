@@ -30,6 +30,7 @@ public class SelectShapeByPointListRequest extends AsyncBaseNoteRequest {
         selectResultList = noteManager.getNoteDocument().selectShapesByTouchPointList(getContext(), touchPointList, 1.0f);
         renderCurrentPageInBitmap(noteManager);
         updateShapeDataInfo(noteManager);
+        noteManager.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectPointRotationInitialPoint();
         Log.e("############", "shape select takes: " + benchmarkEnd());
     }
 

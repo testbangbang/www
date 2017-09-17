@@ -1,5 +1,8 @@
 package com.onyx.android.sdk.scribble.data;
 
+import android.graphics.Matrix;
+import android.graphics.PointF;
+
 import org.nustaq.serialization.annotations.Flat;
 
 import java.io.Serializable;
@@ -70,6 +73,41 @@ public class TouchPointList implements Serializable {
         for (TouchPoint point : points) {
             point.x = point.x + dx;
             point.y = point.y + dy;
+        }
+    }
+
+    public void rotateAllPoints(float rotateAngle, PointF originPoint) {
+        Matrix rotateMatrix = new Matrix();
+        rotateMatrix.setRotate(rotateAngle, originPoint.x, originPoint.y);
+        for (TouchPoint point : points) {
+            float[] pts = new float[2];
+            pts[0] = point.x;
+            pts[1] = point.y;
+            rotateMatrix.mapPoints(pts);
+            point.x = pts[0];
+            point.y = pts[1];
+        }
+    }
+
+    public void mirrorAllPoints(MirrorType type,int translateDistance){
+        Matrix mirrorMatrix = new Matrix();
+        switch (type) {
+            case XAxisMirror:
+                mirrorMatrix.setScale(-1, 1);
+                mirrorMatrix.postTranslate(translateDistance, 0);
+                break;
+            case YAxisMirror:
+                mirrorMatrix.setScale(1, -1);
+                mirrorMatrix.postTranslate(0, translateDistance);
+                break;
+        }
+        for (TouchPoint point : points) {
+            float[] pts = new float[2];
+            pts[0] = point.x;
+            pts[1] = point.y;
+            mirrorMatrix.mapPoints(pts);
+            point.x = pts[0];
+            point.y = pts[1];
         }
     }
 }
