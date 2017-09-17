@@ -124,14 +124,6 @@ public class TouchHelper {
     }
 
     private void setupTouchReader(final View view) {
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                getTouchReader().processTouchEvent(motionEvent);
-                return true;
-            }
-        });
-
         if (customLimitRect == null) {
             Rect limitRect = new Rect();
             view.getLocalVisibleRect(limitRect);
@@ -139,6 +131,11 @@ public class TouchHelper {
         }else {
             getTouchReader().setLimitRect(customLimitRect);
         }
+    }
+
+    public boolean onTouchEvent(final MotionEvent motionEvent) {
+        getTouchReader().processTouchEvent(motionEvent);
+        return true;
     }
 
     private void setupRawInputManager(final View view) {
