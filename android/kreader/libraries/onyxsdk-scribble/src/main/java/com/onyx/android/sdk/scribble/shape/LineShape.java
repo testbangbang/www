@@ -1,16 +1,16 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.util.Log;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
+import android.graphics.Path;
+import android.graphics.PointF;
+
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
+import com.onyx.android.sdk.utils.MathUtils;
 
 /**
  * Created by zhuzeng on 7/12/16.
  */
-public class LineShape extends BaseShape {
+public class LineShape extends NonEPDShape {
 
     public int getType() {
         return ShapeFactory.SHAPE_LINE;
@@ -33,8 +33,17 @@ public class LineShape extends BaseShape {
         if (renderContext.matrix != null) {
             renderContext.matrix.mapPoints(points);
         }
+        Matrix transformMatrix = new Matrix();
+        Path path = new Path();
+        path.moveTo(points[0], points[1]);
+        path.lineTo(points[2], points[3]);
+        if (getOrientation() != 0) {
+            PointF centerPoint = MathUtils.calculateMiddlePointFromTwoPoint(points[0], points[1], points[2], points[3]);
+            transformMatrix.setRotate(getOrientation(), centerPoint.x,centerPoint.y);
+            path.transform(transformMatrix);
+        }
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
-        renderContext.canvas.drawLine(points[0], points[1], points[2], points[3], renderContext.paint);
+        renderContext.canvas.drawPath(path, renderContext.paint);
     }
 
 }

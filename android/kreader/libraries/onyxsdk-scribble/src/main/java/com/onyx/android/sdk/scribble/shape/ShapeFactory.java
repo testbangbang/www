@@ -60,7 +60,7 @@ public class ShapeFactory {
                 shape = new RectangleShape();
                 break;
             case ShapeFactory.SHAPE_TEXT:
-                shape = new TexShape();
+                shape = new TextShape();
                 break;
             case ShapeFactory.SHAPE_TRIANGLE:
                 shape = new TriangleShape();

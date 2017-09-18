@@ -2,16 +2,14 @@ package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.Matrix;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.graphics.RectF;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 /**
  * Created by zhuzeng on 4/20/16.
  */
-public class CircleShape extends BaseShape {
+public class CircleShape extends NonEPDShape {
 
     public int getType() {
         return ShapeFactory.SHAPE_CIRCLE;
@@ -31,7 +29,6 @@ public class CircleShape extends BaseShape {
     }
 
     public void render(final RenderContext renderContext) {
-        Log.e("TAG", "render: " );
         float sx = getDownPoint().getX();
         float sy = getDownPoint().getY();
         float ex = getCurrentPoint().getX();
@@ -49,28 +46,6 @@ public class CircleShape extends BaseShape {
         }
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         renderContext.canvas.drawPath(path, renderContext.paint);
-    }
-
-//    @Override
-//    public RectF getBoundingRect() {
-//        float sx = getDownPoint().getX();
-//        float sy = getDownPoint().getY();
-//        float ex = getCurrentPoint().getX();
-//        float ey = getCurrentPoint().getY();
-//        RectF boundingRect = new RectF(sx, sy, ex, ey);;
-//        Matrix transformMatrix = new Matrix();
-//        if (getOrientation() != 0) {
-//            transformMatrix.setRotate(getOrientation(), boundingRect.centerX(), boundingRect.centerY());
-//            transformMatrix.mapRect(boundingRect);
-//        }
-//        return boundingRect;
-//    }
-
-    @Override
-    public void onRotate(final float angle, PointF pointF) {
-        Log.d("CircleShape", "angle:" + angle);
-        float newAngle = (getOrientation() + 45) % 360;
-        setOrientation(newAngle % 360);
     }
 
 }

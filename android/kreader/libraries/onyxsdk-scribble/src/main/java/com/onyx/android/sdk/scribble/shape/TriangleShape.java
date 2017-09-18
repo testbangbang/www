@@ -1,12 +1,16 @@
 package com.onyx.android.sdk.scribble.shape;
 
+import android.graphics.Matrix;
+import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.RectF;
+
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 /**
  * Created by zhuzeng on 8/6/16.
  */
-public class TriangleShape extends BaseShape {
+public class TriangleShape extends NonEPDShape {
 
     protected float points[] = new float[6];
 
@@ -27,9 +31,19 @@ public class TriangleShape extends BaseShape {
     public void render(final RenderContext renderContext) {
         final float[] renderPoints = updatePoints(renderContext);
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
-        renderContext.canvas.drawLine(renderPoints[0], renderPoints[1], renderPoints[2], renderPoints[3], renderContext.paint);
-        renderContext.canvas.drawLine(renderPoints[0], renderPoints[1], renderPoints[4], renderPoints[5], renderContext.paint);
-        renderContext.canvas.drawLine(renderPoints[4], renderPoints[5], renderPoints[2], renderPoints[3], renderContext.paint);
+        Matrix transformMatrix = new Matrix();
+        Path path = new Path();
+        path.moveTo(renderPoints[0], renderPoints[1]);
+        path.lineTo(renderPoints[2], renderPoints[3]);
+        path.lineTo(renderPoints[4], renderPoints[5]);
+        path.close();
+        if (getOrientation() != 0) {
+            //TODO:Obtuse triangle bounding rect is not correct.
+            PointF centerPoint = new PointF(getBoundingRect().centerX(),getBoundingRect().centerY());
+            transformMatrix.setRotate(getOrientation(), centerPoint.x, centerPoint.y);
+            path.transform(transformMatrix);
+        }
+        renderContext.canvas.drawPath(path, renderContext.paint);
     }
 
     private float[] updatePoints(final RenderContext renderContext) {
