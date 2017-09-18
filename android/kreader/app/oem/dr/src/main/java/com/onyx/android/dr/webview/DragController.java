@@ -147,7 +147,7 @@ public class DragController {
      * @param dragAction The drag action: either {@link #DRAG_ACTION_MOVE} or
      *        {@link #DRAG_ACTION_COPY}
      */
-    public void startDrag(Bitmap b, int screenX, int screenY,
+    public void startDrag(Bitmap bitmap, int screenX, int screenY,
             int textureLeft, int textureTop, int textureWidth, int textureHeight,
             DragSource source, Object dragInfo, int dragAction) {
         if (PROFILE_DRAWING_DURING_DRAG) {
@@ -169,9 +169,8 @@ public class DragController {
         dragging = true;
         dragSource = source;
         this.dragInfo = dragInfo;
-        DragView dragView = dragView = new DragView(context, b, registrationX, registrationY,
+        dragView = new DragView(context, bitmap, registrationX, registrationY,
                 textureLeft, textureTop, textureWidth, textureHeight);
-        Log.i("@@@","motionDownX:" + motionDownX + ",motionDownY:" + motionDownY);
         dragView.show(windowToken, (int)motionDownX, (int)motionDownY);
     }
 

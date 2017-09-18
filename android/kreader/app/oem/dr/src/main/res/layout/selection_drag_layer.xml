@@ -10,13 +10,13 @@
         android:layout_width="@dimen/startHandle_width"
         android:layout_height="@dimen/startHandle_height"
         android:scaleType="center"
-        android:src="@drawable/selection_handle" />
+        android:src="@drawable/ic_choose_left" />
 
     <ImageView
         android:id="@+id/endHandle"
         android:layout_width="@dimen/endHandle_width"
         android:layout_height="@dimen/endHandle_height"
         android:scaleType="center"
-        android:src="@drawable/selection_handle" />
+        android:src="@drawable/ic_choose_right" />
 
 </com.onyx.android.dr.webview.DragLayer>
