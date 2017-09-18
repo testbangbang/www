@@ -16,10 +16,11 @@ import com.onyx.android.dr.interfaces.CreateGroupView;
 import com.onyx.android.dr.presenter.CreateGroupPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.SecondCustomPopupWindow;
-import com.onyx.android.sdk.data.model.CreateGroupBean;
 import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
+import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -62,7 +63,6 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     @Bind(R.id.create_group_activity_whether_exist)
     ImageView whetherExist;
     private CreateGroupPresenter createGroupPresenter;
-    private List<String> gradeData;
     private List<String> annualData;
     private List<String> classData;
     private SecondCustomPopupWindow customPopupWindow;
@@ -89,10 +89,10 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
 
     @Override
     protected void initData() {
+        annualData = new ArrayList<>();
+        classData = new ArrayList<>();
         createGroupPresenter = new CreateGroupPresenter(this);
-        gradeData = createGroupPresenter.getGradeData();
-        annualData = createGroupPresenter.getAnnualData();
-        classData = createGroupPresenter.getClassData();
+        createGroupPresenter.getGradeData();
         customPopupWindow = new SecondCustomPopupWindow(this);
         parentId = DRPreferenceManager.loadLibraryParentId(this, "");
         setData();
@@ -102,12 +102,13 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     private void setData() {
         image.setImageResource(R.drawable.ic_group);
         title.setText(getString(R.string.group_home_page_activity_create));
-        classType = classData.get(0);
-        year = annualData.get(0);
-        grade = gradeData.get(0);
         yearName.setText(year);
         gradeName.setText(grade);
         className.setText(classType);
+    }
+
+    @Override
+    public void setSchoolInfo(List<GroupBean> list) {
     }
 
     public void initEvent() {
@@ -171,13 +172,10 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
                 finish();
                 break;
             case R.id.create_group_activity_year_container:
-                showCommonPopupWindow(yearContainer, annualData, YEAR_TAG);
                 break;
             case R.id.create_group_activity_grade_container:
-                showCommonPopupWindow(gradeContainer, gradeData, GRADE_TAG);
                 break;
             case R.id.create_group_activity_class_container:
-                showCommonPopupWindow(classContainer, classData, CLASS_TAG);
                 break;
         }
     }
@@ -188,9 +186,9 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
             CommonNotices.showMessage(this, getString(R.string.input_custom_group_name));
             return;
         }
-        CreateGroupBean bean = new CreateGroupBean();
-        bean.setName(customName);
-        bean.setParent(parentId);
+        CreateGroupResultBean bean = new CreateGroupResultBean();
+        bean.name = customName;
+        bean.parent = parentId;
         createGroupPresenter.createGroup(bean);
     }
 

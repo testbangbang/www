@@ -6,9 +6,10 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.CreateGroupData;
 import com.onyx.android.dr.interfaces.CreateGroupView;
 import com.onyx.android.dr.request.cloud.CreateGroupRequest;
+import com.onyx.android.dr.request.cloud.RequestGetSchoolInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.CreateGroupBean;
+import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
@@ -26,7 +27,7 @@ public class CreateGroupPresenter {
         createGroupData = new CreateGroupData();
     }
 
-    public void createGroup(CreateGroupBean createGroupBean) {
+    public void createGroup(CreateGroupResultBean createGroupBean) {
         final CreateGroupRequest req = new CreateGroupRequest(createGroupBean);
         createGroupData.createGroup(req, new BaseCallback() {
             @Override
@@ -40,9 +41,14 @@ public class CreateGroupPresenter {
         });
     }
 
-    public List<String> getGradeData() {
-        List<String> list = createGroupData.loadGradeData(DRApplication.getInstance());
-        return list;
+    public void getGradeData() {
+        final RequestGetSchoolInfo req = new RequestGetSchoolInfo();
+        createGroupData.getSchoolInfo(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                createGroupView.setSchoolInfo(req.getGroups());
+            }
+        });
     }
 
     public List<String> getAnnualData() {
