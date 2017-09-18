@@ -35,10 +35,12 @@ import com.onyx.android.sdk.dict.data.speex.SpeexConversionRequest;
 import com.onyx.android.sdk.dict.request.common.DictBaseCallback;
 import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.dict.utils.PatternUtils;
+import com.onyx.android.sdk.utils.ReflectUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -82,6 +84,13 @@ public class AutoPagedWebView extends BTWebView {
     private float scrollDiffX = 0;
     private float lastTouchX = 0;
     private boolean scrolling = false;
+
+    private void getSelectedData(String title) {
+        Method getSelection = ReflectUtil.getDeclaredMethodSafely(WebView.class,"getSelection",null);
+        getSelection.setAccessible(true);
+        String text = (String) ReflectUtil.invokeMethodSafely(getSelection,this);
+        callback(text,title);
+    }
 
     public void enableA2ForSpecificView(View view) {
     }
