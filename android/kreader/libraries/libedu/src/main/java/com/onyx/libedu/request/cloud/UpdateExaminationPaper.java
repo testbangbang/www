@@ -46,7 +46,7 @@ public class UpdateExaminationPaper extends BaseEduRequest {
         if (list.size() <= limits) {
             insertPaper(list, list.size());
         } else {
-            Collections.sort(list, new TimeComparator());
+            //Collections.sort(list, new TimeComparator());
             ExaminationPaper paper = list.get(1);
             ExaminationPaper.deletePaper(getContext(), paper);
             PaperQuestionAndAnswer.deleteAnswerPaperByTimes(getContext(), paper.paperId, paper.times);
