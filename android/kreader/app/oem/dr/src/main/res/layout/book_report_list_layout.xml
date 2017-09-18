@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/book_report_list_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/book_report_list_book_name" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/book_report_list_pages" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/book_report_list_summary" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/book_report_list_word_count" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/book_report_list_manage" />
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <com.onyx.android.dr.view.PageRecyclerView
+        android:id="@+id/book_report_list_recycle"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/new_word_activity_radio_group_padding_top"
+        android:text="@string/informal_essay_activity_hint"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/level_one_heading_font" />
+
+    <View style="@style/Horizontal_view" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/book_report_list_page_padding_contain">
+
+        <TextView
+            android:id="@+id/book_report_list_total_size"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/fragment_speech_recording_all_number"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <TextView
+            android:id="@+id/book_report_list_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:drawableLeft="@drawable/dict_page_left"
+            android:drawableRight="@drawable/dict_page_right"
+            android:text="1/10"
+            android:textSize="@dimen/level_one_heading_font" />
+    </RelativeLayout>
+</LinearLayout>

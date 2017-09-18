@@ -361,4 +361,9 @@
     <dimen name="query_dict_activity_view_height">65dp</dimen>
     <dimen name="new_word_query_activity_bottom_padding_bottom">20dp</dimen>
     <dimen name="dialog_result_bottom_padding_bottom">20dp</dimen>
+    <dimen name="tip_confirm_save_after_feeling_message_margin">20dp</dimen>
+    <dimen name="tip_confirm_save_after_feeling_button_margin">40dp</dimen>
+    <dimen name="book_report_detail_layout_padding">10dp</dimen>
+    <dimen name="book_report_detail_edit_text_margin">10dp</dimen>
+    <dimen name="book_report_list_page_padding_contain">10dp</dimen>
 </resources>

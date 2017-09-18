@@ -546,4 +546,11 @@
     <string name="select_most_dict">最多可选择四本字典</string>
     <string name="font">字体</string>
     <string name="remove_from_cart_message">是否从购物车中删除书籍?</string>
+    <string name="is_save_content">是否保存内容？</string>
+    <string name="book_report_list_time">时间</string>
+    <string name="book_report_list_book_name">书名</string>
+    <string name="book_report_list_pages">页码</string>
+    <string name="book_report_list_summary">内容概要</string>
+    <string name="book_report_list_word_count">字数</string>
+    <string name="book_report_list_manage">管理</string>
 </resources>

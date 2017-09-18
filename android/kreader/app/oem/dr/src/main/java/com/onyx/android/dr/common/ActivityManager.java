@@ -12,6 +12,8 @@ import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.activity.BookDetailActivity;
+import com.onyx.android.dr.activity.BookReportDetailActivity;
+import com.onyx.android.dr.activity.BookReportListActivity;
 import com.onyx.android.dr.activity.CreateGroupActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
@@ -169,6 +171,20 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, MemorandumActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startReadingReportActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, BookReportDetailActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startReadingReportListActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, BookReportListActivity.class);
         context.startActivity(intent);
     }
 
