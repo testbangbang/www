@@ -10,24 +10,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/group_home_page_activity_create"
-        style="@style/new_word_notebook_textview_style"
-        android:text="@string/group_home_page_activity_create" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/group_home_page_activity_container_margin_top"
+        android:gravity="left|center"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/group_home_page_activity_join"
-        style="@style/new_word_notebook_textview_style"
-        android:text="@string/group_home_page_activity_join" />
+        <TextView
+            android:id="@+id/group_home_page_activity_create"
+            style="@style/new_word_notebook_textview_style"
+            android:drawableLeft="@drawable/ic_reader_group_set"
+            android:drawablePadding="@dimen/group_home_page_activity_create_padding"
+            android:text="@string/group_home_page_activity_create" />
 
-    <TextView
-        android:id="@+id/group_home_page_activity_exit"
-        style="@style/new_word_notebook_textview_style"
-        android:text="@string/group_home_page_activity_exit" />
+        <TextView
+            android:id="@+id/group_home_page_activity_join"
+            style="@style/new_word_notebook_textview_style"
+            android:drawableLeft="@drawable/ic_reader_group_add"
+            android:drawablePadding="@dimen/group_home_page_activity_create_padding"
+            android:text="@string/group_home_page_activity_join" />
 
-    <TextView
-        android:id="@+id/group_home_page_activity_manage"
-        style="@style/new_word_notebook_textview_style"
-        android:text="@string/group_home_page_activity_manage" />
+        <TextView
+            android:id="@+id/group_home_page_activity_manage"
+            style="@style/new_word_notebook_textview_style"
+            android:drawableLeft="@drawable/ic_reader_group_admin"
+            android:drawablePadding="@dimen/group_home_page_activity_create_padding"
+            android:text="@string/group_home_page_activity_manage" />
 
+    </LinearLayout>
 </LinearLayout>

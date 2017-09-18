@@ -50,8 +50,8 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     private DividerItemDecoration dividerItemDecoration;
     private MemorandumAdapter memorandumAdapter;
     private MemorandumPresenter memorandumPresenter;
-    private List<MemorandumEntity> memorandumList;
     private ArrayList<Boolean> listCheck;
+    private List<MemorandumEntity> memorandumList;
 
     @Override
     protected Integer getLayoutId() {

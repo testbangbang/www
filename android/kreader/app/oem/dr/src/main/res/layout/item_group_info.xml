@@ -1,32 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
-    android:padding="@dimen/item_group_info_padding"
-    android:orientation="horizontal">
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/group_info_item_group_name"
-        style="@style/dialog_time_selector_textview_style"
-        android:layout_marginLeft="@dimen/group_info_item_group_name_margin_left"
-        android:text="@string/memorandum_activity_time" />
-
-    <TextView
-        android:id="@+id/group_info_item_owner_name"
-        style="@style/dialog_time_selector_textview_style"
-        android:layout_toRightOf="@+id/group_info_item_group_name"
-        android:layout_marginLeft="@dimen/group_info_item_owner_name_margin_left"
-        android:text="@string/memorandum_activity_time_quantum" />
-
-    <CheckBox
-        android:id="@+id/group_info_item_check"
-        android:layout_alignParentRight="true"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginRight="@dimen/group_info_item_check_margin_right"
-        android:scaleX="1.3"
-        android:scaleY="1.3" />
+        android:orientation="horizontal">
 
-</RelativeLayout>
+        <TextView
+            android:id="@+id/info_item_group_name"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="3"
+            android:text="@string/join_group_name" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/info_item_group_owner_name"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="3"
+            android:text="@string/group_owner" />
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:layout_width="@dimen/info_item_group_join_container_width"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp">
+
+            <TextView
+                android:id="@+id/info_item_group_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/info_item_group_join_margin_left"
+                android:background="@drawable/rectangle_stroke_focused"
+                android:padding="@dimen/info_item_group_join_padding"
+                android:text="@string/apply_join"
+                android:textColor="@color/white"
+                android:textSize="@dimen/level_two_heading_font" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+</LinearLayout>

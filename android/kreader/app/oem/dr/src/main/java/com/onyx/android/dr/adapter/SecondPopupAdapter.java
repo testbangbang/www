@@ -14,9 +14,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by hehai on 17-8-1.
+ * Created by zhouzhiming on 2017/9/15.
  */
-
 public class SecondPopupAdapter extends PageRecyclerView.PageAdapter<SecondPopupAdapter.ViewHolder> {
     private List<String> list;
     private OnItemClickListener listener;
@@ -27,7 +26,7 @@ public class SecondPopupAdapter extends PageRecyclerView.PageAdapter<SecondPopup
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.address_popup_list_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.second_popup_adapter_row);
     }
 
     @Override
