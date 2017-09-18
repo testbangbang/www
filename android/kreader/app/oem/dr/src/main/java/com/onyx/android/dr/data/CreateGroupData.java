@@ -5,6 +5,7 @@ import android.content.Context;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.request.cloud.CreateGroupRequest;
+import com.onyx.android.dr.request.cloud.RequestGetSchoolInfo;
 import com.onyx.android.sdk.common.request.BaseCallback;
 
 import java.util.ArrayList;
@@ -44,6 +45,10 @@ public class CreateGroupData {
     }
 
     public void createGroup(CreateGroupRequest req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void getSchoolInfo(RequestGetSchoolInfo req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 }

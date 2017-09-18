@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
+import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.PayBean;
@@ -78,6 +79,9 @@ public interface ContentService {
 
     @POST("carts")
     Call<ProductCart<CloudMetadata>> addProduct(@Body final ProductRequestBean product);
+
+    @POST("/api/groups")
+    Call<List<CreateGroupResultBean>> createGroup(@Body final CreateGroupResultBean product);
 
     @GET("carts")
     Call<QueryResult<ProductCart<CloudMetadata>>> getCartProducts();

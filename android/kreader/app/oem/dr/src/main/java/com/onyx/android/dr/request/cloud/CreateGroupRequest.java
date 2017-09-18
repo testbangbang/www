@@ -1,7 +1,6 @@
 package com.onyx.android.dr.request.cloud;
 
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.CreateGroupBean;
 import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
@@ -15,10 +14,10 @@ import retrofit2.Response;
  * Created by zhouzhiming on 2017/8/30.
  */
 public class CreateGroupRequest extends BaseCloudRequest {
-    private CreateGroupBean createGroupBeen;
+    private CreateGroupResultBean createGroupBeen;
     private List<CreateGroupResultBean> list = new ArrayList<>();
 
-    public CreateGroupRequest(CreateGroupBean bean) {
+    public CreateGroupRequest(CreateGroupResultBean bean) {
         this.createGroupBeen = bean;
     }
 

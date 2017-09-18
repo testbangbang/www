@@ -2,6 +2,7 @@ package com.onyx.android.dr.interfaces;
 
 
 import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
+import com.onyx.android.sdk.data.model.v2.GroupBean;
 
 import java.util.List;
 
@@ -10,4 +11,5 @@ import java.util.List;
  */
 public interface CreateGroupView {
     void setCreateGroupResult(List<CreateGroupResultBean> list);
+    void setSchoolInfo(List<GroupBean> list);
 }
