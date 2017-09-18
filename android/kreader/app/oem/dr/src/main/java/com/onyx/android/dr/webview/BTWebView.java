@@ -261,7 +261,7 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
             // Update Layout Params
             ViewGroup.LayoutParams layerParams = selectionDragLayer.getLayoutParams();
             layerParams.height = contentHeight;
-            layerParams.width = contentWidth;
+            layerParams.width = computeHorizontalScrollRange() + contentWidth;
             selectionDragLayer.setLayoutParams(layerParams);
         }
 
@@ -314,14 +314,16 @@ public class BTWebView extends WebView implements TextSelectionJavascriptInterfa
     private Handler drawSelectionHandlesHandler = new Handler(){
         public void handleMessage(Message m){
             MyAbsoluteLayout.LayoutParams startParams = (MyAbsoluteLayout.LayoutParams) startSelectionHandle.getLayoutParams();
-            startParams.x = (int) (selectionBounds.left - startSelectionHandle.getDrawable().getIntrinsicWidth());
-            startParams.y = (int) (selectionBounds.top - startSelectionHandle.getDrawable().getIntrinsicHeight());
+
+            int intrinsicWidth = startSelectionHandle.getDrawable().getIntrinsicWidth();
+            startParams.x = (int) (selectionBounds.left - (intrinsicWidth * 3));
+            startParams.y = (int) (selectionBounds.bottom);// - startSelectionHandle.getDrawable().getIntrinsicHeight());
             // Stay on screen.
             startParams.x = (startParams.x < 0) ? 0 : startParams.x;
             startParams.y = (startParams.y < 0) ? 0 : startParams.y;
             startSelectionHandle.setLayoutParams(startParams);
             MyAbsoluteLayout.LayoutParams endParams = (MyAbsoluteLayout.LayoutParams) endSelectionHandle.getLayoutParams();
-            endParams.x = (int) selectionBounds.right;
+            endParams.x = (int) selectionBounds.right - (intrinsicWidth / 2);
             endParams.y = (int) selectionBounds.bottom;
             // Stay on screen
             endParams.x = (endParams.x < 0) ? 0 : endParams.x;

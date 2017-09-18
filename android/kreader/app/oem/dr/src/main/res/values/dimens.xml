@@ -291,9 +291,9 @@
     <dimen name="action_item_vertical_padding_right">10dp</dimen>
     <dimen name="horiz_separator_width">2dp</dimen>
     <dimen name="startHandle_width">37dp</dimen>
-    <dimen name="startHandle_height">37dp</dimen>
+    <dimen name="startHandle_height">40dp</dimen>
     <dimen name="endHandle_width">37dp</dimen>
-    <dimen name="endHandle_height">37dp</dimen>
+    <dimen name="endHandle_height">40dp</dimen>
     <dimen name="activity_dict_result_view_margin_top">20dp</dimen>
     <dimen name="activity_dict_result_view_margin_bottom">20dp</dimen>
     <dimen name="pay_qr_code_width">250dp</dimen>
