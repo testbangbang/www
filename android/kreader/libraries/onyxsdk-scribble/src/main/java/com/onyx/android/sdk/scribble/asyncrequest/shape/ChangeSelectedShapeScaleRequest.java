@@ -35,7 +35,7 @@ public class ChangeSelectedShapeScaleRequest extends AsyncBaseNoteRequest {
         setResumeInputProcessor(parent.useDFBForCurrentState());
         benchmarkStart();
         parent.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
-        RectF originSelectedRect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect();
+        RectF originSelectedRect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
         PointF originCenterPoint = new PointF(originSelectedRect.centerX(), originSelectedRect.centerY());
         if ((Float.compare(scaleSize, Float.MIN_VALUE) == 0) && touchPoint != null) {
             double newDistance = getTwoPointsDistance(new PointF(touchPoint.getX(), touchPoint.getY()), originCenterPoint);
@@ -44,7 +44,7 @@ public class ChangeSelectedShapeScaleRequest extends AsyncBaseNoteRequest {
         }
         parent.getNoteDocument().getCurrentPage(getContext()).setScaleToSelectShapeList(scaleSize, false);
         renderCurrentPageInBitmap(parent);
-        RectF afterScaleRect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect();
+        RectF afterScaleRect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
         PointF afterZoomCenterPoint = new PointF(afterScaleRect.centerX(), afterScaleRect.centerY());
         parent.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(
                 originCenterPoint.x - afterZoomCenterPoint.x,

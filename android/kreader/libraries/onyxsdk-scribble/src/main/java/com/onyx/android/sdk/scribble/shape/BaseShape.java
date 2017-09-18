@@ -50,6 +50,7 @@ public class BaseShape implements Shape {
 
     private boolean selected = false;
     private float scale = 1.0f;
+    private float orientation;
 
     /**
      * rectangle, circle, etc.
@@ -188,11 +189,14 @@ public class BaseShape implements Shape {
     public void resize(final float width, final float height) {
     }
 
-    public int getOrientation() {
-        return 0;
+    public float getOrientation() {
+        return orientation;
     }
 
-    public void setOrientation(int orientation) {}
+    @Override
+    public void setOrientation(float orientation) {
+        this.orientation = orientation;
+    }
 
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         addDownPoint(normalizedPoint, screenPoint);
@@ -240,8 +244,8 @@ public class BaseShape implements Shape {
     }
 
     @Override
-    public void onRotate(final float angle,PointF pointF){
-        normalizedPoints.rotateAllPoints(angle,pointF);
+    public void onRotate(final float angle, PointF pointF) {
+        normalizedPoints.rotateAllPoints(angle, pointF);
         updatePoints();
     }
 

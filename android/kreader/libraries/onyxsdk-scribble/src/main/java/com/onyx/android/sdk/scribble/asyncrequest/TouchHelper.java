@@ -4,16 +4,16 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawDataEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawErasingEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointMoveReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointMoveReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointMoveReceivedEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -124,7 +124,6 @@ public class TouchHelper {
         Rect limitRect = new Rect();
         view.getLocalVisibleRect(limitRect);
         getTouchReader().setLimitRect(limitRect);
-
     }
 
     public boolean onTouchEvent(final MotionEvent motionEvent) {

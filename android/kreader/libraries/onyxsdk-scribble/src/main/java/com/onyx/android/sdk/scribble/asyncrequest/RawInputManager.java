@@ -7,7 +7,6 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.touch.RawInputReader;
 
-
 import java.util.List;
 
 /**
@@ -15,6 +14,7 @@ import java.util.List;
  */
 
 public class RawInputManager {
+    private static final String TAG = RawInputManager.class.getSimpleName();
     private RawInputReader.RawInputCallback callback;
     private RawInputReader rawInputReader = null;
     private boolean useRawInput = true;

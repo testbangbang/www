@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
-import android.view.SurfaceView;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;

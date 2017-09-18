@@ -1,10 +1,11 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.RectF;
-import com.onyx.android.sdk.scribble.data.TouchPoint;
+import android.util.Log;
+
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 /**
@@ -30,6 +31,7 @@ public class CircleShape extends BaseShape {
     }
 
     public void render(final RenderContext renderContext) {
+        Log.e("TAG", "render: " );
         float sx = getDownPoint().getX();
         float sy = getDownPoint().getY();
         float ex = getCurrentPoint().getX();
@@ -38,10 +40,37 @@ public class CircleShape extends BaseShape {
         if (renderContext.matrix != null) {
             renderContext.matrix.mapRect(rect);
         }
+        Matrix transformMatrix = new Matrix();
+        Path path = new Path();
+        path.addOval(rect, Path.Direction.CW);
+        if (getOrientation() != 0) {
+            transformMatrix.setRotate(getOrientation(), rect.centerX(), rect.centerY());
+            path.transform(transformMatrix);
+        }
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
-        renderContext.canvas.drawOval(rect, renderContext.paint);
+        renderContext.canvas.drawPath(path, renderContext.paint);
     }
 
+//    @Override
+//    public RectF getBoundingRect() {
+//        float sx = getDownPoint().getX();
+//        float sy = getDownPoint().getY();
+//        float ex = getCurrentPoint().getX();
+//        float ey = getCurrentPoint().getY();
+//        RectF boundingRect = new RectF(sx, sy, ex, ey);;
+//        Matrix transformMatrix = new Matrix();
+//        if (getOrientation() != 0) {
+//            transformMatrix.setRotate(getOrientation(), boundingRect.centerX(), boundingRect.centerY());
+//            transformMatrix.mapRect(boundingRect);
+//        }
+//        return boundingRect;
+//    }
 
+    @Override
+    public void onRotate(final float angle, PointF pointF) {
+        Log.d("CircleShape", "angle:" + angle);
+        float newAngle = (getOrientation() + 45) % 360;
+        setOrientation(newAngle % 360);
+    }
 
 }

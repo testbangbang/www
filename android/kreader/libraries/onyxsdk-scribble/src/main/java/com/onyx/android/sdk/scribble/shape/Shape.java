@@ -76,9 +76,9 @@ public interface Shape {
 
     void resize(final float width, final float height);
 
-    int getOrientation();
+    float getOrientation();
 
-    void setOrientation(int orientation);
+    void setOrientation(float orientation);
 
     void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint);
 

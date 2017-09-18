@@ -38,7 +38,7 @@ public class ChangeSelectedShapeRotationRequest extends AsyncBaseNoteRequest {
         benchmarkStart();
         helper.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
         RectF selectedRect = helper.getNoteDocument().getCurrentPage(
-                getContext()).getSelectedRect();
+                getContext()).getSelectedRect().getRectF();
         float centerX = selectedRect.centerX();
         float centerY = selectedRect.centerY();
         PointF extendedPoint = helper.getNoteDocument().getCurrentPage(
