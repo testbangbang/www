@@ -262,7 +262,10 @@ public class NoteManager {
     }
 
     public void onNewStash(final Shape shape) {
-        shapeStash.add(shape);
+        if (shape != null) {
+            // TODO work around of null shape, deep fix in future
+            shapeStash.add(shape);
+        }
     }
 
     public final NoteDrawingArgs getNoteDrawingArgs() {
