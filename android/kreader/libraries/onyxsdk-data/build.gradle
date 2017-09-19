@@ -4,13 +4,11 @@ apply plugin: 'com.neenbedankt.android-apt'
 def artifact = new Properties()
 artifact.load(new FileInputStream("$projectDir/deploy.settings"))
 
-if (System.getenv('BINTRAY_VERSION') != null) {
-    artifact.version = System.getenv('BINTRAY_VERSION')
-}
-
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
+
+    //defaultPublishConfig "bintrayRelease"
 
     defaultConfig {
         minSdkVersion rootProject.ext.minSdkVersion
@@ -24,6 +22,10 @@ android {
     }
     buildTypes {
         release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
+        }
+        bintrayRelease {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
         }

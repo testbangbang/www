@@ -21,11 +21,15 @@ public class PenReader {
 
         void onEndRawData();
 
+        void onRawTouchPointMoveReceived(final TouchPoint point);
+
         void onRawTouchPointListReceived(final TouchPointList pointList);
 
         void onBeginErasing();
 
         void onEndErasing();
+
+        void onEraseTouchPointMoveReceived(final TouchPoint point);
 
         void onEraseTouchPointListReceived(final TouchPointList pointList);
     }
@@ -70,7 +74,7 @@ public class PenReader {
 
             @Override
             public void onRawTouchPointMoveReceived(TouchPoint point) {
-
+                penReaderCallback.onRawTouchPointMoveReceived(point);
             }
 
             @Override
@@ -85,7 +89,7 @@ public class PenReader {
 
             @Override
             public void onEraseTouchPointMoveReceived(TouchPoint point) {
-
+                penReaderCallback.onEraseTouchPointMoveReceived(point);
             }
 
             @Override
