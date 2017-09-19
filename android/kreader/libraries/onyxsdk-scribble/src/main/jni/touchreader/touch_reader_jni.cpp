@@ -25,7 +25,7 @@ static void onTouchPointReceived(void * userData, int px, int py, int pressure, 
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeRawReader
   (JNIEnv *env, jobject thiz) {
-    readerObject = thiz;
+    readerObject = env->NewGlobalRef(thiz);
     std::string path = touchReader.findDevice();
     std::string deviceName;
     touchReader.openDevice(path, deviceName);
@@ -36,6 +36,8 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_n
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeRawClose
   (JNIEnv *env, jobject) {
     touchReader.closeDevice();
+    env->DeleteGlobalRef(readerObject);
+    readerObject = NULL;
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_touch_RawInputReader_nativeSetStrokeWidth

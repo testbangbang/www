@@ -28,10 +28,10 @@ public class MirrorSelectedShapeRequest extends AsyncBaseNoteRequest {
         int translateDistance = 0;
         switch (mirrorType){
             case XAxisMirror:
-                translateDistance = 2 * (int) noteManager.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().centerX();
+                translateDistance = 2 * (int) noteManager.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF().centerX();
                 break;
             case YAxisMirror:
-                translateDistance = 2 * (int) noteManager.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().centerY();
+                translateDistance = 2 * (int) noteManager.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF().centerY();
                 break;
         }
         noteManager.getNoteDocument().getCurrentPage(getContext()).setMirrorEffectToSelectShapeList(mirrorType, translateDistance,isAddToHistory);

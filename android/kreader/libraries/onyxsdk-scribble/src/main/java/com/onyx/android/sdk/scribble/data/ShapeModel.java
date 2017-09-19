@@ -80,6 +80,9 @@ public class ShapeModel extends BaseModel {
     @Column
     int layoutType;
 
+    @Column
+    float orientation = 0f;
+
     public ShapeModel() {
     }
 
@@ -266,4 +269,11 @@ public class ShapeModel extends BaseModel {
         this.layoutType = layoutType;
     }
 
+    public float getOrientation() {
+        return orientation;
+    }
+
+    public void setOrientation(float orientation) {
+        this.orientation = orientation;
+    }
 }

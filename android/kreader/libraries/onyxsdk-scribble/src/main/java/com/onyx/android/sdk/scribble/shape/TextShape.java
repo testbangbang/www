@@ -1,10 +1,7 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
-import android.graphics.Typeface;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -12,7 +9,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 /**
  * Created by zhuzeng on 4/19/16.
  */
-public class TexShape extends BaseShape  {
+public class TextShape extends BaseShape  {
 
     /**
      * rectangle, circle, etc.

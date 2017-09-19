@@ -5,7 +5,9 @@ import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
+import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -266,10 +268,18 @@ public class NoteManager {
         return getViewHelper().getHostView();
     }
 
-    public void setView(SurfaceView surfaceView) {
+    public void setView(final SurfaceView surfaceView) {
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().setup(surfaceView);
         getTouchHelper().startRawDrawing();
+        //TODO:add onTouch Here,if need can move to handler.
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                getTouchHelper().onTouchEvent(event);
+                return true;
+            }
+        });
         registerEventBus(this);
     }
 
