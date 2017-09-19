@@ -34,6 +34,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private volatile boolean pauseRawInputProcessor = true;
     private volatile boolean resumeRawInputProcessor = false;
     private volatile boolean render = true;
+    private volatile boolean renderToScreen = true;
     private volatile boolean transfer = true;
     private volatile boolean resetNoteDataInfo = true;
     private volatile boolean applyGCIntervalUpdate = false;
@@ -161,7 +162,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             @Override
             public void run() {
                 try {
-                    parent.enableScreenPost(true);
+                    if (isRenderToScreen()) {
+                        parent.enableScreenPost(true);
+                    }
                     synchronized (parent) {
                         updateShapeDataInfo(parent);
                         if (isRender() && isTransfer()) {
@@ -258,6 +261,14 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     private boolean isRenderRandomTestPath() {
         return debugPathBenchmark && BuildConfig.DEBUG;
+    }
+
+    private boolean isRenderToScreen() {
+        return renderToScreen;
+    }
+
+    public void setRenderToScreen(boolean toScreen) {
+        renderToScreen = toScreen;
     }
 
     private boolean drawRandomTestPath(final Canvas canvas, final Paint paint) {
