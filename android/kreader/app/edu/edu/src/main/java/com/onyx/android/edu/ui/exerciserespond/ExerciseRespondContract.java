@@ -19,7 +19,7 @@ public interface ExerciseRespondContract {
 
     interface ExerciseRespondView extends BaseView<ExerciseRespondPresenter> {
         void showQuestions(List<Question> questions, ChooseQuestionVariable variable, boolean showAnswer);
-        void showToast();
+        void showToast(String result);
     }
 
     interface ExerciseRespondPresenter extends BasePresenter {

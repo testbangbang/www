@@ -7,10 +7,12 @@ import com.onyx.android.edu.base.BaseQuestionView;
 import com.onyx.android.edu.bean.PaperResult;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.libedu.EduCloudManager;
 import com.onyx.libedu.db.PaperQuestionAndAnswer;
 import com.onyx.libedu.model.ChooseQuestionVariable;
 import com.onyx.libedu.model.Question;
+import com.onyx.libedu.request.cloud.CheckExamCountRequest;
 import com.onyx.libedu.request.cloud.GetQuestionsRequest;
 import com.onyx.libedu.request.cloud.InsertUserAnswerRequest;
 
@@ -39,8 +41,23 @@ public class ExerciseRespondPresenter implements ExerciseRespondContract.Exercis
     @Override
     public void subscribe() {
         eduCloudManager = new EduCloudManager();
-        getDate();
+        checkExamCount();
         //exerciseRespondView.showQuestions(questions, chooseQuestionVariable, showAnswer);
+    }
+
+    private void checkExamCount() {
+        final CheckExamCountRequest rq = new CheckExamCountRequest(bookId);
+        eduCloudManager.submitRequest(EduApp.instance(), rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                String result = rq.getResult();
+                if(!StringUtils.isNullOrEmpty(result)) {
+                    exerciseRespondView.showToast(result);
+                } else {
+                    getDate();
+                }
+            }
+        });
     }
 
     private void getDate() {
@@ -52,7 +69,7 @@ public class ExerciseRespondPresenter implements ExerciseRespondContract.Exercis
                 if(questions != null && questions.size() > 0) {
                     exerciseRespondView.showQuestions(questions, chooseQuestionVariable, showAnswer);
                 } else {
-                    exerciseRespondView.showToast();
+                    exerciseRespondView.showToast("试题不存在，请上传试题！");
                 }
             }
         });
