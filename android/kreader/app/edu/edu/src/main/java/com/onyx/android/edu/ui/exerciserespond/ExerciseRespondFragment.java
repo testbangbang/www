@@ -1,16 +1,12 @@
 package com.onyx.android.edu.ui.exerciserespond;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,7 +17,6 @@ import com.onyx.android.edu.adapter.QuestionsPagerAdapter;
 import com.onyx.android.edu.base.BaseFragment;
 import com.onyx.android.edu.base.BaseQuestionView;
 import com.onyx.android.edu.bean.PaperResult;
-import com.onyx.android.edu.db.model.Chapter;
 import com.onyx.android.edu.ui.respondresult.RespondResultActivity;
 import com.onyx.android.edu.utils.JsonUtils;
 import com.onyx.android.edu.view.ChoiceQuestionView;
@@ -195,8 +190,8 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
     };
 
     @Override
-    public void showToast() {
-        Toast.makeText(EduApp.instance(), "试题不存在，请上传试题！", Toast.LENGTH_SHORT).show();
+    public void showToast(String result) {
+        Toast.makeText(EduApp.instance(), result, Toast.LENGTH_SHORT).show();
         getActivity().finish();
     }
 
