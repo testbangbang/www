@@ -6,7 +6,7 @@
   "supportColor" : true,
   "defaultGamma": 100,
   "defaultTextGamma": 150,
-  "fixedGamma": 100,
+  "fixedGamma": 150,
   "frontLight" : 100,
   "defaultUseSystemStatusBar" : false,
   "supportBrushPen": true,
