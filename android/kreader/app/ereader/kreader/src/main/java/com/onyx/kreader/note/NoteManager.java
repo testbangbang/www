@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -15,19 +14,9 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.asyncrequest.TouchHelper;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.BeginRawErasingEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.EndRawDataEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawErasePointMoveReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.RawTouchPointMoveReceivedEvent;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -39,18 +28,9 @@ import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNoteDocument;
 import com.onyx.kreader.note.data.ReaderNotePage;
-import com.onyx.kreader.note.data.ReaderShapeFactory;
 import com.onyx.kreader.note.request.ReaderBaseNoteRequest;
-import com.onyx.kreader.ui.events.ShapeAddedEvent;
-import com.onyx.kreader.ui.events.ShapeDrawingEvent;
-import com.onyx.kreader.ui.events.ShapeErasingEvent;
-import com.onyx.kreader.ui.events.ShortcutDrawingFinishedEvent;
-import com.onyx.kreader.ui.events.ShortcutDrawingStartEvent;
-import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
-import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,7 +49,8 @@ public class NoteManager {
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private volatile SurfaceView surfaceView;
 
-    private volatile Shape currentShape = null;
+    private ShapeEventHandler shapeEventHandler;
+
     private RenderContext renderContext = new RenderContext();
 
     private List<Shape> shapeStash = new ArrayList<>();
@@ -85,11 +66,11 @@ public class NoteManager {
     private volatile boolean enableShortcutErasing = false;
     private boolean useWakeLock = true;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder(false);
-    private TouchPoint eraserPoint;
 
     public NoteManager(final Context context, final EventBus bus) {
         eventBus = bus;
-        eventBus.register(this);
+        shapeEventHandler = new ShapeEventHandler(this);
+        shapeEventHandler.registerEventBus();
         ConfigManager.init(context.getApplicationContext());
         getTouchHelper().setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
     }
@@ -142,6 +123,14 @@ public class NoteManager {
 
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    public List<PageInfo> getVisiblePages() {
+        return visiblePages;
+    }
+
+    public SurfaceView getHostView() {
+        return surfaceView;
     }
 
     private void initNoteArgs(final Context context) {
@@ -272,7 +261,7 @@ public class NoteManager {
         return null;
     }
 
-    private void onNewStash(final Shape shape) {
+    public void onNewStash(final Shape shape) {
         shapeStash.add(shape);
     }
 
@@ -297,20 +286,8 @@ public class NoteManager {
         getTouchHelper().setStrokeWidth(w);
     }
 
-    public Shape createNewShape(final PageInfo pageInfo) {
-        ReaderNotePage page = getNoteDocument().ensurePageExist(null, pageInfo.getName(), pageInfo.getSubPage());
-        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
-        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
-        shape.setColor(getNoteDrawingArgs().strokeColor);
-        shape.setPageUniqueId(pageInfo.getName());
-        shape.setSubPageUniqueId(page.getSubPageUniqueId());
-        shape.ensureShapeUniqueId();
-        currentShape = shape;
-        return shape;
-    }
-
     public Shape getCurrentShape() {
-        return currentShape;
+        return shapeEventHandler.getCurrentShape();
     }
 
     public boolean isDFBForCurrentShape() {
@@ -331,30 +308,9 @@ public class NoteManager {
         }
     }
 
-    public void resetCurrentShape() {
-        currentShape = null;
-    }
-
-    public void onDownMessage(final Shape currentShape) {
-        if (ReaderShapeFactory.isDFBShape(currentShape.getType())) {
-            enableScreenPost(false);
-        } else {
-            enableScreenPost(true);
-        }
-    }
-
     public void setVisiblePages(final List<PageInfo> list) {
         visiblePages.clear();
         visiblePages.addAll(list);
-    }
-
-    public final PageInfo hitTest(final float x, final float y) {
-        for(PageInfo pageInfo : visiblePages) {
-            if (pageInfo.getDisplayRect().contains(x, y)) {
-                return pageInfo;
-            }
-        }
-        return null;
     }
 
     public final RenderContext getRenderContext() {
@@ -364,7 +320,6 @@ public class NoteManager {
     public final List<Shape> detachShapeStash() {
         final List<Shape> list = shapeStash;
         shapeStash = new ArrayList<>();
-        currentShape = null;
         return list;
     }
 
@@ -409,88 +364,6 @@ public class NoteManager {
         }
     }
 
-    public Shape ensureNewShape(final TouchPoint normalizedPoint, final TouchPoint screen) {
-        final PageInfo pageInfo = hitTest(normalizedPoint.x, normalizedPoint.y);
-        if (pageInfo == null) {
-            return null;
-        }
-        Shape shape = getCurrentShape();
-        if (shape == null) {
-            shape = createNewShape(pageInfo);
-            onDownMessage(shape);
-            shape.onDown(normalizedPoint, screen);
-            return shape;
-        }
-        shape.onMove(normalizedPoint, screen);
-        return shape;
-    }
-
-    public void setVisibleDrawRectF(RectF visibleDrawRectF) {
-        this.visibleDrawRectF = visibleDrawRectF;
-    }
-
-    public boolean inVisibleDrawRectF(float x, float y){
-        return visibleDrawRectF.contains(x, y);
-    }
-
-    public Shape collectPoint(final PageInfo pageInfo, final TouchPoint point, boolean createShape, boolean up) {
-        float[] srcPoint = new float[2];
-        float[] dstPoint = new float[2];
-
-        srcPoint[0] = point.x;
-        srcPoint[1] = point.y;
-        EpdController.mapToEpd(surfaceView, srcPoint, dstPoint);
-        final TouchPoint screen = new TouchPoint(dstPoint[0], dstPoint[1],
-                point.getPressure(), point.getSize(),
-                point.getTimestamp());
-
-
-        if (pageInfo == null) {
-            return onShapeUp(pageInfo, point, screen);
-        }
-        point.normalize(pageInfo);
-        if (getCurrentShape() == null) {
-            if (createShape) {
-                return onShapeDown(pageInfo, point, screen);
-            }
-            return null;
-        }
-        if (!up) {
-            return onShapeMove(pageInfo, point, screen);
-        }
-        return onShapeUp(pageInfo, point, screen);
-    }
-
-    private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        ReaderNotePage page = getNoteDocument().ensurePageExist(null, pageInfo.getName(), pageInfo.getSubPage());
-        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
-        onDownMessage(shape);
-        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth / pageInfo.getActualScale());
-        shape.setColor(getNoteDrawingArgs().strokeColor);
-        shape.setPageUniqueId(pageInfo.getName());
-        shape.setSubPageUniqueId(page.getSubPageUniqueId());
-        shape.ensureShapeUniqueId();
-        shape.setDisplayStrokeWidth(getNoteDrawingArgs().strokeWidth);
-        shape.onDown(normal, screen);
-        currentShape = shape;
-        return shape;
-    }
-
-    private Shape onShapeMove(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        getCurrentShape().onMove(normal, screen);
-        return getCurrentShape();
-    }
-
-    private Shape onShapeUp(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        final Shape shape = getCurrentShape();
-        if (shape == null) {
-            return null;
-        }
-        shape.onUp(normal, screen);
-        resetCurrentShape();
-        return shape;
-    }
-
     public boolean isNoteDirty() {
         return noteDirty.get();
     }
@@ -511,204 +384,7 @@ public class NoteManager {
         }
     }
 
-    private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
-        final TouchPoint normalized = new TouchPoint(motionEvent.getHistoricalX(i),
-                motionEvent.getHistoricalY(i),
-                motionEvent.getHistoricalPressure(i),
-                motionEvent.getHistoricalSize(i),
-                motionEvent.getHistoricalEventTime(i));
-        return normalized;
-    }
-
-    private PageInfo lastPageInfo = null;
-
-    public void onDrawingTouchDown(MotionEvent motionEvent) {
-        final TouchPoint touchPoint = new TouchPoint(motionEvent);
-        lastPageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
-        if (lastPageInfo == null) {
-            return;
-        }
-        final Shape shape = collectPoint(lastPageInfo, touchPoint, true, false);
-        getEventBus().post(new ShapeDrawingEvent(shape));
-    }
-
-    public void onDrawingTouchMove(MotionEvent motionEvent) {
-        if (lastPageInfo == null) {
-            return;
-        }
-
-        int n = motionEvent.getHistorySize();
-        for (int i = 0; i < n; i++) {
-            final TouchPoint touchPoint = fromHistorical(motionEvent, i);
-            PageInfo pageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
-            if (pageInfo != lastPageInfo) {
-                 continue;
-            }
-            collectPoint(lastPageInfo, touchPoint, true, false);
-        }
-
-        TouchPoint touchPoint = new TouchPoint(motionEvent);
-        PageInfo pageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
-        if (pageInfo != lastPageInfo) {
-            return;
-        }
-        final Shape shape = collectPoint(lastPageInfo, touchPoint, true, false);
-        getEventBus().post(new ShapeDrawingEvent(shape));
-    }
-
-    public void onDrawingTouchUp(MotionEvent motionEvent) {
-        if (lastPageInfo == null) {
-            return;
-        }
-        finishCurrentShape();
-    }
-
-    public void onErasingTouchDown(final MotionEvent motionEvent) {
-    }
-
-    public void onErasingTouchMove(final MotionEvent motionEvent) {
-        TouchPointList list = new TouchPointList();
-        int n = motionEvent.getHistorySize();
-        for (int i = 0; i < n; i++) {
-            list.add(fromHistorical(motionEvent, i));
-        }
-        list.add(new TouchPoint(motionEvent));
-        getEventBus().post(new ShapeErasingEvent(false, true, list));
-
-        eraserPoint = list.get(list.size() - 1);
-    }
-
-    public void onErasingTouchUp(final MotionEvent motionEvent) {
-        eraserPoint = null;
-    }
-
-    @Subscribe
-    public void onErasingTouchEvent(ErasingTouchEvent e) {
-        if (isDFBForCurrentShape()) {
-            return;
-        }
-        switch (e.getMotionEvent().getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                onErasingTouchDown(e.getMotionEvent());
-                break;
-            case MotionEvent.ACTION_MOVE:
-                onErasingTouchMove(e.getMotionEvent());
-                break;
-            case MotionEvent.ACTION_UP:
-                onErasingTouchUp(e.getMotionEvent());
-                break;
-            default:
-                break;
-        }
-    }
-
-    @Subscribe
-    public void onDrawingTouchEvent(DrawingTouchEvent e) {
-        if (isDFBForCurrentShape()) {
-            return;
-        }
-        switch (e.getMotionEvent().getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                if (isEraser()) {
-                    onErasingTouchDown(e.getMotionEvent());
-                } else {
-                    onDrawingTouchDown(e.getMotionEvent());
-                }
-                break;
-            case MotionEvent.ACTION_MOVE:
-                if (isEraser()) {
-                    onErasingTouchMove(e.getMotionEvent());
-                } else {
-                    onDrawingTouchMove(e.getMotionEvent());
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (isEraser()) {
-                    onErasingTouchUp(e.getMotionEvent());
-                } else {
-                    onDrawingTouchUp(e.getMotionEvent());
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    private boolean shortcutDrawing = false;
-
-    @Subscribe
-    public void onBeginRawDataEvent(BeginRawDataEvent e) {
-        Debug.e(getClass(), "onBeginRawDataEvent");
-        if (e.isShortcutDrawing()) {
-            shortcutDrawing = true;
-            getEventBus().post(new ShortcutDrawingStartEvent());
-        }
-    }
-
-    @Subscribe
-    public void onEndRawDataEvent(EndRawDataEvent e) {
-        Debug.e(getClass(), "onEndRawDataEvent");
-//        onNewStash(e.shape);
-    }
-
-    private void finishCurrentShape() {
-        onNewStash(currentShape);
-        resetCurrentShape();
-        if (shortcutDrawing) {
-            getEventBus().post(new ShortcutDrawingFinishedEvent());
-        } else {
-            getEventBus().post(new ShapeAddedEvent());
-        }
-    }
-
-    @Subscribe
-    public void onRawTouchPointMoveReceivedEvent(RawTouchPointMoveReceivedEvent e) {
-    }
-
-    @Subscribe
-    public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent e) {
-        Debug.e(getClass(), "onRawTouchPointListReceivedEvent");
-        PageInfo lastPageInfo = null;
-        for (TouchPoint p : e.getTouchPointList().getPoints()) {
-            PageInfo pageInfo = hitTest(p.getX(), p.getY());
-            if (pageInfo == null || (lastPageInfo != null && pageInfo != lastPageInfo)) {
-                if (currentShape != null) {
-                    finishCurrentShape();
-                }
-                continue;
-            }
-
-            collectPoint(pageInfo, p, true, false);
-        }
-        if (currentShape != null) {
-            finishCurrentShape();
-        }
-    }
-
-    @Subscribe
-    public void onRawErasingStartEvent(BeginRawErasingEvent e) {
-        Debug.e(getClass(), "onRawErasingStartEvent");
-        getEventBus().post(new ShortcutErasingStartEvent());
-    }
-
-    @Subscribe
-    public void onRawErasingFinishEvent(RawErasePointListReceivedEvent e) {
-        Debug.e(getClass(), "onRawErasingFinishEvent");
-        getEventBus().post(new ShortcutErasingFinishEvent(e.getTouchPointList()));
-    }
-
-    @Subscribe
-    public void onRawErasePointMoveReceivedEvent(RawErasePointMoveReceivedEvent e) {
-
-    }
-
-    @Subscribe
-    public void onRawErasePointListReceivedEvent(RawErasePointListReceivedEvent e) {
-        Debug.e(getClass(), "onRawErasePointListReceivedEvent");
-
-    }
-
     public TouchPoint getEraserPoint() {
-        return eraserPoint;
+        return shapeEventHandler.getEraserPoint();
     }
 }
