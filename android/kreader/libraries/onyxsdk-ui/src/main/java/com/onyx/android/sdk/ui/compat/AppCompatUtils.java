@@ -40,8 +40,13 @@ public class AppCompatUtils {
         }
     }
 
+    //todo use deviceConfig to config the colorSupport for every app
+    @Deprecated
     public static boolean isColorDevice(Context context) {
-        return "pl107".equalsIgnoreCase(Build.MODEL) && context.getResources().getConfiguration().smallestScreenWidthDp == 960;
+        if (!"pl107".equalsIgnoreCase(Build.MODEL) && !"info".equalsIgnoreCase(Build.MODEL)) {
+            return false;
+        }
+        return context.getResources().getConfiguration().smallestScreenWidthDp == 960;
     }
 
     public static float calculateEvenDigital(float value) {
