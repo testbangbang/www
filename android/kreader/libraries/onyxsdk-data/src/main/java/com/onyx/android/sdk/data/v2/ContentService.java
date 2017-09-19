@@ -13,8 +13,10 @@ import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
+import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
 import com.onyx.android.sdk.data.model.v2.PayBean;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
+import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.data.model.v2.SignUpBean;
 
 import java.util.List;
@@ -87,11 +89,17 @@ public interface ContentService {
     @POST("/api/groups")
     Call<CreateGroupCommonBean> createGroup(@Body final CreateGroupCommonBean product);
 
+    @POST("/api/JoinGroups")
+    Call<List<JoinGroupBean>> joinGroup(@Body final JoinGroupBean product);
+
     @GET("/api/groups/checkExists")
     Call<GroupNameExistBean> checkExist(@Query(Constant.TEXT_TAG) final String text, @Query(Constant.PARENT_TAG) final String parent);
 
     @GET("/api/groups/search")
     Call<List<CreateGroupCommonBean>> searchSchool(@Query(Constant.TEXT_TAG) final String text, @Query(Constant.PARENT_TAG) final String parent);
+
+    @GET("/api/groups/searchWithCreator")
+    Call<List<SearchGroupBean>> getRelatedGroup(@Query(Constant.TEXT_TAG) final String text);
 
     @GET("carts")
     Call<QueryResult<ProductCart<CloudMetadata>>> getCartProducts();
