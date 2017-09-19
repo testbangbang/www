@@ -15,6 +15,7 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -59,7 +60,8 @@ public class ReaderPainter {
                          final ReaderUserDataInfo userDataInfo,
                          final ReaderViewInfo viewInfo,
                          ReaderSelectionManager selectionManager,
-                         NoteManager noteManager) {
+                         NoteManager noteManager,
+                         List<PageInfo> visiblePages) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
@@ -70,7 +72,7 @@ public class ReaderPainter {
         drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
         drawPageLinks(context, canvas, paint, userDataInfo, viewInfo);
-        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager);
+        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager, visiblePages);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -184,12 +186,13 @@ public class ReaderPainter {
                                    Paint paint,
                                    final ReaderUserDataInfo userDataInfo,
                                    final ReaderViewInfo viewInfo,
-                                   final NoteManager noteManager) {
+                                   final NoteManager noteManager,
+                                   List<PageInfo> visiblePages) {
         if (!viewInfo.supportScalable) {
             return;
         }
         drawShapes(context, canvas, paint, userDataInfo, noteManager);
-        drawStashShapes(context, canvas, paint, noteManager, viewInfo);
+        drawStashShapes(context, canvas, paint, noteManager, viewInfo, visiblePages);
         drawShapeEraser(context, canvas, paint, noteManager);
     }
 
@@ -285,30 +288,43 @@ public class ReaderPainter {
     }
 
     private void drawStashShapes(final Context context,
-                            final Canvas canvas,
-                            final Paint paint,
-                            final NoteManager noteManager,
-                            final ReaderViewInfo viewInfo) {
+                                 final Canvas canvas,
+                                 final Paint paint,
+                                 final NoteManager noteManager,
+                                 final ReaderViewInfo viewInfo,
+                                 List<PageInfo> visiblePages) {
         if (!SingletonSharedPreference.isShowNote(context)) {
             return;
         }
         if (noteManager.isDFBForCurrentShape()) {
             return;
         }
-        final PageInfo pageInfo = viewInfo.getFirstVisiblePage();
-        final Matrix renderMatrix = new Matrix();
-        renderMatrix.reset();
-        renderMatrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
-        renderMatrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
-        RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
-        if (!CollectionUtils.isNullOrEmpty(noteManager.getShapeStash())) {
-            for (Shape shape : noteManager.getShapeStash()) {
-                shape.render(renderContext);
+        for (PageInfo pageInfo : visiblePages) {
+            final Matrix renderMatrix = new Matrix();
+            renderMatrix.reset();
+            renderMatrix.postScale(pageInfo.getActualScale(), pageInfo.getActualScale());
+            renderMatrix.postTranslate(pageInfo.getDisplayRect().left, pageInfo.getDisplayRect().top);
+            RenderContext renderContext = RenderContext.create(canvas, paint, renderMatrix);
+            if (!CollectionUtils.isNullOrEmpty(noteManager.getShapeStash())) {
+                for (Shape shape : noteManager.getShapeStash()) {
+                    if (isShapeOnThePage(noteManager, pageInfo, shape)) {
+                        shape.render(renderContext);
+                    }
+                }
+            }
+
+            Shape currentShape = noteManager.getCurrentShape();
+            if (currentShape != null && isShapeOnThePage(noteManager, pageInfo, currentShape)) {
+                currentShape.render(renderContext);
             }
         }
-        if (noteManager.getCurrentShape() != null) {
-            noteManager.getCurrentShape().render(renderContext);
-        }
+    }
+
+    private boolean isShapeOnThePage(NoteManager noteManager, PageInfo pageInfo, Shape shape) {
+        String subPageId = noteManager.getNoteDocument().getPageUniqueId(pageInfo.getName(),
+                pageInfo.getSubPage());
+        return shape.getPageUniqueId().compareTo(pageInfo.getName()) == 0 &&
+                shape.getSubPageUniqueId().compareTo(subPageId) == 0;
     }
 
     private void drawShapeEraser(final Context context,

@@ -1051,7 +1051,8 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderUserDataInfo(),
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
-                    getReaderDataHolder().getNoteManager());
+                    getReaderDataHolder().getNoteManager(),
+                    getReaderDataHolder().getVisiblePages());
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
