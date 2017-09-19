@@ -148,6 +148,12 @@ public class ScribbleStylusWebViewDemoActivity extends AppCompatActivity impleme
 
             }
 
+            public void onRawTouchPointMoveReceived(final TouchPoint point) {
+
+            }
+
+
+
             @Override
             public void onRawTouchPointListReceived(TouchPointList touchPointList) {
                 for (TouchPoint touchPoint : touchPointList.getPoints()) {
@@ -175,6 +181,10 @@ public class ScribbleStylusWebViewDemoActivity extends AppCompatActivity impleme
             @Override
             public void onEraseTouchPointListReceived(TouchPointList touchPointList) {
 
+            }
+
+            public void onEraseTouchPointMoveReceived(final TouchPoint point) {
+                
             }
 
         });

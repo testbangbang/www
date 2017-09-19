@@ -72,7 +72,7 @@ public class ScribbleStylusSurfaceViewDemoActivity extends AppCompatActivity imp
                 touchHelper.setup(surfaceView)
                         .setStrokeWidth(3.0f)
                         .setUseRawInput(true)
-                        .setCustomLimitRect(limit, exclude)
+                        .setLimitRect(limit, exclude)
                         .startRawDrawing();
             }
         });
