@@ -3,6 +3,10 @@ apply plugin: 'com.android.library'
 def artifact = new Properties()
 artifact.load(new FileInputStream("$projectDir/deploy.settings"))
 
+if (System.getenv('BINTRAY_VERSION') != null) {
+    artifact.version = System.getenv('BINTRAY_VERSION')
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
