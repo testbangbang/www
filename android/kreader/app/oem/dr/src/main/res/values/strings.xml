@@ -578,4 +578,5 @@
     <string name="write_remarks">scribble</string>
     <string name="add_new_word">add new word</string>
     <string name="delete_mark">delete mark</string>
+    <string name="create_group_activity_group_name_hint">This group name already exists, please re-enter.</string>
 </resources>

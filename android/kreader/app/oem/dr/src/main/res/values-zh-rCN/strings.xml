@@ -570,4 +570,5 @@
     <string name="write_remarks">手写备注</string>
     <string name="add_new_word">添加生词</string>
     <string name="delete_mark">删除标记</string>
+    <string name="create_group_activity_group_name_hint">该群名已存在，请重新输入</string>
 </resources>

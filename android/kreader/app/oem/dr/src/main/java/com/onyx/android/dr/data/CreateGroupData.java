@@ -5,7 +5,9 @@ import android.content.Context;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.request.cloud.CreateGroupRequest;
+import com.onyx.android.dr.request.cloud.RequestCheckGroupNameExist;
 import com.onyx.android.dr.request.cloud.RequestGetSchoolInfo;
+import com.onyx.android.dr.request.cloud.RequestGetYearData;
 import com.onyx.android.sdk.common.request.BaseCallback;
 
 import java.util.ArrayList;
@@ -48,7 +50,15 @@ public class CreateGroupData {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 
+    public void checkGroupName(RequestCheckGroupNameExist req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
     public void getSchoolInfo(RequestGetSchoolInfo req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void getYearData(RequestGetYearData req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 }

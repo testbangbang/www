@@ -5,26 +5,21 @@ import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import retrofit2.Response;
 
 /**
  * Created by hehai on 17-7-28.
  */
 
-public class RequestGetSchoolInfo extends BaseCloudRequest {
-    private List<CreateGroupCommonBean> groups = new ArrayList<>();
-    private final String text;
+public class RequestGetYearData extends BaseCloudRequest {
+    private CreateGroupCommonBean groups;
     private final String parentId;
 
-    public RequestGetSchoolInfo(String text, String parent){
-        this.text = text;
+    public RequestGetYearData(String parent){
         this.parentId = parent;
     }
 
-    public List<CreateGroupCommonBean> getGroups() {
+    public CreateGroupCommonBean getGroups() {
         return groups;
     }
 
@@ -35,8 +30,8 @@ public class RequestGetSchoolInfo extends BaseCloudRequest {
 
     private void getRootGroupList(CloudManager parent) {
         try {
-            Response<List<CreateGroupCommonBean>> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
-                    .searchSchool(text, parentId));
+            Response<CreateGroupCommonBean> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
+                    .getYearData(parentId));
             if (response != null) {
                 groups = response.body();
             }

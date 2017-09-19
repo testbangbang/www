@@ -41,6 +41,14 @@ public class DRPreferenceManager extends PreferenceManager {
         return getStringValue(context, Constants.LIBRARY_PARENT_ID, defaultValue);
     }
 
+    public static void saveParentId(Context context, String libraryParentId) {
+        setStringValue(context, Constants.PARENT_ID, libraryParentId);
+    }
+
+    public static String loadParentId(Context context, String defaultValue) {
+        return getStringValue(context, Constants.PARENT_ID, defaultValue);
+    }
+
     public static boolean hasImportContent(Context context) {
         return getBooleanValue(context, Constants.IMPORT_CONTENT_IN_FIRST_BOOT_TAG, false);
     }

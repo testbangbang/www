@@ -13,9 +13,12 @@ import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Environment;
+import android.text.Editable;
+import android.text.Selection;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
@@ -952,5 +955,10 @@ public class Utils {
             return true;
         }
         return false;
+    }
+
+    public static void movingCursor(EditText editText) {
+        Editable eText = editText.getText();
+        Selection.setSelection(eText, eText.length());
     }
 }
