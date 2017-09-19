@@ -297,4 +297,5 @@
     <dimen name="join_group_activity_search_group_margin_left">40dp</dimen>
     <dimen name="join_group_activity_group_name_width">550dp</dimen>
     <dimen name="create_group_activity_whether_exist_margin_left">20dp</dimen>
+    <dimen name="group_manager_activity_manager_container_width">100dp</dimen>
 </resources>

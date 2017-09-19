@@ -14,7 +14,7 @@ import retrofit2.Response;
 public class RequestCheckGroupNameExist extends BaseCloudRequest {
     private final String text;
     private final String parentId;
-    private GroupNameExistBean groups;
+    private GroupNameExistBean groups = new GroupNameExistBean();
 
     public RequestCheckGroupNameExist(String text, String parent){
         this.text = text;

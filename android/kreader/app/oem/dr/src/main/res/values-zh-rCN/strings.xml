@@ -565,10 +565,16 @@
     <string name="join_group_name">群组名</string>
     <string name="group_owner">群主</string>
     <string name="join">加入</string>
-    <string name="input_group_name_hint">请输入群名或群主名</string>
+    <string name="input_group_name_hint">请输入群组名或群主名</string>
     <string name="go_back">返回</string>
     <string name="write_remarks">手写备注</string>
     <string name="add_new_word">添加生词</string>
     <string name="delete_mark">删除标记</string>
     <string name="create_group_activity_group_name_hint">该群名已存在，请重新输入</string>
+    <string name="group_manager_group_name">所在组</string>
+    <string name="group_manager_identity">身份</string>
+    <string name="number_of_people">人数</string>
+    <string name="news">消息</string>
+    <string name="group_manager_activity_manage_group">管理群组</string>
+    <string name="examine">查看</string>
 </resources>

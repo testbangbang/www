@@ -21,12 +21,13 @@ import com.onyx.android.dr.activity.ExitGroupActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
 import com.onyx.android.dr.activity.GroupHomePageActivity;
-import com.onyx.android.dr.activity.GroupMemberManageActivity;
+import com.onyx.android.dr.activity.GroupMemberActivity;
 import com.onyx.android.dr.activity.HearAndSpeakActivity;
 import com.onyx.android.dr.activity.InformalEssayActivity;
 import com.onyx.android.dr.activity.JoinGroupActivity;
 import com.onyx.android.dr.activity.LoginActivity;
 import com.onyx.android.dr.activity.MainActivity;
+import com.onyx.android.dr.activity.ManageGroupActivity;
 import com.onyx.android.dr.activity.MemorandumActivity;
 import com.onyx.android.dr.activity.MyNotesActivity;
 import com.onyx.android.dr.activity.NewWordNotebookActivity;
@@ -245,10 +246,17 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
+    public static void startManageGroupActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, ManageGroupActivity.class);
+        context.startActivity(intent);
+    }
+
     public static void startGroupMemberManageActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setClass(context, GroupMemberManageActivity.class);
+        intent.setClass(context, GroupMemberActivity.class);
         context.startActivity(intent);
     }
 
