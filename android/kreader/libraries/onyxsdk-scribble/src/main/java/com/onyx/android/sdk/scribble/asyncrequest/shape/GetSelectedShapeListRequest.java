@@ -33,7 +33,7 @@ public class GetSelectedShapeListRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(final NoteManager parent) throws Exception {
         selectedShapeList = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedShapeList();
-        selectedRectF = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect();
+        selectedRectF = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
     }
 
 }

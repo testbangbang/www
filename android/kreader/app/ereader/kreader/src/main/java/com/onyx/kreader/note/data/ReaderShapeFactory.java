@@ -1,6 +1,5 @@
 package com.onyx.kreader.note.data;
 
-import com.onyx.android.sdk.scribble.data.ShapeModel;
 import com.onyx.android.sdk.scribble.shape.*;
 import com.onyx.kreader.note.model.ReaderNoteShapeModel;
 
@@ -49,7 +48,7 @@ public class ReaderShapeFactory {
                 shape = new RectangleShape();
                 break;
             case ShapeFactory.SHAPE_TEXT:
-                shape = new TexShape();
+                shape = new TextShape();
                 break;
             case ShapeFactory.SHAPE_TRIANGLE:
                 shape = new TriangleShape();

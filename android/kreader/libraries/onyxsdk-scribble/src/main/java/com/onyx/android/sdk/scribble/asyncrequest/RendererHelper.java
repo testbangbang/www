@@ -26,6 +26,7 @@ import com.onyx.android.sdk.scribble.R;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NotePage;
+import com.onyx.android.sdk.scribble.data.SelectedRectF;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -104,9 +105,10 @@ public class RendererHelper {
                                     final RenderContext renderContext) {
         for (PageInfo page : request.getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(parent.getAppContext(), page.getName());
-            renderContext.force = notePage.getSelectedRect() != null;
+            SelectedRectF selectedRectF = notePage.getSelectedRect();
+            renderContext.force =  selectedRectF!= null;
             notePage.render(renderContext, null);
-            renderSelectedRect(notePage.getSelectedRect(), renderContext);
+            renderSelectedRect(selectedRectF.getRectF(), renderContext,selectedRectF.getOrientation());
         }
 
     }
@@ -168,27 +170,41 @@ public class RendererHelper {
         canvas.drawRect(rect, paint);
     }
 
-    public void renderSelectedRect(RectF selectedRectF, RenderContext renderContext) {
+    public void renderSelectedRect(RectF selectedRectF, RenderContext renderContext, float orientation) {
         if (selectedRectF.width() < 0 || selectedRectF.height() < 0) {
             return;
         }
         Paint boundingPaint = new Paint(Color.BLACK);
         boundingPaint.setStyle(Paint.Style.STROKE);
         boundingPaint.setPathEffect(selectedDashPathEffect);
+        if (orientation != 0) {
+            renderContext.canvas.save();
+            renderContext.canvas.rotate(orientation, selectedRectF.centerX(), selectedRectF.centerY());
+        }
         renderContext.canvas.drawRect(selectedRectF, boundingPaint);
-        drawCornerPoint(selectedRectF, renderContext);
+        if (orientation != 0) {
+            renderContext.canvas.restore();
+        }
+        drawCornerPoint(selectedRectF, renderContext, orientation);
     }
 
-    private void drawCornerPoint(RectF selectedRectF,RenderContext renderContext){
+    private void drawCornerPoint(RectF selectedRectF, RenderContext renderContext, float orientation) {
         Paint cornerPointPaint = new Paint(Color.BLACK);
         cornerPointPaint.setStyle(Paint.Style.FILL);
         ArrayList<PointF> dragPointList = new ArrayList<>();
-        dragPointList.add(new PointF(selectedRectF.left,selectedRectF.top));
-        dragPointList.add(new PointF(selectedRectF.right,selectedRectF.top));
-        dragPointList.add(new PointF(selectedRectF.left,selectedRectF.bottom));
-        dragPointList.add(new PointF(selectedRectF.right,selectedRectF.bottom));
+        dragPointList.add(new PointF(selectedRectF.left, selectedRectF.top));
+        dragPointList.add(new PointF(selectedRectF.right, selectedRectF.top));
+        dragPointList.add(new PointF(selectedRectF.left, selectedRectF.bottom));
+        dragPointList.add(new PointF(selectedRectF.right, selectedRectF.bottom));
+        if (orientation != 0) {
+            renderContext.canvas.save();
+            renderContext.canvas.rotate(orientation, selectedRectF.centerX(), selectedRectF.centerY());
+        }
         for (PointF pointF : dragPointList) {
             renderContext.canvas.drawCircle(pointF.x, pointF.y, 5, cornerPointPaint);
+        }
+        if (orientation != 0) {
+            renderContext.canvas.restore();
         }
     }
 

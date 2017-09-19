@@ -40,4 +40,8 @@ public class MathUtils {
     public static PointF calculateMiddlePointFromTwoPoint(double p1X, double p1Y, double p2X, double p2Y) {
         return new PointF(((float) ((p1X + p2X) / 2)), ((float) (p1Y + p2Y) / 2));
     }
+
+    public static PointF calculateTriangleCentroidPoint(PointF p1,PointF p2,PointF p3){
+        return new PointF((p1.x + p2.x + p3.x) / 3, (p1.y + p2.y + p3.y) / 3);
+    }
 }

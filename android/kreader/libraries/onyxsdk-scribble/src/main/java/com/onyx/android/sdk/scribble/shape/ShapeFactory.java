@@ -60,7 +60,7 @@ public class ShapeFactory {
                 shape = new RectangleShape();
                 break;
             case ShapeFactory.SHAPE_TEXT:
-                shape = new TexShape();
+                shape = new TextShape();
                 break;
             case ShapeFactory.SHAPE_TRIANGLE:
                 shape = new TriangleShape();
@@ -110,6 +110,7 @@ public class ShapeFactory {
         shapeModel.setGroupId(shape.getGroupId());
         shapeModel.setLayoutType(shape.getLayoutType());
         shapeModel.setExtraAttributesBean(shape.getShapeExtraAttributes());
+        shapeModel.setOrientation(shape.getOrientation());
         return shapeModel;
     }
 
@@ -124,6 +125,7 @@ public class ShapeFactory {
         shape.setGroupId(model.getGroupId());
         shape.setLayoutType(model.getLayoutType());
         shape.setShapeExtraAttributes(model.getExtraAttributesBean());
+        shape.setOrientation(model.getOrientation());
     }
 
     public static Map<String, List<Shape>> getSubPageSpanShapeList(List<Shape> subPageShapes) {

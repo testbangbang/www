@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.EPDShape;
@@ -52,8 +53,10 @@ public class NotePage {
     }
 
     public void saveCurrentSelectPointRotationInitialPoint(){
-        rotateCacheRectTopLeft = new PointF(getSelectedRect().left, getSelectedRect().top);
-        rotateCacheRectTopRight = new PointF(getSelectedRect().right, getSelectedRect().top);
+        rotateCacheRectTopLeft = new PointF(getSelectedRect().getRectF().left, getSelectedRect().getRectF().top);
+        rotateCacheRectTopRight = new PointF(getSelectedRect().getRectF().right, getSelectedRect().getRectF().top);
+        Log.d("NotePage", "rotateCacheRectTopLeft:" + rotateCacheRectTopLeft);
+        Log.d("NotePage", "rotateCacheRectTopRight:" + rotateCacheRectTopRight);
     }
 
     private void deepCopyShapeList(List<Shape> sourceList, List<Shape> destinationList) {
@@ -353,8 +356,10 @@ public class NotePage {
         }
     }
 
-    public RectF getSelectedRect() {
+    public SelectedRectF getSelectedRect() {
+        //TODO:only consider 1 orientation shape circumstance.
         List<RectF> selectShapeRectList = new ArrayList<>();
+        float orientation = 0f;
         for (Shape shape : shapeList) {
             if (shape.isSelected()) {
                 RectF selectRect = new RectF();
@@ -367,17 +372,21 @@ public class NotePage {
                 }else {
                     selectRect = shape.getBoundingRect();
                 }
+                orientation = shape.getOrientation();
                 selectShapeRectList.add(selectRect);
             }
         }
         if (selectShapeRectList.size() == 0) {
-            return new RectF();
+            return new SelectedRectF(0,new RectF());
         } else {
             RectF resultSelectRectF = new RectF();
             for (RectF targetRect : selectShapeRectList) {
+                if (resultSelectRectF.contains(targetRect)&&orientation!=0){
+                    orientation = 0;
+                }
                 resultSelectRectF.union(targetRect);
             }
-            return resultSelectRectF;
+            return new SelectedRectF(orientation,resultSelectRectF);
         }
     }
 
