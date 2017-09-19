@@ -8,6 +8,7 @@ import android.graphics.PointF;
  */
 
 public class NonEPDShape extends BaseShape {
+
     @Override
     public void onRotate(final float angle, PointF pointF) {
         setOrientation((getOrientation() + angle) % 360);

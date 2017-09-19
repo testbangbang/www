@@ -20,11 +20,17 @@ public class CircleShape extends NonEPDShape {
     }
 
     public boolean hitTest(final float x, final float y, final float radius) {
-        float sx = getDownPoint().getX();
-        float sy = getDownPoint().getY();
-        float ex = getCurrentPoint().getX();
-        float ey = getCurrentPoint().getY();
-        return ShapeUtils.collide((sx + ex) / 2, (sy + ey) / 2, Math.abs(sx - ex), Math.abs(sy - ey),
+        final float[] renderPoints = new float[4];
+        renderPoints[0] = getDownPoint().x;
+        renderPoints[1] = getDownPoint().y;
+        renderPoints[2] = getCurrentPoint().x;
+        renderPoints[3] = getCurrentPoint().y;
+        Matrix transformMatrix = new Matrix();
+        if (Float.compare(getOrientation(), 0f) != 0) {
+            transformMatrix.setRotate(getOrientation(), getBoundingRect().centerX(), getBoundingRect().centerY());
+            transformMatrix.mapPoints(renderPoints);
+        }
+        return ShapeUtils.collide((renderPoints[0] + renderPoints[2]) / 2, (renderPoints[1] + renderPoints[3]) / 2, Math.abs(renderPoints[0] - renderPoints[2]), Math.abs(renderPoints[1] - renderPoints[3]),
                 x, y, radius);
     }
 
@@ -40,7 +46,7 @@ public class CircleShape extends NonEPDShape {
         Matrix transformMatrix = new Matrix();
         Path path = new Path();
         path.addOval(rect, Path.Direction.CW);
-        if (getOrientation() != 0) {
+        if (Float.compare(getOrientation(), 0f) != 0) {
             transformMatrix.setRotate(getOrientation(), rect.centerX(), rect.centerY());
             path.transform(transformMatrix);
         }
