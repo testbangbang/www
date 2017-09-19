@@ -58,4 +58,14 @@ public class Constant {
 
     public static final String PRODUCT = "product";
     public static final String TEXT_TAG = "text";
+
+    public static final String CREATE_IMPRESSION_NAEM = "name";
+    public static final String CREATE_IMPRESSION_CONTENT = "content";
+    public static final String CREATE_IMPRESSION_BOOK_ID = "book";
+    public static final String CREATE_IMPRESSION_COMMENTS = "comments";
+
+    public static final String GET_IMPRESSIONS_LIST_OFFSET = "offset";
+    public static final String GET_IMPRESSIONS_LIST_LIMIT = "limit";
+    public static final String GET_IMPRESSIONS_LIST_SORT_BY = "sortBy";
+    public static final String GET_IMPRESSIONS_LIST_ORDER = "order";
 }

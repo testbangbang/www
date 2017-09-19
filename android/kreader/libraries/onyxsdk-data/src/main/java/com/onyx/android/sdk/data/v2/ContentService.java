@@ -9,6 +9,10 @@ import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
+import com.onyx.android.sdk.data.model.v2.CommentsBean;
+import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
+import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
+import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.PayBean;
@@ -87,4 +91,13 @@ public interface ContentService {
 
     @GET("books/search")
     Call<QueryResult<CloudMetadata>> search(@Query(Constant.TEXT_TAG) final String text);
+
+    @POST("impressions")
+    Call<CreateBookReportResult> createImpression(@Body final CreateBookReportRequestBean bean);
+
+    @GET("impressions")
+    Call<GetBookReportList> getImpressionsList(@Query(Constant.GET_IMPRESSIONS_LIST_OFFSET) String offset,
+                                               @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
+                                               @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
+                                               @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
 }
