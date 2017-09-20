@@ -106,11 +106,10 @@ public class RendererHelper {
         for (PageInfo page : request.getVisiblePages()) {
             final NotePage notePage = parent.getNoteDocument().getNotePage(parent.getAppContext(), page.getName());
             SelectedRectF selectedRectF = notePage.getSelectedRect();
-            renderContext.force =  selectedRectF!= null;
+            renderContext.force = selectedRectF != null;
             notePage.render(renderContext, null);
-            renderSelectedRect(selectedRectF.getRectF(), renderContext,selectedRectF.getOrientation());
+            renderSelectedRect(selectedRectF.getRectF(), renderContext, selectedRectF.getOrientation());
         }
-
     }
 
     public void renderVisiblePagesInBitmap(final NoteManager parent, final AsyncBaseNoteRequest request) {
@@ -171,7 +170,7 @@ public class RendererHelper {
     }
 
     public void renderSelectedRect(RectF selectedRectF, RenderContext renderContext, float orientation) {
-        if (selectedRectF.width() < 0 || selectedRectF.height() < 0) {
+        if (selectedRectF == null || selectedRectF.width() < 0 || selectedRectF.height() < 0) {
             return;
         }
         Paint boundingPaint = new Paint(Color.BLACK);
@@ -186,6 +185,7 @@ public class RendererHelper {
             renderContext.canvas.restore();
         }
         drawCornerPoint(selectedRectF, renderContext, orientation);
+        drawRotationHandler(selectedRectF, renderContext, orientation);
     }
 
     private void drawCornerPoint(RectF selectedRectF, RenderContext renderContext, float orientation) {
@@ -203,6 +203,24 @@ public class RendererHelper {
         for (PointF pointF : dragPointList) {
             renderContext.canvas.drawCircle(pointF.x, pointF.y, 5, cornerPointPaint);
         }
+        if (orientation != 0) {
+            renderContext.canvas.restore();
+        }
+    }
+
+    private void drawRotationHandler(RectF selectedRectF, RenderContext renderContext, float orientation) {
+        Paint rotationHandlerPaint = new Paint(Color.BLACK);
+        rotationHandlerPaint.setStyle(Paint.Style.STROKE);
+        float rotationPointYCoordinate = Float.compare(selectedRectF.top - 50, 0) < 0 ? 0f : selectedRectF.top - 50;
+        if (orientation != 0) {
+            renderContext.canvas.save();
+            renderContext.canvas.rotate(orientation, selectedRectF.centerX(), selectedRectF.centerY());
+        }
+        renderContext.canvas.drawCircle(selectedRectF.centerX(), rotationPointYCoordinate, 10, rotationHandlerPaint);
+        rotationHandlerPaint.setStyle(Paint.Style.FILL);
+        rotationHandlerPaint.setPathEffect(selectedDashPathEffect);
+        renderContext.canvas.drawLine(selectedRectF.centerX(), selectedRectF.top,
+                selectedRectF.centerX(), rotationPointYCoordinate, rotationHandlerPaint);
         if (orientation != 0) {
             renderContext.canvas.restore();
         }

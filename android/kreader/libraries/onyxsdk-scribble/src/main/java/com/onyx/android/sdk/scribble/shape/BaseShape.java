@@ -50,7 +50,8 @@ public class BaseShape implements Shape {
 
     private boolean selected = false;
     private float scale = 1.0f;
-    private float orientation;
+    private float orientation = 0f;
+    private float selectRectOrientation = 0f;
 
     /**
      * rectangle, circle, etc.
@@ -246,6 +247,7 @@ public class BaseShape implements Shape {
     @Override
     public void onRotate(final float angle, PointF pointF) {
         normalizedPoints.rotateAllPoints(angle, pointF);
+        setSelectRectOrientation((getSelectRectOrientation() + angle) % 360);
         updatePoints();
     }
 
@@ -504,5 +506,15 @@ public class BaseShape implements Shape {
     @Override
     public boolean canModified(int documentReviewRevision) {
         return revision >= documentReviewRevision;
+    }
+
+    @Override
+    public float getSelectRectOrientation() {
+        return selectRectOrientation;
+    }
+
+    @Override
+    public void setSelectRectOrientation(float selectRectOrientation) {
+        this.selectRectOrientation = selectRectOrientation;
     }
 }

@@ -12,5 +12,6 @@ public class NonEPDShape extends BaseShape {
     @Override
     public void onRotate(final float angle, PointF pointF) {
         setOrientation((getOrientation() + angle) % 360);
+        setSelectRectOrientation(getOrientation());
     }
 }

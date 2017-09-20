@@ -5,7 +5,6 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.EPDShape;
@@ -44,7 +43,7 @@ public class NotePage {
     private Shape currentShape;
     private boolean loaded = false;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
-    private PointF rotateCacheRectTopLeft,rotateCacheRectTopRight;
+    private PointF rotateCacheRectTopLeft, rotateCacheRectTopRight;
 
     public void saveCurrentSelectShape() {
         if (preTransformShapeList.size() == 0) {
@@ -55,8 +54,6 @@ public class NotePage {
     public void saveCurrentSelectPointRotationInitialPoint(){
         rotateCacheRectTopLeft = new PointF(getSelectedRect().getRectF().left, getSelectedRect().getRectF().top);
         rotateCacheRectTopRight = new PointF(getSelectedRect().getRectF().right, getSelectedRect().getRectF().top);
-        Log.d("NotePage", "rotateCacheRectTopLeft:" + rotateCacheRectTopLeft);
-        Log.d("NotePage", "rotateCacheRectTopRight:" + rotateCacheRectTopRight);
     }
 
     private void deepCopyShapeList(List<Shape> sourceList, List<Shape> destinationList) {
@@ -207,6 +204,7 @@ public class NotePage {
     public void clearShapeSelectRecord() {
         for (Shape shape : selectedShapeList) {
             shape.setSelected(false);
+            shape.setSelectRectOrientation(0);
         }
         selectedShapeList.clear();
     }
@@ -386,7 +384,7 @@ public class NotePage {
                 }
                 resultSelectRectF.union(targetRect);
             }
-            return new SelectedRectF(orientation,resultSelectRectF);
+            return new SelectedRectF(orientation, resultSelectRectF);
         }
     }
 
