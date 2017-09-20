@@ -20,8 +20,4 @@
 -keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$* { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$* { *; }
--keep class com.onyx.android.sdk.scribble.api.** { *; }
-
--keep class com.onyx.android.sdk.scribble.touch.RawInputReader {
-public *;
-}
+-keep class com.onyx.android.sdk.scribble.api.** { public *; }
