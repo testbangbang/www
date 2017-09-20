@@ -47,6 +47,7 @@ import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.presenter.MainPresenter;
 import com.onyx.android.dr.util.ApkUtils;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.util.SystemUtils;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
@@ -236,7 +237,17 @@ public class MainActivity extends BaseActivity implements MainView {
         Map<String, List<String>> changeLogs = applicationUpdate.changeLogs;
         String[] downloadUrlList = applicationUpdate.downloadUrlList;
         String language = getResources().getConfiguration().locale.toString();
-        ApkUtils.showNewApkDialog(DRApplication.getInstance(), changeLogs.get(language).get(0), downloadUrlList[0]);
+        String message = String.format(getString(R.string.current_version), SystemUtils.getAPPVersionCode(MainActivity.this)) + "--->";
+        message += String.format(getString(R.string.update_version), applicationUpdate.versionCode) + "\n";
+        message += getString(R.string.update_content);
+        if (changeLogs != null && changeLogs.size() > 0) {
+            List<String> messageList = changeLogs.get(language);
+            for (int i = 0; i < messageList.size(); i++) {
+                message += messageList.get(i);
+                message += "\n";
+            }
+        }
+        ApkUtils.showNewApkDialog(DRApplication.getInstance(), message, downloadUrlList[0]);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -386,4 +386,6 @@
     <dimen name="change_password_result_drawable_padding">20dp</dimen>
     <dimen name="forget_password_name_margin_top">210dp</dimen>
     <dimen name="group_manager_activity_manager_container_width">100dp</dimen>
+    <dimen name="new_apk_dialog_width">600dp</dimen>
+    <dimen name="new_apk_dialog_height">400dp</dimen>
 </resources>

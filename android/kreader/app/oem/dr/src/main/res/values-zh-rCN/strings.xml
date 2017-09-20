@@ -403,7 +403,7 @@
     <string name="device_setting_check_system_update">检查更新</string>
     <string name="system_update">系统更新</string>
     <string name="update_the_system_firmware">更新系统固件</string>
-    <string name="bookstore_update">书城更新</string>
+    <string name="bookstore_update">书城更新(下载完后会自动重启升级)</string>
     <string name="update_bookstore_application">更新书城应用</string>
     <string name="device_setting_page_refreshes_value">每%1$s刷新一次屏幕</string>
     <string name="device_setting_page_refresh_rate">页面刷新频率</string>
@@ -591,4 +591,7 @@
     <string name="news">消息</string>
     <string name="group_manager_activity_manage_group">管理群组</string>
     <string name="examine">查看</string>
+    <string name="current_version">  (当前版本: V%d)</string>
+    <string name="update_version">  (更新版本: V%d)</string>
+    <string name="update_content">更新内容:\n</string>
 </resources>
