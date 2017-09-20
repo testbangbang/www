@@ -18,7 +18,9 @@
             android:id="@+id/read_summary_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/this_article_or_an_overview_of_this_page" />
+            android:text="@string/this_article_or_an_overview_of_this_page"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_two_font_size" />
 
         <EditText
             android:id="@+id/edit_read_summary"
@@ -42,7 +44,9 @@
             android:id="@+id/new_words_review_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/new_words_review" />
+            android:text="@string/new_words_review"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_two_font_size" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/new_words_review_recycler"
@@ -62,7 +66,9 @@
             android:id="@+id/good_sentence_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/perfect_this_article_or_this_page_good_sentence" />
+            android:text="@string/perfect_this_article_or_this_page_good_sentence"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_two_font_size" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/good_sentence_recycler"

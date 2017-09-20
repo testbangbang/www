@@ -600,6 +600,11 @@
     <string name="news">news</string>
     <string name="group_manager_activity_manage_group">manage group</string>
     <string name="examine">look over</string>
+    <string name="time">time</string>
+    <string name="book_name">book</string>
+    <string name="page_number">page number</string>
+    <string name="book_abstract">Summary</string>
+    <string name="progress">progress</string>
     <string name="current_version">  (CurrentVersion: V%d)</string>
     <string name="update_version">   (Update Version: V%d)</string>
     <string name="update_content">Update content:\n</string>

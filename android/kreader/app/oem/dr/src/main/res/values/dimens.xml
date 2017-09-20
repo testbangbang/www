@@ -394,4 +394,6 @@
     <dimen name="new_apk_dialog_width">600dp</dimen>
     <dimen name="new_apk_dialog_height">400dp</dimen>
     <dimen name="library_item_read_progress_margin_left">132dp</dimen>
+    <dimen name="item_summary_list_height">60dp</dimen>
 </resources>
+

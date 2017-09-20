@@ -5,4 +5,22 @@ package com.onyx.android.dr.reader.event;
  */
 
 public class ReadingSummaryMenuEvent {
+    private String bookName;
+    private String pageNumber;
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
+    }
+
+    public String getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(String pageNumber) {
+        this.pageNumber = pageNumber;
+    }
 }
