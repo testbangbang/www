@@ -82,7 +82,7 @@ public class GroupHomePageActivity extends BaseActivity {
                 ActivityManager.startJoinGroupActivity(this);
                 break;
             case R.id.group_home_page_activity_manage:
-                ActivityManager.startGroupMemberManageActivity(this);
+                ActivityManager.startManageGroupActivity(this);
                 break;
         }
     }

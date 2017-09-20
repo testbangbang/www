@@ -7,10 +7,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.presenter.JoinGroupPresenter;
-import com.onyx.android.sdk.data.model.CreatorBean;
-import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
-import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
+import com.onyx.android.dr.bean.GroupMemberBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -21,15 +18,12 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 2017/8/31.
  */
-public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.ViewHolder> {
-    private List<SearchGroupBean> dataList;
+public class ManageGroupAdapter extends PageRecyclerView.PageAdapter<ManageGroupAdapter.ViewHolder> {
+    private List<GroupMemberBean> dataList;
     private OnItemClickListener onItemClickListener;
-    private JoinGroupPresenter presenter;
-    private int length = 100;
 
-    public void setDataList(List<SearchGroupBean> dataList, JoinGroupPresenter presenter) {
+    public void setDataList(List<GroupMemberBean> dataList) {
         this.dataList = dataList;
-        this.presenter = presenter;
     }
 
     @Override
@@ -49,23 +43,16 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_group_info, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_manage_group_info, null);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        final SearchGroupBean bean = dataList.get(position);
-        CreatorBean creator = bean.creator;
-        holder.groupName.setText(bean.name);
-        holder.groupOwnerName.setText(creator.name);
-        holder.joinGroup.setOnClickListener(new View.OnClickListener() {
+        GroupMemberBean bean = dataList.get(position);
+        holder.state.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JoinGroupBean joinGroupBean = new JoinGroupBean();
-                String[] array = new String[]{bean._id};
-                joinGroupBean.setGroups(array);
-                presenter.joinGroup(joinGroupBean);
             }
         });
     }
@@ -80,12 +67,18 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.info_item_group_name)
+        @Bind(R.id.manage_group_info_item_serial_number)
+        TextView serialNumber;
+        @Bind(R.id.manage_group_info_item_group_name)
         TextView groupName;
-        @Bind(R.id.info_item_group_owner_name)
-        TextView groupOwnerName;
-        @Bind(R.id.info_item_group_join)
-        TextView joinGroup;
+        @Bind(R.id.manage_group_info_item_identity)
+        TextView identity;
+        @Bind(R.id.manage_group_info_item_people_number)
+        TextView peopleNumber;
+        @Bind(R.id.manage_group_info_item_news)
+        TextView news;
+        @Bind(R.id.manage_group_info_item_state)
+        TextView state;
         View rootView;
 
         ViewHolder(View view) {

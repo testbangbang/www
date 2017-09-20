@@ -13,6 +13,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SecondPopupAdapter;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -25,7 +26,7 @@ import java.util.List;
 public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupAdapter.OnItemClickListener {
     private int height;
     private int width;
-    private List<String> datas = new ArrayList<>();
+    private List<CreateGroupCommonBean> datas = new ArrayList<>();
     private View contentView;
     private PageRecyclerView popupWindowRecycler;
     private SecondPopupAdapter popupAdapter;
@@ -72,7 +73,7 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
         update();
     }
 
-    public void showPopupWindow(View parent, List<String> datas, int type) {
+    public void showPopupWindow(View parent, List<CreateGroupCommonBean> datas, int type) {
         this.datas = datas;
         this.type = type;
         initView();
@@ -87,14 +88,14 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
     }
 
     @Override
-    public void onClick(int position, String string) {
+    public void onClick(int position, CreateGroupCommonBean bean) {
         if (listener != null) {
-            listener.onClick(position, string);
+            listener.onClick(position, bean);
         }
     }
 
     public interface OnItemClickListener {
-        void onClick(int position, String string);
+        void onClick(int position, CreateGroupCommonBean bean);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {

@@ -28,6 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:clickable="true"
             android:layout_marginLeft="@dimen/join_group_activity_search_group_margin_left"
             android:background="@drawable/ic_reader_search" />
 

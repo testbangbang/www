@@ -1,16 +1,15 @@
 package com.onyx.android.dr.presenter;
 
 import com.onyx.android.dr.DRApplication;
-import com.onyx.android.dr.R;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.CreateGroupData;
 import com.onyx.android.dr.interfaces.CreateGroupView;
 import com.onyx.android.dr.request.cloud.CreateGroupRequest;
+import com.onyx.android.dr.request.cloud.RequestCheckGroupNameExist;
 import com.onyx.android.dr.request.cloud.RequestGetSchoolInfo;
+import com.onyx.android.dr.request.cloud.RequestGetYearData;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
-import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 
 import java.util.List;
 
@@ -27,22 +26,28 @@ public class CreateGroupPresenter {
         createGroupData = new CreateGroupData();
     }
 
-    public void createGroup(CreateGroupResultBean createGroupBean) {
-        final CreateGroupRequest req = new CreateGroupRequest(createGroupBean);
+    public void createGroup(CreateGroupCommonBean bean) {
+        final CreateGroupRequest req = new CreateGroupRequest(bean);
         createGroupData.createGroup(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (StringUtils.isNullOrEmpty(e + tag)){
-                    createGroupView.setCreateGroupResult(req.getResult());
-                }else{
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.create_group_success));
-                }
+                createGroupView.setCreateGroupResult(req.getResult());
             }
         });
     }
 
-    public void getGradeData() {
-        final RequestGetSchoolInfo req = new RequestGetSchoolInfo();
+    public void checkGroupName(String text, String parent) {
+        final RequestCheckGroupNameExist req = new RequestCheckGroupNameExist(text, parent);
+        createGroupData.checkGroupName(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                createGroupView.setCheckGroupNameResult(req.getGroups());
+            }
+        });
+    }
+
+    public void getSchoolData(String text, String parent) {
+        final RequestGetSchoolInfo req = new RequestGetSchoolInfo(text, parent);
         createGroupData.getSchoolInfo(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -51,13 +56,38 @@ public class CreateGroupPresenter {
         });
     }
 
-    public List<String> getAnnualData() {
-        List<String> list = createGroupData.loadAnnualData(DRApplication.getInstance());
-        return list;
+    public void getYearData(String parent) {
+        final RequestGetYearData req = new RequestGetYearData(parent);
+        createGroupData.getYearData(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                createGroupView.setYearInfo(req.getGroups());
+            }
+        });
     }
 
-    public List<String> getClassData() {
-        List<String> list = createGroupData.loadClassData(DRApplication.getInstance());
+    public void getGradeData(String parent) {
+        final RequestGetYearData req = new RequestGetYearData(parent);
+        createGroupData.getYearData(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                createGroupView.setGradeInfo(req.getGroups());
+            }
+        });
+    }
+
+    public void getClassData(String parent) {
+        final RequestGetYearData req = new RequestGetYearData(parent);
+        createGroupData.getYearData(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                createGroupView.setClassInfo(req.getGroups());
+            }
+        });
+    }
+
+    public List<String> getAnnualData() {
+        List<String> list = createGroupData.loadAnnualData(DRApplication.getInstance());
         return list;
     }
 }

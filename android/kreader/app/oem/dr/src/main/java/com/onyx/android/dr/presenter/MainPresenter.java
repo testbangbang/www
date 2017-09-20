@@ -6,7 +6,6 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.action.AuthTokenAction;
 import com.onyx.android.dr.activity.MainView;
 import com.onyx.android.dr.data.MainData;
-import com.onyx.android.dr.data.MainTabMenuConfig;
 import com.onyx.android.dr.event.LoginFailedEvent;
 import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
 import com.onyx.android.dr.request.local.RequestLoadLocalDB;
@@ -66,7 +65,9 @@ public class MainPresenter {
                 List<GroupBean> groups = req.getGroups();
                 if (groups != null && groups.size() > 0) {
                     String library = groups.get(0).library;
+                    String parentId = groups.get(0)._id;
                     DRPreferenceManager.saveLibraryParentId(DRApplication.getInstance(), library);
+                    DRPreferenceManager.saveParentId(DRApplication.getInstance(), parentId);
                     DRPreferenceManager.saveUserType(DRApplication.getInstance(), groups.get(0).name);
                 }
             }

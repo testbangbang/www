@@ -592,4 +592,11 @@
     <string name="forget_password_user_name">user name： %s</string>
     <string name="new_password_must_be_filled">new password must be filled</string>
     <string name="password_input_is_inconsistent">password input is inconsistent</string>
+    <string name="create_group_activity_group_name_hint">This group name already exists, please re-enter.</string>
+    <string name="group_manager_group_name">group name</string>
+    <string name="group_manager_identity">identity</string>
+    <string name="number_of_people">number of people</string>
+    <string name="news">news</string>
+    <string name="group_manager_activity_manage_group">manage group</string>
+    <string name="examine">look over</string>
 </resources>

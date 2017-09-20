@@ -6,6 +6,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -17,10 +18,10 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 2017/9/15.
  */
 public class SecondPopupAdapter extends PageRecyclerView.PageAdapter<SecondPopupAdapter.ViewHolder> {
-    private List<String> list;
+    private List<CreateGroupCommonBean> list;
     private OnItemClickListener listener;
 
-    public void setList(List<String> list) {
+    public void setList(List<CreateGroupCommonBean> list) {
         this.list = list;
     }
 
@@ -47,7 +48,7 @@ public class SecondPopupAdapter extends PageRecyclerView.PageAdapter<SecondPopup
 
     @Override
     public void onPageBindViewHolder(ViewHolder holder, final int position) {
-        holder.spinnerText.setText(list.get(position));
+        holder.spinnerText.setText(list.get(position).name);
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,7 +72,7 @@ public class SecondPopupAdapter extends PageRecyclerView.PageAdapter<SecondPopup
     }
 
     public interface OnItemClickListener {
-        void onClick(int position, String string);
+        void onClick(int position, CreateGroupCommonBean bean);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
