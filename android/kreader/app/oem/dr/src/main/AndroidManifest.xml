@@ -68,8 +68,8 @@
         <activity
             android:name=".activity.DictQueryActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
@@ -199,7 +199,11 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".activity.GroupMemberManageActivity"
+            android:name=".activity.ManageGroupActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".activity.GroupMemberActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
@@ -244,6 +248,10 @@
 
         <activity android:name=".activity.BookReportListActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
+            android:name=".activity.ForgetPasswordActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>

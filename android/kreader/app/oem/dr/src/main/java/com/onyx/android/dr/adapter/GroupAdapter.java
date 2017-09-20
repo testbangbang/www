@@ -3,14 +3,14 @@ package com.onyx.android.dr.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.GroupInfoBean;
+import com.onyx.android.dr.presenter.JoinGroupPresenter;
+import com.onyx.android.sdk.data.model.CreatorBean;
+import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
+import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -22,13 +22,14 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 2017/8/31.
  */
 public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.ViewHolder> {
-    private List<GroupInfoBean> dataList;
-    private List<Boolean> listCheck;
+    private List<SearchGroupBean> dataList;
     private OnItemClickListener onItemClickListener;
+    private JoinGroupPresenter presenter;
+    private int length = 100;
 
-    public void setDataList(List<GroupInfoBean> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<SearchGroupBean> dataList, JoinGroupPresenter presenter) {
         this.dataList = dataList;
-        this.listCheck = listCheck;
+        this.presenter = presenter;
     }
 
     @Override
@@ -54,30 +55,17 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        GroupInfoBean bean = dataList.get(position);
-        holder.groupName.setText(bean.getGroupName());
-        holder.groupOwnerName.setText(bean.getGroupOwnerName());
-        holder.checkBox.setChecked(listCheck.get(position));
-        holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.setOnItemCheckedChanged(position, b);
-                }
-            }
-        });
-        holder.rootView.setOnClickListener(new View.OnClickListener() {
+        final SearchGroupBean bean = dataList.get(position);
+        CreatorBean creator = bean.creator;
+        holder.groupName.setText(bean.name);
+        holder.groupOwnerName.setText(creator.name);
+        holder.joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        onItemClickListener.setOnItemClick(position, false);
-                    } else {
-                        holder.checkBox.setChecked(true);
-                        onItemClickListener.setOnItemClick(position, true);
-                    }
-                }
+                JoinGroupBean joinGroupBean = new JoinGroupBean();
+                String[] array = new String[]{bean._id};
+                joinGroupBean.setGroups(array);
+                presenter.joinGroup(joinGroupBean);
             }
         });
     }
@@ -92,12 +80,12 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.group_info_item_check)
-        CheckBox checkBox;
-        @Bind(R.id.group_info_item_group_name)
+        @Bind(R.id.info_item_group_name)
         TextView groupName;
-        @Bind(R.id.group_info_item_owner_name)
+        @Bind(R.id.info_item_group_owner_name)
         TextView groupOwnerName;
+        @Bind(R.id.info_item_group_join)
+        TextView joinGroup;
         View rootView;
 
         ViewHolder(View view) {

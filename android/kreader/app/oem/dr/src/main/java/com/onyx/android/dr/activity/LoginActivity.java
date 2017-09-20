@@ -298,7 +298,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         readingInfo.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button, R.id.login_wifi_settings})
+    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button, R.id.login_wifi_settings, R.id.forget_password})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_register:
@@ -315,6 +315,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 break;
             case R.id.login_wifi_settings:
                 ActivityManager.startWifiActivity(this);
+                break;
+            case R.id.forget_password:
+                ActivityManager.startForgetPasswordActivity(this);
                 break;
         }
     }

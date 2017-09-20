@@ -290,6 +290,9 @@ public class DeviceConfig {
         public static final String MENU_LISTEN_BOOKS = "menu_listen_books";
         public static final String MENU_AFTER_READING = "menu_after_reading";
         public static final String MENU_READER_SETTING = "menu_reader_setting";
+        public static final String MENU_READER_FONT = "menu_reader_font";
+        public static final String MENU_READER_CATALOG = "menu_reader_catalog";
+        public static final String MENU_WRITE_REMARKS = "menu_write_remarks";
     }
 
     public static class AfterReadingInfo {

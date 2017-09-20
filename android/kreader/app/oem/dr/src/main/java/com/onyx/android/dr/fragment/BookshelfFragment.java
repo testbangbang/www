@@ -67,6 +67,8 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
     TextView titleBarTitle;
     @Bind(R.id.title_bar_right_menu)
     TextView titleBarRightMenu;
+    @Bind(R.id.title_bar_right_icon_one)
+    ImageView share;
     @Bind(R.id.bookshelf_book_search)
     ImageView bookshelfBookSearch;
     @Bind(R.id.bookshelf_type_toggle)
@@ -136,7 +138,10 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         listAdapter = new BookListAdapter(getActivity(), getDataHolder());
         initPageIndicator(pageIndicatorLayout);
         listAdapter.setShowName(true);
+        listAdapter.setCanChecked(true);
         titleBar = rootView.findViewById(R.id.bookshelf_title_bar);
+        share.setImageResource(R.drawable.ic_reader_share);
+        share.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -209,12 +214,13 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
             pageIndicatorLayout.setVisibility(View.GONE);
             titleBar.setVisibility(View.GONE);
             bookshelfTabTitle.setVisibility(View.VISIBLE);
+            listAdapter.setShowCheckbox(false);
         } else {
             EventBus.getDefault().post(new BackToMainViewEvent());
         }
     }
 
-    @OnClick({R.id.menu_back, R.id.bookshelf_book_search, R.id.bookshelf_type_toggle})
+    @OnClick({R.id.menu_back, R.id.bookshelf_book_search, R.id.bookshelf_type_toggle, R.id.title_bar_right_icon_one})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -225,6 +231,9 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
                 break;
             case R.id.bookshelf_type_toggle:
                 toggleBookshelfMode();
+                break;
+            case R.id.title_bar_right_icon_one:
+                listAdapter.getSelectedMetadata();
                 break;
         }
     }

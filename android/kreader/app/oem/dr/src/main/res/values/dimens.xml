@@ -37,9 +37,11 @@
     <dimen name="login_text_margin_left">20dp</dimen>
     <dimen name="spinner_drop_down_ver_offset">48dp</dimen>
     <dimen name="login_text_margin_right">5dp</dimen>
+    <dimen name="create_group_activity_margin_right">10dp</dimen>
     <dimen name="login_layout_title_margin_top">100dp</dimen>
     <dimen name="user_info_edit_text_width">400dp</dimen>
     <dimen name="user_info_text_view_width">230dp</dimen>
+    <dimen name="create_group_activity_text_view_width">200dp</dimen>
     <dimen name="login_next_button_margin_bottom">400dp</dimen>
     <dimen name="login_next_button_margin_right">150dp</dimen>
     <dimen name="user_info_edit_text_margin_right">10dp</dimen>
@@ -167,6 +169,7 @@
     <dimen name="dialog_result_spinner_margin">20dp</dimen>
     <dimen name="select_dialog_close_cancel_margin">20dp</dimen>
     <dimen name="select_dialog_close_cancel_padding">20dp</dimen>
+    <dimen name="create_group_activity_text_view_style_padding">10dp</dimen>
     <dimen name="dialog_resutl_view_margin">20dp</dimen>
     <dimen name="dialog_result_bottom">20dp</dimen>
     <dimen name="dict_query_total_strokes_marginleft">20dp</dimen>
@@ -288,9 +291,9 @@
     <dimen name="action_item_vertical_padding_right">10dp</dimen>
     <dimen name="horiz_separator_width">2dp</dimen>
     <dimen name="startHandle_width">37dp</dimen>
-    <dimen name="startHandle_height">37dp</dimen>
+    <dimen name="startHandle_height">40dp</dimen>
     <dimen name="endHandle_width">37dp</dimen>
-    <dimen name="endHandle_height">37dp</dimen>
+    <dimen name="endHandle_height">40dp</dimen>
     <dimen name="activity_dict_result_view_margin_top">20dp</dimen>
     <dimen name="activity_dict_result_view_margin_bottom">20dp</dimen>
     <dimen name="pay_qr_code_width">250dp</dimen>
@@ -359,6 +362,8 @@
     <dimen name="dict_setting_activity_margin_top">40dp</dimen>
     <dimen name="dict_select_dialog_recycler_view_margin">10dp</dimen>
     <dimen name="query_dict_activity_view_height">65dp</dimen>
+    <dimen name="reader_menu_tab_height">100dp</dimen>
+    <dimen name="reader_reading_setting_menu_margin">100dp</dimen>
     <dimen name="new_word_query_activity_bottom_padding_bottom">20dp</dimen>
     <dimen name="dialog_result_bottom_padding_bottom">20dp</dimen>
     <dimen name="tip_confirm_save_after_feeling_message_margin">20dp</dimen>
@@ -366,4 +371,25 @@
     <dimen name="book_report_detail_layout_padding">10dp</dimen>
     <dimen name="book_report_detail_edit_text_margin">10dp</dimen>
     <dimen name="book_report_list_page_padding_contain">10dp</dimen>
+    <dimen name="group_home_page_activity_create_padding">20dp</dimen>
+    <dimen name="group_home_page_activity_container_margin_top">-200dp</dimen>
+    <dimen name="recommend_group_name_margin_top_margin_left">60dp</dimen>
+    <dimen name="create_group_activity_cancel_margin_left">-10dp</dimen>
+    <dimen name="create_group_activity_create_marin_left">80dp</dimen>
+    <dimen name="create_group_activity_cancel_container_margin_top">100dp</dimen>
+    <dimen name="create_group_activity_recommend_group_name_margin_left">120dp</dimen>
+    <dimen name="info_item_group_join_container_width">140dp</dimen>
+    <dimen name="info_item_group_join_padding">10dp</dimen>
+    <dimen name="info_item_group_join_margin_left">25dp</dimen>
+    <dimen name="join_group_activity_group_name_container_margin">20dp</dimen>
+    <dimen name="join_group_activity_group_name_margin_left">60dp</dimen>
+    <dimen name="create_group_activity_recommend_group_name_margin_top">80dp</dimen>
+    <dimen name="join_group_activity_search_group_margin_left">40dp</dimen>
+    <dimen name="join_group_activity_group_name_width">550dp</dimen>
+    <dimen name="create_group_activity_whether_exist_margin_left">20dp</dimen>
+    <dimen name="phone_number_margin">30dp</dimen>
+    <dimen name="change_password_result_drawable_padding">20dp</dimen>
+    <dimen name="forget_password_name_margin_top">210dp</dimen>
+    <dimen name="group_manager_activity_manager_container_width">100dp</dimen>
+    <dimen name="library_item_read_progress_margin_left">132dp</dimen>
 </resources>

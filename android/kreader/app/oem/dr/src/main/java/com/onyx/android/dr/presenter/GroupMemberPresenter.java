@@ -10,11 +10,11 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 /**
  * Created by zhouzhiming on 2017/8/29.
  */
-public class GroupMemberManagePresenter {
+public class GroupMemberPresenter {
     private GroupMemberView groupMemberView;
     private GroupMemberData groupMemberData;
 
-    public GroupMemberManagePresenter(GroupMemberView groupMemberView) {
+    public GroupMemberPresenter(GroupMemberView groupMemberView) {
         this.groupMemberView = groupMemberView;
         groupMemberData = new GroupMemberData();
     }

@@ -26,6 +26,7 @@ import com.onyx.android.dr.event.ReloadDictImageEvent;
 import com.onyx.android.dr.event.UpdateSoundIconEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.event.WebviewPageChangedEvent;
+import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
@@ -155,9 +156,15 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
         DictPreference.init(this);
         dictPresenter.loadData(this);
         getIntentData();
+        initItemData();
         initSound();
         settingDictionaryFunction();
         initEvent();
+    }
+
+    private void initItemData() {
+        itemList = Utils.loadItemData(this);
+        resultView.setActionList(itemList);
     }
 
     @Override
@@ -263,6 +270,21 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             }
         });
 
+        resultView.setActionSelectListener(new ActionSelectListener() {
+            @Override
+            public void onClick(String title, String selectText) {
+                copyText = selectText;
+                if (!StringUtils.isNullOrEmpty(copyText)) {
+                    if (title.equals(getString(R.string.new_word_query))) {
+                        EventBus.getDefault().post(new NewWordQueryEvent(copyText));
+                    } else if (title.equals(getString(R.string.good_sentence_excerpt))) {
+                        EventBus.getDefault().post(new GoodSentenceNotebookEvent(copyText));
+                    }
+                } else {
+                    CommonNotices.showMessage(DictResultShowActivity.this, getString(R.string.webview_toast_copy_failed));
+                }
+            }
+        });
     }
 
     public void testWordDictQuery() {
@@ -546,6 +568,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     @Override
     protected void onStop() {
         super.onStop();
+        if (resultView != null) {
+            resultView.dismissAction();
+        }
     }
 
     @Override

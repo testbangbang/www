@@ -374,6 +374,11 @@ public class JEBReaderWrapper {
                 public Bitmap getBitmap() {
                     return image.bitmap;
                 }
+
+                @Override
+                public String getName() {
+                    return image.name;
+                }
             });
         }
         return result;

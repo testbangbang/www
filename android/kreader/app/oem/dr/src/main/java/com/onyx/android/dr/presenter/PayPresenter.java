@@ -25,7 +25,9 @@ public class PayPresenter {
         payData.pay(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                payActivityView.setPayBean(req.getPayBean());
+                if (e == null) {
+                    payActivityView.setPayBean(req.getPayBean());
+                }
             }
         });
     }

@@ -658,6 +658,7 @@ public class AlFormatEPUB extends AlAXML {
 // addon
             case AlFormatTag.TAG_IMAGE:
             case AlFormatTag.TAG_IMG:
+            case AlFormatTag.TAG_AUDIO:
                 if (tag.closed) {
 
                 } else

@@ -1,9 +1,11 @@
 package com.neverland.engbook.util;
 
+import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.graphics.Bitmap;
 import android.graphics.Picture;
 import android.graphics.PorterDuff;
+import android.util.Log;
 
 import com.larvalabs.svgandroid.SVG;
 import com.larvalabs.svgandroid.SVGParser;
@@ -14,16 +16,69 @@ import com.neverland.engbook.level2.AlFormat;
 import com.neverland.engbook.unicode.AlUnicode;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 public class AlImage {
-
+	private static final String AUDIO_IMAGE = "audio.png";
+	private static final String AUDIO_DIR = "audio";
 	private int					storeIndex = 0;
 	private final String[]		storeImage = {null, null};
 	private final AlBitmap[]	storeBitmap = {new AlBitmap(), new AlBitmap()};
 	private final int[]			storeScale = {0, 0};
+	private byte[]				audioBitmapData = null;
+	private int audioBitmapWidth = 0;
+	private int audioBitmapHeight = 0;
+	private String audioPath;
+	private static final List<String> AUDIO_TYPE_LIST = new ArrayList<>();
+	static {
+		AUDIO_TYPE_LIST.add(".mp3");
+	}
+
+	public static boolean isAudio(String name){
+		for(String type : AUDIO_TYPE_LIST){
+			if(name.endsWith(type)){
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void setAudioImagePath(Context context){
+		try {
+			audioPath = context.getFilesDir().getAbsolutePath() + File.separator + AUDIO_DIR;
+			InputStream inputStream = context.getAssets().open(AUDIO_IMAGE);
+			int lenght = inputStream.available();
+			audioBitmapData = new byte[lenght];
+			inputStream.read(audioBitmapData,0,lenght);
+			BitmapFactory.decodeByteArray(audioBitmapData,0,audioBitmapData.length, opts);
+			audioBitmapWidth = opts.outWidth;
+			audioBitmapHeight = opts.outHeight;
+			inputStream.close();
+			createAudioDir();
+		}catch (Exception e){
+			e.printStackTrace();
+			Log.e(AlImage.class.getSimpleName(),e.toString());
+		}
+	}
+
+	private void createAudioDir(){
+		File file = new File(audioPath);
+		if(!file.exists()){
+			file.mkdirs();
+		}else{
+			for(File f : file.listFiles()){
+				if(f.isFile()){
+					f.delete();
+				}
+			}
+		}
+	}
 	
 	@Override
 	protected void finalize() throws Throwable {
@@ -158,11 +213,16 @@ public class AlImage {
 			}
 
             if (ai.data != null) {
-                storeBitmap[storeIndex].bmp = BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
-                storeBitmap[storeIndex].height = opts.outHeight;
-                storeBitmap[storeIndex].width = opts.outWidth;
-                storeImage[storeIndex] = ai.name;
-                storeScale[storeIndex] = scale;
+				if(isAudio(ai.name)) {
+					storeBitmap[storeIndex].bmp = BitmapFactory.decodeByteArray(audioBitmapData,0,audioBitmapData.length, opts);
+					audioDataToFile(ai);
+				}else {
+					storeBitmap[storeIndex].bmp = BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
+				}
+				storeBitmap[storeIndex].height = opts.outHeight;
+				storeBitmap[storeIndex].width = opts.outWidth;
+				storeImage[storeIndex] = ai.name;
+				storeScale[storeIndex] = scale;
             }
         }
 		
@@ -170,6 +230,32 @@ public class AlImage {
 			return storeBitmap[storeIndex];
 		
 		return null;
+	}
+
+	private void audioDataToFile(AlOneImage ai){
+		int index = ai.name.lastIndexOf(File.separator);
+		String destPath = ai.name;
+		if(index >= 0){
+			destPath = ai.name.substring(index,ai.name.length());
+		}
+
+		File file = new File(audioPath + destPath);
+		FileOutputStream fos = null;
+		if(!file.exists()){
+			try {
+				fos = new FileOutputStream(file);
+				fos.write(ai.data, 0, ai.data.length);
+			}catch (Exception e){
+				e.toString();
+			}finally {
+				if(fos != null){
+					try {
+						fos.close();
+					}catch (Exception e) {
+					}
+				}
+			}
+		}
 	}
 
 	public boolean scanImage(AlOneImage ai) {
@@ -204,7 +290,13 @@ public class AlImage {
 				}
             } else
 			{
-                BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
+				if(isAudio(ai.name)){
+					ai.height = audioBitmapHeight;
+					ai.width = audioBitmapWidth;
+					return true;
+				}else {
+					BitmapFactory.decodeByteArray(ai.data, 0, ai.data.length, opts);
+				}
                 if (opts.outHeight != -1 && opts.outWidth != -1) {
                     ai.height = opts.outHeight;
                     ai.width = opts.outWidth;

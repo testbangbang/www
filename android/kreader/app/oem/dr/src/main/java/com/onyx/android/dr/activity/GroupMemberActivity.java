@@ -11,7 +11,7 @@ import com.onyx.android.dr.bean.GroupMemberBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.interfaces.GroupMemberView;
-import com.onyx.android.dr.presenter.GroupMemberManagePresenter;
+import com.onyx.android.dr.presenter.GroupMemberPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -24,7 +24,7 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 2017/8/28.
  */
-public class GroupMemberManageActivity extends BaseActivity implements GroupMemberView {
+public class GroupMemberActivity extends BaseActivity implements GroupMemberView {
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.title_bar_title)
@@ -35,7 +35,7 @@ public class GroupMemberManageActivity extends BaseActivity implements GroupMemb
     TextView deleteMember;
     @Bind(R.id.group_member_manage_activity_recycler_view)
     PageRecyclerView recyclerView;
-    private GroupMemberManagePresenter groupMemberManagePresenter;
+    private GroupMemberPresenter groupMemberManagePresenter;
     private GroupMemberAdapter groupMemberAdapter;
     private List<GroupMemberBean> groupList;
 
@@ -60,7 +60,7 @@ public class GroupMemberManageActivity extends BaseActivity implements GroupMemb
 
     @Override
     protected void initData() {
-        groupMemberManagePresenter = new GroupMemberManagePresenter(this);
+        groupMemberManagePresenter = new GroupMemberPresenter(this);
         groupMemberManagePresenter.getGroupMember();
         groupList = new ArrayList<GroupMemberBean>();
         initTitleData();

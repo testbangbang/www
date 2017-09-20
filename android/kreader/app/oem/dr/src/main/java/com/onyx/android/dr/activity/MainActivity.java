@@ -167,7 +167,6 @@ public class MainActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArticlePushMenuEvent(ArticlePushMenuEvent event) {
         CommonNotices.showMessage(this, getString(R.string.menu_article_push));
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

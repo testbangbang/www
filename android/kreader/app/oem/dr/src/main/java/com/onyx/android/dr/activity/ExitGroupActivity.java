@@ -8,11 +8,11 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GroupAdapter;
-import com.onyx.android.dr.bean.GroupInfoBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.interfaces.ExitGroupView;
 import com.onyx.android.dr.presenter.ExitGroupPresenter;
+import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -41,7 +41,7 @@ public class ExitGroupActivity extends BaseActivity implements ExitGroupView {
     private ExitGroupPresenter exitGroupPresenter;
     private DividerItemDecoration dividerItemDecoration;
     private GroupAdapter groupAdapter;
-    private List<GroupInfoBean> groupList;
+    private List<CreateGroupCommonBean> groupList;
     private ArrayList<Boolean> listCheck;
 
     @Override
@@ -70,7 +70,7 @@ public class ExitGroupActivity extends BaseActivity implements ExitGroupView {
     protected void initData() {
         exitGroupPresenter = new ExitGroupPresenter(this);
         exitGroupPresenter.getAllGroup();
-        groupList = new ArrayList<GroupInfoBean>();
+        groupList = new ArrayList<>();
         listCheck = new ArrayList<>();
         initTitleData();
         initEvent();
@@ -82,13 +82,12 @@ public class ExitGroupActivity extends BaseActivity implements ExitGroupView {
     }
 
     @Override
-    public void setAllGroupResult(List<GroupInfoBean> list, ArrayList<Boolean> checkList) {
+    public void setAllGroupResult(List<CreateGroupCommonBean> list, ArrayList<Boolean> checkList) {
         if (list == null || list.size() <= 0) {
             return;
         }
         groupList = list;
         listCheck = checkList;
-        groupAdapter.setDataList(groupList, listCheck);
         recyclerView.setAdapter(groupAdapter);
     }
 

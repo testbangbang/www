@@ -8,6 +8,8 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.webkit.ConsoleMessage;
@@ -27,7 +29,6 @@ import com.onyx.android.dr.event.UpdateVoiceStatusEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.util.Utils;
-import com.onyx.android.dr.webview.BTWebView;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
 import com.onyx.android.sdk.dict.data.DictionaryProviderBase;
 import com.onyx.android.sdk.dict.data.DictionaryQueryResult;
@@ -35,14 +36,15 @@ import com.onyx.android.sdk.dict.data.speex.SpeexConversionRequest;
 import com.onyx.android.sdk.dict.request.common.DictBaseCallback;
 import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.dict.utils.PatternUtils;
+import com.onyx.android.sdk.utils.ReflectUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -51,7 +53,7 @@ import java.util.regex.Pattern;
 /**
  * Created by zhuzeng on 11/4/15.
  */
-public class AutoPagedWebView extends BTWebView {
+public class AutoPagedWebView extends WebView {
     public static final String HTML_FILE = "onyxdict.html";
     public static final String DICT_WEBSIT = "file://" + Utils.WEBSIT_DIR + HTML_FILE;
     public static final String ONYX_DICT = "OnyxDict";
@@ -77,11 +79,6 @@ public class AutoPagedWebView extends BTWebView {
     private ActionMode mActionMode;
     List<String> actionList = new ArrayList<>();
     private ActionSelectListener actionSelectListener;
-    private float scrollDiffY = 0;
-    private float lastTouchY = 0;
-    private float scrollDiffX = 0;
-    private float lastTouchX = 0;
-    private boolean scrolling = false;
 
     public void enableA2ForSpecificView(View view) {
     }
@@ -165,6 +162,78 @@ public class AutoPagedWebView extends BTWebView {
 
     public void setCurrentDictionary(int currentDictionary) {
         this.currentDictionary = currentDictionary;
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback) {
+        ActionMode actionMode = super.startActionMode(callback);
+        return resolveActionMode(actionMode);
+    }
+
+    @Override
+    public ActionMode startActionMode(ActionMode.Callback callback, int type) {
+        ActionMode actionMode = super.startActionMode(callback, type);
+        return resolveActionMode(actionMode);
+    }
+
+    /**
+     * setting popup action list
+     *
+     * @param actionList
+     */
+    public void setActionList(List<String> actionList) {
+        this.actionList = actionList;
+    }
+
+    public void setActionSelectListener(ActionSelectListener actionSelectListener) {
+        this.actionSelectListener = actionSelectListener;
+    }
+
+    public void dismissAction() {
+        releaseAction();
+    }
+
+    private void releaseAction() {
+        if (mActionMode != null) {
+            mActionMode.finish();
+            mActionMode = null;
+        }
+    }
+
+    /**
+     * click item
+     *
+     * @param actionMode
+     */
+    private ActionMode resolveActionMode(ActionMode actionMode) {
+        if (actionMode != null) {
+            final Menu menu = actionMode.getMenu();
+            mActionMode = actionMode;
+            menu.clear();
+            for (int i = 0; i < actionList.size(); i++) {
+                menu.add(actionList.get(i));
+            }
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem menuItem = menu.getItem(i);
+                menuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        getSelectedData((String) item.getTitle());
+                        releaseAction();
+                        return true;
+                    }
+                });
+            }
+        }
+        mActionMode = actionMode;
+        return actionMode;
+    }
+
+    private void getSelectedData(String title) {
+        Method getSelection = ReflectUtil.getDeclaredMethodSafely(WebView.class, "getSelection", null);
+        getSelection.setAccessible(true);
+        String text = (String) ReflectUtil.invokeMethodSafely(getSelection, this);
+        callback(text, title);
     }
 
     public int getPageCount() {
@@ -305,17 +374,10 @@ public class AutoPagedWebView extends BTWebView {
 
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
-                    float xPoint = getDensityIndependentValue(event.getX(), context) / getDensityIndependentValue(getScale(), context);
-                    float yPoint = getDensityIndependentValue(event.getY(), context) / getDensityIndependentValue(getScale(), context);
                     switch (event.getAction()) {
                         case MotionEvent.ACTION_DOWN:
                             downX = event.getX();
                             downY = event.getY();
-                            String startTouchUrl = String.format(Locale.US, "javascript:android.selection.startTouch(%f, %f);",
-                                    xPoint, yPoint);
-                            lastTouchX = xPoint;
-                            lastTouchY = yPoint;
-                            loadUrl(startTouchUrl);
                             break;
                         case MotionEvent.ACTION_UP:
                             float x = event.getX();
@@ -323,22 +385,6 @@ public class AutoPagedWebView extends BTWebView {
                             if (processAction(downX, downY, x, y)) {
                                 return true;
                             }
-                            if(!scrolling){
-                                scrolling = false;
-                                endSelectionMode();
-                                return false;
-                            }
-                            scrollDiffX = 0;
-                            scrollDiffY = 0;
-                            scrolling = false;
-                            break;
-                        case MotionEvent.ACTION_MOVE:
-                            scrollDiffX += (xPoint - lastTouchX);
-                            scrollDiffY += (yPoint - lastTouchY);
-                            lastTouchX = xPoint;
-                            lastTouchY = yPoint;
-                            // Only account for legitimate movement.
-                            scrolling = (Math.abs(scrollDiffX) > 10 || Math.abs(scrollDiffY) > 10);
                             break;
                     }
                     return false;

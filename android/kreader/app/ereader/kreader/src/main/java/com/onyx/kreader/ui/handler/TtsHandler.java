@@ -29,14 +29,16 @@ public class TtsHandler extends BaseHandler {
 
     private ReaderDataHolder readerDataHolder;
     private String initialPosition;
+    private String audioPath;
     private ReaderSentence currentSentence;
     private boolean stopped;
 
     private DialogTts dialogTts;
 
-    public static HandlerInitialState createInitialState(String initialPosition) {
+    public static HandlerInitialState createInitialState(String initialPosition,String audioPath) {
         HandlerInitialState state = new HandlerInitialState();
         state.ttsInitialPosition = initialPosition;
+        state.audioPath = audioPath;
         return state;
     }
 
@@ -49,6 +51,7 @@ public class TtsHandler extends BaseHandler {
     public void onActivate(ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
         if (initialState != null) {
             initialPosition = initialState.ttsInitialPosition;
+            audioPath = initialState.audioPath;
         }
         getDialogTts().show();
     }
@@ -94,7 +97,11 @@ public class TtsHandler extends BaseHandler {
 
     public void ttsPlay() {
         stopped = false;
-        readerDataHolder.getTtsManager().play();
+        readerDataHolder.getTtsManager().play(audioPath);
+    }
+
+    public String getAudioPath(){
+        return audioPath;
     }
 
     public void ttsPause() {
@@ -118,7 +125,7 @@ public class TtsHandler extends BaseHandler {
         readerDataHolder.getTtsManager().setSpeechRate(rate);
         if (currentSentence != null) {
             readerDataHolder.getTtsManager().supplyText(cleanUpText(currentSentence.getReaderSelection().getText()));
-            readerDataHolder.getTtsManager().play();
+            readerDataHolder.getTtsManager().play(null);
         }
     }
 
@@ -210,7 +217,7 @@ public class TtsHandler extends BaseHandler {
                 }
                 dumpCurrentSentence();
                 readerDataHolder.getTtsManager().supplyText(cleanUpText(currentSentence.getReaderSelection().getText()));
-                readerDataHolder.getTtsManager().play();
+                readerDataHolder.getTtsManager().play(null);
             }
         });
         return true;

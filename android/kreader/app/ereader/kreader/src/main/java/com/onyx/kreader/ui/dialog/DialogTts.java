@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
@@ -120,12 +121,18 @@ public class DialogTts extends OnyxBaseDialog implements View.OnClickListener, C
     }
 
     public void show() {
-        readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                ttsHandler.ttsPlay();
-            }
-        });
+        if(StringUtils.isNotBlank(ttsHandler.getAudioPath())){
+            ttsSpeed.setVisibility(View.GONE);
+            ttsHandler.ttsPlay();
+        }else {
+            ttsSpeed.setVisibility(View.VISIBLE);
+            readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    ttsHandler.ttsPlay();
+                }
+            });
+        }
         super.show();
     }
 

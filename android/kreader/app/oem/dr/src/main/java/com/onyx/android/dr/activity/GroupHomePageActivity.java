@@ -6,6 +6,8 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.util.DRPreferenceManager;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -18,8 +20,6 @@ public class GroupHomePageActivity extends BaseActivity {
     TextView createGroup;
     @Bind(R.id.group_home_page_activity_join)
     TextView joinGroup;
-    @Bind(R.id.group_home_page_activity_exit)
-    TextView exitGroup;
     @Bind(R.id.group_home_page_activity_manage)
     TextView groupMemberManage;
     @Bind(R.id.image_view_back)
@@ -45,6 +45,7 @@ public class GroupHomePageActivity extends BaseActivity {
     @Override
     protected void initData() {
         initTitleData();
+        setViewByIdentity();
         initEvent();
     }
 
@@ -53,12 +54,20 @@ public class GroupHomePageActivity extends BaseActivity {
         title.setText(getString(R.string.group));
     }
 
+    private void setViewByIdentity() {
+        String userType = DRPreferenceManager.getUserType(this, "");
+        if (userType.equals(Constants.ACCOUNT_TYPE_HIGH_SCHOOL)) {
+            createGroup.setVisibility(View.VISIBLE);
+        } else {
+            createGroup.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void initEvent() {
     }
 
     @OnClick({R.id.group_home_page_activity_create,
             R.id.group_home_page_activity_join,
-            R.id.group_home_page_activity_exit,
             R.id.image_view_back,
             R.id.group_home_page_activity_manage})
     public void onClick(View view) {
@@ -72,11 +81,8 @@ public class GroupHomePageActivity extends BaseActivity {
             case R.id.group_home_page_activity_join:
                 ActivityManager.startJoinGroupActivity(this);
                 break;
-            case R.id.group_home_page_activity_exit:
-                ActivityManager.startExitGroupActivity(this);
-                break;
             case R.id.group_home_page_activity_manage:
-                ActivityManager.startGroupMemberManageActivity(this);
+                ActivityManager.startManageGroupActivity(this);
                 break;
         }
     }

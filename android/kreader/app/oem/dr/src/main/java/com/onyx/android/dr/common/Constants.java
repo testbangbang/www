@@ -18,6 +18,7 @@ public class Constants {
     public static final String CONFIG_SCHOOL_LEVEL = "config_school_level";
 
     public static final String LIBRARY_PARENT_ID = "library_parent_Id";
+    public static final String PARENT_ID = "parent_Id";
     public static final String IMPORT_CONTENT_IN_FIRST_BOOT_TAG = "metadata_import_in_first_boot";
 
     public static final String ACCOUNT_TYPE_HIGH_SCHOOL = "中小学生";
@@ -107,6 +108,7 @@ public class Constants {
     public static final String LANGUAGE_BOOKSHELF = "language_bookshelf";
     public static final String GRADED_BOOKSHELF = "graded_bookshelf";
     public static final String ORDER_ID = "order_id";
+    public static final String READ_HISTORY_URI = "content://com.onyx.android.sdk.OnyxCmsProvider/library_metadata";
     public static String STANDBY_PIC_DIRECTORY = "/data/local/assets/images/";
     public static final String APK_NAME = "dr.apk";
     public static final String APK_DOWNLOAD_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + Constants.APK_NAME;

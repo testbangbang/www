@@ -3,14 +3,17 @@ package com.onyx.android.dr.view;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SecondPopupAdapter;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -21,20 +24,18 @@ import java.util.List;
  * Created by zhouzhiming on 2017/8/29.
  */
 public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupAdapter.OnItemClickListener {
-
-    private final int height = 620;
+    private int height;
     private int width;
-    private List<String> datas = new ArrayList<>();
+    private List<CreateGroupCommonBean> datas = new ArrayList<>();
     private View contentView;
     private PageRecyclerView popupWindowRecycler;
     private SecondPopupAdapter popupAdapter;
     public static final float secondProportion = 0.6f;
-    public static final float firstProportion  = 0.18f;
+    public static final float firstProportion  = 0.3f;
     private int offsetY;
     private OnItemClickListener listener;
-
-
     private int type;
+    private DividerItemDecoration dividerItemDecoration;
 
     public void setOffsetY(int offsetY) {
         this.offsetY = offsetY;
@@ -51,10 +52,12 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
     private void initView() {
         popupWindowRecycler = (PageRecyclerView) contentView.findViewById(R.id.popup_window_recycler);
         popupWindowRecycler.setLayoutManager(new DisableScrollLinearManager(DRApplication.getInstance().getBaseContext()));
+        dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         popupAdapter = new SecondPopupAdapter();
         popupAdapter.setOnItemClickListener(this);
         popupAdapter.setList(datas);
         popupWindowRecycler.setAdapter(popupAdapter);
+        popupWindowRecycler.addItemDecoration(dividerItemDecoration);
     }
 
     private void initData() {
@@ -63,14 +66,14 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
         }else if (type == Constants.IDENTITY) {
             setWidth((int) (secondProportion * width));
         }
-        setHeight(height);
+        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
         setOutsideTouchable(true);
         setBackgroundDrawable(new ColorDrawable(00000000));
         update();
     }
 
-    public void showPopupWindow(View parent, List<String> datas, int type) {
+    public void showPopupWindow(View parent, List<CreateGroupCommonBean> datas, int type) {
         this.datas = datas;
         this.type = type;
         initView();
@@ -85,14 +88,14 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
     }
 
     @Override
-    public void onClick(int position, String string) {
+    public void onClick(int position, CreateGroupCommonBean bean) {
         if (listener != null) {
-            listener.onClick(position, string);
+            listener.onClick(position, bean);
         }
     }
 
     public interface OnItemClickListener {
-        void onClick(int position, String string);
+        void onClick(int position, CreateGroupCommonBean bean);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
