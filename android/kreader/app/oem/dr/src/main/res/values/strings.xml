@@ -410,7 +410,7 @@
     <string name="device_setting_current_version">The current version number</string>
     <string name="device_setting_check_system_update">Check for updates</string>
     <string name="update_the_system_firmware">Update the system firmware</string>
-    <string name="bookstore_update">Bookstore update</string>
+    <string name="bookstore_update">Bookstore update(After the download will automatically restart the upgrade)</string>
     <string name="update_bookstore_application">Update bookstore application</string>
     <string name="device_setting_page_refreshes_value">The %1$s page refreshes the screen once</string>
     <string name="device_setting_page_refresh_rate">The page refresh rate</string>
@@ -600,4 +600,7 @@
     <string name="news">news</string>
     <string name="group_manager_activity_manage_group">manage group</string>
     <string name="examine">look over</string>
+    <string name="current_version">  (CurrentVersion: V%d)</string>
+    <string name="update_version">   (Update Version: V%d)</string>
+    <string name="update_content">Update content:\n</string>
 </resources>
