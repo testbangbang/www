@@ -43,6 +43,7 @@ import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
 import com.onyx.android.dr.activity.ShoppingCartActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
+import com.onyx.android.dr.activity.SummaryListActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
 import com.onyx.android.dr.activity.WifiActivity;
 import com.onyx.android.dr.bean.NewWordBean;
@@ -436,6 +437,11 @@ public class ActivityManager {
 
     public static void startForgetPasswordActivity(Context context) {
         Intent intent = new Intent(context, ForgetPasswordActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startSummaryListActivity(Context context) {
+        Intent intent = new Intent(context, SummaryListActivity.class);
         context.startActivity(intent);
     }
 }

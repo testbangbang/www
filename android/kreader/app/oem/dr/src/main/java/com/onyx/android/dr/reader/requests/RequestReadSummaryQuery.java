@@ -44,12 +44,10 @@ public class RequestReadSummaryQuery extends BaseDataRequest {
         }
         if (readSummaryEntity.newWordList == null) {
             readSummaryEntity.newWordList = queryNewWordList();
-            readSummaryEntity.insert();
         }
 
         if (readSummaryEntity.goodSentenceList == null) {
             readSummaryEntity.goodSentenceList = queryGoodSentenceList();
-            readSummaryEntity.insert();
         }
     }
 

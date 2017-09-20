@@ -247,6 +247,10 @@
             android:name=".activity.ForgetPasswordActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity
+            android:name=".activity.SummaryListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>
                 <action android:name="com.onyx.android.dr.CLEAR_FILE" />

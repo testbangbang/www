@@ -16,6 +16,7 @@ import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
 import com.onyx.android.dr.event.InfromalEssayEvent;
 import com.onyx.android.dr.event.MemorandumEvent;
 import com.onyx.android.dr.event.NewWordNotebookEvent;
+import com.onyx.android.dr.event.ReadSummaryEvent;
 import com.onyx.android.dr.event.SketchEvent;
 import com.onyx.android.dr.interfaces.MyNotesView;
 import com.onyx.android.dr.presenter.MyNotesPresenter;
@@ -138,6 +139,11 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onMemorandumEvent(MemorandumEvent event) {
         ActivityManager.startMemorandumActivity(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReadSummaryEvent(ReadSummaryEvent event) {
+        ActivityManager.startSummaryListActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

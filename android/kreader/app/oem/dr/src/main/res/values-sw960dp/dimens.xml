@@ -302,4 +302,5 @@
     <dimen name="forget_password_name_margin_top">210dp</dimen>
     <dimen name="group_manager_activity_manager_container_width">100dp</dimen>
     <dimen name="library_item_read_progress_margin_left">132dp</dimen>
+    <dimen name="item_summary_list_height">60dp</dimen>
 </resources>
