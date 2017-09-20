@@ -17,7 +17,7 @@ import com.onyx.android.sample.device.DeviceConfig;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.scribble.api.PenReader;
-import com.onyx.android.sdk.scribble.asyncrequest.TouchHelper;
+import com.onyx.android.sdk.scribble.api.TouchHelper;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 
