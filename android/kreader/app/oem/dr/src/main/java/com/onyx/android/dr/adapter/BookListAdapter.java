@@ -1,12 +1,16 @@
 package com.onyx.android.dr.adapter;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,6 +19,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
@@ -38,7 +43,9 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -57,6 +64,9 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     private LibraryDataHolder dataHolder;
     private boolean isShowName;
     private boolean isShowTime;
+    private boolean showCheckbox;
+    private boolean canChecked;
+    private Set<Metadata> selectedMetadata = new HashSet<>();
 
     public BookListAdapter(Context context, LibraryDataHolder dataHolder) {
         this.context = context;
@@ -100,11 +110,11 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     }
 
     @Override
-    public void onPageBindViewHolder(LibraryItemViewHolder viewHolder, int position) {
+    public void onPageBindViewHolder(final LibraryItemViewHolder viewHolder, final int position) {
         viewHolder.itemView.setTag(position);
 
-        Metadata eBook = getEBookList().get(position);
-        viewHolder.getWidgetImage.setVisibility(isFileExists(eBook) ? View.VISIBLE : View.GONE);
+        final Metadata eBook = getEBookList().get(position);
+        viewHolder.getWidgetImage.setText(getReadRecords(eBook) + "%");
         viewHolder.titleView.setVisibility(isShowName ? View.VISIBLE : View.GONE);
         viewHolder.timeView.setVisibility(isShowTime ? View.VISIBLE : View.GONE);
         viewHolder.titleView.setText(String.valueOf(eBook.getName()));
@@ -125,11 +135,31 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         viewHolder.rootView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                // TODO: 17-9-4 long  click
+                if (canChecked) {
+                    showCheckbox = !showCheckbox;
+                    selectedMetadata.clear();
+                    notifyDataSetChanged();
+                }
                 return false;
             }
         });
+
+        viewHolder.checkBox.setVisibility(showCheckbox ? View.VISIBLE : View.GONE);
+        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                selectOrCancel(eBook, isChecked);
+            }
+        });
         viewHolder.rootView.setTag(position);
+    }
+
+    private void selectOrCancel(Metadata metadata, boolean isChecked) {
+        if (isChecked) {
+            selectedMetadata.add(metadata);
+        } else {
+            selectedMetadata.remove(metadata);
+        }
     }
 
     @Override
@@ -179,7 +209,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         @Bind(R.id.library_item_image_cover)
         ImageView coverImage;
         @Bind(R.id.library_item_image_get_widget)
-        ImageView getWidgetImage;
+        TextView getWidgetImage;
         @Bind(R.id.library_item_textView_title)
         TextView titleView;
         @Bind(R.id.library_item_textView_time)
@@ -335,6 +365,43 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
 
     public void setShowTime(boolean showTime) {
         isShowTime = showTime;
+    }
+
+    public void setCanChecked(boolean canChecked) {
+        this.canChecked = canChecked;
+    }
+
+    public Set<Metadata> getSelectedMetadata() {
+        return selectedMetadata;
+    }
+
+    public void setShowCheckbox(boolean showCheckbox) {
+        this.showCheckbox = showCheckbox;
+    }
+
+    private int getReadRecords(Metadata metadata) {
+        Cursor cursor = null;
+        int progress = 0;
+        try {
+            ContentResolver resolver = DRApplication.getInstance().getContentResolver();
+            Uri uri = Uri.parse(Constants.READ_HISTORY_URI);
+            cursor = resolver.query(uri, new String[]{"Progress"}, "Location=?", new String[]{metadata.getNativeAbsolutePath()}, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                String string = cursor.getString(0);
+                if (!StringUtils.isNullOrEmpty(string)) {
+                    String[] split = string.split("/");
+                    int i = Integer.valueOf(split[0]) * 100 / Integer.valueOf(split[1]);
+                    progress = i < 1 ? 1 : i;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return progress;
     }
 }
 
