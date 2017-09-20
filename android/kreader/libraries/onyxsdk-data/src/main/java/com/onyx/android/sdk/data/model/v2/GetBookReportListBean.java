@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.model.v2;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by li on 2017/9/19.
@@ -15,5 +16,5 @@ public class GetBookReportListBean {
     public String book;
     public BookReportUserBean user;
     public int __v;
-    public CommentsBean comments;
+    public List<CommentsBean> comments;
 }

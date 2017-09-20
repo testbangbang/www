@@ -61,4 +61,6 @@
     <integer name="shopping_cart_col">1</integer>
     <integer name="search_result_row">5</integer>
     <integer name="search_result_col">1</integer>
+    <integer name="report_list_col">1</integer>
+    <integer name="report_list_row">7</integer>
 </resources>

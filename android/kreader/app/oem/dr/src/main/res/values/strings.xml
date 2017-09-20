@@ -507,7 +507,7 @@
     <string name="pronounce_evaluation_hint">Third party App, to be provided.</string>
     <string name="start_record">start_record</string>
     <string name="fragment_speech_recording_hint">hint: You can only call your own essay file.</string>
-    <string name="fragment_speech_recording_all_number">total:</string>
+    <string name="fragment_speech_recording_all_number">total:%d</string>
     <string name="data_unit">data unit</string>
     <string name="hint_input_search_word">Please input search keyword.</string>
     <string name="input_keyword">input keyword</string>
@@ -554,4 +554,5 @@
     <string name="select_most_dict">Choose four dictionaries at most</string>
     <string name="font">font</string>
     <string name="remove_from_cart_message">Whether remove books from cart?</string>
+    <string name="book_report_list_bring_out">Out</string>
 </resources>

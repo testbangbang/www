@@ -7,17 +7,17 @@ import java.util.Date;
  */
 
 public class BookReportUserBean {
-    private String _id;
-    private Date updatedAt;
-    private Date createdAt;
-    private String provider;
-    private String email;
-    private String name;
-    private String __v;
-    private BookReportUserInfo info;
-    private String devices;
-    private String library;
-    private String role;
+    public String _id;
+    public Date updatedAt;
+    public Date createdAt;
+    public String provider;
+    public String email;
+    public String name;
+    public String __v;
+    public BookReportUserInfo info;
+    public String devices;
+    public String library;
+    public String role;
 
     public String get_id() {
         return _id;

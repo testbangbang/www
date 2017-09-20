@@ -8,14 +8,15 @@ import java.util.List;
  */
 
 public class CreateBookReportResult {
-    private int __v;
-    private Date updatedAt;
-    private Date createdAt;
-    private String content;
-    private String name;
-    private String book;
-    private String user;
-    private List<CommentsBean> comments;
+    public String _id;
+    public int __v;
+    public Date updatedAt;
+    public Date createdAt;
+    public String content;
+    public String name;
+    public String book;
+    public String user;
+    public List<CommentsBean> comments;
 
     public int get__v() {
         return __v;

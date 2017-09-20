@@ -7,7 +7,14 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.event.DeleteBookReportEvent;
+import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -17,19 +24,23 @@ import butterknife.ButterKnife;
  */
 
 public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
+    private List<GetBookReportListBean> data;
+    private int row = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_row);
+    private int column = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_col);
+
     @Override
     public int getRowCount() {
-        return 7;
+        return row;
     }
 
     @Override
     public int getColumnCount() {
-        return 6;
+        return column;
     }
 
     @Override
     public int getDataCount() {
-        return 0;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -40,12 +51,52 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+        BookReportViewHolder viewHolder = (BookReportViewHolder) holder;
+        GetBookReportListBean bookReportListBean = data.get(position);
+        viewHolder.bookReportListItemBookName.setText(bookReportListBean.name);
+        viewHolder.bookReportListItemTime.setText(bookReportListBean.updatedAt + "");
+        viewHolder.bookReportListItemPage.setText("000");
+        String content = bookReportListBean.content;
+        viewHolder.bookReportListItemWordCount.setText(content == null ? "0" : String.valueOf(content.length()));
+        viewHolder.bookReportListItemSummary.setText(content == null ? "" : content);
+        viewHolder.bookReportListItemBringOut.setOnClickListener(this);
+        viewHolder.bookReportListItemBringOut.setTag(position);
+        viewHolder.bookReportListItemShare.setOnClickListener(this);
+        viewHolder.bookReportListItemShare.setTag(position);
+        viewHolder.bookReportListItemDelete.setOnClickListener(this);
+        viewHolder.bookReportListItemDelete.setTag(position);
+        viewHolder.itemView.setTag(position);
+        viewHolder.itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
+        Object position = v.getTag();
+        if(position == null) {
+            return;
+        }
+        GetBookReportListBean bookReportBean = data.get((Integer) position);
 
+        switch (v.getId()) {
+            case R.id.book_report_list_item_bring_out:
+                ToastManage.showMessage(DRApplication.getInstance(),"bring_out");
+                break;
+            case R.id.book_report_list_item_share:
+                ToastManage.showMessage(DRApplication.getInstance(),"share");
+                break;
+            case R.id.book_report_list_item_delete:
+                ToastManage.showMessage(DRApplication.getInstance(),"delete");
+                EventBus.getDefault().post(new DeleteBookReportEvent(bookReportBean));
+                break;
+            default:
+                ToastManage.showMessage(DRApplication.getInstance(),"item");
+                break;
+        }
+    }
+
+    public void setData(List<GetBookReportListBean> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     static class BookReportViewHolder extends RecyclerView.ViewHolder {
@@ -59,8 +110,12 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         TextView bookReportListItemSummary;
         @Bind(R.id.book_report_list_item_word_count)
         TextView bookReportListItemWordCount;
-        @Bind(R.id.book_report_list_item_manage)
-        TextView bookReportListItemManage;
+        @Bind(R.id.book_report_list_item_bring_out)
+        TextView bookReportListItemBringOut;
+        @Bind(R.id.book_report_list_item_share)
+        TextView bookReportListItemShare;
+        @Bind(R.id.book_report_list_item_delete)
+        TextView bookReportListItemDelete;
 
         BookReportViewHolder(View view) {
             super(view);

@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.ProductCart;
 import com.onyx.android.sdk.data.model.ProductOrder;
 import com.onyx.android.sdk.data.model.ProductResult;
+import com.onyx.android.sdk.data.model.v2.AddCommentRequestBean;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
@@ -24,6 +25,7 @@ import java.util.List;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
@@ -92,12 +94,26 @@ public interface ContentService {
     @GET("books/search")
     Call<QueryResult<CloudMetadata>> search(@Query(Constant.TEXT_TAG) final String text);
 
-    @POST("impressions")
+    @POST("/api/impressions")
     Call<CreateBookReportResult> createImpression(@Body final CreateBookReportRequestBean bean);
 
-    @GET("impressions")
+    @GET("/api/impressions")
     Call<GetBookReportList> getImpressionsList(@Query(Constant.GET_IMPRESSIONS_LIST_OFFSET) String offset,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
+
+    @GET("/api/impressions/{id}")
+    Call<CreateBookReportResult> getImpression(@Path(Constant.ID_TAG) final String id);
+
+    @DELETE("/api/impressions/{id}")
+    Call<String> deleteImpression(@Path(Constant.ID_TAG) final String id);
+
+    @POST("/api/impressions/{id}/addComment")
+    Call<CreateBookReportResult> addComment(@Path(Constant.ID_TAG) String id,
+                                            @Body AddCommentRequestBean bean);
+
+    @DELETE("/api/impressions/{id}/removeComment")
+    Call<CreateBookReportResult> removeComment(@Path(Constant.ID_TAG) String id,
+                                               @Query(Constant.REMOVE_COMMENT_ID) String commentId);
 }
