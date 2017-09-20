@@ -514,7 +514,7 @@
     <string name="pronounce_evaluation_hint">第三方App，待提供</string>
     <string name="start_record">开始录音</string>
     <string name="fragment_speech_recording_hint">小提示：仅可调用自己的随笔文件</string>
-    <string name="fragment_speech_recording_all_number">共计:</string>
+    <string name="fragment_speech_recording_all_number">共计:%d</string>
     <string name="join_group_activity_all_number">搜索结果: 共</string>
     <string name="data_unit">条</string>
     <string name="hint_input_search_word">请输入搜索的关键字</string>
@@ -562,6 +562,14 @@
     <string name="select_most_dict">最多可选择四本字典</string>
     <string name="font">字体</string>
     <string name="remove_from_cart_message">是否从购物车中删除书籍?</string>
+    <string name="is_save_content">是否保存内容？</string>
+    <string name="book_report_list_time">时间</string>
+    <string name="book_report_list_book_name">书名</string>
+    <string name="book_report_list_pages">页码</string>
+    <string name="book_report_list_summary">内容概要</string>
+    <string name="book_report_list_word_count">字数</string>
+    <string name="book_report_list_manage">管理</string>
+    <string name="book_report_list_bring_out">导出</string>
     <string name="join_group_name">群组名</string>
     <string name="group_owner">群主</string>
     <string name="join">加入</string>

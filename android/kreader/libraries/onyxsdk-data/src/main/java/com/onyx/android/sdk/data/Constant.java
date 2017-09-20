@@ -58,6 +58,13 @@ public class Constant {
 
     public static final String PRODUCT = "product";
     public static final String TEXT_TAG = "text";
+
+    public static final String GET_IMPRESSIONS_LIST_OFFSET = "offset";
+    public static final String GET_IMPRESSIONS_LIST_LIMIT = "limit";
+    public static final String GET_IMPRESSIONS_LIST_SORT_BY = "sortBy";
+    public static final String GET_IMPRESSIONS_LIST_ORDER = "order";
+
+    public static final String REMOVE_COMMENT_ID = "comment";
     public static final String PHONE_TAG = "phone";
     public static final String PARENT_TAG = "parent";
 }

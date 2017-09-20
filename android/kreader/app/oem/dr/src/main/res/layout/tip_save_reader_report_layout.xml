@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rectangle_stroke"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tip_dialog_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tip_confirm_save_after_feeling_message_margin"
+        android:gravity="center_horizontal"
+        android:text="@string/is_save_content"
+        android:textSize="@dimen/level_one_font_size" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/tip_confirm_save_after_feeling_button_margin"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/tip_dialog_cancel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/Cancel"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_one_font_size" />
+
+        <Button
+            android:id="@+id/tip_dialog_sure"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/ok"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_one_font_size" />
+    </LinearLayout>
+</LinearLayout>
