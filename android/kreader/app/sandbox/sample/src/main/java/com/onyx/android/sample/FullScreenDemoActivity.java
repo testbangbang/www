@@ -35,6 +35,7 @@ public class FullScreenDemoActivity extends AppCompatActivity  {
 
     private Handler handler = new Handler(Looper.getMainLooper());
     private int initColor = Color.WHITE;
+    private boolean stop = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +59,7 @@ public class FullScreenDemoActivity extends AppCompatActivity  {
                 canvas.drawColor(Color.WHITE);
                 holder.unlockCanvasAndPost(canvas);
 
+                stop = false;
                 triggerNext();
             }
 
@@ -68,13 +70,16 @@ public class FullScreenDemoActivity extends AppCompatActivity  {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-
+                stop = true;
             }
         });
     }
 
 
     private void triggerNext() {
+        if (stop) {
+            return;
+        }
         EpdController.setViewDefaultUpdateMode(surfaceView, UpdateMode.GC);
         final Canvas canvas = surfaceView.getHolder().lockCanvas();
         Paint paint = new Paint();
