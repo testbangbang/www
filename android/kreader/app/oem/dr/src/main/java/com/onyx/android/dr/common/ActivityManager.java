@@ -18,6 +18,7 @@ import com.onyx.android.dr.activity.DictResultShowActivity;
 import com.onyx.android.dr.activity.DictSettingActivity;
 import com.onyx.android.dr.activity.EBookStoreActivity;
 import com.onyx.android.dr.activity.ExitGroupActivity;
+import com.onyx.android.dr.activity.ForgetPasswordActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
 import com.onyx.android.dr.activity.GroupHomePageActivity;
@@ -430,6 +431,11 @@ public class ActivityManager {
 
     public static void startShoppingCartActivity(Context context) {
         Intent intent = new Intent(context, ShoppingCartActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startForgetPasswordActivity(Context context) {
+        Intent intent = new Intent(context, ForgetPasswordActivity.class);
         context.startActivity(intent);
     }
 }

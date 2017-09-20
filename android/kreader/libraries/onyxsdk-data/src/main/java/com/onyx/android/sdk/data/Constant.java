@@ -58,5 +58,6 @@ public class Constant {
 
     public static final String PRODUCT = "product";
     public static final String TEXT_TAG = "text";
+    public static final String PHONE_TAG = "phone";
     public static final String PARENT_TAG = "parent";
 }

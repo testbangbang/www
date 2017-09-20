@@ -104,4 +104,8 @@ public class DRPreferenceManager extends PreferenceManager {
     public static void saveSearchKeyword(Context context, String bookshelfType) {
         setStringValue(context, Constants.SEARCH_KEYWORD, bookshelfType);
     }
+
+    public static boolean getAutoLogin(Context context, boolean defaultValue) {
+        return getBooleanValue(context, Constants.AUTO_LOGIN_FLAG, defaultValue);
+    }
 }

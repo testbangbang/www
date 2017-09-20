@@ -13,11 +13,13 @@ import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
+import com.onyx.android.sdk.data.model.v2.NewPassword;
 import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
 import com.onyx.android.sdk.data.model.v2.PayBean;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
 import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.data.model.v2.SignUpBean;
+import com.onyx.android.sdk.data.model.v2.VerifyCode;
 
 import java.util.List;
 
@@ -26,6 +28,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -109,4 +112,10 @@ public interface ContentService {
 
     @GET("books/search")
     Call<QueryResult<CloudMetadata>> search(@Query(Constant.TEXT_TAG) final String text);
+
+    @GET("users/phoneVerify")
+    Call<VerifyCode> phoneVerify(@Query(Constant.PHONE_TAG) final String phone);
+
+    @PUT("users/password/{token}")
+    Call<VerifyCode> setPassword(@Path(Constant.TOKEN_TAG) String token, @Body final NewPassword newPassword);
 }
