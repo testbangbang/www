@@ -366,6 +366,11 @@
     <dimen name="reader_reading_setting_menu_margin">100dp</dimen>
     <dimen name="new_word_query_activity_bottom_padding_bottom">20dp</dimen>
     <dimen name="dialog_result_bottom_padding_bottom">20dp</dimen>
+    <dimen name="tip_confirm_save_after_feeling_message_margin">20dp</dimen>
+    <dimen name="tip_confirm_save_after_feeling_button_margin">40dp</dimen>
+    <dimen name="book_report_detail_layout_padding">10dp</dimen>
+    <dimen name="book_report_detail_edit_text_margin">10dp</dimen>
+    <dimen name="book_report_list_page_padding_contain">10dp</dimen>
     <dimen name="group_home_page_activity_create_padding">20dp</dimen>
     <dimen name="group_home_page_activity_container_margin_top">-200dp</dimen>
     <dimen name="recommend_group_name_margin_top_margin_left">60dp</dimen>
