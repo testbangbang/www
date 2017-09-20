@@ -4,6 +4,16 @@ apply plugin: 'com.jfrog.bintray'
 def artifact = new Properties()
 artifact.load(new FileInputStream("$projectDir/deploy.settings"))
 
+def isOverride = false
+
+if (System.getenv('BINTRAY_VERSION') != null) {
+    def ver = System.getenv('BINTRAY_VERSION')
+    if (ver.endsWith("-snapshot")) {
+        isOverride = true;
+    }
+    artifact.version = ver
+}
+
 version=artifact.version
 group=artifact.groupId
 
@@ -40,6 +50,8 @@ if (propFile.exists()) {
 bintray {
     user = properties.getProperty("bintray.user")
     key = properties.getProperty("bintray.apikey")
+
+    override = isOverride
 
     configurations = ['archives']
     pkg {

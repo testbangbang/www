@@ -6,11 +6,19 @@ apply plugin: 'com.neenbedankt.android-apt'
 def artifact = new Properties()
 artifact.load(new FileInputStream("$projectDir/deploy.settings"))
 
+if (System.getenv('BINTRAY_VERSION') != null) {
+    artifact.version = System.getenv('BINTRAY_VERSION')
+}
+
 android {
     compileSdkVersion rootProject.ext.compileSdkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
 
-//    defaultPublishConfig "bintrayRelease"
+    if (System.getenv('PUBLISH_CONFIG') != null) {
+        defaultPublishConfig System.getenv('PUBLISH_CONFIG')
+    } else {
+        defaultPublishConfig "release"
+    }
 
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
@@ -52,11 +60,11 @@ android {
         clean.dependsOn 'ndkClean'
     }
     buildTypes {
-        release {
-            minifyEnabled false
+        bintrayRelease {
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
         }
-        bintrayRelease {
+        release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../proguard-rules.pro', 'proguard-rules.pro'
         }
