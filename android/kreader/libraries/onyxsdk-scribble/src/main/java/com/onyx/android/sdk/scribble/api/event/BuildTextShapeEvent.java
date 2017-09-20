@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.scribble.asyncrequest.event;
+package com.onyx.android.sdk.scribble.api.event;
 
 import com.onyx.android.sdk.scribble.view.LinedEditText;
 

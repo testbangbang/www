@@ -1,17 +1,11 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.graphics.Rect;
-import android.text.method.Touch;
 import android.view.MotionEvent;
 
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
