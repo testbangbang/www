@@ -76,7 +76,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile(name: 'onyxdownloadservice-release', ext: 'aar')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"

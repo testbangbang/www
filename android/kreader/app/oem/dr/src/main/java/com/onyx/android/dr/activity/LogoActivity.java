@@ -3,6 +3,7 @@ package com.onyx.android.dr.activity;
 import android.view.KeyEvent;
 import android.view.View;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.data.MenuBean;
@@ -22,9 +23,6 @@ import java.util.List;
  */
 
 public class LogoActivity extends BaseActivity implements MainView {
-
-    private MainPresenter mainPresenter;
-
     @Override
     protected Integer getLayoutId() {
         return R.layout.activity_logo;
@@ -41,33 +39,19 @@ public class LogoActivity extends BaseActivity implements MainView {
 
     @Override
     protected void initData() {
-        mainPresenter = new MainPresenter(this);
-        mainPresenter.loadData(this);
-        mainPresenter.authToken();
+        if(DRApplication.getInstance().isLoginSuccess()){
+            ActivityManager.startMainActivity(this);
+        }else{
+            ActivityManager.startLoginActivity(this);
+        }
+
+        stopBootAnimation();
+        finish();
     }
 
     @Override
     public void setTabMenuData(List<MenuBean> menuData) {
 
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLoginFailedEvent(LoginFailedEvent event) {
-        ActivityManager.startLoginActivity(this);
-        stopBootAnimation();
-        finish();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onAccountAvailableEvent(AccountAvailableEvent event) {
-        ActivityManager.startMainActivity(this);
-        stopBootAnimation();
-        finish();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onWifiConnectedEvent(WifiConnectedEvent event) {
-        mainPresenter.authToken();
     }
 
     @Override

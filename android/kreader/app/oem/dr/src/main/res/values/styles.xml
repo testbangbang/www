@@ -592,4 +592,8 @@
         <item name="android:background">@drawable/ic_login_drop_down</item>
     </style>
 
+    <style name="SplashTheme" parent="AppTheme">
+        <item name="android:windowBackground">@drawable/splash</item>
+        <item name="android:windowFullscreen">true</item>
+    </style>
 </resources>

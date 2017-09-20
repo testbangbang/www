@@ -1,5 +1,6 @@
 package com.onyx.android.dr.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
@@ -7,8 +8,12 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
@@ -30,6 +35,7 @@ import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.request.cloud.ApplicationUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.data.utils.DownloadUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.PackageUtils;
 
@@ -45,6 +51,7 @@ import java.util.List;
  */
 
 public class ApkUtils {
+    private static CustomDialog dialog;
     public static String getSoftwareBuildName() {
         PackageInfo packageInfo = getPackageInfo();
         String[] versions = null;
@@ -161,7 +168,7 @@ public class ApkUtils {
         if (!apkFile.exists()) {
             return;
         }
-        ActivityManager.startInstallAPKActivity(context, apkFile);
+        SilentInstall.installApk(context,path);
     }
 
     public static void updateApk(final boolean isUserChecked) {
@@ -202,32 +209,47 @@ public class ApkUtils {
 
     public static void showNewApkDialog(final Context context, String message, final String url) {
         final CustomDialog.Builder builder = new CustomDialog.Builder(context);
-        builder.setTitle(context.getString(R.string.find_a_new_version));
-        builder.setMessage(message);
-        CustomDialog dialog = builder.setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                downloadAPK(url);
-                CommonNotices.showMessage(context, context.getString(R.string.start_updating));
-            }
-        }).setNegativeButton(context.getString(R.string.cancel_updating), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                CommonNotices.showMessage(context, context.getString(R.string.cancel_updating));
-                dialog.dismiss();
-            }
-        }).create();
+        View inflate = View.inflate(context, R.layout.apk_update_view, null);
+        TextView updateMsg = (TextView) inflate.findViewById(R.id.apk_update_message);
+        final TextView progressBar = (TextView) inflate.findViewById(R.id.apk_progress);
+        dialog = builder.setContentView(inflate).setTitle(context.getString(R.string.find_a_new_version))
+                .setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        downloadAPK(url, progressBar);
+                        CommonNotices.showMessage(context, context.getString(R.string.start_updating));
+                    }
+                }).setNegativeButton(context.getString(R.string.cancel_updating), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        CommonNotices.showMessage(context, context.getString(R.string.cancel_updating));
+                        dialog.dismiss();
+                    }
+                }).create();
+        updateMsg.setText(message);
         Window window = dialog.getWindow();
         if (window != null) {
             window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         }
+        WindowManager.LayoutParams params = window.getAttributes();
+        params.height = (int)context.getResources().getDimension(R.dimen.new_apk_dialog_height);
+        params.width = (int)context.getResources().getDimension(R.dimen.new_apk_dialog_width);
+        window.setAttributes(params);
         dialog.show();
     }
 
-    private static void downloadAPK(String url) {
-        RequestDownloadAPK req = new RequestDownloadAPK(url);
-        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {
+    private static void downloadAPK(String url, final TextView progressBar) {
+        DownloadUtils.DownloadCallback downloadCallback = new DownloadUtils.DownloadCallback() {
+            @Override
+            public void stateChanged(int state, long finished, long total, long precentage) {
+                progressBar.setText(precentage + "%");
+                if (precentage == 100 && dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+            }
+        };
+        RequestDownloadAPK req = new RequestDownloadAPK(url, downloadCallback);
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new  BaseCallback(){
             @Override
             public void done(BaseRequest request, Throwable e) {
 

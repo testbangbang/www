@@ -410,7 +410,7 @@
     <string name="device_setting_current_version">The current version number</string>
     <string name="device_setting_check_system_update">Check for updates</string>
     <string name="update_the_system_firmware">Update the system firmware</string>
-    <string name="bookstore_update">Bookstore update</string>
+    <string name="bookstore_update">Bookstore update(After the download will automatically restart the upgrade)</string>
     <string name="update_bookstore_application">Update bookstore application</string>
     <string name="device_setting_page_refreshes_value">The %1$s page refreshes the screen once</string>
     <string name="device_setting_page_refresh_rate">The page refresh rate</string>
@@ -523,7 +523,7 @@
     <string name="pronounce_evaluation_hint">Third party App, to be provided.</string>
     <string name="start_record">start_record</string>
     <string name="fragment_speech_recording_hint">hint: You can only call your own essay file.</string>
-    <string name="fragment_speech_recording_all_number">total:</string>
+    <string name="fragment_speech_recording_all_number">total:%d</string>
     <string name="join_group_activity_all_number">search result: total</string>
     <string name="data_unit">data unit</string>
     <string name="hint_input_search_word">Please input search keyword.</string>
@@ -571,6 +571,7 @@
     <string name="select_most_dict">Choose four dictionaries at most</string>
     <string name="font">font</string>
     <string name="remove_from_cart_message">Whether remove books from cart?</string>
+    <string name="book_report_list_bring_out">Out</string>
     <string name="join_group_name">group name</string>
     <string name="group_owner">group owner</string>
     <string name="join">join</string>
@@ -604,4 +605,7 @@
     <string name="page_number">page number</string>
     <string name="book_abstract">Summary</string>
     <string name="progress">progress</string>
+    <string name="current_version">  (CurrentVersion: V%d)</string>
+    <string name="update_version">   (Update Version: V%d)</string>
+    <string name="update_content">Update content:\n</string>
 </resources>

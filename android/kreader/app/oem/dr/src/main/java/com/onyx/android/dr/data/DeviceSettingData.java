@@ -10,6 +10,7 @@ import com.onyx.android.dr.devicesetting.data.util.StorageSizeUtil;
 import com.onyx.android.dr.event.DeviceSettingViewBaseEvent;
 import com.onyx.android.dr.util.PowerUtil;
 import com.onyx.android.dr.util.SystemLanguage;
+import com.onyx.android.dr.util.SystemUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -196,9 +197,12 @@ public class DeviceSettingData {
         systemVersionInformation.isChild = true;
         systemVersionInformationList.add(systemVersionInformation);
 
+
+        int version = SystemUtils.getAPPVersionCode(context);
+        String currentVersion = String.format(DRApplication.getInstance().getString(R.string.current_version),version);
         systemVersionInformation = new SystemVersionInformation();
         systemVersionInformation.title = DRApplication.getInstance().getResources().getString(R.string.bookstore_update);
-        systemVersionInformation.information = DRApplication.getInstance().getResources().getString(R.string.update_bookstore_application);
+        systemVersionInformation.information = DRApplication.getInstance().getResources().getString(R.string.update_bookstore_application) + currentVersion;
         systemVersionInformation.isChild = true;
         systemVersionInformationList.add(systemVersionInformation);
 
