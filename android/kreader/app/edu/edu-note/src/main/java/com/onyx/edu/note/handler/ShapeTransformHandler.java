@@ -9,7 +9,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.asyncrequest.event.DrawingTouchEvent;
+import com.onyx.android.sdk.scribble.api.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
 import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;

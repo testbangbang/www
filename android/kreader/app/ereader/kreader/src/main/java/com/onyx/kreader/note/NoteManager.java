@@ -13,7 +13,7 @@ import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
-import com.onyx.android.sdk.scribble.asyncrequest.TouchHelper;
+import com.onyx.android.sdk.scribble.api.TouchHelper;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
