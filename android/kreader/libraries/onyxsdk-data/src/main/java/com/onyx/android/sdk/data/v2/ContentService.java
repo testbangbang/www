@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.model.GroupNameExistBean;
 import com.onyx.android.sdk.data.model.ProductCart;
 import com.onyx.android.sdk.data.model.ProductOrder;
 import com.onyx.android.sdk.data.model.ProductResult;
@@ -9,11 +10,13 @@ import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
-import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
+import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
+import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
 import com.onyx.android.sdk.data.model.v2.PayBean;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
+import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.data.model.v2.SignUpBean;
 
 import java.util.List;
@@ -77,11 +80,26 @@ public interface ContentService {
     @GET("orders/{id}")
     Call<ProductOrder<CloudMetadata>> getOrder(@Path(Constant.ID_TAG) final String id);
 
+    @GET("/api/groups/{id}")
+    Call<CreateGroupCommonBean> getYearData(@Path(Constant.ID_TAG) final String id);
+
     @POST("carts")
     Call<ProductCart<CloudMetadata>> addProduct(@Body final ProductRequestBean product);
 
     @POST("/api/groups")
-    Call<List<CreateGroupResultBean>> createGroup(@Body final CreateGroupResultBean product);
+    Call<CreateGroupCommonBean> createGroup(@Body final CreateGroupCommonBean product);
+
+    @POST("/api/JoinGroups")
+    Call<List<JoinGroupBean>> joinGroup(@Body final JoinGroupBean product);
+
+    @GET("/api/groups/checkExists")
+    Call<GroupNameExistBean> checkExist(@Query(Constant.TEXT_TAG) final String text, @Query(Constant.PARENT_TAG) final String parent);
+
+    @GET("/api/groups/search")
+    Call<List<CreateGroupCommonBean>> searchSchool(@Query(Constant.TEXT_TAG) final String text, @Query(Constant.PARENT_TAG) final String parent);
+
+    @GET("/api/groups/searchWithCreator")
+    Call<List<SearchGroupBean>> getRelatedGroup(@Query(Constant.TEXT_TAG) final String text);
 
     @GET("carts")
     Call<QueryResult<ProductCart<CloudMetadata>>> getCartProducts();

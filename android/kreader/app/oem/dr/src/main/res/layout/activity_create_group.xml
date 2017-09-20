@@ -49,9 +49,16 @@
                 android:visibility="visible" />
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/create_group_activity_recommend_school"
-            style="@style/CreateGroupEditTextStyle" />
+        <RelativeLayout
+            android:id="@+id/create_group_activity_recommend_school_container"
+            android:layout_width="@dimen/create_group_edit_text_width"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/create_group_activity_recommend_school"
+                style="@style/CreateGroupEditTextStyle" />
+
+        </RelativeLayout>
 
     </LinearLayout>
 
@@ -211,15 +218,31 @@
                 android:visibility="visible" />
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/create_group_activity_custom_group_name"
-            style="@style/CreateGroupEditTextStyle" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/create_group_activity_custom_group_name"
+                style="@style/CreateGroupEditTextStyle" />
+
+            <TextView
+                android:id="@+id/create_group_activity_group_name_hint"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/create_group_activity_group_name_hint"
+                android:textColor="@android:color/black"
+                android:visibility="gone"
+                android:textSize="@dimen/level_two_font_size" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/create_group_activity_whether_exist"
             android:layout_width="wrap_content"
-            android:layout_marginLeft="@dimen/create_group_activity_whether_exist_margin_left"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/create_group_activity_whether_exist_margin_left" />
 
     </LinearLayout>
 

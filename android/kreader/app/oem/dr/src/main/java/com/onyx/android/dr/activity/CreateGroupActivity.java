@@ -1,5 +1,7 @@
 package com.onyx.android.dr.activity;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -15,9 +17,10 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.CreateGroupView;
 import com.onyx.android.dr.presenter.CreateGroupPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.SecondCustomPopupWindow;
-import com.onyx.android.sdk.data.model.v2.CreateGroupResultBean;
-import com.onyx.android.sdk.data.model.v2.GroupBean;
+import com.onyx.android.sdk.data.model.GroupNameExistBean;
+import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -32,6 +35,8 @@ import butterknife.OnClick;
 public class CreateGroupActivity extends BaseActivity implements CreateGroupView {
     @Bind(R.id.create_group_activity_recommend_school)
     EditText recommendGroupName;
+    @Bind(R.id.create_group_activity_recommend_school_container)
+    RelativeLayout schoolContainer;
     @Bind(R.id.create_group_activity_custom_group_name)
     EditText customGroupName;
     @Bind(R.id.create_group_activity_year)
@@ -50,6 +55,8 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     TextView createGroup;
     @Bind(R.id.create_group_activity_cancel)
     TextView cancel;
+    @Bind(R.id.create_group_activity_group_name_hint)
+    TextView hint;
     @Bind(R.id.create_group_activity_recommend_check)
     CheckBox recommendCheck;
     @Bind(R.id.create_group_activity_custom_check)
@@ -63,16 +70,22 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     @Bind(R.id.create_group_activity_whether_exist)
     ImageView whetherExist;
     private CreateGroupPresenter createGroupPresenter;
-    private List<String> annualData;
-    private List<String> classData;
+    private List<CreateGroupCommonBean> annualData;
+    private List<CreateGroupCommonBean> gradeData;
+    private List<CreateGroupCommonBean> classData;
+    private List<CreateGroupCommonBean> schoolData;
     private SecondCustomPopupWindow customPopupWindow;
     private final int YEAR_TAG = 0;
     private final int GRADE_TAG = 1;
     private final int CLASS_TAG = 2;
+    private final int SCHOOL_TAG = 3;
+    private final String EXIST_FALSE = "false";
+    private final String EXIST_TRUE = "true";
     public String classType = "";
     public String year = "";
     public String grade = "";
-    private String parentId;
+    private String parentId = "";
+    private String customName;
 
     @Override
     protected Integer getLayoutId() {
@@ -91,10 +104,11 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     protected void initData() {
         annualData = new ArrayList<>();
         classData = new ArrayList<>();
+        gradeData = new ArrayList<>();
+        schoolData = new ArrayList<>();
         createGroupPresenter = new CreateGroupPresenter(this);
-        createGroupPresenter.getGradeData();
         customPopupWindow = new SecondCustomPopupWindow(this);
-        parentId = DRPreferenceManager.loadLibraryParentId(this, "");
+        parentId = DRPreferenceManager.loadParentId(this, "");
         setData();
         initEvent();
     }
@@ -105,10 +119,6 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
         yearName.setText(year);
         gradeName.setText(grade);
         className.setText(classType);
-    }
-
-    @Override
-    public void setSchoolInfo(List<GroupBean> list) {
     }
 
     public void initEvent() {
@@ -128,21 +138,39 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
                 }
             }
         });
+        recommendGroupName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence string, int start, int before, int count) {
+                Utils.movingCursor(recommendGroupName);
+                createGroupPresenter.getSchoolData(string.toString(), "");
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
     }
 
-    private void showCommonPopupWindow(final RelativeLayout view, List<String> list, final int tag) {
+    private void showCommonPopupWindow(final RelativeLayout view, final List<CreateGroupCommonBean> list, final int tag) {
         customPopupWindow.setOnItemClickListener(new SecondCustomPopupWindow.OnItemClickListener() {
             @Override
-            public void onClick(int position, String string) {
+            public void onClick(int position, CreateGroupCommonBean bean) {
                 if (tag == GRADE_TAG) {
-                    grade = string;
-                    gradeName.setText(string);
+                    gradeName.setText(bean.name);
+                    createGroupPresenter.getClassData(bean._id);
                 } else if (tag == YEAR_TAG) {
-                    year = string;
-                    yearName.setText(string);
+                    yearName.setText(bean.name);
+                    createGroupPresenter.getGradeData(bean._id);
                 } else if (tag == CLASS_TAG) {
-                    classType = string;
-                    className.setText(string);
+                    className.setText(bean.name);
+                } else if (tag == SCHOOL_TAG) {
+                    recommendGroupName.setText(bean.name);
+                    Utils.movingCursor(recommendGroupName);
+                    createGroupPresenter.getYearData(bean._id);
                 }
                 if (customPopupWindow.isShowing()) {
                     customPopupWindow.dismiss();
@@ -172,31 +200,97 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
                 finish();
                 break;
             case R.id.create_group_activity_year_container:
+                showCommonPopupWindow(yearContainer, annualData, YEAR_TAG);
                 break;
             case R.id.create_group_activity_grade_container:
+                showCommonPopupWindow(gradeContainer, gradeData, GRADE_TAG);
                 break;
             case R.id.create_group_activity_class_container:
+                showCommonPopupWindow(classContainer, classData, CLASS_TAG);
                 break;
         }
     }
 
     private void createGroupRequest() {
-        String customName = customGroupName.getText().toString();
+        customName = customGroupName.getText().toString();
         if (StringUtils.isNullOrEmpty(customName)) {
             CommonNotices.showMessage(this, getString(R.string.input_custom_group_name));
             return;
         }
-        CreateGroupResultBean bean = new CreateGroupResultBean();
-        bean.name = customName;
-        bean.parent = parentId;
-        createGroupPresenter.createGroup(bean);
+        createGroupPresenter.checkGroupName(customName, parentId);
     }
 
     @Override
-    public void setCreateGroupResult(List<CreateGroupResultBean> list) {
-        if (list != null && !list.isEmpty()) {
+    public void setSchoolInfo(List<CreateGroupCommonBean> list) {
+        if (list == null && list.size() <= 0) {
+            return;
+        }
+        schoolData = list;
+        if (customPopupWindow.isShowing()) {
+            customPopupWindow.dismiss();
+        }
+        showCommonPopupWindow(schoolContainer, schoolData, SCHOOL_TAG);
+    }
+
+    @Override
+    public void setYearInfo(CreateGroupCommonBean bean) {
+        if (bean.children == null && bean.children.size() <= 0) {
+            return;
+        }
+        annualData = bean.children;
+        if (customPopupWindow.isShowing()) {
+            customPopupWindow.dismiss();
+        }
+        showCommonPopupWindow(yearContainer, annualData, YEAR_TAG);
+    }
+
+    @Override
+    public void setGradeInfo(CreateGroupCommonBean bean) {
+        if (bean.children == null && bean.children.size() <= 0) {
+            return;
+        }
+        gradeData = bean.children;
+        if (customPopupWindow.isShowing()) {
+            customPopupWindow.dismiss();
+        }
+        showCommonPopupWindow(gradeContainer, gradeData, GRADE_TAG);
+    }
+
+    @Override
+    public void setClassInfo(CreateGroupCommonBean bean) {
+        if (bean.children == null && bean.children.size() <= 0) {
+            return;
+        }
+        classData = bean.children;
+        if (customPopupWindow.isShowing()) {
+            customPopupWindow.dismiss();
+        }
+        showCommonPopupWindow(classContainer, classData, CLASS_TAG);
+    }
+
+    @Override
+    public void setCreateGroupResult(CreateGroupCommonBean bean) {
+        if (bean != null) {
             ActivityManager.startGroupHomePageActivity(this);
             CommonNotices.showMessage(this, getString(R.string.create_group_success));
+            finish();
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.create_group_failed));
+        }
+    }
+
+    @Override
+    public void setCheckGroupNameResult(GroupNameExistBean bean) {
+        if (bean.isExists.equals(EXIST_FALSE)) {
+            hint.setVisibility(View.GONE);
+            whetherExist.setImageResource(R.drawable.ic_reader_group_set_right);
+            CreateGroupCommonBean groupBean = new CreateGroupCommonBean();
+            groupBean.name = customName;
+            groupBean.parent = parentId;
+            createGroupPresenter.createGroup(groupBean);
+        } else if (bean.isExists.equals(EXIST_TRUE)) {
+            hint.setVisibility(View.VISIBLE);
+            whetherExist.setImageResource(R.drawable.ic_reader_group_set_wrong);
         }
     }
 

@@ -199,7 +199,11 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
-            android:name=".activity.GroupMemberManageActivity"
+            android:name=".activity.ManageGroupActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".activity.GroupMemberActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity

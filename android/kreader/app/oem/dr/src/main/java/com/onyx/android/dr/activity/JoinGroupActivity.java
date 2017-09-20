@@ -9,11 +9,11 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GroupAdapter;
-import com.onyx.android.dr.bean.GroupInfoBean;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.interfaces.JoinGroupView;
 import com.onyx.android.dr.presenter.JoinGroupPresenter;
+import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
+import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -42,11 +42,12 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
     ImageView image;
     @Bind(R.id.join_group_activity_recycler_view)
     PageRecyclerView recyclerView;
+    @Bind(R.id.join_group_activity_all_number)
+    TextView allNumber;
     private JoinGroupPresenter joinGroupPresenter;
     private DividerItemDecoration dividerItemDecoration;
     private GroupAdapter groupAdapter;
-    private List<GroupInfoBean> groupList;
-    private ArrayList<Boolean> listCheck;
+    private List<SearchGroupBean> groupList;
 
     @Override
     protected Integer getLayoutId() {
@@ -73,8 +74,7 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
     @Override
     protected void initData() {
         joinGroupPresenter = new JoinGroupPresenter(this);
-        groupList = new ArrayList<GroupInfoBean>();
-        listCheck = new ArrayList<>();
+        groupList = new ArrayList<>();
         initTitleData();
         initEvent();
     }
@@ -85,17 +85,6 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
     }
 
     public void initEvent() {
-        groupAdapter.setOnItemListener(new GroupAdapter.OnItemClickListener() {
-            @Override
-            public void setOnItemClick(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
-            }
-
-            @Override
-            public void setOnItemCheckedChanged(int position, boolean isCheck) {
-                listCheck.set(position, isCheck);
-            }
-        });
     }
 
     @OnClick({R.id.image_view_back,
@@ -125,22 +114,22 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
     }
 
     @Override
-    public void setSearchGroupResult(List<GroupInfoBean> list, ArrayList<Boolean> checkList) {
+    public void setSearchGroupResult(List<SearchGroupBean> list) {
         if (list == null || list.size() <= 0) {
             return;
         }
         groupList = list;
-        listCheck = checkList;
-        groupAdapter.setDataList(groupList, listCheck);
+        allNumber.setText(getString(R.string.join_group_activity_all_number) + groupList.size() + getString(R.string.data_unit));
+        groupAdapter.setDataList(groupList, joinGroupPresenter);
         recyclerView.setAdapter(groupAdapter);
     }
 
     @Override
-    public void setJoinGroupResult(boolean result) {
-        if (result) {
-            ActivityManager.startGroupHomePageActivity(this);
-            CommonNotices.showMessage(this, getString(R.string.join_group_success));
+    public void setJoinGroupResult(List<JoinGroupBean> list) {
+        if (list == null || list.size() <= 0) {
+            return;
         }
+        CommonNotices.showMessage(this, getString(R.string.join_group_success));
     }
 
     private void connectNetwork() {
