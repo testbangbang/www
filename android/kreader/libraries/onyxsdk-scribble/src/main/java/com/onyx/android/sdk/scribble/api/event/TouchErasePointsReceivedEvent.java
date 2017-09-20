@@ -1,13 +1,13 @@
-package com.onyx.android.sdk.scribble.asyncrequest.event;
+package com.onyx.android.sdk.scribble.api.event;
 
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 
 /**
- * Created by solskjaer49 on 2017/8/2 18:18.
+ * Created by solskjaer49 on 2017/8/2 18:16.
  */
 
-public class ShapeSelectTouchPointListReceivedEvent {
-    public ShapeSelectTouchPointListReceivedEvent(TouchPointList touchPointList) {
+public class TouchErasePointsReceivedEvent {
+    public TouchErasePointsReceivedEvent(TouchPointList touchPointList) {
         this.touchPointList = touchPointList;
     }
 
@@ -16,5 +16,4 @@ public class ShapeSelectTouchPointListReceivedEvent {
     }
 
     private TouchPointList touchPointList;
-
 }

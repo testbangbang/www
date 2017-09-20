@@ -1,4 +1,4 @@
-package com.onyx.android.sdk.scribble.asyncrequest.event;
+package com.onyx.android.sdk.scribble.api.event;
 
 import android.view.MotionEvent;
 
@@ -6,11 +6,11 @@ import android.view.MotionEvent;
  * Created by lxm on 2017/8/28.
  */
 
-public class ErasingTouchEvent {
+public class DrawingTouchEvent {
 
     private MotionEvent motionEvent;
 
-    public ErasingTouchEvent(MotionEvent motionEvent) {
+    public DrawingTouchEvent(MotionEvent motionEvent) {
         this.motionEvent = motionEvent;
     }
 
