@@ -185,7 +185,7 @@ public class BaseOptions {
         if (!backend.hasKey(GAMMA_LEVEL)) {
             return getGlobalDefaultGamma();
         }
-        return getGlobalDefaultGamma();
+        return backend.getFloat(GAMMA_LEVEL);
     }
 
     public void setGamma(float gamma) {
@@ -208,7 +208,7 @@ public class BaseOptions {
         if (!backend.hasKey(TEXT_GAMMA_LEVEL)) {
             return getGlobalDefaultTextGamma();
         }
-        return getGlobalDefaultTextGamma();
+        return backend.getFloat(TEXT_GAMMA_LEVEL);
     }
 
     public void setTextGamma(float gamma) {
