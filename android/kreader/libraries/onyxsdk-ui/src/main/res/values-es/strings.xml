@@ -1,0 +1,93 @@
+<resources>
+    <string name="paste">Paste</string>
+    <string name="copy">Copiar</string>
+    <string name="cut">Cut</string>
+    <string name="delete">Eliminar</string>
+    <string name="app_name">onyx.sdk.ui</string>
+    <string name="dialog_reader_menu_back">Volver</string>
+    <string name="font_face">Font face</string>
+    <string name="text_style">Estilo del texto</string>
+    <string name="reader_layer_menu_zoom">Zoom</string>
+    <string name="reader_layer_menu_font_reflow">Font Reflow</string>
+    <string name="reader_layer_menu_zoom_in">Zoom In</string>
+    <string name="reader_layer_menu_zoom_out">Zoom Out</string>
+    <string name="reader_layer_menu_zoom_to_page">To Page</string>
+    <string name="reader_layer_menu_zoom_to_width">To Width</string>
+    <string name="reader_layer_menu_zoom_by_crop_page">Crop Page</string>
+    <string name="reader_layer_menu_zoom_by_crop_width">Crop Width</string>
+    <string name="reader_layer_menu_zoom_by_rect">By Rect</string>
+    <string name="reader_layer_menu_navigation">Navigation</string>
+    <string name="reader_layer_menu_navigation_comic_mode">Comic Mode</string>
+    <string name="reader_layer_menu_navigation_article_mode">Article Mode</string>
+    <string name="reader_layer_menu_navigation_reset">Reset</string>
+    <string name="reader_layer_menu_navigation_more_settings">More Settings</string>
+    <string name="reader_layer_menu_notes">Notes</string>
+    <string name="reader_layer_menu_directory_toc">TOC</string>
+    <string name="reader_layer_menu_directory_bookmark">Bookmark</string>
+    <string name="reader_layer_menu_directory_note">Note</string>
+    <string name="reader_layer_menu_directory_scribble">Scribble</string>
+    <string name="reader_layer_menu_directory_export">Export</string>
+    <string name="reader_layer_menu_directory_import">Import</string>
+    <string name="reader_layer_menu_show_annotation">Annotation</string>
+    <string name="reader_layer_menu_show_scribble">Show</string>
+    <string name="reader_layer_menu_hide_scribble">Hide</string>
+    <string name="reader_layer_menu_rotation">Rotation</string>
+    <string name="reader_layer_menu_rotation_rotate90">Rotate 90</string>
+    <string name="reader_layer_menu_rotation_rotate0">Rotate 0</string>
+    <string name="reader_layer_menu_rotation_rotate270">Rotate 270</string>
+    <string name="reader_layer_menu_rotation_rotate180">Rotate 180</string>
+    <string name="reader_layer_menu_more">More</string>
+    <string name="reader_layer_menu_tts">TTS</string>
+    <string name="reader_layer_menu_front_light">Front Light</string>
+    <string name="reader_layer_menu_refresh">Refresh</string>
+    <string name="reader_layer_menu_settings">Settings</string>
+    <string name="reader_layer_menu_font_style_font_indent">Indent</string>
+    <string name="reader_layer_menu_font_style_font_line_spacing">Espacios</string>
+    <string name="reader_layer_menu_font_style_page_margins">Page margins</string>
+    <string name="font_size_example_text" translatable="false">Aa</string>
+    <string name="brightness">Brightness</string>
+    <string name="natural_light">Natural light</string>
+    <string name="always">Always</string>
+    <string name="every_3_pages">Every 3 pages</string>
+    <string name="every_5_pages">Every 5 pages</string>
+    <string name="every_7_pages">Every 7 pages</string>
+    <string name="every_9_pages">Every 9 pages</string>
+    <string name="never">Never</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <string name="gamma_correction">Contrast</string>
+    <string name="manual_crop">Manual Crop</string>
+    <string name="outOfRangRerror">Out of Range</string>
+    <string name="illegalInput">Illegal Input</string>
+
+    <string name="loading">Loading…</string>
+
+    <string name="save">Save</string>
+    <string name="custom_line_width">Custom Line Width</string>
+    <string name="line_width_preview">Line width to preview</string>
+    <string name="current_value">Current value:</string>
+    <string name="custom_value">The custom value</string>
+    <string name="reader_layer_menu_slideshow">Slideshow</string>
+
+    <string name="wifi_dialog_title">Wifi connection</string>
+    <string name="wifi_dialog_content">WiFi connection is needed. Turn on WiFi?</string>
+
+    <string name="importing">Importing old scribble data...</string>
+    <string name="import_success">Import success！</string>
+    <string name="no_old_scribble_data">There is no old scribble data</string>
+    <string name="import_fail">Import failure</string>
+    <string name="import_success_info" formatted="false">Import total of %d data</string>
+
+    <string name="expand">Expand</string>
+    <string name="collapse">Collapse</string>
+    <string name="jump">Jump</string>
+
+    <string name="filter">Filter</string>
+    <string name="order_asc">Ascend</string>
+    <string name="order_desc">Descend</string>
+
+    <string name="chinese_font_face">Chinese Font face</string>
+    <string name="english_font_face">Tipo de letra</string>
+    <string name="cold_light">Cold light</string>
+    <string name="warm_light">Warm light</string>
+</resources>
