@@ -33,6 +33,12 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         saveDocument = save;
     }
 
+    public static FlushShapeListRequest renderInBackgroundRequest(final List<PageInfo> pages, final List<Shape> list, int spi) {
+        FlushShapeListRequest request = new FlushShapeListRequest(pages, list, spi, true, true, false);
+        request.setRenderToScreen(false);
+        return request;
+    }
+
     public void execute(final NoteManager noteManager) throws Exception {
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape() && !isPause());
         ensureDocumentOpened(noteManager);
