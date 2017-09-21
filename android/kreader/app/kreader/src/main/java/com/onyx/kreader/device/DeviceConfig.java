@@ -62,7 +62,17 @@ public class DeviceConfig {
     private int defaultLineSpacingIndex = 1;
     private int defaultPageMarginIndex = 1;
     private boolean exitAfterFinish = false;
+    private boolean showChineseFontFace = true;
     private String umengKey;
+
+    public boolean isShowChineseFontFace() {
+        return showChineseFontFace;
+    }
+
+    public void setShowChineseFontFace(boolean showChineseFontFace) {
+        this.showChineseFontFace = showChineseFontFace;
+    }
+
     private String channel;
 
     // in seconds

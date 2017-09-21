@@ -34,6 +34,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.LocaleUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.actions.ChangeChineseConvertTypeAction;
 import com.onyx.kreader.ui.actions.ChangeCodePageAction;
 import com.onyx.kreader.ui.actions.ChangeStyleAction;
@@ -215,7 +216,19 @@ public class DialogTextStyle extends DialogBase {
         });
 
         viewPager.setPagingEnabled(false);
-        switchViewPage(0);
+
+        if (!DeviceConfig.sharedInstance(getContext()).isShowChineseFontFace()) {
+            chineseFontFaceLayout.setVisibility(View.GONE);
+            pageViews.get(0).setVisibility(View.GONE);
+        }
+        int i = 0;
+        for (View v : pageViews) {
+            if(v.getVisibility() != View.GONE){
+                break;
+            }
+            i++;
+        }
+        switchViewPage(i);
     }
 
     private void switchViewPage(final int index) {
