@@ -40,7 +40,7 @@ public class DRApplication extends MultiDexApplication {
     private DictionaryManager dictionaryManager;
     private int apkDownloadReference;
     private boolean isLogin = false;
-
+    private boolean haveIndexService;
 
     public boolean isLogin() {
         return isLogin;
@@ -100,7 +100,6 @@ public class DRApplication extends MultiDexApplication {
     public static CloudStore getCloudStore() {
         if (cloudStore == null) {
             cloudStore = new CloudStore();
-            cloudStore.setCloudConf(getCloudConf());
         }
         return cloudStore;
     }
@@ -182,5 +181,13 @@ public class DRApplication extends MultiDexApplication {
             return true;
         }
         return false;
+    }
+
+    public boolean isHaveIndexService() {
+        return haveIndexService;
+    }
+
+    public void setHaveIndexService(boolean haveIndexService) {
+        this.haveIndexService = haveIndexService;
     }
 }

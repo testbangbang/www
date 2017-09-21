@@ -607,4 +607,6 @@
     <string name="current_version">  (当前版本: V%d)</string>
     <string name="update_version">  (更新版本: V%d)</string>
     <string name="update_content">更新内容:\n</string>
+    <string name="sign_up_failed">注册失败</string>
+    <string name="no_logon_server">未找到登录服务器</string>
 </resources>

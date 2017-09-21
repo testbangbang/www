@@ -73,10 +73,6 @@ import java.io.File;
 
 public class ActivityManager {
     public static void startLoginActivity(Context context) {
-        if (enableWifiOpenAndDetect(context)) {
-            CommonNotices.showMessage(context, context.getString(R.string.network_not_connected));
-            return;
-        }
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
     }
