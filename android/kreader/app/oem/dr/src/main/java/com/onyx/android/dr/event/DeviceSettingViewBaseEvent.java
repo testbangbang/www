@@ -27,4 +27,6 @@ public class DeviceSettingViewBaseEvent {
     public static class OpenSystemSettingEvent extends DeviceSettingBaseEvent {}
 
     public static class DeviceSettingUserInfoEvent extends DeviceSettingBaseEvent {}
+
+    public static class DeviceSettingWifiSettingEvent extends DeviceSettingBaseEvent {}
 }

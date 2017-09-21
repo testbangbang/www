@@ -98,6 +98,8 @@ public class DeviceSettingData {
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_system_update), new DeviceSettingViewBaseEvent.DeviceSettingCheckUpdateEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_version_update_record), new DeviceSettingViewBaseEvent.DeviceSettingViewSystemVersionHistoryEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_model), new DeviceSettingViewBaseEvent.OpenSystemSettingEvent());
+        deviceSettingViewEvents.put(context.getString(R.string.menu_wifi_setting), new DeviceSettingViewBaseEvent.DeviceSettingWifiSettingEvent());
+
     }
 
     private void initDeviceSettingDeviceInformationExplain(final Context context) {

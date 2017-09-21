@@ -400,6 +400,12 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
         openSystemSetting();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeviceSettingWifiSettingEvent(DeviceSettingViewBaseEvent.DeviceSettingWifiSettingEvent event) {
+        ActivityManager.startWifiActivity(DRApplication.getInstance());
+    }
+
+
     private void openSystemSetting() {
         if (TimeUtils.getCurrentTimeInLong() > lastPressTime + Constants.RESET_PRESS_TIMEOUT) {
             lastPressTime = TimeUtils.getCurrentTimeInLong();
