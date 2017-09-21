@@ -37,6 +37,7 @@ import com.onyx.android.dr.event.NotesMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
 import com.onyx.android.dr.event.ToBookshelfV2Event;
 import com.onyx.android.dr.event.UpdateDownloadSucceedEvent;
+import com.onyx.android.dr.event.WifiConnectedEvent;
 import com.onyx.android.dr.fragment.BaseFragment;
 import com.onyx.android.dr.fragment.BookshelfFragment;
 import com.onyx.android.dr.fragment.BookshelfV2Fragment;
@@ -124,6 +125,13 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     protected void initData() {
         mainPresenter.loadTabMenu(DRPreferenceManager.getUserType(DRApplication.getInstance(), ""));
+        autoLogin();
+    }
+
+    private void autoLogin() {
+        if (DRPreferenceManager.getAutoLogin(this, false)) {
+            mainPresenter.authToken(this);
+        }
     }
 
     @Override
@@ -258,6 +266,11 @@ public class MainActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateDownloadSucceedEvent(UpdateDownloadSucceedEvent event) {
         ApkUtils.firmwareLocal();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWifiConnectedEvent(WifiConnectedEvent event) {
+        autoLogin();
     }
 
     private LibraryDataHolder getDataHolder() {

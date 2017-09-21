@@ -3,18 +3,17 @@ package com.onyx.android.dr.presenter;
 import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
-import com.onyx.android.dr.action.AuthTokenAction;
 import com.onyx.android.dr.activity.MainView;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.data.MainData;
-import com.onyx.android.dr.event.LoginFailedEvent;
 import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
-import com.onyx.android.dr.request.local.RequestLoadLocalDB;
+import com.onyx.android.dr.request.cloud.RequestIndexServiceAndLogin;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
-
-import org.greenrobot.eventbus.EventBus;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -31,28 +30,23 @@ public class MainPresenter {
         mainData = new MainData();
     }
 
-    public void loadData(Context context) {
-        RequestLoadLocalDB req = new RequestLoadLocalDB();
-        mainData.loadLocalDB(req, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-
-            }
-        });
-    }
-
     public void loadTabMenu(String userType) {
         mainView.setTabMenuData(mainData.loadTabMenu(userType));
     }
 
-    public void authToken() {
-        AuthTokenAction authTokenAction = new AuthTokenAction();
-        mainData.authToken(authTokenAction, new BaseCallback() {
+    public void authToken(Context context) {
+        String userAccount = DRPreferenceManager.getUserAccount(DRApplication.getInstance(), "");
+        String password = DRPreferenceManager.getUserPassword(DRApplication.getInstance(), "");
+        if (StringUtils.isNullOrEmpty(userAccount) || StringUtils.isNullOrEmpty(password)) {
+            ActivityManager.startLoginActivity(context);
+            return;
+        }
+        final BaseAuthAccount neoAccountBase = BaseAuthAccount.create(userAccount, password);
+        final RequestIndexServiceAndLogin req = new RequestIndexServiceAndLogin(neoAccountBase);
+        mainData.login(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    EventBus.getDefault().post(new LoginFailedEvent());
-                }
+
             }
         });
     }

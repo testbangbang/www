@@ -6,15 +6,15 @@ import com.onyx.android.dr.bean.CityBean;
 import com.onyx.android.dr.bean.InterestBean;
 import com.onyx.android.dr.bean.ProvinceBean;
 import com.onyx.android.dr.bean.ZoneBean;
-import com.onyx.android.dr.request.cloud.LoginByAdminRequest;
 import com.onyx.android.dr.request.cloud.RequestGetRootGroupList;
+import com.onyx.android.dr.request.cloud.RequestIndexServiceAndLogin;
 import com.onyx.android.dr.request.cloud.SignUpRequest;
 import com.onyx.android.dr.request.local.RequestCityList;
+import com.onyx.android.dr.request.local.RequestLoadLocalDB;
 import com.onyx.android.dr.request.local.RequestProvinceList;
 import com.onyx.android.dr.request.local.RequestZoneList;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,10 +29,8 @@ public class LoginData {
     private List<CityBean> citys;
     private List<ZoneBean> zones;
 
-    public void login(LoginByAdminRequest request, BaseCallback callback) {
-        final CloudRequestChain requestChain = new CloudRequestChain();
-        requestChain.addRequest(request, callback);
-        requestChain.execute(DRApplication.getInstance(), DRApplication.getCloudStore().getCloudManager());
+    public void login(RequestIndexServiceAndLogin request, BaseCallback callback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), request, callback);
     }
 
     public void getRootGroups(RequestGetRootGroupList req, BaseCallback baseCallback) {
@@ -81,5 +79,9 @@ public class LoginData {
                 invoke(baseCallback, req, e);
             }
         });
+    }
+
+    public void loadLocalDB(RequestLoadLocalDB req, BaseCallback baseCallback) {
+        DRApplication.getDataManager().submit(DRApplication.getInstance(), req, baseCallback);
     }
 }

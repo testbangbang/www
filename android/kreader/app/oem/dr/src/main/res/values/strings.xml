@@ -620,4 +620,6 @@
     <string name="current_version">  (CurrentVersion: V%d)</string>
     <string name="update_version">   (Update Version: V%d)</string>
     <string name="update_content">Update content:\n</string>
+    <string name="sign_up_failed">sign up failed</string>
+    <string name="no_logon_server">No logon server</string>
 </resources>

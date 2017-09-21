@@ -1,11 +1,9 @@
 package com.onyx.android.dr.action;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.AccountAvailableEvent;
 import com.onyx.android.dr.event.HardwareErrorEvent;
@@ -14,7 +12,6 @@ import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.manager.LeanCloudManager;
 import com.onyx.android.dr.request.cloud.LoginByAdminRequest;
 import com.onyx.android.dr.util.DRPreferenceManager;
-import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudManager;
@@ -28,7 +25,6 @@ import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -40,6 +36,11 @@ import org.greenrobot.eventbus.EventBus;
 public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
     private static final String TAG = "AuthTokenAction";
     private int localLoadRetryCount = 3;
+    private BaseAuthAccount baseAuthAccount;
+
+    public AuthTokenAction(BaseAuthAccount baseAuthAccount) {
+        this.baseAuthAccount = baseAuthAccount;
+    }
 
     @Override
     public void execute(LibraryDataHolder dataHolder, final BaseCallback baseCallback) {
@@ -53,53 +54,29 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
             return;
         }
 
-        if (!NetworkUtil.isWiFiConnected(dataHolder.getContext())) {
-            if (0 == Utils.getConfiguredNetworks(dataHolder.getContext())) {
-                ActivityManager.startWifiActivity(dataHolder.getContext());
-            } else {
-                Device.currentDevice().enableWifiDetect(dataHolder.getContext());
-                NetworkUtil.enableWiFi(dataHolder.getContext(), true);
-            }
-            return;
-        }
-
         final CloudRequestChain requestChain = new CloudRequestChain();
         requestChain.setAbortException(false);
         addIndexLookupRequest(dataHolder, requestChain);
-        addLoginRequest(dataHolder, requestChain, baseCallback);
+        addLoginRequest(dataHolder, requestChain, baseAuthAccount, baseCallback);
         requestChain.execute(dataHolder.getContext(), dataHolder.getCloudManager());
     }
 
     private void addIndexLookupRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain) {
-        Log.e(TAG, "addIndexLookupRequest: ===================================1======");
         if (!DeviceConfig.sharedInstance(dataHolder.getContext()).isUseCloudIndexServer()) {
             return;
         }
-        Log.e(TAG, "addIndexLookupRequest: ===================================2======");
         final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(DeviceConfig.sharedInstance(DRApplication.getInstance()).getCloudMainIndexServerApi(),
                 createIndexService(dataHolder.getContext()));
         indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
         requestChain.addRequest(indexServiceRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                Log.e(TAG, "addIndexLookupRequest: ===================================2======");
-                if (e != null || !IndexService.hasValidServer(indexServiceRequest.getResultIndexService())) {
-                    Log.w(TAG, "indexService error,ready to use backup service");
-                    useFallbackServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
-                }
+                DRApplication.getInstance().setHaveIndexService(indexServiceRequest.getResultIndexService() != null);
             }
         });
     }
 
-    private void addLoginRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain, final BaseCallback baseCallback) {
-        String account = DRPreferenceManager.getUserAccount(dataHolder.getContext(), "");
-        String password = DRPreferenceManager.getUserPassword(dataHolder.getContext(), "");
-        if (StringUtils.isNullOrEmpty(account) || StringUtils.isNullOrEmpty(password)) {
-            EventBus.getDefault().post(new LoginFailedEvent());
-            return;
-        }
-
-        BaseAuthAccount baseAuthAccount = BaseAuthAccount.create(account, password);
+    private void addLoginRequest(final LibraryDataHolder dataHolder, final CloudRequestChain requestChain, BaseAuthAccount baseAuthAccount, final BaseCallback baseCallback) {
         final LoginByAdminRequest accountLoadRequest = new LoginByAdminRequest(baseAuthAccount);
         requestChain.addRequest(accountLoadRequest, new BaseCallback() {
             @Override
@@ -109,7 +86,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                 } else {
                     NeoAccountBase eduAccount = accountLoadRequest.getNeoAccount();
                     if (NeoAccountBase.isValid(eduAccount) && StringUtils.isNotBlank(eduAccount.info)) {
-                        sendAccountAvailableEvent(eduAccount);
+                        sendAccountAvailableEvent(dataHolder.getContext(), eduAccount);
                     } else {
                         sendLoginFailedEvent(dataHolder.getContext());
                         e = ContentException.TokenException();
@@ -124,7 +101,9 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         sendLoginFailedEvent(context);
     }
 
-    private void sendAccountAvailableEvent(final NeoAccountBase account) {
+    private void sendAccountAvailableEvent(Context context, final NeoAccountBase account) {
+        DRPreferenceManager.saveLibraryParentId(context, account.library);
+        DRApplication.getInstance().setLogin(true);
         final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(account);
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), generateAccountInfoRequest, new BaseCallback() {
             @Override

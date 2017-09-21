@@ -73,14 +73,9 @@ import java.io.File;
  */
 
 public class ActivityManager {
-    public static boolean startLoginActivity(Context context) {
-        if (enableWifiOpenAndDetect(context)) {
-            CommonNotices.showMessage(context, context.getString(R.string.network_not_connected));
-            return false;
-        }
+    public static void startLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
-        return true;
     }
 
     public static void startDictQueryActivity(Context context) {

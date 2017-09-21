@@ -21,9 +21,12 @@ import com.onyx.android.dr.bean.SignUpInfo;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.AccountAvailableEvent;
+import com.onyx.android.dr.event.LoginFailedEvent;
 import com.onyx.android.dr.presenter.LoginPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.RegularUtil;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.CustomPopupWindow;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
@@ -33,6 +36,9 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -210,6 +216,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     protected void initData() {
         loginPresenter = new LoginPresenter(this);
+        loginPresenter.loadDB();
         loginPresenter.getRootGroups();
         loginPresenter.getInterestList();
         loginPresenter.queryProvince();
@@ -217,15 +224,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void setAccountInfo(NeoAccountBase accountInfo) {
-        if (accountInfo != null) {
-            CommonNotices.showMessage(this, getString(R.string.login_succeed));
-            DRPreferenceManager.saveLibraryParentId(this, accountInfo.library);
-            DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
-            ActivityManager.startMainActivity(this);
-            finish();
-        } else {
-            CommonNotices.showMessage(this, getString(R.string.username_or_password_error));
-        }
+
     }
 
     @Override
@@ -250,6 +249,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
         if (result) {
             showLoginLayout();
             CommonNotices.showMessage(this, getString(R.string.sign_up_succeed));
+        } else if (!DRApplication.getInstance().isHaveIndexService()) {
+            CommonNotices.showMessage(this, getString(R.string.no_logon_server));
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.sign_up_failed));
         }
     }
 
@@ -300,6 +303,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             connectNetwork();
             return;
         }
+        loginPresenter.getRootGroups();
         loginTitle.setText(getString(R.string.identity_title));
         loginTitle.setVisibility(View.VISIBLE);
         loginTitleLine.setVisibility(View.VISIBLE);
@@ -561,7 +565,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     private String getGroupID(String selectedItem) {
         String groupID = "";
         for (GroupBean group : groups) {
-            if (group.name.equals(selectedItem)) {
+            if (selectedItem.equals(group.name)) {
                 groupID = group._id;
             }
         }
@@ -585,13 +589,19 @@ public class LoginActivity extends BaseActivity implements LoginView {
             editTextPassword.requestFocus();
             return;
         }
-        loginPresenter.login(account, password, autoLoginCheckbox.isChecked());
+        loginPresenter.login(account, password);
     }
 
     private void connectNetwork() {
-        Device.currentDevice().enableWifiDetect(this);
-        NetworkUtil.enableWiFi(this, true);
-        CommonNotices.showMessage(this, getString(R.string.network_not_connected));
+        if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
+            if (0 == Utils.getConfiguredNetworks(DRApplication.getInstance())) {
+                ActivityManager.startWifiActivity(DRApplication.getInstance());
+            } else {
+                Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+                NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
+            }
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
+        }
     }
 
     @Override
@@ -603,5 +613,24 @@ public class LoginActivity extends BaseActivity implements LoginView {
             return true;
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountAvailableEvent(AccountAvailableEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.login_succeed));
+        DRPreferenceManager.saveUserAccount(DRApplication.getInstance(), editTextAccount.getText().toString());
+        DRPreferenceManager.saveUserPassword(DRApplication.getInstance(), editTextPassword.getText().toString());
+        DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
+        ActivityManager.startMainActivity(this);
+        finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onLoginFailedEvent(LoginFailedEvent event) {
+        if (!DRApplication.getInstance().isHaveIndexService()) {
+            CommonNotices.showMessage(this, getString(R.string.no_logon_server));
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.username_or_password_error));
+        }
     }
 }

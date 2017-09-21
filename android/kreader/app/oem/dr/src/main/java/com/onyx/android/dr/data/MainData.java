@@ -6,6 +6,7 @@ import com.onyx.android.dr.action.AuthTokenAction;
 import com.onyx.android.dr.action.CloudLibraryListLoadAction;
 import com.onyx.android.dr.event.MainLibraryTabEvent;
 import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
+import com.onyx.android.dr.request.cloud.RequestIndexServiceAndLogin;
 import com.onyx.android.dr.request.local.RequestLoadLocalDB;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.model.Library;
@@ -23,10 +24,8 @@ public class MainData {
         return MainTabMenuConfig.getMenuData(userType);
     }
 
-    public void authToken(AuthTokenAction authTokenAction, BaseCallback baseCallback) {
-        ActionChain actionChain = new ActionChain();
-        actionChain.addAction(authTokenAction);
-        actionChain.execute(DRApplication.getLibraryDataHolder(), baseCallback);
+    public void login(RequestIndexServiceAndLogin req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 
     public void loadLocalDB(RequestLoadLocalDB req, BaseCallback baseCallback) {
