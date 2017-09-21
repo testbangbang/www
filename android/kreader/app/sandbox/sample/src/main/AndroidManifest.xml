@@ -32,7 +32,11 @@
         <activity android:name=".EnvironmentDemoActivity" />
         <activity android:name=".FrontLightDemoActivity" />
         <activity android:name=".SdkDataOTATestActivity" />
-        <activity android:name=".FullScreenDemoActivity" />
+        <activity android:name=".FullScreenDemoActivity"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+             />
+
         <activity android:name=".SettingsDemoActivity" />
         <activity android:name=".ScribbleStateDemoActivity" />
         <activity android:name=".ParallelUpdateActivity" />
