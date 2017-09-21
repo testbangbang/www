@@ -130,6 +130,14 @@ public class RawInputReader {
         }
     }
 
+    public void setLimitRect(final List<Rect> rectList) {
+        if (rectList != null && rectList.size() > 0) {
+            nativeSetLimitRegion(mapToRawTouchRect(rectList));
+            EpdController.setScreenHandWritingRegionLimit(hostView,
+                    rectList.toArray(new Rect[0]));
+        }
+    }
+
     public void setExcludeRect(final List<Rect> rectList) {
         if (rectList != null && rectList.size() > 0) {
             nativeSetExcludeRegion(mapToRawTouchRect(rectList));

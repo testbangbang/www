@@ -147,10 +147,6 @@ public class RawInputManager {
 
     public RawInputManager setHostView(final View view) {
         getRawInputReader().setHostView(view);
-        return this;
-    }
-
-    public RawInputManager setLimitRect(final View view) {
         Rect limitRect = new Rect();
         view.getLocalVisibleRect(limitRect);
         getRawInputReader().setLimitRect(limitRect);
@@ -158,6 +154,12 @@ public class RawInputManager {
     }
 
     public RawInputManager setLimitRect(Rect limitRect, List<Rect> excludeRectList) {
+        getRawInputReader().setLimitRect(limitRect);
+        getRawInputReader().setExcludeRect(excludeRectList);
+        return this;
+    }
+
+    public RawInputManager setLimitRect(List<Rect> limitRect, List<Rect> excludeRectList) {
         getRawInputReader().setLimitRect(limitRect);
         getRawInputReader().setExcludeRect(excludeRectList);
         return this;

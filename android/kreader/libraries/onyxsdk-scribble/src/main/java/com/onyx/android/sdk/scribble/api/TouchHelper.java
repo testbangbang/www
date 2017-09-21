@@ -135,9 +135,7 @@ public class TouchHelper {
     }
 
     private void setupRawInputManager(final View view) {
-        getRawInputManager()
-                .setHostView(view)
-                .setLimitRect(view);
+        getRawInputManager().setHostView(view);
     }
 
     public boolean checkTouchPoint(final TouchPoint touchPoint) {
@@ -168,10 +166,15 @@ public class TouchHelper {
         return this;
     }
 
-    public TouchHelper startRawDrawing() {
+    public TouchHelper createRawDrawing() {
         getRawInputManager().startRawInputReader();
         getEpdPenManager().startDrawing();
         return this;
+    }
+
+    public void destroyRawDrawing() {
+        getRawInputManager().quitRawInputReader();
+        getEpdPenManager().quitDrawing();
     }
 
     public void pauseRawDrawing() {
@@ -184,9 +187,14 @@ public class TouchHelper {
         getEpdPenManager().resumeDrawing();
     }
 
-    public void quitRawDrawing() {
-        getRawInputManager().quitRawInputReader();
-        getEpdPenManager().quitDrawing();
+    public void startRawDrawing() {
+        createRawDrawing();
+        resumeRawDrawing();
+    }
+
+    public void stopRawDrawing() {
+        pauseRawDrawing();
+        destroyRawDrawing();
     }
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
@@ -195,16 +203,26 @@ public class TouchHelper {
 
     public void quit() {
         pauseRawDrawing();
-        quitRawDrawing();
+        destroyRawDrawing();
     }
 
     public void setLimitRect(Rect rect) {
         setLimitRect(rect, null);
     }
 
+    public void setLimitRect(List<Rect> rectList) {
+        setLimitRect(rectList, null);
+    }
+
     public TouchHelper setLimitRect(Rect limitRect, List<Rect> excludeRectList) {
         getTouchReader().setLimitRect(limitRect);
         getRawInputManager().setLimitRect(limitRect, excludeRectList);
+        return this;
+    }
+
+    public TouchHelper setLimitRect(List<Rect> limitRectList, List<Rect> excludeRectList) {
+        getTouchReader().setLimitRect(limitRectList);
+        getRawInputManager().setLimitRect(limitRectList, excludeRectList);
         return this;
     }
 

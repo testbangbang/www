@@ -48,6 +48,7 @@ public class NoteManager {
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private volatile SurfaceView surfaceView;
+    private volatile Rect visibleDrawRect;
 
     private ShapeEventHandler shapeEventHandler;
 
@@ -84,7 +85,7 @@ public class NoteManager {
     }
 
     public void startRawEventProcessor() {
-        getTouchHelper().startRawDrawing();
+        getTouchHelper().createRawDrawing();
     }
 
     public void enableRawEventProcessor(boolean enable) {
@@ -96,7 +97,7 @@ public class NoteManager {
 
     public void stopRawEventProcessor() {
         releaseWakeLock();
-        getTouchHelper().quitRawDrawing();
+        getTouchHelper().destroyRawDrawing();
     }
 
     public void pauseRawEventProcessor() {
@@ -148,8 +149,11 @@ public class NoteManager {
             initNoteArgs(context);
         }
         surfaceView = sv;
+        this.visibleDrawRect = new Rect(visibleDrawRect);
         getTouchHelper().setup(surfaceView);
-        getTouchHelper().setLimitRect(visibleDrawRect, RectUtils.toRectList(excludeRect));
+
+        List<Rect> limitRegions = getLimitRegionOfVisiblePages();
+        getTouchHelper().setLimitRect(limitRegions, RectUtils.toRectList(excludeRect));
     }
 
     public final TouchHelper getTouchHelper() {
@@ -314,6 +318,8 @@ public class NoteManager {
     public void setVisiblePages(final List<PageInfo> list) {
         visiblePages.clear();
         visiblePages.addAll(list);
+
+        getTouchHelper().setLimitRect(getLimitRegionOfVisiblePages());
     }
 
     public final RenderContext getRenderContext() {
@@ -390,4 +396,15 @@ public class NoteManager {
     public TouchPoint getEraserPoint() {
         return shapeEventHandler.getEraserPoint();
     }
+
+    private List<Rect> getLimitRegionOfVisiblePages() {
+        List<Rect> list = new ArrayList<>();
+        for (PageInfo page : visiblePages) {
+            Rect r = RectUtils.toRect(page.getDisplayRect());
+            r.intersect(visibleDrawRect);
+            list.add(r);
+        }
+        return list;
+    }
+
 }
