@@ -222,7 +222,7 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
 
     @Override
     public void setSchoolInfo(List<CreateGroupCommonBean> list) {
-        if (list == null && list.size() <= 0) {
+        if (list == null || list.size() <= 0) {
             return;
         }
         schoolData = list;
@@ -234,7 +234,7 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
 
     @Override
     public void setYearInfo(CreateGroupCommonBean bean) {
-        if (bean.children == null && bean.children.size() <= 0) {
+        if (bean.children == null || bean.children.size() <= 0) {
             return;
         }
         annualData = bean.children;
@@ -246,7 +246,7 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
 
     @Override
     public void setGradeInfo(CreateGroupCommonBean bean) {
-        if (bean.children == null && bean.children.size() <= 0) {
+        if (bean.children == null || bean.children.size() <= 0) {
             return;
         }
         gradeData = bean.children;
@@ -258,7 +258,7 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
 
     @Override
     public void setClassInfo(CreateGroupCommonBean bean) {
-        if (bean.children == null && bean.children.size() <= 0) {
+        if (bean.children == null || bean.children.size() <= 0) {
             return;
         }
         classData = bean.children;

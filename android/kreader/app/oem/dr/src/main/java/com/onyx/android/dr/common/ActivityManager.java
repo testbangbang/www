@@ -253,9 +253,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startGroupMemberManageActivity(Context context) {
+    public static void startGroupMemberActivity(Context context, String id) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.GROUP_ID, id);
         intent.setClass(context, GroupMemberActivity.class);
         context.startActivity(intent);
     }

@@ -104,4 +104,12 @@ public class DRPreferenceManager extends PreferenceManager {
     public static void saveSearchKeyword(Context context, String bookshelfType) {
         setStringValue(context, Constants.SEARCH_KEYWORD, bookshelfType);
     }
+
+    public static String getExitGroupPosition(Context context, String defaultValue) {
+        return getStringValue(context, Constants.SEARCH_KEYWORD, defaultValue);
+    }
+
+    public static void saveExitGroupPosition(Context context, String bookshelfType) {
+        setStringValue(context, Constants.SEARCH_KEYWORD, bookshelfType);
+    }
 }
