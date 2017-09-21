@@ -17,6 +17,7 @@ public class WakeLockHolder {
     private volatile PowerManager.WakeLock wakeLock;
     private AtomicInteger wakeLockCounting = new AtomicInteger(0);
     public final static int FULL_FLAGS = PowerManager.FULL_WAKE_LOCK;
+    public final static int ON_AFTER_RELEASE = PowerManager.ON_AFTER_RELEASE;
     public final static int WAKEUP_FLAGS = PowerManager.FULL_WAKE_LOCK|PowerManager.ACQUIRE_CAUSES_WAKEUP;
     private volatile boolean referenceCounted = true;
 
