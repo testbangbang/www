@@ -239,6 +239,9 @@ public class DeviceSettingData {
         deviceSettingValue.put(context.getString(R.string.device_setting_language_settings), currentSystemLanguage);
 
         deviceSettingValue.put(context.getString(R.string.device_setting_device_information), context.getString(R.string.device_setting_device_information_value));
+        deviceSettingValue.put(context.getString(R.string.device_setting_user_info),context.getString(R.string.device_setting_user_info));
+        deviceSettingValue.put(context.getString(R.string.menu_wifi_setting),context.getString(R.string.menu_wifi_setting));
+        deviceSettingValue.put(context.getString(R.string.reset),context.getString(R.string.reset));
 
         return deviceSettingValue;
     }
