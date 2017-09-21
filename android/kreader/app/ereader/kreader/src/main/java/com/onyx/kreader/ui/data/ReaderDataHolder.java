@@ -398,6 +398,15 @@ public class ReaderDataHolder {
         });
     }
 
+    public void submitRequest(final BaseReaderRequest request, final BaseCallback callback) {
+        reader.submitRequest(context, request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                callback.invoke(callback, request, e);
+            }
+        });
+    }
+
     public void submitRenderRequest(final BaseReaderRequest renderRequest) {
         submitRenderRequest(renderRequest, null);
     }

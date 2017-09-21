@@ -41,7 +41,7 @@ public class ExerciseRespondPresenter implements ExerciseRespondContract.Exercis
     @Override
     public void subscribe() {
         eduCloudManager = new EduCloudManager();
-        checkExamCount();
+        getDate();
         //exerciseRespondView.showQuestions(questions, chooseQuestionVariable, showAnswer);
     }
 

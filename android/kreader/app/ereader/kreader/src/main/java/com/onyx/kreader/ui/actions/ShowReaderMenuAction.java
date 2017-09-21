@@ -18,8 +18,19 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.CheckExaminataionRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -30,23 +41,15 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.ClearPageAction;
@@ -63,13 +66,13 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogContrast;
 import com.onyx.kreader.ui.dialog.DialogExport;
+import com.onyx.kreader.ui.dialog.DialogMessage;
 import com.onyx.kreader.ui.dialog.DialogNavigationSettings;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.device.DeviceConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -693,14 +696,28 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     public void startQuiz(final ReaderDataHolder readerDataHolder) {
-        Intent intent = new Intent();
+        final Intent intent = new Intent();
         intent.setComponent(new ComponentName("com.onyx.android.edu", "com.onyx.android.edu.ui.exerciserespond.ExerciseRespondActivity"));
         Log.d(TAG, "startQuiz: ----------"+KReaderApp.instance().getBookId() +"："+KReaderApp.instance().getBookName());
         intent.putExtra("examination_book_id", KReaderApp.instance().getBookId());
         intent.putExtra("examination_book_name", KReaderApp.instance().getBookName());
-        //intent.putExtra("choose_question_variable", "{\"difficult\":{\"difficultName\":\"容易\",\"id\":1},\"documentType\":\"All\",\"questionType\":{\"id\":1},\"stage\":{\"id\":1,\"stageName\":\"初级\"},\"subject\":{\"id\":-1,\"subjectName\":\"软件开发\"},\"textbook\":{\"bookName\":\"Java开发技术\",\"id\":-1},\"version\":{\"id\":-1,\"versionName\":\"第一版\"}}\n");
-        //intent.putExtra("question", "[{\"answerCount\":1,\"difficult\":0,\"id\":1,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"questionOptions\":{\"一个类可以定义多个构造函数\":\"\",\"构造函数和类有相同的名称，并且不能带任何参数\":\"\",\"构造函数的返回类型是void\":\"\",\"类必须显式定义构造函数\":\"\"},\"stem\":\"在Java中，下面对于构造函数的描述正确的是\"},{\"answerCount\":1,\"difficult\":0,\"id\":2,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"questionOptions\":{\"静态修饰的成员变量和成员方法随着类的加载而加载\":\"\",\"静态修饰的成员变量和成员方法随着类的消失而消失\":\"\",\"静态修饰的成员可以被整个类对象所共享\":\"\",\"静态修饰的成员方法可以访问非静态成员变量\":\"\"},\"stem\":\"下面对static的描述错误的是？\"},{\"answerCount\":3,\"difficult\":0,\"id\":3,\"questionAnalytical\":{\"answer\":\"v1\",\"id\":-1,\"questionAnalyze\":\"analyse1\"},\"stem\":\"请回答Java的访问修饰符\"}]");
-        ActivityUtil.startActivitySafely(readerDataHolder.getContext(), intent);
+        CheckExaminationDataAction checkExaminationDataAction = new CheckExaminationDataAction(KReaderApp.instance().getBookId());
+        checkExaminationDataAction.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                String result = ((CheckExaminataionRequest) request).getResult();
+                if(StringUtils.isNullOrEmpty(result)) {
+                    ActivityUtil.startActivitySafely(readerDataHolder.getContext(), intent);
+                }else {
+                    showMessageDialog(readerDataHolder, result);
+                }
+            }
+        });
+    }
+
+    private void showMessageDialog(ReaderDataHolder readerDataHolder, String message) {
+        DialogMessage dialogMessage = new DialogMessage(readerDataHolder.getContext(), message);
+        dialogMessage.show();
     }
 
     private void showReaderSettings(final ReaderDataHolder readerDataHolder) {

@@ -120,14 +120,14 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
                 mPaperPager.setCurrentItem(next, false);
                 updatePaperIndex();
             } else {
-                showToast(getString(R.string.ask_select_answer));
+                Toast.makeText(EduApp.instance(), getString(R.string.ask_select_answer), Toast.LENGTH_SHORT).show();
             }
         } else {
             BaseQuestionView selectView = mQuestionsPagerAdapter.getViewList().get(index);
             if (selectView.hasAnswers() || selectView.isShowAnswer()) {
                 enterResultActivity();
             } else {
-                showToast(getString(R.string.ask_select_answer));
+                Toast.makeText(EduApp.instance(), getString(R.string.ask_select_answer), Toast.LENGTH_SHORT).show();
             }
         }
     }
