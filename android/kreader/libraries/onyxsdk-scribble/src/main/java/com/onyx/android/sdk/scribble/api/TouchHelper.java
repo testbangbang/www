@@ -135,9 +135,7 @@ public class TouchHelper {
     }
 
     private void setupRawInputManager(final View view) {
-        getRawInputManager()
-                .setHostView(view)
-                .setLimitRect(view);
+        getRawInputManager().setHostView(view);
     }
 
     public boolean checkTouchPoint(final TouchPoint touchPoint) {
