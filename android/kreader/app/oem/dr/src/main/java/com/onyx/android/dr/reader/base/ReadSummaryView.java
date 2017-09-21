@@ -14,4 +14,6 @@ public interface ReadSummaryView {
     void setNewWordList(List<ReadSummaryNewWordReviewBean> newWordList);
 
     void setGoodSentenceList(List<ReadSummaryGoodSentenceReviewBean> goodSentenceList);
+
+    void setSummary(String summary);
 }

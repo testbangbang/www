@@ -2,6 +2,7 @@ package com.onyx.android.dr.reader.activity;
 
 import android.content.Intent;
 import android.support.v7.widget.DividerItemDecoration;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,7 +44,7 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     @Bind(R.id.menu_back)
     LinearLayout menuBack;
     @Bind(R.id.title_bar_right_menu)
-    TextView titleBarRightMenu;
+    TextView save;
     @Bind(R.id.read_summary_title)
     TextView readSummaryTitle;
     @Bind(R.id.edit_read_summary)
@@ -83,6 +84,9 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         goodSentenceRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         goodSentenceRecycler.addItemDecoration(dividerItemDecoration);
         goodSentenceRecycler.setAdapter(goodSentenceReviewListAdapter);
+
+        save.setVisibility(View.VISIBLE);
+        save.setText(getString(R.string.save));
     }
 
     @Override
@@ -96,10 +100,16 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         readSummaryPresenter.getReadSummary(bookName, pageNumber);
     }
 
-    @OnClick(R.id.menu_back)
-    public void onClick() {
-        saveReadSummary();
-        finish();
+    @OnClick({R.id.menu_back, R.id.title_bar_right_menu})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.menu_back:
+                finish();
+                break;
+            case R.id.title_bar_right_menu:
+                saveReadSummary();
+                break;
+        }
     }
 
     @Override
@@ -116,6 +126,11 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     @Override
     public void setGoodSentenceList(List<ReadSummaryGoodSentenceReviewBean> goodSentenceList) {
         goodSentenceReviewListAdapter.setList(goodSentenceList);
+    }
+
+    @Override
+    public void setSummary(String summary) {
+        editReadSummary.setText(summary);
     }
 
     public void saveReadSummary() {

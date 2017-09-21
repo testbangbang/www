@@ -45,6 +45,7 @@ import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
 import com.onyx.android.dr.activity.ShoppingCartActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
+import com.onyx.android.dr.activity.SummaryListActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
 import com.onyx.android.dr.activity.UserInfoActivity;
 import com.onyx.android.dr.activity.WifiActivity;
@@ -457,9 +458,14 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startUserInfoActivity(Context context){
+    public static void startUserInfoActivity(Context context) {
         Intent intent = new Intent(context, UserInfoActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startSummaryListActivity(Context context) {
+        Intent intent = new Intent(context, SummaryListActivity.class);
         context.startActivity(intent);
     }
 }

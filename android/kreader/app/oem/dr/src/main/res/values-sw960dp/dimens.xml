@@ -312,4 +312,6 @@
     <dimen name="user_info_exit_margin_right">20dp</dimen>
     <dimen name="user_info_exit_padding">5dp</dimen>
     <dimen name="user_info_user_name_margin_top">15dp</dimen>
+    <dimen name="item_summary_list_height">60dp</dimen>
 </resources>
+

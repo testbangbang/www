@@ -24,4 +24,7 @@ public class ReadSummaryEntity extends BaseModel {
     public String newWordList;
     @Column
     public String goodSentenceList;
+    @Column
+    public String time;
+    public boolean isChecked;
 }

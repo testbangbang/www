@@ -600,6 +600,11 @@
     <string name="news">消息</string>
     <string name="group_manager_activity_manage_group">管理群组</string>
     <string name="examine">查看</string>
+    <string name="time">时间</string>
+    <string name="book_name">书名</string>
+    <string name="page_number">页码</string>
+    <string name="book_abstract">内容概要</string>
+    <string name="progress">进度</string>
     <string name="current_version">  (当前版本: V%d)</string>
     <string name="update_version">  (更新版本: V%d)</string>
     <string name="update_content">更新内容:\n</string>
