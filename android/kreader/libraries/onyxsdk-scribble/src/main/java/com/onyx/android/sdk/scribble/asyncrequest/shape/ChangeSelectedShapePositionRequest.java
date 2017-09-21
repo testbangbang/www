@@ -30,18 +30,18 @@ public class ChangeSelectedShapePositionRequest extends AsyncBaseNoteRequest {
     private volatile boolean isAddToHistory = false;
 
     @Override
-    public void execute(NoteManager helper) throws Exception {
-        setResumeInputProcessor(helper.useDFBForCurrentState());
+    public void execute(NoteManager manager) throws Exception {
+        setResumeInputProcessor(manager.useDFBForCurrentState());
         benchmarkStart();
-        helper.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
+        manager.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
         if ((Float.compare(targetDx, Float.MIN_VALUE) == 0 || (Float.compare(targetDy, Float.MIN_VALUE) == 0)) && touchPoint != null) {
-            targetDx = touchPoint.getX() - helper.getNoteDocument().getCurrentPage(
+            targetDx = touchPoint.getX() - manager.getNoteDocument().getCurrentPage(
                     getContext()).getSelectedRect().getRectF().centerX();
-            targetDy = touchPoint.getY() - helper.getNoteDocument().getCurrentPage(
+            targetDy = touchPoint.getY() - manager.getNoteDocument().getCurrentPage(
                     getContext()).getSelectedRect().getRectF().centerY();
         }
-        helper.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(targetDx, targetDy, isAddToHistory);
-        renderCurrentPageInBitmap(helper);
-        updateShapeDataInfo(helper);
+        manager.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(targetDx, targetDy, isAddToHistory);
+        renderCurrentPageInBitmap(manager);
+        updateShapeDataInfo(manager);
     }
 }

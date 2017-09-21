@@ -25,6 +25,9 @@ import java.util.Map;
  * Manager for a list of shapes in single page.
  * To make it easy for activity or other class to manage shapes.
  * ShapeManager->NotePage->Shape->ShapeModel
+ *
+ * ShapeTransform Logic:
+ * both shape and selected rectangle need transform.
  */
 public class NotePage {
 
@@ -44,6 +47,7 @@ public class NotePage {
     private boolean loaded = false;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
     private PointF rotateCacheRectTopLeft, rotateCacheRectTopRight;
+    private volatile SelectedRectF currentSelectedRectF = new SelectedRectF(new RectF());
 
     public void saveCurrentSelectShape() {
         if (preTransformShapeList.size() == 0) {
@@ -51,7 +55,7 @@ public class NotePage {
         }
     }
 
-    public void saveCurrentSelectPointRotationInitialPoint(){
+    public void saveCurrentSelectPointRotationInitialData(){
         rotateCacheRectTopLeft = new PointF(getSelectedRect().getRectF().left, getSelectedRect().getRectF().top);
         rotateCacheRectTopRight = new PointF(getSelectedRect().getRectF().right, getSelectedRect().getRectF().top);
     }
@@ -206,6 +210,7 @@ public class NotePage {
             shape.setSelected(false);
             shape.setSelectRectOrientation(0);
         }
+        clearSelectedRect();
         selectedShapeList.clear();
     }
 
@@ -354,7 +359,8 @@ public class NotePage {
         }
     }
 
-    public SelectedRectF getSelectedRect() {
+    private void updateSelectedRect() {
+        currentSelectedRectF = new SelectedRectF(0, new RectF());
         //TODO:only consider 1 orientation shape circumstance.
         List<RectF> selectShapeRectList = new ArrayList<>();
         float orientation = 0f;
@@ -367,25 +373,39 @@ public class NotePage {
                     } else {
                         selectRect = shape.getBoundingRect();
                     }
-                }else {
+                } else {
                     selectRect = shape.getBoundingRect();
                 }
-                orientation = shape.getOrientation();
+                orientation = shape.getSelectRectOrientation();
                 selectShapeRectList.add(selectRect);
             }
         }
+        RectF resultSelectRectF = new RectF();
         if (selectShapeRectList.size() == 0) {
-            return new SelectedRectF(0,new RectF());
+            currentSelectedRectF = new SelectedRectF(0, resultSelectRectF);
         } else {
-            RectF resultSelectRectF = new RectF();
-            for (RectF targetRect : selectShapeRectList) {
-                if (resultSelectRectF.contains(targetRect)&&orientation!=0){
-                    orientation = 0;
-                }
-                resultSelectRectF.union(targetRect);
-            }
-            return new SelectedRectF(orientation, resultSelectRectF);
+            currentSelectedRectF = unionSelectedShapeBoundingRect(orientation, selectShapeRectList);
         }
+    }
+
+    private void clearSelectedRect(){
+        currentSelectedRectF = new SelectedRectF(new RectF());
+    }
+
+    public SelectedRectF getSelectedRect() {
+        updateSelectedRect();
+        return currentSelectedRectF;
+    }
+
+    private SelectedRectF unionSelectedShapeBoundingRect(float orientation, List<RectF> selectShapeBoundingRect) {
+        RectF resultSelectRectF = new RectF();
+        for (RectF targetRect : selectShapeBoundingRect) {
+            if (resultSelectRectF.contains(targetRect) && Float.compare(orientation, 0) != 0) {
+                orientation = 0;
+            }
+            resultSelectRectF.union(targetRect);
+        }
+        return new SelectedRectF(orientation, resultSelectRectF);
     }
 
     public PointF getRotateExtendPoint() {
@@ -575,7 +595,7 @@ public class NotePage {
         }
     }
 
-    public void setMirrorEffectToSelectShapeList(MirrorType type, int translateDistance,boolean addToActionHistory) {
+    public void setMirrorEffectToSelectShapeList(MirrorType type, int translateDistance, boolean addToActionHistory) {
         if (selectedShapeList.size() <= 0) {
             return;
         }

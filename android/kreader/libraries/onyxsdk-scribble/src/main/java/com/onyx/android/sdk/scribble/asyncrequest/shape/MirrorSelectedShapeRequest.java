@@ -34,7 +34,7 @@ public class MirrorSelectedShapeRequest extends AsyncBaseNoteRequest {
                 translateDistance = 2 * (int) noteManager.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF().centerY();
                 break;
         }
-        noteManager.getNoteDocument().getCurrentPage(getContext()).setMirrorEffectToSelectShapeList(mirrorType, translateDistance,isAddToHistory);
+        noteManager.getNoteDocument().getCurrentPage(getContext()).setMirrorEffectToSelectShapeList(mirrorType, translateDistance, isAddToHistory);
         renderCurrentPageInBitmap(noteManager);
         updateShapeDataInfo(noteManager);
     }
