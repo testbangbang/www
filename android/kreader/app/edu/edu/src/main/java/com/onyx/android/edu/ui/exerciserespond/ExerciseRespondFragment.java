@@ -18,6 +18,7 @@ import com.onyx.android.edu.base.BaseFragment;
 import com.onyx.android.edu.base.BaseQuestionView;
 import com.onyx.android.edu.bean.PaperResult;
 import com.onyx.android.edu.ui.respondresult.RespondResultActivity;
+import com.onyx.android.edu.utils.ActivityUtils;
 import com.onyx.android.edu.utils.JsonUtils;
 import com.onyx.android.edu.view.ChoiceQuestionView;
 import com.onyx.android.edu.view.ChooseCallback;
@@ -191,7 +192,7 @@ public class ExerciseRespondFragment extends BaseFragment implements View.OnClic
 
     @Override
     public void showToast(String result) {
-        Toast.makeText(EduApp.instance(), result, Toast.LENGTH_SHORT).show();
+        ActivityUtils.sendCheckExamResultBroadcast(EduApp.instance(), result);
         getActivity().finish();
     }
 
