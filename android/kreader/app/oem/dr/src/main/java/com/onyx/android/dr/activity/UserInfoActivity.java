@@ -91,11 +91,10 @@ public class UserInfoActivity extends BaseActivity {
         }
     }
 
-    private void onExitSignOut(){
-        if(ActivityManager.startLoginActivity(UserInfoActivity.this)) {
-            DRApplication.getInstance().setLogin(false);
-            DRPreferenceManager.cleanUserInfo(UserInfoActivity.this);
-            finish();
-        }
+    private void onExitSignOut() {
+        ActivityManager.startLoginActivity(this);
+        DRApplication.getInstance().setLogin(false);
+        DRPreferenceManager.cleanUserInfo(UserInfoActivity.this);
+        finish();
     }
 }

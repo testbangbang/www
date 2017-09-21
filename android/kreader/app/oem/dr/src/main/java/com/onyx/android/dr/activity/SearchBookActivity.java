@@ -12,7 +12,6 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SearchResultListAdapter;
-import com.onyx.android.dr.bean.ProductBean;
 import com.onyx.android.dr.bean.SearchResultBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.event.BookDetailEvent;
@@ -26,6 +25,7 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -56,6 +56,8 @@ public class SearchBookActivity extends BaseActivity implements SearchBookView {
     CustomSearchView customSearchView;
     @Bind(R.id.search_book_recycler)
     PageRecyclerView searchBookRecycler;
+    @Bind(R.id.empty_result)
+    TextView emptyResult;
     private SearchBookPresenter searchBookPresenter;
     private LibraryDataHolder dataHolder;
     private SearchResultListAdapter searchResultListAdapter;
@@ -126,6 +128,7 @@ public class SearchBookActivity extends BaseActivity implements SearchBookView {
     @Override
     public void setResult(List<SearchResultBean> result) {
         searchResultListAdapter.setList(result);
+        emptyResult.setVisibility(CollectionUtils.isNullOrEmpty(result) ? View.VISIBLE : View.GONE);
     }
 
     private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {

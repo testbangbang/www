@@ -622,4 +622,5 @@
     <string name="update_content">Update content:\n</string>
     <string name="sign_up_failed">sign up failed</string>
     <string name="no_logon_server">No logon server</string>
+    <string name="no_search_result">No search result</string>
 </resources>
