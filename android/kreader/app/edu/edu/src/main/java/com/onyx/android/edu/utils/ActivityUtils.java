@@ -19,6 +19,8 @@ package com.onyx.android.edu.utils;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 
 
@@ -26,7 +28,8 @@ import android.support.annotation.NonNull;
  * This provides methods to help Activities load their UI.
  */
 public class ActivityUtils {
-
+    private static final String ACTION_CHECK_EXAMINATION_RESULT = "com.onyx.kreader.anction.CHECK_EXAM_RESULT";
+    private static final String CHECK_RESULT = "check_result";
     /**
      * The {@code fragment} is added to the container view with id {@code frameId}. The operation is
      * performed by the {@code fragmentManager}.
@@ -49,5 +52,13 @@ public class ActivityUtils {
         }else {
             transaction.show(toFragment).commit();
         }
+    }
+
+    public static void sendCheckExamResultBroadcast(Context context, String result) {
+        Intent intent = new Intent();
+        intent.setAction(ACTION_CHECK_EXAMINATION_RESULT);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);
+        intent.putExtra(CHECK_RESULT, result);
+        context.sendBroadcast(intent);
     }
 }

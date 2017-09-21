@@ -183,6 +183,8 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name=".ui.receiver.CheckExaminationResultReceiver"/>
+
         <activity android:name=".ui.ReaderTab2Activity"
             android:theme="@style/Theme.AppCompat.Transparent.NoActionBar"
             android:launchMode="singleInstance"

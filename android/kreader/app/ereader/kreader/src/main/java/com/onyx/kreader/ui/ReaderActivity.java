@@ -36,14 +36,14 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
 import com.onyx.android.sdk.ui.view.ReaderStatusBar;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -66,6 +66,7 @@ import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.dialog.DialogMessage;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 import com.onyx.kreader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
@@ -73,6 +74,7 @@ import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.ClosePopupEvent;
 import com.onyx.kreader.ui.events.ConfirmCloseDialogEvent;
+import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
@@ -95,7 +97,6 @@ import com.onyx.kreader.ui.events.ShortcutErasingEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
-import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
@@ -105,6 +106,7 @@ import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.BaseHandler;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.handler.SlideshowHandler;
+import com.onyx.kreader.ui.receiver.CheckExaminationResultReceiver;
 import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
@@ -136,6 +138,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     private final ReaderPainter readerPainter = new ReaderPainter();
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
+    private CheckExaminationResultReceiver checkExaminationResultReceiver;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -298,12 +301,34 @@ public class ReaderActivity extends OnyxBaseActivity {
         IntentFilter filter = new IntentFilter();
         filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         registerReceiver(networkConnectChangedReceiver, filter);
+
+        checkExaminationResultReceiver = new CheckExaminationResultReceiver();
+        checkExaminationResultReceiver.setOnCheckExamResultListener(new CheckExaminationResultReceiver.OnCheckExamResultListener() {
+
+            @Override
+            public void checkResult(String result) {
+                showMessageDialog(result);
+            }
+        });
+
+        filter.addAction("com.onyx.kreader.anction.CHECK_EXAM_RESULT");
+        registerReceiver(checkExaminationResultReceiver, filter);
+    }
+
+    public void showMessageDialog(String message) {
+        DialogMessage dialogMessage = new DialogMessage(this, message);
+        dialogMessage.show();
     }
 
     private void cleanupReceiver() {
         if (networkConnectChangedReceiver != null) {
             unregisterReceiver(networkConnectChangedReceiver);
             networkConnectChangedReceiver = null;
+        }
+
+        if(checkExaminationResultReceiver != null) {
+            unregisterReceiver(checkExaminationResultReceiver);
+            checkExaminationResultReceiver = null;
         }
     }
 
