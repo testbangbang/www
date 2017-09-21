@@ -1,4 +1,4 @@
-package com.onyx.edu.note.util;
+package com.onyx.kreader.ui.utils;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
@@ -8,32 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.google.android.flexbox.FlexboxLayout;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.edu.note.ui.PageAdapter;
-import com.onyx.edu.note.ui.PageDataBindingAdapter;
-
-import java.util.List;
-
 /**
- * Created by solskjaer49 on 2016/11/26 10:31.
+ * Created by lxm on 2017/9/20.
  */
 
-public class OnyxDataBindingUtil {
-
-    @BindingAdapter({"layoutColumns"})
-    public static void setLayoutColumns(View view, int layoutColumns) {
-        if (layoutColumns == 0){
-            return;
-        }
-        ViewGroup parent = (ViewGroup) view.getParent();
-        if (parent instanceof FlexboxLayout) {
-            FlexboxLayout.LayoutParams lp = (FlexboxLayout.LayoutParams)view.getLayoutParams();
-            float flexBasisPercent = (float) 1/layoutColumns;
-            lp.setFlexBasisPercent(flexBasisPercent);
-            view.setLayoutParams(lp);
-        }
-    }
+public class DataBindingUtils {
 
     @BindingAdapter({"android:src"})
     public static void setImageViewResource(ImageView imageView, int resource) {
@@ -57,23 +36,6 @@ public class OnyxDataBindingUtil {
         imageView.setImageBitmap(bitmap);
     }
 
-    @SuppressWarnings("unchecked")
-    @BindingAdapter("items")
-    public static void setItems(PageRecyclerView recyclerView, List items) {
-        PageAdapter adapter = (PageAdapter) recyclerView.getAdapter();
-        if (adapter != null) {
-            adapter.setRawData(items, recyclerView.getContext());
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    @BindingAdapter("menuActions")
-    public static void setMenuActions(PageRecyclerView recyclerView, List menuActions) {
-        PageDataBindingAdapter adapter = (PageDataBindingAdapter) recyclerView.getAdapter();
-        if (adapter != null) {
-            adapter.setRawData(recyclerView, menuActions);
-        }
-    }
 
     @BindingAdapter("android:layout_centerInParent")
     public static void setCenterInParent(View view, boolean centerInParent) {

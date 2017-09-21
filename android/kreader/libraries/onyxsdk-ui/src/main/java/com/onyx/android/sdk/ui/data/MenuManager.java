@@ -44,6 +44,10 @@ public class MenuManager {
                                   int menuVariable,
                                   ViewGroup.LayoutParams params,
                                   SparseArray<MenuItem> menuItemMap) {
+        if (subMenu != null) {
+            subMenu.remove(parent);
+            subMenu = null;
+        }
         subMenu = Menu.addMenu(parent, eventBus, layoutId, menuVariable, params, menuItemMap);
         return this;
     }
@@ -75,5 +79,26 @@ public class MenuManager {
             menu.updateItemMap(menuVariable, eventBus, menuItemSparseArray);
         }
         return this;
+    }
+
+    public void removeSubMenu(ViewGroup parent) {
+        if (subMenu != null) {
+            subMenu.remove(parent);
+            subMenu = null;
+        }
+    }
+
+    public void removeMainMenu(ViewGroup parent) {
+        if (mainMenu != null) {
+            mainMenu.remove(parent);
+            mainMenu = null;
+        }
+    }
+
+    public void removeToolbarMenu(ViewGroup parent) {
+        if (toolbarMenu != null) {
+            toolbarMenu.remove(parent);
+            toolbarMenu = null;
+        }
     }
 }

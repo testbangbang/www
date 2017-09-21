@@ -572,7 +572,7 @@ public class ShowReaderMenuAction extends BaseAction {
         new StartSideNoteAction().execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                startNoteDrawing(readerDataHolder, readerActivity, false);
+                startSideNodeDrawing(readerDataHolder, readerActivity);
             }
         });
     }
@@ -786,6 +786,12 @@ public class ShowReaderMenuAction extends BaseAction {
         readerMenu.updateReaderMenuState(getReaderMenuState(readerDataHolder));
     }
 
+    public static void startSideNodeDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
+        ShowSideScribbleMenu showMenu = new ShowSideScribbleMenu(readerActivity.getExtraView(),
+                getScribbleActionCallback(readerDataHolder));
+        showMenu.execute(readerDataHolder, null);
+    }
+
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showFullToolbar) {
         hideReaderMenu();
         final ShowScribbleMenuAction menuAction = new ShowScribbleMenuAction(readerActivity.getExtraView(),
@@ -938,7 +944,7 @@ public class ShowReaderMenuAction extends BaseAction {
         }
     }
 
-    private static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
+    public static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
@@ -1179,6 +1185,24 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
         }
         return action;
+    }
+
+    public static ReaderMenuAction getCurrentPenWidth(final ReaderDataHolder readerDataHolder) {
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        if (noteDataInfo != null) {
+            float strokeWidth = noteDataInfo.getStrokeWidth();
+            return menuIdFromStrokeWidth(strokeWidth);
+        }
+        return ReaderMenuAction.SCRIBBLE_WIDTH1;
+    }
+
+    public static ReaderMenuAction getCurrentPenShape(final ReaderDataHolder readerDataHolder) {
+        ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
+        if (noteDataInfo != null) {
+            int currentShapeType = noteDataInfo.getCurrentShapeType();
+            return createShapeAction(currentShapeType);
+        }
+        return ReaderMenuAction.SCRIBBLE_PENCIL;
     }
 
 }

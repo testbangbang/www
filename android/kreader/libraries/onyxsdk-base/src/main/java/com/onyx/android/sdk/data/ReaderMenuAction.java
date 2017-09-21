@@ -36,5 +36,11 @@ public enum ReaderMenuAction {
     SCRIBBLE_DOC_POSITION, SCRIBBLE_DOC_PREV_PAGE, SCRIBBLE_DOC_NEXT_PAGE,
     SCRIBBLE_SIDE_NOTE_POSITION, SCRIBBLE_SIDE_NOTE_PREV_PAGE, SCRIBBLE_SIDE_NOTE_NEXT_PAGE,
     SCRIBBLE_SIDE_NOTE_ADD_PAGE, SCRIBBLE_SIDE_NOTE_DELETE_PAGE,
-    SCRIBBLE_UNDO, SCRIBBLE_SAVE, SCRIBBLE_REDO, SCRIBBLE_CLOSE
+    SCRIBBLE_UNDO, SCRIBBLE_SAVE, SCRIBBLE_REDO, SCRIBBLE_CLOSE;
+    public static ReaderMenuAction valueOf(int ordinal) {
+        if (ordinal < 0 || ordinal >= values().length) {
+            throw new IndexOutOfBoundsException("Invalid ordinal");
+        }
+        return values()[ordinal];
+    }
 }

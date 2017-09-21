@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.onyx.android.sdk.data.ReaderMenuAction"/>
+        <import type="com.onyx.android.sdk.ui.data.MenuItem"/>
+        <import type="android.util.SparseArray"/>
+        <import type="com.onyx.kreader.R"/>
+
+        <variable
+            name="item"
+            type="SparseArray&lt;MenuItem>"/>
+
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:background="@android:color/white"
+        android:gravity="center_horizontal"
+        app:flexDirection="column"
+        app:flexWrap="wrap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_ERASER_PART.ordinal()].setMenuIcon(R.drawable.ic_eraser_part)}"
+            layout="@layout/scribble_sub_menu"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_ERASER_ALL.ordinal()].setMenuIcon(R.drawable.ic_eraser_all)}"
+            layout="@layout/scribble_sub_menu"/>
+
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

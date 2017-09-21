@@ -911,12 +911,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRect()), rotation);
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
     }
 
-    private List<RectF> getExcludeRect(final RectF scribbleMenuExcludeRect) {
+    private List<RectF> getExcludeRect(final List<RectF> scribbleMenuExcludeRect) {
         List<RectF> excludeRect = new ArrayList<>();
-        excludeRect.add(scribbleMenuExcludeRect);
+        excludeRect.addAll(scribbleMenuExcludeRect);
         if (buttonShowTabWidget.isShown()) {
             RectF r = new RectF(buttonShowTabWidget.getLeft(), buttonShowTabWidget.getTop(), buttonShowTabWidget.getRight(), buttonShowTabWidget.getBottom());
             excludeRect.add(r);

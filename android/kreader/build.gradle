@@ -91,5 +91,8 @@ ext {
 
     androidtiffbitmapfactoryVersion = '0.9.7.6'
 
+    //ui
+    flexboxVersion='0.3.0'
+
 }
 

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.onyx.android.sdk.data.ReaderMenuAction"/>
+        <import type="com.onyx.android.sdk.ui.data.MenuItem"/>
+        <import type="android.util.SparseArray"/>
+        <import type="com.onyx.kreader.R"/>
+
+        <variable
+            name="item"
+            type="SparseArray&lt;MenuItem>"/>
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:background="@android:color/white"
+        android:id="@+id/main_menu"
+        android:gravity="center_horizontal"
+        appCompat:alwaysLayoutImageView="true"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_WIDTH.ordinal()].setMenuIcon(R.drawable.ic_width)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SHAPE.ordinal()].setMenuIcon(R.drawable.ic_shape)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_ERASER.ordinal()].setMenuIcon(R.drawable.ic_eraser)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_UNDO.ordinal()].setMenuIcon(R.drawable.ic_undo)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SAVE.ordinal()].setMenuIcon(R.drawable.ic_save)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_REDO.ordinal()].setMenuIcon(R.drawable.ic_redo)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_ADD_PAGE.ordinal()].setMenuIcon(R.drawable.ic_add)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_DELETE_PAGE.ordinal()].setMenuIcon(R.drawable.ic_delete)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_CLOSE.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_page_closed)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_MINIMIZE.ordinal()].setMenuIcon(R.drawable.ic_unfold).setRotation(-90)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal()].setMenuIcon(R.drawable.ic_pack_up).setRotation(-90)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal()].setMenuIcon(R.drawable.ic_page_arrow_left)}"
+            layout="@layout/menu_item"/>
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:textSize="20sp"
+            android:padding="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/imagebtn_bg"
+            android:onClick="@{(v) ->item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal()].menuClicked(v)}"
+            android:text="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal()].text}" />
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_SIDE_NOTE_NEXT_PAGE.ordinal()].setMenuIcon(R.drawable.ic_page_arrow_right)}"
+            layout="@layout/menu_item"/>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>
