@@ -255,6 +255,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
+            android:name=".activity.UserInfoActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".activity.SummaryListActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 

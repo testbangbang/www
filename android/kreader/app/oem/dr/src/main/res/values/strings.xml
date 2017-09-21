@@ -381,6 +381,7 @@
     <string name="device_setting_automatic_shut_down">Automatic shutdown</string>
     <string name="device_setting_language_settings">Language Settings</string>
     <string name="device_setting_device_information">Equipment information</string>
+    <string name="device_setting_user_info">User</string>
     <string name="device_setting_one_page">1 page</string>
     <string name="device_setting_ten_pages">10 pages</string>
     <string name="device_setting_twenty_pages">20 pages</string>
