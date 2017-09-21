@@ -168,7 +168,7 @@ public class TouchHelper {
         return this;
     }
 
-    public TouchHelper initRawDrawing() {
+    public TouchHelper createRawDrawing() {
         getRawInputManager().startRawInputReader();
         getEpdPenManager().startDrawing();
         return this;
@@ -190,7 +190,7 @@ public class TouchHelper {
     }
 
     public void startRawDrawing() {
-        initRawDrawing();
+        createRawDrawing();
         resumeRawDrawing();
     }
 
