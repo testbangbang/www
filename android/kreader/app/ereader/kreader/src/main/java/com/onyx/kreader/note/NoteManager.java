@@ -48,6 +48,7 @@ public class NoteManager {
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private volatile SurfaceView surfaceView;
+    private volatile Rect visibleDrawRect;
 
     private ShapeEventHandler shapeEventHandler;
 
@@ -148,12 +149,10 @@ public class NoteManager {
             initNoteArgs(context);
         }
         surfaceView = sv;
+        this.visibleDrawRect = new Rect(visibleDrawRect);
         getTouchHelper().setup(surfaceView);
 
         List<Rect> limitRegions = getLimitRegionOfVisiblePages();
-        for (Rect r : limitRegions) {
-            r.intersect(visibleDrawRect);
-        }
         getTouchHelper().setLimitRect(limitRegions, RectUtils.toRectList(excludeRect));
     }
 
@@ -401,8 +400,11 @@ public class NoteManager {
     private List<Rect> getLimitRegionOfVisiblePages() {
         List<Rect> list = new ArrayList<>();
         for (PageInfo page : visiblePages) {
-            list.add(RectUtils.toRect(page.getDisplayRect()));
+            Rect r = RectUtils.toRect(page.getDisplayRect());
+            r.intersect(visibleDrawRect);
+            list.add(r);
         }
         return list;
     }
+
 }
