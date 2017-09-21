@@ -126,6 +126,7 @@
         <item>@string/device_setting_automatic_shut_down</item>
         <item>@string/device_setting_language_settings</item>
         <item>@string/device_setting_device_information</item>
+        <item>@string/device_setting_user_info</item>
     </string-array>
 
     <string-array name="device_setting_page_refreshes">

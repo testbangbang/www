@@ -29,6 +29,7 @@ import com.onyx.android.dr.event.UpdateVoiceStatusEvent;
 import com.onyx.android.dr.event.WebViewLoadOverEvent;
 import com.onyx.android.dr.interfaces.ActionSelectListener;
 import com.onyx.android.dr.util.Utils;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
 import com.onyx.android.sdk.dict.data.DictionaryProviderBase;
 import com.onyx.android.sdk.dict.data.DictionaryQueryResult;
@@ -80,12 +81,6 @@ public class AutoPagedWebView extends WebView {
     List<String> actionList = new ArrayList<>();
     private ActionSelectListener actionSelectListener;
 
-    public void enableA2ForSpecificView(View view) {
-    }
-
-    public void disableA2ForSpecificView(View view) {
-    }
-
     private String headwordSoundPath = null;
     private List<Set<DictionaryQueryResult>> resultList = new ArrayList<Set<DictionaryQueryResult>>();
     private List<String> pathList = new ArrayList<String>();
@@ -111,7 +106,6 @@ public class AutoPagedWebView extends WebView {
 
     @Override
     public void destroy() {
-        enableA2ForSpecificView(this);
         super.destroy();
     }
 
@@ -431,7 +425,7 @@ public class AutoPagedWebView extends WebView {
                 }
             });
         }
-        disableA2ForSpecificView(this);
+        EpdController.disableA2ForSpecificView(this);
     }
 
     public void setPageChangedListener(final PageChangedListener l) {

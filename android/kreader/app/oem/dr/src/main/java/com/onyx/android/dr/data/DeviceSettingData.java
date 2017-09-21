@@ -88,6 +88,7 @@ public class DeviceSettingData {
 
     public void initDeviceSettingViewEvent(final Context context) {
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_page_refreshes), new DeviceSettingViewBaseEvent.DeviceSettingPageRefreshEvent());
+        deviceSettingViewEvents.put(context.getString(R.string.device_setting_user_info), new DeviceSettingViewBaseEvent.DeviceSettingUserInfoEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_lock_screen_time), new DeviceSettingViewBaseEvent.DeviceSettingLockScreenTimeEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_automatic_shut_down), new DeviceSettingViewBaseEvent.DeviceSettingAutomaticShutDownEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_language_settings), new DeviceSettingViewBaseEvent.DeviceSettingLanguageSettingsEvent());

@@ -373,6 +373,7 @@
     <string name="device_setting_automatic_shut_down">自动关机</string>
     <string name="device_setting_language_settings">语言设置</string>
     <string name="device_setting_device_information">设备信息</string>
+    <string name="device_setting_user_info">用户信息</string>
     <string name="device_setting_one_page">1 页</string>
     <string name="device_setting_ten_pages">10 页</string>
     <string name="device_setting_twenty_pages">20 页</string>

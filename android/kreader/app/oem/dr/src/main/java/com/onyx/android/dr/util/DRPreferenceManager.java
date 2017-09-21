@@ -118,4 +118,9 @@ public class DRPreferenceManager extends PreferenceManager {
         }
         return false;
     }
+
+    public static void cleanUserInfo(Context context){
+        saveUserAccount(context,"");
+        saveUserPassword(context,"");
+    }
 }

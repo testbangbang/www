@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -343,6 +344,15 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPageRefreshEvent(DeviceSettingViewBaseEvent.DeviceSettingPageRefreshEvent event) {
         updateDeviceSettingPage(R.id.setting_page_refresh);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeviceSettingUserInfoEvent(DeviceSettingViewBaseEvent.DeviceSettingUserInfoEvent event){
+        if(DRApplication.getInstance().isLoginSuccess()){
+            ActivityManager.startUserInfoActivity(DRApplication.getInstance().getBaseContext());
+        }else{
+            ActivityManager.startLoginActivity(DRApplication.getInstance().getBaseContext());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
