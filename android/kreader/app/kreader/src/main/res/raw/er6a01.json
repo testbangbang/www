@@ -2,6 +2,7 @@
     "ttsEnabled" : false,
     "hasFrontLight" : false,
     "disableNoteFunc" : true,
+    "showChineseFontFace": false,
     "regalEnable" : false,
     "keyBinding": {
         "HandlerManager": {

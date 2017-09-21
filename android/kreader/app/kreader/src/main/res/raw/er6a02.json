@@ -5,6 +5,7 @@
     "hasFrontLight" : true,
     "disableNoteFunc" : true,
     "regalEnable" : true,
+    "showChineseFontFace": false,
     "keyBinding": {
         "HandlerManager": {
             "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
