@@ -25,7 +25,6 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
     private List<SearchGroupBean> dataList;
     private OnItemClickListener onItemClickListener;
     private JoinGroupPresenter presenter;
-    private int length = 100;
 
     public void setDataList(List<SearchGroupBean> dataList, JoinGroupPresenter presenter) {
         this.dataList = dataList;

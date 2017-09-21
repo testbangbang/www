@@ -106,6 +106,14 @@ public class DRPreferenceManager extends PreferenceManager {
         setStringValue(context, Constants.SEARCH_KEYWORD, bookshelfType);
     }
 
+    public static String getExitGroupPosition(Context context, String defaultValue) {
+        return getStringValue(context, Constants.SEARCH_KEYWORD, defaultValue);
+    }
+
+    public static void saveExitGroupPosition(Context context, String bookshelfType) {
+        setStringValue(context, Constants.SEARCH_KEYWORD, bookshelfType);
+    }
+
     public static boolean getAutoLogin(Context context, boolean defaultValue) {
         return getBooleanValue(context, Constants.AUTO_LOGIN_FLAG, defaultValue);
     }

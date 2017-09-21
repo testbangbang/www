@@ -69,7 +69,6 @@ public class ExitGroupActivity extends BaseActivity implements ExitGroupView {
     @Override
     protected void initData() {
         exitGroupPresenter = new ExitGroupPresenter(this);
-        exitGroupPresenter.getAllGroup();
         groupList = new ArrayList<>();
         listCheck = new ArrayList<>();
         initTitleData();

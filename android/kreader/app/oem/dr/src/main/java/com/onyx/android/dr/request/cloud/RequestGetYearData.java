@@ -12,7 +12,7 @@ import retrofit2.Response;
  */
 
 public class RequestGetYearData extends BaseCloudRequest {
-    private CreateGroupCommonBean groups;
+    private CreateGroupCommonBean groups = new CreateGroupCommonBean();
     private final String parentId;
 
     public RequestGetYearData(String parent){

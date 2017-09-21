@@ -10,12 +10,12 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class DeleteGroupMemberRequest extends BaseCloudRequest {
+public class RequestExitGroup extends BaseCloudRequest {
     private final DeleteGroupMemberBean bean;
     private final String id;
     private DeleteGroupMemberBean result;
 
-    public DeleteGroupMemberRequest(String id, DeleteGroupMemberBean bean) {
+    public RequestExitGroup(String id, DeleteGroupMemberBean bean) {
         this.id = id;
         this.bean = bean;
     }
@@ -26,13 +26,13 @@ public class DeleteGroupMemberRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        getDeleteGroupMemberState(parent);
+        getMyGroup(parent);
     }
 
-    private void getDeleteGroupMemberState(CloudManager parent) {
+    private void getMyGroup(CloudManager parent) {
         try {
-            Response<DeleteGroupMemberBean> response = executeCall(ServiceFactory.getContentService(
-                    parent.getCloudConf().getApiBase()).deleteGroupMember(id, bean));
+            Response<DeleteGroupMemberBean> response = executeCall(ServiceFactory.getContentService(parent.
+                    getCloudConf().getApiBase()).deleteGroup(id, bean));
             if (response != null) {
                 result = response.body();
             }

@@ -7,11 +7,12 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ManageGroupAdapter;
-import com.onyx.android.dr.bean.GroupMemberBean;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.interfaces.ManageGroupView;
 import com.onyx.android.dr.presenter.ManageGroupPresenter;
+import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
+import com.onyx.android.sdk.data.model.v2.AllGroupBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -35,7 +36,7 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
     PageRecyclerView recyclerView;
     private ManageGroupPresenter presenter;
     private ManageGroupAdapter manageGroupAdapter;
-    private List<GroupMemberBean> groupList;
+    private List<AllGroupBean> groupList;
 
     @Override
     protected Integer getLayoutId() {
@@ -59,7 +60,7 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
     @Override
     protected void initData() {
         presenter = new ManageGroupPresenter(this);
-        presenter.getGroupMember();
+        presenter.getAllGroup();
         groupList = new ArrayList<>();
         initTitleData();
         initEvent();
@@ -71,36 +72,37 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
     }
 
     @Override
-    public void setGroupMemberResult(List<GroupMemberBean> list) {
+    public void setGroupMemberResult(List<AllGroupBean> list) {
         if (list == null || list.size() <= 0) {
             return;
         }
         groupList = list;
-        manageGroupAdapter.setDataList(groupList);
+        manageGroupAdapter.setDataList(this, groupList, presenter);
         recyclerView.setAdapter(manageGroupAdapter);
+    }
+
+    @Override
+    public void setExitGroupResult(DeleteGroupMemberBean result) {
+        if (result != null) {
+            CommonNotices.showMessage(this, getString(R.string.exit_success));
+            String position = DRPreferenceManager.getExitGroupPosition(this, "");
+            Integer tag = Integer.valueOf(position);
+            groupList.remove(tag);
+            manageGroupAdapter.notifyItemRemoved(tag);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.exit_failed));
+        }
     }
 
     public void initEvent() {
     }
 
-    @OnClick({R.id.image_view_back,
-            R.id.group_member_manage_activity_delete})
+    @OnClick({R.id.image_view_back})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
                 finish();
                 break;
-            case R.id.group_member_manage_activity_delete:
-                presenter.deleteGroupMember();
-                break;
-        }
-    }
-
-    @Override
-    public void setDeleteGroupMemberResult(boolean result) {
-        if (result) {
-            ActivityManager.startGroupHomePageActivity(this);
-            CommonNotices.showMessage(this, getString(R.string.delete_group_member_success));
         }
     }
 

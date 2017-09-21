@@ -57,7 +57,7 @@ public class GroupHomePageActivity extends BaseActivity {
     private void setViewByIdentity() {
         String userType = DRPreferenceManager.getUserType(this, "");
         if (userType.equals(Constants.ACCOUNT_TYPE_HIGH_SCHOOL)) {
-            createGroup.setVisibility(View.VISIBLE);
+            createGroup.setVisibility(View.GONE);
         } else {
             createGroup.setVisibility(View.VISIBLE);
         }

@@ -3,11 +3,16 @@ package com.onyx.android.dr.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.GroupMemberBean;
+import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.sdk.data.model.ChildBean;
+import com.onyx.android.sdk.data.model.v2.ListBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.ArrayList;
@@ -19,21 +24,16 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class GroupMemberAdapter extends PageRecyclerView.PageAdapter<GroupMemberAdapter.ViewHolder> implements View.OnClickListener {
-    private List<GroupMemberBean> dataList = new ArrayList<>();
-    private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
-    public int selectedPosition = -1;
+public class GroupMemberAdapter extends PageRecyclerView.PageAdapter<GroupMemberAdapter.ViewHolder> {
+    private List<ListBean> dataList = new ArrayList<>();
+    public static boolean isShow = false;
+    private List<Boolean> listCheck;
+    private OnItemClickListener onItemClickListener;
 
-    public void setMenuDataList(List<GroupMemberBean> dataList) {
-        this.dataList.addAll(dataList);
-    }
-
-    public interface OnRecyclerViewItemClickListener {
-        void onItemClick(View view, int position);
-    }
-
-    public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
-        this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
+    public void setMenuDataList(List<ListBean> dataList, List<Boolean> listCheck) {
+        this.dataList = dataList;
+        this.listCheck = listCheck;
+        notifyDataSetChanged();
     }
 
     @Override
@@ -58,36 +58,63 @@ public class GroupMemberAdapter extends PageRecyclerView.PageAdapter<GroupMember
     }
 
     @Override
-    public void onPageBindViewHolder(ViewHolder holder, int position) {
-        GroupMemberBean bean = dataList.get(position);
-        holder.tabMenuTitle.setText(bean.getMemberName());
-        holder.rootView.setTag(position);
-        if (selectedPosition == position) {
-            holder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke_focused);
-            holder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.white));
+    public void onPageBindViewHolder(final ViewHolder holder, final int position) {
+        ListBean bean = dataList.get(position);
+        ChildBean child = bean.child;
+        String userAccount = DRPreferenceManager.getUserAccount(DRApplication.getInstance(), "");
+        if (isShow) {
+            if (child.name.equals(userAccount)) {
+                holder.checkContainer.setVisibility(View.INVISIBLE);
+            }else{
+                holder.checkContainer.setVisibility(View.VISIBLE);
+            }
         } else {
-            holder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke);
-            holder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.black));
+            holder.checkContainer.setVisibility(View.INVISIBLE);
         }
-        holder.rootView.setOnClickListener(this);
+        holder.tabMenuTitle.setText(child.name);
+        holder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.black));
+        holder.checkBox.setChecked(listCheck.get(position));
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.setOnItemCheckedChanged(position, b);
+                }
+            }
+        });
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null) {
+                    if (holder.checkBox.isChecked()) {
+                        holder.checkBox.setChecked(false);
+                        onItemClickListener.setOnItemClick(position, false);
+                    } else {
+                        holder.checkBox.setChecked(true);
+                        onItemClickListener.setOnItemClick(position, true);
+                    }
+                }
+            }
+        });
     }
 
-    @Override
-    public void onClick(View v) {
-        if (v.getTag() == null) {
-            return;
-        }
-        int position = (int) v.getTag();
-        selectedPosition = position;
-        notifyDataSetChanged();
-        if (onRecyclerViewItemClickListener != null) {
-            onRecyclerViewItemClickListener.onItemClick(v, position);
-        }
+    public interface OnItemClickListener {
+        void setOnItemClick(int position, boolean isCheck);
+
+        void setOnItemCheckedChanged(int position, boolean isCheck);
+    }
+
+    public void setOnItemListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.group_member_item_name)
         TextView tabMenuTitle;
+        @Bind(R.id.group_member_item_check_container)
+        LinearLayout checkContainer;
+        @Bind(R.id.group_member_item_check)
+        CheckBox checkBox;
         View rootView;
 
         ViewHolder(View view) {

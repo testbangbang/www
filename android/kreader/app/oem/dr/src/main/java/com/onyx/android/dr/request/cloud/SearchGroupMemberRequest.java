@@ -10,20 +10,14 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class RequestGroupMember extends BaseCloudRequest {
+public class SearchGroupMemberRequest extends BaseCloudRequest {
     private final String id;
-    private final String offset;
-    private final String limit;
-    private final String sortBy;
-    private final String order;
+    private final String text;
     private GroupMemberBean groupMember = new GroupMemberBean();
 
-    public RequestGroupMember(String id, String offset, String limit, String sortBy, String order) {
+    public SearchGroupMemberRequest(String id, String text) {
         this.id = id;
-        this.offset = offset;
-        this.limit = limit;
-        this.sortBy = sortBy;
-        this.order = order;
+        this.text = text;
     }
 
     public GroupMemberBean getGroup() {
@@ -38,7 +32,7 @@ public class RequestGroupMember extends BaseCloudRequest {
     private void getMyGroup(CloudManager parent) {
         try {
             Response<GroupMemberBean> response = executeCall(ServiceFactory.getContentService(
-                    parent.getCloudConf().getApiBase()).getGroupMember(id, offset, limit, sortBy, order));
+                    parent.getCloudConf().getApiBase()).searchGroupMember(id, text));
             if (response != null) {
                 groupMember = response.body();
             }
