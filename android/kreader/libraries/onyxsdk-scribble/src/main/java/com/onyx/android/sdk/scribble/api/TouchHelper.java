@@ -210,9 +210,19 @@ public class TouchHelper {
         setLimitRect(rect, null);
     }
 
+    public void setLimitRect(List<Rect> rectList) {
+        setLimitRect(rectList, null);
+    }
+
     public TouchHelper setLimitRect(Rect limitRect, List<Rect> excludeRectList) {
         getTouchReader().setLimitRect(limitRect);
         getRawInputManager().setLimitRect(limitRect, excludeRectList);
+        return this;
+    }
+
+    public TouchHelper setLimitRect(List<Rect> limitRectList, List<Rect> excludeRectList) {
+        getTouchReader().setLimitRect(limitRectList);
+        getRawInputManager().setLimitRect(limitRectList, excludeRectList);
         return this;
     }
 
