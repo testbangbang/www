@@ -75,4 +75,7 @@ public class FlushNoteAction extends BaseAction {
         return pauseNote;
     }
 
+    public void setPauseNote(boolean pauseNote) {
+        this.pauseNote = pauseNote;
+    }
 }
