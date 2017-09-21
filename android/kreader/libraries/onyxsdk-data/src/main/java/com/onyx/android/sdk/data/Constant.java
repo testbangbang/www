@@ -67,4 +67,10 @@ public class Constant {
     public static final String REMOVE_COMMENT_ID = "comment";
     public static final String PHONE_TAG = "phone";
     public static final String PARENT_TAG = "parent";
+    public static final String OFFSET_TAG = "offset";
+    public static final String LIMIT_TAG = "limit";
+    public static final String SORTBY_TAG = "sortBy";
+    public static final String ORDER_TAG = "order";
+    public static final String USERS_TAG = "users";
+    public static final String GROUPS_TAG = "groups";
 }

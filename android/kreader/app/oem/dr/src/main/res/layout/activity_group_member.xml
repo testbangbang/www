@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/group_result_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/group_member_activity_all_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/join_group_activity_all_number_padding"
+            android:text="@string/member_number"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <RelativeLayout
+            android:id="@+id/group_member_activity_search_container"
+            android:layout_width="@dimen/group_member_activity_member_name_width"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerVertical="true">
+
+            <EditText
+                android:id="@+id/group_member_activity_member_name"
+                style="@style/dict_query_edittext"
+                android:layout_width="@dimen/group_member_activity_member_name_width"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignTop="@+id/activity_word_query_search"
+                android:padding="@dimen/activity_query_word_padding" />
+
+            <ImageView
+                android:id="@+id/group_member_activity_search"
+                style="@style/image_style" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/group_member_manage_activity_delete"
+            style="@style/new_word_notebook_textview_style"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/group_member_manage_activity_delete_padding"
+            android:text="@string/manage" />
+
+    </RelativeLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/group_member_manage_activity_recycler_view_margin_top"
+        android:orientation="vertical">
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/group_member_manage_activity_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+</LinearLayout>

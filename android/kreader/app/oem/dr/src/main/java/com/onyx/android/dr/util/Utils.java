@@ -1,6 +1,7 @@
 package com.onyx.android.dr.util;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
@@ -960,5 +961,15 @@ public class Utils {
     public static void movingCursor(EditText editText) {
         Editable eText = editText.getText();
         Selection.setSelection(eText, eText.length());
+    }
+
+    public static void setDialogAttributes(Dialog dialog) {
+        WindowManager.LayoutParams attributes = dialog.getWindow().getAttributes();
+        Float heightProportion = Float.valueOf(DRApplication.getInstance().getString(R.string.speech_recording_activity_dialog_height));
+        Float widthProportion = Float.valueOf(DRApplication.getInstance().getString(R.string.speech_recording_activity_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
+        dialog.getWindow().setAttributes(attributes);
+        dialog.show();
     }
 }

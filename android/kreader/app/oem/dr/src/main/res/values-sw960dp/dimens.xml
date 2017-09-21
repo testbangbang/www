@@ -306,7 +306,19 @@
     <dimen name="change_password_result_drawable_padding">20dp</dimen>
     <dimen name="forget_password_name_margin_top">210dp</dimen>
     <dimen name="group_manager_activity_manager_container_width">100dp</dimen>
+    <dimen name="group_member_manage_activity_recycler_view_margin_top">20dp</dimen>
+    <dimen name="join_group_activity_all_number_padding">10dp</dimen>
+    <dimen name="group_member_activity_member_name_width">300dp</dimen>
+    <dimen name="group_member_manage_activity_delete_padding">10dp</dimen>
+    <dimen name="group_member_item_check_margin_left">20dp</dimen>
+    <dimen name="group_member_item_name_padding">20dp</dimen>
+    <dimen name="group_member_item_name_margin_left">10dp</dimen>
     <dimen name="library_item_read_progress_margin_left">132dp</dimen>
+    <dimen name="user_info_exit_margin_left">20dp</dimen>
+    <dimen name="user_info_exit_margin_bottom">20dp</dimen>
+    <dimen name="user_info_exit_margin_right">20dp</dimen>
+    <dimen name="user_info_exit_padding">5dp</dimen>
+    <dimen name="user_info_user_name_margin_top">15dp</dimen>
     <dimen name="item_summary_list_height">60dp</dimen>
 </resources>
 

@@ -373,6 +373,7 @@
     <string name="device_setting_automatic_shut_down">自动关机</string>
     <string name="device_setting_language_settings">语言设置</string>
     <string name="device_setting_device_information">设备信息</string>
+    <string name="device_setting_user_info">用户信息</string>
     <string name="device_setting_one_page">1 页</string>
     <string name="device_setting_ten_pages">10 页</string>
     <string name="device_setting_twenty_pages">20 页</string>
@@ -599,6 +600,17 @@
     <string name="news">消息</string>
     <string name="group_manager_activity_manage_group">管理群组</string>
     <string name="examine">查看</string>
+    <string name="manage">管理</string>
+    <string name="member_number">组员人数: </string>
+    <string name="people_unit">人</string>
+    <string name="delete_group_member_hint">是否删除选中组员，操作不可恢复</string>
+    <string name="input_search_group_member_name">输入要搜索的群组成员名</string>
+    <string name="group_member">组员</string>
+    <string name="group_state_exit">退出</string>
+    <string name="exit_success">退出成功</string>
+    <string name="delete_group_member_failed">删除群组成员失败</string>
+    <string name="exit_failed">退出失败</string>
+    <string name="exit_group_hint">是否退出群组，操作不可恢复</string>
     <string name="time">时间</string>
     <string name="book_name">书名</string>
     <string name="page_number">页码</string>

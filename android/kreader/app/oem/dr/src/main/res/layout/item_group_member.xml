@@ -1,14 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="@dimen/tab_speech_time_padding">
+    android:background="@drawable/rectangle_stroke"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/group_member_item_check_container"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:visibility="invisible"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/group_member_item_check"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="@dimen/group_member_item_check_margin_left"
+            android:scaleX="1.0"
+            android:scaleY="1.0"
+            android:src="@color/white" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/group_member_item_name"
-        style="@style/text_view_second_style"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/group_member_item_name_margin_left"
+        android:layout_gravity="center_vertical"
+        android:text="@string/one_minute"
         android:textColor="@color/tab_text_color_selector"
-        android:text="@string/one_minute"/>
+        android:textSize="@dimen/level_two_font_size" />
 
 </LinearLayout>

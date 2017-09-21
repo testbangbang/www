@@ -32,9 +32,14 @@ public class SilentInstall {
         } catch (Exception e) {
             Log.e(TAG, "", e);
         } finally {
-            if (process != null) {
+            try {
+                if (process != null) {
+                    process.exitValue();
+                }
+            } catch (IllegalThreadStateException e) {
                 process.destroy();
             }
+
         }
         return false;
     }

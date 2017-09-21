@@ -22,6 +22,7 @@ import android.os.StatFs;
 import android.util.Log;
 
 import java.io.BufferedReader;
+import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -89,8 +90,16 @@ public class StorageSizeUtil {
             paths.add(extFile.getAbsolutePath());
         }
         try {
-            Runtime runtime = Runtime.getRuntime();
-            Process process = runtime.exec("mount");
+            Process process = Runtime.getRuntime().exec("sh");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            String command = "mount";
+            os.write(command.getBytes());
+            os.writeBytes("\n");
+            os.flush();
+
+            os.writeBytes("exit\n");
+            os.flush();
+
             InputStream is = process.getInputStream();
             InputStreamReader isr = new InputStreamReader(is);
             BufferedReader br = new BufferedReader(isr);

@@ -1,5 +1,6 @@
 package com.onyx.android.dr.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,8 +8,15 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.GroupMemberBean;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.dialog.AlertInfoDialog;
+import com.onyx.android.dr.presenter.ManageGroupPresenter;
+import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.util.Utils;
+import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
+import com.onyx.android.sdk.data.model.v2.AllGroupBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -19,11 +27,19 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 2017/8/31.
  */
 public class ManageGroupAdapter extends PageRecyclerView.PageAdapter<ManageGroupAdapter.ViewHolder> {
-    private List<GroupMemberBean> dataList;
+    private List<AllGroupBean> dataList;
     private OnItemClickListener onItemClickListener;
+    private String groupOwner = "creator";
+    private String groupMember = "user";
+    private String tag = "";
+    private ManageGroupPresenter presenter;
+    private Context context;
+    private AlertInfoDialog alertDialog;
 
-    public void setDataList(List<GroupMemberBean> dataList) {
+    public void setDataList(Context context, List<AllGroupBean> dataList, ManageGroupPresenter presenter) {
         this.dataList = dataList;
+        this.presenter = presenter;
+        this.context = context;
     }
 
     @Override
@@ -49,10 +65,56 @@ public class ManageGroupAdapter extends PageRecyclerView.PageAdapter<ManageGroup
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        GroupMemberBean bean = dataList.get(position);
+        final AllGroupBean bean = dataList.get(position);
+        holder.serialNumber.setText(String.valueOf(position + 1));
+        holder.groupName.setText(bean.name);
+        if (bean.role.equals(groupOwner)) {
+            holder.identity.setText(DRApplication.getInstance().getString(R.string.group_owner));
+            holder.state.setText(DRApplication.getInstance().getResources().getString(R.string.examine));
+        } else if(bean.role.equals(groupMember)) {
+            holder.identity.setText(DRApplication.getInstance().getString(R.string.group_member));
+            holder.state.setText(DRApplication.getInstance().getResources().getString(R.string.group_state_exit));
+        }
+        holder.peopleNumber.setText(bean.usersCount + tag);
+        if (StringUtils.isNullOrEmpty(bean.applyCount + tag) || bean.applyCount == 0) {
+            holder.news.setText(DRApplication.getInstance().getString(R.string.device_setting_no));
+        } else {
+            holder.news.setText(bean.applyCount + tag);
+        }
         holder.state.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String text = holder.state.getText().toString();
+                if (text.equals(DRApplication.getInstance().getResources().getString(R.string.examine))){
+                    ActivityManager.startGroupMemberActivity(DRApplication.getInstance(), bean._id);
+                }else if (text.equals(DRApplication.getInstance().getResources().getString(R.string.group_state_exit))){
+                    showDialog(bean._id, position);
+                }
+            }
+        });
+    }
+
+    private void showDialog(final String childId, final int position) {
+        alertDialog = new AlertInfoDialog(context, context.getString(R.string.exit_group_hint), true,
+                context.getResources().getString(R.string.dialog_button_confirm), context.getResources().getString(R.string.dialog_button_cancel));
+        Utils.setDialogAttributes(alertDialog);
+        alertDialog.setOKOnClickListener(new AlertInfoDialog.OnOKClickListener() {
+            @Override
+            public void onOKClick(int value) {
+                String parentId = DRPreferenceManager.loadParentId(DRApplication.getInstance(), "");
+                DeleteGroupMemberBean deleteGroupMemberBean = new DeleteGroupMemberBean();
+                String[] array = new String[]{childId};
+                deleteGroupMemberBean.setGroups(array);
+                presenter.exitGroup(parentId, deleteGroupMemberBean);
+                DRPreferenceManager.saveExitGroupPosition(context, position + tag);
+            }
+        });
+        alertDialog.setCancelOnClickListener(new AlertInfoDialog.OnCancelClickListener() {
+            @Override
+            public void onCancelClick() {
+                if (alertDialog.isShowing()) {
+                    alertDialog.dismiss();
+                }
             }
         });
     }

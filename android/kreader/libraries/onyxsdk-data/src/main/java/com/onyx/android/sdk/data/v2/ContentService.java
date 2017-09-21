@@ -2,24 +2,26 @@ package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 import com.onyx.android.sdk.data.model.GroupNameExistBean;
 import com.onyx.android.sdk.data.model.ProductCart;
 import com.onyx.android.sdk.data.model.ProductOrder;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.v2.AddCommentRequestBean;
+import com.onyx.android.sdk.data.model.v2.AllGroupBean;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
-import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
-import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
+import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
+import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
-import com.onyx.android.sdk.data.model.v2.NewPassword;
 import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
+import com.onyx.android.sdk.data.model.v2.NewPassword;
 import com.onyx.android.sdk.data.model.v2.PayBean;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
 import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
@@ -118,6 +120,25 @@ public interface ContentService {
 
     @GET("books/search")
     Call<QueryResult<CloudMetadata>> search(@Query(Constant.TEXT_TAG) final String text);
+
+    @GET("/api/groups/me")
+    Call<List<AllGroupBean>> getAllGroups();
+
+    @GET("/api/groups/{id}/users")
+    Call<GroupMemberBean> getGroupMember(@Path(Constant.ID_TAG) final String id,
+                                         @Query(Constant.OFFSET_TAG) final String offset,
+                                         @Query(Constant.LIMIT_TAG) final String limit,
+                                         @Query(Constant.SORTBY_TAG) final String sortBy,
+                                         @Query(Constant.ORDER_TAG) final String order);
+
+    @GET("/api/groups/{id}/searchUsers")
+    Call<GroupMemberBean> searchGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.TEXT_TAG) final String offset);
+
+    @DELETE("/api/groups/{id}/users")
+    Call<DeleteGroupMemberBean> deleteGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.USERS_TAG) final DeleteGroupMemberBean bean);
+
+    @DELETE("/api/users/{id}/leaveGroups")
+    Call<DeleteGroupMemberBean> deleteGroup(@Path(Constant.ID_TAG) final String id, @Query(Constant.GROUPS_TAG) final DeleteGroupMemberBean bean);
 
     @POST("/api/impressions")
     Call<CreateBookReportResult> createImpression(@Body final CreateBookReportRequestBean bean);

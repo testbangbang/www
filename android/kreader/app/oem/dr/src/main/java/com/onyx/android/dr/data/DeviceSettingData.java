@@ -88,6 +88,7 @@ public class DeviceSettingData {
 
     public void initDeviceSettingViewEvent(final Context context) {
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_page_refreshes), new DeviceSettingViewBaseEvent.DeviceSettingPageRefreshEvent());
+        deviceSettingViewEvents.put(context.getString(R.string.device_setting_user_info), new DeviceSettingViewBaseEvent.DeviceSettingUserInfoEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_lock_screen_time), new DeviceSettingViewBaseEvent.DeviceSettingLockScreenTimeEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_automatic_shut_down), new DeviceSettingViewBaseEvent.DeviceSettingAutomaticShutDownEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_language_settings), new DeviceSettingViewBaseEvent.DeviceSettingLanguageSettingsEvent());
@@ -97,6 +98,8 @@ public class DeviceSettingData {
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_system_update), new DeviceSettingViewBaseEvent.DeviceSettingCheckUpdateEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_version_update_record), new DeviceSettingViewBaseEvent.DeviceSettingViewSystemVersionHistoryEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_model), new DeviceSettingViewBaseEvent.OpenSystemSettingEvent());
+        deviceSettingViewEvents.put(context.getString(R.string.menu_wifi_setting), new DeviceSettingViewBaseEvent.DeviceSettingWifiSettingEvent());
+
     }
 
     private void initDeviceSettingDeviceInformationExplain(final Context context) {
@@ -236,6 +239,9 @@ public class DeviceSettingData {
         deviceSettingValue.put(context.getString(R.string.device_setting_language_settings), currentSystemLanguage);
 
         deviceSettingValue.put(context.getString(R.string.device_setting_device_information), context.getString(R.string.device_setting_device_information_value));
+        deviceSettingValue.put(context.getString(R.string.device_setting_user_info),context.getString(R.string.device_setting_user_info));
+        deviceSettingValue.put(context.getString(R.string.menu_wifi_setting),context.getString(R.string.menu_wifi_setting));
+        deviceSettingValue.put(context.getString(R.string.reset),context.getString(R.string.reset));
 
         return deviceSettingValue;
     }

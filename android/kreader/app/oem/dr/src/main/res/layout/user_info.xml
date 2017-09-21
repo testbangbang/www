@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="4"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/user_info_user_head"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_user" />
+
+        <TextView
+            android:id="@+id/user_info_user_name"
+            android:layout_below="@id/user_info_user_head"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/user_info_user_name_margin_top"
+            android:gravity="top|center"
+            android:text="UserInfo"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_font_size" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5">
+
+        <TextView
+            android:id="@+id/user_info_exit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/user_info_exit_margin_bottom"
+            android:layout_marginLeft="@dimen/user_info_exit_margin_left"
+            android:layout_marginRight="@dimen/user_info_exit_margin_right"
+            android:padding="@dimen/user_info_exit_padding"
+            android:background="@drawable/background_border"
+            android:gravity="center"
+            android:text="@string/exit"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_font_size" />
+    </RelativeLayout>
+</LinearLayout>

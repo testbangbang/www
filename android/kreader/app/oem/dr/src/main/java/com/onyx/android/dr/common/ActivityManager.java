@@ -47,6 +47,7 @@ import com.onyx.android.dr.activity.ShoppingCartActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SummaryListActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
+import com.onyx.android.dr.activity.UserInfoActivity;
 import com.onyx.android.dr.activity.WifiActivity;
 import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.event.MenuWifiSettingEvent;
@@ -267,9 +268,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startGroupMemberManageActivity(Context context) {
+    public static void startGroupMemberActivity(Context context, String id) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.GROUP_ID, id);
         intent.setClass(context, GroupMemberActivity.class);
         context.startActivity(intent);
     }
@@ -449,6 +451,12 @@ public class ActivityManager {
 
     public static void startForgetPasswordActivity(Context context) {
         Intent intent = new Intent(context, ForgetPasswordActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startUserInfoActivity(Context context) {
+        Intent intent = new Intent(context, UserInfoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

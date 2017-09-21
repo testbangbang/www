@@ -1,8 +1,8 @@
 package com.onyx.android.dr.data;
 
 import com.onyx.android.dr.DRApplication;
-import com.onyx.android.dr.request.cloud.DeleteGroupMemberRequest;
-import com.onyx.android.dr.request.cloud.RequestGroupMember;
+import com.onyx.android.dr.request.cloud.RequestAllGroup;
+import com.onyx.android.dr.request.cloud.RequestExitGroup;
 import com.onyx.android.sdk.common.request.BaseCallback;
 
 
@@ -11,11 +11,11 @@ import com.onyx.android.sdk.common.request.BaseCallback;
  */
 public class ManageGroupData {
 
-    public void requestGroupMember(RequestGroupMember req, BaseCallback baseCallback) {
+    public void requestAllGroup(RequestAllGroup req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 
-    public void requestDeleteGroupMember(DeleteGroupMemberRequest req, BaseCallback baseCallback) {
+    public void requestExitGroup(RequestExitGroup req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 }

@@ -17,7 +17,6 @@ import android.os.PowerManager.WakeLock;
 import android.provider.MediaStore;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -25,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
@@ -241,7 +239,7 @@ public class SpeechRecordingActivity extends BaseActivity
     private void settingSpeechTime() {
         alertDialog = new AlertInfoDialog(this, getString(R.string.setting_record_time), false,
                 getResources().getString(R.string.dialog_button_confirm), getResources().getString(R.string.dialog_button_cancel));
-        setDialogAttributes();
+        Utils.setDialogAttributes(alertDialog);
         alertDialog.setOKOnClickListener(new AlertInfoDialog.OnOKClickListener() {
             @Override
             public void onOKClick(int value) {
@@ -256,16 +254,6 @@ public class SpeechRecordingActivity extends BaseActivity
                 }
             }
         });
-    }
-
-    private void setDialogAttributes() {
-        WindowManager.LayoutParams attributes = alertDialog.getWindow().getAttributes();
-        Float heightProportion = Float.valueOf(getString(R.string.speech_recording_activity_dialog_height));
-        Float widthProportion = Float.valueOf(getString(R.string.speech_recording_activity_dialog_width));
-        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
-        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
-        alertDialog.getWindow().setAttributes(attributes);
-        alertDialog.show();
     }
 
     private void recordSpeechContent() {
