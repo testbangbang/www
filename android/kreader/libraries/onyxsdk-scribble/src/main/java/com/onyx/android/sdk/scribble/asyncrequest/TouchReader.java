@@ -7,6 +7,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +22,7 @@ public class TouchReader {
     }
 
     private TouchInputCallback callback;
-    private Rect limitRect = new Rect();
+    private List<Rect> limitRectList = new ArrayList();
     private boolean inUserErasing = false;
     private boolean renderByFramework = false;
     private boolean useRawInput = false;
@@ -37,7 +38,14 @@ public class TouchReader {
     }
 
     public TouchReader setLimitRect(Rect softwareLimitRect) {
-        this.limitRect = softwareLimitRect;
+        limitRectList = new ArrayList<>();
+        limitRectList.add(softwareLimitRect);
+        return this;
+    }
+
+    public TouchReader setLimitRect(List<Rect> softwareLimitRectList) {
+        limitRectList = new ArrayList<>();
+        limitRectList.addAll(softwareLimitRectList);
         return this;
     }
 
@@ -89,7 +97,12 @@ public class TouchReader {
     }
 
     public boolean checkTouchPoint(final TouchPoint touchPoint) {
-        return limitRect.contains((int) touchPoint.x, (int) touchPoint.y);
+        for (Rect r : limitRectList) {
+            if (r.contains((int) touchPoint.x, (int) touchPoint.y)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public boolean checkTouchPointList(final TouchPointList touchPointList) {

@@ -149,7 +149,12 @@ public class NoteManager {
         }
         surfaceView = sv;
         getTouchHelper().setup(surfaceView);
-        getTouchHelper().setLimitRect(visibleDrawRect, RectUtils.toRectList(excludeRect));
+
+        List<Rect> limitRegions = getLimitRegionOfVisiblePages();
+        for (Rect r : limitRegions) {
+            r.intersect(visibleDrawRect);
+        }
+        getTouchHelper().setLimitRect(limitRegions, RectUtils.toRectList(excludeRect));
     }
 
     public final TouchHelper getTouchHelper() {
@@ -314,6 +319,8 @@ public class NoteManager {
     public void setVisiblePages(final List<PageInfo> list) {
         visiblePages.clear();
         visiblePages.addAll(list);
+
+        getTouchHelper().setLimitRect(getLimitRegionOfVisiblePages());
     }
 
     public final RenderContext getRenderContext() {
@@ -389,5 +396,13 @@ public class NoteManager {
 
     public TouchPoint getEraserPoint() {
         return shapeEventHandler.getEraserPoint();
+    }
+
+    private List<Rect> getLimitRegionOfVisiblePages() {
+        List<Rect> list = new ArrayList<>();
+        for (PageInfo page : visiblePages) {
+            list.add(RectUtils.toRect(page.getDisplayRect()));
+        }
+        return list;
     }
 }
