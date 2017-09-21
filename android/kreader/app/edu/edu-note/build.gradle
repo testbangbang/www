@@ -78,5 +78,5 @@ dependencies {
     annotationProcessor  'org.greenrobot:eventbus-annotation-processor:3.0.1'
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
-    compile 'com.google.android:flexbox:0.3.0'
+    compile "com.google.android:flexbox:$rootProject.flexboxVersion"
 }

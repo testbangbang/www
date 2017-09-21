@@ -65,6 +65,10 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    dataBinding {
+        enabled = true
+    }
 }
 
 apt {
@@ -100,6 +104,7 @@ dependencies {
     compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
     compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
     compile "com.github.PhilJay:MPAndroidChart:v$rootProject.mpAndroidChart"
+    compile "com.google.android:flexbox:$rootProject.flexboxVersion"
 
     debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
     releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"

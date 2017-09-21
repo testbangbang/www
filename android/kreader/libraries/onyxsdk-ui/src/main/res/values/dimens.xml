@@ -102,4 +102,7 @@
     <dimen name="light_settings_rating_bar_minHeight">64px</dimen>
     <dimen name="light_settings_rating_bar_maxHeight">64px</dimen>
     <dimen name="popup_selection_menu_image_view_padding">4dp</dimen>
+
+    <dimen name="menu_item_padding_left_right">6dp</dimen>
+    <dimen name="menu_item_padding_top_bottom">4dp</dimen>
 </resources>

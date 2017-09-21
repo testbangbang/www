@@ -24,12 +24,14 @@ public class MenuItem extends BaseObservable {
     public ObservableInt menuIcon = new ObservableInt(android.R.color.transparent);
     public ObservableField<String> text = new ObservableField<>();
     public ObservableInt width = new ObservableInt(200);
+    public ObservableInt rotation = new ObservableInt(0);
     public ObservableBoolean enabled = new ObservableBoolean(true);
     // work when parent layout is FlexboxLayout
     public ObservableInt layoutColumns = new ObservableInt();
 
     private EventBus eventBus;
     private int menuId;
+    private int parentMenuId;
 
     public MenuItem(int visibility) {
         setVisibility(visibility);
@@ -69,6 +71,11 @@ public class MenuItem extends BaseObservable {
         return this;
     }
 
+    public MenuItem setRotation(int rotation) {
+        this.rotation.set(rotation);
+        return this;
+    }
+
     public MenuItem setLayoutColumns(int layoutColumns) {
         this.layoutColumns.set(layoutColumns);
         return this;
@@ -77,6 +84,15 @@ public class MenuItem extends BaseObservable {
     public MenuItem setEventBus(EventBus eventBus) {
         this.eventBus = eventBus;
         return this;
+    }
+
+    public MenuItem setParentMenuId(int parentMenuId) {
+        this.parentMenuId = parentMenuId;
+        return this;
+    }
+
+    public int getParentMenuId() {
+        return parentMenuId;
     }
 
     public void setWidth(int width) {
@@ -89,6 +105,10 @@ public class MenuItem extends BaseObservable {
 
     public static MenuItem createVisibleMenu() {
         return new MenuItem(View.VISIBLE);
+    }
+
+    public static MenuItem createSubVisibleMenu(int parentId) {
+        return new MenuItem(View.VISIBLE).setParentMenuId(parentId);
     }
 
     public static MenuItem createVisibleMenu(String text) {
@@ -107,6 +127,14 @@ public class MenuItem extends BaseObservable {
         return menuItems;
     }
 
+    public static SparseArray<MenuItem> createSubVisibleMenus(List<Integer> menuIds, int parentId) {
+        SparseArray<MenuItem> menuItems = new SparseArray<>();
+        for (Integer id : menuIds) {
+            menuItems.put(id, createSubVisibleMenu(parentId));
+        }
+        return menuItems;
+    }
+
     public static SparseArray<MenuItem> createVisibleMenus(List<Integer> menuIds, int columns) {
         SparseArray<MenuItem> menuItems = new SparseArray<>();
         for (Integer id : menuIds) {
@@ -119,6 +147,6 @@ public class MenuItem extends BaseObservable {
 
 
     public void menuClicked(View view) {
-        eventBus.post(MenuClickEvent.create(view, menuId));
+        eventBus.post(MenuClickEvent.create(view, menuId, parentMenuId));
     }
 }
