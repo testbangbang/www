@@ -135,9 +135,7 @@ public class TouchHelper {
     }
 
     private void setupRawInputManager(final View view) {
-        getRawInputManager()
-                .setHostView(view)
-                .setLimitRect(view);
+        getRawInputManager().setHostView(view);
     }
 
     public boolean checkTouchPoint(final TouchPoint touchPoint) {
@@ -168,7 +166,7 @@ public class TouchHelper {
         return this;
     }
 
-    public TouchHelper initRawDrawing() {
+    public TouchHelper createRawDrawing() {
         getRawInputManager().startRawInputReader();
         getEpdPenManager().startDrawing();
         return this;
@@ -190,7 +188,7 @@ public class TouchHelper {
     }
 
     public void startRawDrawing() {
-        initRawDrawing();
+        createRawDrawing();
         resumeRawDrawing();
     }
 

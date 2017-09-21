@@ -272,7 +272,7 @@ public class NoteManager {
     public void setView(final SurfaceView surfaceView) {
         getViewHelper().setHostView(surfaceView);
         getTouchHelper().setup(surfaceView);
-        getTouchHelper().initRawDrawing();
+        getTouchHelper().createRawDrawing();
         //TODO:add onTouch Here,if need can move to handler.
         surfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
