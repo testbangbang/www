@@ -84,7 +84,7 @@ public class NoteManager {
     }
 
     public void startRawEventProcessor() {
-        getTouchHelper().startRawDrawing();
+        getTouchHelper().initRawDrawing();
     }
 
     public void enableRawEventProcessor(boolean enable) {
@@ -96,7 +96,7 @@ public class NoteManager {
 
     public void stopRawEventProcessor() {
         releaseWakeLock();
-        getTouchHelper().quitRawDrawing();
+        getTouchHelper().destroyRawDrawing();
     }
 
     public void pauseRawEventProcessor() {

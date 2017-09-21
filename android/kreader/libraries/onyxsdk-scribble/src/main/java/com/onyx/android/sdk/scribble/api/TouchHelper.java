@@ -168,10 +168,15 @@ public class TouchHelper {
         return this;
     }
 
-    public TouchHelper startRawDrawing() {
+    public TouchHelper initRawDrawing() {
         getRawInputManager().startRawInputReader();
         getEpdPenManager().startDrawing();
         return this;
+    }
+
+    public void destroyRawDrawing() {
+        getRawInputManager().quitRawInputReader();
+        getEpdPenManager().quitDrawing();
     }
 
     public void pauseRawDrawing() {
@@ -184,9 +189,14 @@ public class TouchHelper {
         getEpdPenManager().resumeDrawing();
     }
 
-    public void quitRawDrawing() {
-        getRawInputManager().quitRawInputReader();
-        getEpdPenManager().quitDrawing();
+    public void startRawDrawing() {
+        initRawDrawing();
+        resumeRawDrawing();
+    }
+
+    public void stopRawDrawing() {
+        pauseRawDrawing();
+        destroyRawDrawing();
     }
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
@@ -195,7 +205,7 @@ public class TouchHelper {
 
     public void quit() {
         pauseRawDrawing();
-        quitRawDrawing();
+        destroyRawDrawing();
     }
 
     public void setLimitRect(Rect rect) {
