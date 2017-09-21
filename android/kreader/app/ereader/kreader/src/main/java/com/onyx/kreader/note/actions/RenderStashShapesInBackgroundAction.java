@@ -29,6 +29,7 @@ public class RenderStashShapesInBackgroundAction extends BaseAction {
         final List<Shape> stash = noteManager.detachShapeStash();
 
         final FlushShapeListRequest flushRequest = new FlushShapeListRequest(pages, stash, 0, true, true, false);
+        flushRequest.setRenderToScreen(false);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(),
                 flushRequest, baseCallback);
     }
