@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/apk_update_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/book_detail_dialog_message_margin_left"
+        android:layout_marginTop="@dimen/book_detail_dialog_message_margin_top"
+        android:textSize="@dimen/level_two_heading_font" />
+
+    <TextView
+        android:id="@+id/apk_progress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="0%"
+        android:textSize="@dimen/level_one_font_size" />
+</LinearLayout>

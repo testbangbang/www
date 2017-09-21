@@ -12,12 +12,15 @@ import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.activity.BookDetailActivity;
+import com.onyx.android.dr.activity.BookReportDetailActivity;
+import com.onyx.android.dr.activity.BookReportListActivity;
 import com.onyx.android.dr.activity.CreateGroupActivity;
 import com.onyx.android.dr.activity.DictQueryActivity;
 import com.onyx.android.dr.activity.DictResultShowActivity;
 import com.onyx.android.dr.activity.DictSettingActivity;
 import com.onyx.android.dr.activity.EBookStoreActivity;
 import com.onyx.android.dr.activity.ExitGroupActivity;
+import com.onyx.android.dr.activity.ForgetPasswordActivity;
 import com.onyx.android.dr.activity.GoodSentenceNotebookActivity;
 import com.onyx.android.dr.activity.GoodSentenceTypeActivity;
 import com.onyx.android.dr.activity.GroupHomePageActivity;
@@ -42,7 +45,9 @@ import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
 import com.onyx.android.dr.activity.ShoppingCartActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
+import com.onyx.android.dr.activity.SummaryListActivity;
 import com.onyx.android.dr.activity.SystemUpdateHistoryActivity;
+import com.onyx.android.dr.activity.UserInfoActivity;
 import com.onyx.android.dr.activity.WifiActivity;
 import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.event.MenuWifiSettingEvent;
@@ -68,13 +73,14 @@ import java.io.File;
  */
 
 public class ActivityManager {
-    public static void startLoginActivity(Context context) {
+    public static boolean startLoginActivity(Context context) {
         if (enableWifiOpenAndDetect(context)) {
             CommonNotices.showMessage(context, context.getString(R.string.network_not_connected));
-            return;
+            return false;
         }
         Intent intent = new Intent(context, LoginActivity.class);
         context.startActivity(intent);
+        return true;
     }
 
     public static void startDictQueryActivity(Context context) {
@@ -170,6 +176,20 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, MemorandumActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startReadingReportActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, BookReportDetailActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startReadingReportListActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, BookReportListActivity.class);
         context.startActivity(intent);
     }
 
@@ -431,6 +451,22 @@ public class ActivityManager {
 
     public static void startShoppingCartActivity(Context context) {
         Intent intent = new Intent(context, ShoppingCartActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startForgetPasswordActivity(Context context) {
+        Intent intent = new Intent(context, ForgetPasswordActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startUserInfoActivity(Context context) {
+        Intent intent = new Intent(context, UserInfoActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startSummaryListActivity(Context context) {
+        Intent intent = new Intent(context, SummaryListActivity.class);
         context.startActivity(intent);
     }
 }

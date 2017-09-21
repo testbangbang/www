@@ -373,6 +373,7 @@
     <string name="device_setting_automatic_shut_down">自动关机</string>
     <string name="device_setting_language_settings">语言设置</string>
     <string name="device_setting_device_information">设备信息</string>
+    <string name="device_setting_user_info">用户信息</string>
     <string name="device_setting_one_page">1 页</string>
     <string name="device_setting_ten_pages">10 页</string>
     <string name="device_setting_twenty_pages">20 页</string>
@@ -403,7 +404,7 @@
     <string name="device_setting_check_system_update">检查更新</string>
     <string name="system_update">系统更新</string>
     <string name="update_the_system_firmware">更新系统固件</string>
-    <string name="bookstore_update">书城更新</string>
+    <string name="bookstore_update">书城更新(下载完后会自动重启升级)</string>
     <string name="update_bookstore_application">更新书城应用</string>
     <string name="device_setting_page_refreshes_value">每%1$s刷新一次屏幕</string>
     <string name="device_setting_page_refresh_rate">页面刷新频率</string>
@@ -484,7 +485,7 @@
     <string name="forget_password">忘记密码</string>
     <string name="auto_login">下次自动登录</string>
     <string name="login_title">欢迎使用Deep Reader</string>
-    <string name="confirm_password">确认密码</string>
+    <string name="confirm_password">*确认密码</string>
     <string name="two_passwords_are_not_consistent">两次密码输入不一致</string>
     <string name="small_language">小语种</string>
     <string name="classification_bookshelf">类别书架</string>
@@ -514,7 +515,7 @@
     <string name="pronounce_evaluation_hint">第三方App，待提供</string>
     <string name="start_record">开始录音</string>
     <string name="fragment_speech_recording_hint">小提示：仅可调用自己的随笔文件</string>
-    <string name="fragment_speech_recording_all_number">共计:</string>
+    <string name="fragment_speech_recording_all_number">共计:%d</string>
     <string name="join_group_activity_all_number">搜索结果: 共</string>
     <string name="data_unit">条</string>
     <string name="hint_input_search_word">请输入搜索的关键字</string>
@@ -562,6 +563,14 @@
     <string name="select_most_dict">最多可选择四本字典</string>
     <string name="font">字体</string>
     <string name="remove_from_cart_message">是否从购物车中删除书籍?</string>
+    <string name="is_save_content">是否保存内容？</string>
+    <string name="book_report_list_time">时间</string>
+    <string name="book_report_list_book_name">书名</string>
+    <string name="book_report_list_pages">页码</string>
+    <string name="book_report_list_summary">内容概要</string>
+    <string name="book_report_list_word_count">字数</string>
+    <string name="book_report_list_manage">管理</string>
+    <string name="book_report_list_bring_out">导出</string>
     <string name="join_group_name">群组名</string>
     <string name="group_owner">群主</string>
     <string name="join">加入</string>
@@ -570,6 +579,20 @@
     <string name="write_remarks">手写备注</string>
     <string name="add_new_word">添加生词</string>
     <string name="delete_mark">删除标记</string>
+    <string name="change_password">修改密码</string>
+    <string name="phone_number">*手机号：</string>
+    <string name="verification_code">*验证码：</string>
+    <string name="get_verification_code">获取验证码</string>
+    <string name="new_password">*新密码</string>
+    <string name="change_password_succeed">恭喜您，密码修改成功</string>
+    <string name="verification_code_must_be_filled">验证码不能为空</string>
+    <string name="verification_code_expires">验证码过期超时，请重新获取</string>
+    <string name="verification_code_error">验证码错误</string>
+    <string name="the_phone_not_register">手机号未注册</string>
+    <string name="verification_code_has_been_sent">验证码已发送</string>
+    <string name="forget_password_user_name">正在找回的账号： %s</string>
+    <string name="new_password_must_be_filled">新密码不能为空</string>
+    <string name="password_input_is_inconsistent">密码输入不一致</string>
     <string name="create_group_activity_group_name_hint">该群名已存在，请重新输入</string>
     <string name="group_manager_group_name">所在组</string>
     <string name="group_manager_identity">身份</string>
@@ -588,4 +611,12 @@
     <string name="delete_group_member_failed">删除群组成员失败</string>
     <string name="exit_failed">退出失败</string>
     <string name="exit_group_hint">是否退出群组，操作不可恢复</string>
+    <string name="time">时间</string>
+    <string name="book_name">书名</string>
+    <string name="page_number">页码</string>
+    <string name="book_abstract">内容概要</string>
+    <string name="progress">进度</string>
+    <string name="current_version">  (当前版本: V%d)</string>
+    <string name="update_version">  (更新版本: V%d)</string>
+    <string name="update_content">更新内容:\n</string>
 </resources>

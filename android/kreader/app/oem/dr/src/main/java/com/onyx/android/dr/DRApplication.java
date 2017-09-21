@@ -39,6 +39,16 @@ public class DRApplication extends MultiDexApplication {
     private int cartCount;
     private DictionaryManager dictionaryManager;
     private int apkDownloadReference;
+    private boolean isLogin = false;
+
+
+    public boolean isLogin() {
+        return isLogin;
+    }
+
+    public void setLogin(boolean login) {
+        isLogin = login;
+    }
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -162,5 +172,15 @@ public class DRApplication extends MultiDexApplication {
 
     private void turnOffLed() {
         Device.currentDevice.led(this, false);
+    }
+
+    public boolean isLoginSuccess(){
+        if(isLogin()){
+            return true;
+        }
+        if(DRPreferenceManager.isSaveUserInfo(getBaseContext())){
+            return true;
+        }
+        return false;
     }
 }

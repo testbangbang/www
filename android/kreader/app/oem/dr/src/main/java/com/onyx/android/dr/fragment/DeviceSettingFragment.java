@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -346,6 +347,15 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeviceSettingUserInfoEvent(DeviceSettingViewBaseEvent.DeviceSettingUserInfoEvent event){
+        if(DRApplication.getInstance().isLoginSuccess()){
+            ActivityManager.startUserInfoActivity(DRApplication.getInstance().getBaseContext());
+        }else{
+            ActivityManager.startLoginActivity(DRApplication.getInstance().getBaseContext());
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLockScreenTimeEvent(DeviceSettingViewBaseEvent.DeviceSettingLockScreenTimeEvent event) {
         updateDeviceSettingPage(R.id.setting_lock_screen_time);
     }
@@ -389,6 +399,12 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     public void onOpenSystemSettingEvent(DeviceSettingViewBaseEvent.OpenSystemSettingEvent event) {
         openSystemSetting();
     }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeviceSettingWifiSettingEvent(DeviceSettingViewBaseEvent.DeviceSettingWifiSettingEvent event) {
+        ActivityManager.startWifiActivity(DRApplication.getInstance());
+    }
+
 
     private void openSystemSetting() {
         if (TimeUtils.getCurrentTimeInLong() > lastPressTime + Constants.RESET_PRESS_TIMEOUT) {

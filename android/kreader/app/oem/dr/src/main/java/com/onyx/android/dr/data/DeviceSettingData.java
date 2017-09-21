@@ -10,6 +10,7 @@ import com.onyx.android.dr.devicesetting.data.util.StorageSizeUtil;
 import com.onyx.android.dr.event.DeviceSettingViewBaseEvent;
 import com.onyx.android.dr.util.PowerUtil;
 import com.onyx.android.dr.util.SystemLanguage;
+import com.onyx.android.dr.util.SystemUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -87,6 +88,7 @@ public class DeviceSettingData {
 
     public void initDeviceSettingViewEvent(final Context context) {
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_page_refreshes), new DeviceSettingViewBaseEvent.DeviceSettingPageRefreshEvent());
+        deviceSettingViewEvents.put(context.getString(R.string.device_setting_user_info), new DeviceSettingViewBaseEvent.DeviceSettingUserInfoEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_lock_screen_time), new DeviceSettingViewBaseEvent.DeviceSettingLockScreenTimeEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_automatic_shut_down), new DeviceSettingViewBaseEvent.DeviceSettingAutomaticShutDownEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_language_settings), new DeviceSettingViewBaseEvent.DeviceSettingLanguageSettingsEvent());
@@ -96,6 +98,8 @@ public class DeviceSettingData {
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_system_update), new DeviceSettingViewBaseEvent.DeviceSettingCheckUpdateEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_version_update_record), new DeviceSettingViewBaseEvent.DeviceSettingViewSystemVersionHistoryEvent());
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_model), new DeviceSettingViewBaseEvent.OpenSystemSettingEvent());
+        deviceSettingViewEvents.put(context.getString(R.string.menu_wifi_setting), new DeviceSettingViewBaseEvent.DeviceSettingWifiSettingEvent());
+
     }
 
     private void initDeviceSettingDeviceInformationExplain(final Context context) {
@@ -196,9 +200,12 @@ public class DeviceSettingData {
         systemVersionInformation.isChild = true;
         systemVersionInformationList.add(systemVersionInformation);
 
+
+        int version = SystemUtils.getAPPVersionCode(context);
+        String currentVersion = String.format(DRApplication.getInstance().getString(R.string.current_version),version);
         systemVersionInformation = new SystemVersionInformation();
         systemVersionInformation.title = DRApplication.getInstance().getResources().getString(R.string.bookstore_update);
-        systemVersionInformation.information = DRApplication.getInstance().getResources().getString(R.string.update_bookstore_application);
+        systemVersionInformation.information = DRApplication.getInstance().getResources().getString(R.string.update_bookstore_application) + currentVersion;
         systemVersionInformation.isChild = true;
         systemVersionInformationList.add(systemVersionInformation);
 
@@ -232,6 +239,9 @@ public class DeviceSettingData {
         deviceSettingValue.put(context.getString(R.string.device_setting_language_settings), currentSystemLanguage);
 
         deviceSettingValue.put(context.getString(R.string.device_setting_device_information), context.getString(R.string.device_setting_device_information_value));
+        deviceSettingValue.put(context.getString(R.string.device_setting_user_info),context.getString(R.string.device_setting_user_info));
+        deviceSettingValue.put(context.getString(R.string.menu_wifi_setting),context.getString(R.string.menu_wifi_setting));
+        deviceSettingValue.put(context.getString(R.string.reset),context.getString(R.string.reset));
 
         return deviceSettingValue;
     }

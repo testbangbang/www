@@ -1,5 +1,7 @@
 package com.onyx.android.dr.activity;
 
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -28,6 +30,7 @@ import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -109,6 +112,12 @@ public class LoginActivity extends BaseActivity implements LoginView {
     EditText confirmPasswordPassword;
     @Bind(R.id.login_wifi_settings)
     ImageView loginWifiSettings;
+    @Bind(R.id.user_login_show_password)
+    ImageView showPassword;
+    @Bind(R.id.register_show_password)
+    ImageView registerShowPassword;
+    @Bind(R.id.sign_up_show_password)
+    ImageView signUpShowPassword;
 
     private LoginPresenter loginPresenter;
     private View identity_layout;
@@ -131,6 +140,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     private List<String> cityNames;
     private List<CityBean> citys;
     private List<String> zoneNames;
+    private boolean isUserShowPassword = false;
+    private boolean isRegisterShowPassword = false;
+    private boolean isSignUpShowPassword = false;
+
 
     @Override
     protected Integer getLayoutId() {
@@ -258,7 +271,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void setProvince(List<String> provinceNames, List<ProvinceBean> provinces) {
         this.provinceNames = provinceNames;
         this.provinces = provinces;
-        if (provinceNames != null) {
+        if (!CollectionUtils.isNullOrEmpty(provinceNames)) {
             spinnerProvince.setText(provinceNames.get(0));
             loginPresenter.queryCity(provinces.get(0).proSort);
         }
@@ -268,7 +281,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void setCitys(List<String> cityNames, List<CityBean> citys) {
         this.cityNames = cityNames;
         this.citys = citys;
-        if (cityNames != null) {
+        if (!CollectionUtils.isNullOrEmpty(cityNames)) {
             spinnerCity.setText(cityNames.get(0));
             loginPresenter.queryZone(citys.get(0).citySort);
         }
@@ -277,7 +290,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void setZone(List<String> zoneNames) {
         this.zoneNames = zoneNames;
-        if (zoneNames != null) {
+        if (!CollectionUtils.isNullOrEmpty(zoneNames)) {
             spinnerCounty.setText(zoneNames.get(0));
         }
     }
@@ -298,7 +311,11 @@ public class LoginActivity extends BaseActivity implements LoginView {
         readingInfo.setVisibility(View.GONE);
     }
 
-    @OnClick({R.id.button_register, R.id.button_login, R.id.login_next_button, R.id.login_prev_button, R.id.login_wifi_settings})
+    @OnClick({R.id.button_register, R.id.button_login,
+            R.id.login_next_button, R.id.login_prev_button,
+            R.id.login_wifi_settings, R.id.forget_password,
+            R.id.user_login_show_password, R.id.register_show_password,
+            R.id.sign_up_show_password})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_register:
@@ -316,6 +333,32 @@ public class LoginActivity extends BaseActivity implements LoginView {
             case R.id.login_wifi_settings:
                 ActivityManager.startWifiActivity(this);
                 break;
+            case R.id.forget_password:
+                ActivityManager.startForgetPasswordActivity(this);
+                break;
+            case R.id.user_login_show_password:
+                isUserShowPassword = setShowPassword(editTextPassword,showPassword,isUserShowPassword);
+                break;
+            case R.id.register_show_password:
+                isRegisterShowPassword = setShowPassword(confirmPasswordPassword,registerShowPassword,isRegisterShowPassword);
+                break;
+            case R.id.sign_up_show_password:
+                isSignUpShowPassword = setShowPassword(signUpPassword,signUpShowPassword,isSignUpShowPassword);
+                break;
+        }
+    }
+
+    private boolean setShowPassword(EditText editText,ImageView imageView,boolean flags){
+        if (flags) {
+            imageView.setImageResource(R.drawable.eye_close);
+            editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            editText.setSelection(editText.getText().length());
+            return false;
+        } else {
+            imageView.setImageResource(R.drawable.eye_open);
+            editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            editText.setSelection(editText.getText().length());
+            return true;
         }
     }
 

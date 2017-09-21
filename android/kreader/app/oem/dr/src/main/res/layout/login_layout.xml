@@ -28,10 +28,26 @@
             style="@style/UserInfoTextViewStyle"
             android:text="@string/password" />
 
-        <EditText
-            android:id="@+id/editText_password"
-            style="@style/UserInfoEditTextStyle"
-            android:inputType="textPassword" />
+        <LinearLayout style="@style/UserInfoEditTextStyle"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/editText_password"
+                android:layout_width="0dp"
+                android:layout_weight="8"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:layout_gravity="center"
+                android:inputType="textPassword" />
+
+            <ImageView
+                android:id="@+id/user_login_show_password"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/eye_close"/>
+        </LinearLayout>
 
     </LinearLayout>
 

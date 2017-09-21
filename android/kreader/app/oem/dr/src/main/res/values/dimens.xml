@@ -366,6 +366,11 @@
     <dimen name="reader_reading_setting_menu_margin">100dp</dimen>
     <dimen name="new_word_query_activity_bottom_padding_bottom">20dp</dimen>
     <dimen name="dialog_result_bottom_padding_bottom">20dp</dimen>
+    <dimen name="tip_confirm_save_after_feeling_message_margin">20dp</dimen>
+    <dimen name="tip_confirm_save_after_feeling_button_margin">40dp</dimen>
+    <dimen name="book_report_detail_layout_padding">10dp</dimen>
+    <dimen name="book_report_detail_edit_text_margin">10dp</dimen>
+    <dimen name="book_report_list_page_padding_contain">10dp</dimen>
     <dimen name="group_home_page_activity_create_padding">20dp</dimen>
     <dimen name="group_home_page_activity_container_margin_top">-200dp</dimen>
     <dimen name="recommend_group_name_margin_top_margin_left">60dp</dimen>
@@ -382,6 +387,9 @@
     <dimen name="join_group_activity_search_group_margin_left">40dp</dimen>
     <dimen name="join_group_activity_group_name_width">550dp</dimen>
     <dimen name="create_group_activity_whether_exist_margin_left">20dp</dimen>
+    <dimen name="phone_number_margin">30dp</dimen>
+    <dimen name="change_password_result_drawable_padding">20dp</dimen>
+    <dimen name="forget_password_name_margin_top">210dp</dimen>
     <dimen name="group_manager_activity_manager_container_width">100dp</dimen>
     <dimen name="group_member_manage_activity_recycler_view_margin_top">20dp</dimen>
     <dimen name="join_group_activity_all_number_padding">10dp</dimen>
@@ -390,4 +398,13 @@
     <dimen name="group_member_item_check_margin_left">20dp</dimen>
     <dimen name="group_member_item_name_padding">20dp</dimen>
     <dimen name="group_member_item_name_margin_left">10dp</dimen>
+    <dimen name="new_apk_dialog_width">600dp</dimen>
+    <dimen name="new_apk_dialog_height">400dp</dimen>
+    <dimen name="library_item_read_progress_margin_left">132dp</dimen>
+    <dimen name="user_info_exit_margin_left">20dp</dimen>
+    <dimen name="user_info_exit_margin_bottom">20dp</dimen>
+    <dimen name="user_info_exit_margin_right">20dp</dimen>
+    <dimen name="user_info_exit_padding">5dp</dimen>
+    <dimen name="user_info_user_name_margin_top">15dp</dimen>
+    <dimen name="item_summary_list_height">60dp</dimen>
 </resources>

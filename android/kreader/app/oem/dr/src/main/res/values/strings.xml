@@ -381,6 +381,7 @@
     <string name="device_setting_automatic_shut_down">Automatic shutdown</string>
     <string name="device_setting_language_settings">Language Settings</string>
     <string name="device_setting_device_information">Equipment information</string>
+    <string name="device_setting_user_info">User</string>
     <string name="device_setting_one_page">1 page</string>
     <string name="device_setting_ten_pages">10 pages</string>
     <string name="device_setting_twenty_pages">20 pages</string>
@@ -410,7 +411,7 @@
     <string name="device_setting_current_version">The current version number</string>
     <string name="device_setting_check_system_update">Check for updates</string>
     <string name="update_the_system_firmware">Update the system firmware</string>
-    <string name="bookstore_update">Bookstore update</string>
+    <string name="bookstore_update">Bookstore update(After the download will automatically restart the upgrade)</string>
     <string name="update_bookstore_application">Update bookstore application</string>
     <string name="device_setting_page_refreshes_value">The %1$s page refreshes the screen once</string>
     <string name="device_setting_page_refresh_rate">The page refresh rate</string>
@@ -523,7 +524,7 @@
     <string name="pronounce_evaluation_hint">Third party App, to be provided.</string>
     <string name="start_record">start_record</string>
     <string name="fragment_speech_recording_hint">hint: You can only call your own essay file.</string>
-    <string name="fragment_speech_recording_all_number">total:</string>
+    <string name="fragment_speech_recording_all_number">total:%d</string>
     <string name="join_group_activity_all_number">search result: total</string>
     <string name="data_unit">data unit</string>
     <string name="hint_input_search_word">Please input search keyword.</string>
@@ -571,6 +572,7 @@
     <string name="select_most_dict">Choose four dictionaries at most</string>
     <string name="font">font</string>
     <string name="remove_from_cart_message">Whether remove books from cart?</string>
+    <string name="book_report_list_bring_out">Out</string>
     <string name="join_group_name">group name</string>
     <string name="group_owner">group owner</string>
     <string name="join">join</string>
@@ -578,6 +580,20 @@
     <string name="write_remarks">scribble</string>
     <string name="add_new_word">add new word</string>
     <string name="delete_mark">delete mark</string>
+    <string name="change_password">change password</string>
+    <string name="phone_number">*phone：</string>
+    <string name="verification_code">*verification：</string>
+    <string name="get_verification_code">get verification code</string>
+    <string name="new_password">*new password</string>
+    <string name="change_password_succeed">change password succeed</string>
+    <string name="verification_code_must_be_filled">verification code must be filled</string>
+    <string name="verification_code_expires">verification code expires</string>
+    <string name="verification_code_error">verification code error</string>
+    <string name="the_phone_not_register">the phone not register</string>
+    <string name="verification_code_has_been_sent">verification code has been sent</string>
+    <string name="forget_password_user_name">user name： %s</string>
+    <string name="new_password_must_be_filled">new password must be filled</string>
+    <string name="password_input_is_inconsistent">password input is inconsistent</string>
     <string name="create_group_activity_group_name_hint">This group name already exists, please re-enter.</string>
     <string name="group_manager_group_name">group name</string>
     <string name="group_manager_identity">identity</string>
@@ -596,4 +612,12 @@
     <string name="delete_group_member_failed">delete group member failed</string>
     <string name="exit_failed">exit failed</string>
     <string name="exit_group_hint">Whether to quit group, operation cannot be restored.</string>
+    <string name="time">time</string>
+    <string name="book_name">book</string>
+    <string name="page_number">page number</string>
+    <string name="book_abstract">Summary</string>
+    <string name="progress">progress</string>
+    <string name="current_version">  (CurrentVersion: V%d)</string>
+    <string name="update_version">   (Update Version: V%d)</string>
+    <string name="update_content">Update content:\n</string>
 </resources>

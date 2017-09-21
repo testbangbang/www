@@ -86,6 +86,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/login_layout_margin_top"
         android:background="@drawable/rectangle_stroke"
+        android:src="@drawable/qr_code"
         android:visibility="gone" />
 
     <LinearLayout

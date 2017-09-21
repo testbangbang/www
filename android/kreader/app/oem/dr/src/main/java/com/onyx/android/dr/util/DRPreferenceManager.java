@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by suicheng on 2016/11/18.
@@ -111,5 +112,23 @@ public class DRPreferenceManager extends PreferenceManager {
 
     public static void saveExitGroupPosition(Context context, String bookshelfType) {
         setStringValue(context, Constants.SEARCH_KEYWORD, bookshelfType);
+    }
+
+    public static boolean getAutoLogin(Context context, boolean defaultValue) {
+        return getBooleanValue(context, Constants.AUTO_LOGIN_FLAG, defaultValue);
+    }
+
+    public static boolean isSaveUserInfo(Context context){
+        String account = getUserAccount(context,null);
+        String password = getUserPassword(context,null);
+        if(StringUtils.isNotBlank(account) && StringUtils.isNotBlank(password)){
+            return true;
+        }
+        return false;
+    }
+
+    public static void cleanUserInfo(Context context){
+        saveUserAccount(context,"");
+        saveUserPassword(context,"");
     }
 }

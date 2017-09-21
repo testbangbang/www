@@ -2,6 +2,7 @@ package com.onyx.android.dr.reader.requests;
 
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity_Table;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -24,8 +25,10 @@ public class RequestReadSummaryInsert extends BaseDataRequest {
             entity.summary = readSummaryEntity.summary;
             entity.newWordList = readSummaryEntity.newWordList;
             entity.goodSentenceList = readSummaryEntity.goodSentenceList;
+            readSummaryEntity.time = TimeUtils.getDate(System.currentTimeMillis());
             entity.update();
         } else {
+            readSummaryEntity.time = TimeUtils.getDate(System.currentTimeMillis());
             readSummaryEntity.insert();
         }
     }

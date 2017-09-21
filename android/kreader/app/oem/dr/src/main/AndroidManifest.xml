@@ -31,6 +31,7 @@
     <uses-permission android:name="android.permission.REORDER_TASKS" />
     <uses-permission android:name="android.permission.INTERACT_ACROSS_USERS_FULL" />
     <uses-permission android:name="android.permission.CHANGE_CONFIGURATION" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES"/>
     <uses-permission android:name="android.permission.REBOOT" />
 
     <application
@@ -42,7 +43,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LogoActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -68,8 +69,8 @@
         <activity
             android:name=".activity.DictQueryActivity"
             android:exported="true"
-            android:screenOrientation="portrait"
             android:launchMode="singleTask"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateVisible|adjustResize" />
 
@@ -241,6 +242,24 @@
 
         <activity
             android:name=".activity.ShoppingCartActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity android:name=".activity.BookReportDetailActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity android:name=".activity.BookReportListActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity
+            android:name=".activity.ForgetPasswordActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".activity.UserInfoActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
+            android:name=".activity.SummaryListActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <receiver android:name=".receiver.RecorderReceiver">
