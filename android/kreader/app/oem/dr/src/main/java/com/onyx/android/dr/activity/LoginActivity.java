@@ -28,6 +28,7 @@ import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -258,7 +259,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void setProvince(List<String> provinceNames, List<ProvinceBean> provinces) {
         this.provinceNames = provinceNames;
         this.provinces = provinces;
-        if (provinceNames != null) {
+        if (!CollectionUtils.isNullOrEmpty(provinceNames)) {
             spinnerProvince.setText(provinceNames.get(0));
             loginPresenter.queryCity(provinces.get(0).proSort);
         }
@@ -268,7 +269,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     public void setCitys(List<String> cityNames, List<CityBean> citys) {
         this.cityNames = cityNames;
         this.citys = citys;
-        if (cityNames != null) {
+        if (!CollectionUtils.isNullOrEmpty(cityNames)) {
             spinnerCity.setText(cityNames.get(0));
             loginPresenter.queryZone(citys.get(0).citySort);
         }
@@ -277,7 +278,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
     @Override
     public void setZone(List<String> zoneNames) {
         this.zoneNames = zoneNames;
-        if (zoneNames != null) {
+        if (!CollectionUtils.isNullOrEmpty(zoneNames)) {
             spinnerCounty.setText(zoneNames.get(0));
         }
     }
