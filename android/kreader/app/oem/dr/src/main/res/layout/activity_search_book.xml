@@ -22,5 +22,15 @@
             android:id="@+id/custom_search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/empty_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/no_search_result"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="gone" />
     </RelativeLayout>
 </LinearLayout>
