@@ -9,11 +9,14 @@ import com.onyx.kreader.note.NoteManager;
 public class RedoRequest extends ReaderBaseNoteRequest {
 
     public RedoRequest(final PageInfo p) {
+        setRender(true);
+        setTransfer(true);
         setVisiblePage(p);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        noteManager.redo(getContext(), getVisiblePages().get(0).getName());
+        noteManager.redo(getContext(), getVisiblePages().get(0).getName(),
+                getVisiblePages().get(0).getSubPage());
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }

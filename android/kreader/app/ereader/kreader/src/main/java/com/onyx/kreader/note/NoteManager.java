@@ -353,15 +353,15 @@ public class NoteManager {
         return shapeStash.size() > 0;
     }
 
-    public void undo(final Context context, final String pageName) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+    public void undo(final Context context, final String pageName, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
         if (readerNotePage != null) {
             readerNotePage.undo();
         }
     }
 
-    public void redo(final Context context, final String pageName) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+    public void redo(final Context context, final String pageName, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
         if (readerNotePage != null) {
             readerNotePage.redo();
         }
