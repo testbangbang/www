@@ -50,4 +50,5 @@
     <dimen name="preference_category_text_size">14sp</dimen>
 
     <dimen name="tree_item_text_size">26sp</dimen>
+    <dimen name="menu_item_padding_top_bottom">10dp</dimen>
 </resources>
