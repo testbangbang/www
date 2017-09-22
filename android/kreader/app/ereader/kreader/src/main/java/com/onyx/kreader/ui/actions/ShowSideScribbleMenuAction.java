@@ -20,6 +20,7 @@ import com.onyx.android.sdk.ui.data.MenuClickEvent;
 import com.onyx.android.sdk.ui.data.MenuItem;
 import com.onyx.android.sdk.ui.data.MenuManager;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.ui.utils.ViewUtils;
 import com.onyx.kreader.BR;
 import com.onyx.kreader.R;
 import com.onyx.kreader.note.actions.FlushNoteAction;
@@ -47,6 +48,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ReaderDataHolder readerDataHolder;
     private View dividerLine;
     private ShowScribbleMenuAction.ActionCallback actionCallback;
+    private ViewTreeObserver.OnGlobalLayoutListener layoutListener;
 
     public ShowSideScribbleMenuAction(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.parent = parent;
@@ -79,7 +81,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void onMenuViewSizeChange(ViewGroup parent) {
-        parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        layoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
                 List<RectF> excludeRectFs = new ArrayList<>();
@@ -87,7 +89,8 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
                 readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(excludeRectFs));
             }
-        });
+        };
+        parent.getViewTreeObserver().addOnGlobalLayoutListener(layoutListener);
     }
 
     private void addDividerLine(ViewGroup parent) {
@@ -260,6 +263,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
 
     @Subscribe
     public void close(CloseScribbleMenuEvent event) {
+        ViewUtils.removeGlobalLayoutListener(parent, layoutListener);
         removeMenu();
         parent.removeView(dividerLine);
         readerDataHolder.getEventBus().unregister(this);
