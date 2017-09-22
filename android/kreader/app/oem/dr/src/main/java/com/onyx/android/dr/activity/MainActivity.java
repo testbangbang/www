@@ -128,7 +128,9 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void autoLogin() {
-        mainPresenter.authToken(this);
+        if(!DRApplication.getInstance().isLoginSuccess()) {
+            mainPresenter.authToken(this);
+        }
     }
 
     @Override
