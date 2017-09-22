@@ -75,6 +75,7 @@ import java.io.File;
 public class ActivityManager {
     public static void startLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

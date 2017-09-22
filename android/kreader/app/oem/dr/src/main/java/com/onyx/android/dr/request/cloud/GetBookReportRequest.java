@@ -11,7 +11,7 @@ import retrofit2.Response;
  * Created by li on 2017/9/20.
  */
 
-public class GetBookReportRequest extends BaseCloudRequest {
+public class GetBookReportRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private String id;
     private CreateBookReportResult result;
 

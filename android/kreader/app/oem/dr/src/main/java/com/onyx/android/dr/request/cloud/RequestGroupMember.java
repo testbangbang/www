@@ -10,7 +10,7 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class RequestGroupMember extends BaseCloudRequest {
+public class RequestGroupMember extends AutoNetWorkConnectionBaseCloudRequest {
     private final String id;
     private final String offset;
     private final String limit;

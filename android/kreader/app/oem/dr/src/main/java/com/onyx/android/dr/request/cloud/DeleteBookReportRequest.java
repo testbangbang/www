@@ -10,7 +10,7 @@ import retrofit2.Response;
  * Created by li on 2017/9/20.
  */
 
-public class DeleteBookReportRequest extends BaseCloudRequest {
+public class DeleteBookReportRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private String id;
     private String result;
 

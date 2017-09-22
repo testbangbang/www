@@ -12,7 +12,7 @@ import retrofit2.Response;
  * Created by hehai on 17-9-7.
  */
 
-public class RequestResetPassword extends BaseCloudRequest {
+public class RequestResetPassword extends AutoNetWorkConnectionBaseCloudRequest {
     private NewPassword newPassword;
     private VerifyCode verifyCode;
     private String token;

@@ -9,7 +9,7 @@ import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 /**
  * Created by hehai on 17-5-12.
  */
-public class RequestFirmwareLocalCheck extends BaseCloudRequest {
+public class RequestFirmwareLocalCheck extends AutoNetWorkConnectionBaseCloudRequest {
 
     @Override
     public void execute(CloudManager helper) throws Exception {

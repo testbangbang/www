@@ -7,7 +7,7 @@ import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class ExitGroupRequest extends BaseCloudRequest {
+public class ExitGroupRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private CreateGroupCommonBean createGroupResultBean;
 
     public ExitGroupRequest() {
