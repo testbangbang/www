@@ -326,6 +326,9 @@ public class ReaderPainter {
     private boolean isShapeOnThePage(NoteManager noteManager, PageInfo pageInfo, Shape shape) {
         String subPageId = noteManager.getNoteDocument().getPageUniqueId(pageInfo.getName(),
                 pageInfo.getSubPage());
+        if (subPageId == null) {
+            return false;
+        }
         return shape.getPageUniqueId().compareTo(pageInfo.getName()) == 0 &&
                 shape.getSubPageUniqueId().compareTo(subPageId) == 0;
     }
