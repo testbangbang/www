@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookReportListAdapter;
+import com.onyx.android.dr.event.BringOutBookReportEvent;
 import com.onyx.android.dr.event.DeleteBookReportEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
@@ -188,5 +189,11 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         GetBookReportListBean bookReportBean = event.getBookReportBean();
         bookReportPresenter.deleteImpression(bookReportBean._id);
         list.remove(bookReportBean);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnBringOutBookReportEvent(BringOutBookReportEvent event) {
+        GetBookReportListBean bookReportBean = event.getBookReportBean();
+        bookReportPresenter.bringOutReport(bookReportBean);
     }
 }

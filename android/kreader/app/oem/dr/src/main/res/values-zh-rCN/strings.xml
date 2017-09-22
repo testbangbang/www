@@ -623,6 +623,7 @@
     <string name="sign_up_failed">注册失败</string>
     <string name="no_logon_server">未找到登录服务器</string>
     <string name="no_search_result">没有搜索结果</string>
+    <string name="no_content">内容为空！</string>
     <string name="no_dict_data_hint">没有相应字典数据，请前往下载!</string>
     <string name="dict_download_hint">词典下载提示</string>
     <string name="informal_essay_activity_all_number">共计: </string>

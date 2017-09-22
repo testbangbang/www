@@ -16,6 +16,7 @@ public class CreateBookReportResult {
     public String name;
     public String book;
     public String user;
+    public String pageNumber;
     public List<CommentsBean> comments;
 
     public int get__v() {

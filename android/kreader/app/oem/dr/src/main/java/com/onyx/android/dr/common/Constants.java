@@ -124,6 +124,10 @@ public class Constants {
     static final public String NON_MANUFACTURE_BASED_CONFIG_NAME = "onyx";
     public static final String UPDATE_URL = "update_url";
     public static final String UPDATE_ZIP = "update.zip";
+    public static final String BOOK_REPORT_DATA = "book_report_data";
+    public static final String BOOK_NAME = "book_name";
+    public static final String BOOK_PAGE = "book_page";
+    public static final String BOOK_ID = "book_id";
 
     public static final int DEVICE_SETTING_FRAGMENT = 0;
     public static final int SCHOOL_CHILDREN = 0;
