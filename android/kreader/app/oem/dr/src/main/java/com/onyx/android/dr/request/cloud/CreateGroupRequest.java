@@ -10,7 +10,7 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class CreateGroupRequest extends BaseCloudRequest {
+public class CreateGroupRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private CreateGroupCommonBean createGroupBeen;
     private CreateGroupCommonBean result;
 

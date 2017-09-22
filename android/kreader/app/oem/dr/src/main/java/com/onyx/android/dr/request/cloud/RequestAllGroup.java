@@ -13,7 +13,7 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class RequestAllGroup extends BaseCloudRequest {
+public class RequestAllGroup extends AutoNetWorkConnectionBaseCloudRequest {
     private List<AllGroupBean> groups = new ArrayList<>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
 

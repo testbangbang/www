@@ -13,7 +13,7 @@ import retrofit2.Response;
  * Created by hehai on 17-9-7.
  */
 
-public class RequestAddProduct extends BaseCloudRequest {
+public class RequestAddProduct extends AutoNetWorkConnectionBaseCloudRequest {
     private ProductRequestBean product;
     private ProductCart<CloudMetadata> cart;
 

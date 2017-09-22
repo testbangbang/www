@@ -14,7 +14,7 @@ import retrofit2.Response;
  * Created by hehai on 17-7-28.
  */
 
-public class RequestGetSchoolInfo extends BaseCloudRequest {
+public class RequestGetSchoolInfo extends AutoNetWorkConnectionBaseCloudRequest {
     private List<CreateGroupCommonBean> groups = new ArrayList<>();
     private final String text;
     private final String parentId;

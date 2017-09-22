@@ -11,7 +11,7 @@ import retrofit2.Response;
  * Created by hehai on 17-7-28.
  */
 
-public class RequestGetYearData extends BaseCloudRequest {
+public class RequestGetYearData extends AutoNetWorkConnectionBaseCloudRequest {
     private CreateGroupCommonBean groups = new CreateGroupCommonBean();
     private final String parentId;
 

@@ -12,7 +12,7 @@ import retrofit2.Response;
  * Created by hehai on 17-9-7.
  */
 
-public class RequestGetOrder extends BaseCloudRequest {
+public class RequestGetOrder extends AutoNetWorkConnectionBaseCloudRequest {
     private String orderId;
     private ProductOrder<CloudMetadata> order;
 

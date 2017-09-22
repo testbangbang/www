@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by hehai on 17-9-8.
@@ -23,6 +24,9 @@ public class AutoNetWorkConnectionBaseCloudRequest extends BaseCloudRequest {
     @Override
     public void beforeExecute(CloudManager parent) {
         super.beforeExecute(parent);
+        if (StringUtils.isNullOrEmpty(parent.getToken())) {
+            ActivityManager.startLoginActivity(DRApplication.getInstance());
+        }
         if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
             if (0 == Utils.getConfiguredNetworks(DRApplication.getInstance())) {
                 ActivityManager.startWifiActivity(DRApplication.getInstance());
