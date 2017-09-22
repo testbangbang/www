@@ -16,7 +16,7 @@
     </data>
 
     <com.google.android.flexbox.FlexboxLayout
-        android:background="@android:color/white"
+        android:background="@drawable/shadow_bg"
         android:gravity="center_horizontal"
         app:flexDirection="column"
         app:flexWrap="wrap"

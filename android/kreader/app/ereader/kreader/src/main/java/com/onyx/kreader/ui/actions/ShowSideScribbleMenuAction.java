@@ -37,14 +37,14 @@ import java.util.List;
  * Created by lxm on 2017/9/20.
  */
 
-public class ShowSideScribbleMenu extends BaseAction {
+public class ShowSideScribbleMenuAction extends BaseAction {
 
     private ViewGroup parent;
     private MenuManager sideMenu;
     private ReaderDataHolder readerDataHolder;
     private ShowScribbleMenuAction.ActionCallback actionCallback;
 
-    public ShowSideScribbleMenu(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
+    public ShowSideScribbleMenuAction(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.parent = parent;
         this.actionCallback = actionCallback;
     }
@@ -89,6 +89,11 @@ public class ShowSideScribbleMenu extends BaseAction {
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_NEXT_PAGE.ordinal());
         return menuActions;
+    }
+
+    private void updateMainMenuBg() {
+        boolean subMenuShowed = sideMenu.getSubMenu() != null && sideMenu.getSubMenu().isShowing();
+        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg : R.drawable.shadow_bg);
     }
 
     private List<Integer> getMainMenuActions() {
@@ -219,6 +224,7 @@ public class ShowSideScribbleMenu extends BaseAction {
         }
         sideMenu.getSubMenu().setParentMenuId(parentAction.ordinal());
         postMenuChangedEvent(readerDataHolder);
+        updateMainMenuBg();
     }
 
 
@@ -228,7 +234,7 @@ public class ShowSideScribbleMenu extends BaseAction {
     }
 
     @Subscribe
-    private void close(CloseScribbleMenuEvent event) {
+    public void close(CloseScribbleMenuEvent event) {
         removeMenu();
         readerDataHolder.getEventBus().unregister(this);
         readerDataHolder.resetHandlerManager();
@@ -237,6 +243,7 @@ public class ShowSideScribbleMenu extends BaseAction {
     private void closeSubMenu(final ViewGroup parent) {
         sideMenu.removeSubMenu(parent);
         postMenuChangedEvent(readerDataHolder);
+        updateMainMenuBg();
     }
 
     private void showCustomLineWidthDialog() {

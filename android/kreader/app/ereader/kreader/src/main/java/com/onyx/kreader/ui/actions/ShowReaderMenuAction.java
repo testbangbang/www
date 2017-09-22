@@ -787,7 +787,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     public static void startSideNodeDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
-        ShowSideScribbleMenu showMenu = new ShowSideScribbleMenu(readerActivity.getExtraView(),
+        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
                 getScribbleActionCallback(readerDataHolder));
         showMenu.execute(readerDataHolder, null);
     }
