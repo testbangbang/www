@@ -16,7 +16,7 @@
     </data>
 
     <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-        android:background="@android:color/white"
+        android:background="@drawable/shadow_bg"
         android:id="@+id/main_menu"
         android:gravity="center_horizontal"
         appCompat:alwaysLayoutImageView="true"

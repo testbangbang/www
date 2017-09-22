@@ -91,6 +91,11 @@ public class ShowSideScribbleMenu extends BaseAction {
         return menuActions;
     }
 
+    private void updateMainMenuBg() {
+        boolean subMenuShowed = sideMenu.getSubMenu() != null && sideMenu.getSubMenu().isShowing();
+        sideMenu.getMainMenu().getRootView().setBackgroundResource(subMenuShowed ? R.drawable.sub_menu_show_shadow_bg : R.drawable.shadow_bg);
+    }
+
     private List<Integer> getMainMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal());
@@ -219,6 +224,7 @@ public class ShowSideScribbleMenu extends BaseAction {
         }
         sideMenu.getSubMenu().setParentMenuId(parentAction.ordinal());
         postMenuChangedEvent(readerDataHolder);
+        updateMainMenuBg();
     }
 
 
@@ -237,6 +243,7 @@ public class ShowSideScribbleMenu extends BaseAction {
     private void closeSubMenu(final ViewGroup parent) {
         sideMenu.removeSubMenu(parent);
         postMenuChangedEvent(readerDataHolder);
+        updateMainMenuBg();
     }
 
     private void showCustomLineWidthDialog() {
