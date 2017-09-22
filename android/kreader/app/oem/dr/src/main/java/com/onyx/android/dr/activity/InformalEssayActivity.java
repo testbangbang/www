@@ -13,10 +13,15 @@ import com.onyx.android.dr.adapter.InformalEssayAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.InformalEssayView;
 import com.onyx.android.dr.presenter.InformalEssayPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,7 +112,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         }
         informalEssayList = dataList;
         listCheck = checkList;
-        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + informalEssayList.size() + getString(R.string.data_unit));
+        allNumber.setText(getString(R.string.informal_essay_activity_all_number) + informalEssayList.size() + getString(R.string.data_unit));
         informalEssayAdapter.setDataList(informalEssayList, listCheck);
         recyclerView.setAdapter(informalEssayAdapter);
     }
@@ -177,6 +182,16 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_success));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 
     @Override

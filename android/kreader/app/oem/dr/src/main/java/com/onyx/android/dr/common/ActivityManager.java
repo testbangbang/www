@@ -465,4 +465,23 @@ public class ActivityManager {
         Intent intent = new Intent(context, SummaryListActivity.class);
         context.startActivity(intent);
     }
+
+    public static void startStatisticsActivity(Context context){
+        try {
+            Intent intent = context.getPackageManager().getLaunchIntentForPackage(
+                    Constants.KREADER_PACKAGE_NAME);
+            if (intent != null) {
+                ComponentName componentName = new ComponentName(Constants.KREADER_PACKAGE_NAME,
+                        Constants.STATISTICS_ACTIVITY_FULL_PATH);
+                intent.setAction(Intent.ACTION_MAIN);
+                intent.addCategory(Intent.CATEGORY_LAUNCHER);
+                intent.setComponent(componentName);
+                context.startActivity(intent);
+            } else {
+                CommonNotices.showMessage(context, context.getString(R.string.do_not_install_note_apk));
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
 }
