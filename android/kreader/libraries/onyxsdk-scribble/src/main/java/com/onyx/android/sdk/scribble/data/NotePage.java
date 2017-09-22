@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.EPDShape;
@@ -48,6 +49,7 @@ public class NotePage {
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
     private PointF rotateCacheRectTopLeft, rotateCacheRectTopRight;
     private volatile SelectedRectF currentSelectedRectF = new SelectedRectF(new RectF());
+    private RectF rotateSelectedCachedRecF = new RectF();
 
     public void saveCurrentSelectShape() {
         if (preTransformShapeList.size() == 0) {
@@ -359,7 +361,7 @@ public class NotePage {
         }
     }
 
-    private void updateSelectedRect() {
+    private void buildSelectedRect(){
         //TODO:only consider 1 orientation shape circumstance.
         List<RectF> selectShapeRectList = new ArrayList<>();
         float orientation = 0f;
@@ -386,13 +388,36 @@ public class NotePage {
         }
     }
 
+    private void updateSelectedRect(ShapeTransformAction transformAction, float x, float y, float angle, float zoomFactor) {
+        Matrix transformMatrix = new Matrix();
+        switch (transformAction) {
+            case XAxisMirror:
+            case YAxisMirror:
+                buildSelectedRect();
+                break;
+            case Rotation:
+                Log.d("NotePage", "angle:" + angle);
+                currentSelectedRectF.setOrientation(currentSelectedRectF.getOrientation() + angle);
+                break;
+            case Move:
+                currentSelectedRectF.getRectF().offset(x, y);
+                break;
+            case Zoom:
+                transformMatrix.setScale(zoomFactor, zoomFactor);
+                transformMatrix.mapRect(currentSelectedRectF.getRectF());
+                break;
+        }
+    }
+
     private void clearSelectedRect(){
         currentSelectedRectF.setOrientation(0);
         currentSelectedRectF.setRectF(new RectF());
     }
 
     public SelectedRectF getSelectedRect() {
-        updateSelectedRect();
+        if (currentSelectedRectF.getRectF().isEmpty()){
+            buildSelectedRect();
+        }
         return currentSelectedRectF;
     }
 
@@ -539,6 +564,7 @@ public class NotePage {
         }
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        updateSelectedRect(ShapeTransformAction.Zoom, 0, 0, 0, scale);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
@@ -555,6 +581,7 @@ public class NotePage {
         }
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        updateSelectedRect(ShapeTransformAction.Move, dX, dY,0,0);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
@@ -566,6 +593,7 @@ public class NotePage {
         if (selectedShapeList.size() <= 0) {
             return;
         }
+        Log.d("setRotationAngleToSelectShapeList", "angle:" + angle);
         for (Shape shape : selectedShapeList) {
             shape.onRotate(angle, originPoint);
         }
@@ -587,6 +615,7 @@ public class NotePage {
 
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        updateSelectedRect(ShapeTransformAction.Rotation, 0, 0, angle, 0);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
