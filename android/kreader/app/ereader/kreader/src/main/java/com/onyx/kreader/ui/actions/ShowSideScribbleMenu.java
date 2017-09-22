@@ -234,7 +234,7 @@ public class ShowSideScribbleMenu extends BaseAction {
     }
 
     @Subscribe
-    private void close(CloseScribbleMenuEvent event) {
+    public void close(CloseScribbleMenuEvent event) {
         removeMenu();
         readerDataHolder.getEventBus().unregister(this);
         readerDataHolder.resetHandlerManager();
