@@ -11,36 +11,37 @@
             type="com.onyx.android.sdk.ui.data.MenuItem" />
     </data>
 
-    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-        android:paddingTop="@dimen/menu_item_padding_top_bottom"
-        android:paddingBottom="@dimen/menu_item_padding_top_bottom"
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
         android:paddingRight="@dimen/menu_item_padding_left_right"
         android:paddingLeft="@dimen/menu_item_padding_left_right"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/image_button_bg"
         android:onClick="@{(v) ->item.menuClicked(v)}"
-        android:visibility="@{item == null ? View.INVISIBLE:item.visibility}"
+        android:visibility="@{item.visibility}"
         android:enabled="@{item.enabled}"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
         appCompat:alwaysLayoutImageView="true">
 
+        <ImageView
+            android:id="@+id/function_item_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerInParent="true"
+            android:scaleType="fitCenter"
+            android:src="@{item.menuIcon}" />
+
         <RadioButton
-            android:layout_width="@dimen/side_scribble_checkbox_size"
-            android:layout_height="@dimen/side_scribble_checkbox_size"
+            android:id="@+id/function_item_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/function_item_image_view"
+            android:layout_centerHorizontal="true"
             android:button="@drawable/scribble_check_indicator"
             android:checked="@{item.checked}"
             android:clickable="false"
             android:focusable="false" />
 
-        <ImageView
-            android:id="@+id/menu_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@{item.menuIcon}" />
-
-    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
-
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
 </layout>

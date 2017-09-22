@@ -2,9 +2,12 @@ package com.onyx.kreader.ui.actions;
 
 import android.content.DialogInterface;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.graphics.RectF;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -42,6 +45,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ViewGroup parent;
     private MenuManager sideMenu;
     private ReaderDataHolder readerDataHolder;
+    private View dividerLine;
     private ShowScribbleMenuAction.ActionCallback actionCallback;
 
     public ShowSideScribbleMenuAction(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
@@ -57,7 +61,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
     }
 
-    private void show(ReaderDataHolder readerDataHolder) {
+    private void show(final ReaderDataHolder readerDataHolder) {
         parent.removeAllViews();
         sideMenu = new MenuManager();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -70,7 +74,29 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 lp,
                 MenuItem.createVisibleMenus(getMainMenuActions()));
         updateSideNotePositionText(readerDataHolder);
-        postMenuChangedEvent(readerDataHolder);
+        addDividerLine(parent);
+        onMenuViewSizeChange(parent);
+    }
+
+    private void onMenuViewSizeChange(ViewGroup parent) {
+        parent.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                List<RectF> excludeRectFs = new ArrayList<>();
+                collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
+                collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
+                readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(excludeRectFs));
+            }
+        });
+    }
+
+    private void addDividerLine(ViewGroup parent) {
+        dividerLine = new View(parent.getContext());
+        dividerLine.setBackgroundColor(Color.BLACK);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int) parent.getContext().getResources().getDimension(R.dimen.divider_line_size),
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        parent.addView(dividerLine, lp);
     }
 
     private List<Integer> getExpandMenuActions() {
@@ -223,7 +249,6 @@ public class ShowSideScribbleMenuAction extends BaseAction {
             sideMenu.getSubMenu().unCheckAll().check(checkedMenuAction.ordinal());
         }
         sideMenu.getSubMenu().setParentMenuId(parentAction.ordinal());
-        postMenuChangedEvent(readerDataHolder);
         updateMainMenuBg();
     }
 
@@ -236,13 +261,13 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     @Subscribe
     public void close(CloseScribbleMenuEvent event) {
         removeMenu();
+        parent.removeView(dividerLine);
         readerDataHolder.getEventBus().unregister(this);
         readerDataHolder.resetHandlerManager();
     }
 
     private void closeSubMenu(final ViewGroup parent) {
         sideMenu.removeSubMenu(parent);
-        postMenuChangedEvent(readerDataHolder);
         updateMainMenuBg();
     }
 
@@ -268,18 +293,6 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                         new FlushNoteAction(pages, true, true, false, false).execute(readerDataHolder, null);
                     }
                 });
-            }
-        });
-    }
-
-    private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
-        parent.post(new Runnable() {
-            @Override
-            public void run() {
-                List<RectF> excludeRectFs = new ArrayList<>();
-                collectExcludeRectFs(excludeRectFs, sideMenu.getMainMenu());
-                collectExcludeRectFs(excludeRectFs, sideMenu.getSubMenu());
-                readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(excludeRectFs));
             }
         });
     }
