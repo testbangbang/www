@@ -16,6 +16,7 @@ public class RequestIndexServiceAndLogin extends AutoNetWorkConnectionBaseCloudR
 
     public RequestIndexServiceAndLogin(BaseAuthAccount account) {
         this.account = account;
+        setNeedLogin(false);
     }
 
     @Override

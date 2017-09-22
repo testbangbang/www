@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.media.AudioManager;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.DividerItemDecoration;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -236,6 +237,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 readerReadingSettingMenu.setVisibility(View.GONE);
+                dismissZone.setVisibility(View.VISIBLE);
             }
         });
 
@@ -244,6 +246,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
             public void onClick(View v) {
                 saveReadSetting();
                 readerReadingSettingMenu.setVisibility(View.GONE);
+                dismissZone.setVisibility(View.VISIBLE);
             }
         });
     }
@@ -635,6 +638,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReaderFontMenuEvent(ReaderFontMenuEvent event) {
         readerReadingSettingMenu.setVisibility(readerReadingSettingMenu.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        dismissZone.setVisibility(View.INVISIBLE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -818,5 +822,10 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     protected void onStop() {
         super.onStart();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(@NonNull KeyEvent event) {
+        return super.dispatchKeyEvent(event);
     }
 }

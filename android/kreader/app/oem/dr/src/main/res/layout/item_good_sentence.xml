@@ -2,64 +2,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/new_word_item_order_number"
-        style="@style/good_sentence_item_textview"
-        android:layout_weight="1"
-        android:text="@string/order_number" />
-
-    <View style="@style/good_sentence_item_view" />
-
-    <TextView
-        android:id="@+id/good_sentence_item_content"
-        style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        android:layout_weight="4"
-        android:text="@string/good_sentence_activity_good_sentence" />
-
-    <View style="@style/good_sentence_item_view" />
-
-    <TextView
-        android:id="@+id/good_sentence_item_reading_matter"
-        style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        android:layout_weight="2"
-        android:text="@string/good_sentence_activity_involved_reading_matter" />
-
-    <View style="@style/good_sentence_item_view" />
-
-    <TextView
-        android:id="@+id/good_sentence_item_page_number"
-        style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        android:layout_weight="2"
-        android:text="@string/good_sentence_activity_page_number" />
-
-    <View style="@style/good_sentence_item_view" />
-
-    <TextView
-        android:id="@+id/good_sentence_item_time"
-        style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        android:layout_weight="2"
-        android:text="@string/memorandum_activity_time" />
-
-    <View style="@style/good_sentence_item_view" />
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="@dimen/new_word_activity_all_check_width"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/good_sentence_item_check"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
-            android:src="@color/white" />
+        <TextView
+            android:id="@+id/new_word_item_order_number"
+            style="@style/good_sentence_item_textview"
+            android:layout_weight="1"
+            android:text="@string/order_number" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <TextView
+            android:id="@+id/good_sentence_item_content"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_weight="4"
+            android:text="@string/good_sentence_activity_good_sentence" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <TextView
+            android:id="@+id/good_sentence_item_reading_matter"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_weight="2"
+            android:text="@string/good_sentence_activity_involved_reading_matter" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <TextView
+            android:id="@+id/good_sentence_item_page_number"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_weight="2"
+            android:text="@string/good_sentence_activity_page_number" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <TextView
+            android:id="@+id/good_sentence_item_time"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <LinearLayout
+            android:layout_width="@dimen/new_word_activity_all_check_width"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:id="@+id/good_sentence_item_check"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                android:src="@color/white" />
+        </LinearLayout>
+
     </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
 </LinearLayout>

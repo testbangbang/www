@@ -304,6 +304,7 @@
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
     <string name="speech_recording_activity_dialog_height" format="float" type="dimen">0.25</string>
+    <string name="dict_download_hint_dialog_height" format="float" type="dimen">0.25</string>
     <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
     <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
     <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
@@ -623,4 +624,7 @@
     <string name="no_logon_server">未找到登录服务器</string>
     <string name="no_search_result">没有搜索结果</string>
     <string name="no_content">内容为空！</string>
+    <string name="no_dict_data_hint">没有相应字典数据，请前往下载!</string>
+    <string name="dict_download_hint">词典下载提示</string>
+    <string name="informal_essay_activity_all_number">共计: </string>
 </resources>

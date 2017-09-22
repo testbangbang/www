@@ -11,7 +11,7 @@ import retrofit2.Response;
  * Created by hehai on 17-7-28.
  */
 
-public class RequestCheckGroupNameExist extends BaseCloudRequest {
+public class RequestCheckGroupNameExist extends AutoNetWorkConnectionBaseCloudRequest {
     private final String text;
     private final String parentId;
     private GroupNameExistBean groups = new GroupNameExistBean();

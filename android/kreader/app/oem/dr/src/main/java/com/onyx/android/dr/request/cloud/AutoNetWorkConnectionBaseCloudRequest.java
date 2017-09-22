@@ -4,17 +4,25 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 
 /**
  * Created by hehai on 17-9-8.
  */
 
 public class AutoNetWorkConnectionBaseCloudRequest extends BaseCloudRequest {
+    private boolean needLogin = true;
+
+    public void setNeedLogin(boolean needLogin) {
+        this.needLogin = needLogin;
+    }
+
     @Override
     public void execute(CloudManager parent) throws Exception {
 
@@ -23,6 +31,9 @@ public class AutoNetWorkConnectionBaseCloudRequest extends BaseCloudRequest {
     @Override
     public void beforeExecute(CloudManager parent) {
         super.beforeExecute(parent);
+        if (needLogin && StringUtils.isNullOrEmpty(parent.getToken())) {
+            ActivityManager.startLoginActivity(DRApplication.getInstance());
+        }
         if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
             if (0 == Utils.getConfiguredNetworks(DRApplication.getInstance())) {
                 ActivityManager.startWifiActivity(DRApplication.getInstance());

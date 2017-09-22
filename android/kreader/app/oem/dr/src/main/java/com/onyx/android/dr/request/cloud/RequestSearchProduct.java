@@ -12,7 +12,7 @@ import retrofit2.Response;
  * Created by hehai on 17-9-7.
  */
 
-public class RequestSearchProduct extends BaseCloudRequest {
+public class RequestSearchProduct extends AutoNetWorkConnectionBaseCloudRequest {
     private QueryResult<CloudMetadata> result;
     private String text;
 

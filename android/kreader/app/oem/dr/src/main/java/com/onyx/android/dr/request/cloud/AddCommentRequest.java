@@ -12,7 +12,7 @@ import retrofit2.Response;
  * Created by li on 2017/9/20.
  */
 
-public class AddCommentRequest extends BaseCloudRequest {
+public class AddCommentRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private String id;
     private AddCommentRequestBean requestBean;
     private CreateBookReportResult result;

@@ -10,7 +10,7 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class SearchGroupMemberRequest extends BaseCloudRequest {
+public class SearchGroupMemberRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private final String id;
     private final String text;
     private GroupMemberBean groupMember = new GroupMemberBean();

@@ -20,7 +20,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by hehai on 17-5-31.
  */
 
-public class RequestDownloadAPK extends BaseCloudRequest {
+public class RequestDownloadAPK extends AutoNetWorkConnectionBaseCloudRequest {
     private DownloadUtils.DownloadCallback downloadCallback;
 
     private String url;

@@ -11,7 +11,7 @@ import retrofit2.Response;
  * Created by li on 2017/9/20.
  */
 
-public class RemoveCommentRequest extends BaseCloudRequest {
+public class RemoveCommentRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private String id;
     private String commentId;
     private CreateBookReportResult result;

@@ -11,7 +11,7 @@ import retrofit2.Response;
  * Created by hehai on 17-9-7.
  */
 
-public class RequestPhoneVerify extends BaseCloudRequest {
+public class RequestPhoneVerify extends AutoNetWorkConnectionBaseCloudRequest {
     private String phone;
     private VerifyCode verifyCode;
 

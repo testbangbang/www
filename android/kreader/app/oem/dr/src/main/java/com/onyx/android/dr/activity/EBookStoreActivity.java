@@ -103,7 +103,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         shoppingCart.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
         search.setImageResource(R.drawable.ic_search);
-        shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
+        displayCartCount();
         ebookStoreGroupsRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
@@ -196,7 +196,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Override
     public void setCartCount(int count) {
         DRApplication.getInstance().setCartCount(count);
-        shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
+        displayCartCount();
     }
 
     private void loadBooks(String language, LibraryDataHolder holder) {
@@ -270,7 +270,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
             return;
         }
         initPagination();
-        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), getPagination());
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), ebookStoreGroupsRecycler.getPaginator());
         pageIndicator.showRefresh(false);
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
@@ -402,5 +402,15 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAddToCartEvent(AddToCartEvent event) {
         eBookStorePresenter.addToCart(event.getBookId());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        displayCartCount();
+    }
+
+    private void displayCartCount() {
+        shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
     }
 }

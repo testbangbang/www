@@ -108,7 +108,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
         }
         memorandumList = dataList;
         listCheck = checkList;
-        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + memorandumList.size() + getString(R.string.data_unit));
+        allNumber.setText(getString(R.string.informal_essay_activity_all_number) + memorandumList.size() + getString(R.string.data_unit));
         memorandumAdapter.setDataList(memorandumList, listCheck);
         recyclerView.setAdapter(memorandumAdapter);
     }

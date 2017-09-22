@@ -13,7 +13,7 @@ import retrofit2.Response;
  * Created by hehai on 17-7-28.
  */
 
-public class RequestGetRootGroupList extends BaseCloudRequest {
+public class RequestGetRootGroupList extends AutoNetWorkConnectionBaseCloudRequest {
     private List<GroupBean> groups;
 
     public List<GroupBean> getGroups() {

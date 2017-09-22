@@ -21,6 +21,9 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.util.Log;
 
+import com.onyx.android.sdk.utils.ShellUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.File;
@@ -89,23 +92,11 @@ public class StorageSizeUtil {
                 && extFile.canWrite()) {
             paths.add(extFile.getAbsolutePath());
         }
-        try {
-            Process process = Runtime.getRuntime().exec("sh");
-            DataOutputStream os = new DataOutputStream(process.getOutputStream());
-            String command = "mount";
-            os.write(command.getBytes());
-            os.writeBytes("\n");
-            os.flush();
-
-            os.writeBytes("exit\n");
-            os.flush();
-
-            InputStream is = process.getInputStream();
-            InputStreamReader isr = new InputStreamReader(is);
-            BufferedReader br = new BufferedReader(isr);
-            String line = null;
+        ShellUtils.CommandResult result = ShellUtils.execCommand("mount", false);
+        if (StringUtils.isNotBlank(result.successMsg)) {
+            String[] lines = result.successMsg.split(ShellUtils.COMMAND_NEW_LINE);
             int mountPathIndex = 1;
-            while ((line = br.readLine()) != null) {
+            for (String line : lines) {
                 if ((!line.contains("fat") && !line.contains("fuse") && !line
                         .contains("storage"))
                         || line.contains("secure")
@@ -138,9 +129,6 @@ public class StorageSizeUtil {
                 }
                 paths.add(mountPath);
             }
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
         }
         return paths;
     }

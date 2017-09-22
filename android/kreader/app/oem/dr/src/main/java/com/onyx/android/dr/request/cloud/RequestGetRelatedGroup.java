@@ -13,7 +13,7 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class RequestGetRelatedGroup extends BaseCloudRequest {
+public class RequestGetRelatedGroup extends AutoNetWorkConnectionBaseCloudRequest {
     private final String name;
     private List<SearchGroupBean> groups = new ArrayList<>();
 

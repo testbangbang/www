@@ -48,7 +48,7 @@ public class AlertInfoDialog extends Dialog implements View.OnClickListener {
     }
 
     public AlertInfoDialog(final Context context, final String title, final boolean tag, final String leftButton, final String rightButton) {
-        super(context, R.style.dialog);
+        super(context, R.style.base_dialog);
         this.context = context;
         this.title = title;
         this.tag = tag;
@@ -66,6 +66,7 @@ public class AlertInfoDialog extends Dialog implements View.OnClickListener {
         maxValue = (TextView) findViewById(R.id.dialog_seek_bar_max_value);
         seekBar = (SeekBar) findViewById(R.id.dialog_seek_bar);
         dialogCenter = (LinearLayout) findViewById(R.id.dialog_center);
+        setCanceledOnTouchOutside(true);
         initData();
     }
 

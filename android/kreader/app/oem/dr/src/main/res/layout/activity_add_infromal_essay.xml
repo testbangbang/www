@@ -20,6 +20,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/title_margin_left"
             android:text="@string/title"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <EditText

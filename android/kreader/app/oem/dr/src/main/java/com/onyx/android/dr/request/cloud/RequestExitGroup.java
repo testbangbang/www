@@ -10,7 +10,7 @@ import retrofit2.Response;
 /**
  * Created by zhouzhiming on 2017/8/30.
  */
-public class RequestExitGroup extends BaseCloudRequest {
+public class RequestExitGroup extends AutoNetWorkConnectionBaseCloudRequest {
     private final DeleteGroupMemberBean bean;
     private final String id;
     private DeleteGroupMemberBean result;
