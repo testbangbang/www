@@ -623,4 +623,5 @@
     <string name="sign_up_failed">sign up failed</string>
     <string name="no_logon_server">No logon server</string>
     <string name="no_search_result">No search result</string>
+    <string name="no_content">No content</string>
 </resources>

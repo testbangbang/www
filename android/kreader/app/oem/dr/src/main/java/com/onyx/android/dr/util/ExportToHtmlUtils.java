@@ -2,6 +2,7 @@ package com.onyx.android.dr.util;
 
 import android.content.Context;
 import android.os.Environment;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
 import com.onyx.android.dr.R;
@@ -11,6 +12,7 @@ import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import java.io.File;
@@ -231,6 +233,50 @@ public class ExportToHtmlUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }finally {
+            FileUtils.closeQuietly(printStream);
+        }
+    }
+
+    public static void exportBookReportToHtml(String title, List<String> titleList, GetBookReportListBean bookReportListBean) {
+        StringBuilder sb = getTitleStringBuilder(title);
+        sb.append("<table border=\"1\"><tr>");
+        for (int i = 0; i < titleList.size(); i++) {
+            sb.append("<th>");
+            sb.append(titleList.get(i));
+            sb.append("</th>");
+        }
+        sb.append("</tr>");
+
+        sb.append("<tr>");
+        sb.append("<th>");
+        sb.append(bookReportListBean.updatedAt);
+        sb.append("</th>");
+        sb.append("<th>");
+        sb.append(bookReportListBean.name);
+        sb.append("</th>");
+        sb.append("<th>");
+        sb.append("000");
+        sb.append("</th>");
+        sb.append("<th>");
+        sb.append(bookReportListBean.content);
+        sb.append("</th>");
+        sb.append("<th>");
+        sb.append(bookReportListBean.content == null ? 0 :bookReportListBean.content.length());
+        sb.append("</th>");
+        sb.append("</tr>");
+        sb.append("</table>");
+
+        PrintStream printStream = null;
+        try {
+            createCatalogue();
+            File file = new File(Environment.getExternalStorageDirectory(), Constants.MY_NOTES_FOLDER + File.separator +
+            bookReportListBean.name + TimeUtils.getCurrentMillTimeInString() + Constants.HTML);
+            file.createNewFile();
+            printStream = new PrintStream(new FileOutputStream(file));
+            printStream.println(sb);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
             FileUtils.closeQuietly(printStream);
         }
     }

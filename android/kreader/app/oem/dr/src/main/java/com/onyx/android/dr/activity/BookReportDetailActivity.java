@@ -1,6 +1,8 @@
 package com.onyx.android.dr.activity;
 
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.text.Editable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.Window;
@@ -10,6 +12,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.interfaces.BookReportView;
+import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.sdk.data.model.v2.CommentsBean;
+import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
+import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+import com.onyx.android.sdk.utils.StringUtils;
+
+import java.io.Serializable;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -18,7 +31,7 @@ import butterknife.OnClick;
  * Created by li on 2017/9/15.
  */
 
-public class BookReportDetailActivity extends BaseActivity {
+public class BookReportDetailActivity extends BaseActivity implements BookReportView {
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.title_bar_title)
@@ -48,6 +61,12 @@ public class BookReportDetailActivity extends BaseActivity {
     private Button dialogCancel;
     private Button dialogSure;
     private AlertDialog dialog;
+    private GetBookReportListBean data;
+    private String bookName;
+    private String bookPage;
+    private String bookId;
+    private BookReportPresenter bookReportPresenter;
+    private boolean isSave = false;
 
     @Override
     protected Integer getLayoutId() {
@@ -56,7 +75,7 @@ public class BookReportDetailActivity extends BaseActivity {
 
     @Override
     protected void initConfig() {
-
+        bookReportPresenter = new BookReportPresenter(this);
     }
 
     @Override
@@ -74,6 +93,24 @@ public class BookReportDetailActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        Intent intent = getIntent();
+        Serializable serializableExtra = intent.getSerializableExtra(Constants.BOOK_REPORT_DATA);
+        if(serializableExtra != null) {
+            data = (GetBookReportListBean) serializableExtra;
+            bookReportDetailContents.setText(data.content);
+            bookReportDetailTitle.setText(data.name);
+            List<CommentsBean> comments = data.comments;
+            if(comments != null && comments.size() > 0) {
+                //TODO:webView
+            }
+        }
+
+        bookName = intent.getStringExtra(Constants.BOOK_NAME);
+        bookPage = intent.getStringExtra(Constants.BOOK_PAGE);
+        bookId = intent.getStringExtra(Constants.BOOK_ID);
+        if(!StringUtils.isNullOrEmpty(bookName)) {
+            bookReportDetailTitle.setText(bookName);
+        }
         initListener();
     }
 
@@ -94,18 +131,17 @@ public class BookReportDetailActivity extends BaseActivity {
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
-                //TODO:whether save
-                finish();
+                backActivity();
                 break;
             case R.id.title_bar_title:
-                //TODO:whether save
-                finish();
+                backActivity();
                 break;
             case R.id.title_bar_right_select_time:
                 break;
             case R.id.title_bar_right_icon_one:
                 break;
             case R.id.title_bar_right_icon_two:
+                save();
                 break;
             case R.id.title_bar_right_icon_three:
                 break;
@@ -116,6 +152,7 @@ public class BookReportDetailActivity extends BaseActivity {
             case R.id.title_bar_right_image:
                 break;
             case R.id.title_bar_right_edit_text:
+                showMarks();
                 break;
             case R.id.title_bar_right_menu:
                 break;
@@ -124,14 +161,40 @@ public class BookReportDetailActivity extends BaseActivity {
         }
     }
 
+    private void showMarks() {
+        if(data != null) {
+            //TODO:
+        }
+    }
+
+    private void save() {
+        String text = bookReportDetailContents.getText().toString();
+        if(StringUtils.isNullOrEmpty(text)) {
+            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+            return;
+        }
+
+        if(!StringUtils.isNullOrEmpty(bookName) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
+            bookReportPresenter.createImpression(bookId, bookName, text, bookPage);
+        }
+    }
+
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
             //TODO: show dialog to comfirm save content
-            showTipDiaolog();
+            backActivity();
             return true;
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    private void backActivity() {
+        if(isSave) {
+            finish();
+        }else {
+            showTipDiaolog();
+        }
     }
 
     private void showTipDiaolog() {
@@ -157,9 +220,24 @@ public class BookReportDetailActivity extends BaseActivity {
         dialogSure.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: SAVE CONTENT
+                save();
                 dialog.dismiss();
             }
         });
+    }
+
+    @Override
+    public void setCreateBookReportData(CreateBookReportResult result) {
+        isSave = true;
+    }
+
+    @Override
+    public void setBookReportList(List<GetBookReportListBean> list) {
+
+    }
+
+    @Override
+    public void setDeleteResult() {
+
     }
 }
