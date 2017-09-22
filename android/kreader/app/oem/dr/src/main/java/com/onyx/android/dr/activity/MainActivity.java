@@ -129,9 +129,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void autoLogin() {
-        if (DRPreferenceManager.getAutoLogin(this, false)) {
-            mainPresenter.authToken(this);
-        }
+        mainPresenter.authToken(this);
     }
 
     @Override

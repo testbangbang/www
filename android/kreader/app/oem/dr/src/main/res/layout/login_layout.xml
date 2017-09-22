@@ -26,7 +26,6 @@
 
         <TextView
             style="@style/UserInfoTextViewStyle"
-            android:layout_gravity="center_vertical"
             android:text="@string/password" />
 
         <LinearLayout style="@style/UserInfoEditTextStyle"
