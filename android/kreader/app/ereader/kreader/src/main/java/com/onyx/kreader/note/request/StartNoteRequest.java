@@ -17,14 +17,25 @@ import java.util.List;
 
 public class StartNoteRequest extends ReaderBaseNoteRequest {
 
+    private boolean sideNoting = false;
+
     public StartNoteRequest(final List<PageInfo> list) {
         setAbortPendingTasks(false);
         setVisiblePages(list);
         setResetNoteDataInfo(false);
     }
 
+    public StartNoteRequest(final List<PageInfo> list, boolean sideNoting) {
+        setAbortPendingTasks(false);
+        setVisiblePages(list);
+        setResetNoteDataInfo(false);
+
+        this.sideNoting = sideNoting;
+    }
+
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
+        noteManager.setSideNoting(sideNoting);
         noteManager.setVisiblePages(getVisiblePages());
         noteManager.startRawEventProcessor();
         noteManager.resumeRawEventProcessor(getContext());

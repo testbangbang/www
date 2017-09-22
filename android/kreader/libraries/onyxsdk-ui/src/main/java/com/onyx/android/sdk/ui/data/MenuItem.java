@@ -23,8 +23,6 @@ public class MenuItem extends BaseObservable {
     public ObservableInt visibility = new ObservableInt(View.GONE);
     public ObservableInt menuIcon = new ObservableInt(android.R.color.transparent);
     public ObservableField<String> text = new ObservableField<>();
-    public ObservableInt width = new ObservableInt(200);
-    public ObservableInt rotation = new ObservableInt(0);
     public ObservableBoolean enabled = new ObservableBoolean(true);
     // work when parent layout is FlexboxLayout
     public ObservableInt layoutColumns = new ObservableInt();
@@ -71,11 +69,6 @@ public class MenuItem extends BaseObservable {
         return this;
     }
 
-    public MenuItem setRotation(int rotation) {
-        this.rotation.set(rotation);
-        return this;
-    }
-
     public MenuItem setLayoutColumns(int layoutColumns) {
         this.layoutColumns.set(layoutColumns);
         return this;
@@ -93,10 +86,6 @@ public class MenuItem extends BaseObservable {
 
     public int getParentMenuId() {
         return parentMenuId;
-    }
-
-    public void setWidth(int width) {
-        this.width.set(width);
     }
 
     public void setText(String text) {

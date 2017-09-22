@@ -17,7 +17,9 @@
   "single_touch" : 1,
 
   "shortcut_drawing": 1,
-  "shortcut_erasing": 1
+  "shortcut_erasing": 1,
+
+  "finger_erasing" : 1
 
 
 }
