@@ -57,6 +57,7 @@ public class NoteManager {
     private List<Shape> shapeStash = new ArrayList<>();
     private DeviceConfig noteConfig;
     private MappingConfig mappingConfig;
+    private boolean sideNoting = false;
     private List<PageInfo> visiblePages = new ArrayList<>();
     private EventBus eventBus;
     private ReaderNoteDataInfo noteDataInfo = new ReaderNoteDataInfo();
@@ -315,6 +316,10 @@ public class NoteManager {
         }
     }
 
+    public void setSideNoting(boolean sideNoting) {
+        this.sideNoting = sideNoting;
+    }
+
     public void setVisiblePages(final List<PageInfo> list) {
         visiblePages.clear();
         visiblePages.addAll(list);
@@ -400,6 +405,9 @@ public class NoteManager {
     private List<Rect> getLimitRegionOfVisiblePages() {
         List<Rect> list = new ArrayList<>();
         for (PageInfo page : visiblePages) {
+            if (sideNoting && page.getSubPage() == 0) {
+                continue;
+            }
             Rect r = RectUtils.toRect(page.getDisplayRect());
             r.intersect(visibleDrawRect);
             list.add(r);
