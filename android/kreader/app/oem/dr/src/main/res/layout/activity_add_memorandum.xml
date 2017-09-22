@@ -12,6 +12,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/add_memorandum_activity_start_time_margin_bottom"
         android:background="@android:color/white">
 
         <TextView

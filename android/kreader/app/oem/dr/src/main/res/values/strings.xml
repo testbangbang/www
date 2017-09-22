@@ -307,6 +307,7 @@
     <string name="dict_select_dialog_height" format="float" type="dimen">0.5</string>
     <string name="dict_select_dialog_width" format="float" type="dimen">0.6</string>
     <string name="speech_recording_activity_dialog_height" format="float" type="dimen">0.25</string>
+    <string name="dict_download_hint_dialog_height" format="float" type="dimen">0.25</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
     <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
     <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
@@ -623,4 +624,7 @@
     <string name="sign_up_failed">sign up failed</string>
     <string name="no_logon_server">No logon server</string>
     <string name="no_search_result">No search result</string>
+    <string name="no_dict_data_hint">There is no corresponding ci data, please go to download.</string>
+    <string name="dict_download_hint">dict download_hint</string>
+    <string name="informal_essay_activity_all_number">total:</string>
 </resources>

@@ -8,6 +8,8 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ManageGroupAdapter;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.ManageGroupView;
 import com.onyx.android.dr.presenter.ManageGroupPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
@@ -15,6 +17,9 @@ import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.AllGroupBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,6 +109,16 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
                 finish();
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_success));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 
     @Override

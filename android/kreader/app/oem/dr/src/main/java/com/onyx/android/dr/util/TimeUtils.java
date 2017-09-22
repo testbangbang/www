@@ -13,6 +13,7 @@ import java.util.Date;
  */
 public class TimeUtils {
     public static final String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    public static final String NEW_DATA_TIME_FORMAT = "yyyy-MM-dd HH-mm-ss";
     public static final String HOUR_AND_MINUTE = "yyyy-MM-dd HH:mm";
     public static final String DATA_FORMAT = "yyyy-MM-dd";
     public static final String START_TIME = " 00:00:00";
@@ -22,6 +23,7 @@ public class TimeUtils {
     private static final int MILLISECOND_STEP = 3600;
     private static final int HOUR_STEP = 24;
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATA_TIME_FORMAT);
+    public static final SimpleDateFormat NEW_DATE_FORMAT = new SimpleDateFormat(NEW_DATA_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(DATA_FORMAT);
 
     private TimeUtils() {
@@ -34,6 +36,10 @@ public class TimeUtils {
 
     public static String getTime(long timeInMillis) {
         return getTime(timeInMillis, DEFAULT_DATE_FORMAT);
+    }
+
+    public static String getNewTime(long timeInMillis) {
+        return getTime(timeInMillis, NEW_DATE_FORMAT);
     }
 
     public static String getDate(long timeInMillis) {

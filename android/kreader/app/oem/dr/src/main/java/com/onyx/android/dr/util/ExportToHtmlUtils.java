@@ -4,14 +4,16 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
-import com.onyx.android.dr.R;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.sdk.utils.FileUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -94,11 +96,14 @@ public class ExportToHtmlUtils {
         PrintStream printStream = null;
         try {
             createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.NEW_WORD_HTML);
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.NEW_WORD_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
         } catch (Exception e) {
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
         }finally {
             FileUtils.closeQuietly(printStream);
@@ -137,13 +142,14 @@ public class ExportToHtmlUtils {
         PrintStream printStream = null;
         try {
             createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.INFORMAL_ESSAY_HTML);
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.INFORMAL_ESSAY_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            CommonNotices.showMessage(context, context.getString(R.string.export_success));
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
         } catch (Exception e) {
-            CommonNotices.showMessage(context, context.getString(R.string.export_failed));
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
         } finally {
             FileUtils.closeQuietly(printStream);
@@ -185,11 +191,14 @@ public class ExportToHtmlUtils {
         PrintStream printStream = null;
         try {
             createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.GOOD_SENTENCE_HTML);
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.GOOD_SENTENCE_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
         } catch (Exception e) {
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
         }finally {
             FileUtils.closeQuietly(printStream);
@@ -224,11 +233,14 @@ public class ExportToHtmlUtils {
         PrintStream printStream = null;
         try {
             createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.MEMORANDUM_HTML);
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.MEMORANDUM_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
         } catch (Exception e) {
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
         }finally {
             FileUtils.closeQuietly(printStream);

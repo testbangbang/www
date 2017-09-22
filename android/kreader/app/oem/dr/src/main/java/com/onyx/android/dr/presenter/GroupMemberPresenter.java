@@ -27,8 +27,8 @@ public class GroupMemberPresenter {
         groupMemberData = new GroupMemberData();
     }
 
-    public void getGroupMember(String id, String offset, String limit, String sortBy, String order) {
-        final RequestGroupMember req = new RequestGroupMember(id, offset, limit, sortBy, order);
+    public void getGroupMember(String id, String param) {
+        final RequestGroupMember req = new RequestGroupMember(id, param);
         groupMemberData.requestGroupMember(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
