@@ -319,13 +319,16 @@ public class ShapeTransformHandler extends BaseHandler {
                 }
                 switch (transformAction) {
                     case Move:
-                        new ChangeSelectedShapePositionAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        new ChangeSelectedShapePositionAction(mShapeSelectPoint,
+                                false).execute(noteManager, null);
                         break;
                     case Zoom:
-                        new ChangeSelectedShapeScaleAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        new ChangeSelectedShapeScaleAction(mShapeSelectPoint,
+                                false).execute(noteManager, null);
                         break;
                     case Rotation:
-                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint,
+                                false).execute(noteManager, null);
                         break;
                 }
                 break;

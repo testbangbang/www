@@ -175,4 +175,13 @@ public interface Shape {
     float getSelectRectOrientation();
 
     void setSelectRectOrientation(float selectRectOrientation);
+
+    float getRotationPointXCoordinate();
+
+    void setRotationPointXCoordinate(float xCoordinate);
+
+    float getRotationPointYCoordinate();
+
+    void setRotationPointYCoordinate(float yCoordinate);
+
 }

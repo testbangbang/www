@@ -53,6 +53,8 @@ public class BaseShape implements Shape {
     private float orientation = 0f;
     private float selectRectOrientation = 0f;
 
+    private PointF rotationCenterPoint = new PointF();
+
     /**
      * rectangle, circle, etc.
      * @return
@@ -516,5 +518,25 @@ public class BaseShape implements Shape {
     @Override
     public void setSelectRectOrientation(float selectRectOrientation) {
         this.selectRectOrientation = selectRectOrientation;
+    }
+
+    @Override
+    public float getRotationPointXCoordinate() {
+        return rotationCenterPoint.x;
+    }
+
+    @Override
+    public void setRotationPointXCoordinate(float xCoordinate) {
+        rotationCenterPoint.x = xCoordinate;
+    }
+
+    @Override
+    public float getRotationPointYCoordinate() {
+        return rotationCenterPoint.y;
+    }
+
+    @Override
+    public void setRotationPointYCoordinate(float yCoordinate) {
+        rotationCenterPoint.y = yCoordinate;
     }
 }

@@ -19,6 +19,8 @@ public class Migration_4_ShapeModel extends AlterTableMigration<ShapeModel> {
     @Override
     public void onPreMigrate() {
         addColumn(SQLiteType.REAL, ShapeModel_Table.orientation.getNameAlias().name());
+        addColumn(SQLiteType.REAL, ShapeModel_Table.rotationPointXCoordinate.getNameAlias().name());
+        addColumn(SQLiteType.REAL, ShapeModel_Table.rotationPointYCoordinate.getNameAlias().name());
     }
 }
 

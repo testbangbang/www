@@ -360,7 +360,6 @@ public class NotePage {
     }
 
     private void updateSelectedRect() {
-        currentSelectedRectF = new SelectedRectF(0, new RectF());
         //TODO:only consider 1 orientation shape circumstance.
         List<RectF> selectShapeRectList = new ArrayList<>();
         float orientation = 0f;
@@ -380,16 +379,16 @@ public class NotePage {
                 selectShapeRectList.add(selectRect);
             }
         }
-        RectF resultSelectRectF = new RectF();
         if (selectShapeRectList.size() == 0) {
-            currentSelectedRectF = new SelectedRectF(0, resultSelectRectF);
+            clearSelectedRect();
         } else {
             currentSelectedRectF = unionSelectedShapeBoundingRect(orientation, selectShapeRectList);
         }
     }
 
     private void clearSelectedRect(){
-        currentSelectedRectF = new SelectedRectF(new RectF());
+        currentSelectedRectF.setOrientation(0);
+        currentSelectedRectF.setRectF(new RectF());
     }
 
     public SelectedRectF getSelectedRect() {

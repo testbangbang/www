@@ -27,10 +27,12 @@ public class CircleShape extends NonEPDShape {
         renderPoints[3] = getCurrentPoint().y;
         Matrix transformMatrix = new Matrix();
         if (Float.compare(getOrientation(), 0f) != 0) {
-            transformMatrix.setRotate(getOrientation(), getBoundingRect().centerX(), getBoundingRect().centerY());
+            transformMatrix.setRotate(getOrientation(), getRotationPointXCoordinate(), getRotationPointYCoordinate());
             transformMatrix.mapPoints(renderPoints);
         }
-        return ShapeUtils.collide((renderPoints[0] + renderPoints[2]) / 2, (renderPoints[1] + renderPoints[3]) / 2, Math.abs(renderPoints[0] - renderPoints[2]), Math.abs(renderPoints[1] - renderPoints[3]),
+        return ShapeUtils.collide((renderPoints[0] + renderPoints[2]) / 2,
+                (renderPoints[1] + renderPoints[3]) / 2,
+                Math.abs(renderPoints[0] - renderPoints[2]), Math.abs(renderPoints[1] - renderPoints[3]),
                 x, y, radius);
     }
 
@@ -47,7 +49,7 @@ public class CircleShape extends NonEPDShape {
         Path path = new Path();
         path.addOval(rect, Path.Direction.CW);
         if (Float.compare(getOrientation(), 0f) != 0) {
-            transformMatrix.setRotate(getOrientation(), rect.centerX(), rect.centerY());
+            transformMatrix.setRotate(getOrientation(), getRotationPointXCoordinate(), getRotationPointYCoordinate());
             path.transform(transformMatrix);
         }
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));

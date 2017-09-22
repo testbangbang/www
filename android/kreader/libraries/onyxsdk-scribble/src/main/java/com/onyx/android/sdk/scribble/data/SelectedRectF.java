@@ -12,7 +12,6 @@ import java.util.List;
  */
 
 public class SelectedRectF {
-    private List<PointF> cornerPointList = new ArrayList<>();
     private final int detectionRange = 10;
 
     public ShapeTransformAction getTouchPointHitTest(PointF touchPoint) {
@@ -20,7 +19,8 @@ public class SelectedRectF {
         float[] pointArray = new float[2];
         pointArray[0] = touchPoint.x;
         pointArray[1] = touchPoint.y;
-        //TODO:A little trick here, because no rotated rect detect in android, so we just rotate back the point to 0 degrees to do the detection.
+        //TODO:A little trick here, because no rotated rect detect in android,
+        // so we just rotate back the point to 0 degrees to do the detection.
         if (Float.compare(orientation, 0f) == 1) {
             pointRevertMatrix.setRotate(360 - orientation, rectF.centerX(), rectF.centerY());
             pointRevertMatrix.mapPoints(pointArray);
@@ -63,12 +63,6 @@ public class SelectedRectF {
     public SelectedRectF(float orientation, RectF rectF) {
         this.orientation = orientation;
         this.rectF = rectF;
-        if (!this.rectF.isEmpty()) {
-            cornerPointList.add(new PointF(rectF.left, rectF.top));
-            cornerPointList.add(new PointF(rectF.right, rectF.top));
-            cornerPointList.add(new PointF(rectF.left, rectF.bottom));
-            cornerPointList.add(new PointF(rectF.right, rectF.bottom));
-        }
     }
 
     private List<RectF> buildZoomDetectionRectList() {
