@@ -1048,6 +1048,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             getReaderDataHolder().getReaderPainter().drawPage(this,
                     canvas,
                     pageBitmap,
+                    getReaderDataHolder(),
                     getReaderDataHolder().getReaderUserDataInfo(),
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
