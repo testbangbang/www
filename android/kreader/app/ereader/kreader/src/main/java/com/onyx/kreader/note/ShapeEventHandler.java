@@ -204,6 +204,11 @@ public class ShapeEventHandler {
         TouchPointList list = new TouchPointList();
         int n = motionEvent.getHistorySize();
         for (int i = 0; i < n; i++) {
+            final TouchPoint touchPoint = fromHistorical(motionEvent, i);
+            PageInfo pageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
+            if (pageInfo == null || (noteManager.isSideNoting() && !noteManager.isSidePage(pageInfo))) {
+                continue;
+            }
             list.add(fromHistorical(motionEvent, i));
         }
         list.add(new TouchPoint(motionEvent));
