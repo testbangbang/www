@@ -9,8 +9,6 @@ import com.onyx.kreader.note.NoteManager;
 public class RedoRequest extends ReaderBaseNoteRequest {
 
     public RedoRequest(final PageInfo p) {
-        setRender(true);
-        setTransfer(true);
         setVisiblePage(p);
     }
 

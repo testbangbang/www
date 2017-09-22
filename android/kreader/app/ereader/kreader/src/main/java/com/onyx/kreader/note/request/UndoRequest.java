@@ -9,8 +9,6 @@ import com.onyx.kreader.note.NoteManager;
 public class UndoRequest extends ReaderBaseNoteRequest {
 
     public UndoRequest(final PageInfo p) {
-        setRender(true);
-        setTransfer(true);
         setVisiblePage(p);
     }
 
