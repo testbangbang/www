@@ -37,14 +37,14 @@ import java.util.List;
  * Created by lxm on 2017/9/20.
  */
 
-public class ShowSideScribbleMenu extends BaseAction {
+public class ShowSideScribbleMenuAction extends BaseAction {
 
     private ViewGroup parent;
     private MenuManager sideMenu;
     private ReaderDataHolder readerDataHolder;
     private ShowScribbleMenuAction.ActionCallback actionCallback;
 
-    public ShowSideScribbleMenu(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
+    public ShowSideScribbleMenuAction(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
         this.parent = parent;
         this.actionCallback = actionCallback;
     }
