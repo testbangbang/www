@@ -125,11 +125,7 @@ public interface ContentService {
     Call<List<AllGroupBean>> getAllGroups();
 
     @GET("/api/groups/{id}/users")
-    Call<GroupMemberBean> getGroupMember(@Path(Constant.ID_TAG) final String id,
-                                         @Query(Constant.OFFSET_TAG) final String offset,
-                                         @Query(Constant.LIMIT_TAG) final String limit,
-                                         @Query(Constant.SORTBY_TAG) final String sortBy,
-                                         @Query(Constant.ORDER_TAG) final String order);
+    Call<GroupMemberBean> getGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.WHERE_TAG) final String param);
 
     @GET("/api/groups/{id}/searchUsers")
     Call<GroupMemberBean> searchGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.TEXT_TAG) final String offset);
