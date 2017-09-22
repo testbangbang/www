@@ -18,8 +18,9 @@ import org.greenrobot.eventbus.EventBus;
 public class Menu {
 
     private ViewDataBinding menuBinding;
-
     private SparseArray<MenuItem> itemMap;
+    private boolean isShowing = false;
+    private int parentMenuId;
 
     public static Menu addMenu(ViewGroup parent,
                                EventBus eventBus,
@@ -50,8 +51,15 @@ public class Menu {
     }
 
     public Menu show(final ViewGroup parent, final ViewGroup.LayoutParams params) {
+        remove(parent);
         parent.addView(getRootView(), params);
+        isShowing = true;
         return this;
+    }
+
+    public void remove(ViewGroup parent) {
+        parent.removeView(getRootView());
+        isShowing = false;
     }
 
     public Menu check(int menuId) {
@@ -99,12 +107,28 @@ public class Menu {
         return this;
     }
 
+    public void setParentMenuId(int parentMenuId) {
+        this.parentMenuId = parentMenuId;
+    }
+
+    public int getParentMenuId() {
+        return parentMenuId;
+    }
+
+    public boolean isShowing() {
+        return isShowing && getRootView().getVisibility() == View.VISIBLE;
+    }
+
     public ViewDataBinding getMenuBinding() {
         return menuBinding;
     }
 
     public View getRootView() {
         return getMenuBinding().getRoot();
+    }
+
+    public int getRootViewId() {
+        return getRootView().getId();
     }
 
     public Menu updateItemMap(int menuVariable, EventBus eventBus, SparseArray<MenuItem> map) {

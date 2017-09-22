@@ -36,6 +36,7 @@ import com.onyx.kreader.ui.handler.HandlerManager;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -570,7 +571,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private void postMenuChangedEvent(final ReaderDataHolder readerDataHolder) {
         int bottomOfTopToolBar = 0;
         int topOfBottomToolBar = 0;
-        RectF excludeRect = new RectF();
+        List<RectF> excludeRectFs = new ArrayList<>();
         if (bottomToolbar.getVisibility() == View.VISIBLE) {
             bottomOfTopToolBar = topToolbar.getBottom();
         }
@@ -579,9 +580,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         }
 
         if (fullToolbar.getVisibility() == View.VISIBLE) {
-            excludeRect = new RectF(fullToolbar.getLeft(), fullToolbar.getTop(), fullToolbar.getRight(), fullToolbar.getBottom());
+            excludeRectFs.add(new RectF(fullToolbar.getLeft(), fullToolbar.getTop(), fullToolbar.getRight(), fullToolbar.getBottom()));
         }
-        readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar, excludeRect));
+        readerDataHolder.getEventBus().post(ScribbleMenuChangedEvent.create(bottomOfTopToolBar, topOfBottomToolBar, excludeRectFs));
     }
 
     private static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
