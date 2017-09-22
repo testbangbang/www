@@ -42,6 +42,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private ViewGroup parent;
     private MenuManager sideMenu;
     private ReaderDataHolder readerDataHolder;
+    private View dividerLine;
     private ShowScribbleMenuAction.ActionCallback actionCallback;
 
     public ShowSideScribbleMenuAction(ViewGroup parent, ShowScribbleMenuAction.ActionCallback actionCallback) {
@@ -71,6 +72,16 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 MenuItem.createVisibleMenus(getMainMenuActions()));
         updateSideNotePositionText(readerDataHolder);
         postMenuChangedEvent(readerDataHolder);
+        addDividerLine(parent);
+    }
+
+    private void addDividerLine(ViewGroup parent) {
+        dividerLine = new View(parent.getContext());
+        dividerLine.setBackgroundColor(Color.BLACK);
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int) parent.getContext().getResources().getDimension(R.dimen.divider_line_size),
+                ViewGroup.LayoutParams.MATCH_PARENT);
+        lp.addRule(RelativeLayout.CENTER_IN_PARENT);
+        parent.addView(dividerLine, lp);
     }
 
     private List<Integer> getExpandMenuActions() {
@@ -236,6 +247,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     @Subscribe
     public void close(CloseScribbleMenuEvent event) {
         removeMenu();
+        parent.removeView(dividerLine);
         readerDataHolder.getEventBus().unregister(this);
         readerDataHolder.resetHandlerManager();
     }
