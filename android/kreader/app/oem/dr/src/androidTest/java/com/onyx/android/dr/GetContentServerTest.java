@@ -14,6 +14,7 @@ import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudLibraryListLoadRequest;
 
@@ -31,7 +32,7 @@ public class GetContentServerTest extends ApplicationTestCase<DRApplication> {
 
     public void testLookUpContentServer() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final AuthTokenAction authTokenAction = new AuthTokenAction();
+        final AuthTokenAction authTokenAction = new AuthTokenAction(BaseAuthAccount.create("userName","password"));
         final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction("1");
         ActionChain actionChain = new ActionChain();
         actionChain.addAction(authTokenAction);
