@@ -436,6 +436,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             getUserInfo(signUpInfo);
             if (!stepNotComplete) {
                 loginPresenter.signUp(signUpInfo);
+                showProgressDialog(signUpInfo, null);
             }
             stepNotComplete = false;
         }
@@ -590,6 +591,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             return;
         }
         loginPresenter.login(account, password);
+        showCloudProgressDialogWithMessage(account, R.string.logging_in, null);
     }
 
     private void connectNetwork() {
@@ -622,6 +624,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         DRPreferenceManager.saveUserPassword(DRApplication.getInstance(), editTextPassword.getText().toString());
         DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
         ActivityManager.startMainActivity(this);
+        dismissAllProgressDialog();
         finish();
     }
 
@@ -632,5 +635,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
         } else {
             CommonNotices.showMessage(this, getString(R.string.username_or_password_error));
         }
+        dismissAllProgressDialog();
     }
 }

@@ -20,6 +20,8 @@ import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BackToMainViewEvent;
 import com.onyx.android.dr.event.EBookListEvent;
+import com.onyx.android.dr.event.HideLoadingProgressEvent;
+import com.onyx.android.dr.event.ShowLoadingProgressEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.BookshelfView;
 import com.onyx.android.dr.presenter.BookshelfPresenter;
@@ -173,6 +175,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
                 loadLibrary(position);
                 break;
         }
+        EventBus.getDefault().post(new ShowLoadingProgressEvent());
     }
 
     private void loadBookshelf(String language) {
@@ -263,15 +266,18 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         queryResult.count = result.size();
         Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(DRApplication.getInstance(), DRApplication.getCloudStore().getCloudManager(), queryResult.list);
         updateContentView(getLibraryDataModel(queryResult, bitmaps));
+        EventBus.getDefault().post(new HideLoadingProgressEvent());
     }
 
     @Override
     public void setLanguageCategory(Map<String, List<Metadata>> map) {
+        EventBus.getDefault().post(new HideLoadingProgressEvent());
         adapter.setMap(map);
     }
 
     @Override
     public void setLibraryList(List<Library> list) {
+        EventBus.getDefault().post(new HideLoadingProgressEvent());
         this.libraryList = list;
         bookshelfTab.removeAllTabs();
         for (Library lib : libraryList) {

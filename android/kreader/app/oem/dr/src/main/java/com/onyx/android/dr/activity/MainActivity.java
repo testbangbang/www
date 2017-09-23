@@ -30,11 +30,13 @@ import com.onyx.android.dr.event.DictMenuEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.event.HaveNewVersionApkEvent;
 import com.onyx.android.dr.event.HaveNewVersionEvent;
+import com.onyx.android.dr.event.HideLoadingProgressEvent;
 import com.onyx.android.dr.event.ListenAndSayMenuEvent;
 import com.onyx.android.dr.event.LoginFailedEvent;
 import com.onyx.android.dr.event.MoreBooksEvent;
 import com.onyx.android.dr.event.NotesMenuEvent;
 import com.onyx.android.dr.event.SettingsMenuEvent;
+import com.onyx.android.dr.event.ShowLoadingProgressEvent;
 import com.onyx.android.dr.event.ToBookshelfV2Event;
 import com.onyx.android.dr.event.UpdateDownloadSucceedEvent;
 import com.onyx.android.dr.event.WifiConnectedEvent;
@@ -128,7 +130,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void autoLogin() {
-        if(!DRApplication.getInstance().isLoginSuccess()) {
+        if (!DRApplication.getInstance().isLoginSuccess()) {
             mainPresenter.authToken(this);
         }
     }
@@ -268,6 +270,16 @@ public class MainActivity extends BaseActivity implements MainView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWifiConnectedEvent(WifiConnectedEvent event) {
         autoLogin();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShowLoadingProgressEvent(ShowLoadingProgressEvent event) {
+        showProgressDialog(null, null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHideLoadingProgressEvent(HideLoadingProgressEvent event) {
+        dismissAllProgressDialog();
     }
 
     private LibraryDataHolder getDataHolder() {

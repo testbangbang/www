@@ -659,4 +659,5 @@
     <string name="no_dict_data_hint">没有相应字典数据，请前往下载!</string>
     <string name="dict_download_hint">词典下载提示</string>
     <string name="informal_essay_activity_all_number">共计: </string>
+    <string name="logging_in">正在登录...</string>
 </resources>
