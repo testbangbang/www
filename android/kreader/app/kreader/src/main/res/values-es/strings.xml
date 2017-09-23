@@ -51,7 +51,7 @@
     <string name="search_hint">Search</string>
     <string name="not_found">No Search Result</string>
     <string name="emptyselection">Empty Selection</string>
-    <string name="loading_document">Loading Document</string>
+    <string name="loading_document">Cargando libro</string>
     <string name="dialog_password_text_password">Password</string>
     <string name="dialog_password_set">Set</string>
     <string name="dialog_password_cancel">Cancel</string>
@@ -85,8 +85,8 @@
     <string name="nothing">no\ncrop</string>
     <string name="search">Search</string>
     <string name="total_page" formatted="false">Total: %d </string>
-    <string name="min_scroll_toast">Has been scaled to the minimum value</string>
-    <string name="max_scroll_toast">Has been scaled to the maximum value</string>
+    <string name="min_scroll_toast">Zoom mínimo, no se reducirá más el texto</string>
+    <string name="max_scroll_toast">Zoom máximo, no se ampliará más el texto</string>
     <string name="did_not_find_the_dictionary">Didn\'t find the dictionary</string>
     <string name="screen_refresh">Screen Refresh</string>
     <string name="back">Volver</string>
@@ -280,12 +280,12 @@
     <string name="fail_create_export_directory">Failed to create export directory: </string>
     <string name="show_password">Show the password</string>
 
-    <string name="fast">fast</string>
-    <string name="faster">faster</string>
-    <string name="normal">normal</string>
-    <string name="slower">slower</string>
-    <string name="slow">slow</string>
-    <string name="get_page_text_failed">Get page text failed!</string>
+    <string name="fast">Muy rápido</string>
+    <string name="faster">Rápido</string>
+    <string name="normal">Normal</string>
+    <string name="slower">Lento</string>
+    <string name="slow">Muy lento</string>
+    <string name="get_page_text_failed">No se puede iniciar!</string>
     <string name="dialog_reflow_settings_text_direction">Text direction</string>
     <string name="already_at_maximum_line_spacing">Already at maximum line spacing!</string>
     <string name="already_at_minimum_line_spacing">Already at minimum line spacing!</string>
