@@ -33,6 +33,7 @@ public class InformalEssayPresenter {
     private InformalEssayData infromalEssayData;
     private Context context;
     public List<InformalEssayEntity> allDatas;
+    private String tag = "";
 
     public InformalEssayPresenter(Context context, InformalEssayView informalEssayView) {
         this.informalEssayView = informalEssayView;

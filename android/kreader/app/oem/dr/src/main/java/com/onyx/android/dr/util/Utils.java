@@ -972,4 +972,14 @@ public class Utils {
         dialog.getWindow().setAttributes(attributes);
         dialog.show();
     }
+
+    public static void setDictDialogAttributes(Dialog dialog) {
+        WindowManager.LayoutParams attributes = dialog.getWindow().getAttributes();
+        Float heightProportion = Float.valueOf(DRApplication.getInstance().getString(R.string.dict_download_hint_dialog_height));
+        Float widthProportion = Float.valueOf(DRApplication.getInstance().getString(R.string.speech_recording_activity_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
+        dialog.getWindow().setAttributes(attributes);
+        dialog.show();
+    }
 }

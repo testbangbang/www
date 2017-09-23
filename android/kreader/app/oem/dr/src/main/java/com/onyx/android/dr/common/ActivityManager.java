@@ -183,6 +183,12 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
+    public static void startReadingReportActivity(Context context, Intent intent) {
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, BookReportDetailActivity.class);
+        context.startActivity(intent);
+    }
+
     public static void startReadingReportListActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

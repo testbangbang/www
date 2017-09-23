@@ -3,56 +3,65 @@
     android:id="@+id/item_infromal_essay_linearlayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
-
-    <TextView
-        android:id="@+id/infromal_essay_item_time"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        style="@style/good_sentence_item_textview"
-        android:layout_weight="2"
-        android:text="@string/infromal_essay_activity_time" />
-
-    <View style="@style/good_sentence_item_view" />
-
-    <TextView
-        android:id="@+id/infromal_essay_item_title"
-        style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        android:layout_weight="2"
-        android:text="@string/infromal_essay_activity_title" />
-
-    <View style="@style/good_sentence_item_view" />
-
-    <TextView
-        android:id="@+id/infromal_essay_item_word_number"
-        style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="1dp"
-        android:layout_weight="2"
-        android:text="@string/infromal_essay_activity_word_number" />
-
-    <View style="@style/good_sentence_item_view" />
-
-    <TextView
-        android:id="@+id/infromal_essay_item_content"
-        style="@style/good_sentence_item_textview"
-        android:layout_marginLeft="@dimen/title_interval_margin_left"
-        android:layout_weight="4"
-        android:text="@string/infromal_essay_activity_content" />
-
-    <View style="@style/good_sentence_item_view" />
+    android:orientation="vertical">
 
     <LinearLayout
-        android:layout_width="@dimen/new_word_activity_all_check_width"
-        android:layout_height="match_parent">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/infromal_essay_item_check"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
-            android:src="@color/white" />
+        <TextView
+            android:id="@+id/infromal_essay_item_time"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_weight="2"
+            android:text="@string/infromal_essay_activity_time" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <TextView
+            android:id="@+id/infromal_essay_item_title"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_weight="2"
+            android:text="@string/infromal_essay_activity_title" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <TextView
+            android:id="@+id/infromal_essay_item_word_number"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/infromal_essay_activity_word_number" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <TextView
+            android:id="@+id/infromal_essay_item_content"
+            style="@style/good_sentence_item_textview"
+            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_weight="4"
+            android:text="@string/infromal_essay_activity_content" />
+
+        <View style="@style/good_sentence_item_view" />
+
+        <LinearLayout
+            android:layout_width="@dimen/new_word_activity_all_check_width"
+            android:layout_height="match_parent">
+
+            <CheckBox
+                android:id="@+id/infromal_essay_item_check"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                android:src="@color/white" />
+        </LinearLayout>
+
     </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
 </LinearLayout>

@@ -420,4 +420,6 @@
     <dimen name="ebook_item_cover_width">160dp</dimen>
     <dimen name="ebook_item_cover_height">221dp</dimen>
     <dimen name="recent_reading_recycler_height">600dp</dimen>
+    <dimen name="add_memorandum_activity_start_time_margin_bottom">20dp</dimen>
+    <dimen name="dict_download_dialog_content_padding">10dp</dimen>
 </resources>

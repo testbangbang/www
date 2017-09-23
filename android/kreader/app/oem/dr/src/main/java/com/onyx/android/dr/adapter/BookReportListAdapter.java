@@ -1,5 +1,7 @@
 package com.onyx.android.dr.adapter;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +9,9 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.BringOutBookReportEvent;
 import com.onyx.android.dr.event.DeleteBookReportEvent;
 import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.view.PageRecyclerView;
@@ -79,19 +84,26 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
 
         switch (v.getId()) {
             case R.id.book_report_list_item_bring_out:
-                ToastManage.showMessage(DRApplication.getInstance(),"bring_out");
+                EventBus.getDefault().post(new BringOutBookReportEvent(bookReportBean));
                 break;
             case R.id.book_report_list_item_share:
                 ToastManage.showMessage(DRApplication.getInstance(),"share");
                 break;
             case R.id.book_report_list_item_delete:
-                ToastManage.showMessage(DRApplication.getInstance(),"delete");
                 EventBus.getDefault().post(new DeleteBookReportEvent(bookReportBean));
                 break;
             default:
-                ToastManage.showMessage(DRApplication.getInstance(),"item");
+                startBookReportDetailActivity(bookReportBean);
                 break;
         }
+    }
+
+    private void startBookReportDetailActivity(GetBookReportListBean bookReportBean) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.BOOK_REPORT_DATA, bookReportBean);
+        intent.putExtras(bundle);
+        ActivityManager.startReadingReportActivity(DRApplication.getInstance(), intent);
     }
 
     public void setData(List<GetBookReportListBean> data) {

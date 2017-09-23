@@ -11,6 +11,7 @@ public class CreateBookReportRequestBean implements Serializable{
     private String name;
     private String content;
     private String book;
+    private String pageNumber;
     private List<CommentsBean> comments;
 
     public String getName() {
@@ -35,6 +36,14 @@ public class CreateBookReportRequestBean implements Serializable{
 
     public void setBook(String book) {
         this.book = book;
+    }
+
+    public String getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(String pageNumber) {
+        this.pageNumber = pageNumber;
     }
 
     public List<CommentsBean> getComments() {

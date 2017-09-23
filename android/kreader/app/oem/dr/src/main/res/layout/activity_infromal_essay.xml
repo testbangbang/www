@@ -37,7 +37,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="@string/fragment_speech_recording_all_number"
+                android:text="@string/informal_essay_activity_all_number"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_one_heading_font" />
 

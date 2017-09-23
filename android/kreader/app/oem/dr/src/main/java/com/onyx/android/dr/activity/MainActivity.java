@@ -92,7 +92,6 @@ public class MainActivity extends BaseActivity implements MainView {
         mainPresenter = new MainPresenter(this);
         MainTabMenuConfig.loadMenuInfo(this);
         mainPresenter.getMyGroup();
-        DRApplication.getInstance().initDictDatas();
     }
 
     @Override
@@ -129,7 +128,9 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void autoLogin() {
-        mainPresenter.authToken(this);
+        if(!DRApplication.getInstance().isLoginSuccess()) {
+            mainPresenter.authToken(this);
+        }
     }
 
     @Override
@@ -146,13 +147,11 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDictMenuEvent(DictMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_dict));
         ActivityManager.startDictQueryActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onNotesMenuEvent(NotesMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_notes));
         ActivityManager.startMyNotesActivity(this);
     }
 

@@ -16,10 +16,15 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.dialog.TimePickerDialog;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.presenter.GoodSentencePresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,7 +127,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
             goodSentenceList = dataList;
             listCheck = checkList;
         }
-        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + goodSentenceList.size() + getString(R.string.data_unit));
+        allNumber.setText(getString(R.string.informal_essay_activity_all_number) + goodSentenceList.size() + getString(R.string.data_unit));
         if (dictType == Constants.ENGLISH_TYPE) {
             englishRadioButton.setText(getString(R.string.english) + "(" + goodSentenceList.size() + getString(R.string.new_word_unit) + ")");
         } else if (dictType == Constants.CHINESE_TYPE) {
@@ -259,6 +264,16 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
             goodSentenceList.clear();
             goodSentenceAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_success));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 
     @Override

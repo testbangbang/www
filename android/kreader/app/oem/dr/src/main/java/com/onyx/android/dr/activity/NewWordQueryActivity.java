@@ -96,7 +96,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
 
     @Override
     protected void initData() {
-        queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
+        queryResult = new ConcurrentHashMap<>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(this);
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
@@ -230,7 +230,6 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
                     addSearchResult(queryWordRequest.queryResult);
                     dictSpinnerAdapter.setDatas(searchResultList);
                     resultSpinner.setAdapter(dictSpinnerAdapter);
-
                 }
             });
             if (!bRet) {

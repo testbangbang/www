@@ -1,7 +1,11 @@
 package com.onyx.android.dr.activity;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -16,11 +20,13 @@ import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.DictTypeConfig;
+import com.onyx.android.dr.dialog.AlertInfoDialog;
 import com.onyx.android.dr.event.ChineseQueryEvent;
 import com.onyx.android.dr.event.EnglishQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
 import com.onyx.android.dr.interfaces.DictResultShowView;
 import com.onyx.android.dr.presenter.DictFunctionPresenter;
+import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -83,6 +89,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     private List<DictTypeBean> chineseDictName;
     private List<DictTypeBean> japaneseDictName;
     private int dictType = Constants.ENGLISH_TYPE;
+    private AlertInfoDialog alertDialog;
+    private static CustomDialog dialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -110,7 +118,6 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         queryDictTypeAdapter = new QueryDictTypeAdapter();
         dictPresenter = new DictFunctionPresenter(this);
         dictTypeRecyclerView.setAdapter(queryDictTypeAdapter);
-        dictPresenter.getDictMapData();
         initTitleData();
         initEvent();
     }
@@ -130,6 +137,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     @Override
     protected void onResume() {
         super.onResume();
+        DRApplication.getInstance().initDictDatas();
         List<DictTypeBean> dictLanguageData = DictTypeConfig.dictLanguageData;
         if (dictLanguageData == null || dictLanguageData.size() <= 0) {
             dictPresenter.loadData(this);
@@ -153,6 +161,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     public void intContainerVisible(List<DictTypeBean> dictLanguageData) {
         int type = dictLanguageData.get(0).getType();
+        getDictData(type);
         languageQueryTypeAdapter.setSelectedPosition(type);
         englishDictName = Utils.getEnglishDictData();
         chineseDictName = Utils.getChineseDictData();
@@ -163,19 +172,55 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
             japaneseLinearLayout.setVisibility(View.GONE);
             queryDictTypeAdapter.setMenuDatas(englishDictName);
             queryDictTypeAdapter.notifyDataSetChanged();
+            wordQuery.requestFocus();
         } else if (type == Constants.CHINESE_TYPE) {
             chineseLinearLayout.setVisibility(View.VISIBLE);
             englishLinearLayout.setVisibility(View.GONE);
             japaneseLinearLayout.setVisibility(View.GONE);
             queryDictTypeAdapter.setMenuDatas(chineseDictName);
             queryDictTypeAdapter.notifyDataSetChanged();
+            spellQuery.requestFocus();
         } else if (type == Constants.OTHER_TYPE) {
             japaneseLinearLayout.setVisibility(View.VISIBLE);
             englishLinearLayout.setVisibility(View.GONE);
             chineseLinearLayout.setVisibility(View.GONE);
             queryDictTypeAdapter.setMenuDatas(japaneseDictName);
             queryDictTypeAdapter.notifyDataSetChanged();
+            japaneseQuery.requestFocus();
         }
+    }
+
+    private void getDictData(int type) {
+        List<String> pathList = Utils.getPathList(type);
+        dictPresenter.getDictMapData();
+        if (pathList == null || pathList.size() <= 0) {
+            showDialog(this, getString(R.string.no_dict_data_hint));
+        }
+    }
+
+    public static void showDialog(final Context context, String content) {
+        final CustomDialog.Builder builder = new CustomDialog.Builder(context);
+        View inflate = View.inflate(context, R.layout.dialog_dict_download_hint, null);
+        TextView text = (TextView) inflate.findViewById(R.id.dict_download_dialog_content);
+        dialog = builder.setContentView(inflate).setTitle(R.string.dict_download_hint)
+                .setPositiveButton(context.getString(R.string.download), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        ActivityManager.startEBookStoreActivity(context);
+                    }
+                }).setNegativeButton(context.getString(R.string.dialog_button_cancel), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create();
+        text.setText(content);
+        Window window = dialog.getWindow();
+        if (window != null) {
+            window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        }
+        Utils.setDictDialogAttributes(dialog);
+        dialog.show();
     }
 
     public void initEvent() {
@@ -207,6 +252,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         queryDictTypeAdapter.setMenuDatas(englishDictName);
         queryDictTypeAdapter.notifyDataSetChanged();
         dictType = Constants.ENGLISH_TYPE;
+        wordQuery.requestFocus();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -217,6 +263,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         queryDictTypeAdapter.setMenuDatas(chineseDictName);
         queryDictTypeAdapter.notifyDataSetChanged();
         dictType = Constants.CHINESE_TYPE;
+        spellQuery.requestFocus();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -227,6 +274,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         queryDictTypeAdapter.setMenuDatas(japaneseDictName);
         queryDictTypeAdapter.notifyDataSetChanged();
         dictType = Constants.OTHER_TYPE;
+        japaneseQuery.requestFocus();
     }
 
     @OnClick({R.id.activity_word_query_search,

@@ -12,18 +12,12 @@ import retrofit2.Response;
  */
 public class RequestGroupMember extends AutoNetWorkConnectionBaseCloudRequest {
     private final String id;
-    private final String offset;
-    private final String limit;
-    private final String sortBy;
-    private final String order;
+    private final String param;
     private GroupMemberBean groupMember = new GroupMemberBean();
 
-    public RequestGroupMember(String id, String offset, String limit, String sortBy, String order) {
+    public RequestGroupMember(String id, String param) {
         this.id = id;
-        this.offset = offset;
-        this.limit = limit;
-        this.sortBy = sortBy;
-        this.order = order;
+        this.param = param;
     }
 
     public GroupMemberBean getGroup() {
@@ -38,7 +32,7 @@ public class RequestGroupMember extends AutoNetWorkConnectionBaseCloudRequest {
     private void getMyGroup(CloudManager parent) {
         try {
             Response<GroupMemberBean> response = executeCall(ServiceFactory.getContentService(
-                    parent.getCloudConf().getApiBase()).getGroupMember(id, offset, limit, sortBy, order));
+                    parent.getCloudConf().getApiBase()).getGroupMember(id, param));
             if (response != null) {
                 groupMember = response.body();
             }

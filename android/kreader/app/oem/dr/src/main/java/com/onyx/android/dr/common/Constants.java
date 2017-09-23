@@ -77,10 +77,11 @@ public class Constants {
     public static final String STARTUP_ACTIVITY_FULL_PATH = "com.onyx.android.note.activity.StartupActivity";
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
-    public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word.html";
-    public static final String MEMORANDUM_HTML = MY_NOTES_FOLDER + "/memorandum.html";
-    public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay.html";
-    public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence.html";
+    public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word";
+    public static final String MEMORANDUM_HTML = MY_NOTES_FOLDER + "/memorandum";
+    public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay";
+    public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence";
+    public static final String UNIT = ".html";
 
     public static final String ACCOUNT = "account";
     public static final String PASSWORD = "password";
@@ -123,6 +124,10 @@ public class Constants {
     static final public String NON_MANUFACTURE_BASED_CONFIG_NAME = "onyx";
     public static final String UPDATE_URL = "update_url";
     public static final String UPDATE_ZIP = "update.zip";
+    public static final String BOOK_REPORT_DATA = "book_report_data";
+    public static final String BOOK_NAME = "book_name";
+    public static final String BOOK_PAGE = "book_page";
+    public static final String BOOK_ID = "book_id";
 
     public static final int DEVICE_SETTING_FRAGMENT = 0;
     public static final int SCHOOL_CHILDREN = 0;
@@ -134,4 +139,7 @@ public class Constants {
     public static final int ACTION_ONE = 0;
     public static final int ACTION_TWO = 1;
     public static final int FOUR = 4;
+
+    public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
+    public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";
 }

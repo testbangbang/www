@@ -37,7 +37,7 @@ public class DictTypeConfig {
     }
 
     public void loadDictMap() {
-        if (englishDictMap == null || englishDictMap.size() <= 0) {
+        if (whetherLoadData(englishDictMap)){
             List<DictTypeBean> dictName = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
             List<DictTypeBean> newDictName = new ArrayList<>();
             if (dictName != null && dictName.size() > Constants.FOUR) {
@@ -51,7 +51,7 @@ public class DictTypeConfig {
                 englishDictMap.put(Constants.ENGLISH_TYPE, Utils.getDictName(Constants.ENGLISH_DICTIONARY));
             }
         }
-        if (chineseDictMap == null || chineseDictMap.size() <= 0) {
+        if (whetherLoadData(chineseDictMap)){
             List<DictTypeBean> dictName = Utils.getDictName(Constants.CHINESE_DICTIONARY);
             List<DictTypeBean> newDictName = new ArrayList<>();
             if (dictName != null && dictName.size() > Constants.FOUR) {
@@ -65,7 +65,7 @@ public class DictTypeConfig {
                 chineseDictMap.put(Constants.CHINESE_TYPE, Utils.getDictName(Constants.CHINESE_DICTIONARY));
             }
         }
-        if (minorityDictMap == null || minorityDictMap.size() <= 0) {
+        if (whetherLoadData(minorityDictMap)){
             List<DictTypeBean> dictName = Utils.getDictName(Constants.OTHER_DICTIONARY);
             List<DictTypeBean> newDictName = new ArrayList<>();
             if (dictName != null && dictName.size() > Constants.FOUR) {
@@ -79,6 +79,18 @@ public class DictTypeConfig {
                 minorityDictMap.put(Constants.OTHER_TYPE, Utils.getDictName(Constants.OTHER_DICTIONARY));
             }
         }
+    }
+
+    public boolean whetherLoadData(Map<Integer, List<DictTypeBean>> map) {
+        if (map.size() <= 0) {
+            return true;
+        }
+        for (Map.Entry<Integer, List<DictTypeBean>> entry : map.entrySet()) {
+            if (entry.getValue().size() <= 0) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public List<DictTypeBean> getDictTypeData(int userType) {

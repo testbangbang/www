@@ -6,9 +6,11 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GroupMemberAdapter;
+import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.dialog.AlertInfoDialog;
@@ -58,8 +60,8 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
     private GroupMemberAdapter groupMemberAdapter;
     private List<ListBean> groupList;
     private String offset = "1";
-    private String limit = "20";
-    private String sortBy = "updatedAt";
+    private String limit = "200";
+    private String sortBy = "createdAt";
     private String order = "-1";
     private ArrayList<Boolean> listCheck;
     private AlertInfoDialog alertDialog;
@@ -96,7 +98,9 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
     private void getIntentData() {
         id = getIntent().getStringExtra(Constants.GROUP_ID);
         groupMemberManagePresenter = new GroupMemberPresenter(this);
-        groupMemberManagePresenter.getGroupMember(id, offset, limit, sortBy, order);
+        MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
+        String json = JSON.toJSON(bean).toString();
+        groupMemberManagePresenter.getGroupMember(id, json);
     }
 
     private void initTitleData() {
