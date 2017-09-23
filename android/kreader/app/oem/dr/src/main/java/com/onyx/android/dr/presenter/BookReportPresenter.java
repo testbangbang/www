@@ -9,6 +9,7 @@ import com.onyx.android.dr.request.cloud.BringOutBookReportRequest;
 import com.onyx.android.dr.request.cloud.CreateBookReportRequest;
 import com.onyx.android.dr.request.cloud.DeleteBookReportRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportListRequest;
+import com.onyx.android.dr.request.cloud.GetBookReportRequest;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
@@ -91,6 +92,7 @@ public class BookReportPresenter {
         requestBean.setName(bookName);
         requestBean.setBook(bookId);
         requestBean.setContent(content);
+        requestBean.setPageNumber(currentPage);
         final CreateBookReportRequest rq = new CreateBookReportRequest(requestBean);
         bookReportData.createImpression(rq, new BaseCallback() {
             @Override
@@ -99,10 +101,23 @@ public class BookReportPresenter {
                 if(createBookReportResult != null) {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
                             .getResources().getString(R.string.saved_successfully));
-                    bookReportView.setCreateBookReportData(createBookReportResult);
+                    bookReportView.setCreateBookReportData();
                 }else {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
                             .getResources().getString(R.string.save_failed));
+                }
+            }
+        });
+    }
+
+    public void getImpression(String id) {
+        final GetBookReportRequest rq = new GetBookReportRequest(id);
+        bookReportData.getImpression(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                CreateBookReportResult result = rq.getResult();
+                if(result != null) {
+                    bookReportView.getBookReport(result);
                 }
             }
         });
