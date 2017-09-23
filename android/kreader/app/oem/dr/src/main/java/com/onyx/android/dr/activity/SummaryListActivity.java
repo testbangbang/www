@@ -2,9 +2,11 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -15,8 +17,10 @@ import com.onyx.android.dr.interfaces.SummaryView;
 import com.onyx.android.dr.presenter.SummaryListPresenter;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.event.ReadingSummaryMenuEvent;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -47,8 +51,11 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
     CheckBox summaryListAllSelect;
     @Bind(R.id.summary_list_all_recycler)
     PageRecyclerView summaryListRecycler;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
     private SummaryListAdapter listAdapter;
     private SummaryListPresenter presenter;
+    private PageIndicator pageIndicator;
 
     @Override
     protected Integer getLayoutId() {
@@ -74,6 +81,20 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
         titleBarRightIconTwo.setVisibility(View.VISIBLE);
         titleBarRightIconOne.setImageResource(R.drawable.ic_reader_share);
         titleBarRightIconTwo.setImageResource(R.drawable.ic_reader_choose_delet);
+        initPageIndicator(pageIndicatorLayout);
+        summaryListRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
+            }
+        });
     }
 
     @Override
@@ -85,6 +106,7 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
     @Override
     public void setSummaryList(List<ReadSummaryEntity> summaryList) {
         listAdapter.setReadSummaryList(summaryList);
+        updatePageIndicator();
     }
 
     @OnClick({R.id.menu_back, R.id.title_bar_right_icon_one, R.id.title_bar_right_icon_two})
@@ -120,5 +142,55 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
         strings[0] = event.getBookName();
         strings[1] = event.getPageNumber();
         ActivityManager.startReadSummaryActivity(this, strings);
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), summaryListRecycler.getPaginator());
+        pageIndicator.showRefresh(false);
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                summaryListRecycler.prevPage();
+            }
+
+            @Override
+            public void next() {
+                summaryListRecycler.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(listAdapter.getRowCount(), listAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = listAdapter.getDataCount();
+        getPagination().resize(listAdapter.getRowCount(), listAdapter.getColumnCount(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
     }
 }

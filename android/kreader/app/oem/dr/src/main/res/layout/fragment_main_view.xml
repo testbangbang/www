@@ -143,7 +143,6 @@
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/recent_reading_recycler"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="@dimen/recent_reading_recycler_height" />
     </LinearLayout>
 </LinearLayout>

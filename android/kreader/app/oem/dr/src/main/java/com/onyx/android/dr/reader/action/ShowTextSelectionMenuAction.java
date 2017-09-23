@@ -127,6 +127,7 @@ public class ShowTextSelectionMenuAction {
         AnnotationInfo annotationInfo = getAnnotationParam(readerPresenter);
         DialogDict dialogDict = new DialogDict(readerActivity, readerPresenter ,annotationInfo.getQuote());
         dialogDict.show();
+        readerPresenter.onDictionaryLookup(annotationInfo.getQuote());
     }
 
     private static void closeMenu(ReaderPresenter readerPresenter){

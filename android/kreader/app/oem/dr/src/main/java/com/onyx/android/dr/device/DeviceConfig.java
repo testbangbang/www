@@ -54,6 +54,10 @@ public class DeviceConfig {
     static public final String CLOUD_MAIN_INDEX_SERVER_API = "cloud_main_index_server_api";
 
     static public final String MAIN_TAB_MENU_TAG = "main_tab_menu_tag";
+    private String statisticsUrl = "http://dev.onyx-international.cn/api/1/";
+
+    private String umengKey;
+    private String channel;
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -335,5 +339,29 @@ public class DeviceConfig {
 
     public String getBookDownloadUrl(String bookId) {
         return DRApplication.getCloudStore().getCloudConf().getApiBase() + String.format(BOOK_DOWNLOAD_URL, bookId);
+    }
+
+    public String getStatisticsUrl() {
+        return statisticsUrl;
+    }
+
+    public void setStatisticsUrl(String statisticsUrl) {
+        this.statisticsUrl = statisticsUrl;
+    }
+
+    public String getUmengKey() {
+        return umengKey;
+    }
+
+    public void setUmengKey(String umengKey) {
+        this.umengKey = umengKey;
+    }
+
+    public String getChannel() {
+        return channel;
+    }
+
+    public void setChannel(String channel) {
+        this.channel = channel;
     }
 }

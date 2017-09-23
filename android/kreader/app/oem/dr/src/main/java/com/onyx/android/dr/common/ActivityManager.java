@@ -57,6 +57,7 @@ import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.dr.reader.view.CustomDialog;
+import com.onyx.android.dr.statistics.StatisticsActivity;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -463,6 +464,11 @@ public class ActivityManager {
 
     public static void startSummaryListActivity(Context context) {
         Intent intent = new Intent(context, SummaryListActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startStatisticsActivity(Context context) {
+        Intent intent = new Intent(context, StatisticsActivity.class);
         context.startActivity(intent);
     }
 }

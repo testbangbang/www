@@ -10,7 +10,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.event.ReadingSummaryMenuEvent;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.dr.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -76,6 +76,11 @@ public class SummaryListAdapter extends PageRecyclerView.PageAdapter<SummaryList
                 EventBus.getDefault().post(event);
             }
         });
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
     static class ViewHolder extends PageRecyclerView.ViewHolder {

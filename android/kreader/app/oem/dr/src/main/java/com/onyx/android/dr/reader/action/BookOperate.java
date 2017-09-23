@@ -12,9 +12,11 @@ import com.onyx.android.dr.reader.common.ReadSettingSpaceConfig;
 import com.onyx.android.dr.reader.common.ReaderDeviceManager;
 import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.reader.event.ChangeScreenEvent;
+import com.onyx.android.dr.reader.event.DocumentFinishEvent;
 import com.onyx.android.dr.reader.event.DocumentInfoRequestResultEvent;
 import com.onyx.android.dr.reader.event.GetSearchHistoryEvent;
 import com.onyx.android.dr.reader.event.GotoPositionActionResultEvent;
+import com.onyx.android.dr.reader.event.PageChangedEvent;
 import com.onyx.android.dr.reader.event.SentenceRequestResultEvent;
 import com.onyx.android.dr.reader.event.StartTtsPlayEvent;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
@@ -165,6 +167,7 @@ public class BookOperate {
         if (!readerPresenter.getReaderViewInfo().canNextScreen) {
             ToastManage.showMessage(readerPresenter.getReaderView().getViewContext(),
                     readerPresenter.getReaderView().getViewContext().getString(R.string.max_page_toast));
+            EventBus.getDefault().post(new DocumentFinishEvent(readerPresenter.getReaderView().getViewContext()));
             return;
         }
         final NextScreenRequest nextScreenRequest = new NextScreenRequest();
@@ -173,6 +176,7 @@ public class BookOperate {
             public void done(BaseRequest baseRequest, Throwable throwable) {
                 if (throwable == null) {
                     readerPresenter.getPageInformation().setNextPage();
+                    EventBus.getDefault().post(PageChangedEvent.beforePageChange(readerPresenter));
                 }
                 onRenderRequestFinished(nextScreenRequest, throwable);
             }
@@ -191,6 +195,7 @@ public class BookOperate {
             public void done(BaseRequest baseRequest, Throwable throwable) {
                 if (throwable == null) {
                     readerPresenter.getPageInformation().setPrevPage();
+                    EventBus.getDefault().post(PageChangedEvent.beforePageChange(readerPresenter));
                 }
                 onRenderRequestFinished(prevScreenRequest, throwable);
             }
@@ -451,6 +456,8 @@ public class BookOperate {
                 addAnnotationRequest, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable throwable) {
+                        Annotation annotation = addAnnotationRequest.getAnnotation();
+                        readerPresenter.onTextSelected(annotation);
                         onRenderRequestFinished(addAnnotationRequest, throwable);
                     }
                 });

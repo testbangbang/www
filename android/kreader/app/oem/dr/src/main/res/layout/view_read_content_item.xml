@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:paddingBottom="10dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:background="@drawable/square_bg_no_focused"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:layout_gravity="center_vertical"
+            android:padding="@dimen/activity_statistics_item_margin"
+            android:text=""
+            android:textSize="@dimen/view_common_statistics_item_text_size"
+            android:id="@+id/name"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <com.onyx.android.sdk.ui.view.DashedLine
+            app:dashLine_orientation="vertical"
+            android:id="@+id/right_dash_line"
+            android:layout_width="2dp"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:textColor="@android:color/black"
+            android:singleLine="true"
+            android:ellipsize="middle"
+            android:layout_gravity="center_vertical"
+            android:padding="@dimen/activity_statistics_item_margin"
+            android:text=""
+            android:textSize="@dimen/activity_statistics_item_text_size"
+            android:id="@+id/value"
+            android:layout_weight="2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+
+</LinearLayout>

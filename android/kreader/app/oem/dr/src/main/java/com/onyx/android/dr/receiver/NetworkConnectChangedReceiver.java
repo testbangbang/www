@@ -19,7 +19,12 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class NetworkConnectChangedReceiver extends BroadcastReceiver {
+    private NetworkChangedListener networkChangedListener;
+
     private static final String TAG = NetworkConnectChangedReceiver.class.getSimpleName();
+
+    public NetworkConnectChangedReceiver() {
+    }
 
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -30,6 +35,16 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
             if (info != null && info.isAvailable()) {
                 EventBus.getDefault().post(new WifiConnectedEvent());
             }
+
+            if (info != null) { // connected to the internet
+                if (networkChangedListener != null) {
+                    networkChangedListener.onNetworkChanged(info.isConnected(), info.getType());
+                }
+            } else {
+                if (networkChangedListener != null) {
+                    networkChangedListener.onNoNetwork();
+                }
+            }
         } else if (WifiManager.WIFI_STATE_CHANGED_ACTION.equals(intent.getAction())) {
             int wifiState = intent.getIntExtra(WifiManager.EXTRA_WIFI_STATE, 0);
             if (wifiState == WifiManager.WIFI_STATE_ENABLED) {
@@ -39,5 +54,17 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                 }
             }
         }
+    }
+
+    public interface NetworkChangedListener {
+
+        void onNetworkChanged(boolean connected, int networkType);
+
+        void onNoNetwork();
+
+    }
+
+    public NetworkConnectChangedReceiver(final NetworkChangedListener networkChangedListener) {
+        this.networkChangedListener = networkChangedListener;
     }
 }

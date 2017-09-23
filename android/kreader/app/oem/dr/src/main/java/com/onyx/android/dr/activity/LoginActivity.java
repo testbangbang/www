@@ -341,18 +341,18 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 ActivityManager.startForgetPasswordActivity(this);
                 break;
             case R.id.user_login_show_password:
-                isUserShowPassword = setShowPassword(editTextPassword,showPassword,isUserShowPassword);
+                isUserShowPassword = setShowPassword(editTextPassword, showPassword, isUserShowPassword);
                 break;
             case R.id.register_show_password:
-                isRegisterShowPassword = setShowPassword(confirmPasswordPassword,registerShowPassword,isRegisterShowPassword);
+                isRegisterShowPassword = setShowPassword(confirmPasswordPassword, registerShowPassword, isRegisterShowPassword);
                 break;
             case R.id.sign_up_show_password:
-                isSignUpShowPassword = setShowPassword(signUpPassword,signUpShowPassword,isSignUpShowPassword);
+                isSignUpShowPassword = setShowPassword(signUpPassword, signUpShowPassword, isSignUpShowPassword);
                 break;
         }
     }
 
-    private boolean setShowPassword(EditText editText,ImageView imageView,boolean flags){
+    private boolean setShowPassword(EditText editText, ImageView imageView, boolean flags) {
         if (flags) {
             imageView.setImageResource(R.drawable.eye_close);
             editText.setTransformationMethod(PasswordTransformationMethod.getInstance());

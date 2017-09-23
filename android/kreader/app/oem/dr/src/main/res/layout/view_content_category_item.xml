@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:background="#14000000">
+
+    <TextView
+        android:textColor="@android:color/black"
+        android:text=""
+        android:layout_marginLeft="10dp"
+        android:textSize="22sp"
+        android:id="@+id/text_category"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <TextView
+        android:textColor="@android:color/black"
+        android:text="20%"
+        android:layout_marginRight="10dp"
+        android:textSize="22sp"
+        android:id="@+id/text_proportion"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.onyx.android.sdk.ui.view.DashedLine
+        android:id="@+id/bottom_dash_line"
+        app:dashLine_orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"/>
+
+    <com.onyx.android.sdk.ui.view.DashedLine
+        app:dashLine_orientation="vertical"
+        android:id="@+id/right_dash_line"
+        android:layout_alignParentRight="true"
+        android:layout_width="2dp"
+        android:layout_height="match_parent"/>
+</RelativeLayout>
