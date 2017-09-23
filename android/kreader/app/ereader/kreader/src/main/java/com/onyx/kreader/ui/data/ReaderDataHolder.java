@@ -658,7 +658,7 @@ public class ReaderDataHolder {
     }
 
     public void nextSideNotePage() {
-        if (sideNotePage < getSideNotePageCount()) {
+        if (sideNotePage < getSideNotePageCount() - 1) {
             sideNotePage++;
         }
     }

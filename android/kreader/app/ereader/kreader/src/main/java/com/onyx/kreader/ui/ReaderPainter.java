@@ -31,6 +31,7 @@ import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
+import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.data.SingletonSharedPreference.AnnotationHighlightStyle;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
@@ -57,6 +58,7 @@ public class ReaderPainter {
     public void drawPage(Context context,
                          Canvas canvas,
                          final Bitmap bitmap,
+                         ReaderDataHolder readerDataHolder,
                          final ReaderUserDataInfo userDataInfo,
                          final ReaderViewInfo viewInfo,
                          ReaderSelectionManager selectionManager,
@@ -67,7 +69,7 @@ public class ReaderPainter {
         drawBitmap(canvas, paint, bitmap);
         drawCropRectIndicator(canvas, paint, viewInfo);
         drawViewportOverlayIndicator(canvas, paint, viewInfo);
-        drawBookmark(context, canvas, userDataInfo, viewInfo);
+        drawBookmark(context, canvas, readerDataHolder, userDataInfo, viewInfo);
         drawSearchResults(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
         drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
@@ -196,8 +198,9 @@ public class ReaderPainter {
         drawShapeEraser(context, canvas, paint, noteManager);
     }
 
-    private void drawBookmark(Context context, Canvas canvas, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
-        if (!SingletonSharedPreference.isShowBookmark(context)) {
+    private void drawBookmark(Context context, Canvas canvas, ReaderDataHolder readerDataHolder, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
+        if (!SingletonSharedPreference.isShowBookmark(context) ||
+                readerDataHolder.isSideNoting()) {
             return;
         }
         Bitmap bitmap = BookmarkIconFactory.getBookmarkIcon(context, hasBookmark(userDataInfo, viewInfo));
@@ -323,6 +326,9 @@ public class ReaderPainter {
     private boolean isShapeOnThePage(NoteManager noteManager, PageInfo pageInfo, Shape shape) {
         String subPageId = noteManager.getNoteDocument().getPageUniqueId(pageInfo.getName(),
                 pageInfo.getSubPage());
+        if (subPageId == null) {
+            return false;
+        }
         return shape.getPageUniqueId().compareTo(pageInfo.getName()) == 0 &&
                 shape.getSubPageUniqueId().compareTo(subPageId) == 0;
     }

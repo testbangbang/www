@@ -15,7 +15,6 @@
         android:paddingRight="@dimen/menu_item_padding_left_right"
         android:paddingLeft="@dimen/menu_item_padding_left_right"
         app:iconDrawingSize="@dimen/side_scribble_item_img_size"
-        android:rotation="@{item.rotation}"
         android:enabled="@{item.enabled}"
         android:background="@drawable/imagebtn_bg"
         android:layout_width="wrap_content"

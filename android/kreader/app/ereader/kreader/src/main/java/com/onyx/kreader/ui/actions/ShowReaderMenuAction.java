@@ -1032,7 +1032,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void startErasing(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new ChangeNoteShapeAction(ShapeFactory.SHAPE_ERASER));
         actionChain.execute(readerDataHolder, null);
@@ -1040,7 +1040,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void toggleMenu(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
-        final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
+        final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         final FlushNoteAction flushNoteAction = new FlushNoteAction(pages, true, true, false, false);
         final ResumeDrawingAction action = new ResumeDrawingAction(pages);
         actionChain.addAction(flushNoteAction);
