@@ -596,4 +596,22 @@
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="android:windowFullscreen">true</item>
     </style>
+
+    <style name="dialog_transparent_no_title" parent="dialog_no_title">
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="tts_button">
+        <item name="android:padding">5dp</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:layout_margin">@dimen/tts_button_margin</item>
+    </style>
+
+    <style name="tts_speed_checkbox">
+        <item name="android:paddingLeft">4dp</item>
+        <item name="android:button">@drawable/tts_speed_select</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
 </resources>
