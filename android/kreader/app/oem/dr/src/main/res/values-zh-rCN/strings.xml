@@ -627,4 +627,5 @@
     <string name="no_dict_data_hint">没有相应字典数据，请前往下载!</string>
     <string name="dict_download_hint">词典下载提示</string>
     <string name="informal_essay_activity_all_number">共计: </string>
+    <string name="no_comment_no_export">还未批阅，不能导出</string>
 </resources>

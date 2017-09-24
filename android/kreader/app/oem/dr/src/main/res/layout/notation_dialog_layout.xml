@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/notation_dialog_whole_padding">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/Cancel"
+            android:textSize="@dimen/level_two_font_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="@string/postil"
+            android:textSize="@dimen/level_two_font_size" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:text="@string/ok"
+            android:textSize="@dimen/level_two_font_size" />
+    </RelativeLayout>
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_margin="@dimen/notation_dialog_edit_margin"
+        android:layout_weight="1"
+        android:background="@drawable/rectangle_stroke"
+        android:gravity="top"
+        android:hint="@string/postil"
+        android:minLines="10"
+        android:padding="@dimen/book_report_detail_edit_text_margin"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black_gray"
+        android:textSize="@dimen/level_three_font_size" />
+</LinearLayout>

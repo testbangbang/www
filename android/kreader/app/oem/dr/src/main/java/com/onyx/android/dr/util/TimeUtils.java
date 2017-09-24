@@ -68,7 +68,7 @@ public class TimeUtils {
     }
 
     public static String getCurrentMillTimeInString() {
-        return getCurrentTimeInString(DEFAULT_DATE_FORMAT);
+        return getCurrentTimeInString(NEW_DATE_FORMAT);
     }
 
     public static int compareDate(String DATE1, String DATE2) {
