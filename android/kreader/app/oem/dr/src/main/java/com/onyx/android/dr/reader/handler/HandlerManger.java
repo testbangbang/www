@@ -3,9 +3,15 @@ package com.onyx.android.dr.reader.handler;
 import android.view.MotionEvent;
 
 
+import com.onyx.android.dr.reader.dialog.DialogAudioPlay;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderImage;
+import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,8 +25,21 @@ public class HandlerManger {
     public static final int TTS_PROVIDER = 3;
     private ReaderPresenter readerPresenter;
     private int activeProviderType;
-
+    private DialogAudioPlay dialogAudioPlay;
     public Map<Integer, BaseHandler> handlerList = null;
+    private static final List<String> AUDIO_TYPE_LIST = new ArrayList<>();
+    static {
+        AUDIO_TYPE_LIST.add(".mp3");
+    }
+
+    public static boolean isAudio(String name){
+        for(String type : AUDIO_TYPE_LIST){
+            if(name.endsWith(type)){
+                return true;
+            }
+        }
+        return false;
+    }
 
     public int getActiveProviderType() {
         return activeProviderType;
@@ -36,6 +55,7 @@ public class HandlerManger {
     public HandlerManger(ReaderPresenter readerPresenter) {
         this.readerPresenter = readerPresenter;
         initHandler();
+        dialogAudioPlay = new DialogAudioPlay(readerPresenter);
     }
 
     public void initHandler() {
@@ -78,7 +98,30 @@ public class HandlerManger {
     }
 
     public boolean onSingleTapUp(MotionEvent event) {
+        String audioName = tryPageImage(event.getX(),event.getY());
+        if(StringUtils.isNotBlank(audioName)){
+            dialogAudioPlay.setAudioPath(audioName);
+            dialogAudioPlay.show();
+            return true;
+        }
         return handlerList.get(activeProviderType).onSingleTapUp(event);
+    }
+
+    private String tryPageImage(final float x, final float y) {
+        for (PageInfo pageInfo : readerPresenter.getReaderViewInfo().getVisiblePages()) {
+            if (!readerPresenter.getReaderUserDataInfo().hasPageImages(pageInfo)) {
+                continue;
+            }
+            List<ReaderImage> images = readerPresenter.getReaderUserDataInfo().getPageImages(pageInfo);
+            for (ReaderImage image : images) {
+                if (image.getRectangle().contains(x, y)) {
+                    if(isAudio(image.getName())) {
+                        return image.getName();
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     public boolean onSingleTapConfirmed(MotionEvent event) {

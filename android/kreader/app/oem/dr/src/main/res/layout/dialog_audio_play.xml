@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_view"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:background="@android:color/transparent">
+
+    <LinearLayout
+        android:id="@+id/audio_button_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/tts_layout_bg"
+        android:orientation="vertical"
+        android:paddingBottom="5dp"
+        android:paddingLeft="@dimen/ellipse_view_padding"
+        android:paddingRight="@dimen/ellipse_view_padding"
+        android:paddingTop="5dp">
+
+        <SeekBar
+            android:id="@+id/audio_play_progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:maxHeight="6dp"
+            android:minHeight="6dp"
+            android:layout_margin="20dp"
+            android:progressDrawable="@drawable/tts_seekbar_progress"
+            android:thumb="@drawable/tts_voice_seekbar_thumb" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/audio_play"
+                style="@style/tts_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_tts_play" />
+
+            <ImageButton
+                android:id="@+id/audio_stop"
+                style="@style/tts_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_tts_stop" />
+
+            <ImageButton
+                android:id="@+id/audio_voice"
+                style="@style/tts_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_tts_voice" />
+
+            <ImageButton
+                android:id="@+id/audio_close"
+                style="@style/tts_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_dialog_tts_close" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/voice_size_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/audio_button_layout"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/radio_button_bg_off"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="10dp"
+        android:rotation="-90">
+
+        <ImageButton
+            android:id="@+id/minus_voice"
+            style="@style/tts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:rotation="90"
+            android:src="@drawable/ic_dialog_reader_menu_font_small" />
+
+        <SeekBar
+            android:id="@+id/seek_bar_audio"
+            android:layout_width="@dimen/dialog_tts_voice_height"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:maxHeight="6dp"
+            android:minHeight="6dp"
+            android:progressDrawable="@drawable/tts_seekbar_progress"
+            android:thumb="@drawable/tts_voice_seekbar_thumb" />
+
+        <ImageButton
+            android:id="@+id/plus_voice"
+            style="@style/tts_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_dialog_reader_menu_font_big" />
+    </LinearLayout>
+</RelativeLayout>
