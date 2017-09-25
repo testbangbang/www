@@ -943,16 +943,4 @@ public class MimeTypeUtils {
     public static boolean isAudioFile(final String extension) {
         return getAudioExtension().contains(extension.toLowerCase());
     }
-
-    public static boolean isMimeTypeNeedIgnore(String mimeType, List<String> ignoreList) {
-        if (StringUtils.isNullOrEmpty(mimeType) || CollectionUtils.isNullOrEmpty(ignoreList)) {
-            return false;
-        }
-        for (String ignore : ignoreList) {
-            if (mimeType.contains(ignore)) {
-                return true;
-            }
-        }
-        return false;
-    }
 }

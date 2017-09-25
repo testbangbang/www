@@ -15,7 +15,6 @@ import com.onyx.android.sdk.data.provider.SystemConfigProvider;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.ApplicationUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
@@ -106,7 +105,7 @@ public class FileOpenWithRequest extends BaseFSRequest {
     }
 
     private boolean isTypeIgnored(String mimeType) {
-        return MimeTypeUtils.isMimeTypeNeedIgnore(mimeType, typeIgnoreList);
+        return CollectionUtils.safelyReverseContains(typeIgnoreList, mimeType);
     }
 
     private boolean isAppIgnored(JSONArray appArray, String packageName) {
