@@ -1,6 +1,7 @@
 package com.onyx.android.dr.data;
 
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.request.cloud.AddCommentRequest;
 import com.onyx.android.dr.request.cloud.BringOutBookReportRequest;
 import com.onyx.android.dr.request.cloud.CreateBookReportRequest;
 import com.onyx.android.dr.request.cloud.DeleteBookReportRequest;
@@ -30,6 +31,10 @@ public class BookReportData {
     }
 
     public void getImpression(GetBookReportRequest rq, BaseCallback callback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
+    }
+
+    public void addComment(AddCommentRequest rq, BaseCallback callback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
     }
 }

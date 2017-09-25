@@ -17,4 +17,6 @@ public interface BookReportView {
     void setDeleteResult();
 
     void getBookReport(CreateBookReportResult result);
+
+    void addCommentResult(CreateBookReportResult result);
 }

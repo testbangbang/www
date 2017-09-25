@@ -5,6 +5,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.BookReportData;
 import com.onyx.android.dr.interfaces.BookReportView;
+import com.onyx.android.dr.request.cloud.AddCommentRequest;
 import com.onyx.android.dr.request.cloud.BringOutBookReportRequest;
 import com.onyx.android.dr.request.cloud.CreateBookReportRequest;
 import com.onyx.android.dr.request.cloud.DeleteBookReportRequest;
@@ -12,6 +13,7 @@ import com.onyx.android.dr.request.cloud.GetBookReportListRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportRequest;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.v2.AddCommentRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
@@ -98,11 +100,11 @@ public class BookReportPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 CreateBookReportResult createBookReportResult = rq.getCreateBookReportResult();
-                if(createBookReportResult != null) {
+                if (createBookReportResult != null) {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
                             .getResources().getString(R.string.saved_successfully));
                     bookReportView.setCreateBookReportData();
-                }else {
+                } else {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
                             .getResources().getString(R.string.save_failed));
                 }
@@ -116,9 +118,25 @@ public class BookReportPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 CreateBookReportResult result = rq.getResult();
-                if(result != null) {
+                if (result != null) {
                     bookReportView.getBookReport(result);
                 }
+            }
+        });
+    }
+
+    public void addComment(String bookId, String top, String left, String content) {
+        AddCommentRequestBean requestBean = new AddCommentRequestBean();
+        requestBean.top = top;
+        requestBean.left = left;
+        requestBean.content = content;
+
+        final AddCommentRequest rq = new AddCommentRequest(bookId, requestBean);
+        bookReportData.addComment(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                CreateBookReportResult result = rq.getResult();
+                bookReportView.addCommentResult(result);
             }
         });
     }

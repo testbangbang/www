@@ -28,14 +28,25 @@
             android:textColor="@color/black"
             android:textSize="@dimen/level_one_font_size" />
 
-        <EditText
-            android:id="@+id/book_report_detail_contents"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="@dimen/book_report_detail_edit_text_margin"
-            android:layout_weight="1"
-            android:background="@drawable/rounded_rectangle_stroke"
-            android:gravity="top"
-            android:padding="@dimen/book_report_detail_edit_text_margin" />
+            android:layout_weight="1">
+
+            <EditText
+                android:id="@+id/book_report_detail_contents"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/book_report_detail_edit_text_margin"
+                android:background="@drawable/rounded_rectangle_stroke"
+                android:gravity="top"
+                android:padding="@dimen/book_report_detail_edit_text_margin" />
+
+            <WebView
+                android:id="@+id/book_report_detail_web_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone" />
+        </FrameLayout>
     </LinearLayout>
 </LinearLayout>
