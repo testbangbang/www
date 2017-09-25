@@ -25,6 +25,7 @@ import android.widget.Toast;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.DictTypeBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.DictTypeConfig;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -660,15 +661,7 @@ public class Utils {
             Toast.makeText(context, R.string.illegalInput, Toast.LENGTH_SHORT).show();
             return;
         }
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.VIEW");
-        String baseUrl = Constants.WIKTIONARY_URL;
-        if (Utils.isChinese(context)) {
-            baseUrl = Constants.BAIDU_BAIKE_URL;
-        }
-        Uri content_url = Uri.parse(baseUrl + editQuery);
-        intent.setData(content_url);
-        context.startActivity(intent);
+        ActivityManager.startBaiduBaiKeActivity(context,editQuery);
     }
 
     public static int dip2px(Context context, float dpValue) {

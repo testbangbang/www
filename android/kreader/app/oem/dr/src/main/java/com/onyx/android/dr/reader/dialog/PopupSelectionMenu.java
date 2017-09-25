@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.NewWordBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.manager.OperatingDataManager;
@@ -357,12 +358,7 @@ public class PopupSelectionMenu extends LinearLayout {
         }
 
         String headWord = mDictTitle.getText().toString();
-        Intent intent = new Intent();
-        intent.setAction("android.intent.action.VIEW");
-        String uriString = DeviceUtils.isChinese(getContext()) ? BAIDU_BAIKE : WIKTIONARY_URL;
-        Uri content_url = Uri.parse(uriString + headWord);
-        intent.setData(content_url);
-        getActivity().startActivity(intent);
+        ActivityManager.startBaiduBaiKeActivity(getActivity(),headWord);
     }
 
     private void toggleDictList() {
