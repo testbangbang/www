@@ -430,4 +430,5 @@
     <dimen name="tts_speed_checkbox_height">40dp</dimen>
     <dimen name="tts_speed_checkbox_width">10dp</dimen>
     <dimen name="tts_speed_checkbox_divider_height">2dp</dimen>
+    <dimen name="baidu_baike_content_padding">15dp</dimen>
 </resources>
