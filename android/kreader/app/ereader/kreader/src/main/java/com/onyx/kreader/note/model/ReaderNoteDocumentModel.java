@@ -3,6 +3,7 @@ package com.onyx.kreader.note.model;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.kreader.note.data.ReaderNotePageNameMap;
 import com.raizlabs.android.dbflow.annotation.*;
@@ -18,7 +19,6 @@ public class ReaderNoteDocumentModel extends BaseModel {
 
     public static final int TYPE_LIBRARY = 0;
     public static final int TYPE_DOCUMENT = 1;
-    private static final float DEFAULT_STROKE_WIDTH = 3.0f;
 
     @Column
     @PrimaryKey(autoincrement = true)
@@ -219,7 +219,7 @@ public class ReaderNoteDocumentModel extends BaseModel {
     }
 
     public static float getDefaultStrokeWidth() {
-        return DEFAULT_STROKE_WIDTH;
+        return NoteModel.getDefaultStrokeWidth();
     }
 
     public static int getDefaultStrokeColor() {
