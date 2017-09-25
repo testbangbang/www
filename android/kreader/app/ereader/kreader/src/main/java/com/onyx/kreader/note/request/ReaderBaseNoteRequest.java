@@ -334,12 +334,17 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     getDocUniqueId(),
                     getParentLibraryId());
             initWithDeviceConfig(parent);
+            restoreNoteDrawingArgs(parent);
         }
     }
 
     private void initWithDeviceConfig(final NoteManager parent) {
         NoteModel.setDefaultEraserRadius(DeviceConfig.sharedInstance(getContext()).getEraserRadius());
         parent.getNoteDocument().setEraserRadius(NoteModel.getDefaultEraserRadius());
+    }
+
+    private void restoreNoteDrawingArgs(NoteManager noteManager) {
+        noteManager.restoreStrokeWidth();
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {
