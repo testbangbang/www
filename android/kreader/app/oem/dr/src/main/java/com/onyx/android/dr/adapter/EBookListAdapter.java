@@ -19,7 +19,7 @@ import com.onyx.android.dr.event.AddToCartEvent;
 import com.onyx.android.dr.event.BookDetailEvent;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.event.PayForEvent;
-import com.onyx.android.dr.holder.LibraryDataHolder;
+import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.Constant;
@@ -31,7 +31,6 @@ import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
 import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.device.Device;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -58,10 +57,11 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     private boolean newPage = false;
     private int noThumbnailPosition = 0;
     private boolean isVisibleToUser = false;
-    private LibraryDataHolder dataHolder;
+    private List<Metadata> eBookList;
 
-    public EBookListAdapter(LibraryDataHolder dataHolder) {
-        this.dataHolder = dataHolder;
+    public void setEBookList(List<Metadata> EBookList) {
+        this.eBookList = EBookList;
+        notifyDataSetChanged();
     }
 
     public void setRowAndCol(int row, int col) {
@@ -70,10 +70,6 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     }
 
     private LibraryDataModel pageDataModel = new LibraryDataModel();
-
-    public void setNewPage(boolean newPage) {
-        this.newPage = newPage;
-    }
 
     @Override
     public int getRowCount() {
@@ -87,7 +83,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
 
     @Override
     public int getDataCount() {
-        return getLibraryListSize() + getBookListSize();
+        return getBookListSize();
     }
 
     @Override
@@ -223,6 +219,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     }
 
     private LibraryDataModel getPageDataModel() {
+        pageDataModel.visibleBookList = eBookList;
         return pageDataModel;
     }
 
@@ -294,7 +291,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
                 CloseableReference<Bitmap> closeableRef = loadRequest.getRefBitmap();
                 if (closeableRef != null && closeableRef.isValid()) {
                     getPageDataModel().thumbnailMap.put(metadata.getAssociationId(), closeableRef);
-                    updateContentView();
+                    notifyDataSetChanged();
                 }
             }
         });
@@ -345,16 +342,6 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
             return true;
         }
         return false;
-    }
-
-    private void updateContentView() {
-        newPage = true;
-        notifyDataSetChanged();
-    }
-
-    public void updateContentView(LibraryDataModel libraryDataModel) {
-        pageDataModel = dataHolder.getCloudViewInfo().getPageLibraryDataModel(libraryDataModel);
-        updateContentView();
     }
 }
 
