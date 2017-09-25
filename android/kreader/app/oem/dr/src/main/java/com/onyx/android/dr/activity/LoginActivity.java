@@ -341,18 +341,18 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 ActivityManager.startForgetPasswordActivity(this);
                 break;
             case R.id.user_login_show_password:
-                isUserShowPassword = setShowPassword(editTextPassword,showPassword,isUserShowPassword);
+                isUserShowPassword = setShowPassword(editTextPassword, showPassword, isUserShowPassword);
                 break;
             case R.id.register_show_password:
-                isRegisterShowPassword = setShowPassword(confirmPasswordPassword,registerShowPassword,isRegisterShowPassword);
+                isRegisterShowPassword = setShowPassword(confirmPasswordPassword, registerShowPassword, isRegisterShowPassword);
                 break;
             case R.id.sign_up_show_password:
-                isSignUpShowPassword = setShowPassword(signUpPassword,signUpShowPassword,isSignUpShowPassword);
+                isSignUpShowPassword = setShowPassword(signUpPassword, signUpShowPassword, isSignUpShowPassword);
                 break;
         }
     }
 
-    private boolean setShowPassword(EditText editText,ImageView imageView,boolean flags){
+    private boolean setShowPassword(EditText editText, ImageView imageView, boolean flags) {
         if (flags) {
             imageView.setImageResource(R.drawable.eye_close);
             editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
@@ -436,6 +436,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             getUserInfo(signUpInfo);
             if (!stepNotComplete) {
                 loginPresenter.signUp(signUpInfo);
+                showProgressDialog(signUpInfo, null);
             }
             stepNotComplete = false;
         }
@@ -590,6 +591,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             return;
         }
         loginPresenter.login(account, password);
+        showCloudProgressDialogWithMessage(account, R.string.logging_in, null);
     }
 
     private void connectNetwork() {
@@ -622,6 +624,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         DRPreferenceManager.saveUserPassword(DRApplication.getInstance(), editTextPassword.getText().toString());
         DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
         ActivityManager.startMainActivity(this);
+        dismissAllProgressDialog();
         finish();
     }
 
@@ -632,5 +635,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
         } else {
             CommonNotices.showMessage(this, getString(R.string.username_or_password_error));
         }
+        dismissAllProgressDialog();
     }
 }

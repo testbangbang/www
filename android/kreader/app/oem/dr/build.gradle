@@ -109,4 +109,8 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile "com.google.zxing:core:$rootProject.zxingVersion"
     compile "com.google.zxing:android-core:$rootProject.zxingVersion"
+    compile "com.github.PhilJay:MPAndroidChart:v$rootProject.mpAndroidChart"
+    compile(project(path: ':libraries:onyxsdk-statistics')) {
+        exclude group: 'com.alibaba', module: 'fastjson'
+    }
 }

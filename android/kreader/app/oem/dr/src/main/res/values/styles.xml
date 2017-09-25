@@ -278,7 +278,9 @@
     <style name="good_sentence_activity_spinner_second">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:dropDownVerticalOffset">@dimen/good_sentence_activity_spinner_second_offset</item>
+        <item name="android:dropDownVerticalOffset">
+            @dimen/good_sentence_activity_spinner_second_offset
+        </item>
         <item name="android:layout_margin">@dimen/dialog_result_spinner_margin</item>
         <item name="android:layout_alignParentRight">true</item>
     </style>
@@ -286,7 +288,8 @@
     <style name="dict_setting_activity_spinner_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:dropDownVerticalOffset">@dimen/dict_setting_activity_spinner_offset</item>
+        <item name="android:dropDownVerticalOffset">@dimen/dict_setting_activity_spinner_offset
+        </item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:layout_margin">@dimen/dict_setting_activity_spinner_margin</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -318,7 +321,9 @@
     <style name="dict_setting_activity_text_second_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/dict_setting_activity_first_sequence_margin_left</item>
+        <item name="android:layout_marginLeft">
+            @dimen/dict_setting_activity_first_sequence_margin_left
+        </item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -327,7 +332,8 @@
     <style name="text_view_second_style">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginTop">@dimen/record_time_activity_text_view_margin_top</item>
+        <item name="android:layout_marginTop">@dimen/record_time_activity_text_view_margin_top
+        </item>
         <item name="android:layout_gravity">center_horizontal</item>
         <item name="android:padding">@dimen/select_dialog_close_cancel_padding</item>
         <item name="android:background">@drawable/rectangle_stroke</item>
@@ -595,6 +601,13 @@
     <style name="SplashTheme" parent="AppTheme">
         <item name="android:windowBackground">@drawable/splash</item>
         <item name="android:windowFullscreen">true</item>
+    </style>
+
+    <style name="statistics_text_view">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_marginTop">@dimen/activity_statistics_spacing</item>
+        <item name="android:layout_marginBottom">@dimen/activity_statistics_spacing</item>
+        <item name="android:textSize">@dimen/activity_statistics_small_text_size</item>
     </style>
 
     <style name="dialog_transparent_no_title" parent="dialog_no_title">

@@ -4,7 +4,13 @@ import com.onyx.android.dr.reader.action.BookOperate;
 import com.onyx.android.dr.reader.base.ReaderView;
 import com.onyx.android.dr.reader.data.BookInfo;
 import com.onyx.android.dr.reader.data.PageInformation;
+import com.onyx.android.dr.reader.event.AnnotationEvent;
+import com.onyx.android.dr.reader.event.DictionaryLookupEvent;
+import com.onyx.android.dr.reader.event.DocumentCloseEvent;
 import com.onyx.android.dr.reader.event.DocumentOpenEvent;
+import com.onyx.android.dr.reader.event.EventReceiver;
+import com.onyx.android.dr.reader.event.NetworkChangedEvent;
+import com.onyx.android.dr.reader.event.TextSelectionEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.highlight.ReaderSelectionManager;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
@@ -12,6 +18,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
@@ -23,6 +30,7 @@ import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CloseRequest;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -35,6 +43,7 @@ import java.util.List;
 public class ReaderPresenter {
     private DataManager dataProvider;
     private boolean fluent;
+    private EventReceiver eventReceiver;
 
     public void setFluent(boolean fluent) {
         this.fluent = fluent;
@@ -142,9 +151,18 @@ public class ReaderPresenter {
     }
 
     public void openDocument() {
+        prepareEventReceiver();
         documentOpenState = DocumentOpenState.OPENING;
         checkFileType();
         openDocumentIml();
+        EventBus.getDefault().post(new DocumentOpenEvent(getReaderView().getViewContext(), bookInfo.getDocumentInfo()));
+    }
+
+    public void prepareEventReceiver() {
+        if (eventReceiver == null) {
+            eventReceiver = new EventReceiver(getReaderView().getViewContext());
+            EventBus.getDefault().register(eventReceiver);
+        }
     }
 
     private void openDocumentIml() {
@@ -250,6 +268,12 @@ public class ReaderPresenter {
 
             }
         });
+
+        EventBus.getDefault().post(new DocumentCloseEvent(getReaderView().getViewContext()));
+        if (eventReceiver != null) {
+            EventBus.getDefault().unregister(eventReceiver);
+            eventReceiver = null;
+        }
     }
 
     public void onDocumentOpened() {
@@ -260,5 +284,30 @@ public class ReaderPresenter {
                 getReader().getDocumentPath(),
                 metadata.getTitle());
         EventBus.getDefault().post(new DocumentOpenEvent(getReaderView().getApplicationContext(), documentInfo));
+    }
+
+    public void onTextSelected(final Annotation annotation) {
+        if (annotation == null) {
+            return;
+        }
+        String originText = annotation.getQuote();
+        String userNote = annotation.getNote();
+        if (StringUtils.isBlank(userNote)) {
+            final TextSelectionEvent event = TextSelectionEvent.onTextSelected(getReaderView().getViewContext(), originText);
+            EventBus.getDefault().post(event);
+            return;
+        }
+        final AnnotationEvent event = AnnotationEvent.onAddAnnotation(getReaderView().getViewContext(), originText, userNote);
+        EventBus.getDefault().post(event);
+    }
+
+    public void onDictionaryLookup(final String text) {
+        final DictionaryLookupEvent event = DictionaryLookupEvent.create(getReaderView().getViewContext(), text);
+        EventBus.getDefault().post(event);
+    }
+
+    public void onNetworkChanged(boolean connected, int networkType) {
+        final NetworkChangedEvent event = NetworkChangedEvent.create(getReaderView().getViewContext(), connected, networkType);
+        EventBus.getDefault().post(event);
     }
 }

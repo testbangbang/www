@@ -624,9 +624,42 @@
     <string name="sign_up_failed">sign up failed</string>
     <string name="no_logon_server">No logon server</string>
     <string name="no_search_result">No search result</string>
+    <string name="read_count">Reading book</string>
+    <string name="finish_count">Finished book</string>
+    <string name="read_time">Read time</string>
+    <string name="look_up_dictionary_count">Look up dictionary</string>
+    <string name="statistics_annotation_count">Annotation</string>
+    <string name="data_analysis">Data analysis</string>
+    <string name="reading_record">Reading record</string>
+    <string name="reading_level" formatted="false">You read no more than %.2f%%of the people</string>
+    <string name="reading_time_every_day" formatted="false">On an average day you read %.2f hours, mainly reading time distribution in %d:00 - %d:00</string>
+    <string name="read_longest_book" formatted="false">A book to read for the longest: %s</string>
+    <string name="read_most_carefully_book" formatted="false">Read the book carefully : %s</string>
+    <string name="read_start_time" formatted="false">%s \n start</string>
+    <string name="read_use_time" formatted="false">The book reading total times \n %s</string>
+    <string name="read_end_time" formatted="false">%s \n end</string>
+    <string name="high_light_count" formatted="false">Highlight: %d</string>
+    <string name="annotation_count" formatted="false">Annotation: %d</string>
+    <string name="look_up_dict_count" formatted="false">Look Up dictionary count: %d</string>
+    <string name="time_distribution">Time distribution</string>
+    <string name="self_time_distribution">Your reading time distribution</string>
+    <string name="other_time_distribution">The average reading time distribution to other users</string>
+    <string name="reading_content_analysis">Reading content analysis</string>
+    <string name="recently_read_content">Recently read content</string>
+    <string name="statistics_shortcut_name">Read statistics</string>
+    <string name="social_science">Social Science</string>
+    <string name="life">Life</string>
+    <string name="children_book">Children Book</string>
+    <string name="finance_and_economics">Finance and Economics</string>
+    <string name="magazine">Magazine</string>
+    <string name="fiction">Fiction</string>
+    <string name="load_statistical_data_failed">Load statistical data failed</string>
+    <string name="network_data">Network data</string>
+    <string name="local_data">Local data</string>
     <string name="no_content">No content</string>
     <string name="no_dict_data_hint">There is no corresponding ci data, please go to download.</string>
     <string name="dict_download_hint">dict download_hint</string>
     <string name="informal_essay_activity_all_number">total:</string>
+    <string name="logging_in">logging...</string>
     <string name="no_comment_no_export">No comment, no export</string>
 </resources>

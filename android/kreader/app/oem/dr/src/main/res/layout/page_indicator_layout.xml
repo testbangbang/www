@@ -3,7 +3,6 @@
     android:id="@+id/page_indicator_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_gravity="bottom"
     android:layout_margin="@dimen/page_indicator_padding"
     android:gravity="center_vertical">
 

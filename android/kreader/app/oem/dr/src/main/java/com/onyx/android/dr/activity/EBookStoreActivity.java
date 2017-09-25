@@ -147,6 +147,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     protected void initData() {
         eBookStorePresenter = new EBookStorePresenter(this);
         eBookStorePresenter.getRootLibraryList(getParentLibraryId());
+        showProgressDialog("",null);
         eBookStorePresenter.getCartCount();
     }
 
@@ -178,6 +179,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
             Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(this, DRApplication.getCloudStore().getCloudManager(), queryResult.list);
             updateContentView(getLibraryDataModel(queryResult, bitmaps));
         }
+        dismissAllProgressDialog();
     }
 
     @Override

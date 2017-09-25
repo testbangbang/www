@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -40,6 +41,8 @@ import com.onyx.android.dr.reader.data.BookInfo;
 import com.onyx.android.dr.reader.data.SingletonSharedPreference;
 import com.onyx.android.dr.reader.dialog.DialogSearch;
 import com.onyx.android.dr.reader.dialog.ReaderDialogManage;
+import com.onyx.android.dr.reader.event.ActivityPauseEvent;
+import com.onyx.android.dr.reader.event.ActivityResumeEvent;
 import com.onyx.android.dr.reader.event.BookReadRecordUpdateEvent;
 import com.onyx.android.dr.reader.event.DisplayStatusBarEvent;
 import com.onyx.android.dr.reader.event.DocumentOpenEvent;
@@ -68,8 +71,10 @@ import com.onyx.android.dr.reader.utils.CustomFileObserver;
 import com.onyx.android.dr.reader.utils.ScreenUtil;
 import com.onyx.android.dr.reader.view.BookProgressbar;
 import com.onyx.android.dr.reader.view.CustomDialog;
+import com.onyx.android.dr.receiver.NetworkConnectChangedReceiver;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.device.EnvironmentUtil;
@@ -111,6 +116,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     private CustomDialog dialog;
     private CustomFileObserver fileObserver;
     private TextView bookName;
+    private NetworkConnectChangedReceiver networkConnectChangedReceiver;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -120,6 +126,7 @@ public class ReaderActivity extends Activity implements ReaderView {
         initView();
         initListener();
         initData();
+        initReceiver();
     }
 
     private void initListener() {
@@ -147,6 +154,8 @@ public class ReaderActivity extends Activity implements ReaderView {
         CloudMetadata metadata = new Select().from(CloudMetadata.class).where(CloudMetadata_Table.nativeAbsolutePath.eq(path)).querySingle();
         if (metadata != null) {
             bookInfo.setLanguage(metadata.getLanguage());
+            DocumentInfo documentInfo = DocumentInfo.create(metadata.getAuthorList(), readerPresenter.getReader().getDocumentMd5(), metadata.getName(), metadata.getNativeAbsolutePath(), metadata.getTitle());
+            bookInfo.setDocumentInfo(documentInfo);
         }
         bookInfo.setBookPath(path);
 
@@ -314,6 +323,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     @Override
     protected void onResume() {
         super.onResume();
+        EventBus.getDefault().post(new ActivityResumeEvent(this));
         syncReaderPainter();
     }
 
@@ -407,6 +417,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        cleanupReceiver();
         EventBus.getDefault().post(new FinishReaderEvent());
         HandlerManger handlerManger = getReaderPresenter().getHandlerManger();
         handlerManger.handlerList.get(handlerManger.TTS_PROVIDER).onStop();
@@ -508,7 +519,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRedrawPageEvent(RedrawPageEvent event){
+    public void onRedrawPageEvent(RedrawPageEvent event) {
         readerPresenter.getBookOperate().redrawPage();
     }
 
@@ -551,5 +562,35 @@ public class ReaderActivity extends Activity implements ReaderView {
             type = Constants.OTHER_TYPE;
         }
         return type;
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        EventBus.getDefault().post(new ActivityPauseEvent(this));
+    }
+
+    private void initReceiver() {
+        networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
+            @Override
+            public void onNetworkChanged(boolean connected, int networkType) {
+                readerPresenter.onNetworkChanged(connected, networkType);
+            }
+
+            @Override
+            public void onNoNetwork() {
+
+            }
+        });
+        IntentFilter filter = new IntentFilter();
+        filter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
+        registerReceiver(networkConnectChangedReceiver, filter);
+    }
+
+    private void cleanupReceiver() {
+        if (networkConnectChangedReceiver != null) {
+            unregisterReceiver(networkConnectChangedReceiver);
+            networkConnectChangedReceiver = null;
+        }
     }
 }

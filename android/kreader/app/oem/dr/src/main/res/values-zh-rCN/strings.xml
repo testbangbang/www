@@ -623,9 +623,42 @@
     <string name="sign_up_failed">注册失败</string>
     <string name="no_logon_server">未找到登录服务器</string>
     <string name="no_search_result">没有搜索结果</string>
+    <string name="social_science">社科</string>
+    <string name="life">生活</string>
+    <string name="magazine">期刊杂志</string>
+    <string name="fiction">小说</string>
+    <string name="children_book">童书</string>
+    <string name="finance_and_economics">财经</string>
+    <string name="reading_time_every_day" formatted="false">你平均每天阅读%.2f小时，主要阅读时间分布在%d:00 - %d:00</string>
+    <string name="reading_level" formatted="false">你的阅读排名超过了%.2f%%的人</string>
+    <string name="read_count">读过的书(本)</string>
+    <string name="finish_count">读完的书(本)</string>
+    <string name="read_time">阅读时长(h)</string>
+    <string name="look_up_dictionary_count">查阅字典次数</string>
+    <string name="statistics_annotation_count">批注数量</string>
+    <string name="read_longest_book" formatted="false">阅读时间最长的一本书: %s</string>
+    <string name="read_most_carefully_book" formatted="false">阅读最仔细的一本书 : %s</string>
+    <string name="read_start_time" formatted="false">%s \n 开始</string>
+    <string name="read_use_time" formatted="false">此书总共阅读时长 \n %s</string>
+    <string name="read_end_time" formatted="false">%s \n 为止</string>
+    <string name="high_light_count" formatted="false">高亮: %d处</string>
+    <string name="annotation_count" formatted="false">备注: %d点</string>
+    <string name="look_up_dict_count" formatted="false">字典查阅: %d次</string>
+    <string name="time_distribution">时间分布</string>
+    <string name="self_time_distribution">你的阅读时间分布</string>
+    <string name="other_time_distribution">其他用户平均阅读时间分布</string>
+    <string name="reading_content_analysis">阅读内容分析</string>
+    <string name="recently_read_content">最近阅读内容</string>
+    <string name="statistics_shortcut_name">阅读统计</string>
+    <string name="load_statistical_data_failed">加载统计数据失败</string>
+    <string name="network_data">联网数据</string>
+    <string name="data_analysis">数据分析</string>
+    <string name="reading_record">阅读记录</string>
+    <string name="local_data">本地数据</string>
     <string name="no_content">内容为空！</string>
     <string name="no_dict_data_hint">没有相应字典数据，请前往下载!</string>
     <string name="dict_download_hint">词典下载提示</string>
     <string name="informal_essay_activity_all_number">共计: </string>
+    <string name="logging_in">正在登录...</string>
     <string name="no_comment_no_export">还未批阅，不能导出</string>
 </resources>

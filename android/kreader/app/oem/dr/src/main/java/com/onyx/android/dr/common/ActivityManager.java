@@ -57,6 +57,7 @@ import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.dr.reader.view.CustomDialog;
+import com.onyx.android.dr.statistics.StatisticsActivity;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -472,22 +473,8 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startStatisticsActivity(Context context){
-        try {
-            Intent intent = context.getPackageManager().getLaunchIntentForPackage(
-                    Constants.KREADER_PACKAGE_NAME);
-            if (intent != null) {
-                ComponentName componentName = new ComponentName(Constants.KREADER_PACKAGE_NAME,
-                        Constants.STATISTICS_ACTIVITY_FULL_PATH);
-                intent.setAction(Intent.ACTION_MAIN);
-                intent.addCategory(Intent.CATEGORY_LAUNCHER);
-                intent.setComponent(componentName);
-                context.startActivity(intent);
-            } else {
-                CommonNotices.showMessage(context, context.getString(R.string.do_not_install_note_apk));
-            }
-        } catch (Exception exception) {
-            exception.printStackTrace();
-        }
+    public static void startStatisticsActivity(Context context) {
+        Intent intent = new Intent(context, StatisticsActivity.class);
+        context.startActivity(intent);
     }
 }
