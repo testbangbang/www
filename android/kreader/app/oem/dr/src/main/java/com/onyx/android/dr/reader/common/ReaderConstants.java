@@ -14,6 +14,7 @@ public class ReaderConstants {
     public static final String IS_FLUENT = "isFluent";
     public static final String SCREENSHOT_PATH = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "Screenshots/";
     public static final String AFTER_READING_ID = "after_reading_id";
+    public static final String BOOK_ID = "bookId";
     public static float SCREENSHOT_HEIGHT = 120;
     public static final int CREATED_DIRECTORY = 1073742080;
 }

@@ -9,6 +9,7 @@ public class OpenBookParam {
     private String password;
     private String localPath;
     private String bookName;
+    private String bookId;
     private boolean isFluent;
 
     public String getBookName() {
@@ -41,5 +42,13 @@ public class OpenBookParam {
 
     public void setFluent(boolean fluent) {
         isFluent = fluent;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 }

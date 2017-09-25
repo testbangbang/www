@@ -334,6 +334,7 @@ public class ActivityManager {
         OpenBookParam openBookParam = new OpenBookParam();
         openBookParam.setBookName(metadata.getName());
         openBookParam.setLocalPath(localPath);
+        openBookParam.setBookId(metadata.getCloudId());
         ReaderUtil.openBook(context, openBookParam);
     }
 
