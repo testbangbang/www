@@ -179,6 +179,11 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     }
 
+    @Override
+    public void addCommentResult(CreateBookReportResult result) {
+
+    }
+
     private void initPage() {
         paginator.resize(bookReportListAdapter.getRowCount(), bookReportListAdapter.getColumnCount(), list.size());
         pages = paginator.pages();

@@ -433,4 +433,5 @@
     <dimen name="group_home_page_activity_create_width">250dp</dimen>
     <dimen name="rectangle_stroke_second_radius">10dp</dimen>
     <dimen name="create_group_activity_school_search_margin">5dp</dimen>
+    <dimen name="baidu_baike_content_padding">15dp</dimen>
 </resources>

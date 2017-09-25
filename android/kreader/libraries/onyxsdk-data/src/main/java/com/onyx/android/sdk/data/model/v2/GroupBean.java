@@ -14,5 +14,5 @@ public class GroupBean {
     public String name;
     public int __v;
     public String parent;
-    public List<GroupBean> ancestors;
+    public List<String> ancestors;
 }

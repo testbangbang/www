@@ -3,9 +3,9 @@ package com.onyx.android.dr.activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,6 +25,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.BookMarksPopupWindow;
@@ -32,6 +34,8 @@ import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.List;
@@ -70,6 +74,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     TextView bookReportDetailTitle;
     @Bind(R.id.book_report_detail_contents)
     EditText bookReportDetailContents;
+    @Bind(R.id.book_report_detail_web_view)
+    WebView bookReportWebContent;
     private Button dialogCancel;
     private Button dialogSure;
     private AlertDialog dialog;
@@ -193,9 +199,24 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     private void showNotationDialog() {
+        if (data == null) {
+            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+            return;
+        }
+
+        if (data.comments == null && data.comments.size() <= 0) {
+            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+            return;
+        }
         if (notationDialog == null) {
             notationDialog = new NotationDialog();
         }
+
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.MARK_BOOK_ID, data._id);
+        bundle.putString(Constants.MARK_TOP, String.valueOf(currentY));
+        bundle.putString(Constants.MARK_LEFT, String.valueOf(currentX));
+        notationDialog.setArguments(bundle);
         notationDialog.show(this.getFragmentManager(), "tag");
     }
 
@@ -243,6 +264,14 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     private void save() {
+        if (data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+            return;
+        }
+
+        if (data != null) {
+            bookReportPresenter.deleteImpression(data._id);
+            return;
+        }
         String text = bookReportDetailContents.getText().toString();
         if (StringUtils.isNullOrEmpty(text)) {
             CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
@@ -273,7 +302,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     private void backActivity() {
-        if (isSave) {
+        if (isSave || (Constants.ACCOUNT_TYPE_TEACHER.equals(userType) && data != null)) {
             finish();
         } else {
             showTipDiaolog();
@@ -323,7 +352,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     public void setDeleteResult() {
-
+        String content = bookReportDetailContents.getText().toString();
+        bookReportPresenter.createImpression(data.book, data.name, content, data.pageNumber);
     }
 
     @Override
@@ -334,5 +364,15 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         getBookReportListBean.name = result.name;
         getBookReportListBean.content = result.content;
         bookReportPresenter.bringOutReport(getBookReportListBean);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().post(new RedrawPageEvent());
+    }
+
+    public void addCommentResult(CreateBookReportResult result) {
+
     }
 }

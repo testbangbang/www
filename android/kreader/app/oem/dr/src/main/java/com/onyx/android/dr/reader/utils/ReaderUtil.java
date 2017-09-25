@@ -114,6 +114,7 @@ public class ReaderUtil {
             Intent intent = new Intent(context, ReaderActivity.class);
             intent.addCategory("android.intent.category.DEFAULT");
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra(ReaderConstants.BOOK_ID, openBookParam.getBookId());
             intent.putExtra(ReaderConstants.BOOK_NAME, openBookParam.getBookName());
             intent.putExtra(ReaderConstants.BOOK_PASSWORD, openBookParam.getPassword());
             intent.putExtra(ReaderConstants.IS_FLUENT, openBookParam.isFluent());

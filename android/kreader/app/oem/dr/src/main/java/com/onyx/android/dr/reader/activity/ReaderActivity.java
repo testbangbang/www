@@ -163,11 +163,14 @@ public class ReaderActivity extends Activity implements ReaderView {
         bookInfo.setBookName(bookName);
         String password = getIntent().getStringExtra(ReaderConstants.BOOK_PASSWORD);
         bookInfo.setPassword(password);
+        String bookId = getIntent().getStringExtra(ReaderConstants.BOOK_ID);
+        bookInfo.setBookId(bookId);
         isFluent = getIntent().getBooleanExtra(ReaderConstants.IS_FLUENT, false);
         return true;
     }
 
     public void initThirdLibrary() {
+        DRApplication.getInstance().initDictDatas();
         EventBus.getDefault().register(this);
     }
 

@@ -1,6 +1,7 @@
 package com.onyx.android.dr.action;
 
 import android.content.Context;
+import android.os.Build;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -137,6 +138,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
         IndexService authService = new IndexService();
         authService.mac = NetworkUtil.getMacAddress(context);
         authService.installationId = LeanCloudManager.getInstallationId();
+        authService.model = Build.MODEL;
         return authService;
     }
 

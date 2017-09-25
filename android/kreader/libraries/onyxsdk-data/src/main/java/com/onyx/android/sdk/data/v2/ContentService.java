@@ -49,7 +49,8 @@ public interface ContentService {
 
     @GET("devices/findByMac")
     Call<IndexService> getIndexService(@Query("mac") final String macAddress,
-                                       @Query("installationId") final String installationId);
+                                       @Query("installationId") final String installationId,
+                                       @Query("model") final String model);
 
     @POST("auth/local")
     Call<AuthToken> getAccountToken(@Body final BaseAuthAccount account);

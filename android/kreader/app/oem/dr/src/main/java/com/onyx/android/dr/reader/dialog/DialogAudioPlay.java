@@ -123,15 +123,6 @@ public class DialogAudioPlay extends OnyxBaseDialog implements View.OnClickListe
         minusVoice.setOnClickListener(this);
         plusVoice.setOnClickListener(this);
 
-        voiceSizeLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                int width = voiceSizeLayout.getMeasuredWidth();
-                int height = voiceSizeLayout.getMeasuredHeight();
-                voiceSizeLayout.setY(voiceSizeLayout.getY() - width / 2 + height / 2);
-            }
-        });
-
         seekBarAudio.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -201,6 +192,13 @@ public class DialogAudioPlay extends OnyxBaseDialog implements View.OnClickListe
 
     private void onClickVoice(View v) {
         voiceSizeLayout.setVisibility(voiceSizeLayout.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
+        setViewCoordinate();
+    }
+
+    private void setViewCoordinate(){
+        int width = voiceSizeLayout.getMeasuredWidth();
+        int height = voiceSizeLayout.getMeasuredHeight();
+        voiceSizeLayout.setY((voiceSizeLayout.getY() - width / 2 + height / 2));
     }
 
     private void onClickClose(View v) {

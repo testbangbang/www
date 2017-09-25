@@ -16,7 +16,7 @@
         app:tabIndicatorHeight="@dimen/bookshelf_tab_indicator_height"
         app:tabTextAppearance="@android:style/TextAppearance.Holo.Large" />
 
-    <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
+    <com.onyx.android.dr.view.PageRecyclerView
         android:id="@+id/ebook_store_groups_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"

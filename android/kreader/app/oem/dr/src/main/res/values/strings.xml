@@ -412,8 +412,8 @@
     <string name="device_setting_current_version">The current version number</string>
     <string name="device_setting_check_system_update">Check for updates</string>
     <string name="update_the_system_firmware">Update the system firmware</string>
-    <string name="bookstore_update">Bookstore update(After the download will automatically restart the upgrade)</string>
-    <string name="update_bookstore_application">Update bookstore application</string>
+    <string name="bookstore_update">Update Native application(After the download will automatically restart the upgrade)</string>
+    <string name="update_bookstore_application">Update Native application</string>
     <string name="device_setting_page_refreshes_value">The %1$s page refreshes the screen once</string>
     <string name="device_setting_page_refresh_rate">The page refresh rate</string>
     <string name="close_screen_prompt">The screen closes when there is no operation</string>
@@ -515,7 +515,7 @@
     <string name="qr_title">Sweep QR code link deep reader WeChat public number, access to relevant newsletter</string>
     <string name="paid">paid</string>
     <string name="chart">Chart</string>
-    <string name="system_update">system update</string>
+    <string name="system_update">system update(android system update)</string>
     <string name="read">read</string>
     <string name="download">download</string>
     <string name="pay_qr_code_title">Please use WeChat to scan QR code to pay</string>
@@ -662,4 +662,7 @@
     <string name="informal_essay_activity_all_number">total:</string>
     <string name="logging_in">logging...</string>
     <string name="no_comment_no_export">No comment, no export</string>
+    <string name="notation_add_success">Add successfully</string>
+    <string name="notation_add_fail">Add failed</string>
+    <string name="baidu_baike_parameter_error">Parameter error</string>
 </resources>

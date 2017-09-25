@@ -777,7 +777,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         Intent intent = new Intent();
         intent.putExtra(Constants.BOOK_NAME, readerPresenter.getBookInfo().getBookName());
         intent.putExtra(Constants.BOOK_PAGE, String.valueOf(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName()));
-        intent.putExtra(Constants.BOOK_ID, readerPresenter.getBookInfo().getDocumentInfo().getName());
+        intent.putExtra(Constants.BOOK_ID, readerPresenter.getBookInfo().getBookId());
         ActivityManager.startReadingReportActivity(getContext(), intent);
 
     }
