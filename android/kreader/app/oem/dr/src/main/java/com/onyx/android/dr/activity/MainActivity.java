@@ -93,7 +93,6 @@ public class MainActivity extends BaseActivity implements MainView {
     protected void initConfig() {
         mainPresenter = new MainPresenter(this);
         MainTabMenuConfig.loadMenuInfo(this);
-        mainPresenter.getMyGroup();
     }
 
     @Override
@@ -130,7 +129,7 @@ public class MainActivity extends BaseActivity implements MainView {
     }
 
     private void autoLogin() {
-        if (!DRApplication.getInstance().isLoginSuccess()) {
+        if (!DRApplication.getInstance().isLogin() && DRPreferenceManager.isSaveUserInfo(getBaseContext())) {
             mainPresenter.authToken(this);
         }
     }

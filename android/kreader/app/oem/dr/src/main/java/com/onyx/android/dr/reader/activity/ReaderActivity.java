@@ -170,6 +170,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     }
 
     public void initThirdLibrary() {
+        DRApplication.getInstance().initDictDatas();
         EventBus.getDefault().register(this);
     }
 
