@@ -182,7 +182,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Override
     protected void onPause() {
         if (getReaderDataHolder().isDocumentInitRendered() &&
-                getReaderDataHolder().inNoteWritingProvider()) {
+                getReaderDataHolder().isNoteWritingProvider()) {
             final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
             FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
             flushNoteAction.execute(getReaderDataHolder(), null);
@@ -472,7 +472,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentInitRendered()) {
             return;
         }
-        if (getReaderDataHolder().inNoteWritingProvider()) {
+        if (getReaderDataHolder().isNoteWritingProvider()) {
             return;
         }
         updateNoteHostView();
@@ -584,7 +584,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onSystemUIChanged(final SystemUIChangedEvent event) {
-        if (event == null || !getReaderDataHolder().inNoteWritingProvider()) {
+        if (event == null || !getReaderDataHolder().isNoteWritingProvider()) {
             return;
         }
         if (event.isUiOpen()) {
@@ -675,7 +675,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
-        if (!getReaderDataHolder().inNoteWritingProvider()) {
+        if (!getReaderDataHolder().isNoteWritingProvider()) {
             saveDocumentOptions();
         } else {
             stopNoteWriting(new BaseCallback() {
@@ -827,7 +827,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
         updateNoteHostView();
 
-        if (getReaderDataHolder().inNoteWritingProvider()) {
+        if (getReaderDataHolder().isNoteWritingProvider()) {
             flushReaderNote(true, true, true, false, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
@@ -977,7 +977,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShortcutErasingStart(final ShortcutErasingStartEvent event) {
-        if (!getReaderDataHolder().inNoteWritingProvider()) {
+        if (!getReaderDataHolder().isNoteWritingProvider()) {
             ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
         }
     }
@@ -1010,7 +1010,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShortcutDrawingFinished(final ShortcutDrawingFinishedEvent event) {
-        if (getReaderDataHolder().inNoteWritingProvider()) {
+        if (getReaderDataHolder().isNoteWritingProvider()) {
             getHandlerManager().setEnableTouch(true);
             return;
         }
