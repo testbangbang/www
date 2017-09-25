@@ -294,6 +294,12 @@ public class NoteManager {
         getTouchHelper().setStrokeWidth(w);
     }
 
+    public void restoreStrokeWidth() {
+        if (noteDocument != null && noteDocument.isOpen()) {
+            setCurrentStrokeWidth(noteDocument.getStrokeWidth());
+        }
+    }
+
     public Shape getCurrentShape() {
         return shapeEventHandler.getCurrentShape();
     }
