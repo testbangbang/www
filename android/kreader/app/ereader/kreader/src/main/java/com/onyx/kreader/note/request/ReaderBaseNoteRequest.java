@@ -175,14 +175,21 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
-                        parent.resumeRawEventProcessor(getContext());
-                    }
+                    updateRawInputProcessor(parent);
                     parent.getRequestManager().releaseWakeLock();
                 }
             }
         };
         return runnable;
+    }
+
+    private void updateRawInputProcessor(NoteManager noteManager) {
+        if (isPauseRawInputProcessor()) {
+            noteManager.pauseRawEventProcessor();
+        }
+        if (isResumeRawInputProcessor() && noteManager.isDFBForCurrentShape()) {
+            noteManager.resumeRawEventProcessor(getContext());
+        }
     }
 
     public final ReaderNoteDataInfo getNoteDataInfo() {

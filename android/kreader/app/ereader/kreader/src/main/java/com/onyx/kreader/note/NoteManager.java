@@ -417,7 +417,9 @@ public class NoteManager {
                 continue;
             }
             Rect r = RectUtils.toRect(page.getDisplayRect());
-            r.intersect(visibleDrawRect);
+            if (visibleDrawRect != null) {
+                r.intersect(visibleDrawRect);
+            }
             list.add(r);
         }
         return list;
