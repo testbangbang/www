@@ -372,6 +372,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         setSideReadingLeft(getSideReadingRight());
         setSideReadingRight(tab);
 
+        rebuildTabWidget();
+
         updateReaderTabWindowHeight(getSideReadingLeft());
         updateReaderTabWindowHeight(getSideReadingRight());
     }
@@ -702,7 +704,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private boolean isShowingTabWidget() {
-        return tabWidgetVisible.get() && tabManager.getOpenedTabs().size() > 1;
+        return ReaderTabManager.supportMultipleTabs() && tabWidgetVisible.get();
     }
 
     private void showTabWidgetOnCondition() {
