@@ -339,5 +339,8 @@
     <dimen name="notation_dialog_whole_padding">10dp</dimen>
     <dimen name="notation_dialog_edit_margin">20dp</dimen>
     <dimen name="book_marks_whole_padding">10dp</dimen>
+    <dimen name="group_home_page_activity_create_width">250dp</dimen>
+    <dimen name="rectangle_stroke_second_radius">10dp</dimen>
+    <dimen name="create_group_activity_school_search_margin">5dp</dimen>
 </resources>
 

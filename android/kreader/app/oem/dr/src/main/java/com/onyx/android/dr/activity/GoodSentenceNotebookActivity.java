@@ -320,6 +320,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
         QueryPagination pagination = getPagination();
         pagination.resize(goodSentenceAdapter.getRowCount(), goodSentenceAdapter.getColumnCount(), 0);
         pagination.setCurrentPage(0);
+        goodSentenceRecyclerView.setCurrentPage(0);
     }
 
     private QueryPagination getPagination() {

@@ -63,7 +63,7 @@
     <integer name="search_result_col">1</integer>
     <integer name="report_list_col">1</integer>
     <integer name="report_list_row">7</integer>
-    <integer name="second_popup_adapter_row">16</integer>
+    <integer name="second_popup_adapter_row">8</integer>
     <integer name="book_marks_row">1</integer>
     <integer name="book_marks_col">1</integer>
 </resources>

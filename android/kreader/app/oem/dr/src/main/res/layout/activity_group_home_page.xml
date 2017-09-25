@@ -19,21 +19,21 @@
 
         <TextView
             android:id="@+id/group_home_page_activity_create"
-            style="@style/new_word_notebook_textview_style"
+            style="@style/group_home_page_activity_text_style"
             android:drawableLeft="@drawable/ic_reader_group_set"
             android:drawablePadding="@dimen/group_home_page_activity_create_padding"
             android:text="@string/group_home_page_activity_create" />
 
         <TextView
             android:id="@+id/group_home_page_activity_join"
-            style="@style/new_word_notebook_textview_style"
+            style="@style/group_home_page_activity_text_style"
             android:drawableLeft="@drawable/ic_reader_group_add"
             android:drawablePadding="@dimen/group_home_page_activity_create_padding"
             android:text="@string/group_home_page_activity_join" />
 
         <TextView
             android:id="@+id/group_home_page_activity_manage"
-            style="@style/new_word_notebook_textview_style"
+            style="@style/group_home_page_activity_text_style"
             android:drawableLeft="@drawable/ic_reader_group_admin"
             android:drawablePadding="@dimen/group_home_page_activity_create_padding"
             android:text="@string/group_home_page_activity_manage" />

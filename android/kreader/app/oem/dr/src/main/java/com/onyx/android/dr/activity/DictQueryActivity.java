@@ -229,6 +229,39 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         startSoftKeyboardSearch(exampleQuery);
         startSoftKeyboardSearch(spellQuery);
         startSoftKeyboardSearch(japaneseQuery);
+        wordQuery.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                phraseQuerySearch.setVisibility(View.GONE);
+                exampleQuerySearch.setVisibility(View.GONE);
+                wordQuerySearch.setVisibility(View.VISIBLE);
+                phraseQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                exampleQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                wordQuery.setBackgroundResource(R.drawable.rectangle_stroke);
+            }
+        });
+        phraseQuery.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                wordQuerySearch.setVisibility(View.GONE);
+                exampleQuerySearch.setVisibility(View.GONE);
+                phraseQuerySearch.setVisibility(View.VISIBLE);
+                wordQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                exampleQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                phraseQuery.setBackgroundResource(R.drawable.rectangle_stroke);
+            }
+        });
+        exampleQuery.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                wordQuerySearch.setVisibility(View.GONE);
+                phraseQuerySearch.setVisibility(View.GONE);
+                exampleQuerySearch.setVisibility(View.VISIBLE);
+                wordQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                exampleQuery.setBackgroundResource(R.drawable.rectangle_stroke);
+                phraseQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+            }
+        });
     }
 
     private void startSoftKeyboardSearch(final EditText editText) {
