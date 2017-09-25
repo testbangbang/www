@@ -4,6 +4,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -34,8 +35,8 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
     EditText groupName;
     @Bind(R.id.join_group_activity_search_group)
     ImageView searchGroup;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -87,11 +88,11 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
     public void initEvent() {
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.join_group_activity_search_group})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.join_group_activity_search_group:

@@ -55,7 +55,7 @@
     <integer name="recent_book_col">3</integer>
     <integer name="bookshelf_group_item_row">1</integer>
     <integer name="bookshelf_group_item_col">3</integer>
-    <integer name="new_word_notebook_row">14</integer>
+    <integer name="new_word_notebook_row">13</integer>
     <integer name="pencil_sketch_tab_column">4</integer>
     <integer name="pencil_sketch_tab_row">3</integer>
     <integer name="postil_list_row">5</integer>

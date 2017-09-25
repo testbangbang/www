@@ -2,9 +2,12 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -17,8 +20,10 @@ import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.InformalEssayView;
 import com.onyx.android.dr.presenter.InformalEssayPresenter;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -37,8 +42,8 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     PageRecyclerView recyclerView;
     @Bind(R.id.image)
     ImageView image;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.title_bar_right_icon_four)
@@ -49,13 +54,14 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     ImageView iconTwo;
     @Bind(R.id.good_sentence_activity_all_check)
     CheckBox allCheck;
-    @Bind(R.id.good_sentence_activity_all_number)
-    TextView allNumber;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
     private DividerItemDecoration dividerItemDecoration;
     private InformalEssayAdapter informalEssayAdapter;
     private InformalEssayPresenter informalEssayPresenter;
     private List<InformalEssayEntity> informalEssayList;
     private ArrayList<Boolean> listCheck;
+    private PageIndicator pageIndicator;
 
     @Override
     protected Integer getLayoutId() {
@@ -83,6 +89,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     protected void initData() {
         informalEssayList = new ArrayList<>();
         listCheck = new ArrayList<>();
+        initPageIndicator(pageIndicatorLayout);
         getIntentData();
         initEvent();
     }
@@ -112,9 +119,9 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         }
         informalEssayList = dataList;
         listCheck = checkList;
-        allNumber.setText(getString(R.string.informal_essay_activity_all_number) + informalEssayList.size() + getString(R.string.data_unit));
         informalEssayAdapter.setDataList(informalEssayList, listCheck);
         recyclerView.setAdapter(informalEssayAdapter);
+        updatePageIndicator();
     }
 
     public void initEvent() {
@@ -144,15 +151,28 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 informalEssayAdapter.notifyDataSetChanged();
             }
         });
+        recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
+            }
+        });
     }
 
     @OnClick({R.id.title_bar_right_icon_four,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.title_bar_right_icon_three,
             R.id.title_bar_right_icon_two})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:
@@ -182,6 +202,54 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), recyclerView.getPaginator());
+        pageIndicator.showRefresh(false);
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                recyclerView.prevPage();
+            }
+
+            @Override
+            public void next() {
+                recyclerView.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(informalEssayAdapter.getRowCount(), informalEssayAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = informalEssayAdapter.getDataCount();
+        getPagination().resize(informalEssayAdapter.getRowCount(), informalEssayAdapter.getColumnCount(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

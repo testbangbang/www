@@ -5,9 +5,11 @@ import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,13 +30,15 @@ import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.dict.data.DictionaryManager;
 import com.onyx.android.sdk.dict.data.DictionaryQueryResult;
 import com.onyx.android.sdk.dict.request.QueryWordRequest;
 import com.onyx.android.sdk.dict.request.common.DictBaseCallback;
 import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -54,16 +58,16 @@ import butterknife.OnClick;
 public class QueryRecordActivity extends BaseActivity implements QueryRecordView {
     @Bind(R.id.query_record_activity_recyclerview)
     PageRecyclerView queryRecordRecyclerView;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
     ImageView image;
-    @Bind(R.id.query_record_activity_all_number)
-    TextView allNumber;
     @Bind(R.id.title_bar_right_icon_four)
     ImageView iconFour;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
     private DividerItemDecoration dividerItemDecoration;
     private QueryRecordPresenter queryRecordPresenter;
     private QueryRecordAdapter queryRecordAdapter;
@@ -89,6 +93,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private DictSpinnerAdapter dictSpinnerAdapter;
     private TextView baiduBaike;
     private List<String> pathList;
+    private PageIndicator indicator;
 
     @Override
     protected Integer getLayoutId() {
@@ -115,12 +120,13 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     @Override
     protected void initData() {
-        queryResult = new ConcurrentHashMap<String, DictionaryQueryResult>();
-        queryRecordList = new ArrayList<QueryRecordEntity>();
+        queryResult = new ConcurrentHashMap<>();
+        queryRecordList = new ArrayList<>();
         customFontSize = DRApplication.getInstance().getCustomFontSize();
         queryRecordPresenter = new QueryRecordPresenter(this);
         queryRecordPresenter.getAllQueryRecordData();
         dictSpinnerAdapter = new DictSpinnerAdapter(this);
+        initPageIndicator(pageIndicatorLayout);
         initTitleData();
         loadDictionary();
         initEvent();
@@ -144,10 +150,10 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
-        allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
         queryRecordAdapter.setDatas(dataList);
         queryRecordRecyclerView.setAdapter(queryRecordAdapter);
         queryRecordList = dataList;
+        updatePageIndicator();
     }
 
     @Override
@@ -207,8 +213,22 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
                     }
                 }
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
+        queryRecordRecyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
             }
         });
     }
@@ -391,17 +411,65 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         resultView.loadUrl("javascript:" + "showDict(\"" + dictName + "\",\"" + dictPath + "\")");
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:
                 ActivityManager.startDictSettingActivity(this, Constants.DICT_OTHER);
                 break;
         }
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        indicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), queryRecordRecyclerView.getPaginator());
+        indicator.showRefresh(false);
+        indicator.setTotalFormat(getString(R.string.total_format));
+        indicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                queryRecordRecyclerView.prevPage();
+            }
+
+            @Override
+            public void next() {
+                queryRecordRecyclerView.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+            }
+        });
+        indicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(queryRecordAdapter.getRowCount(), queryRecordAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = queryRecordAdapter.getDataCount();
+        getPagination().resize(queryRecordAdapter.getRowCount(), queryRecordAdapter.getColumnCount(), totalCount);
+        indicator.resetGPaginator(getPagination());
+        indicator.updateTotal(totalCount);
+        indicator.updateCurrentPage(totalCount);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -7,6 +7,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -61,8 +62,8 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     CheckBox recommendCheck;
     @Bind(R.id.create_group_activity_custom_check)
     CheckBox customCheck;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -183,14 +184,14 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     }
 
     @OnClick({R.id.create_group_activity_create,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.create_group_activity_grade_container,
             R.id.create_group_activity_year_container,
             R.id.create_group_activity_class_container,
             R.id.create_group_activity_cancel})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.create_group_activity_create:
