@@ -372,6 +372,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         setSideReadingLeft(getSideReadingRight());
         setSideReadingRight(tab);
 
+        rebuildTabWidget();
+
         updateReaderTabWindowHeight(getSideReadingLeft());
         updateReaderTabWindowHeight(getSideReadingRight());
     }
