@@ -14,16 +14,19 @@
     "com.android.settings",
     "com.android.browser",
     "com.android.email",
-    "com.android.calendar",
     "com.android.deskclock",
     "com.onyx.deskclock",
     "com.android.quicksearchbox",
-    "com.onyx.appmarket",
     "com.onyx.android.edu",
     "com.android.music",
     "com.android.providers.downloads.ui",
     "com.onyx.kreader",
-    "com.onyx.android.dr"
+    "com.onyx.android.dr",
+    "com.android.gallery",
+    "com.android.providers.downloads.ui",
+    "com.onyx.reader",
+    "com.onyx.android.production.test",
+    "com.onyx.appmarket"
   ],
   "test_apps": [
     "com.onyx.test",

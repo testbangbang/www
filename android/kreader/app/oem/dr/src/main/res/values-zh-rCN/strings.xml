@@ -493,7 +493,7 @@
     <string name="chinese_subject">中　　文:</string>
     <string name="language_bookshelf">语言书架</string>
     <string name="bookstore">书城</string>
-    <string name="grade_bookshelf">分级书架</string>
+    <string name="grade_bookshelf">类别书架</string>
     <string name="popular_recommendation">热门推荐</string>
     <string name="price_format">￥ %.2f</string>
     <string name="pay">支付</string>
