@@ -48,6 +48,7 @@ public class HandlerManager {
     public static final String READING_PROVIDER = "rp";
     public static final String WORD_SELECTION_PROVIDER = "wp";
     public static final String SCRIBBLE_PROVIDER = "scribble";
+    public static final String SIDE_NOTE_PROVIDER = "side_note";
     public static final String ERASER_PROVIDER = "eraser";
     public static final String TTS_PROVIDER = "tts";
     public static final String SLIDESHOW_PROVIDER = "slideshow";
@@ -74,6 +75,7 @@ public class HandlerManager {
         providerMap.put(READING_PROVIDER, new ReadingHandler(this));
         providerMap.put(WORD_SELECTION_PROVIDER, new WordSelectionHandler(this, readerDataHolder.getContext()));
         providerMap.put(SCRIBBLE_PROVIDER, new ScribbleHandler(this));
+        providerMap.put(SIDE_NOTE_PROVIDER, new SideNoteHandler(this));
         providerMap.put(ERASER_PROVIDER, new ScribbleHandler(this));
         providerMap.put(TTS_PROVIDER, new TtsHandler(this));
         providerMap.put(SLIDESHOW_PROVIDER, new SlideshowHandler(this));

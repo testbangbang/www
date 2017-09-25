@@ -58,7 +58,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         this.readerDataHolder = readerDataHolder;
         readerDataHolder.getEventBus().register(this);
         show(readerDataHolder);
-        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SCRIBBLE_PROVIDER);
+        readerDataHolder.getHandlerManager().setActiveProvider(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
     private void show(final ReaderDataHolder readerDataHolder) {
