@@ -662,4 +662,6 @@
     <string name="informal_essay_activity_all_number">total:</string>
     <string name="logging_in">logging...</string>
     <string name="no_comment_no_export">No comment, no export</string>
+    <string name="notation_add_success">Add successfully</string>
+    <string name="notation_add_fail">Add failed</string>
 </resources>
