@@ -82,6 +82,18 @@ public class CollectionUtils {
         return false;
     }
 
+    public static boolean safelyReverseContains(List<String> list, String string) {
+        if (StringUtils.isNullOrEmpty(string) || CollectionUtils.isNullOrEmpty(list)) {
+            return false;
+        }
+        for (String item : list) {
+            if (string.contains(item)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void diff(final HashSet<String> origin, final HashSet<String> target, final HashSet<String> diff) {
         for(String s : target) {
             if (!origin.contains(s)) {

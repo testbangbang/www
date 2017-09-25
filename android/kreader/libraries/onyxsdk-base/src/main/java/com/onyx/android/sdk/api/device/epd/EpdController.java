@@ -233,7 +233,7 @@ public abstract class EpdController
         Device.currentDevice().enableA2ForSpecificView(view);
     }
 
-    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+    public static void setWebViewContrastOptimize(WebView view, boolean enabled) {
         Device.currentDevice().setWebViewContrastOptimize(view, enabled);
     }
 
