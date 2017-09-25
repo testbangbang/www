@@ -8,6 +8,7 @@ import com.raizlabs.android.dbflow.sql.language.Select;
  */
 
 public class BookInfo {
+    private String bookId;
     private String bookName;
     private String bookPath;
     private String password;
@@ -52,5 +53,13 @@ public class BookInfo {
 
     public void setDocumentInfo(DocumentInfo documentInfo) {
         this.documentInfo = documentInfo;
+    }
+
+    public String getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(String bookId) {
+        this.bookId = bookId;
     }
 }
