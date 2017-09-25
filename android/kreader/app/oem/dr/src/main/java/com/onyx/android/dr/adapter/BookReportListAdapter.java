@@ -60,7 +60,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         GetBookReportListBean bookReportListBean = data.get(position);
         viewHolder.bookReportListItemBookName.setText(bookReportListBean.name);
         viewHolder.bookReportListItemTime.setText(bookReportListBean.updatedAt + "");
-        viewHolder.bookReportListItemPage.setText("000");
+        viewHolder.bookReportListItemPage.setText(bookReportListBean.pageNumber);
         String content = bookReportListBean.content;
         viewHolder.bookReportListItemWordCount.setText(content == null ? "0" : String.valueOf(content.length()));
         viewHolder.bookReportListItemSummary.setText(content == null ? "" : content);

@@ -128,6 +128,9 @@ public class Constants {
     public static final String BOOK_NAME = "book_name";
     public static final String BOOK_PAGE = "book_page";
     public static final String BOOK_ID = "book_id";
+    public static final String MARK_BOOK_ID = "mark_book_id";
+    public static final String MARK_TOP = "mark_top";
+    public static final String MARK_LEFT = "mark_left";
 
     public static final int DEVICE_SETTING_FRAGMENT = 0;
     public static final int SCHOOL_CHILDREN = 0;
