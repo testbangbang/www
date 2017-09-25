@@ -11,6 +11,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
+import com.onyx.android.dr.activity.BaiduBaiKeActivity;
 import com.onyx.android.dr.activity.BookDetailActivity;
 import com.onyx.android.dr.activity.BookReportDetailActivity;
 import com.onyx.android.dr.activity.BookReportListActivity;
@@ -476,6 +477,13 @@ public class ActivityManager {
 
     public static void startStatisticsActivity(Context context) {
         Intent intent = new Intent(context, StatisticsActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startBaiduBaiKeActivity(Context context,String keyWord) {
+        Intent intent = new Intent(context, BaiduBaiKeActivity.class);
+        intent.putExtra(BaiduBaiKeActivity.BAIDU_BAIKE_PARAM_KEY,keyWord);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 }
