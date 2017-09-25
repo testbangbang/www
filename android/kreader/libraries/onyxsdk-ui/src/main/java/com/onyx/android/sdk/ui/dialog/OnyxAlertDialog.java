@@ -42,9 +42,20 @@ public class OnyxAlertDialog extends DialogFragment {
     private Button neutralButton;
     private View customContentView, topDividerLine, functionButtonDividerLine, bottomDivider, btnNeutralDivider;
     private Params params = new Params();
+    private DialogEventsListener eventsListener;
 
     public interface CustomViewAction {
         void onCreateCustomView(View customView, TextView pageIndicator);
+    }
+
+    public interface DialogEventsListener {
+        void onCancel(OnyxAlertDialog dialog, DialogInterface dialogInterface);
+
+        void onDismiss(OnyxAlertDialog dialog, DialogInterface dialogInterface);
+    }
+
+    public void setDialogEventsListener(DialogEventsListener listener) {
+        this.eventsListener = listener;
     }
 
     public Params getParams() {
@@ -190,6 +201,22 @@ public class OnyxAlertDialog extends DialogFragment {
     public void dismiss() {
         EpdController.enableRegal();
         super.dismiss();
+    }
+
+    @Override
+    public void onCancel(DialogInterface dialog) {
+        super.onCancel(dialog);
+        if (eventsListener != null) {
+            eventsListener.onCancel(OnyxAlertDialog.this, dialog);
+        }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialog) {
+        super.onDismiss(dialog);
+        if (eventsListener != null) {
+            eventsListener.onDismiss(OnyxAlertDialog.this, dialog);
+        }
     }
 
     public static class Params {

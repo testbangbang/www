@@ -225,4 +225,8 @@ public class GPaginator {
     public static String progressText(int current, int total) {
         return String.format("%d / %d", current, total);
     }
+
+    public String getProgressText() {
+        return getVisibleCurrentPage() + "/" + pages();
+    }
 }

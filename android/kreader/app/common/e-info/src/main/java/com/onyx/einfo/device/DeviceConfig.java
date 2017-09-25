@@ -4,17 +4,16 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import com.alibaba.fastjson.JSONArray;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.einfo.BuildConfig;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -69,6 +68,11 @@ public class DeviceConfig {
     static public final String MEDIA_SCAN_SUPPORT = "media_scan_support";
     static public final String GALLERY_DIR = "gallery_dir";
     static public final String MUSIC_DIR = "music_dir";
+
+    static public final String APPS_IGNORE_LIST = "app_ignore_list";
+    static public final String CONTENT_READ_ONLY_TAG = "content_read_only";
+    static public final String AUDIO_TAG = "audio_enable";
+    static public final String SUPPORT_SCREEN_SAVER = "support_screen_saver";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -240,7 +244,7 @@ public class DeviceConfig {
     }
 
     public boolean isUseCloudIndexServer() {
-        return backend.getBoolean(CLOUD_INDEX_SERVER_USE);
+        return backend.getBoolean(CLOUD_INDEX_SERVER_USE, false);
     }
 
     public DeviceInfoShowConfig getQrCodeShowConfig() {
@@ -279,7 +283,7 @@ public class DeviceConfig {
     }
 
     public boolean isDeviceSupportColor() {
-        return backend.getBoolean(DEVICE_SUPPORT_COLOR);
+        return backend.getBoolean(DEVICE_SUPPORT_COLOR, false);
     }
 
     public List<String> getContentMenuItemList() {
@@ -316,5 +320,24 @@ public class DeviceConfig {
             list.addAll(getGalleryDir());
         }
         return list;
+    }
+
+    public final boolean hasAudio() {
+        return backend.getBoolean(AUDIO_TAG, true);
+    }
+
+    public final boolean isContentReadOnly() {
+        return backend.getBoolean(CONTENT_READ_ONLY_TAG, false);
+    }
+
+    public boolean supportScreenSaver() {
+        return backend.getBoolean(SUPPORT_SCREEN_SAVER, false);
+    }
+
+    public Map<String, JSONArray> getAppsIgnoreListMap() {
+        if (backend.hasKey(APPS_IGNORE_LIST)) {
+            return (Map<String, JSONArray>) (backend.getObject(APPS_IGNORE_LIST));
+        }
+        return new HashMap<>();
     }
 }

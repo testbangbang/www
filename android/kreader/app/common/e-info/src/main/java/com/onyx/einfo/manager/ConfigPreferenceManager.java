@@ -20,6 +20,7 @@ public class ConfigPreferenceManager extends PreferenceManager {
     public static final String CLOUD_SORT_ORDER_TAG = "cloud_sort_order";
     public static final String STORAGE_SORT_BY_TAG = "storage_sort_by";
     public static final String STORAGE_SORT_ORDER_TAG = "storage_sort_order";
+    public static final String STORAGE_VIEW_TYPE_TAG = "storage_view_type";
 
     public static boolean hasImportContent(Context context) {
         return getBooleanValue(context, Constant.IMPORT_CONTENT_IN_FIRST_BOOT_TAG, false);
@@ -78,5 +79,14 @@ public class ConfigPreferenceManager extends PreferenceManager {
 
     public static void setStorageSortOrder(Context context, SortOrder order) {
         setStringValue(context, STORAGE_SORT_ORDER_TAG, order.toString());
+    }
+
+    public static ViewType getStorageViewType(Context context) {
+        return ViewType.valueOf(getStringValue(context, STORAGE_VIEW_TYPE_TAG,
+                ViewType.Thumbnail.toString()));
+    }
+
+    public static void setStorageViewType(Context context, ViewType viewType) {
+        setStringValue(context, STORAGE_VIEW_TYPE_TAG, viewType.toString());
     }
 }

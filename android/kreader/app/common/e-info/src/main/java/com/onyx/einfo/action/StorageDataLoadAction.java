@@ -1,12 +1,16 @@
 package com.onyx.einfo.action;
 
+import android.content.Context;
 import android.databinding.ObservableList;
 
+import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.provider.SystemConfigProvider;
 import com.onyx.android.sdk.data.request.data.fs.StorageFileListLoadRequest;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.einfo.R;
@@ -57,10 +61,37 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     addToModelItemList(dataHolder, parentFile, fileListLoadRequest.getResultFileList());
+                    addShortcutModelItemList(dataHolder);
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
+    }
+
+    public static List<StorageItemViewModel> loadShortcutModelList(LibraryDataHolder dataHolder) {
+        List<StorageItemViewModel> list = new ArrayList<>();
+        List<String> dirPathList = loadShortcutList(dataHolder.getContext());
+        if (!CollectionUtils.isNullOrEmpty(dirPathList)) {
+            for (String path : dirPathList) {
+                list.add(createShortcutModel(dataHolder, new File(path)));
+            }
+        }
+        return list;
+    }
+
+    public static List<String> loadShortcutList(Context context) {
+        String json = SystemConfigProvider.getStringValue(context, SystemConfigProvider.KEY_STORAGE_FOLDER_SHORTCUT_LIST);
+        List<String> dirPathList = JSONObjectParseUtils.parseObject(json, new TypeReference<List<String>>() {
+        });
+        if (dirPathList == null) {
+            dirPathList = new ArrayList<>();
+        }
+        return dirPathList;
+    }
+
+    public static boolean saveShortcutList(Context context, List<String> list) {
+        return SystemConfigProvider.setStringValue(context, SystemConfigProvider.KEY_STORAGE_FOLDER_SHORTCUT_LIST,
+                JSONObjectParseUtils.toJson(list));
     }
 
     private void addToModelItemList(LibraryDataHolder dataHolder, File parentFile, List<File> fileList) {
@@ -73,16 +104,31 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
         }
     }
 
-    private StorageItemViewModel createGoUpModel(LibraryDataHolder dataHolder, File file) {
+    private void addShortcutModelItemList(LibraryDataHolder dataHolder) {
+        if (isStorageRoot(parentFile)) {
+            List<StorageItemViewModel> list = loadShortcutModelList(dataHolder);
+            if (!CollectionUtils.isNullOrEmpty(list)) {
+                resultDataItemList.addAll(list);
+            }
+        }
+    }
+
+    public static StorageItemViewModel createGoUpModel(LibraryDataHolder dataHolder, File file) {
         StorageItemViewModel model = new StorageItemViewModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.createGoUpModel(file, dataHolder.getContext().getString(R.string.storage_go_up)));
         model.setEnableSelection(false);
         return model;
     }
 
-    private StorageItemViewModel createNormalModel(LibraryDataHolder dataHolder, File file) {
+    public static StorageItemViewModel createNormalModel(LibraryDataHolder dataHolder, File file) {
         StorageItemViewModel model = new StorageItemViewModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.create(file, null));
+        return model;
+    }
+
+    public static StorageItemViewModel createShortcutModel(LibraryDataHolder dataHolder, File file) {
+        StorageItemViewModel model = new StorageItemViewModel(dataHolder.getEventBus());
+        model.setFileModel(FileModel.createShortcutModel(file));
         return model;
     }
 

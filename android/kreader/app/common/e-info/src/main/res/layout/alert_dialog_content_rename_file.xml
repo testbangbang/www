@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rename_file"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="2dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+    android:paddingTop="2dp">
+
+    <TextView
+        android:id="@+id/textView_label_current_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:singleLine="true"
+        android:text="@string/original_name"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_content_text_size" />
+
+    <TextView
+        android:id="@+id/textView_current_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_toRightOf="@id/textView_label_current_name"
+        android:ellipsize="middle"
+        android:paddingLeft="20dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_content_text_size" />
+
+    <TextView
+        android:id="@+id/textView_label_new_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_label_current_name"
+        android:singleLine="true"
+        android:text="@string/new_name"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_content_text_size" />
+
+    <EditText
+        android:id="@+id/editText_rename"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_label_current_name"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_toRightOf="@+id/textView_label_new_name"
+        android:background="@drawable/edittext_background"
+        android:padding="3dp"
+        android:singleLine="true"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/dialog_content_text_size" />
+</RelativeLayout>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_dialog"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/dialog_border"
+    android:padding="2dp">
+
+    <include
+        android:id="@+id/dialog_tittleBar"
+        layout="@layout/dialog_tittle_bar" />
+
+    <CheckBox
+        android:id="@+id/checkbox_default_open"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/button_minHeight"
+        android:singleLine="true"
+        android:text="@string/checkbox_text"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="@dimen/dialog_application_checkbox_text_size" />
+
+    <View
+        android:id="@+id/top_divider_line"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"
+        android:layout_below="@id/dialog_tittleBar"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <View
+        android:id="@+id/bottom_divider_line"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="1dp"
+        android:layout_above="@id/checkbox_default_open"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp" />
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/apps_contentView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_divider_line"
+        android:layout_below="@+id/top_divider_line"
+        android:layout_margin="5dp" />
+</RelativeLayout>
