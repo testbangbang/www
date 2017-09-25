@@ -422,4 +422,12 @@
     <dimen name="recent_reading_recycler_height">600dp</dimen>
     <dimen name="add_memorandum_activity_start_time_margin_bottom">20dp</dimen>
     <dimen name="dict_download_dialog_content_padding">10dp</dimen>
+    <dimen name="notation_dialog_whole_padding">10dp</dimen>
+    <dimen name="notation_dialog_edit_margin">20dp</dimen>
+    <dimen name="book_marks_whole_padding">10dp</dimen>
+    <dimen name="tts_button_margin">5dp</dimen>
+    <dimen name="dialog_tts_voice_height">150dp</dimen>
+    <dimen name="tts_speed_checkbox_height">40dp</dimen>
+    <dimen name="tts_speed_checkbox_width">10dp</dimen>
+    <dimen name="tts_speed_checkbox_divider_height">2dp</dimen>
 </resources>

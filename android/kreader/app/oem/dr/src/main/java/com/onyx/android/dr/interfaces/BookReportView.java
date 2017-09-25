@@ -10,9 +10,11 @@ import java.util.List;
  */
 
 public interface BookReportView {
-    void setCreateBookReportData(CreateBookReportResult result);
+    void setCreateBookReportData();
 
     void setBookReportList(List<GetBookReportListBean> list);
 
     void setDeleteResult();
+
+    void getBookReport(CreateBookReportResult result);
 }

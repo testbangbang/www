@@ -150,7 +150,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     @Override
-    public void setCreateBookReportData(CreateBookReportResult result) {
+    public void setCreateBookReportData() {
 
     }
 
@@ -172,6 +172,11 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Override
     public void setDeleteResult() {
         setData(list);
+    }
+
+    @Override
+    public void getBookReport(CreateBookReportResult result) {
+
     }
 
     private void initPage() {

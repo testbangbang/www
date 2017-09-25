@@ -2,8 +2,15 @@ package com.onyx.android.dr.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
+import android.view.ActionMode;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -11,11 +18,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.util.Utils;
+import com.onyx.android.dr.view.BookMarksPopupWindow;
+import com.onyx.android.dr.view.NotationDialog;
 import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
@@ -67,6 +79,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private String bookId;
     private BookReportPresenter bookReportPresenter;
     private boolean isSave = false;
+    private BookMarksPopupWindow bookMarksPopupWindow;
+    private String userType;
+    private float currentX;
+    private float currentY;
+    private NotationDialog notationDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -89,18 +106,21 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         titleBarRightIconTwo.setImageDrawable(getResources().getDrawable(R.drawable.ic_reader_note_diary_save));
         titleBarRightIconThree.setVisibility(View.VISIBLE);
         titleBarRightIconThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_reader_share));
+        bookReportDetailContents.setHighlightColor(Color.TRANSPARENT);
+        userType = DRPreferenceManager.getUserType(DRApplication.getInstance(), "");
     }
 
     @Override
     protected void initData() {
         Intent intent = getIntent();
         Serializable serializableExtra = intent.getSerializableExtra(Constants.BOOK_REPORT_DATA);
-        if(serializableExtra != null) {
+        if (serializableExtra != null) {
             data = (GetBookReportListBean) serializableExtra;
             bookReportDetailContents.setText(data.content);
+            bookReportDetailContents.setSelection(data.content.length());
             bookReportDetailTitle.setText(data.name);
             List<CommentsBean> comments = data.comments;
-            if(comments != null && comments.size() > 0) {
+            if (comments != null && comments.size() > 0) {
                 //TODO:webView
             }
         }
@@ -108,26 +128,79 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         bookName = intent.getStringExtra(Constants.BOOK_NAME);
         bookPage = intent.getStringExtra(Constants.BOOK_PAGE);
         bookId = intent.getStringExtra(Constants.BOOK_ID);
-        if(!StringUtils.isNullOrEmpty(bookName)) {
+        if (!StringUtils.isNullOrEmpty(bookName)) {
             bookReportDetailTitle.setText(bookName);
         }
         initListener();
     }
 
     private void initListener() {
-        bookReportDetailContents.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        bookReportDetailContents.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                isSave = false;
+            }
+        });
+
+        bookReportDetailContents.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                currentX = event.getX();
+                currentY = event.getY();
                 return false;
+            }
+        });
+
+        bookReportDetailContents.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                if (Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+                    showNotationDialog();
+                }
+                return false;
+            }
+        });
+
+        bookReportDetailContents.setCustomSelectionActionModeCallback(new ActionMode.Callback() {
+            @Override
+            public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+                return false;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode mode) {
+
             }
         });
     }
 
+    private void showNotationDialog() {
+        if (notationDialog == null) {
+            notationDialog = new NotationDialog();
+        }
+        notationDialog.show(this.getFragmentManager(), "tag");
+    }
+
     @OnClick({R.id.image_view_back, R.id.title_bar_title, R.id.title_bar_right_select_time,
-            R.id.title_bar_right_icon_one, R.id.title_bar_right_icon_two, R.id.title_bar_right_icon_three,
-            R.id.title_bar_right_icon_four, R.id.title_bar_right_shopping_cart, R.id.title_bar_right_image, R.id.title_bar_right_edit_text, R.id.title_bar_right_menu,
-            R.id.book_report_detail_title})
+            R.id.title_bar_right_icon_one, R.id.title_bar_right_icon_two, R.id.title_bar_right_icon_three})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
@@ -137,52 +210,62 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                 backActivity();
                 break;
             case R.id.title_bar_right_select_time:
+                showMarks();
                 break;
             case R.id.title_bar_right_icon_one:
+                export();
                 break;
             case R.id.title_bar_right_icon_two:
                 save();
                 break;
             case R.id.title_bar_right_icon_three:
                 break;
-            case R.id.title_bar_right_icon_four:
-                break;
-            case R.id.title_bar_right_shopping_cart:
-                break;
-            case R.id.title_bar_right_image:
-                break;
-            case R.id.title_bar_right_edit_text:
-                showMarks();
-                break;
-            case R.id.title_bar_right_menu:
-                break;
-            case R.id.book_report_detail_title:
-                break;
         }
     }
 
     private void showMarks() {
-        if(data != null) {
-            //TODO:
-        }
-    }
-
-    private void save() {
-        String text = bookReportDetailContents.getText().toString();
-        if(StringUtils.isNullOrEmpty(text)) {
+        Utils.hideSoftWindow(this);
+        if (data == null) {
             CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
             return;
         }
 
-        if(!StringUtils.isNullOrEmpty(bookName) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
+        if (data.comments == null && data.comments.size() <= 0) {
+            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+            return;
+        }
+
+        if (bookMarksPopupWindow == null) {
+            bookMarksPopupWindow = new BookMarksPopupWindow(this);
+        }
+
+        bookMarksPopupWindow.show(titleBarRightEditText, data.comments);
+    }
+
+    private void save() {
+        String text = bookReportDetailContents.getText().toString();
+        if (StringUtils.isNullOrEmpty(text)) {
+            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+            return;
+        }
+
+        if (!StringUtils.isNullOrEmpty(bookName) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
             bookReportPresenter.createImpression(bookId, bookName, text, bookPage);
         }
+    }
+
+    private void export() {
+        if (data == null) {
+            CommonNotices.showMessage(DRApplication.getInstance(), getResources().getString(R.string.no_comment_no_export));
+            return;
+        }
+
+        bookReportPresenter.getImpression(data._id);
     }
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            //TODO: show dialog to comfirm save content
             backActivity();
             return true;
         }
@@ -190,9 +273,9 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     private void backActivity() {
-        if(isSave) {
+        if (isSave) {
             finish();
-        }else {
+        } else {
             showTipDiaolog();
         }
     }
@@ -213,6 +296,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         dialogCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                isSave = true;
                 dialog.dismiss();
             }
         });
@@ -227,8 +311,9 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     @Override
-    public void setCreateBookReportData(CreateBookReportResult result) {
+    public void setCreateBookReportData() {
         isSave = true;
+        bookReportDetailContents.setEnabled(false);
     }
 
     @Override
@@ -239,5 +324,15 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Override
     public void setDeleteResult() {
 
+    }
+
+    @Override
+    public void getBookReport(CreateBookReportResult result) {
+        //TODO: confirm not to export comments ?
+        GetBookReportListBean getBookReportListBean = new GetBookReportListBean();
+        getBookReportListBean.updatedAt = result.updatedAt;
+        getBookReportListBean.name = result.name;
+        getBookReportListBean.content = result.content;
+        bookReportPresenter.bringOutReport(getBookReportListBean);
     }
 }
