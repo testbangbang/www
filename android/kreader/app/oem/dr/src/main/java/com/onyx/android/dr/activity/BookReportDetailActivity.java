@@ -25,6 +25,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.BookMarksPopupWindow;
@@ -33,6 +34,8 @@ import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.Serializable;
 import java.util.List;
@@ -261,11 +264,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     private void save() {
-        if(data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+        if (data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
             return;
         }
 
-        if(data != null) {
+        if (data != null) {
             bookReportPresenter.deleteImpression(data._id);
             return;
         }
@@ -364,6 +367,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().post(new RedrawPageEvent());
+    }
+
     public void addCommentResult(CreateBookReportResult result) {
 
     }

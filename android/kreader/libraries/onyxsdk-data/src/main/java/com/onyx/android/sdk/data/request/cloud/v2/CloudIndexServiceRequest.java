@@ -95,7 +95,7 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
     private IndexService loadContentServiceInfoFromCloud(CloudManager parent) throws Exception {
         try {
             Response<IndexService> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(apiBase)
-                    .getIndexService(requestService.mac, requestService.installationId));
+                    .getIndexService(requestService.mac, requestService.installationId, requestService.model));
             if (response.isSuccessful()) {
                 return response.body();
             }

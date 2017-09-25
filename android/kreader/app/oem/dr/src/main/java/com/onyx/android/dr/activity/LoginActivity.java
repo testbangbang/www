@@ -254,6 +254,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         } else {
             CommonNotices.showMessage(this, getString(R.string.sign_up_failed));
         }
+        dismissAllProgressDialog();
     }
 
     private void showLoginLayout() {
@@ -623,6 +624,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
         DRPreferenceManager.saveUserAccount(DRApplication.getInstance(), editTextAccount.getText().toString());
         DRPreferenceManager.saveUserPassword(DRApplication.getInstance(), editTextPassword.getText().toString());
         DRPreferenceManager.saveAutoLogin(this, autoLoginCheckbox.isChecked());
+        loginPresenter.getMyGroup();
         ActivityManager.startMainActivity(this);
         dismissAllProgressDialog();
         finish();
