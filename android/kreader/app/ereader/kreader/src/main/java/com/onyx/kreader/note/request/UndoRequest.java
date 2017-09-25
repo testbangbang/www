@@ -13,7 +13,8 @@ public class UndoRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        noteManager.undo(getContext(), getVisiblePages().get(0).getName());
+        noteManager.undo(getContext(), getVisiblePages().get(0).getName(),
+                getVisiblePages().get(0).getSubPage());
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }

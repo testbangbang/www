@@ -40,7 +40,7 @@ public class ShapeEventHandler {
     private NoteManager noteManager;
     private volatile Shape currentShape = null;
     private TouchPoint eraserPoint;
-
+    private PageInfo lastPageInfo = null;
     private boolean shortcutDrawing = false;
 
     public ShapeEventHandler(NoteManager noteManager) {
@@ -118,7 +118,6 @@ public class ShapeEventHandler {
         return shape;
     }
 
-
     public Shape collectPoint(final PageInfo pageInfo, final TouchPoint point, boolean createShape, boolean up) {
         float[] srcPoint = new float[2];
         float[] dstPoint = new float[2];
@@ -145,6 +144,7 @@ public class ShapeEventHandler {
         }
         return onShapeUp(pageInfo, point, screen);
     }
+
     private TouchPoint fromHistorical(final MotionEvent motionEvent, int i) {
         final TouchPoint normalized = new TouchPoint(motionEvent.getHistoricalX(i),
                 motionEvent.getHistoricalY(i),
@@ -153,8 +153,6 @@ public class ShapeEventHandler {
                 motionEvent.getHistoricalEventTime(i));
         return normalized;
     }
-
-    private PageInfo lastPageInfo = null;
 
     public void onDrawingTouchDown(MotionEvent motionEvent) {
         final TouchPoint touchPoint = new TouchPoint(motionEvent);
@@ -204,6 +202,11 @@ public class ShapeEventHandler {
         TouchPointList list = new TouchPointList();
         int n = motionEvent.getHistorySize();
         for (int i = 0; i < n; i++) {
+            final TouchPoint touchPoint = fromHistorical(motionEvent, i);
+            PageInfo pageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
+            if (pageInfo == null || (noteManager.isSideNoting() && !noteManager.isSidePage(pageInfo))) {
+                continue;
+            }
             list.add(fromHistorical(motionEvent, i));
         }
         list.add(new TouchPoint(motionEvent));

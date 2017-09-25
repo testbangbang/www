@@ -316,8 +316,16 @@ public class NoteManager {
         }
     }
 
+    public boolean isSideNoting() {
+        return sideNoting;
+    }
+
     public void setSideNoting(boolean sideNoting) {
         this.sideNoting = sideNoting;
+    }
+
+    public boolean isSidePage(PageInfo pageInfo) {
+        return pageInfo.getSubPage() > 0;
     }
 
     public void setVisiblePages(final List<PageInfo> list) {
@@ -345,15 +353,15 @@ public class NoteManager {
         return shapeStash.size() > 0;
     }
 
-    public void undo(final Context context, final String pageName) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+    public void undo(final Context context, final String pageName, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
         if (readerNotePage != null) {
             readerNotePage.undo();
         }
     }
 
-    public void redo(final Context context, final String pageName) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+    public void redo(final Context context, final String pageName, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
         if (readerNotePage != null) {
             readerNotePage.redo();
         }
@@ -405,7 +413,7 @@ public class NoteManager {
     private List<Rect> getLimitRegionOfVisiblePages() {
         List<Rect> list = new ArrayList<>();
         for (PageInfo page : visiblePages) {
-            if (sideNoting && page.getSubPage() == 0) {
+            if (sideNoting && !isSidePage(page)) {
                 continue;
             }
             Rect r = RectUtils.toRect(page.getDisplayRect());

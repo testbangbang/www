@@ -219,7 +219,9 @@ std::string TouchReader::findDevice() {
 }
 
 void TouchReader::closeDevice(){
-    LOGI("touch reader closeDevice fd %d", fd);
+    if (debug) {
+        LOGI("touch reader closeDevice fd %d", fd);
+    }
     if (fd > 0) {
         close(fd);
         fd = 0;
