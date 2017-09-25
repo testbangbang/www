@@ -27,26 +27,14 @@
 
         <View style="@style/Horizontal_view" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top">
-
-            <TextView
-                android:id="@+id/query_record_activity_all_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/fragment_speech_recording_all_number"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
-
-        </RelativeLayout>
+        <include
+            layout="@layout/page_indicator_layout"
+            android:visibility="visible" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/title_bar"
         android:layout_above="@id/query_record_activity_bottom"
         android:orientation="vertical">
@@ -83,10 +71,9 @@
 
         </LinearLayout>
 
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
+        <com.onyx.android.dr.view.PageRecyclerView
             android:id="@+id/query_record_activity_recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
 </RelativeLayout>

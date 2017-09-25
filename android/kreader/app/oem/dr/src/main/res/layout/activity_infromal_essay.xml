@@ -27,21 +27,10 @@
 
         <View style="@style/Horizontal_view" />
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top">
+        <include
+            layout="@layout/page_indicator_layout"
+            android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/good_sentence_activity_all_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:text="@string/informal_essay_activity_all_number"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/level_one_heading_font" />
-
-        </RelativeLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -109,7 +98,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
+        <com.onyx.android.dr.view.PageRecyclerView
             android:id="@+id/infromal_essay_activity_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

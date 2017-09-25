@@ -8,7 +8,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.dr.view.PageRecyclerView;
 
 import java.util.List;
 

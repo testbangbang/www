@@ -5,6 +5,7 @@ import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -74,8 +75,8 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView ivVoiceTwo;
     @Bind(R.id.activity_dict_iv_voice_one)
     ImageView ivVoiceOne;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -293,7 +294,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
-                    if (queryWordRequest.queryResult == null) {
+                    if (queryWordRequest.queryResult == null || resultView == null) {
                         return;
                     }
                     resultView.loadResultAsHtml(queryWordRequest.queryResult);
@@ -353,14 +354,14 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     @OnClick({R.id.activity_dict_iv_voice_one,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.title_bar_right_icon_four,
             R.id.title_bar_right_icon_three,
             R.id.title_bar_right_icon_two,
             R.id.activity_dict_iv_voice_two})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.activity_dict_iv_voice_one:

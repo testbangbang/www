@@ -1,12 +1,14 @@
 package com.onyx.android.dr.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -20,8 +22,11 @@ import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.NewWordView;
 import com.onyx.android.dr.presenter.NewWordPresenter;
+import com.onyx.android.dr.view.DividerItemDecoration;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -32,14 +37,15 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
+
 /**
  * Created by zhouzhiming on 17-7-11.
  */
 public class NewWordNotebookActivity extends BaseActivity implements NewWordView, TimePickerDialog.TimePickerDialogInterface {
     @Bind(R.id.new_word_activity_recyclerview)
     PageRecyclerView newWordRecyclerView;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -52,8 +58,6 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     RadioButton chineseRadioButton;
     @Bind(R.id.new_word_activity_minority_language)
     RadioButton minorityLanguageRadioButton;
-    @Bind(R.id.new_word_activity_all_number)
-    TextView allNumber;
     @Bind(R.id.title_bar_right_select_time)
     TextView selectTime;
     @Bind(R.id.title_bar_right_icon_four)
@@ -62,6 +66,8 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     ImageView iconThree;
     @Bind(R.id.new_word_activity_all_check)
     CheckBox allCheck;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
     private DividerItemDecoration dividerItemDecoration;
     private NewWordAdapter newWordAdapter;
     private NewWordPresenter newWordPresenter;
@@ -69,6 +75,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     private ArrayList<Boolean> listCheck;
     private TimePickerDialog timePickerDialog;
     private int dictType = Constants.ENGLISH_TYPE;
+    private PageIndicator pageIndicator;
 
     @Override
     protected Integer getLayoutId() {
@@ -86,12 +93,12 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
 
     private void initRecyclerView() {
         dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
+                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         newWordAdapter = new NewWordAdapter();
         DisableScrollGridManager disableScrollGridManager = new DisableScrollGridManager(DRApplication.getInstance());
         disableScrollGridManager.setScrollEnable(true);
         newWordRecyclerView.setLayoutManager(disableScrollGridManager);
-        newWordRecyclerView.addItemDecoration(dividerItemDecoration);
+        newWordRecyclerView.setAdapter(newWordAdapter);
     }
 
     @Override
@@ -99,6 +106,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordList = new ArrayList<>();
         listCheck = new ArrayList<>();
         timePickerDialog = new TimePickerDialog(this);
+        initPageIndicator(pageIndicatorLayout);
         initTitleData();
         loadNewWordData();
         initEvent();
@@ -129,7 +137,6 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
             newWordList = dataList;
             listCheck = checkList;
         }
-        allNumber.setText(getString(R.string.informal_essay_activity_all_number) + newWordList.size() + getString(R.string.data_unit));
         if (dictType == Constants.ENGLISH_TYPE) {
             englishRadioButton.setText(getString(R.string.english) + "(" + newWordList.size() + getString(R.string.new_word_unit) + ")");
         } else if (dictType == Constants.CHINESE_TYPE) {
@@ -142,8 +149,8 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
 
     private void setRecyclerViewData() {
         newWordAdapter.setDataList(newWordList, listCheck);
-        newWordRecyclerView.setAdapter(newWordAdapter);
         newWordAdapter.notifyDataSetChanged();
+        updatePageIndicator();
     }
 
     public void initEvent() {
@@ -171,6 +178,19 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
                     }
                 }
                 newWordAdapter.notifyDataSetChanged();
+            }
+        });
+        newWordRecyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
             }
         });
     }
@@ -210,13 +230,13 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordPresenter.getAllNewWordByType(dictType);
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.title_bar_right_select_time,
             R.id.title_bar_right_icon_three,
             R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_right_select_time:
@@ -266,6 +286,54 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
             newWordList.clear();
             newWordAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), newWordRecyclerView.getPaginator());
+        pageIndicator.showRefresh(false);
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                newWordRecyclerView.prevPage();
+            }
+
+            @Override
+            public void next() {
+                newWordRecyclerView.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(newWordAdapter.getRowCount(), newWordAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = newWordAdapter.getDataCount();
+        getPagination().resize(newWordAdapter.getRowCount(), newWordAdapter.getColumnCount(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

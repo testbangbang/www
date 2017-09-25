@@ -14,7 +14,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.util.TimeUtils;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
@@ -103,6 +103,10 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
                 ActivityManager.startNewWordQueryActivity(DRApplication.getInstance(), bean.newWord);
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
     }
 
     public interface OnItemClickListener {

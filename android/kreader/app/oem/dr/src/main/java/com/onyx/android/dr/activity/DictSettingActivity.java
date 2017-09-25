@@ -7,6 +7,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -37,8 +38,8 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 2017/9/12.
  */
 public class DictSettingActivity extends BaseActivity implements DictSettingView {
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -281,14 +282,14 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
         return selectList;
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.dict_setting_activity_first_select_dict,
             R.id.dict_setting_activity_second_select_dict,
             R.id.dict_setting_activity_third_select_dict,
             R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:
