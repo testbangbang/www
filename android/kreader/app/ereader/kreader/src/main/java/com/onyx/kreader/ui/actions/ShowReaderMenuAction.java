@@ -569,12 +569,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void startSideNote(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        new StartSideNoteAction().execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                startSideNodeDrawing(readerDataHolder, readerActivity);
-            }
-        });
+        readerActivity.startSideNote();
     }
 
     private static void prevSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
@@ -784,12 +779,6 @@ public class ShowReaderMenuAction extends BaseAction {
 
     public static void updateReaderMenuState(final ReaderDataHolder readerDataHolder) {
         readerMenu.updateReaderMenuState(getReaderMenuState(readerDataHolder));
-    }
-
-    public static void startSideNodeDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
-        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
-                getScribbleActionCallback(readerDataHolder));
-        showMenu.execute(readerDataHolder, null);
     }
 
     public static void startNoteDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity, boolean showFullToolbar) {
@@ -1105,7 +1094,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public boolean isSupportingSideNote() {
-                return isLandscapeViewport(readerDataHolder);
+                return readerDataHolder.supportSideNote();
             }
 
             @Override
@@ -1123,10 +1112,6 @@ public class ShowReaderMenuAction extends BaseAction {
                 return readerDataHolder.getWindowParameters();
             }
         };
-    }
-
-    private static boolean isLandscapeViewport(final ReaderDataHolder readerDataHolder) {
-        return readerDataHolder.getDisplayWidth() > readerDataHolder.getDisplayHeight();
     }
 
     public static Map<Float, ReaderMenuAction> getStrokeMapping() {
