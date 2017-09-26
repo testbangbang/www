@@ -665,4 +665,6 @@
     <string name="notation_add_success">Add successfully</string>
     <string name="notation_add_fail">Add failed</string>
     <string name="baidu_baike_parameter_error">Parameter error</string>
+    <string name="width_adaptive">width adaptive</string>
+    <string name="menu_time_setting">Time setting</string>
 </resources>

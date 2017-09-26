@@ -21,6 +21,7 @@ import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.presenter.ReadSummaryPresenter;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -73,6 +74,9 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         Intent intent = getIntent();
         String[] metadataArray = intent.getStringArrayExtra(Constants.METADATA_ARRAY);
         bookName = metadataArray[0];
+        if (StringUtils.isNotBlank(bookName) && bookName.contains(".")) {
+            bookName = bookName.substring(0, bookName.indexOf("."));
+        }
         pageNumber = metadataArray[1];
         newWordsReviewListAdapter = new NewWordsReviewListAdapter();
         newWordsReviewRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
@@ -92,6 +96,7 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     @Override
     protected void initView() {
         titleBarTitle.setText(getString(R.string.read_summary));
+        image.setImageResource(R.drawable.ic_reader_top_main);
     }
 
     @Override
