@@ -82,6 +82,7 @@ public class ReaderDataHolder {
     private int optionsSkippedTimes = 0;
     private int lastRequestSequence;
 
+    private boolean enteringSideNote = false;
     private boolean sideNoting = false;
     private int sideNotePage = 0;
     private int sideNotePageCount = 1;
@@ -633,6 +634,18 @@ public class ReaderDataHolder {
 
     public void setLastRequestSequence(int lastRequestSequence) {
         this.lastRequestSequence = lastRequestSequence;
+    }
+
+    public boolean supportSideNote() {
+        return supportScalable();
+    }
+
+    public boolean isEnteringSideNote() {
+        return enteringSideNote;
+    }
+
+    public void setEnteringSideNote(boolean enteringSideNote) {
+        this.enteringSideNote = enteringSideNote;
     }
 
     public boolean isSideNoting() {
