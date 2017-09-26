@@ -143,7 +143,8 @@
     <string name="chinese_query_content">中文查询</string>
     <string name="japanese_query">日文查询:</string>
     <string name="japanese_query_content">日文查询</string>
-    <string name="french_query">法文查询</string>
+    <string name="french_query">法文查询:</string>
+    <string name="french_query_content">法文查询</string>
     <string name="headword_search_empty">查询结果为0</string>
     <string name="dict_query_bracket_left">[</string>
     <string name="dict_query_bracket_right">]</string>
@@ -664,4 +665,7 @@
     <string name="notation_add_success">添加成功</string>
     <string name="notation_add_fail">添加失败</string>
     <string name="baidu_baike_parameter_error">参数错误</string>
+    <string name="clear_search_history">清除历史搜索记录</string>
+    <string name="fourth_sequence">第四序列</string>
+    <string name="french">法文</string>
 </resources>

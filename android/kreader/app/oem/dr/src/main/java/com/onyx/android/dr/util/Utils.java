@@ -3,7 +3,6 @@ package com.onyx.android.dr.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -728,12 +727,14 @@ public class Utils {
 
     public static List<String> getPathList(int dictType) {
         List<String> pathList = new ArrayList<>();
-        if (dictType == Constants.ENGLISH_TYPE) {
+        if (dictType == Constants.ENGLISH_TAG) {
             pathList = loadLocalDict(Constants.ENGLISH_DICTIONARY);
-        } else if (dictType == Constants.CHINESE_TYPE) {
+        } else if (dictType == Constants.CHINESE_TAG) {
             pathList = loadLocalDict(Constants.CHINESE_DICTIONARY);
-        } else if (dictType == Constants.OTHER_TYPE) {
-            pathList = loadLocalDict(Constants.OTHER_DICTIONARY);
+        } else if (dictType == Constants.JAPANESE_TAG) {
+            pathList = loadLocalDict(Constants.JAPANESE_DICTIONARY);
+        } else if (dictType == Constants.FRENCH_TAG) {
+            pathList = loadLocalDict(Constants.FRENCH_DICTIONARY);
         }
         return pathList;
     }
@@ -741,12 +742,14 @@ public class Utils {
     public static List<String> getDictListByMap(int dictType) {
         List<String> pathList = new ArrayList<>();
         List<DictTypeBean> dictTypeList = new ArrayList<>();
-        if (dictType == Constants.ENGLISH_TYPE) {
+        if (dictType == Constants.ENGLISH_TAG) {
             dictTypeList = getEnglishDictData();
-        } else if (dictType == Constants.CHINESE_TYPE) {
+        } else if (dictType == Constants.CHINESE_TAG) {
             dictTypeList = getChineseDictData();
-        } else if (dictType == Constants.OTHER_TYPE) {
-            dictTypeList = getMinorityDictData();
+        } else if (dictType == Constants.JAPANESE_TAG) {
+            dictTypeList = getJapaneseDictData();
+        } else if (dictType == Constants.FRENCH_TAG) {
+            dictTypeList = getFrenchDictData();
         }
         for (int i = 0; i < dictTypeList.size(); i++) {
             String dictName = dictTypeList.get(i).getTabName();
@@ -777,7 +780,7 @@ public class Utils {
         List<DictTypeBean> englishDictName = new ArrayList<>();
         for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.englishDictMap.entrySet()) {
             Integer key = entry.getKey();
-            if (key == Constants.ENGLISH_TYPE) {
+            if (key == Constants.ENGLISH_TAG) {
                 englishDictName = entry.getValue();
             }
         }
@@ -788,18 +791,29 @@ public class Utils {
         List<DictTypeBean> englishDictName = new ArrayList<>();
         for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.chineseDictMap.entrySet()) {
             Integer key = entry.getKey();
-            if (key == Constants.CHINESE_TYPE) {
+            if (key == Constants.CHINESE_TAG) {
                 englishDictName = entry.getValue();
             }
         }
         return englishDictName;
     }
 
-    public static List<DictTypeBean> getMinorityDictData() {
+    public static List<DictTypeBean> getJapaneseDictData() {
         List<DictTypeBean> englishDictName = new ArrayList<>();
-        for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.minorityDictMap.entrySet()) {
+        for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.japaneseDictMap.entrySet()) {
             Integer key = entry.getKey();
-            if (key == Constants.OTHER_TYPE) {
+            if (key == Constants.JAPANESE_TAG) {
+                englishDictName = entry.getValue();
+            }
+        }
+        return englishDictName;
+    }
+
+    public static List<DictTypeBean> getFrenchDictData() {
+        List<DictTypeBean> englishDictName = new ArrayList<>();
+        for (Map.Entry<Integer, List<DictTypeBean>> entry : DictTypeConfig.frenchDictMap.entrySet()) {
+            Integer key = entry.getKey();
+            if (key == Constants.FRENCH_TAG) {
                 englishDictName = entry.getValue();
             }
         }
@@ -809,12 +823,14 @@ public class Utils {
     public static List<String> getDictList(int dictType) {
         List<String> pathList = new ArrayList<>();
         List<String> dictList = new ArrayList<>();
-        if (dictType == Constants.ENGLISH_TYPE) {
+        if (dictType == Constants.ENGLISH_TAG) {
             pathList = loadLocalDict(Constants.ENGLISH_DICTIONARY);
-        } else if (dictType == Constants.CHINESE_TYPE) {
+        } else if (dictType == Constants.CHINESE_TAG) {
             pathList = loadLocalDict(Constants.CHINESE_DICTIONARY);
-        } else if (dictType == Constants.OTHER_TYPE) {
-            pathList = loadLocalDict(Constants.OTHER_DICTIONARY);
+        } else if (dictType == Constants.JAPANESE_TAG) {
+            pathList = loadLocalDict(Constants.JAPANESE_DICTIONARY);
+        } else if (dictType == Constants.FRENCH_TAG) {
+            pathList = loadLocalDict(Constants.FRENCH_DICTIONARY);
         }
         for (int i = 0; i < pathList.size(); i++) {
             String content = pathList.get(i);
@@ -829,12 +845,14 @@ public class Utils {
         List<DictTypeBean> list = new ArrayList<>();
         ArrayList<Boolean> listCheck = new ArrayList<>();
         ArrayList<String> positionList = new ArrayList<>();
-        if (dictType == Constants.ENGLISH_TYPE) {
+        if (dictType == Constants.ENGLISH_TAG) {
             list = Utils.getEnglishDictData();
-        } else if (dictType == Constants.CHINESE_TYPE) {
+        } else if (dictType == Constants.CHINESE_TAG) {
             list = Utils.getChineseDictData();
-        } else if (dictType == Constants.OTHER_TYPE) {
-            list = Utils.getMinorityDictData();
+        } else if (dictType == Constants.JAPANESE_TAG) {
+            list = Utils.getJapaneseDictData();
+        } else if (dictType == Constants.FRENCH_TAG) {
+            list = Utils.getFrenchDictData();
         }
         if (pathList == null && pathList.size() <= 0) {
             return listCheck;
@@ -867,7 +885,8 @@ public class Utils {
         List<String> pathList = new ArrayList<>();
         pathList.addAll(loadLocalDict(Constants.CHINESE_DICTIONARY));
         pathList.addAll(loadLocalDict(Constants.ENGLISH_DICTIONARY));
-        pathList.addAll(loadLocalDict(Constants.OTHER_DICTIONARY));
+        pathList.addAll(loadLocalDict(Constants.JAPANESE_DICTIONARY));
+        pathList.addAll(loadLocalDict(Constants.FRENCH_DICTIONARY));
         return pathList;
     }
 
@@ -877,7 +896,8 @@ public class Utils {
             File path = Environment.getExternalStorageDirectory();
             dictPaths.add(path + Constants.CHINESE_DICTIONARY);
             dictPaths.add(path + Constants.ENGLISH_DICTIONARY);
-            dictPaths.add(path + Constants.OTHER_DICTIONARY);
+            dictPaths.add(path + Constants.JAPANESE_DICTIONARY);
+            dictPaths.add(path + Constants.FRENCH_DICTIONARY);
         }
         return dictPaths;
     }
@@ -938,14 +958,23 @@ public class Utils {
         return true;
     }
 
-    public static boolean compareWhetherEqual(int firstValue, int secondValue, int thirdValue) {
+    public static boolean compareWhetherEqual(int firstValue, int secondValue, int thirdValue, int fourthValue) {
         if (firstValue == secondValue) {
             return true;
         }
         if (firstValue == thirdValue) {
             return true;
         }
+        if (firstValue == fourthValue) {
+            return true;
+        }
         if (secondValue == thirdValue) {
+            return true;
+        }
+        if (secondValue == fourthValue) {
+            return true;
+        }
+        if (thirdValue == fourthValue) {
             return true;
         }
         return false;

@@ -434,4 +434,8 @@
     <dimen name="rectangle_stroke_second_radius">10dp</dimen>
     <dimen name="create_group_activity_school_search_margin">5dp</dimen>
     <dimen name="baidu_baike_content_padding">15dp</dimen>
+    <dimen name="search_list_item_padding_left">10dp</dimen>
+    <dimen name="dict_level_one_font_size">20sp</dimen>
+    <dimen name="lv_search_history_padding">2dp</dimen>
+    <dimen name="btn_clear_history_margin_top">5dp</dimen>
 </resources>

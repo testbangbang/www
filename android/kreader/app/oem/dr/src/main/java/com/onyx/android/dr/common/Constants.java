@@ -36,7 +36,8 @@ public class Constants {
 
     public static final String CHINESE_DICTIONARY = "/dicts/Chinese_dictionary";
     public static final String ENGLISH_DICTIONARY = "/dicts/English_dictionary";
-    public static final String OTHER_DICTIONARY = "/dicts/other_dictionary";
+    public static final String JAPANESE_DICTIONARY = "/dicts/Japanese_dictionary";
+    public static final String FRENCH_DICTIONARY = "/dicts/french_dictionary";
     public static final String EDITQUERY = "editQuery";
     public static final String LOCATION = "location";
     public static final String DICTTYPE = "dictType";
@@ -58,6 +59,11 @@ public class Constants {
     public static final int ENGLISH_TYPE = 0;
     public static final int CHINESE_TYPE = 1;
     public static final int OTHER_TYPE = 2;
+
+    public static final int ENGLISH_TAG = 0;
+    public static final int CHINESE_TAG = 1;
+    public static final int JAPANESE_TAG = 2;
+    public static final int FRENCH_TAG = 3;
 
     public static final int DIALOG_VIEW_FIRST_TYPE = 0;
     public static final int DIALOG_VIEW_SECOND_TYPE = 1;

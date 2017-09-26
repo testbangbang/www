@@ -81,6 +81,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private QueryRecordPresenter queryRecordPresenter;
     private String editQuery = "";
     private List<String> pathList;
+    private int dictType;
 
     @Override
     protected Integer getLayoutId() {
@@ -119,7 +120,7 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     private void loadDictionary() {
         DictPreference.init(this);
         pathList = new ArrayList<>();
-        int dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
+        dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
         if (dictionaryManager.newProviderMap != null && dictionaryManager.newProviderMap.size() > 0) {
             dictionaryManager.newProviderMap.clear();
@@ -200,10 +201,16 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         incomeNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (dictType == Constants.FRENCH_TAG) {
+                    dictType = Constants.OTHER_TYPE;
+                }
+                DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictionaryLookup);
                 NewWordBean bean = new NewWordBean();
-                bean.setNewWord(newWord);
+                bean.setNewWord(editQuery);
                 bean.setDictionaryLookup(dictionaryLookup);
-                bean.setReadingMatter(readingMatter);
+                bean.setReadingMatter("");
+                bean.setNewWordType(dictType);
+                bean.setParaphrase(dictionaryQueryResult.explanation);
                 OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });
