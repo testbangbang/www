@@ -284,4 +284,12 @@ public abstract class EpdController
     public static void disableRegal() {
         Device.currentDevice().enableRegal(false);
     }
+
+    public static void setUpdListSize(int size) {
+        Device.currentDevice().setUpdListSize(size);
+    }
+
+    public static void resetUpdListSize() {
+        Device.currentDevice().setUpdListSize(-1);
+    }
 }

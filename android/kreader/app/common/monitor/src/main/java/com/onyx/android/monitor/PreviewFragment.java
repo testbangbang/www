@@ -57,6 +57,7 @@ import com.onyx.android.monitor.event.SettingsChangedEvent;
 import com.onyx.android.monitor.view.AutoFitTextureView;
 import com.onyx.android.monitor.event.ConnectEvent;
 import com.onyx.android.monitor.view.MenuItem;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -196,6 +197,7 @@ public class PreviewFragment extends Fragment
             // This method is called when the camera is opened.  We start camera preview here.
             mCameraOpenCloseLock.release();
             mCameraDevice = cameraDevice;
+            EpdController.setUpdListSize(1);
             createCameraPreviewSession();
             openA2();
             startGcTimer(gcRefreshRunnable);
@@ -724,6 +726,7 @@ public class PreviewFragment extends Fragment
             }
             stopGcTimer(gcRefreshRunnable);
             closeA2();
+            EpdController.resetUpdListSize();
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
         } finally {
