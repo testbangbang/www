@@ -8,6 +8,7 @@ import com.onyx.android.dr.bean.SignUpInfo;
 import com.onyx.android.dr.data.LoginData;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.manager.LeanCloudManager;
+import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
 import com.onyx.android.dr.request.cloud.RequestGetRootGroupList;
 import com.onyx.android.dr.request.cloud.RequestIndexServiceAndLogin;
 import com.onyx.android.dr.request.cloud.SignUpRequest;
@@ -15,13 +16,17 @@ import com.onyx.android.dr.request.local.RequestCityList;
 import com.onyx.android.dr.request.local.RequestLoadLocalDB;
 import com.onyx.android.dr.request.local.RequestProvinceList;
 import com.onyx.android.dr.request.local.RequestZoneList;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
+import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.utils.NetworkUtil;
+
+import java.util.List;
 
 /**
  * Created by hehai on 17-6-30.
@@ -126,6 +131,24 @@ public class LoginPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
 
+            }
+        });
+    }
+
+
+    public void getMyGroup() {
+        final RequestGetMyGroup req = new RequestGetMyGroup();
+        loginData.getMyGroup(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<GroupBean> groups = req.getGroups();
+                if (groups != null && groups.size() > 0) {
+                    String library = groups.get(0).library;
+                    String parentId = groups.get(0)._id;
+                    DRPreferenceManager.saveLibraryParentId(DRApplication.getInstance(), library);
+                    DRPreferenceManager.saveParentId(DRApplication.getInstance(), parentId);
+                    DRPreferenceManager.saveUserType(DRApplication.getInstance(), groups.get(0).name);
+                }
             }
         });
     }

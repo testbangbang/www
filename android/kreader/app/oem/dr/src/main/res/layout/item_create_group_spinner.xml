@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="match_parent">
 
     <TextView
         android:id="@+id/spinner_text"
@@ -9,7 +9,6 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:padding="@dimen/edit_text_margin_top"
-        android:text="hhhh"
         android:textColor="@android:color/black"
         android:textSize="@dimen/level_three_font_size" />
 

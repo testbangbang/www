@@ -33,6 +33,7 @@ import com.onyx.android.dr.event.WebViewJSEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.interfaces.WebViewInterface;
 import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.util.BookReportComparator;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.Utils;
@@ -43,6 +44,7 @@ import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -406,6 +408,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().post(new RedrawPageEvent());
+    }
+
     public void addCommentResult(CreateBookReportResult result) {
 
     }

@@ -66,8 +66,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     ImageView spellSearch;
     @Bind(R.id.activity_word_japanese_search)
     ImageView japaneseSearch;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -229,6 +229,39 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         startSoftKeyboardSearch(exampleQuery);
         startSoftKeyboardSearch(spellQuery);
         startSoftKeyboardSearch(japaneseQuery);
+        wordQuery.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                phraseQuerySearch.setVisibility(View.GONE);
+                exampleQuerySearch.setVisibility(View.GONE);
+                wordQuerySearch.setVisibility(View.VISIBLE);
+                phraseQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                exampleQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                wordQuery.setBackgroundResource(R.drawable.rectangle_stroke);
+            }
+        });
+        phraseQuery.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                wordQuerySearch.setVisibility(View.GONE);
+                exampleQuerySearch.setVisibility(View.GONE);
+                phraseQuerySearch.setVisibility(View.VISIBLE);
+                wordQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                exampleQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                phraseQuery.setBackgroundResource(R.drawable.rectangle_stroke);
+            }
+        });
+        exampleQuery.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                wordQuerySearch.setVisibility(View.GONE);
+                phraseQuerySearch.setVisibility(View.GONE);
+                exampleQuerySearch.setVisibility(View.VISIBLE);
+                wordQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+                exampleQuery.setBackgroundResource(R.drawable.rectangle_stroke);
+                phraseQuery.setBackgroundColor(getResources().getColor(R.color.light_gray));
+            }
+        });
     }
 
     private void startSoftKeyboardSearch(final EditText editText) {
@@ -279,14 +312,14 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     @OnClick({R.id.activity_word_query_search,
             R.id.activity_phrase_query_search,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.activity_word_spell_search,
             R.id.activity_word_japanese_search,
             R.id.title_bar_right_icon_four,
             R.id.activity_example_query_search})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.activity_word_query_search:

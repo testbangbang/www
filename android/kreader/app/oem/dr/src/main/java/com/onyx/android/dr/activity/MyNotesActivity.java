@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -43,8 +44,8 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     PageRecyclerView thinkRecyclerView;
     @Bind(R.id.my_notes_activity_creation_recyclerview)
     PageRecyclerView creationRecyclerView;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -114,10 +115,10 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     public void initEvent() {
     }
 
-    @OnClick({R.id.image_view_back})
+    @OnClick({R.id.menu_back})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
         }

@@ -6,6 +6,7 @@ import com.onyx.android.dr.bean.CityBean;
 import com.onyx.android.dr.bean.InterestBean;
 import com.onyx.android.dr.bean.ProvinceBean;
 import com.onyx.android.dr.bean.ZoneBean;
+import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
 import com.onyx.android.dr.request.cloud.RequestGetRootGroupList;
 import com.onyx.android.dr.request.cloud.RequestIndexServiceAndLogin;
 import com.onyx.android.dr.request.cloud.SignUpRequest;
@@ -83,5 +84,9 @@ public class LoginData {
 
     public void loadLocalDB(RequestLoadLocalDB req, BaseCallback baseCallback) {
         DRApplication.getDataManager().submit(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void getMyGroup(RequestGetMyGroup req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 }

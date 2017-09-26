@@ -3,6 +3,7 @@ package com.onyx.android.dr.activity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -33,8 +34,8 @@ import butterknife.OnClick;
 public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpyeView {
     @Bind(R.id.new_word_activity_type_recyclerview)
     PageRecyclerView typeRecyclerView;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -95,10 +96,10 @@ public class NewWordTypeActivity extends BaseActivity implements GoodSentenceTpy
     public void initEvent() {
     }
 
-    @OnClick({R.id.image_view_back})
+    @OnClick({R.id.menu_back})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
         }

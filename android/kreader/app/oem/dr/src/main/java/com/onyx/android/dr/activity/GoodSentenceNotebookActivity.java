@@ -2,11 +2,14 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -20,8 +23,10 @@ import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.presenter.GoodSentencePresenter;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -38,8 +43,8 @@ import butterknife.OnClick;
 public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSentenceView, TimePickerDialog.TimePickerDialogInterface {
     @Bind(R.id.good_sentence_activity_recyclerview)
     PageRecyclerView goodSentenceRecyclerView;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -52,8 +57,6 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     RadioButton chineseRadioButton;
     @Bind(R.id.good_sentence_activity_minority_language)
     RadioButton minorityLanguageRadioButton;
-    @Bind(R.id.good_sentence_activity_all_number)
-    TextView allNumber;
     @Bind(R.id.title_bar_right_select_time)
     TextView selectTime;
     @Bind(R.id.title_bar_right_icon_four)
@@ -62,6 +65,8 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     ImageView iconThree;
     @Bind(R.id.good_sentence_activity_all_check)
     CheckBox allCheck;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
     private DividerItemDecoration dividerItemDecoration;
     private GoodSentenceAdapter goodSentenceAdapter;
     private GoodSentencePresenter goodSentencePresenter;
@@ -69,6 +74,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     private List<GoodSentenceNoteEntity> goodSentenceList;
     private ArrayList<Boolean> listCheck;
     private TimePickerDialog timePickerDialog;
+    private PageIndicator pageIndicator;
 
     @Override
     protected Integer getLayoutId() {
@@ -97,6 +103,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
         goodSentenceList = new ArrayList<>();
         listCheck = new ArrayList<>();
         timePickerDialog = new TimePickerDialog(this);
+        initPageIndicator(pageIndicatorLayout);
         loadData();
         initEvent();
     }
@@ -127,7 +134,6 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
             goodSentenceList = dataList;
             listCheck = checkList;
         }
-        allNumber.setText(getString(R.string.informal_essay_activity_all_number) + goodSentenceList.size() + getString(R.string.data_unit));
         if (dictType == Constants.ENGLISH_TYPE) {
             englishRadioButton.setText(getString(R.string.english) + "(" + goodSentenceList.size() + getString(R.string.new_word_unit) + ")");
         } else if (dictType == Constants.CHINESE_TYPE) {
@@ -142,6 +148,7 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
         goodSentenceAdapter.setDataList(goodSentenceList, listCheck);
         goodSentenceRecyclerView.setAdapter(goodSentenceAdapter);
         goodSentenceAdapter.notifyDataSetChanged();
+        updatePageIndicator();
     }
 
     public void initEvent() {
@@ -169,6 +176,19 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
                     }
                 }
                 goodSentenceAdapter.notifyDataSetChanged();
+            }
+        });
+        goodSentenceRecyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
             }
         });
     }
@@ -209,12 +229,12 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     }
 
     @OnClick({R.id.title_bar_right_icon_three,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.title_bar_right_select_time,
             R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_right_select_time:
@@ -264,6 +284,55 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
             goodSentenceList.clear();
             goodSentenceAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), goodSentenceRecyclerView.getPaginator());
+        pageIndicator.showRefresh(false);
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                goodSentenceRecyclerView.prevPage();
+            }
+
+            @Override
+            public void next() {
+                goodSentenceRecyclerView.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(goodSentenceAdapter.getRowCount(), goodSentenceAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+        goodSentenceRecyclerView.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = goodSentenceAdapter.getDataCount();
+        getPagination().resize(goodSentenceAdapter.getRowCount(), goodSentenceAdapter.getColumnCount(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

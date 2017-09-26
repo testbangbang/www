@@ -149,7 +149,7 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
             return;
         }
         initPagination();
-        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), summaryListRecycler.getPaginator());
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), getPagination());
         pageIndicator.showRefresh(false);
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
@@ -180,6 +180,7 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
         QueryPagination pagination = getPagination();
         pagination.resize(listAdapter.getRowCount(), listAdapter.getColumnCount(), 0);
         pagination.setCurrentPage(0);
+        summaryListRecycler.setCurrentPage(0);
     }
 
     private QueryPagination getPagination() {

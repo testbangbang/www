@@ -1,7 +1,6 @@
 package com.onyx.android.dr.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.support.design.widget.TabLayout;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
@@ -11,11 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.action.LibraryGotoPageAction;
-import com.onyx.android.dr.adapter.EBookLanguageGroupAdapter;
 import com.onyx.android.dr.adapter.EBookListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
@@ -29,23 +25,15 @@ import com.onyx.android.dr.presenter.EBookStorePresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.PageIndicator;
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.DataManagerHelper;
+import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.LibraryDataModel;
-import com.onyx.android.sdk.data.LibraryViewInfo;
-import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
-import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
-import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -66,7 +54,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Bind(R.id.menu_back)
     LinearLayout menuBack;
     @Bind(R.id.ebook_store_groups_recycler)
-    SinglePageRecyclerView ebookStoreGroupsRecycler;
+    PageRecyclerView ebookStoreGroupsRecycler;
     @Bind(R.id.title_bar_right_menu)
     TextView titleBarRightMenu;
     @Bind(R.id.title_bar_right_shopping_cart)
@@ -82,9 +70,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     @Bind(R.id.page_indicator_layout)
     RelativeLayout pageIndicatorLayout;
     private EBookStorePresenter eBookStorePresenter;
-    private LibraryDataHolder dataHolder;
     private EBookListAdapter listAdapter;
-    private EBookLanguageGroupAdapter eBookLanguageGroupAdapter;
     private PageIndicator pageIndicator;
 
     @Override
@@ -108,10 +94,9 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
         ebookStoreGroupsRecycler.addItemDecoration(dividerItemDecoration);
-        listAdapter = new EBookListAdapter(getDataHolder());
+        listAdapter = new EBookListAdapter();
         ebookStoreGroupsRecycler.setAdapter(listAdapter);
         initPageIndicator(pageIndicatorLayout);
-        eBookLanguageGroupAdapter = new EBookLanguageGroupAdapter();
 
         ebookStoreTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -130,15 +115,17 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
             }
         });
 
-        ebookStoreGroupsRecycler.setOnChangePageListener(new SinglePageRecyclerView.OnChangePageListener() {
+        ebookStoreGroupsRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
-            public void prev() {
-                prevPage();
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
             }
 
             @Override
-            public void next() {
-                nextPage();
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
             }
         });
     }
@@ -147,7 +134,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     protected void initData() {
         eBookStorePresenter = new EBookStorePresenter(this);
         eBookStorePresenter.getRootLibraryList(getParentLibraryId());
-        showProgressDialog("",null);
+        showProgressDialog("", null);
         eBookStorePresenter.getCartCount();
     }
 
@@ -172,13 +159,8 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
 
     @Override
     public void setBooks(List<Metadata> result) {
-        if (result != null) {
-            QueryResult<Metadata> queryResult = new QueryResult<>();
-            queryResult.list = result;
-            queryResult.count = result.size();
-            Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(this, DRApplication.getCloudStore().getCloudManager(), queryResult.list);
-            updateContentView(getLibraryDataModel(queryResult, bitmaps));
-        }
+        listAdapter.setEBookList(result);
+        updatePageIndicator();
         dismissAllProgressDialog();
     }
 
@@ -221,33 +203,13 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
 
 
     private LibraryDataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new LibraryDataHolder(this);
-            dataHolder.setCloudManager(DRApplication.getCloudStore().getCloudManager());
-        }
-        return dataHolder;
-    }
-
-    private LibraryDataModel getLibraryDataModel(QueryResult<Metadata> result, Map<String, CloseableReference<Bitmap>> map) {
-        return LibraryViewInfo.buildLibraryDataModel(result, map);
+        return DRApplication.getLibraryDataHolder();
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         loadBooks(ebookStoreTab.getTabAt(ebookStoreTab.getSelectedTabPosition()).getText().toString(), getDataHolder());
-    }
-
-    private void updateContentView(LibraryDataModel libraryDataModel) {
-        if (isContentViewInvalid()) {
-            return;
-        }
-        listAdapter.updateContentView(libraryDataModel);
-        updatePageIndicator();
-    }
-
-    private boolean isContentViewInvalid() {
-        return ebookStoreGroupsRecycler == null || pageIndicator == null;
     }
 
     private void updatePageIndicator() {
@@ -259,12 +221,11 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
     }
 
     private int getTotalCount() {
-        LibraryDataModel dataModel = dataHolder.getCloudViewInfo().getLibraryDataModel();
-        return dataModel.bookCount + dataModel.libraryCount;
+        return listAdapter.getBookListSize();
     }
 
     private QueryPagination getPagination() {
-        return dataHolder.getCloudViewInfo().getQueryPagination();
+        return getDataHolder().getCloudViewInfo().getQueryPagination();
     }
 
     private void initPageIndicator(ViewGroup parentView) {
@@ -272,23 +233,23 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
             return;
         }
         initPagination();
-        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), ebookStoreGroupsRecycler.getPaginator());
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), getPagination());
         pageIndicator.showRefresh(false);
         pageIndicator.setTotalFormat(getString(R.string.total_format));
         pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
             @Override
             public void prev() {
-                prevPage();
+                ebookStoreGroupsRecycler.prevPage();
             }
 
             @Override
             public void next() {
-                nextPage();
+                ebookStoreGroupsRecycler.nextPage();
             }
 
             @Override
             public void gotoPage(int page) {
-                showGotoPageAction(page);
+
             }
         });
         pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
@@ -303,97 +264,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         QueryPagination pagination = getPagination();
         pagination.resize(listAdapter.getRowCount(), listAdapter.getColumnCount(), 0);
         pagination.setCurrentPage(0);
-    }
-
-    private void prevPage() {
-        if (!getPagination().prevPage()) {
-            return;
-        }
-        final CloudContentListRequest listRequest = new CloudContentListRequest(dataHolder.getCloudViewInfo().prevPage());
-        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), listRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
-                preLoadPrev();
-            }
-        });
-    }
-
-    private void preLoadPrev() {
-        int preLoadPage = getPagination().getCurrentPage() - 1;
-        if (preLoadPage < 0) {
-            return;
-        }
-        CloudContentListRequest listRequest = new CloudContentListRequest(dataHolder.getCloudViewInfo().pageQueryArgs(preLoadPage));
-        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), listRequest, null);
-    }
-
-    private void nextPage() {
-        if (!getPagination().nextPage()) {
-            return;
-        }
-        QueryArgs queryArgs = dataHolder.getCloudViewInfo().nextPage();
-        final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), listRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    return;
-                }
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
-                preloadNext();
-            }
-        });
-    }
-
-    private void preloadNext() {
-        int preLoadPage = getPagination().getCurrentPage() + 1;
-        if (preLoadPage >= getPagination().pages()) {
-            return;
-        }
-        QueryArgs queryArgs = dataHolder.getCloudViewInfo().pageQueryArgs(preLoadPage);
-        final CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), listRequest, null);
-    }
-
-    private void showGotoPageAction(int currentPage) {
-        final LibraryGotoPageAction gotoPageAction = new LibraryGotoPageAction(this, currentPage,
-                getPagination().pages());
-        gotoPageAction.execute(dataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                int newPage = gotoPageAction.getSelectPage();
-                gotoPageImpl(newPage);
-            }
-        });
-    }
-
-    private void gotoPageImpl(int page) {
-        final int originPage = getPagination().getCurrentPage();
-        loadData(dataHolder.getCloudViewInfo().gotoPage(page), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
-                    getPagination().setCurrentPage(originPage);
-                    return;
-                }
-                CloudContentListRequest listRequest = (CloudContentListRequest) request;
-                QueryResult<Metadata> result = listRequest.getProductResult();
-                updateContentView(getLibraryDataModel(result, listRequest.getThumbnailMap()));
-                preLoadPrev();
-                preloadNext();
-            }
-        });
-    }
-
-    private void loadData(QueryArgs queryArgs, BaseCallback callback) {
-        CloudContentListRequest listRequest = new CloudContentListRequest(queryArgs);
-        DRApplication.getCloudStore().submitRequestToSingle(DRApplication.getInstance(), listRequest, callback);
+        ebookStoreGroupsRecycler.setCurrentPage(0);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

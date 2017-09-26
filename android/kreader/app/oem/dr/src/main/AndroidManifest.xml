@@ -173,6 +173,10 @@
             android:theme="@style/DialogActivityTheme" />
 
         <activity
+            android:name=".activity.BaiduBaiKeActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".activity.SettingActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 

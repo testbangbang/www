@@ -11,7 +11,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.util.TimeUtils;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.dr.view.PageRecyclerView;
 
 import java.util.List;
 
@@ -84,6 +84,10 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
                 }
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
     }
 
     public interface OnItemClickListener {

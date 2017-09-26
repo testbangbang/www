@@ -266,6 +266,12 @@
         <item name="android:background">@android:color/black</item>
     </style>
 
+    <style name="good_sentence_item_second_view">
+        <item name="android:layout_width">1dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@android:color/black</item>
+    </style>
+
     <style name="good_sentence_activity_spinner">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">60dp</item>
@@ -302,6 +308,17 @@
         <item name="android:layout_margin">@dimen/select_dialog_close_cancel_margin</item>
         <item name="android:background">@drawable/rectangle_stroke</item>
         <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/select_dialog_close_cancel_padding</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
+
+    <style name="group_home_page_activity_text_style">
+        <item name="android:layout_width">@dimen/group_home_page_activity_create_width</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/select_dialog_close_cancel_margin</item>
+        <item name="android:background">@drawable/rectangle_stroke_second</item>
+        <item name="android:gravity">center_vertical</item>
         <item name="android:padding">@dimen/select_dialog_close_cancel_padding</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>

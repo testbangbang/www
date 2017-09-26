@@ -12,7 +12,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.util.TimeUtils;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.dr.view.PageRecyclerView;
 
 import java.util.List;
 
@@ -83,6 +83,10 @@ public class MemorandumAdapter extends PageRecyclerView.PageAdapter<MemorandumAd
                 }
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
     }
 
     public interface OnItemClickListener {
