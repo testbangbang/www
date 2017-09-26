@@ -3,6 +3,7 @@ package com.onyx.android.dr.activity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
@@ -33,8 +34,8 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     ImageView iconFour;
     @Bind(R.id.add_infromal_essay_activity_content)
     DefaultEditText contentEditText;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -80,11 +81,11 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     }
 
     @OnClick({R.id.add_infromal_essay_activity_file,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:

@@ -3,6 +3,7 @@ package com.onyx.android.dr.activity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -38,8 +39,8 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 2017/8/28.
  */
 public class GroupMemberActivity extends BaseActivity implements GroupMemberView {
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -141,12 +142,12 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
         });
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.group_member_activity_search,
             R.id.group_member_manage_activity_delete})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case com.onyx.android.dr.R.id.group_member_manage_activity_delete:

@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -31,8 +32,8 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 2017/9/19.
  */
 public class ManageGroupActivity extends BaseActivity implements ManageGroupView {
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -102,10 +103,10 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
     public void initEvent() {
     }
 
-    @OnClick({R.id.image_view_back})
+    @OnClick({R.id.menu_back})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
         }

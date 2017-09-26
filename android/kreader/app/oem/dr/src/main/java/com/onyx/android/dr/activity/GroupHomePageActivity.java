@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
@@ -22,8 +23,8 @@ public class GroupHomePageActivity extends BaseActivity {
     TextView joinGroup;
     @Bind(R.id.group_home_page_activity_manage)
     TextView groupMemberManage;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -68,11 +69,11 @@ public class GroupHomePageActivity extends BaseActivity {
 
     @OnClick({R.id.group_home_page_activity_create,
             R.id.group_home_page_activity_join,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.group_home_page_activity_manage})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.group_home_page_activity_create:

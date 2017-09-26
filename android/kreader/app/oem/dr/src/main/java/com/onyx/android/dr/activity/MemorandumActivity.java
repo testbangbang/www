@@ -2,9 +2,12 @@ package com.onyx.android.dr.activity;
 
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -15,8 +18,10 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.interfaces.MemorandumView;
 import com.onyx.android.dr.presenter.MemorandumPresenter;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +36,8 @@ import butterknife.OnClick;
 public class MemorandumActivity extends BaseActivity implements MemorandumView {
     @Bind(R.id.memorandum_activity_recyclerview)
     PageRecyclerView recyclerView;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -45,13 +50,14 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     ImageView iconTwo;
     @Bind(R.id.memorandum_activity_all_check)
     CheckBox allCheck;
-    @Bind(R.id.memorandum_activity_all_number)
-    TextView allNumber;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
     private DividerItemDecoration dividerItemDecoration;
     private MemorandumAdapter memorandumAdapter;
     private MemorandumPresenter memorandumPresenter;
     private ArrayList<Boolean> listCheck;
     private List<MemorandumEntity> memorandumList;
+    private PageIndicator pageIndicator;
 
     @Override
     protected Integer getLayoutId() {
@@ -77,8 +83,9 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
 
     @Override
     protected void initData() {
-        memorandumList = new ArrayList<MemorandumEntity>();
+        memorandumList = new ArrayList<>();
         listCheck = new ArrayList<>();
+        initPageIndicator(pageIndicatorLayout);
         initTitleData();
         initEvent();
     }
@@ -108,9 +115,9 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
         }
         memorandumList = dataList;
         listCheck = checkList;
-        allNumber.setText(getString(R.string.informal_essay_activity_all_number) + memorandumList.size() + getString(R.string.data_unit));
         memorandumAdapter.setDataList(memorandumList, listCheck);
         recyclerView.setAdapter(memorandumAdapter);
+        updatePageIndicator();
     }
 
     public void initEvent() {
@@ -140,15 +147,28 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
                 memorandumAdapter.notifyDataSetChanged();
             }
         });
+        recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
+            }
+        });
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.title_bar_right_icon_four,
             R.id.title_bar_right_icon_two,
             R.id.title_bar_right_icon_three})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:
@@ -178,6 +198,54 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), recyclerView.getPaginator());
+        pageIndicator.showRefresh(false);
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                recyclerView.prevPage();
+            }
+
+            @Override
+            public void next() {
+                recyclerView.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(memorandumAdapter.getRowCount(), memorandumAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = memorandumAdapter.getDataCount();
+        getPagination().resize(memorandumAdapter.getRowCount(), memorandumAdapter.getColumnCount(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
     }
 
     @Override

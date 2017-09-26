@@ -66,8 +66,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     ImageView spellSearch;
     @Bind(R.id.activity_word_japanese_search)
     ImageView japaneseSearch;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -279,14 +279,14 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
 
     @OnClick({R.id.activity_word_query_search,
             R.id.activity_phrase_query_search,
-            R.id.image_view_back,
+            R.id.menu_back,
             R.id.activity_word_spell_search,
             R.id.activity_word_japanese_search,
             R.id.title_bar_right_icon_four,
             R.id.activity_example_query_search})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.activity_word_query_search:

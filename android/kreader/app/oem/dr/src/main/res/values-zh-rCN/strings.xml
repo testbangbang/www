@@ -403,10 +403,10 @@
     <string name="device_setting_tf_available_memory_card_storage">TF存储卡可用存储空间</string>
     <string name="device_setting_current_version">目前版本号</string>
     <string name="device_setting_check_system_update">检查更新</string>
-    <string name="system_update">系统更新</string>
+    <string name="system_update">系统更新(android 系统升级)</string>
     <string name="update_the_system_firmware">更新系统固件</string>
-    <string name="bookstore_update">书城更新(下载完后会自动重启升级)</string>
-    <string name="update_bookstore_application">更新书城应用</string>
+    <string name="bookstore_update">本机应用更新(下载完后会自动重启升级)</string>
+    <string name="update_bookstore_application">本机应用</string>
     <string name="device_setting_page_refreshes_value">每%1$s刷新一次屏幕</string>
     <string name="device_setting_page_refresh_rate">页面刷新频率</string>
     <string name="close_screen_prompt">在无操作关闭屏幕</string>
@@ -493,7 +493,7 @@
     <string name="chinese_subject">中　　文:</string>
     <string name="language_bookshelf">语言书架</string>
     <string name="bookstore">书城</string>
-    <string name="grade_bookshelf">分级书架</string>
+    <string name="grade_bookshelf">类别书架</string>
     <string name="popular_recommendation">热门推荐</string>
     <string name="price_format">￥ %.2f</string>
     <string name="pay">支付</string>
@@ -663,4 +663,5 @@
     <string name="no_comment_no_export">还未批阅，不能导出</string>
     <string name="notation_add_success">添加成功</string>
     <string name="notation_add_fail">添加失败</string>
+    <string name="baidu_baike_parameter_error">参数错误</string>
 </resources>

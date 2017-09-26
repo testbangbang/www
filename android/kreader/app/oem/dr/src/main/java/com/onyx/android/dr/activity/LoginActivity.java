@@ -460,12 +460,14 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private String checkIdentityComplete() {
-        if (StringUtils.isNullOrEmpty(signUpUsername.getText().toString())) {
+        String userName = signUpUsername.getText().toString();
+        if (StringUtils.isNullOrEmpty(userName) && userName.trim().length() > 0) {
             signUpUsername.setText(Constants.EMPTY_STRING);
             signUpUsername.requestFocus();
             return getString(R.string.account_can_not_be_empty);
         }
-        if (StringUtils.isNullOrEmpty(signUpPassword.getText().toString())) {
+        String password = signUpPassword.getText().toString();
+        if (StringUtils.isNullOrEmpty(password) && password.trim().length() > 0) {
             signUpPassword.setText(Constants.EMPTY_STRING);
             signUpPassword.requestFocus();
             return getString(R.string.password_can_not_be_empty);
@@ -489,9 +491,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private void getUserInfo(SignUpInfo signUpInfo) {
-        signUpInfo.email = identity_email.getText().toString();
-        signUpInfo.name = signUpUsername.getText().toString();
-        signUpInfo.password = signUpPassword.getText().toString();
+        signUpInfo.email = identity_email.getText().toString().trim();
+        signUpInfo.name = signUpUsername.getText().toString().trim();
+        signUpInfo.password = signUpPassword.getText().toString().trim();
         signUpInfo.info = new SignUpInfo.InfoBean();
         signUpInfo.info.phone = identityPhone.getText().toString();
         signUpInfo.info.address = new SignUpInfo.InfoBean.AddressBean();
@@ -591,6 +593,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
             editTextPassword.requestFocus();
             return;
         }
+        account = account.trim();
+        password = password.trim();
         loginPresenter.login(account, password);
         showCloudProgressDialogWithMessage(account, R.string.logging_in, null);
     }

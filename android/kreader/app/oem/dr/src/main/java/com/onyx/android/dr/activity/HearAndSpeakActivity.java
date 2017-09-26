@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -52,8 +53,8 @@ public class HearAndSpeakActivity extends BaseActivity implements HearAndSpeakVi
     RadioButton pronounceEvaluation;
     @Bind(R.id.image)
     ImageView image;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.title_bar_right_image)
@@ -152,14 +153,14 @@ public class HearAndSpeakActivity extends BaseActivity implements HearAndSpeakVi
     public void initEvent() {
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.hear_and_speak_activity_speech_recording,
             R.id.hear_and_speak_activity_pronounce_evaluation,
             R.id.title_bar_right_image,
             R.id.hear_and_speak_activity_article_repeat_after})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.hear_and_speak_activity_article_repeat_after:

@@ -5,6 +5,7 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -61,8 +62,8 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
     TextView incomeNewWordNote;
     @Bind(R.id.new_word_query_activity_baidubaike)
     TextView baiduBaike;
-    @Bind(R.id.image_view_back)
-    ImageView imageViewBack;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
@@ -120,7 +121,9 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         pathList = new ArrayList<>();
         int dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
-        dictionaryManager.newProviderMap.clear();
+        if (dictionaryManager.newProviderMap != null && dictionaryManager.newProviderMap.size() > 0) {
+            dictionaryManager.newProviderMap.clear();
+        }
         pathList = Utils.getDictPathListByMap(dictType);
     }
 
@@ -318,11 +321,11 @@ public class NewWordQueryActivity extends BaseActivity implements QueryRecordVie
         testWordDictQuery();
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.new_word_query_activity_baidubaike})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.new_word_query_activity_baidubaike:
