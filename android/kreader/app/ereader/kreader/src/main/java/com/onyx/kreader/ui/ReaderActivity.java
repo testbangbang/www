@@ -1243,7 +1243,8 @@ public class ReaderActivity extends OnyxBaseActivity {
     public void startSideNote() {
         if (!isLandscapeViewport()) {
             getReaderDataHolder().setEnteringSideNote(true);
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+            ReaderTabHostBroadcastReceiver.sendChangeOrientationIntent(this,
+                    ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
             return;
         }
 
