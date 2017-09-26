@@ -358,6 +358,13 @@ public class ReaderDataHolder {
         getNoteManager().stopRawEventProcessor();
     }
 
+    public void resumeRawEventProcessor() {
+        if (!supportScalable()) {
+            return;
+        }
+        getNoteManager().resumeRawEventProcessor(getContext());
+    }
+
     public void enablePenShortcut()  {
         if (!supportScalable()) {
             return;

@@ -185,6 +185,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 getReaderDataHolder().isNoteWritingProvider()) {
             final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
             FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
+            flushNoteAction.setPauseNote(true);
             flushNoteAction.execute(getReaderDataHolder(), null);
         }
 
@@ -473,6 +474,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (getReaderDataHolder().isNoteWritingProvider()) {
+            getReaderDataHolder().resumeRawEventProcessor();
             return;
         }
         updateNoteHostView();
