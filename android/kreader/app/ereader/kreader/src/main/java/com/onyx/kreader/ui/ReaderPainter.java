@@ -299,9 +299,9 @@ public class ReaderPainter {
         if (!SingletonSharedPreference.isShowNote(context)) {
             return;
         }
-        if (noteManager.isDFBForCurrentShape()) {
-            return;
-        }
+//        if (noteManager.isDFBForCurrentShape()) {
+//            return;
+//        }
         for (PageInfo pageInfo : visiblePages) {
             final Matrix renderMatrix = new Matrix();
             renderMatrix.reset();
