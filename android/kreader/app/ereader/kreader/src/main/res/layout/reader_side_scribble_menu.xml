@@ -57,7 +57,7 @@
             layout="@layout/menu_item"/>
 
         <include
-            bind:item="@{item[ReaderMenuAction.SCRIBBLE_CLOSE.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_page_closed)}"
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_CLOSE.ordinal()].setMenuIcon(R.drawable.ic_side_scribble_close)}"
             layout="@layout/menu_item"/>
 
         <include
