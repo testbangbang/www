@@ -58,11 +58,6 @@ public class MainTabMenuConfig {
         universityMenuData.add(menuData);
         teacherMenuData.add(menuData);
 
-        menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_SETTINGS, context.getResources().getString(R.string.menu_settings), R.drawable.ic_settings, new SettingsMenuEvent());
-        highSchoolMenuData.add(menuData);
-        universityMenuData.add(menuData);
-        teacherMenuData.add(menuData);
-
         menuData = new MenuBean(DeviceConfig.MainMenuInfo.MENU_ARTICLE_PUSH, context.getResources().getString(R.string.menu_article_push), R.drawable.ic_push, new ArticlePushMenuEvent());
         highSchoolMenuData.add(menuData);
         universityMenuData.add(menuData);

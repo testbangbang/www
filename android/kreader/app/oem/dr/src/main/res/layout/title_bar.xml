@@ -29,8 +29,8 @@
 
             <ImageView
                 android:id="@+id/image"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_width="@dimen/title_bar_image_width"
+                android:layout_height="@dimen/title_bar_image_width" />
 
             <TextView
                 android:id="@+id/title_bar_title"

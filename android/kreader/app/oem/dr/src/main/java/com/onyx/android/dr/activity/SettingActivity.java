@@ -64,7 +64,7 @@ public class SettingActivity extends BaseActivity {
     }
 
     private void getIntentData() {
-        tag = getIntent().getIntExtra(Constants.FRAGMENT_TYPE, -1);
+        tag = Constants.DEVICE_SETTING_FRAGMENT;
         startFragment(tag);
     }
 

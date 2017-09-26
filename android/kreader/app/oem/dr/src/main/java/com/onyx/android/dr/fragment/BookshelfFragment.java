@@ -144,6 +144,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         titleBar = rootView.findViewById(R.id.bookshelf_title_bar);
         share.setImageResource(R.drawable.ic_reader_share);
         share.setVisibility(View.VISIBLE);
+        image.setVisibility(View.GONE);
     }
 
     @Override

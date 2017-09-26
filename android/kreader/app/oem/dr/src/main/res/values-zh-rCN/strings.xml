@@ -664,4 +664,6 @@
     <string name="notation_add_success">添加成功</string>
     <string name="notation_add_fail">添加失败</string>
     <string name="baidu_baike_parameter_error">参数错误</string>
+    <string name="width_adaptive">适应宽度</string>
+    <string name="menu_time_setting">时间设置</string>
 </resources>
