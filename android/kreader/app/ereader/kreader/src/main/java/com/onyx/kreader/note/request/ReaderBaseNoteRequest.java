@@ -175,14 +175,21 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
-                        parent.resumeRawEventProcessor(getContext());
-                    }
+                    updateRawInputProcessor(parent);
                     parent.getRequestManager().releaseWakeLock();
                 }
             }
         };
         return runnable;
+    }
+
+    private void updateRawInputProcessor(NoteManager noteManager) {
+        if (isPauseRawInputProcessor()) {
+            noteManager.pauseRawEventProcessor();
+        }
+        if (isResumeRawInputProcessor() && noteManager.isDFBForCurrentShape()) {
+            noteManager.resumeRawEventProcessor(getContext());
+        }
     }
 
     public final ReaderNoteDataInfo getNoteDataInfo() {
@@ -327,12 +334,17 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     getDocUniqueId(),
                     getParentLibraryId());
             initWithDeviceConfig(parent);
+            restoreNoteDrawingArgs(parent);
         }
     }
 
     private void initWithDeviceConfig(final NoteManager parent) {
         NoteModel.setDefaultEraserRadius(DeviceConfig.sharedInstance(getContext()).getEraserRadius());
         parent.getNoteDocument().setEraserRadius(NoteModel.getDefaultEraserRadius());
+    }
+
+    private void restoreNoteDrawingArgs(NoteManager noteManager) {
+        noteManager.restoreStrokeWidth();
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {

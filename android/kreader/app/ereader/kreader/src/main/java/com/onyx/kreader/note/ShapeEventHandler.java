@@ -274,6 +274,7 @@ public class ShapeEventHandler {
     @Subscribe
     public void onBeginRawDataEvent(BeginRawDataEvent e) {
         Debug.e(getClass(), "onBeginRawDataEvent");
+        noteManager.restoreStrokeWidth();
         if (e.isShortcutDrawing()) {
             shortcutDrawing = true;
             getEventBus().post(new ShortcutDrawingStartEvent());

@@ -204,8 +204,9 @@ public class ReaderDataHolder {
         return documentOpenState == DocumentOpenState.OPENED && reader != null;
     }
 
-    public boolean inNoteWritingProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    public boolean isNoteWritingProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
+                getHandlerManager().getActiveProvider().equals(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
     public boolean inReadingProvider() {
