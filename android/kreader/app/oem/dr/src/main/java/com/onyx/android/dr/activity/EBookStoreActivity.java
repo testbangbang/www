@@ -26,7 +26,6 @@ import com.onyx.android.dr.reader.view.DisableScrollGridManager;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
-import com.onyx.android.sdk.data.LibraryDataModel;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.model.Metadata;
 
@@ -89,6 +88,7 @@ public class EBookStoreActivity extends BaseActivity implements EBookStoreView {
         shoppingCart.setVisibility(View.VISIBLE);
         search.setVisibility(View.VISIBLE);
         search.setImageResource(R.drawable.ic_search);
+        image.setImageResource(R.drawable.ic_reader_top_bookstore);
         displayCartCount();
         ebookStoreGroupsRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =

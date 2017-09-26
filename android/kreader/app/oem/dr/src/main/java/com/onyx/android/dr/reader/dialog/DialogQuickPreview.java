@@ -375,6 +375,9 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                 onPageDataChanged();
             }
         });
+
+        ImageView titleImage = (ImageView) findViewById(R.id.image);
+        titleImage.setImageResource(R.drawable.ic_reader_top_browse);
     }
 
     private void initGridType() {

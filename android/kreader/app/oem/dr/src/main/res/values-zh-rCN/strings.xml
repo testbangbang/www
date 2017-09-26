@@ -668,4 +668,6 @@
     <string name="clear_search_history">清除历史搜索记录</string>
     <string name="fourth_sequence">第四序列</string>
     <string name="french">法文</string>
+    <string name="width_adaptive">适应宽度</string>
+    <string name="menu_time_setting">时间设置</string>
 </resources>

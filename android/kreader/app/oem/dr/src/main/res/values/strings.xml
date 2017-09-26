@@ -669,4 +669,6 @@
     <string name="clear_search_history">clear search history</string>
     <string name="fourth_sequence">fourth sequence</string>
     <string name="french">French</string>
+    <string name="width_adaptive">width adaptive</string>
+    <string name="menu_time_setting">Time setting</string>
 </resources>

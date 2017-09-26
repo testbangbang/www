@@ -20,7 +20,9 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.ReaderMenuBean;
+import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.reader.adapter.ReaderTabMenuAdapter;
+import com.onyx.android.dr.reader.common.ReadPageInfo;
 import com.onyx.android.dr.reader.common.ReadSettingFontFaceConfig;
 import com.onyx.android.dr.reader.common.ReadSettingFontSizeConfig;
 import com.onyx.android.dr.reader.common.ReadSettingMarginConfig;
@@ -75,6 +77,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -209,6 +212,8 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
 
         dismissZone = findViewById(R.id.dismiss_zone);
         dismissZone.setOnClickListener(this);
+
+        findViewById(R.id.image).setVisibility(View.GONE);
     }
 
     private void setPrevAndNextButtonVisible() {
@@ -219,6 +224,9 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     }
 
     private void initDefaultView() {
+        if (!ReadPageInfo.supportTypefaceAdjustment(readerPresenter)) {
+            filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_FONT);
+        }
         setReaderTabMenu(defaultMenuData);
 
         ReaderMainMenuItemEvent.bindReaderDefaultMenuItemEvent();
@@ -229,6 +237,16 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
         initReadSettingMenuSpaceClickEvent();
         initReadSettingMenuFontFaceClickEvent();
         initReadSettingMenuSaveClickEvent();
+    }
+
+    private void filterMenu(String tabKey) {
+        Iterator<ReaderMenuBean> iterator = defaultMenuData.iterator();
+        while (iterator.hasNext()) {
+            ReaderMenuBean next = iterator.next();
+            if (tabKey.equals(next.getTabKey())) {
+                iterator.remove();
+            }
+        }
     }
 
     private void initReadSettingMenuSaveClickEvent() {
