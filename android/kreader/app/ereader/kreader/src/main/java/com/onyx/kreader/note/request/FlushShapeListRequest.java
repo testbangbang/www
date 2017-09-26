@@ -67,5 +67,6 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
 
     public void setPause(boolean pause) {
         this.pause = pause;
+        setPauseRawInputProcessor(pause);
     }
 }
