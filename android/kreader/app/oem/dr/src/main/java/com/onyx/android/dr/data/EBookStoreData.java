@@ -13,6 +13,7 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ProductOrder;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudChildLibraryListLoadRequest;
@@ -51,6 +52,8 @@ public class EBookStoreData {
         for (final Library library : libraryList) {
             QueryArgs queryArgs = holder.getCloudViewInfo().buildLibraryQuery(library.getIdString());
             queryArgs.conditionGroup.and(CloudMetadata_Table.language.eq(language));
+            queryArgs.limit = 50;
+            queryArgs.fetchPolicy = FetchPolicy.CLOUD_ONLY;
             final CloudContentListRequest req = new CloudContentListRequest(queryArgs);
             req.setLoadThumbnail(false);
             DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new BaseCallback() {
