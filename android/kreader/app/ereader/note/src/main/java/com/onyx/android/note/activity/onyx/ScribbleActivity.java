@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +43,6 @@ import com.onyx.android.note.actions.scribble.RedoAction;
 import com.onyx.android.note.actions.scribble.RemoveByGroupIdAction;
 import com.onyx.android.note.actions.scribble.UndoAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
-import com.onyx.android.note.data.PenType;
 import com.onyx.android.note.data.ScribbleMenuCategory;
 import com.onyx.android.note.data.ScribbleSubMenuID;
 import com.onyx.android.note.dialog.DialogNoteNameInput;
@@ -84,7 +82,6 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -1048,7 +1045,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public boolean onConfirmAction(final String input) {
                 final CheckNoteNameLegalityAction<ScribbleActivity> action =
-                        new CheckNoteNameLegalityAction<>(input, parentID, NoteModel.TYPE_DOCUMENT, false, false);
+                        new CheckNoteNameLegalityAction<>(input, parentID, NoteModel.TYPE_DOCUMENT,
+                                true, true);
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
