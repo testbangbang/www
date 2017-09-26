@@ -58,6 +58,11 @@
                 android:id="@+id/create_group_activity_recommend_school"
                 style="@style/CreateGroupEditTextStyle" />
 
+            <ImageView
+                android:id="@+id/create_group_activity_school_search"
+                android:layout_margin="@dimen/create_group_activity_school_search_margin"
+                style="@style/image_style" />
+
         </RelativeLayout>
 
     </LinearLayout>

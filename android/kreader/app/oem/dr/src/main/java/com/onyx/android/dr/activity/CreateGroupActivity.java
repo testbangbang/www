@@ -1,7 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -70,12 +68,17 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
     ImageView image;
     @Bind(R.id.create_group_activity_whether_exist)
     ImageView whetherExist;
+    @Bind(R.id.create_group_activity_school_search)
+    ImageView schoolSearch;
     private CreateGroupPresenter createGroupPresenter;
     private List<CreateGroupCommonBean> annualData;
     private List<CreateGroupCommonBean> gradeData;
     private List<CreateGroupCommonBean> classData;
     private List<CreateGroupCommonBean> schoolData;
-    private SecondCustomPopupWindow customPopupWindow;
+    private SecondCustomPopupWindow yearPopupWindow;
+    private SecondCustomPopupWindow schoolPopupWindow;
+    private SecondCustomPopupWindow gradePopupWindow;
+    private SecondCustomPopupWindow classPopupWindow;
     private final int YEAR_TAG = 0;
     private final int GRADE_TAG = 1;
     private final int CLASS_TAG = 2;
@@ -108,7 +111,10 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
         gradeData = new ArrayList<>();
         schoolData = new ArrayList<>();
         createGroupPresenter = new CreateGroupPresenter(this);
-        customPopupWindow = new SecondCustomPopupWindow(this);
+        yearPopupWindow = new SecondCustomPopupWindow(this);
+        schoolPopupWindow = new SecondCustomPopupWindow(this);
+        gradePopupWindow = new SecondCustomPopupWindow(this);
+        classPopupWindow = new SecondCustomPopupWindow(this);
         parentId = DRPreferenceManager.loadParentId(this, "");
         setData();
         initEvent();
@@ -139,48 +145,6 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
                 }
             }
         });
-        recommendGroupName.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void onTextChanged(CharSequence string, int start, int before, int count) {
-                Utils.movingCursor(recommendGroupName);
-                createGroupPresenter.getSchoolData(string.toString(), "");
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });
-    }
-
-    private void showCommonPopupWindow(final RelativeLayout view, final List<CreateGroupCommonBean> list, final int tag) {
-        customPopupWindow.setOnItemClickListener(new SecondCustomPopupWindow.OnItemClickListener() {
-            @Override
-            public void onClick(int position, CreateGroupCommonBean bean) {
-                if (tag == GRADE_TAG) {
-                    gradeName.setText(bean.name);
-                    createGroupPresenter.getClassData(bean._id);
-                } else if (tag == YEAR_TAG) {
-                    yearName.setText(bean.name);
-                    createGroupPresenter.getGradeData(bean._id);
-                } else if (tag == CLASS_TAG) {
-                    className.setText(bean.name);
-                } else if (tag == SCHOOL_TAG) {
-                    recommendGroupName.setText(bean.name);
-                    Utils.movingCursor(recommendGroupName);
-                    createGroupPresenter.getYearData(bean._id);
-                }
-                if (customPopupWindow.isShowing()) {
-                    customPopupWindow.dismiss();
-                }
-            }
-        });
-        if (list != null && list.size() > 0) {
-            customPopupWindow.showPopupWindow(view, list, Constants.SCHOOL_CHILDREN);
-        }
     }
 
     @OnClick({R.id.create_group_activity_create,
@@ -188,6 +152,7 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
             R.id.create_group_activity_grade_container,
             R.id.create_group_activity_year_container,
             R.id.create_group_activity_class_container,
+            R.id.create_group_activity_school_search,
             R.id.create_group_activity_cancel})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -201,15 +166,24 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
                 finish();
                 break;
             case R.id.create_group_activity_year_container:
-                showCommonPopupWindow(yearContainer, annualData, YEAR_TAG);
+                showYearPopupWindow(yearContainer, annualData, YEAR_TAG);
                 break;
             case R.id.create_group_activity_grade_container:
-                showCommonPopupWindow(gradeContainer, gradeData, GRADE_TAG);
+                showGradePopupWindow(gradeContainer, gradeData, GRADE_TAG);
                 break;
             case R.id.create_group_activity_class_container:
-                showCommonPopupWindow(classContainer, classData, CLASS_TAG);
+                showClassPopupWindow(classContainer, classData, CLASS_TAG);
+                break;
+            case R.id.create_group_activity_school_search:
+                searchKeyword();
                 break;
         }
+    }
+
+    private void searchKeyword() {
+        Utils.movingCursor(recommendGroupName);
+        String keyword = recommendGroupName.getText().toString();
+        createGroupPresenter.getSchoolData(keyword, "");
     }
 
     private void createGroupRequest() {
@@ -227,10 +201,8 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
             return;
         }
         schoolData = list;
-        if (customPopupWindow.isShowing()) {
-            customPopupWindow.dismiss();
-        }
-        showCommonPopupWindow(schoolContainer, schoolData, SCHOOL_TAG);
+        closePopupWindow();
+        showSchoolPopupWindow(schoolContainer, schoolData, SCHOOL_TAG);
     }
 
     @Override
@@ -239,10 +211,8 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
             return;
         }
         annualData = bean.children;
-        if (customPopupWindow.isShowing()) {
-            customPopupWindow.dismiss();
-        }
-        showCommonPopupWindow(yearContainer, annualData, YEAR_TAG);
+        closePopupWindow();
+        showYearPopupWindow(yearContainer, annualData, YEAR_TAG);
     }
 
     @Override
@@ -251,10 +221,8 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
             return;
         }
         gradeData = bean.children;
-        if (customPopupWindow.isShowing()) {
-            customPopupWindow.dismiss();
-        }
-        showCommonPopupWindow(gradeContainer, gradeData, GRADE_TAG);
+        closePopupWindow();
+        showGradePopupWindow(gradeContainer, gradeData, GRADE_TAG);
     }
 
     @Override
@@ -263,10 +231,64 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
             return;
         }
         classData = bean.children;
-        if (customPopupWindow.isShowing()) {
-            customPopupWindow.dismiss();
+        closePopupWindow();
+        showClassPopupWindow(classContainer, classData, CLASS_TAG);
+    }
+
+    private void showYearPopupWindow(final RelativeLayout view, final List<CreateGroupCommonBean> list, final int tag) {
+        yearPopupWindow.setOnItemClickListener(new SecondCustomPopupWindow.OnItemClickListener() {
+            @Override
+            public void onClick(int position, CreateGroupCommonBean bean) {
+                yearName.setText(bean.name);
+                createGroupPresenter.getGradeData(bean._id);
+                closePopupWindow();
+            }
+        });
+        if (list != null && list.size() > 0) {
+            yearPopupWindow.showPopupWindow(view, list, Constants.IDENTITY);
         }
-        showCommonPopupWindow(classContainer, classData, CLASS_TAG);
+    }
+
+    private void showSchoolPopupWindow(final RelativeLayout view, final List<CreateGroupCommonBean> list, final int tag) {
+        schoolPopupWindow.setOnItemClickListener(new SecondCustomPopupWindow.OnItemClickListener() {
+            @Override
+            public void onClick(int position, CreateGroupCommonBean bean) {
+                recommendGroupName.setText(bean.name);
+                Utils.movingCursor(recommendGroupName);
+                createGroupPresenter.getYearData(bean._id);
+                closePopupWindow();
+            }
+        });
+        if (list != null && list.size() > 0) {
+            schoolPopupWindow.showPopupWindow(view, list, Constants.IDENTITY);
+        }
+    }
+
+    private void showGradePopupWindow(final RelativeLayout view, final List<CreateGroupCommonBean> list, final int tag) {
+        gradePopupWindow.setOnItemClickListener(new SecondCustomPopupWindow.OnItemClickListener() {
+            @Override
+            public void onClick(int position, CreateGroupCommonBean bean) {
+                gradeName.setText(bean.name);
+                createGroupPresenter.getClassData(bean._id);
+                closePopupWindow();
+            }
+        });
+        if (list != null && list.size() > 0) {
+            gradePopupWindow.showPopupWindow(view, list, Constants.IDENTITY);
+        }
+    }
+
+    private void showClassPopupWindow(final RelativeLayout view, final List<CreateGroupCommonBean> list, final int tag) {
+        classPopupWindow.setOnItemClickListener(new SecondCustomPopupWindow.OnItemClickListener() {
+            @Override
+            public void onClick(int position, CreateGroupCommonBean bean) {
+                className.setText(bean.name);
+                closePopupWindow();
+            }
+        });
+        if (list != null && list.size() > 0) {
+            classPopupWindow.showPopupWindow(view, list, Constants.IDENTITY);
+        }
     }
 
     @Override
@@ -293,6 +315,14 @@ public class CreateGroupActivity extends BaseActivity implements CreateGroupView
             hint.setVisibility(View.VISIBLE);
             whetherExist.setImageResource(R.drawable.ic_reader_group_set_wrong);
         }
+    }
+
+    private void closePopupWindow() {
+        yearPopupWindow.dismiss();
+        schoolPopupWindow.dismiss();
+        gradePopupWindow.dismiss();
+        classPopupWindow.dismiss();
+        Utils.hideSoftWindow(this);
     }
 
     @Override

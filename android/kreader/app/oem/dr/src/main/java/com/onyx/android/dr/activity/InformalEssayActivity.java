@@ -238,6 +238,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         QueryPagination pagination = getPagination();
         pagination.resize(informalEssayAdapter.getRowCount(), informalEssayAdapter.getColumnCount(), 0);
         pagination.setCurrentPage(0);
+        recyclerView.setCurrentPage(0);
     }
 
     private QueryPagination getPagination() {

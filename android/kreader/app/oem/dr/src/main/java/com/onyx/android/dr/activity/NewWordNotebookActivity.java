@@ -322,6 +322,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         QueryPagination pagination = getPagination();
         pagination.resize(newWordAdapter.getRowCount(), newWordAdapter.getColumnCount(), 0);
         pagination.setCurrentPage(0);
+        newWordRecyclerView.setCurrentPage(0);
     }
 
     private QueryPagination getPagination() {

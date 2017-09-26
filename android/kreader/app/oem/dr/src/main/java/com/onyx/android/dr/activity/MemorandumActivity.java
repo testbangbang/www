@@ -234,6 +234,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
         QueryPagination pagination = getPagination();
         pagination.resize(memorandumAdapter.getRowCount(), memorandumAdapter.getColumnCount(), 0);
         pagination.setCurrentPage(0);
+        recyclerView.setCurrentPage(0);
     }
 
     private QueryPagination getPagination() {

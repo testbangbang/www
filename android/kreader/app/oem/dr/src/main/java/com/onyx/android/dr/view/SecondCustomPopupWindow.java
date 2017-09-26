@@ -6,7 +6,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.PopupWindow;
 
 import com.onyx.android.dr.DRApplication;
@@ -30,7 +29,8 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
     private View contentView;
     private PageRecyclerView popupWindowRecycler;
     private SecondPopupAdapter popupAdapter;
-    public static final float secondProportion = 0.6f;
+    public static final float secondProportion = 0.48f;
+    public static final float thirdProportion = 0.3f;
     public static final float firstProportion  = 0.3f;
     private int offsetY;
     private OnItemClickListener listener;
@@ -43,41 +43,31 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
 
     public SecondCustomPopupWindow(Activity context) {
         width = context.getWindowManager().getDefaultDisplay().getWidth();
+        height = context.getWindowManager().getDefaultDisplay().getHeight();
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         contentView = inflater.inflate(R.layout.popup_list, null);
         setContentView(contentView);
+        initView();
     }
 
     private void initView() {
         popupWindowRecycler = (PageRecyclerView) contentView.findViewById(R.id.popup_window_recycler);
         popupWindowRecycler.setLayoutManager(new DisableScrollLinearManager(DRApplication.getInstance().getBaseContext()));
         dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
-        popupAdapter = new SecondPopupAdapter();
-        popupAdapter.setOnItemClickListener(this);
-        popupAdapter.setList(datas);
-        popupWindowRecycler.setAdapter(popupAdapter);
-        popupWindowRecycler.addItemDecoration(dividerItemDecoration);
+        initData();
     }
 
     private void initData() {
-        if (type == Constants.SCHOOL_CHILDREN) {
-            setWidth((int) (firstProportion * width));
-        }else if (type == Constants.IDENTITY) {
-            setWidth((int) (secondProportion * width));
-        }
-        setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        setFocusable(true);
-        setOutsideTouchable(true);
-        setBackgroundDrawable(new ColorDrawable(00000000));
-        update();
+        popupAdapter = new SecondPopupAdapter();
+        popupWindowRecycler.setAdapter(popupAdapter);
+        popupWindowRecycler.addItemDecoration(dividerItemDecoration);
+        popupAdapter.setOnItemClickListener(this);
     }
 
     public void showPopupWindow(View parent, List<CreateGroupCommonBean> datas, int type) {
-        this.datas = datas;
-        this.type = type;
-        initView();
-        initData();
+        popupAdapter.setList(datas);
+        setAttributes(type);
         int[] location = new int[2];
         parent.getLocationOnScreen(location);
         if (!isShowing()) {
@@ -85,6 +75,19 @@ public class SecondCustomPopupWindow extends PopupWindow implements SecondPopupA
         } else {
             dismiss();
         }
+    }
+
+    private void setAttributes(int type) {
+        if (type == Constants.SCHOOL_CHILDREN) {
+            setWidth((int) (firstProportion * width));
+        }else if (type == Constants.IDENTITY) {
+            setWidth((int) (secondProportion * width));
+        }
+        setHeight((int) (thirdProportion * height));
+        setFocusable(true);
+        setOutsideTouchable(true);
+        setBackgroundDrawable(new ColorDrawable(00000000));
+        update();
     }
 
     @Override
