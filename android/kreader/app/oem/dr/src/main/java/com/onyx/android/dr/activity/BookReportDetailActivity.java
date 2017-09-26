@@ -2,10 +2,12 @@ package com.onyx.android.dr.activity;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -13,7 +15,11 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
+import android.webkit.ConsoleMessage;
+import android.webkit.WebChromeClient;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,8 +29,11 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.WebViewJSEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
+import com.onyx.android.dr.interfaces.WebViewInterface;
 import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.dr.util.BookReportComparator;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.BookMarksPopupWindow;
@@ -34,7 +43,11 @@ import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.Bind;
@@ -87,6 +100,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private float currentX;
     private float currentY;
     private NotationDialog notationDialog;
+    private int screenHeight;
 
     @Override
     protected Integer getLayoutId() {
@@ -111,10 +125,29 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         titleBarRightIconThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_reader_share));
         bookReportDetailContents.setHighlightColor(Color.TRANSPARENT);
         userType = DRPreferenceManager.getUserType(DRApplication.getInstance(), "");
+        WebSettings settings = bookReportWebContent.getSettings();
+        settings.setTextSize(WebSettings.TextSize.LARGER);
+        settings.setJavaScriptEnabled(true);
+        bookReportWebContent.addJavascriptInterface(new WebViewInterface(), WebViewInterface.INTERFACE_NAME);
+        bookReportWebContent.setWebViewClient(new ReportWebViewClient());
+        bookReportWebContent.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onConsoleMessage(ConsoleMessage consoleMessage) {
+                int lineNumber = consoleMessage.lineNumber();
+                String message = consoleMessage.message();
+                Log.d("webview++", "onConsoleMessage: " + lineNumber + ":" + message);
+                return super.onConsoleMessage(consoleMessage);
+            }
+        });
+
+        if (bookMarksPopupWindow == null) {
+            bookMarksPopupWindow = new BookMarksPopupWindow(this);
+        }
     }
 
     @Override
     protected void initData() {
+        screenHeight = Utils.getScreenHeight(this);
         Intent intent = getIntent();
         Serializable serializableExtra = intent.getSerializableExtra(Constants.BOOK_REPORT_DATA);
         if (serializableExtra != null) {
@@ -124,7 +157,10 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             bookReportDetailTitle.setText(data.name);
             List<CommentsBean> comments = data.comments;
             if (comments != null && comments.size() > 0) {
-                //TODO:webView
+                bookReportWebContent.setVisibility(View.VISIBLE);
+                bookReportDetailContents.setVisibility(View.GONE);
+                String newContent = insertJsTag();
+                bookReportWebContent.loadDataWithBaseURL(null, newContent, "text/html", "utf-8", null);
             }
         }
 
@@ -156,8 +192,18 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         bookReportDetailContents.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+                bookReportDetailContents.onTouchEvent(event);
                 currentX = event.getX();
                 currentY = event.getY();
+                return true;
+            }
+        });
+
+        bookReportWebContent.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                currentX = event.getX();
+                currentY = event.getY() > (screenHeight * 0.5) ? -event.getY() : event.getY();
                 return false;
             }
         });
@@ -212,7 +258,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         Bundle bundle = new Bundle();
         bundle.putString(Constants.MARK_BOOK_ID, data._id);
         bundle.putString(Constants.MARK_TOP, String.valueOf(currentY));
-        bundle.putString(Constants.MARK_LEFT, String.valueOf(currentX));
+        bundle.putString(Constants.MARK_LEFT, String.valueOf(bookReportDetailContents.getSelectionStart()));
         notationDialog.setArguments(bundle);
         notationDialog.show(this.getFragmentManager(), "tag");
     }
@@ -253,19 +299,15 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             return;
         }
 
-        if (bookMarksPopupWindow == null) {
-            bookMarksPopupWindow = new BookMarksPopupWindow(this);
-        }
-
         bookMarksPopupWindow.show(titleBarRightEditText, data.comments);
     }
 
     private void save() {
-        if(data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+        if (data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
             return;
         }
 
-        if(data != null) {
+        if (data != null) {
             bookReportPresenter.deleteImpression(data._id);
             return;
         }
@@ -366,5 +408,47 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Override
     public void addCommentResult(CreateBookReportResult result) {
 
+    }
+
+    private String insertJsTag() {
+        StringBuilder sb = new StringBuilder();
+        if (data != null && data.comments != null && data.comments.size() > 0) {
+            List<CommentsBean> comments = data.comments;
+            Collections.sort(comments, new BookReportComparator());
+            String content = data.content;
+            int currentPosition = 0;
+            for (CommentsBean bean : comments) {
+                int left = Integer.parseInt(bean.left) - currentPosition;
+                sb.append(content.substring(currentPosition, left));
+                String js = "<img id=\"" + bean._id + "\" src=\"file:///android_asset/audio.png\" onclick=\"addComment('" + bean.content + "')\"/>";
+                sb.append(js);
+                content = content.substring(left);
+                currentPosition = left;
+            }
+            sb.append(content);
+        }
+        return sb.toString();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onWebViewJSEvent(WebViewJSEvent event) {
+        String message = event.getMessage();
+        float rateH = currentY / screenHeight;
+        bookMarksPopupWindow.showText(titleBarRightEditText, message, (int) (screenHeight * 0.3 * rateH));
+    }
+
+    private class ReportWebViewClient extends WebViewClient {
+        @Override
+        public void onPageStarted(WebView view, String url, Bitmap favicon) {
+            super.onPageStarted(view, url, favicon);
+        }
+
+        @Override
+        public void onPageFinished(WebView view, String url) {
+            super.onPageFinished(view, url);
+            String addComment = "function addComment(comments){" +
+                    "control.showDialog(comments);}";
+            bookReportWebContent.loadUrl("javascript:" + addComment);
+        }
     }
 }
