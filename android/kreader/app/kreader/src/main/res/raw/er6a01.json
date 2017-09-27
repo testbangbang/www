@@ -3,6 +3,7 @@
     "hasFrontLight" : false,
     "disableNoteFunc" : true,
     "showChineseFontFace": false,
+    "disableDictionaryFunc": true,
     "regalEnable" : false,
     "keyBinding": {
         "HandlerManager": {

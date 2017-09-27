@@ -997,6 +997,11 @@ public class ShowReaderMenuAction extends BaseAction {
             }
 
             @Override
+            public boolean isDisableDictionary() {
+                return DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableDictionaryFunc();
+            }
+
+            @Override
             public List<String> getFontFaces() {
                 return fontFaces;
             }
