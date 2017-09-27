@@ -26,7 +26,10 @@
     "com.android.providers.downloads.ui",
     "com.onyx.reader",
     "com.onyx.android.production.test",
-    "com.onyx.appmarket"
+    "com.onyx.appmarket",
+    "com.neverland.oreader",
+    "com.onyx.test.MainActivity",
+    "com.android.vending"
   ],
   "test_apps": [
     "com.onyx.test",

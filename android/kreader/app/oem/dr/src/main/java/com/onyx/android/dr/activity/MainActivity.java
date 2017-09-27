@@ -168,7 +168,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingsMenuEvent(SettingsMenuEvent event) {
-        ActivityManager.startSettingActivity(this, Constants.DEVICE_SETTING_FRAGMENT);
+        ActivityManager.startSettingActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

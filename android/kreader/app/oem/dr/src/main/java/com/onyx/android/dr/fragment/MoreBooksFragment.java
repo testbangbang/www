@@ -110,6 +110,7 @@ public class MoreBooksFragment extends BaseFragment {
         initPageIndicator(pageIndicatorLayout);
         titleBarRightMenu.setVisibility(View.VISIBLE);
         titleBarRightMenu.setText(getString(R.string.enter_bookstore));
+        image.setVisibility(View.GONE);
     }
 
     @Override

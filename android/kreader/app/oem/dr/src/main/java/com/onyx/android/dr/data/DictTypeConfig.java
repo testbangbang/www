@@ -7,6 +7,7 @@ import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.ChineseQueryEvent;
 import com.onyx.android.dr.event.EnglishQueryEvent;
+import com.onyx.android.dr.event.FrenchQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
 import com.onyx.android.dr.util.Utils;
 
@@ -22,7 +23,8 @@ public class DictTypeConfig {
     public static List<DictTypeBean> dictLanguageData = new ArrayList<>();
     public static Map<Integer, List<DictTypeBean>> englishDictMap = new ConcurrentHashMap<>();
     public static Map<Integer, List<DictTypeBean>> chineseDictMap = new ConcurrentHashMap<>();
-    public static Map<Integer, List<DictTypeBean>> minorityDictMap = new ConcurrentHashMap<>();
+    public static Map<Integer, List<DictTypeBean>> japaneseDictMap = new ConcurrentHashMap<>();
+    public static Map<Integer, List<DictTypeBean>> frenchDictMap = new ConcurrentHashMap<>();
 
     public void loadDictInfo(Context context) {
         dictLanguageData.clear();
@@ -33,6 +35,9 @@ public class DictTypeConfig {
         dictLanguageData.add(dictData);
 
         dictData = new DictTypeBean(context.getResources().getString(R.string.japanese_query_content), new JapaneseQueryEvent(), Constants.OTHER_TYPE);
+        dictLanguageData.add(dictData);
+
+        dictData = new DictTypeBean(context.getResources().getString(R.string.french_query_content), new FrenchQueryEvent(), Constants.OTHER_TYPE);
         dictLanguageData.add(dictData);
     }
 
@@ -46,9 +51,9 @@ public class DictTypeConfig {
                         newDictName.add(dictName.get(i));
                     }
                 }
-                englishDictMap.put(Constants.ENGLISH_TYPE, newDictName);
+                englishDictMap.put(Constants.ENGLISH_TAG, newDictName);
             }else{
-                englishDictMap.put(Constants.ENGLISH_TYPE, Utils.getDictName(Constants.ENGLISH_DICTIONARY));
+                englishDictMap.put(Constants.ENGLISH_TAG, Utils.getDictName(Constants.ENGLISH_DICTIONARY));
             }
         }
         if (whetherLoadData(chineseDictMap)){
@@ -60,13 +65,13 @@ public class DictTypeConfig {
                         newDictName.add(dictName.get(i));
                     }
                 }
-                chineseDictMap.put(Constants.CHINESE_TYPE, newDictName);
+                chineseDictMap.put(Constants.CHINESE_TAG, newDictName);
             }else{
-                chineseDictMap.put(Constants.CHINESE_TYPE, Utils.getDictName(Constants.CHINESE_DICTIONARY));
+                chineseDictMap.put(Constants.CHINESE_TAG, Utils.getDictName(Constants.CHINESE_DICTIONARY));
             }
         }
-        if (whetherLoadData(minorityDictMap)){
-            List<DictTypeBean> dictName = Utils.getDictName(Constants.OTHER_DICTIONARY);
+        if (whetherLoadData(japaneseDictMap)){
+            List<DictTypeBean> dictName = Utils.getDictName(Constants.JAPANESE_DICTIONARY);
             List<DictTypeBean> newDictName = new ArrayList<>();
             if (dictName != null && dictName.size() > Constants.FOUR) {
                 for (int i = 0; i < Constants.FOUR; i++) {
@@ -74,9 +79,23 @@ public class DictTypeConfig {
                         newDictName.add(dictName.get(i));
                     }
                 }
-                minorityDictMap.put(Constants.OTHER_TYPE, newDictName);
+                japaneseDictMap.put(Constants.JAPANESE_TAG, newDictName);
             }else{
-                minorityDictMap.put(Constants.OTHER_TYPE, Utils.getDictName(Constants.OTHER_DICTIONARY));
+                japaneseDictMap.put(Constants.JAPANESE_TAG, Utils.getDictName(Constants.JAPANESE_DICTIONARY));
+            }
+        }
+        if (whetherLoadData(frenchDictMap)){
+            List<DictTypeBean> dictName = Utils.getDictName(Constants.FRENCH_DICTIONARY);
+            List<DictTypeBean> newDictName = new ArrayList<>();
+            if (dictName != null && dictName.size() > Constants.FOUR) {
+                for (int i = 0; i < Constants.FOUR; i++) {
+                    if (!newDictName.contains(dictName.get(i))){
+                        newDictName.add(dictName.get(i));
+                    }
+                }
+                frenchDictMap.put(Constants.FRENCH_TAG, newDictName);
+            }else{
+                frenchDictMap.put(Constants.FRENCH_TAG, Utils.getDictName(Constants.FRENCH_DICTIONARY));
             }
         }
     }

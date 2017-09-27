@@ -347,10 +347,10 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDeviceSettingUserInfoEvent(DeviceSettingViewBaseEvent.DeviceSettingUserInfoEvent event){
-        if(DRApplication.getInstance().isLoginSuccess()){
+    public void onDeviceSettingUserInfoEvent(DeviceSettingViewBaseEvent.DeviceSettingUserInfoEvent event) {
+        if (DRApplication.getInstance().isLoginSuccess()) {
             ActivityManager.startUserInfoActivity(DRApplication.getInstance().getBaseContext());
-        }else{
+        } else {
             ActivityManager.startLoginActivity(DRApplication.getInstance().getBaseContext());
         }
     }
@@ -403,6 +403,11 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceSettingWifiSettingEvent(DeviceSettingViewBaseEvent.DeviceSettingWifiSettingEvent event) {
         ActivityManager.startWifiActivity(DRApplication.getInstance());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeviceSettingTimeSettingEvent(DeviceSettingViewBaseEvent.DeviceSettingTimeSettingEvent event) {
+        ActivityManager.startDateTimeSettingsActivity(DRApplication.getInstance());
     }
 
 

@@ -232,10 +232,9 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startSettingActivity(Context context, int tag) {
+    public static void startSettingActivity(Context context) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.putExtra(Constants.FRAGMENT_TYPE, tag);
         intent.setClass(context, SettingActivity.class);
         context.startActivity(intent);
     }
@@ -409,6 +408,13 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
+    public static void startDateTimeSettingsActivity(Context context) {
+        Intent intent = new Intent("com.android.settings.DateTimeSettingsSetupWizard");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClassName("com.android.settings", "com.android.settings.DateTimeSettingsSetupWizard");
+        context.startActivity(intent);
+    }
+
     public static void startSystemUpdateHistoryActivity(final Context context) {
         Intent intent = new Intent(context, SystemUpdateHistoryActivity.class);
         context.startActivity(intent);
@@ -487,9 +493,9 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startBaiduBaiKeActivity(Context context,String keyWord) {
+    public static void startBaiduBaiKeActivity(Context context, String keyWord) {
         Intent intent = new Intent(context, BaiduBaiKeActivity.class);
-        intent.putExtra(BaiduBaiKeActivity.BAIDU_BAIKE_PARAM_KEY,keyWord);
+        intent.putExtra(BaiduBaiKeActivity.BAIDU_BAIKE_PARAM_KEY, keyWord);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

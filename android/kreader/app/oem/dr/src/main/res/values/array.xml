@@ -102,12 +102,14 @@
         <item>@string/english</item>
         <item>@string/chinese</item>
         <item>@string/Japanese</item>
+        <item>@string/french</item>
     </string-array>
 
     <integer-array name="dict_setting_language_type">
         <item>0</item>
         <item>1</item>
         <item>2</item>
+        <item>3</item>
     </integer-array>
 
     <string-array translatable="false" name="special_locale_codes">
@@ -129,6 +131,7 @@
         <item>@string/device_setting_user_info</item>
         <item>@string/menu_wifi_setting</item>
         <item>@string/reset</item>
+        <item>@string/menu_time_setting</item>
     </string-array>
 
     <string-array name="device_setting_page_refreshes">

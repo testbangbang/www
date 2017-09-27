@@ -67,6 +67,7 @@ public class ApplicationsActivity extends BaseActivity {
     private List<CustomAppInfo> customAppInfoList = new ArrayList<CustomAppInfo>() {
         {
             add(new CustomAppInfo(GroupHomePageActivity.class, R.string.group, R.drawable.ic_reader_group));
+            add(new CustomAppInfo(SettingActivity.class, R.string.menu_settings, R.drawable.ic_settings));
         }
     };
 

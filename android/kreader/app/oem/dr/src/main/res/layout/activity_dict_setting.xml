@@ -103,6 +103,34 @@
             android:id="@+id/dict_setting_activity_third_select_dict"
             style="@style/dict_setting_activity_text_style"
             android:text="@string/select_dict" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dict_setting_activity_margin_top"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/dict_setting_activity_text_second_style"
+            android:text="@string/fourth_sequence" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/dict_setting_activity_spinner_container_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/dict_setting_activity_spinner"
+            android:background="@drawable/rectangle_stroke">
+
+            <Spinner
+                android:id="@+id/dict_setting_activity_fourth_spinner"
+                style="@style/dict_setting_activity_spinner_style" />
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/dict_setting_activity_fourth_select_dict"
+            style="@style/dict_setting_activity_text_style"
+            android:text="@string/select_dict" />
     </LinearLayout>
 </LinearLayout>
