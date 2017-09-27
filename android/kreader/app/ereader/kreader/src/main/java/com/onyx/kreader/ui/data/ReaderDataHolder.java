@@ -508,6 +508,11 @@ public class ReaderDataHolder {
         if (e != null || request.isAbort()) {
             return;
         }
+
+        if (sideNoting && !isSamePage(readerViewInfo, request.getReaderViewInfo())) {
+            sideNotePage = 0;
+        }
+
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         setLastRequestSequence(request.getRequestSequence());
@@ -515,6 +520,15 @@ public class ReaderDataHolder {
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
             getEventBus().post(new LayoutChangeEvent());
         }
+    }
+
+    private boolean isSamePage(ReaderViewInfo left, ReaderViewInfo right) {
+        if (left == null || right == null) {
+            return false;
+        }
+        String leftPage = left.getFirstVisiblePageName();
+        String rightPage = right.getFirstVisiblePageName();
+        return leftPage.compareTo(rightPage) == 0;
     }
 
     public void updatePinchZoomMenu(final PinchZoomEvent event) {
