@@ -127,4 +127,9 @@ public class NotationDialog extends DialogFragment implements BookReportView {
         }
 
     }
+
+    @Override
+    public void setLibraryId(String bookId, String libraryId) {
+
+    }
 }

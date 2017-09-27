@@ -4,6 +4,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.BookReportData;
+import com.onyx.android.dr.data.LoginData;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.request.cloud.AddCommentRequest;
 import com.onyx.android.dr.request.cloud.BringOutBookReportRequest;
@@ -11,14 +12,22 @@ import com.onyx.android.dr.request.cloud.CreateBookReportRequest;
 import com.onyx.android.dr.request.cloud.DeleteBookReportRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportListRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportRequest;
+import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
+import com.onyx.android.dr.request.cloud.ShareBookReportRequest;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.AddCommentRequestBean;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListRequestBean;
+import com.onyx.android.sdk.data.model.v2.GroupBean;
+import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
+import com.onyx.android.sdk.data.model.v2.ShareBookReportResult;
+import com.onyx.android.sdk.data.request.data.db.GetBookLibraryIdRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,6 +146,39 @@ public class BookReportPresenter {
             public void done(BaseRequest request, Throwable e) {
                 CreateBookReportResult result = rq.getResult();
                 bookReportView.addCommentResult(result);
+            }
+        });
+    }
+
+    public void getLibraryId(final String bookId) {
+        final GetBookLibraryIdRequest rq = new GetBookLibraryIdRequest(bookId);
+        bookReportData.getLibraryId(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                CloudMetadataCollection metadataCollection = rq.getMetadataCollection();
+                if(metadataCollection != null) {
+                    String libraryId = metadataCollection.getLibraryUniqueId();
+                    bookReportView.setLibraryId(bookId, libraryId);
+                }
+            }
+        });
+    }
+
+    public void shareImpression(String library, String bookId) {
+        ShareBookReportRequestBean requestBean = new ShareBookReportRequestBean();
+        requestBean.child = bookId;
+        final ShareBookReportRequest rq = new ShareBookReportRequest(library, requestBean);
+        bookReportData.shareImpression(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ShareBookReportResult result = rq.getResult();
+                if(result != null) {
+                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                            .getResources().getString(R.string.share_book_impression_success));
+                }else {
+                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                            .getResources().getString(R.string.share_book_impression_fail));
+                }
             }
         });
     }

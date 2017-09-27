@@ -84,4 +84,6 @@
     <integer name="second_popup_adapter_row">8</integer>
     <integer name="book_marks_row">1</integer>
     <integer name="book_marks_col">1</integer>
+    <integer name="share_book_report_row">8</integer>
+    <integer name="share_book_report_col">1</integer>
 </resources>

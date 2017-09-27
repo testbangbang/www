@@ -25,6 +25,8 @@ import com.onyx.android.sdk.data.model.v2.NewPassword;
 import com.onyx.android.sdk.data.model.v2.PayBean;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
 import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
+import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
+import com.onyx.android.sdk.data.model.v2.ShareBookReportResult;
 import com.onyx.android.sdk.data.model.v2.SignUpBean;
 import com.onyx.android.sdk.data.model.v2.VerifyCode;
 
@@ -140,7 +142,7 @@ public interface ContentService {
     @POST("/api/impressions")
     Call<CreateBookReportResult> createImpression(@Body final CreateBookReportRequestBean bean);
 
-    @GET("/api/impressions")
+    @GET("/api/impressions/my")
     Call<GetBookReportList> getImpressionsList(@Query(Constant.GET_IMPRESSIONS_LIST_OFFSET) String offset,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
@@ -163,4 +165,7 @@ public interface ContentService {
 
     @PUT("users/password/{token}")
     Call<VerifyCode> setPassword(@Path(Constant.TOKEN_TAG) String token, @Body final NewPassword newPassword);
+
+    @POST("/api/librarys/{id}/impressions")
+    Call<ShareBookReportResult> shareImpression(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
 }

@@ -42,6 +42,7 @@ import com.onyx.android.dr.view.NotationDialog;
 import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -285,7 +286,24 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                 save();
                 break;
             case R.id.title_bar_right_icon_three:
+                share();
                 break;
+        }
+    }
+
+    private void share() {
+        if(Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+            return;
+        }
+
+        if(data != null) {
+            bookReportPresenter.getLibraryId(data.book);
+            return;
+        }
+
+        if(!StringUtils.isNullOrEmpty(bookId)) {
+            bookReportPresenter.getLibraryId(bookId);
+            return;
         }
     }
 
@@ -417,6 +435,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     }
 
+    @Override
+    public void setLibraryId(String bookId, String libraryId) {
+        bookReportPresenter.shareImpression(bookId, libraryId);
+    }
+
     private String insertJsTag() {
         StringBuilder sb = new StringBuilder();
         if (data != null && data.comments != null && data.comments.size() > 0) {
@@ -427,7 +450,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             for (CommentsBean bean : comments) {
                 int left = Integer.parseInt(bean.left) - currentPosition;
                 sb.append(content.substring(currentPosition, left));
-                String js = "<img id=\"" + bean._id + "\" src=\"file:///android_asset/audio.png\" onclick=\"addComment('" + bean.content + "')\"/>";
+                String js = "<img id=\"" + bean._id + "\" src=\"file:///android_asset/ic_postil.png\" onclick=\"addComment('" + bean.content + "')\"/>";
                 sb.append(js);
                 content = content.substring(left);
                 currentPosition = left;

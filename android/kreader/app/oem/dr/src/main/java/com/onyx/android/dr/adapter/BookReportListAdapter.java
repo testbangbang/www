@@ -13,6 +13,7 @@ import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BringOutBookReportEvent;
 import com.onyx.android.dr.event.DeleteBookReportEvent;
+import com.onyx.android.dr.event.ShareBookReportEvent;
 import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
@@ -87,7 +88,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
                 EventBus.getDefault().post(new BringOutBookReportEvent(bookReportBean));
                 break;
             case R.id.book_report_list_item_share:
-                ToastManage.showMessage(DRApplication.getInstance(),"share");
+                EventBus.getDefault().post(new ShareBookReportEvent(bookReportBean));
                 break;
             case R.id.book_report_list_item_delete:
                 EventBus.getDefault().post(new DeleteBookReportEvent(bookReportBean));

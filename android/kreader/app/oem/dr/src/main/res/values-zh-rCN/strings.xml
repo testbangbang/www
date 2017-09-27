@@ -664,4 +664,7 @@
     <string name="notation_add_success">添加成功</string>
     <string name="notation_add_fail">添加失败</string>
     <string name="baidu_baike_parameter_error">参数错误</string>
+    <string name="share_book_impression_success">分享成功</string>
+    <string name="share_book_impression_fail">分享失败</string>
+    <string name="share_book_impression_to_group">分享至群组</string>
 </resources>

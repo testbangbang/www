@@ -1,7 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -12,8 +10,10 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookReportListAdapter;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.event.BringOutBookReportEvent;
 import com.onyx.android.dr.event.DeleteBookReportEvent;
+import com.onyx.android.dr.event.ShareBookReportEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
@@ -22,6 +22,7 @@ import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+import com.onyx.android.sdk.data.model.v2.GroupBean;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -29,7 +30,6 @@ import org.greenrobot.eventbus.ThreadMode;
 import java.util.List;
 
 import butterknife.Bind;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 /**
@@ -184,6 +184,11 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     }
 
+    @Override
+    public void setLibraryId(String bookId, String libraryId) {
+        bookReportPresenter.shareImpression(bookId, libraryId);
+    }
+
     private void initPage() {
         paginator.resize(bookReportListAdapter.getRowCount(), bookReportListAdapter.getColumnCount(), list.size());
         pages = paginator.pages();
@@ -205,5 +210,11 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     public void OnBringOutBookReportEvent(BringOutBookReportEvent event) {
         GetBookReportListBean bookReportBean = event.getBookReportBean();
         bookReportPresenter.bringOutReport(bookReportBean);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShareBookReportEvent(ShareBookReportEvent event) {
+        GetBookReportListBean bookReportBean = event.getBookReportBean();
+        ActivityManager.startShareBookReportActivity(this);
     }
 }

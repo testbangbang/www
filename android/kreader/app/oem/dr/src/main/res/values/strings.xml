@@ -665,4 +665,7 @@
     <string name="notation_add_success">Add successfully</string>
     <string name="notation_add_fail">Add failed</string>
     <string name="baidu_baike_parameter_error">Parameter error</string>
+    <string name="share_book_impression_success">Shared successfully</string>
+    <string name="share_book_impression_fail">Shared failed</string>
+    <string name="share_book_impression_to_group">Share to groups</string>
 </resources>
