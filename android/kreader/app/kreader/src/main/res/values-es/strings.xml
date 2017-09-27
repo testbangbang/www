@@ -2,13 +2,13 @@
 <resources>
     <string name="app_name">Neo Reader v2.0</string>
     <string name="title">title</string>
-    <string name="cancel">Cancel</string>
+    <string name="cancel">Cancelar</string>
     <string name="confirm">Confirm</string>
-    <string name="reset">Reset</string>
+    <string name="reset">Resetear</string>
     <string name="outOfRangRerror">Out Of Range.</string>
     <string name="illegalInput">Illegal Input.</string>
-    <string name="dialog_reflow_settings_contrast">Contrast</string>
-    <string name="contrast_level">Contrast Level</string>
+    <string name="dialog_reflow_settings_contrast">Contraste</string>
+    <string name="contrast_level">Contraste</string>
     <string name="embolden">Embolden</string>
     <string name="embolden_level">Embolden Level</string>
     <string name="menu_item_smart_reflow">Reflow</string>
@@ -17,14 +17,14 @@
     <string name="dialog_reflow_settings_defect_size">Defect Size</string>
     <string name="dialog_reflow_settings_font_size">Font Size</string>
     <string name="dialog_reflow_settings_align">Align</string>
-    <string name="dialog_reflow_settings_format">Format</string>
+    <string name="dialog_reflow_settings_format">Formato</string>
     <string name="dialog_reflow_settings_page_margins">Page margins</string>
     <string name="dialog_reflow_settings_line_spacing">Line Spacing</string>
     <string name="dialog_reflow_settings_word_spacing">Word Spacing</string>
     <string name="dialog_reflow_settings_render_size">Render Size</string>
-    <string name="dialog_reflow_settings_auto_straighten">Straighten</string>
-    <string name="dialog_reflow_settings_justification">Justification</string>
-    <string name="dialog_reflow_settings_columns">Columns</string>
+    <string name="dialog_reflow_settings_auto_straighten">Enderezar</string>
+    <string name="dialog_reflow_settings_justification">Justificación</string>
+    <string name="dialog_reflow_settings_columns">Columnas</string>
     <string name="dialog_reflow_settings_rotation">Rotation</string>
     <string name="dialog_reflow_settings_small">Small</string>
     <string name="dialog_reflow_settings_medium">Medium</string>
@@ -47,16 +47,16 @@
     <string name="dialog_reflow_settings_contrast_darker">Darker</string>
     <string name="dialog_reflow_settings_contrast_darkest">Darkest</string>
     <string name="go_to_page">Go To Page</string>
-    <string name="dialog_crop_tittle">Crop</string>
+    <string name="dialog_crop_tittle">Recorte</string>
     <string name="search_hint">Search</string>
     <string name="not_found">No Search Result</string>
     <string name="emptyselection">Empty Selection</string>
-    <string name="loading_document">Cargando libro</string>
+    <string name="loading_document">Loading Document</string>
     <string name="dialog_password_text_password">Password</string>
     <string name="dialog_password_set">Set</string>
-    <string name="dialog_password_cancel">Cancel</string>
-    <string name="Annotation">Nota</string>
-    <string name="Cancel">Cancelar</string>
+    <string name="dialog_password_cancel">Cancelar</string>
+    <string name="Annotation">Annotation</string>
+    <string name="Cancelar">Cancelar</string>
     <string name="add_annotation">Añadir</string>
     <string name="update">Update</string>
     <string name="dialog_dictionary_title">No Explanation</string>
@@ -69,12 +69,12 @@
     <string name="bookmark">Bookmark</string>
     <string name="annotation">Nota</string>
     <string name="scribble">Scribble</string>
-    <string name="navigation_mode">Navigation Mode</string>
+    <string name="navigation_mode">Modo Navegación</string>
     <string name="action_return">Return</string>
     <string name="delete">Eliminar</string>
     <string name="edit">Editar</string>
-    <string name="page" formatted="false">page %d</string>
-    <string name="crop">Crop</string>
+    <string name="page" formatted="false">Página %d</string>
+    <string name="crop">Recorte</string>
     <string name="column">Column</string>
     <string name="direction">Direction</string>
     <string name="auto">Auto\n</string>
@@ -85,10 +85,10 @@
     <string name="nothing">no\ncrop</string>
     <string name="search">Search</string>
     <string name="total_page" formatted="false">Total: %d </string>
-    <string name="min_scroll_toast">Zoom mínimo, no se reducirá más el texto</string>
+    <string name="min_scroll_toast">>Zoom mínimo, no se reducirá más el texto</string>
     <string name="max_scroll_toast">Zoom máximo, no se ampliará más el texto</string>
     <string name="did_not_find_the_dictionary">Didn\'t find the dictionary</string>
-    <string name="screen_refresh">Screen Refresh</string>
+    <string name="screen_refresh">Refresco de pantalla</string>
     <string name="back">Volver</string>
     <string name="close_history">Close History</string>
     <string name="delete_history">Delete History</string>
@@ -108,33 +108,33 @@
     <string name="settings_close_dialog_key" translatable="false">setting_close_dialog</string>
     <string name="settings_animation_key">setting_animation</string>
     <string name="settings_reflow_cache_key" translatable="false">setting_reflow_cache</string>
-    <string name="settings_system_summary">System Options</string>
-    <string name="settings_system_tittle">System</string>
-    <string name="settings_screen_summary">Screen Setting</string>
-    <string name="settings_screen_tittle">Screen</string>
+    <string name="settings_system_summary">Opciones del Sistema</string>
+    <string name="settings_system_tittle">Sistema</string>
+    <string name="settings_screen_summary">Ajustes de pantalla</string>
+    <string name="settings_screen_tittle">Pantalla</string>
     <string name="settings_config_summary">Config File Setting</string>
     <string name="settings_config_tittle">Config</string>
-    <string name="settings_status_bar_summary">Config StatusBar Display Items</string>
-    <string name="settings_status_bar_tittle">StatusBar</string>
+    <string name="settings_status_bar_summary">Configuración de la barra de estado</string>
+    <string name="settings_status_bar_tittle">Barra de estado</string>
     <string name="settings_control_summary">Key Binding Setting</string>
     <string name="settings_control_tittle">Control</string>
     <string name="settings_scribble_bar_summary">Config Scribble Display Items</string>
     <string name="settings_scribble_bar_tittle">ScribbleBar</string>
-    <string name="settings_close_dialog_tittle">Show Close Dialog When Quit</string>
-    <string name="settings_animation_tittle">Show animation During Zoom And Pan</string>
+    <string name="settings_close_dialog_tittle">Mostrar mensaje de cierre al salir</string>
+    <string name="settings_animation_tittle">Mostar animación durante el zoom</string>
     <string name="settings_reflow_cache_tittle">Cache Reflow bitmap</string>
-    <string name="settings_enable">Enabled</string>
-    <string name="settings_disable">Disabled</string>
+    <string name="settings_enable">Activado</string>
+    <string name="settings_disable">Descativado</string>
     <string name="settings_battery_percentage_show_key" translatable="false">setting_battery_percentage_show</string>
     <string name="settings_battery_graphic_show_key" translatable="false">setting_battery_graphic_show</string>
     <string name="settings_time_show_key" translatable="false">setting_time_status</string>
-    <string name="settings_battery_percentage_show_tittle">Show Current Battery Percentage</string>
+    <string name="settings_battery_percentage_show_tittle">Mostrar porcentaje de la batería</string>
     <string name="settings_battery_graphic_show_tittle">Show Current Battery Graphic</string>
-    <string name="settings_time_show_tittle">Show Current Time</string>
+    <string name="settings_time_show_tittle">Mostrar hora actual</string>
     <string name="settings_scribble_bar_show_reader_status_bar_key" translatable="false">setting_scribble_bar_show_reader_status_bar</string>
     <string name="settings_scribble_bar_show_reader_status_bar_tittle">Show Reader Status Bar In Scribble Mode</string>
-    <string name="settings_show">Show</string>
-    <string name="settings_hide">Hide</string>
+    <string name="settings_show">Activado</string>
+    <string name="settings_hide">Desactivado</string>
     <string name="settings_save_reader_option_paginally_key" translatable="false">setting_save_reader_option_paginally</string>
     <string name="settings_save_reader_option_paginally_tittle">Save Options Paginally</string>
     <string name="settings_key_binding_prev_page_key" translatable="false">prevPage</string>
@@ -153,36 +153,36 @@
     <string name="settings_key_binding_next_view_tittle">Next View</string>
     <string name="settings_config_key_function">Set this key\'s function</string>
     <string name="settings_time_show_format_key" translatable="false">setting_time_show_format</string>
-    <string name="settings_time_show_format_tittle">Use 24-hours format</string>
+    <string name="settings_time_show_format_tittle">Usar formato de 24 horas</string>
     <string name="settings_time_show_format_24hours">13:00</string>
     <string name="settings_time_show_format_12hours">1:00 PM</string>
     <string name="settings_enable_system_status_bar_key" translatable="false">setting_enable_system_status_bar</string>
-    <string name="settings_enable_system_status_bar_tittle">Enable System Status Bar</string>
+    <string name="settings_enable_system_status_bar_tittle">Activar Barra de estado del Sistema</string>
     <string name="settings_enable_reader_status_bar_key" translatable="false">setting_enable_reader_status_bar</string>
-    <string name="setting_enable_reader_status_bar_tittle">Enable Reader Status Bar</string>
+    <string name="setting_enable_reader_status_bar_tittle">Activar barra de lectura</string>
     <string name="settings_enable_multiple_tabs_key" translatable="false">setting_enable_multiple_tabs</string>
     <string name="settings_enable_multiple_tabs_title">Enable multiple documents</string>
     <string name="settings_search_menu_position_key" translatable="false">settings_search_menu_position</string>
     <string name="settings_search_menu_position_tittle">Set Search Menu Position</string>
     <string name="settings_bookmark_key" translatable="false">show_bookmark</string>
     <string name="settings_note_key" translatable="false">show_note</string>
-    <string name="settings_bookmark_tittle">Show bookmark</string>
+    <string name="settings_bookmark_tittle">Mostar marcador</string>
     <string name="settings_hyperlink_key" translatable="false">show_hyperlink</string>
-    <string name="settings_hyperlink_tittle">Show hyperlink</string>
+    <string name="settings_hyperlink_tittle">Mostar hipervínculo</string>
     <string name="settings_dithering_key" translatable="false">image_dithering</string>
-    <string name="settings_dithering_tittle">Image dithering</string>
+    <string name="settings_dithering_tittle">Dithering de imagen</string>
     <string name="settings_regal_mode_key" translatable="false">regal_mode</string>
-    <string name="settings_regal_mode_tittle">Use regal mode</string>
+    <string name="settings_regal_mode_tittle">Función Regal</string>
     <string name="settings_version_key" translatable="false">version_key</string>
-    <string name="settings_versionName">Version Name</string>
+    <string name="settings_versionName">Versión</string>
 
     <string name="settings_show_doc_title_key" translatable="false">setting_show_title_key</string>
-    <string name="settings_show_doc_title">Show document title in status bar</string>
+    <string name="settings_show_doc_title">Mostar nombre del document en la barra de estado</string>
     <string name="settings_crop_to_width_in_landscape_key" translatable="false">crop_to_width_in_landscape_key</string>
-    <string name="settings_crop_to_width_in_landscape_title">Crop to width in landscape</string>
+    <string name="settings_crop_to_width_in_landscape_title">Recorte to width in landscape</string>
 
     <string name="settings_show_annotation_key" translatable="false">setting_show_annotation_key</string>
-    <string name="settings_show_annotation_title">Show annotation</string>
+    <string name="settings_show_annotation_title">Mostrar anotaciones</string>
 
     <string name="settings_annotation_highlight_style_key" translatable="false">settings_annotation_highlight_style_key</string>
 
@@ -215,15 +215,15 @@
     <string name="settings_key_binding_move_down_tittle">Move Down</string>
     <string name="settings_key_binding_move_left_tittle">Move Left</string>
     <string name="settings_key_binding_move_right_tittle">Move Right</string>
-    <string name="settings_key_binding_increase_font_size_tittle">Increase Font Size</string>
-    <string name="settings_key_binding_decrease_font_size_tittle">Decrease Font Size</string>
+    <string name="settings_key_binding_increase_font_size_tittle">Aumentar el tamaño de la fuente</string>
+    <string name="settings_key_binding_decrease_font_size_tittle">Disminuir tamaño de fuente</string>
     <string name="settings_key_binding_reset_default_key" translatable="false">settings_key_binding_reset_default_key</string>
-    <string name="settings_key_binding_reset_default">Reset Default Key Binding</string>
+    <string name="settings_key_binding_reset_default">Restablecer la vinculación de teclas predeterminada</string>
     <string name="tts_play_failed" translatable="false">TTS failed!</string>
 
     <string name="settings_highlight_style_highlight">Highlight</string>
-    <string name="settings_highlight_style_underline">Underline</string>
-    <string name="settings_annotation_highlight_style_title">Annotation Style</string>
+    <string name="settings_highlight_style_underline">Subrayado</string>
+    <string name="settings_annotation_highlight_style_title">Estilo de anotación</string>
 
     <string name="dialog_bind_hot_key_tittle">Bind Hot Key</string>
     <string name="dialog_bind_hot_key_current_bind_function">Function To Bind Hot Key:</string>
@@ -237,7 +237,7 @@
     <string name="dialog_quick_view_enter_page_number_out_of_range_error">The jump page number out of range</string>
     <string name="dialog_quick_view_enter_page_number_empty_error">The jump page number can not be empty</string>
 
-    <string name="reflowing">Reflowing</string>
+    <string name="reflowing">Ajustando</string>
     <string name="loading">Loading</string>
     <string name="load_fail">Load Fail</string>
     <string name="saving">Saving</string>
@@ -271,12 +271,12 @@
     <string name="pinch_zooming_can_not_be_used">Pinch zoom is not supported by current page layout.</string>
     <string name="dictionary_error">The dictionary is not installed or have exception</string>
     <string name="dictionary_data_no_find">Failed to find dictionary data</string>
-    <string name="no_data">No se encontró el significado</string>
+    <string name="no_data">There is no data</string>
     <string name="min_page_toast">Has come to the first page</string>
     <string name="max_page_toast">Has come to the last page</string>
     <string name="current_value">Current Value:</string>
     <string name="open_document_failed">Open document failed!</string>
-    <string name="annotation_export_format" formatted="false">Pagégina %d   %s \n%s\n--------------------\n</string>
+    <string name="annotation_export_format" formatted="false">Page %d   %s \n%s\n--------------------\n</string>
     <string name="fail_create_export_directory">Failed to create export directory: </string>
     <string name="show_password">Show the password</string>
 
@@ -291,19 +291,19 @@
     <string name="already_at_minimum_line_spacing">Already at minimum line spacing!</string>
     <string name="already_at_maximum_page_margins">Already at maximum page margins!</string>
     <string name="already_at_minimum_page_margins">Already at minimum page margins!</string>
-    <string name="make_text_bold">make text bold</string>
+    <string name="make_text_bold">Texto en negrita</string>
     <string name="dialog_slideshow_title">Slideshow</string>
-    <string name="dialog_slideshow_intervals_title">Intervals (in seconds)</string>
-    <string name="dialog_slideshow_max_page_count_title">Max Page</string>
-    <string name="dialog_slideshow_statistic_duration">Duration: </string>
-    <string name="dialog_slideshow_statistic_page_count">Page count: </string>
-    <string name="dialog_slideshow_statistic_start_battery">Start battery: </string>
-    <string name="dialog_slideshow_statistic_end_battery">End battery: </string>
+    <string name="dialog_slideshow_intervals_title">Intervalos (segundos)</string>
+    <string name="dialog_slideshow_max_page_count_title">Cantidad de páginas</string>
+    <string name="dialog_slideshow_statistic_duration">Duración: </string>
+    <string name="dialog_slideshow_statistic_page_count">Páginas: </string>
+    <string name="dialog_slideshow_statistic_start_battery">Batería inicial: </string>
+    <string name="dialog_slideshow_statistic_end_battery">Batería final: </string>
     <string name="default_font" translatable="false">Serif</string>
-    <string name="view_pinch_zooming_menu_font_size">Font size:</string>
+    <string name="view_pinch_zooming_menu_font_size">Fuente size:</string>
     <string name="view_pinch_zooming_menu_scale_factor">Zoom factor:</string>
-    <string name="slide_setting">Slide Setting</string>
-    <string name="dialog_text_style_view_code_page">Encoding</string>
+    <string name="slide_setting">Ajustes de diapositivas</string>
+    <string name="dialog_text_style_view_code_page">Código de página</string>
     <string name="code_page_simplified_chinese">Simplified Chinese</string>
     <string name="code_page_utf8">UTF-8</string>
     <string name="code_page_traditional_chinese">Traditional Chinese</string>
@@ -340,7 +340,7 @@
     <string name="read_start_time" formatted="false">%s \n start</string>
     <string name="read_use_time" formatted="false">The book reading total times \n %s</string>
     <string name="read_end_time" formatted="false">%s \n end</string>
-    <string name="high_light_count" formatted="false">Highlight: %d</string>
+    <string name="high_light_count" formatted="false">Resaltado: %d</string>
     <string name="annotation_count" formatted="false">Annotation: %d</string>
     <string name="look_up_dict_count" formatted="false">Look Up dictionary count: %d</string>
     <string name="time_distribution">Time distribution</string>
