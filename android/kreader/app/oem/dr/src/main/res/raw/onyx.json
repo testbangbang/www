@@ -28,6 +28,7 @@
     "com.onyx.android.production.test",
     "com.neverland.oreader",
     "com.onyx.test",
+    "com.onyx.appmarket",
     "com.android.vending",
     "com.iflytek.speechcloud"
   ],
