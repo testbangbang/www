@@ -51,12 +51,12 @@
     <string name="search_hint">Search</string>
     <string name="not_found">No Search Result</string>
     <string name="emptyselection">Empty Selection</string>
-    <string name="loading_document">Loading Document</string>
+    <string name="loading_document">Cargando libro</string>
     <string name="dialog_password_text_password">Password</string>
     <string name="dialog_password_set">Set</string>
     <string name="dialog_password_cancel">Cancelar</string>
-    <string name="Annotation">Annotation</string>
-    <string name="Cancelar">Cancelar</string>
+    <string name="Annotation">Nota</string>
+    <string name="Cancel">Cancelar</string>
     <string name="add_annotation">Añadir</string>
     <string name="update">Update</string>
     <string name="dialog_dictionary_title">No Explanation</string>
@@ -85,7 +85,7 @@
     <string name="nothing">no\ncrop</string>
     <string name="search">Search</string>
     <string name="total_page" formatted="false">Total: %d </string>
-    <string name="min_scroll_toast">>Zoom mínimo, no se reducirá más el texto</string>
+    <string name="min_scroll_toast">Zoom mínimo, no se reducirá más el texto</string>
     <string name="max_scroll_toast">Zoom máximo, no se ampliará más el texto</string>
     <string name="did_not_find_the_dictionary">Didn\'t find the dictionary</string>
     <string name="screen_refresh">Refresco de pantalla</string>
@@ -271,12 +271,12 @@
     <string name="pinch_zooming_can_not_be_used">Pinch zoom is not supported by current page layout.</string>
     <string name="dictionary_error">The dictionary is not installed or have exception</string>
     <string name="dictionary_data_no_find">Failed to find dictionary data</string>
-    <string name="no_data">There is no data</string>
+    <string name="no_data">No se encontró el significado</string>
     <string name="min_page_toast">Has come to the first page</string>
     <string name="max_page_toast">Has come to the last page</string>
     <string name="current_value">Current Value:</string>
     <string name="open_document_failed">Open document failed!</string>
-    <string name="annotation_export_format" formatted="false">Page %d   %s \n%s\n--------------------\n</string>
+    <string name="annotation_export_format" formatted="false">Página %d %s \n%s\n--------------------\n</string>
     <string name="fail_create_export_directory">Failed to create export directory: </string>
     <string name="show_password">Show the password</string>
 
