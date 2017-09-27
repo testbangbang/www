@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/search_list_item_padding_left"
+    android:background="@drawable/search_dropdown_border"
+    android:focusable="true"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tv_search_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/search_list_item_padding_left"
+        android:text="@string/search_history"
+        android:textSize="@dimen/settings_title_text_size"
+        android:visibility="gone" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <ListView
+        android:id="@+id/lv_search_history"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:padding="@dimen/lv_search_history_padding" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
+
+    <Button
+        android:id="@+id/btn_clear_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/btn_clear_history_margin_top"
+        android:background="@drawable/button_state_bg"
+        android:focusable="true"
+        android:padding="@dimen/search_list_item_padding_left"
+        android:text="@string/clear_search_history"
+        android:textColor="@android:color/black" />
+
+</LinearLayout>

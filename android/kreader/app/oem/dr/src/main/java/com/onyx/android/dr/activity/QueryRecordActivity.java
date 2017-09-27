@@ -28,6 +28,7 @@ import com.onyx.android.dr.event.RefreshWebviewEvent;
 import com.onyx.android.dr.interfaces.QueryRecordView;
 import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.presenter.QueryRecordPresenter;
+import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
 import com.onyx.android.dr.view.PageIndicator;
@@ -94,6 +95,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     private TextView baiduBaike;
     private List<String> pathList;
     private PageIndicator indicator;
+    private int dictType;
 
     @Override
     protected Integer getLayoutId() {
@@ -140,6 +142,7 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
     }
 
     private void loadDictionary() {
+        dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
         dictionaryManager.newProviderMap.clear();
         pathList = Utils.getAllDictPathList();
@@ -281,10 +284,16 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
         addNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (dictType == Constants.FRENCH_TAG) {
+                    dictType = Constants.OTHER_TYPE;
+                }
+                DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictionaryLookup);
                 NewWordBean bean = new NewWordBean();
                 bean.setNewWord(newWord);
                 bean.setDictionaryLookup(dictionaryLookup);
-                bean.setReadingMatter(readingMatter);
+                bean.setReadingMatter("");
+                bean.setNewWordType(dictType);
+                bean.setParaphrase(dictionaryQueryResult.explanation);
                 OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });

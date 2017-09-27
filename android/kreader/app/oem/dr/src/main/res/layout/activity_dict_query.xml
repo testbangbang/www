@@ -114,6 +114,42 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/activity_query_french_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dict_query_function_margin">
+
+            <TextView
+                style="@style/dict_query_type"
+                android:text="@string/french_query"
+                android:visibility="visible" />
+
+            <RelativeLayout
+                android:layout_width="@dimen/dict_query_edittext_width"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/activity_query_french_query"
+                    style="@style/dict_query_edittext"
+                    android:padding="@dimen/activity_query_word_padding" />
+
+                <ImageView
+                    android:id="@+id/activity_word_french_search"
+                    style="@style/image_style" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/activity_query_english_linearlayout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
