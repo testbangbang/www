@@ -170,7 +170,7 @@ public class RendererHelper {
     }
 
     public void renderSelectedRect(RectF selectedRectF, RenderContext renderContext, float orientation) {
-        if (selectedRectF == null || selectedRectF.width() < 0 || selectedRectF.height() < 0) {
+        if (selectedRectF == null || selectedRectF.isEmpty()) {
             return;
         }
         Paint boundingPaint = new Paint(Color.BLACK);
