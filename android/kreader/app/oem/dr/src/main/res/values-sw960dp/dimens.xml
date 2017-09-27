@@ -344,6 +344,31 @@
     <dimen name="group_home_page_activity_create_width">250dp</dimen>
     <dimen name="rectangle_stroke_second_radius">10dp</dimen>
     <dimen name="create_group_activity_school_search_margin">5dp</dimen>
+
+    <dimen name="activity_home_search_layout_height">60dp</dimen>
+    <dimen name="activity_home_search_layout_margin_bottom">10dp</dimen>
+    <dimen name="activity_home_search_layout_margin_top">20dp</dimen>
+    <dimen name="activity_home_search_button_size">50dp</dimen>
+    <dimen name="activity_home_search_edit_padding_left">10dp</dimen>
+    <dimen name="activity_home_search_edit_text_size">20sp</dimen>
+    <dimen name="activity_home_content_page_view_layout_margin">20dp</dimen>
+    <dimen name="activity_home_indicator_layout_margin">10dp</dimen>
+    <dimen name="activity_home_indicator_total_text_size">24sp</dimen>
+    <dimen name="activity_home_indicator_text_size">26sp</dimen>
+    <dimen name="activity_home_indicator_text_marin_left_right">12dp</dimen>
+
+    <dimen name="activity_home_app_item_icon_size">80dp</dimen>
+    <dimen name="activity_home_app_item_text_layout_margin_left_right">18dp</dimen>
+    <dimen name="activity_home_app_item_text_layout_name_text_size">23sp</dimen>
+    <dimen name="activity_home_app_item_text_layout_type_text_size">21sp</dimen>
+    <dimen name="activity_home_app_item_text_layout_size_text_size">21sp</dimen>
+    <dimen name="activity_home_app_item_text_layout_summary_text_size">21sp</dimen>
+    <dimen name="activity_home_app_item_download_button_width">120dp</dimen>
+    <dimen name="activity_home_app_item_download_button_min_height">42dp</dimen>
+    <dimen name="activity_home_app_item_download_button_padding">8dp</dimen>
+    <dimen name="activity_home_app_item_download_button_text_size">23sp</dimen>
+
+    <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
     <dimen name="search_list_item_padding_left">10dp</dimen>
     <dimen name="dict_level_one_font_size">20sp</dimen>
     <dimen name="lv_search_history_padding">2dp</dimen>

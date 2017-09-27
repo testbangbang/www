@@ -30,6 +30,7 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
     private IndexService requestService;
     private IndexService resultService;
     private int localRetryCount = 1;
+    private boolean loadOnlyFromLocal;
 
     public CloudIndexServiceRequest(final String base, IndexService service) {
         requestService = service;
@@ -43,10 +44,12 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
     @Override
     public void execute(CloudManager parent) throws Exception {
         resultService = loadContentServiceInfoFromLocal(getContext(), localRetryCount);
-        IndexService cloudService = loadContentServiceInfoFromCloud(parent);
-        if (cloudService != null) {
-            if (!cloudService.equals(resultService)) {
-                onContentServerChanged(parent, cloudService);
+        if (!loadOnlyFromLocal) {
+            IndexService cloudService = loadContentServiceInfoFromCloud(parent);
+            if (cloudService != null) {
+                if (!cloudService.equals(resultService)) {
+                    onContentServerChanged(parent, cloudService);
+                }
             }
         }
 
@@ -126,5 +129,9 @@ public class CloudIndexServiceRequest extends BaseCloudRequest {
             return;
         }
         this.localRetryCount = retryCount;
+    }
+
+    public void setLoadOnlyFromLocal(boolean loadOnlyFromLocal) {
+        this.loadOnlyFromLocal = loadOnlyFromLocal;
     }
 }

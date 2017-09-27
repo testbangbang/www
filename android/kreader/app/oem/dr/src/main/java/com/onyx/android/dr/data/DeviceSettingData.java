@@ -100,6 +100,7 @@ public class DeviceSettingData {
         deviceSettingViewEvents.put(context.getString(R.string.device_setting_model), new DeviceSettingViewBaseEvent.OpenSystemSettingEvent());
         deviceSettingViewEvents.put(context.getString(R.string.menu_wifi_setting), new DeviceSettingViewBaseEvent.DeviceSettingWifiSettingEvent());
         deviceSettingViewEvents.put(context.getString(R.string.menu_time_setting), new DeviceSettingViewBaseEvent.DeviceSettingTimeSettingEvent());
+        deviceSettingViewEvents.put(context.getString(R.string.menu_tts_setting), new DeviceSettingViewBaseEvent.DeviceSettingTTSSettingEvent());
     }
 
     private void initDeviceSettingDeviceInformationExplain(final Context context) {
@@ -243,6 +244,7 @@ public class DeviceSettingData {
         deviceSettingValue.put(context.getString(R.string.menu_wifi_setting),context.getString(R.string.menu_wifi_setting));
         deviceSettingValue.put(context.getString(R.string.reset),context.getString(R.string.reset));
         deviceSettingValue.put(context.getString(R.string.menu_time_setting),context.getString(R.string.menu_time_setting));
+        deviceSettingValue.put(context.getString(R.string.menu_tts_setting),context.getString(R.string.menu_tts_setting));
 
         return deviceSettingValue;
     }

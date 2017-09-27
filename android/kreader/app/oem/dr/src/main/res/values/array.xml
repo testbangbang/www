@@ -132,6 +132,7 @@
         <item>@string/menu_wifi_setting</item>
         <item>@string/reset</item>
         <item>@string/menu_time_setting</item>
+        <item>@string/menu_tts_setting</item>
     </string-array>
 
     <string-array name="device_setting_page_refreshes">
