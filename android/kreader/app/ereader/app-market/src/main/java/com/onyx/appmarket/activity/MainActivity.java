@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -30,11 +31,14 @@ import com.onyx.android.sdk.data.model.AppProduct;
 import com.onyx.android.sdk.data.model.Category;
 import com.onyx.android.sdk.data.model.Link;
 import com.onyx.android.sdk.data.model.ProductQuery;
+import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
+import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.ContainerRequest;
 import com.onyx.android.sdk.data.request.cloud.MarketAppListRequest;
 import com.onyx.android.sdk.data.request.cloud.MarketAppRequest;
 import com.onyx.android.sdk.data.request.cloud.MarketAppSearchRequest;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
@@ -46,6 +50,7 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.appmarket.MarketApplication;
@@ -84,6 +89,7 @@ public class MainActivity extends OnyxAppCompatActivity {
     private int pageViewRowCount = 5;
     private int pageViewColCount = 1;
     private int blankCount = 0;
+    private int localLoadRetryCount = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -277,8 +283,10 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private void loadAppList() {
+        final CloudRequestChain requestChain = new CloudRequestChain();
         final MarketAppListRequest appListRequest = new MarketAppListRequest(productQuery);
-        loadData(appListRequest, new BaseCallback() {
+        addIndexLookupRequest(requestChain);
+        requestChain.addRequest(appListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -288,6 +296,26 @@ public class MainActivity extends OnyxAppCompatActivity {
                 notifyDataChanged();
             }
         });
+        requestChain.execute(MarketApplication.sInstance, getCloudStore().getCloudManager());
+    }
+
+    private void addIndexLookupRequest(final CloudRequestChain requestChain) {
+        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(getCloudStore().getCloudConf().getApiBase(),
+                createIndexService());
+        indexServiceRequest.setLoadOnlyFromLocal(true);
+        indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
+        requestChain.addRequest(indexServiceRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+            }
+        });
+    }
+
+    private IndexService createIndexService() {
+        IndexService authService = new IndexService();
+        authService.mac = NetworkUtil.getMacAddress(this);
+        authService.model = Build.MODEL;
+        return authService;
     }
 
     private <T extends BaseCloudRequest> void loadData(final T cloudRequest, final BaseCallback callback) {
