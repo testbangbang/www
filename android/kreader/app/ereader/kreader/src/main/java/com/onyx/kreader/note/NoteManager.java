@@ -294,6 +294,12 @@ public class NoteManager {
         getTouchHelper().setStrokeWidth(w);
     }
 
+    public void restoreStrokeWidth() {
+        if (noteDocument != null && noteDocument.isOpen()) {
+            setCurrentStrokeWidth(noteDocument.getStrokeWidth());
+        }
+    }
+
     public Shape getCurrentShape() {
         return shapeEventHandler.getCurrentShape();
     }
@@ -417,7 +423,9 @@ public class NoteManager {
                 continue;
             }
             Rect r = RectUtils.toRect(page.getDisplayRect());
-            r.intersect(visibleDrawRect);
+            if (visibleDrawRect != null) {
+                r.intersect(visibleDrawRect);
+            }
             list.add(r);
         }
         return list;

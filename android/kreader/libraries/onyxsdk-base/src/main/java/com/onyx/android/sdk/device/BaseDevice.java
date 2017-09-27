@@ -476,4 +476,7 @@ public class BaseDevice {
     public void setQRShowConfig(int orientation, int startX, int startY) {};
 
     public void setInfoShowConfig(int orientation, int startX, int startY) {}
+
+    public void setUpdListSize(int size) {
+    }
 }

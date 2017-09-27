@@ -82,6 +82,7 @@ public class ReaderDataHolder {
     private int optionsSkippedTimes = 0;
     private int lastRequestSequence;
 
+    private boolean enteringSideNote = false;
     private boolean sideNoting = false;
     private int sideNotePage = 0;
     private int sideNotePageCount = 1;
@@ -204,8 +205,9 @@ public class ReaderDataHolder {
         return documentOpenState == DocumentOpenState.OPENED && reader != null;
     }
 
-    public boolean inNoteWritingProvider() {
-        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER);
+    public boolean isNoteWritingProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
+                getHandlerManager().getActiveProvider().equals(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
     public boolean inReadingProvider() {
@@ -357,6 +359,13 @@ public class ReaderDataHolder {
         getNoteManager().stopRawEventProcessor();
     }
 
+    public void resumeRawEventProcessor() {
+        if (!supportScalable()) {
+            return;
+        }
+        getNoteManager().resumeRawEventProcessor(getContext());
+    }
+
     public void enablePenShortcut()  {
         if (!supportScalable()) {
             return;
@@ -499,6 +508,11 @@ public class ReaderDataHolder {
         if (e != null || request.isAbort()) {
             return;
         }
+
+        if (sideNoting && !isSamePage(readerViewInfo, request.getReaderViewInfo())) {
+            sideNotePage = 0;
+        }
+
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         setLastRequestSequence(request.getRequestSequence());
@@ -506,6 +520,15 @@ public class ReaderDataHolder {
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
             getEventBus().post(new LayoutChangeEvent());
         }
+    }
+
+    private boolean isSamePage(ReaderViewInfo left, ReaderViewInfo right) {
+        if (left == null || right == null) {
+            return false;
+        }
+        String leftPage = left.getFirstVisiblePageName();
+        String rightPage = right.getFirstVisiblePageName();
+        return leftPage.compareTo(rightPage) == 0;
     }
 
     public void updatePinchZoomMenu(final PinchZoomEvent event) {
@@ -625,6 +648,18 @@ public class ReaderDataHolder {
 
     public void setLastRequestSequence(int lastRequestSequence) {
         this.lastRequestSequence = lastRequestSequence;
+    }
+
+    public boolean supportSideNote() {
+        return supportScalable();
+    }
+
+    public boolean isEnteringSideNote() {
+        return enteringSideNote;
+    }
+
+    public void setEnteringSideNote(boolean enteringSideNote) {
+        this.enteringSideNote = enteringSideNote;
     }
 
     public boolean isSideNoting() {

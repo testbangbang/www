@@ -4,7 +4,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.note.NoteManager;
-import com.onyx.kreader.note.request.FlushShapeListRequest;
+import com.onyx.kreader.note.request.RenderShapeListInBackgroundRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -28,8 +28,8 @@ public class RenderStashShapesInBackgroundAction extends BaseAction {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         final List<Shape> stash = noteManager.detachShapeStash();
 
-        final FlushShapeListRequest flushRequest = FlushShapeListRequest.renderInBackgroundRequest(pages, stash, 0);
+        final RenderShapeListInBackgroundRequest request = new RenderShapeListInBackgroundRequest(pages, stash);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(),
-                flushRequest, baseCallback);
+                request, baseCallback);
     }
 }

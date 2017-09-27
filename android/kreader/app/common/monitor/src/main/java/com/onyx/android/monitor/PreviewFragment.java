@@ -7,6 +7,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.databinding.DataBindingUtil;
@@ -50,6 +51,7 @@ import com.onyx.android.monitor.dialog.ConfirmationDialog;
 import com.onyx.android.monitor.dialog.ConnectErrorDialog;
 import com.onyx.android.monitor.dialog.DialogPreviewMenu;
 import com.onyx.android.monitor.dialog.ErrorDialog;
+import com.onyx.android.monitor.event.ChangeOrientationEvent;
 import com.onyx.android.monitor.event.DismissMenuEvent;
 import com.onyx.android.monitor.event.FullRefreshEvent;
 import com.onyx.android.monitor.event.MenuKeyEvent;
@@ -57,6 +59,7 @@ import com.onyx.android.monitor.event.SettingsChangedEvent;
 import com.onyx.android.monitor.view.AutoFitTextureView;
 import com.onyx.android.monitor.event.ConnectEvent;
 import com.onyx.android.monitor.view.MenuItem;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -196,6 +199,7 @@ public class PreviewFragment extends Fragment
             // This method is called when the camera is opened.  We start camera preview here.
             mCameraOpenCloseLock.release();
             mCameraDevice = cameraDevice;
+            EpdController.setUpdListSize(1);
             createCameraPreviewSession();
             openA2();
             startGcTimer(gcRefreshRunnable);
@@ -724,6 +728,7 @@ public class PreviewFragment extends Fragment
             }
             stopGcTimer(gcRefreshRunnable);
             closeA2();
+            EpdController.resetUpdListSize();
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
         } finally {
@@ -1039,6 +1044,23 @@ public class PreviewFragment extends Fragment
             stopGcTimer(gcRefreshRunnable);
             startGcTimer(gcRefreshRunnable);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onChangeOrientation(final ChangeOrientationEvent event) {
+        changeOrientation();
+    }
+
+    private void changeOrientation() {
+        int currentOrientation = getActivity().getRequestedOrientation();
+
+        int orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+        if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE) {
+            orientation = ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+        } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
+            orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
+        }
+        getActivity().setRequestedOrientation(orientation);
     }
 
     private DialogPreviewMenu getMenuDialog() {

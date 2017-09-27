@@ -40,6 +40,7 @@ public class ShapeEventHandler {
     private NoteManager noteManager;
     private volatile Shape currentShape = null;
     private TouchPoint eraserPoint;
+    private TouchPointList eraserPointList;
     private PageInfo lastPageInfo = null;
     private boolean shortcutDrawing = false;
 
@@ -196,6 +197,7 @@ public class ShapeEventHandler {
     }
 
     public void onErasingTouchDown(final MotionEvent motionEvent) {
+        eraserPointList = new TouchPointList();
     }
 
     public void onErasingTouchMove(final MotionEvent motionEvent) {
@@ -210,12 +212,12 @@ public class ShapeEventHandler {
             list.add(fromHistorical(motionEvent, i));
         }
         list.add(new TouchPoint(motionEvent));
-        getEventBus().post(new ShapeErasingEvent(false, true, list));
-
-        eraserPoint = list.get(list.size() - 1);
+        eraserPointList.add(new TouchPoint(motionEvent));
+        getEventBus().post(new ShapeErasingEvent(false, false, list));
     }
 
     public void onErasingTouchUp(final MotionEvent motionEvent) {
+        getEventBus().post(new ShapeErasingEvent(false, true, eraserPointList));
         eraserPoint = null;
     }
 
@@ -274,6 +276,7 @@ public class ShapeEventHandler {
     @Subscribe
     public void onBeginRawDataEvent(BeginRawDataEvent e) {
         Debug.e(getClass(), "onBeginRawDataEvent");
+        noteManager.restoreStrokeWidth();
         if (e.isShortcutDrawing()) {
             shortcutDrawing = true;
             getEventBus().post(new ShortcutDrawingStartEvent());

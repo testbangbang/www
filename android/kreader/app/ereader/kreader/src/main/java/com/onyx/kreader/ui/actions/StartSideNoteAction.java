@@ -14,13 +14,14 @@ public class StartSideNoteAction extends BaseAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
+        readerDataHolder.setSideNoting(true);
         BaseReaderRequest config = new StartSideNodeRequest(readerDataHolder.getDisplayWidth(),
                 readerDataHolder.getDisplayHeight());
         readerDataHolder.submitRenderRequest(config, new BaseCallback() {
             @Override
             public void beforeDone(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    readerDataHolder.setSideNoting(true);
+                if (e != null) {
+                    readerDataHolder.setSideNoting(false);
                 }
             }
 
