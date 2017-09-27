@@ -12,6 +12,7 @@ import android.widget.ImageView;
 
 import com.onyx.android.monitor.R;
 import com.onyx.android.monitor.SingletonSharedPreference;
+import com.onyx.android.monitor.event.ChangeOrientationEvent;
 import com.onyx.android.monitor.event.DismissMenuEvent;
 import com.onyx.android.monitor.event.FullRefreshEvent;
 import com.onyx.android.monitor.event.SettingsChangedEvent;
@@ -73,6 +74,10 @@ public class DialogPreviewMenu extends Dialog {
                 break;
             case EXIT:
                 EventBus.getDefault().post(new DismissMenuEvent());
+                break;
+            case ORIENTATION:
+                dismiss();
+                EventBus.getDefault().post(new ChangeOrientationEvent());
                 break;
             default:
                 currentParentMenuItem = menuItem;

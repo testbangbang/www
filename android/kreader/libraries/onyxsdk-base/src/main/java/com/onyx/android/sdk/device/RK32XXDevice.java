@@ -94,6 +94,7 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodStartStroke = null;
     private static Method sMethodAddStrokePoint = null;
     private static Method sMethodFinishStroke = null;
+    private static Method sMethodSetUpdListSize = null;
 
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
@@ -780,6 +781,7 @@ public class RK32XXDevice extends BaseDevice {
             sMethodEnableScreenUpdate = ReflectUtil.getMethodSafely(cls, "enableScreenUpdate", boolean.class);
             sMethodSetDisplayScheme = ReflectUtil.getMethodSafely(cls, "setDisplayScheme", int.class);
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
+            sMethodSetUpdListSize = ReflectUtil.getMethodSafely(cls, "setUpdListSize", int.class);
 
             sMethodSetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "setVCom", Context.class, int.class, String.class);
             sMethodGetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "getVCom", String.class);
@@ -1114,5 +1116,10 @@ public class RK32XXDevice extends BaseDevice {
     public void gotoSleep(final Context context) {
         long value = System.currentTimeMillis();
         ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
+    }
+
+    @Override
+    public void setUpdListSize(int size) {
+        ReflectUtil.invokeMethodSafely(sMethodSetUpdListSize, null, size);
     }
 }

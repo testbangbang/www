@@ -3,6 +3,7 @@ package com.onyx.kreader.ui;
 import android.Manifest;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -65,7 +66,9 @@ import com.onyx.kreader.ui.actions.OpenDocumentAction;
 import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.actions.ShowSideScribbleMenuAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
+import com.onyx.kreader.ui.actions.StartSideNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
@@ -185,6 +188,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 getReaderDataHolder().isNoteWritingProvider()) {
             final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
             FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
+            flushNoteAction.setPauseNote(true);
             flushNoteAction.execute(getReaderDataHolder(), null);
         }
 
@@ -218,6 +222,11 @@ public class ReaderActivity extends OnyxBaseActivity {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
                 if (!getReaderDataHolder().isDocumentOpened()) {
                     openFileFromIntentImpl();
+                    return;
+                }
+                if (getReaderDataHolder().isEnteringSideNote()) {
+                    getReaderDataHolder().setEnteringSideNote(false);
+                    startSideNote();
                 }
             }
         });
@@ -473,6 +482,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (getReaderDataHolder().isNoteWritingProvider()) {
+            getReaderDataHolder().resumeRawEventProcessor();
             return;
         }
         updateNoteHostView();
@@ -1228,5 +1238,31 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     public RelativeLayout getExtraView() {
         return extraView;
+    }
+
+    public void startSideNote() {
+        if (!isLandscapeViewport()) {
+            getReaderDataHolder().setEnteringSideNote(true);
+            ReaderTabHostBroadcastReceiver.sendChangeOrientationIntent(this,
+                    ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+            return;
+        }
+
+        new StartSideNoteAction().execute(getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                startSideNodeDrawing(getReaderDataHolder(), ReaderActivity.this);
+            }
+        });
+    }
+
+    private void startSideNodeDrawing(final ReaderDataHolder readerDataHolder, final ReaderActivity readerActivity) {
+        ShowSideScribbleMenuAction showMenu = new ShowSideScribbleMenuAction(readerActivity.getExtraView(),
+                ShowReaderMenuAction.getScribbleActionCallback(readerDataHolder));
+        showMenu.execute(readerDataHolder, null);
+    }
+
+    private boolean isLandscapeViewport() {
+        return getReaderDataHolder().getDisplayWidth() > getReaderDataHolder().getDisplayHeight();
     }
 }

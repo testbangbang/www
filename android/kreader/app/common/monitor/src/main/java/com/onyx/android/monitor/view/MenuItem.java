@@ -6,7 +6,7 @@ package com.onyx.android.monitor.view;
 
 public class MenuItem {
 
-    public enum MenuId {CONTRAST, A2, FULL_REFRESH, BRIGHTNESS, EXIT}
+    public enum MenuId {CONTRAST, A2, FULL_REFRESH, BRIGHTNESS, EXIT, ORIENTATION}
 
     private MenuId id;
     private int drawableResourceId;
