@@ -30,12 +30,12 @@ public interface OnyxOTAService {
     @GET("app/batchUpdate")
     Call<List<ApplicationUpdate>> getUpdateAppInfoList(@Query(Constant.WHERE_TAG) final String param);
 
-    @GET("apks")
+    @GET("api/apks")
     Call<ProductResult<AppProduct>> getMarketAppList(@Query(Constant.WHERE_TAG) final String param);
 
-    @GET("apk/search")
+    @GET("api/apks/search")
     Call<ProductResult<AppProduct>> getMarketAppSearch(@Query(Constant.WHERE_TAG) final String param);
 
-    @GET("apk/{id}")
+    @GET("api/apks/{id}")
     Call<AppProduct> getMarketApp(@Path(Constant.ID_TAG) final String guid);
 }
