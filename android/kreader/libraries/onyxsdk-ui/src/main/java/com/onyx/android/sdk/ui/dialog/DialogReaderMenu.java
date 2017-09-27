@@ -164,6 +164,9 @@ public class DialogReaderMenu extends Dialog {
         updatePageProgress(readerMenuState.getPageIndex());
         seekBarProgress.setMax(readerMenuState.getPageCount());
         seekBarProgress.setProgress(currentPage);
+        if (readerMenuState.isDisableDictionary()) {
+            findViewById(R.id.button_dict).setVisibility(View.GONE);
+        }
     }
 
     private String formatPageProgress(ReaderMenuState state) {

@@ -4,6 +4,7 @@
     "ttsEnabled" : true,
     "hasFrontLight" : true,
     "disableNoteFunc" : true,
+    "disableDictionaryFunc": true,
     "regalEnable" : true,
     "showChineseFontFace": false,
     "keyBinding": {

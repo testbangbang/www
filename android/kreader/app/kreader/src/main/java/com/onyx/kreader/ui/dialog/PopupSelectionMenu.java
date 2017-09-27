@@ -25,8 +25,11 @@ import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
@@ -236,6 +239,10 @@ public class PopupSelectionMenu extends LinearLayout {
             }
         });
 
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableDictionaryFunc()) {
+            button_dict.setVisibility(View.GONE);
+        }
+
         findViewById(R.id.imagebutton_tts).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -386,7 +393,7 @@ public class PopupSelectionMenu extends LinearLayout {
             return;
         }
 
-        if (isWord) {
+        if (isWord && !DeviceConfig.sharedInstance(readerDataHolder.getContext()).isDisableDictionaryFunc()) {
             updateTranslation(readerDataHolder, mMenuCallback.getSelectionText());
             showTranslation();
         } else {
