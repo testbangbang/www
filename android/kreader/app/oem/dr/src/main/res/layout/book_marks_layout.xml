@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/rectangle_stroke"
-    android:padding="@dimen/book_marks_whole_padding"
-    android:orientation="vertical">
+    android:padding="@dimen/book_marks_whole_padding">
 
     <com.onyx.android.dr.view.PageRecyclerView
         android:id="@+id/book_marks_recycler"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-</LinearLayout>
+
+    <com.onyx.android.dr.view.AutoPagedWebView
+        android:id="@+id/book_marks_notation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+</FrameLayout>

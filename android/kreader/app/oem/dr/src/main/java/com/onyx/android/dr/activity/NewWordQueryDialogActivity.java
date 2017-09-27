@@ -79,6 +79,7 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
     private List<String> pathList;
     private boolean tag;
     private NewWordBean intentBean;
+    private int dictType;
 
     @Override
     protected Integer getLayoutId() {
@@ -139,7 +140,7 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
     private void loadDictionary() {
         DictPreference.init(this);
         pathList = new ArrayList<>();
-        int dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
+        dictType = DictPreference.getIntValue(this, Constants.DICTTYPE, Constants.ENGLISH_TYPE);
         dictionaryManager = DRApplication.getInstance().getDictionaryManager();
         dictionaryManager.newProviderMap.clear();
         pathList = Utils.getPathList(dictType);
@@ -218,12 +219,17 @@ public class NewWordQueryDialogActivity extends BaseActivity implements QueryRec
         incomeNewWordNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (dictType == Constants.FRENCH_TAG) {
+                    dictType = Constants.OTHER_TYPE;
+                }
+                DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictionaryLookup);
                 NewWordBean bean = new NewWordBean();
                 bean.setNewWord(editQuery);
                 bean.setDictionaryLookup(intentBean.getDictionaryLookup());
                 bean.setReadingMatter(intentBean.getReadingMatter());
                 bean.setPageNumber(intentBean.getPageNumber());
                 bean.setNewWordType(intentBean.getNewWordType());
+                bean.setParaphrase(dictionaryQueryResult.explanation);
                 OperatingDataManager.getInstance().insertNewWord(bean);
             }
         });

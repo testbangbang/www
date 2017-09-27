@@ -181,12 +181,14 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     private void initTitleData() {
         image.setImageResource(R.drawable.new_word_notebook);
-        if (dictType == Constants.ENGLISH_TYPE) {
+        if (dictType == Constants.ENGLISH_TAG) {
             title.setText(getString(R.string.dict_query_language));
-        } else if (dictType == Constants.CHINESE_TYPE) {
+        } else if (dictType == Constants.CHINESE_TAG) {
             title.setText(getString(R.string.dict_query_chinese_language));
-        } else if (dictType == Constants.OTHER_TYPE) {
+        } else if (dictType == Constants.JAPANESE_TAG) {
             title.setText(getString(R.string.Japanese));
+        } else if (dictType == Constants.FRENCH_TAG) {
+            title.setText(getString(R.string.french));
         }
         iconFour.setVisibility(View.VISIBLE);
         iconThree.setVisibility(View.VISIBLE);
@@ -493,6 +495,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     public void insertNewWord() {
+        if (dictType == Constants.FRENCH_TAG) {
+            dictType = Constants.OTHER_TYPE;
+        }
         DictionaryQueryResult dictionaryQueryResult = queryResult.get(dictionaryLookup);
         NewWordBean bean = new NewWordBean();
         bean.setNewWord(editQuery);
@@ -510,6 +515,9 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGoodSentenceNotebookEvent(GoodSentenceNotebookEvent event) {
+        if (dictType == Constants.FRENCH_TAG) {
+            dictType = Constants.OTHER_TYPE;
+        }
         GoodSentenceBean bean = new GoodSentenceBean();
         bean.setDetails(event.getContent());
         bean.setReadingMatter(dictionaryLookup);

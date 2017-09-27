@@ -52,22 +52,28 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
     Spinner secondSpinner;
     @Bind(R.id.dict_setting_activity_third_spinner)
     Spinner thirdSpinner;
+    @Bind(R.id.dict_setting_activity_fourth_spinner)
+    Spinner fourthSpinner;
     @Bind(R.id.dict_setting_activity_first_select_dict)
     TextView firstSelectDict;
     @Bind(R.id.dict_setting_activity_second_select_dict)
     TextView secondSelectDict;
     @Bind(R.id.dict_setting_activity_third_select_dict)
     TextView thirdSelectDict;
+    @Bind(R.id.dict_setting_activity_fourth_select_dict)
+    TextView fourthSelectDict;
     private DictLanguageTypeAdapter languageTypeAdapter;
     private DictSettingPresenter dictSettingPresenter;
     private List<LanguageTypeBean> languageData;
     private List<LanguageTypeBean> saveLanguageData;
-    private int firstSequenceType = Constants.ENGLISH_TYPE;
-    private int secondSequenceType = Constants.CHINESE_TYPE;
-    private int thirdSequenceType = Constants.OTHER_TYPE;
+    private int firstSequenceType = Constants.ENGLISH_TAG;
+    private int secondSequenceType = Constants.CHINESE_TAG;
+    private int thirdSequenceType = Constants.JAPANESE_TAG;
+    private int fourthSequenceType = Constants.FRENCH_TAG;
     private LanguageTypeBean firstBean;
     private LanguageTypeBean secondBean;
     private LanguageTypeBean thirdBean;
+    private LanguageTypeBean fourthBean;
     private SelectAlertDialog selectTimeDialog;
     private TextView dialogTitle;
     private PageRecyclerView resultView;
@@ -81,6 +87,7 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
     public static final int FIRST = 0;
     public static final int SECOND = 1;
     public static final int THIRD = 2;
+    public static final int FORUTH = 3;
 
     @Override
     protected Integer getLayoutId() {
@@ -139,6 +146,7 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
         firstSpinner.setAdapter(languageTypeAdapter);
         secondSpinner.setAdapter(languageTypeAdapter);
         thirdSpinner.setAdapter(languageTypeAdapter);
+        fourthSpinner.setAdapter(languageTypeAdapter);
         initSpinnerData();
     }
 
@@ -146,9 +154,11 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
         firstSpinner.setSelection(FIRST);
         secondSpinner.setSelection(SECOND);
         thirdSpinner.setSelection(THIRD);
+        fourthSpinner.setSelection(FORUTH);
         firstBean = languageData.get(FIRST);
         secondBean = languageData.get(SECOND);
         thirdBean = languageData.get(THIRD);
+        fourthBean = languageData.get(FORUTH);
     }
 
     public void initEvent() {
@@ -188,6 +198,18 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
+        fourthSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                LanguageTypeBean languageTypeBean = languageData.get(position);
+                fourthBean = languageTypeBean;
+                fourthSequenceType = languageTypeBean.getType();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+            }
+        });
     }
 
     private void loadDialog() {
@@ -211,15 +233,18 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
     private void loadDialogData(final int type) {
         pathList.clear();
         listCheck.clear();
-        if (type == Constants.ENGLISH_TYPE) {
+        if (type == Constants.ENGLISH_TAG) {
             dialogTitle.setText(getString(R.string.dict_query_language) + getString(R.string.dictionary_key_lists));
             pathList = Utils.getDictName(Constants.ENGLISH_DICTIONARY);
-        } else if (type == Constants.CHINESE_TYPE) {
+        } else if (type == Constants.CHINESE_TAG) {
             pathList = Utils.getDictName(Constants.CHINESE_DICTIONARY);
             dialogTitle.setText(getString(R.string.dict_query_chinese_language) + getString(R.string.dictionary_key_lists));
-        } else if (type == Constants.OTHER_TYPE) {
-            pathList = Utils.getDictName(Constants.OTHER_DICTIONARY);
+        } else if (type == Constants.JAPANESE_TAG) {
+            pathList = Utils.getDictName(Constants.JAPANESE_DICTIONARY);
             dialogTitle.setText(getString(R.string.Japanese) + getString(R.string.dictionary_key_lists));
+        } else if (type == Constants.FRENCH_TAG) {
+            pathList = Utils.getDictName(Constants.FRENCH_DICTIONARY);
+            dialogTitle.setText(getString(R.string.french) + getString(R.string.dictionary_key_lists));
         }
         listCheck = Utils.getCheckedList(type, pathList);
         selectDictAdapter.setDataList(pathList, listCheck);
@@ -286,6 +311,7 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
             R.id.dict_setting_activity_first_select_dict,
             R.id.dict_setting_activity_second_select_dict,
             R.id.dict_setting_activity_third_select_dict,
+            R.id.dict_setting_activity_fourth_select_dict,
             R.id.title_bar_right_icon_four})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -304,11 +330,14 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
             case R.id.dict_setting_activity_third_select_dict:
                 loadDialogData(thirdSequenceType);
                 break;
+            case R.id.dict_setting_activity_fourth_select_dict:
+                loadDialogData(fourthSequenceType);
+                break;
         }
     }
 
     private void saveData() {
-        if (Utils.compareWhetherEqual(firstSequenceType, secondSequenceType, thirdSequenceType)) {
+        if (Utils.compareWhetherEqual(firstSequenceType, secondSequenceType, thirdSequenceType, fourthSequenceType)) {
             CommonNotices.showMessage(DictSettingActivity.this, getString(R.string.select_language_hint));
             return;
         }
@@ -316,6 +345,7 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
         saveLanguageData.add(firstBean);
         saveLanguageData.add(secondBean);
         saveLanguageData.add(thirdBean);
+        saveLanguageData.add(fourthBean);
         dictSettingPresenter.saveSettingData(saveLanguageData);
         finish();
         if (jumpSource == Constants.DICT_QUERY) {
