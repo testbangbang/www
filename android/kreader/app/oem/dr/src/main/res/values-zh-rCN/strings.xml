@@ -666,4 +666,5 @@
     <string name="baidu_baike_parameter_error">参数错误</string>
     <string name="width_adaptive">适应宽度</string>
     <string name="menu_time_setting">时间设置</string>
+    <string name="menu_tts_setting">文字转语音（TTS）输出</string>
 </resources>

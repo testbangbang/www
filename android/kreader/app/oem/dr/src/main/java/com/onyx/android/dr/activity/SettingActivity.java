@@ -9,9 +9,14 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.HideLoadingProgressEvent;
+import com.onyx.android.dr.event.StartDownloadingEvent;
 import com.onyx.android.dr.fragment.BaseFragment;
 import com.onyx.android.dr.fragment.BookshelfFragment;
 import com.onyx.android.dr.fragment.DeviceSettingFragment;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -138,5 +143,16 @@ public class SettingActivity extends BaseActivity {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStartDownloadingEvent(StartDownloadingEvent event) {
+        showProgressDialog(null, R.string.downloading, null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHideLoadingProgressEvent(HideLoadingProgressEvent event) {
+        dismissAllProgressDialog();
     }
 }

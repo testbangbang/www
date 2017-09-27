@@ -410,6 +410,11 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
         ActivityManager.startDateTimeSettingsActivity(DRApplication.getInstance());
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeviceSettingTTSSettingEvent(DeviceSettingViewBaseEvent.DeviceSettingTTSSettingEvent event) {
+        ActivityManager.startTTSSettingsActivity(DRApplication.getInstance());
+    }
+
 
     private void openSystemSetting() {
         if (TimeUtils.getCurrentTimeInLong() > lastPressTime + Constants.RESET_PRESS_TIMEOUT) {
