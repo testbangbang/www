@@ -1,4 +1,4 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.activity;
 
 import android.app.Activity;
 import android.graphics.Matrix;
@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.SurfaceView;
 
+import com.onyx.android.sample.R;
 import com.onyx.android.sample.device.DeviceConfig;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 

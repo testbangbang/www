@@ -1,10 +1,13 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.fragment;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.onyx.android.sample.R;
 import com.onyx.android.sdk.api.device.EpdDeviceManager;
 import com.onyx.android.sdk.utils.TestUtils;
 
@@ -12,7 +15,7 @@ import com.onyx.android.sdk.utils.TestUtils;
  * Created by wangxu on 17-8-2.
  */
 
-public class FastUpdateModeActivity extends AppCompatActivity {
+public class FastUpdateModeFragment extends BaseTestFragment {
     
     private boolean isFastMode = false;
     private CountDownTimer timer;
@@ -21,14 +24,20 @@ public class FastUpdateModeActivity extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_fast_update_mode);
-        textView = (TextView) findViewById(R.id.textView);
+
     }
 
     @Override
-    protected void onResume() {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,Bundle savedInstanceState) {
+        View view = View.inflate(getContext(), R.layout.activity_fast_update_mode, null);
+        textView = (TextView) view.findViewById(R.id.textView);
+        return view;
+    }
+
+    @Override
+    public void onResume() {
         super.onResume();
-        startTimer();
+        startTest();
     }
 
     private long generateRandomTime() {
@@ -45,7 +54,7 @@ public class FastUpdateModeActivity extends AppCompatActivity {
         isFastMode = !isFastMode;
     }
 
-    private void startTimer() {
+    public void startTest() {
         if (timer != null) {
             timer.cancel();
             timer = null;
@@ -59,7 +68,7 @@ public class FastUpdateModeActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 toggleFastMode();
-                startTimer();
+                startTest();
             }
         };
         timer.start();
@@ -69,9 +78,8 @@ public class FastUpdateModeActivity extends AppCompatActivity {
         return "After " + time / 1000 + "s will " + (isFastMode ? "quit " : "enter ") + "fast update mode.";
     }
 
-    @Override
-    protected void onPause() {
-        super.onPause();
+    public void stopTest() {
+        super.stopTest();
         if (timer != null) {
             timer.cancel();
         }

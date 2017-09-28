@@ -1,4 +1,4 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.activity;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.onyx.android.sample.R;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.Debug;
