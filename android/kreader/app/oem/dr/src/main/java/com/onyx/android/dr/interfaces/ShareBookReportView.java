@@ -1,6 +1,7 @@
 package com.onyx.android.dr.interfaces;
 
 import com.onyx.android.sdk.data.model.v2.GroupBean;
+import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 
 import java.util.List;
 
@@ -10,4 +11,6 @@ import java.util.List;
 
 public interface ShareBookReportView {
     void setGroupData(List<GroupBean> groups);
+
+    void setGroupMemberResult(GroupMemberBean groupMembers);
 }

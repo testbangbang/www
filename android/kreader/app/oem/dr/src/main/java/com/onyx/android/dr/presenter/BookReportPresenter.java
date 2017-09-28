@@ -12,6 +12,7 @@ import com.onyx.android.dr.request.cloud.CreateBookReportRequest;
 import com.onyx.android.dr.request.cloud.DeleteBookReportRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportListRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportRequest;
+import com.onyx.android.dr.request.cloud.GetSharedImpressionRequest;
 import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
 import com.onyx.android.dr.request.cloud.ShareBookReportRequest;
 import com.onyx.android.dr.util.DRPreferenceManager;
@@ -24,6 +25,7 @@ import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListRequestBean;
+import com.onyx.android.sdk.data.model.v2.GetSharedImpressionResult;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportResult;
@@ -39,6 +41,7 @@ import java.util.List;
 public class BookReportPresenter {
     private BookReportView bookReportView;
     private BookReportData bookReportData;
+    private List<GetBookReportListBean> data;
 
     public BookReportPresenter(BookReportView bookReportView) {
         this.bookReportView = bookReportView;
@@ -51,14 +54,41 @@ public class BookReportPresenter {
         requstBean.limit = "4";
         requstBean.order = "1";
         requstBean.sortBy = "createdAt";
+        final String libraryId = DRPreferenceManager.loadLibraryParentId(DRApplication.getInstance(), "");
 
         final GetBookReportListRequest rq = new GetBookReportListRequest(requstBean);
         bookReportData.getImpressionsList(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetBookReportList bookReportList = rq.getBookReportList();
+                if (data == null) {
+                    data = new ArrayList<GetBookReportListBean>();
+                } else {
+                    data.clear();
+                }
                 if (bookReportList != null && bookReportList.list != null && bookReportList.list.size() > 0) {
-                    bookReportView.setBookReportList(bookReportList.list);
+                    data.addAll(bookReportList.list);
+                }
+                getSharedImpressions(libraryId);
+            }
+        });
+    }
+
+    public void getSharedImpressions(String libraryId) {
+        GetBookReportListRequestBean requstBean = new GetBookReportListRequestBean();
+        requstBean.offset = "1";
+        requstBean.limit = "4";
+        requstBean.order = "1";
+        requstBean.sortBy = "createdAt";
+
+        final GetSharedImpressionRequest rq = new GetSharedImpressionRequest(libraryId, requstBean);
+        bookReportData.getSharedImpressions(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetSharedImpressionResult result = rq.getResult();
+                if(result != null && result.list != null && result.list.size() > 0) {
+                    data.addAll(result.list);
+                    bookReportView.setBookReportList(data);
                 }
             }
         });
@@ -112,7 +142,7 @@ public class BookReportPresenter {
                 if (createBookReportResult != null) {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
                             .getResources().getString(R.string.saved_successfully));
-                    bookReportView.setCreateBookReportData();
+                    bookReportView.setCreateBookReportData(createBookReportResult);
                 } else {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
                             .getResources().getString(R.string.save_failed));
@@ -156,28 +186,9 @@ public class BookReportPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 CloudMetadataCollection metadataCollection = rq.getMetadataCollection();
-                if(metadataCollection != null) {
+                if (metadataCollection != null) {
                     String libraryId = metadataCollection.getLibraryUniqueId();
                     bookReportView.setLibraryId(bookId, libraryId);
-                }
-            }
-        });
-    }
-
-    public void shareImpression(String library, String bookId) {
-        ShareBookReportRequestBean requestBean = new ShareBookReportRequestBean();
-        requestBean.child = bookId;
-        final ShareBookReportRequest rq = new ShareBookReportRequest(library, requestBean);
-        bookReportData.shareImpression(rq, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                ShareBookReportResult result = rq.getResult();
-                if(result != null) {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_success));
-                }else {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_fail));
                 }
             }
         });

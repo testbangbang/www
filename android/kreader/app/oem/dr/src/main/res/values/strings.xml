@@ -674,4 +674,6 @@
     <string name="french">French</string>
     <string name="width_adaptive">width adaptive</string>
     <string name="menu_time_setting">Time setting</string>
+    <string name="share_to_member_count">Member number：%d</string>
+    <string name="share_to_member_no_share">Not choosing to share objects</string>
 </resources>

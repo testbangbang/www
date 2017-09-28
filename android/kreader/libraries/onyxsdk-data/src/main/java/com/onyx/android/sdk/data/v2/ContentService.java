@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
+import com.onyx.android.sdk.data.model.v2.GetSharedImpressionResult;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
@@ -147,6 +148,13 @@ public interface ContentService {
                                                @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
+
+    @GET("/api/librarys/{id}/impressions")
+    Call<GetSharedImpressionResult> getSharedImpression(@Path(Constant.ID_TAG) final String id,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_OFFSET) String offset,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
 
     @GET("/api/impressions/{id}")
     Call<CreateBookReportResult> getImpression(@Path(Constant.ID_TAG) final String id);

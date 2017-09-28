@@ -134,6 +134,7 @@ public class Constants {
     public static final String BOOK_NAME = "book_name";
     public static final String BOOK_PAGE = "book_page";
     public static final String BOOK_ID = "book_id";
+    public static final String IMPRESSION_ID = "impression_id";
     public static final String MARK_BOOK_ID = "mark_book_id";
     public static final String MARK_TOP = "mark_top";
     public static final String MARK_LEFT = "mark_left";

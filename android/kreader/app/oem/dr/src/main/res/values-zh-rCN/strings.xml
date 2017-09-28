@@ -673,4 +673,6 @@
     <string name="french">法文</string>
     <string name="width_adaptive">适应宽度</string>
     <string name="menu_time_setting">时间设置</string>
+    <string name="share_to_member_count">组员人数：%d</string>
+    <string name="share_to_member_no_share">未选择分享对象</string>
 </resources>

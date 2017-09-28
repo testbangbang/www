@@ -348,5 +348,10 @@
     <dimen name="dict_level_one_font_size">20sp</dimen>
     <dimen name="lv_search_history_padding">2dp</dimen>
     <dimen name="btn_clear_history_margin_top">5dp</dimen>
+    <dimen name="share_book_report_item_whole_padding">20dp</dimen>
+    <dimen name="share_book_report_item_group_margin_left">10dp</dimen>
+    <dimen name="share_to_member_item_check_margin">10dp</dimen>
+    <dimen name="share_to_member_count_padding">20dp</dimen>
+    <dimen name="share_to_member_recycler_padding_bottom">10dp</dimen>
 </resources>
 

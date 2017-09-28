@@ -99,7 +99,7 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     }
 
     @Override
-    public void setCreateBookReportData() {
+    public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
 
     }
 

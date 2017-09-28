@@ -11,7 +11,7 @@ import java.util.List;
  */
 
 public interface BookReportView {
-    void setCreateBookReportData();
+    void setCreateBookReportData(CreateBookReportResult createBookReportResult);
 
     void setBookReportList(List<GetBookReportListBean> list);
 

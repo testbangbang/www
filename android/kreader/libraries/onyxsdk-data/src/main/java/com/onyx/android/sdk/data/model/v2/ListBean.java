@@ -12,4 +12,5 @@ public class ListBean {
     public String updatedAt;
     public String parent;
     public ChildBean child;
+    public boolean isChecked;
 }

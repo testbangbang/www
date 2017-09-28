@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.WebViewJSEvent;
@@ -42,7 +43,6 @@ import com.onyx.android.dr.view.NotationDialog;
 import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
-import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -63,6 +63,8 @@ import butterknife.OnClick;
 public class BookReportDetailActivity extends BaseActivity implements BookReportView {
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
+    @Bind(R.id.image)
+    ImageView image;
     @Bind(R.id.title_bar_title)
     TextView titleBarTitle;
     @Bind(R.id.title_bar_right_select_time)
@@ -104,6 +106,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private float currentY;
     private NotationDialog notationDialog;
     private int screenHeight;
+    private CreateBookReportResult createBookReportResult;
 
     @Override
     protected Integer getLayoutId() {
@@ -118,6 +121,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Override
     protected void initView() {
         titleBarTitle.setText(getResources().getString(R.string.reader_response));
+        image.setImageResource(R.drawable.ic_reader_menu_idea);
         titleBarRightSelectTime.setVisibility(View.VISIBLE);
         titleBarRightSelectTime.setText(getResources().getString(R.string.Call_the_modified_file));
         titleBarRightIconOne.setVisibility(View.VISIBLE);
@@ -297,12 +301,12 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         }
 
         if(data != null) {
-            bookReportPresenter.getLibraryId(data.book);
+            ActivityManager.startShareBookReportActivity(this, data._id);
             return;
         }
 
         if(!StringUtils.isNullOrEmpty(bookId)) {
-            bookReportPresenter.getLibraryId(bookId);
+            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id);
             return;
         }
     }
@@ -399,7 +403,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     @Override
-    public void setCreateBookReportData() {
+    public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
+        this.createBookReportResult = createBookReportResult;
         isSave = true;
         bookReportDetailContents.setEnabled(false);
     }
@@ -437,7 +442,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     public void setLibraryId(String bookId, String libraryId) {
-        bookReportPresenter.shareImpression(bookId, libraryId);
+        //bookReportPresenter.shareImpression(bookId, libraryId);
     }
 
     private String insertJsTag() {

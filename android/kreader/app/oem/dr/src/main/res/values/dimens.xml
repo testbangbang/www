@@ -440,4 +440,9 @@
     <dimen name="btn_clear_history_margin_top">5dp</dimen>
     <dimen name="title_bar_image_width">72dp</dimen>
     <dimen name="good_sentence_display_width">425dp</dimen>
+    <dimen name="share_book_report_item_whole_padding">20dp</dimen>
+    <dimen name="share_book_report_item_group_margin_left">10dp</dimen>
+    <dimen name="share_to_member_item_check_margin">10dp</dimen>
+    <dimen name="share_to_member_count_padding">20dp</dimen>
+    <dimen name="share_to_member_recycler_padding_bottom">10dp</dimen>
 </resources>

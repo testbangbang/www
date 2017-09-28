@@ -10,12 +10,14 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ShareBookReportAdapter;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.presenter.ShareBookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
+import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 
 import java.util.List;
 
@@ -60,6 +62,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     PageRecyclerView shareBookReportRecycler;
     private ShareBookReportAdapter adapter;
     private ShareBookReportPresenter shareBookReportPresenter;
+    private String impressionId;
 
     @Override
     protected Integer getLayoutId() {
@@ -74,8 +77,9 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     @Override
     protected void initView() {
         titleBarTitle.setText(getResources().getString(R.string.share_book_impression_to_group));
-        titleBarRightSelectTime.setVisibility(View.VISIBLE);
-        titleBarRightSelectTime.setText(getResources().getString(R.string.infromal_essay_activity_share));
+        image.setImageResource(R.drawable.ic_group);
+        titleBarRightIconOne.setVisibility(View.VISIBLE);
+        titleBarRightIconOne.setImageResource(R.drawable.ic_reader_share);
         shareBookReportRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
@@ -86,6 +90,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
 
     @Override
     protected void initData() {
+        impressionId = getIntent().getStringExtra(Constants.IMPRESSION_ID);
         shareBookReportPresenter = new ShareBookReportPresenter(this);
         shareBookReportPresenter.getAllGroup();
     }
@@ -97,12 +102,13 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.image_view_back)
-    public void onViewClicked() {
+    @Override
+    public void setGroupData(List<GroupBean> groups) {
+        adapter.setData(groups ,impressionId);
     }
 
     @Override
-    public void setGroupData(List<GroupBean> groups) {
-        adapter.setData(groups);
+    public void setGroupMemberResult(GroupMemberBean groupMembers) {
+
     }
 }

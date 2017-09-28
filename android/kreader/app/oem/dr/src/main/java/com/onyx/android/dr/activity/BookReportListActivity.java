@@ -17,12 +17,12 @@ import com.onyx.android.dr.event.ShareBookReportEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
-import com.onyx.android.sdk.data.model.v2.GroupBean;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -81,6 +81,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     private int currentPage = 1;
     private int pages;
     private BookReportPresenter bookReportPresenter;
+    private String userType;
 
     @Override
     protected Integer getLayoutId() {
@@ -95,6 +96,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Override
     protected void initView() {
         titleBarTitle.setText(getResources().getString(R.string.reader_response));
+        image.setImageResource(R.drawable.ic_reader_menu_idea);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         bookReportListRecycle.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
@@ -102,7 +104,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         bookReportListAdapter = new BookReportListAdapter();
         bookReportListRecycle.setAdapter(bookReportListAdapter);
         paginator = bookReportListRecycle.getPaginator();
-
+        userType = DRPreferenceManager.getUserType(DRApplication.getInstance(), "");
         initListener();
     }
 
@@ -150,7 +152,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     @Override
-    public void setCreateBookReportData() {
+    public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
 
     }
 
@@ -162,7 +164,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     private void setData(List<GetBookReportListBean> list) {
         if(bookReportListAdapter != null) {
-            bookReportListAdapter.setData(list);
+            bookReportListAdapter.setData(list, userType);
             String format = DRApplication.getInstance().getResources().getString(R.string.fragment_speech_recording_all_number);
             bookReportListTotalSize.setText(String.format(format, list.size()));
             initPage();
@@ -186,7 +188,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     @Override
     public void setLibraryId(String bookId, String libraryId) {
-        bookReportPresenter.shareImpression(bookId, libraryId);
+        //bookReportPresenter.shareImpression(bookId, libraryId);
     }
 
     private void initPage() {
@@ -215,6 +217,6 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShareBookReportEvent(ShareBookReportEvent event) {
         GetBookReportListBean bookReportBean = event.getBookReportBean();
-        ActivityManager.startShareBookReportActivity(this);
+        ActivityManager.startShareBookReportActivity(this, bookReportBean._id);
     }
 }

@@ -87,4 +87,6 @@
     <integer name="share_book_report_row">8</integer>
     <integer name="share_book_report_col">1</integer>
     <integer name="query_word_list_limit">10</integer>
+    <integer name="share_to_member_row">8</integer>
+    <integer name="share_to_member_col">3</integer>
 </resources>
