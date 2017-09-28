@@ -10,6 +10,7 @@ import android.net.Uri;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
+import com.onyx.android.dr.activity.AnnotationListActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.activity.BaiduBaiKeActivity;
 import com.onyx.android.dr.activity.BookDetailActivity;
@@ -61,6 +62,7 @@ import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.statistics.StatisticsActivity;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -497,6 +499,11 @@ public class ActivityManager {
         Intent intent = new Intent("com.android.settings.TextToSpeechSettings");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClassName("com.android.settings", "com.android.settings.TextToSpeechSettings");
+        context.startActivity(intent);
+    }
+
+    public static void startAnnotationListActivity(Context context) {
+        Intent intent = new Intent(context, AnnotationListActivity.class);
         context.startActivity(intent);
     }
 }

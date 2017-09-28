@@ -687,4 +687,6 @@
     <string name="no_category_found">No category found</string>
     <string name="all">All</string>
     <string name="app_market">App Market</string>
+    <string name="postil_count">postil count</string>
+    <string name="library_name">library</string>
 </resources>

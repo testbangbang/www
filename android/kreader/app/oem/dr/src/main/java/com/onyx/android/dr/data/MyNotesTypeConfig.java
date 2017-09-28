@@ -29,7 +29,7 @@ public class MyNotesTypeConfig {
     public void loadDictInfo(Context context) {
         MenuBean dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_NEW_WORD_NOTEBOOK, context.getResources().getString(R.string.new_word_notebook), R.drawable.new_word_notebook, new NewWordNotebookEvent());
         myTracksData.add(dictData);
-        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_POSTIL, context.getResources().getString(R.string.postil), R.drawable.ic_books, new PostilEvent());
+        dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_POSTIL, context.getResources().getString(R.string.postil), R.drawable.postil, new PostilEvent());
         myThinkData.add(dictData);
         dictData = new MenuBean(DeviceConfig.MyNotesInfo.MY_NOTES_READER_RESPONSE, context.getResources().getString(R.string.reader_response), R.drawable.reader_response, new ReaderResponseEvent());
         myCreationData.add(dictData);

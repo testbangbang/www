@@ -11,6 +11,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.event.ReadingSummaryMenuEvent;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -109,5 +110,14 @@ public class SummaryListAdapter extends PageRecyclerView.PageAdapter<SummaryList
             }
         }
         return selectedList;
+    }
+
+    public void selectAll(boolean check){
+        if (!CollectionUtils.isNullOrEmpty(readSummaryList)){
+            for (ReadSummaryEntity entity : readSummaryList) {
+                entity.isChecked = check;
+            }
+        }
+        notifyDataSetChanged();
     }
 }
