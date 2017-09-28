@@ -8,7 +8,7 @@
     <string name="font_face">Font face</string>
     <string name="text_style">Estilo de texto</string>
     <string name="reader_layer_menu_zoom">Zoom</string>
-    <string name="reader_layer_menu_font_reflow">Reflujo de fuente</string>
+    <string name="reader_layer_menu_font_reflow">Fuente</string>
     <string name="reader_layer_menu_zoom_in">Zoom +</string>
     <string name="reader_layer_menu_zoom_out">Zoom –</string>
     <string name="reader_layer_menu_zoom_to_page">Ajustar</string>
@@ -18,9 +18,9 @@
     <string name="reader_layer_menu_zoom_by_rect">Ventana</string>
     <string name="reader_layer_menu_navigation">Navegación</string>
     <string name="reader_layer_menu_navigation_comic_mode">Comic Mode</string>
-    <string name="reader_layer_menu_navigation_article_mode">Artículo Mode</string>
+    <string name="reader_layer_menu_navigation_article_mode">Artículo</string>
     <string name="reader_layer_menu_navigation_reset">Restaurar</string>
-    <string name="reader_layer_menu_navigation_more_settings">More Settings</string>
+    <string name="reader_layer_menu_navigation_more_settings">Más</string>
     <string name="reader_layer_menu_notes">Notes</string>
     <string name="reader_layer_menu_directory_toc">TOC</string>
     <string name="reader_layer_menu_directory_bookmark">Bookmark</string>
@@ -45,7 +45,7 @@
     <string name="reader_layer_menu_font_style_font_line_spacing">Espacios</string>
     <string name="reader_layer_menu_font_style_page_margins">Márgenes de la página</string>
     <string name="font_size_example_text" translatable="false">Aa</string>
-    <string name="brightness">Brightness</string>
+    <string name="brightness">Brillo</string>
     <string name="natural_light">Natural light</string>
     <string name="always">Siempre</string>
     <string name="every_3_pages">Cada 3 páginas</string>
@@ -56,7 +56,7 @@
     <string name="ok">Aceptar</string>
     <string name="cancel">Cancel</string>
     <string name="gamma_correction">Contraste</string>
-    <string name="manual_crop">Ventana Crop</string>
+    <string name="manual_crop">Ventana</string>
     <string name="outOfRangRerror">Out of Range</string>
     <string name="illegalInput">Illegal Input</string>
 
