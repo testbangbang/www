@@ -1,6 +1,5 @@
 package com.onyx.android.dr.util;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageInfo;
@@ -8,8 +7,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.Display;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -18,9 +15,10 @@ import android.widget.TextView;
 import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.HideLoadingProgressEvent;
+import com.onyx.android.dr.event.StartDownloadingEvent;
 import com.onyx.android.dr.event.HaveNewVersionApkEvent;
 import com.onyx.android.dr.event.HaveNewVersionEvent;
 import com.onyx.android.dr.event.UpdateDownloadSucceedEvent;
@@ -258,12 +256,14 @@ public class ApkUtils {
     }
 
     private static void downloadUpdate(String url) {
+        EventBus.getDefault().post(new StartDownloadingEvent());
         OnyxDownloadManager downloadManager = OnyxDownloadManager.getInstance();
         BaseDownloadTask download = downloadManager.download(DRApplication.getInstance(), url, ApkUtils.getUpdateZipFile().getAbsolutePath(), Constants.UPDATE_ZIP, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     EventBus.getDefault().post(new UpdateDownloadSucceedEvent());
+                    EventBus.getDefault().post(new HideLoadingProgressEvent());
                 }
             }
         });

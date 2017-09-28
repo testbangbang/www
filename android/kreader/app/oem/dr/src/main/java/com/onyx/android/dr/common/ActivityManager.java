@@ -511,4 +511,11 @@ public class ActivityManager {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
+
+    public static void startTTSSettingsActivity(Context context) {
+        Intent intent = new Intent("com.android.settings.TextToSpeechSettings");
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClassName("com.android.settings", "com.android.settings.TextToSpeechSettings");
+        context.startActivity(intent);
+    }
 }

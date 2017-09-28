@@ -23,8 +23,10 @@ import com.onyx.android.dr.event.ReadingRateEvent;
 import com.onyx.android.dr.event.SketchEvent;
 import com.onyx.android.dr.interfaces.MyNotesView;
 import com.onyx.android.dr.presenter.MyNotesPresenter;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -177,5 +179,11 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        DeviceUtils.setFullScreenOnResume(this, false);
+        super.onResume();
     }
 }

@@ -68,6 +68,7 @@ public class ApplicationsActivity extends BaseActivity {
         {
             add(new CustomAppInfo(GroupHomePageActivity.class, R.string.group, R.drawable.ic_reader_group));
             add(new CustomAppInfo(SettingActivity.class, R.string.menu_settings, R.drawable.ic_settings));
+            add(new CustomAppInfo(APPMarketActivity.class, R.string.app_market, R.drawable.market_logo));
         }
     };
 

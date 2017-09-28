@@ -26,10 +26,11 @@
     "com.android.providers.downloads.ui",
     "com.onyx.reader",
     "com.onyx.android.production.test",
-    "com.onyx.appmarket",
     "com.neverland.oreader",
-    "com.onyx.test.MainActivity",
-    "com.android.vending"
+    "com.onyx.test",
+    "com.onyx.appmarket",
+    "com.android.vending",
+    "com.iflytek.speechcloud"
   ],
   "test_apps": [
     "com.onyx.test",

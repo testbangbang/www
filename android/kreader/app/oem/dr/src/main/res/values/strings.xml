@@ -676,4 +676,19 @@
     <string name="menu_time_setting">Time setting</string>
     <string name="share_to_member_count">Member number：%d</string>
     <string name="share_to_member_no_share">Not choosing to share objects</string>
+    <string name="menu_tts_setting">TTS</string>
+    <string name="get_empty_download_link">Empty Download-Link</string>
+    <string name="get_empty_content">Empty Content</string>
+    <string name="download_success">Download Success</string>
+    <string name="apk_download_fail">Download Failed</string>
+    <string name="apk_downloading">Download&#8230;</string>
+    <string name="total">Total：%d</string>
+    <string name="apk_download">Download</string>
+    <string name="install">Install</string>
+    <string name="updated">Updated</string>
+    <string name="size_of_app" translatable="false">%.2fM</string>
+    <string name="apk_search_hint">Search (empty string to search all)</string>
+    <string name="no_category_found">No category found</string>
+    <string name="all">All</string>
+    <string name="app_market">App Market</string>
 </resources>

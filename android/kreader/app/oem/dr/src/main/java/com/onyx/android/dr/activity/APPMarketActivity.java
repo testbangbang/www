@@ -1,11 +1,9 @@
-package com.onyx.appmarket.activity;
+package com.onyx.android.dr.activity;
 
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -20,7 +18,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.Transformation;
+import com.bumptech.glide.load.engine.Resource;
+import com.bumptech.glide.load.resource.gifbitmap.GifBitmapWrapper;
 import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.R;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
@@ -31,14 +35,11 @@ import com.onyx.android.sdk.data.model.AppProduct;
 import com.onyx.android.sdk.data.model.Category;
 import com.onyx.android.sdk.data.model.Link;
 import com.onyx.android.sdk.data.model.ProductQuery;
-import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
-import com.onyx.android.sdk.data.request.cloud.CloudRequestChain;
 import com.onyx.android.sdk.data.request.cloud.ContainerRequest;
 import com.onyx.android.sdk.data.request.cloud.MarketAppListRequest;
 import com.onyx.android.sdk.data.request.cloud.MarketAppRequest;
 import com.onyx.android.sdk.data.request.cloud.MarketAppSearchRequest;
-import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
@@ -50,13 +51,8 @@ import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.InputMethodUtils;
-import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.appmarket.MarketApplication;
-import com.onyx.appmarket.R;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Transformation;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -66,7 +62,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends OnyxAppCompatActivity {
+public class APPMarketActivity extends OnyxAppCompatActivity {
     private static final String TAG = MainActivity.class.getSimpleName();
     private static final String CATEGORY_APPS_GUID = "ed21e3b0ab744025b6447e82315b9398";
     private static final int INVALID_VALUE = -1;
@@ -89,12 +85,11 @@ public class MainActivity extends OnyxAppCompatActivity {
     private int pageViewRowCount = 5;
     private int pageViewColCount = 1;
     private int blankCount = 0;
-    private int localLoadRetryCount = 3;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_app_market);
         ButterKnife.bind(this);
 
         initConfig();
@@ -130,9 +125,20 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private void initView() {
-        initSupportActionBarWithCustomBackFunction();
+        initTitle();
         initSearchEditView();
         initPageView();
+    }
+
+    private void initTitle() {
+        ImageView imageFilter = (ImageView) findViewById(R.id.title_bar_right_icon_one);
+        ImageView titleImage = (ImageView) findViewById(R.id.image);
+        TextView title = (TextView) findViewById(R.id.title_bar_title);
+        imageFilter.setImageResource(R.drawable.type_category);
+        titleImage.setImageResource(R.drawable.market_logo);
+        titleImage.setVisibility(View.VISIBLE);
+        imageFilter.setVisibility(View.VISIBLE);
+        title.setText(getString(R.string.app_market));
     }
 
     private void initSearchEditView() {
@@ -179,7 +185,7 @@ public class MainActivity extends OnyxAppCompatActivity {
 
             @Override
             public AppViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-                return new AppViewHolder(LayoutInflater.from(MainActivity.this).inflate(R.layout.activity_application_item, null, false));
+                return new AppViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_app_market_item, null, false));
             }
 
             @Override
@@ -219,22 +225,21 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private void readerIconImageView(ImageView imageView, final AppProduct product) {
-        Picasso.with(this).load(product.coverUrl)
+        Glide.with(this).load(product.coverUrl)
                 .error(R.mipmap.ic_launcher)
                 .placeholder(R.mipmap.ic_launcher)
-                .transform(new Transformation() {
+                .transform(new Transformation<GifBitmapWrapper>() {
                     @Override
-                    public Bitmap transform(Bitmap source) {
-                        // save cloud icon file for cb loading custom icon
+                    public Resource<GifBitmapWrapper> transform(Resource<GifBitmapWrapper> resource, int outWidth, int outHeight) {
                         File coverFile = getApkIconFilePath(product);
                         if (!coverFile.exists()) {
-                            BitmapUtils.saveBitmap(source, coverFile.getAbsolutePath());
+                            BitmapUtils.saveBitmap(resource.get().getBitmapResource().get(), coverFile.getAbsolutePath());
                         }
-                        return source;
+                        return resource;
                     }
 
                     @Override
-                    public String key() {
+                    public String getId() {
                         return product.packageName;
                     }
                 })
@@ -242,11 +247,12 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private void renderButton(Button button, AppProduct product) {
-        button.setText(R.string.download);
+        button.setText(R.string.apk_download);
         if (checkInstalledLatest(product)) {
-            button.setText(R.string.updated);
+            button.setText(R.string.apk_updated);
             return;
         }
+
         button.setText(checkDownloadedApk(product) ? R.string.install : R.string.download);
     }
 
@@ -283,10 +289,8 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private void loadAppList() {
-        final CloudRequestChain requestChain = new CloudRequestChain();
         final MarketAppListRequest appListRequest = new MarketAppListRequest(productQuery);
-        addIndexLookupRequest(requestChain);
-        requestChain.addRequest(appListRequest, new BaseCallback() {
+        loadData(appListRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -296,26 +300,6 @@ public class MainActivity extends OnyxAppCompatActivity {
                 notifyDataChanged();
             }
         });
-        requestChain.execute(MarketApplication.sInstance, getCloudStore().getCloudManager());
-    }
-
-    private void addIndexLookupRequest(final CloudRequestChain requestChain) {
-        final CloudIndexServiceRequest indexServiceRequest = new CloudIndexServiceRequest(getCloudStore().getCloudConf().getApiBase(),
-                createIndexService());
-        indexServiceRequest.setLoadOnlyFromLocal(true);
-        indexServiceRequest.setLocalLoadRetryCount(localLoadRetryCount);
-        requestChain.addRequest(indexServiceRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-            }
-        });
-    }
-
-    private IndexService createIndexService() {
-        IndexService authService = new IndexService();
-        authService.mac = NetworkUtil.getMacAddress(this);
-        authService.model = Build.MODEL;
-        return authService;
     }
 
     private <T extends BaseCloudRequest> void loadData(final T cloudRequest, final BaseCallback callback) {
@@ -388,6 +372,11 @@ public class MainActivity extends OnyxAppCompatActivity {
         startSearch();
     }
 
+    @OnClick(R.id.menu_back)
+    void onBack() {
+        finish();
+    }
+
     private void startSearch() {
         InputMethodUtils.hideInputKeyboard(this);
         String search = searchText.getText().toString();
@@ -401,7 +390,7 @@ public class MainActivity extends OnyxAppCompatActivity {
         searchAppList(productQuery);
     }
 
-    @OnClick(R.id.imageView_type_filter)
+    @OnClick(R.id.title_bar_right_icon_one)
     void onTypeFilterClick() {
         loadAppCategory();
     }
@@ -490,10 +479,10 @@ public class MainActivity extends OnyxAppCompatActivity {
                             e.printStackTrace();
                         }
                         dismissProgressDialog(product.getGuid());
-                        showWhiteToast(e == null ? R.string.download_success : R.string.download_fail, Toast.LENGTH_SHORT);
+                        showWhiteToast(e == null ? R.string.download_success : R.string.apk_download_fail, Toast.LENGTH_SHORT);
                         getDownLoaderManager().removeTask(product.getGuid());
                         notifyDataChanged();
-                        PackageUtils.installNormal(MainActivity.this, file.getAbsolutePath());
+                        PackageUtils.installNormal(APPMarketActivity.this, file.getAbsolutePath());
                     }
                 });
         task.setForceReDownload(true);
@@ -536,7 +525,7 @@ public class MainActivity extends OnyxAppCompatActivity {
         File file = getApkFilePath(product);
         if (file != null) {
             setProgressDialogToastMessage(product.getGuid(), FileUtils.getFileName(file.getAbsolutePath()) +
-                    " " + getString(R.string.downloading));
+                    " " + getString(R.string.apk_downloading));
         }
     }
 
@@ -550,7 +539,7 @@ public class MainActivity extends OnyxAppCompatActivity {
     }
 
     private CloudStore getCloudStore() {
-        return MarketApplication.getCloudStore();
+        return DRApplication.getCloudStore();
     }
 
     private OnyxDownloadManager getDownLoaderManager() {

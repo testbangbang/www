@@ -445,4 +445,26 @@
     <dimen name="share_to_member_item_check_margin">10dp</dimen>
     <dimen name="share_to_member_count_padding">20dp</dimen>
     <dimen name="share_to_member_recycler_padding_bottom">10dp</dimen>
+    <dimen name="activity_home_search_layout_height">60dp</dimen>
+    <dimen name="activity_home_search_layout_margin_bottom">10dp</dimen>
+    <dimen name="activity_home_search_layout_margin_top">20dp</dimen>
+    <dimen name="activity_home_search_button_size">50dp</dimen>
+    <dimen name="activity_home_search_edit_padding_left">10dp</dimen>
+    <dimen name="activity_home_search_edit_text_size">20sp</dimen>
+    <dimen name="activity_home_content_page_view_layout_margin">20dp</dimen>
+    <dimen name="activity_home_indicator_layout_margin">10dp</dimen>
+    <dimen name="activity_home_indicator_total_text_size">24sp</dimen>
+    <dimen name="activity_home_indicator_text_size">26sp</dimen>
+    <dimen name="activity_home_indicator_text_marin_left_right">12dp</dimen>
+    <dimen name="activity_home_app_item_icon_size">80dp</dimen>
+    <dimen name="activity_home_app_item_text_layout_margin_left_right">18dp</dimen>
+    <dimen name="activity_home_app_item_text_layout_name_text_size">23sp</dimen>
+    <dimen name="activity_home_app_item_text_layout_type_text_size">21sp</dimen>
+    <dimen name="activity_home_app_item_text_layout_size_text_size">21sp</dimen>
+    <dimen name="activity_home_app_item_text_layout_summary_text_size">21sp</dimen>
+    <dimen name="activity_home_app_item_download_button_width">120dp</dimen>
+    <dimen name="activity_home_app_item_download_button_min_height">42dp</dimen>
+    <dimen name="activity_home_app_item_download_button_padding">8dp</dimen>
+    <dimen name="activity_home_app_item_download_button_text_size">23sp</dimen>
+    <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
 </resources>
