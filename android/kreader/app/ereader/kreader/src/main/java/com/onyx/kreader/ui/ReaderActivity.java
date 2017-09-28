@@ -75,6 +75,7 @@ import com.onyx.kreader.ui.actions.SaveDocumentOptionsAction;
 import com.onyx.kreader.ui.actions.ShowQuickPreviewAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
 import com.onyx.kreader.ui.actions.ShowSideScribbleMenuAction;
+import com.onyx.kreader.ui.actions.ShowTabHostMenuDialogAction;
 import com.onyx.kreader.ui.actions.ShowTextSelectionMenuAction;
 import com.onyx.kreader.ui.actions.StartSideNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -1176,87 +1177,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         dataManager.submit(this, metadataRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                showTabHostMenuDialog(getRecentFiles(metadataRequest.getList()));
+                new ShowTabHostMenuDialogAction(surfaceView,
+                        metadataRequest.getList(),
+                        isSideReadingMode).execute(getReaderDataHolder(), null);
             }
         });
 
-    }
-
-    private boolean isValidFilePath(String path) {
-        if (StringUtils.isNullOrEmpty(path)) {
-            return false;
-        }
-        File file = new File(path);
-        return file.exists() && file.isFile();
-    }
-
-    private ArrayList<String> getRecentFiles(List<Metadata> list) {
-        ArrayList<String> files = new ArrayList<>();
-        if (CollectionUtils.isNullOrEmpty(list)) {
-            files.add(getReaderDataHolder().getDocumentPath());
-            return files;
-        }
-        for (Metadata data : list) {
-            if (isValidFilePath(data.getNativeAbsolutePath())) {
-                files.add(data.getNativeAbsolutePath());
-            }
-        }
-        return files;
-    }
-
-    private void showTabHostMenuDialog(List<String> files) {
-        DialogTabHostMenu dlg = new DialogTabHostMenu(this, files, isSideReadingMode,
-                new DialogTabHostMenu.Callback() {
-
-                    @Override
-                    public void onLinkedOpen(String path) {
-                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
-                                ReaderTabHostBroadcastReceiver.SideReadingCallback.DOUBLE_OPEN,
-                                path, null);
-                    }
-
-                    @Override
-                    public void onSideOpen(String left, String right) {
-                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
-                                ReaderTabHostBroadcastReceiver.SideReadingCallback.SIDE_OPEN,
-                                left, right);
-                    }
-
-                    @Override
-                    public void onSideNote(String path) {
-                    }
-
-                    @Override
-                    public void onOpenDoc(String path) {
-                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
-                                ReaderTabHostBroadcastReceiver.SideReadingCallback.OPEN_NEW_DOC,
-                                path, null);
-                    }
-
-                    @Override
-                    public void onSideSwitch() {
-                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
-                                ReaderTabHostBroadcastReceiver.SideReadingCallback.SWITCH_SIDE,
-                                null, null);
-                    }
-
-                    @Override
-                    public void onClosing() {
-                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
-                                ReaderTabHostBroadcastReceiver.SideReadingCallback.QUIT_SIDE_READING,
-                                null, null);
-                    }
-                });
-
-        int[] location = new int[2];
-        surfaceView.getLocationOnScreen(location);
-
-        dlg.getWindow().setGravity(Gravity.LEFT | Gravity.TOP);
-        WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
-        lp.x = location[0] + 10;
-        lp.y = location[1];
-
-        dlg.show();
     }
 
     private void openBuiltInDoc() {
