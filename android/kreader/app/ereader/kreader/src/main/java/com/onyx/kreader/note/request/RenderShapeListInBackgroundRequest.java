@@ -25,6 +25,7 @@ public class RenderShapeListInBackgroundRequest extends ReaderBaseNoteRequest {
         setRender(true);
         setTransfer(true);
         setVisiblePages(pages);
+        setRenderToScreen(false);
         shapeList.addAll(list);
     }
 
