@@ -15,6 +15,7 @@ import com.onyx.kreader.ui.events.GotoPageLinkEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.ResizeReaderWindowEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
+import com.onyx.kreader.ui.events.ShowTabHostMenuDialogEvent;
 import com.onyx.kreader.ui.events.StopNoteEvent;
 import com.onyx.kreader.ui.events.UpdateTabWidgetVisibilityEvent;
 
@@ -33,6 +34,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_DOCUMENT_ACTIVATED = "com.onyx.kreader.action.DOCUMENT_ACTIVATED";
     public static final String ACTION_UPDATE_TAB_WIDGET_VISIBILITY = "com.onyx.kreader.action.UPDATE_TAB_WIDGET_VISIBILITY";
     public static final String ACTION_GOTO_PAGE_LINK = "com.onyx.kreader.action.GOTO_PAGE_LINK";
+    public static final String ACTION_SHOW_TAB_HOST_MENU_DIALOG = "com.onyx.kreader.action.SHOW_TAB_HOST_MENU_DIALOG";
     public static final String ACTION_ENABLE_DEBUG_LOG = "com.onyx.kreader.action.ENABLE_DEBUG_LOG";
     public static final String ACTION_DISABLE_DEBUG_LOG = "com.onyx.kreader.action.DISABLE_DEBUG_LOG";
 
@@ -45,6 +47,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG_PAGE_LINK = "com.onyx.kreader.PAGE_LINK";
     public static final String TAG_ENABLE_DEBUG = "com.onyx.kreader.ENABLE_DEBUG";
     public static final String TAG_SIDE_NOTE_MODE = "com.onyx.kreader.SIDE_NOTE_MODE";
+    public static final String TAG_SIDE_READING_MODE = "com.onyx.kreader.SIDE_READING_MODE";
 
     private static EventBus eventBus;
 
@@ -107,6 +110,12 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         sendBroadcast(context, intent);
     }
 
+    public static void sendShowTabHostMenuDialogIntent(Context context, Class clazz) {
+        Intent intent = new Intent(context, clazz);
+        intent.setAction(ACTION_SHOW_TAB_HOST_MENU_DIALOG);
+        sendBroadcast(context, intent);
+    }
+
     public static void sendEnableDebugLogIntent(Context context, Class clazz) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_ENABLE_DEBUG_LOG);
@@ -157,6 +166,8 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(ACTION_GOTO_PAGE_LINK)) {
             String link = intent.getStringExtra(ReaderBroadcastReceiver.TAG_PAGE_LINK);
             eventBus.post(new GotoPageLinkEvent(link));
+        } else if (intent.getAction().equals(ACTION_SHOW_TAB_HOST_MENU_DIALOG)) {
+            eventBus.post(new ShowTabHostMenuDialogEvent());
         } else if (intent.getAction().equals(ACTION_ENABLE_DEBUG_LOG)) {
             Debug.setDebug(true);
         } else if (intent.getAction().equals(ACTION_DISABLE_DEBUG_LOG)) {

@@ -36,7 +36,15 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.utils.TreeObserverUtils;
@@ -72,6 +80,7 @@ import com.onyx.kreader.ui.actions.StartSideNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
+import com.onyx.kreader.ui.dialog.DialogTabHostMenu;
 import com.onyx.kreader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
@@ -102,6 +111,7 @@ import com.onyx.kreader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
+import com.onyx.kreader.ui.events.ShowTabHostMenuDialogEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
 import com.onyx.kreader.ui.events.StopNoteEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
@@ -118,8 +128,10 @@ import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -143,6 +155,8 @@ public class ReaderActivity extends OnyxBaseActivity {
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
+
+    private boolean isSideReadingMode = false;
 
     private long lastActivated = new Date().getTime();
 
@@ -898,6 +912,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
         }
 
+        isSideReadingMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, false);
+
         boolean sideNoteMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, false);
         if (sideNoteMode) {
             ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
@@ -1149,6 +1165,98 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onMoveTaskToBackRequest(final MoveTaskToBackEvent event) {
         moveTaskToBack(true);
+    }
+
+    @Subscribe
+    public void onShowTabHostMenuDialogRequest(final ShowTabHostMenuDialogEvent event) {
+                final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
+
+        final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+        DataManager dataManager = new DataManager();
+        dataManager.submit(this, metadataRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                showTabHostMenuDialog(getRecentFiles(metadataRequest.getList()));
+            }
+        });
+
+    }
+
+    private boolean isValidFilePath(String path) {
+        if (StringUtils.isNullOrEmpty(path)) {
+            return false;
+        }
+        File file = new File(path);
+        return file.exists() && file.isFile();
+    }
+
+    private ArrayList<String> getRecentFiles(List<Metadata> list) {
+        ArrayList<String> files = new ArrayList<>();
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            files.add(getReaderDataHolder().getDocumentPath());
+            return files;
+        }
+        for (Metadata data : list) {
+            if (isValidFilePath(data.getNativeAbsolutePath())) {
+                files.add(data.getNativeAbsolutePath());
+            }
+        }
+        return files;
+    }
+
+    private void showTabHostMenuDialog(List<String> files) {
+        DialogTabHostMenu dlg = new DialogTabHostMenu(this, files, isSideReadingMode,
+                new DialogTabHostMenu.Callback() {
+
+                    @Override
+                    public void onLinkedOpen(String path) {
+                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
+                                ReaderTabHostBroadcastReceiver.SideReadingCallback.DOUBLE_OPEN,
+                                path, null);
+                    }
+
+                    @Override
+                    public void onSideOpen(String left, String right) {
+                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
+                                ReaderTabHostBroadcastReceiver.SideReadingCallback.SIDE_OPEN,
+                                left, right);
+                    }
+
+                    @Override
+                    public void onSideNote(String path) {
+                    }
+
+                    @Override
+                    public void onOpenDoc(String path) {
+                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
+                                ReaderTabHostBroadcastReceiver.SideReadingCallback.OPEN_NEW_DOC,
+                                path, null);
+                    }
+
+                    @Override
+                    public void onSideSwitch() {
+                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
+                                ReaderTabHostBroadcastReceiver.SideReadingCallback.SWITCH_SIDE,
+                                null, null);
+                    }
+
+                    @Override
+                    public void onClosing() {
+                        ReaderTabHostBroadcastReceiver.sendSideReadingCallbackIntent(ReaderActivity.this,
+                                ReaderTabHostBroadcastReceiver.SideReadingCallback.QUIT_SIDE_READING,
+                                null, null);
+                    }
+                });
+
+        int[] location = new int[2];
+        surfaceView.getLocationOnScreen(location);
+
+        dlg.getWindow().setGravity(Gravity.LEFT | Gravity.TOP);
+        WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
+        lp.x = location[0] + 10;
+        lp.y = location[1];
+
+        dlg.show();
     }
 
     private void openBuiltInDoc() {
