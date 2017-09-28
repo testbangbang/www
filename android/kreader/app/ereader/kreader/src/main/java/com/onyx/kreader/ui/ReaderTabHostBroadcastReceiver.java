@@ -21,10 +21,18 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_QUIT_FULL_SCREEN = "com.onyx.kreader.action.QUIT_FULL_SCREEN";
     public static final String ACTION_SHOW_TAB_WIDGET = "com.onyx.kreader.action.SHOW_TAB_WIDGET";
     public static final String ACTION_OPEN_DOCUMENT_FAILED = "com.onyx.kreader.action.OPEN_DOCUMENT_FAILED";
+    public static final String ACTION_SIDE_READING_CALLBACK = "com.onyx.kreader.action.SIDE_READING_CALLBACK";
 
     public static final String TAG_SCREEN_ORIENTATION = "com.onyx.kreader.action.SCREEN_ORIENTATION";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.action.DOCUMENT_PATH";
     public static final String TAG_TAB_ACTIVITY = "com.onyx.kreader.action.TAB_ACTIVITY";
+    public static final String TAG_SIDE_READING_CALLBACK = "com.onyx.kreader.action.SIDE_READING_CALLBACK";
+    public static final String TAG_SIDE_READING_LEFT_DOC = "com.onyx.kreader.action.SIDE_READING_LEFT";
+    public static final String TAG_SIDE_READING_RIGHT_DOC = "com.onyx.kreader.action.SIDE_READING_RIGHT";
+
+    public enum SideReadingCallback {
+        DOUBLE_OPEN, SIDE_OPEN, OPEN_NEW_DOC, SWITCH_SIDE, QUIT_SIDE_READING
+    }
 
     public static abstract class Callback {
         public abstract void onTabBringToFront(String tabActivity);
@@ -34,6 +42,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         public abstract void onQuitFullScreen();
         public abstract void onUpdateTabWidgetVisibility(boolean visible);
         public abstract void onOpenDocumentFailed(String path);
+        public abstract void onSideReading(SideReadingCallback callback, String leftDocPath, String rightDocPath);
         public abstract void onGotoPageLink(String link);
         public abstract void onEnableDebugLog();
         public abstract void onDisableDebugLog();
@@ -97,6 +106,22 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void sendSideReadingCallbackIntent(Context context,
+                                                     SideReadingCallback callback,
+                                                     String leftDocPath,
+                                                     String rightDocPath) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_SIDE_READING_CALLBACK);
+        intent.putExtra(TAG_SIDE_READING_CALLBACK, callback.toString());
+        if (leftDocPath != null) {
+            intent.putExtra(TAG_SIDE_READING_LEFT_DOC, leftDocPath);
+        }
+        if (rightDocPath != null) {
+            intent.putExtra(TAG_SIDE_READING_RIGHT_DOC, rightDocPath);
+        }
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
@@ -135,6 +160,14 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(ACTION_OPEN_DOCUMENT_FAILED)) {
             if (callback != null) {
                 callback.onOpenDocumentFailed(intent.getStringExtra(TAG_DOCUMENT_PATH));
+            }
+        } else if (intent.getAction().equals(ACTION_SIDE_READING_CALLBACK)) {
+            if (callback != null) {
+                SideReadingCallback cb = Enum.valueOf(SideReadingCallback.class,
+                        intent.getStringExtra(TAG_SIDE_READING_CALLBACK));
+                String left = intent.getStringExtra(TAG_SIDE_READING_LEFT_DOC);
+                String right = intent.getStringExtra(TAG_SIDE_READING_RIGHT_DOC);
+                callback.onSideReading(cb, left, right);
             }
         } else if (intent.getAction().equals(ReaderBroadcastReceiver.ACTION_GOTO_PAGE_LINK)) {
             if (callback != null) {
