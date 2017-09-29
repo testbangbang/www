@@ -19,7 +19,7 @@ static void onTouchPointReceived(void * userData, int px, int py, int pressure, 
     if(debug) {
        LOGI("onTouchPointReceived x y pressure ts erasing state %d %d %d %d %d %d \n", px, py, pressure, ts, erasing, shortcutDrawing, shortcutErasing, state);
     }
-    if (userData == NULL) {
+    if (userData == NULL || readerObject == NULL) {
         return;
     }
     JNIEnv *readerEnv = (JNIEnv *)userData;
