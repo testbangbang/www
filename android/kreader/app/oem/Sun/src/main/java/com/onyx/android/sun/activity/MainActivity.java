@@ -1,4 +1,4 @@
-package com.onyx.android.sun.acitivity;
+package com.onyx.android.sun.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;

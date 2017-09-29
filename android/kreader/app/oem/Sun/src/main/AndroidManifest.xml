@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:name=".SunApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".acitivity.MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
