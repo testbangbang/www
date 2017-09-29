@@ -16,6 +16,7 @@ import com.onyx.android.sample.fragment.ParallelUpdateFragment;
 import com.onyx.android.sample.fragment.RectangleUpdateFragment;
 import com.onyx.android.sample.fragment.TextSelectionFragment;
 import com.onyx.android.sample.fragment.TextUpdateFragment;
+import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,6 +35,7 @@ public class RefreshTestActivity extends AppCompatActivity {
     private final static String TAG = RefreshTestActivity.class.getSimpleName();
 
     private List<BaseTestFragment> fragments = new ArrayList<>();
+    private WakeLockHolder wakeLockHolder = new WakeLockHolder();
     private int currentIndex = 0;
     private Handler handler = new Handler(Looper.getMainLooper());
     private Runnable runnable = new Runnable() {
@@ -49,6 +51,8 @@ public class RefreshTestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_refresh_test);
         ButterKnife.bind(this);
+
+        acquireWakelock();
 
         fragments.add(new RectangleUpdateFragment());
         fragments.add(new OverlayUpdateFragment());
@@ -106,5 +110,14 @@ public class RefreshTestActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        releaseWakelock();
+    }
+
+    private void acquireWakelock() {
+        wakeLockHolder.acquireWakeLock(this, WakeLockHolder.WAKEUP_FLAGS | WakeLockHolder.ON_AFTER_RELEASE, TAG);
+    }
+
+    private void releaseWakelock() {
+        wakeLockHolder.releaseWakeLock();
     }
 }
