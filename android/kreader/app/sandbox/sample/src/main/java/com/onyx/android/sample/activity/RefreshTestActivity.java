@@ -72,6 +72,7 @@ public class RefreshTestActivity extends AppCompatActivity {
     @Override
     public void onStop() {
         super.onStop();
+        stopTest();
         handler.removeCallbacks(runnable);
     }
 
