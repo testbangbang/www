@@ -13,7 +13,6 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.MoreBooksEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.MainFragmentView;
@@ -172,7 +171,7 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
 
     @Override
     public void setDatas(QueryResult<Metadata> queryResult) {
-        if (queryResult.list != null && queryResult.list.size() > 0) {
+        if (queryResult != null && queryResult.list != null && queryResult.list.size() > 0) {
             Map<String, CloseableReference<Bitmap>> bitmaps = DataManagerHelper.loadCloudThumbnailBitmapsWithCache(getActivity(), DRApplication.getCloudStore().getCloudManager(), queryResult.list);
             libraryAdapter.updateContentView(getLibraryDataModel(queryResult, bitmaps));
         }
