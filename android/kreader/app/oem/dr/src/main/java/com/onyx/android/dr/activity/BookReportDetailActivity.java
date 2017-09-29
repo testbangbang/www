@@ -32,6 +32,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.WebViewJSEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
+import com.onyx.android.dr.interfaces.OnLongClickTouchListener;
 import com.onyx.android.dr.interfaces.WebViewInterface;
 import com.onyx.android.dr.presenter.BookReportPresenter;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
@@ -107,6 +108,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private NotationDialog notationDialog;
     private int screenHeight;
     private CreateBookReportResult createBookReportResult;
+    private OnLongClickTouchListener listener;
 
     @Override
     protected Integer getLayoutId() {
@@ -202,6 +204,9 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                 bookReportDetailContents.onTouchEvent(event);
                 currentX = event.getX();
                 currentY = event.getY();
+                if (event.getAction() == MotionEvent.ACTION_UP && listener != null) {
+                    listener.clicked();
+                }
                 return true;
             }
         });
@@ -219,7 +224,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             @Override
             public boolean onLongClick(View v) {
                 if (Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
-                    showNotationDialog();
+                    setListener();
                 }
                 return false;
             }
@@ -244,6 +249,16 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             @Override
             public void onDestroyActionMode(ActionMode mode) {
 
+            }
+        });
+    }
+
+    private void setListener() {
+        setOnLongClickTouchListener(new OnLongClickTouchListener() {
+            @Override
+            public void clicked() {
+                showNotationDialog();
+                listener = null;
             }
         });
     }
@@ -296,16 +311,16 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     private void share() {
-        if(Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+        if (Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
             return;
         }
 
-        if(data != null) {
+        if (data != null) {
             ActivityManager.startShareBookReportActivity(this, data._id);
             return;
         }
 
-        if(!StringUtils.isNullOrEmpty(bookId)) {
+        if (!StringUtils.isNullOrEmpty(bookId)) {
             ActivityManager.startShareBookReportActivity(this, createBookReportResult._id);
             return;
         }
@@ -454,7 +469,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             int currentPosition = 0;
             for (CommentsBean bean : comments) {
                 int left = Integer.parseInt(bean.left) - currentPosition;
-                sb.append(content.substring(currentPosition, left));
+                sb.append(content.substring(0, left));
                 String js = "<img id=\"" + bean._id + "\" src=\"file:///android_asset/ic_postil.png\" onclick=\"addComment('" + bean.content + "')\"/>";
                 sb.append(js);
                 content = content.substring(left);
@@ -485,5 +500,9 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                     "control.showDialog(comments);}";
             bookReportWebContent.loadUrl("javascript:" + addComment);
         }
+    }
+
+    public void setOnLongClickTouchListener(OnLongClickTouchListener listener) {
+        this.listener = listener;
     }
 }

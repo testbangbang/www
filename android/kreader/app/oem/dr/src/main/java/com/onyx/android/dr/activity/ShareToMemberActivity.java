@@ -134,8 +134,10 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
+                finish();
                 break;
             case R.id.title_bar_title:
+                finish();
                 break;
             case R.id.title_bar_right_icon_one:
                 shareToMember();
@@ -150,7 +152,7 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
 
         List<ListBean> selectedData = adapter.getSelectedData();
         if (selectedData == null || selectedData.size() == 0) {
-            CommonNotices.showMessage(DRApplication.getInstance(), "未选择分享对象");
+            CommonNotices.showMessage(DRApplication.getInstance(), getResources().getString(R.string.share_to_member_no_share));
             return;
         }
         for (ListBean bean : selectedData) {

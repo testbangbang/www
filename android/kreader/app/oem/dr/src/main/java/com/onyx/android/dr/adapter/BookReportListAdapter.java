@@ -33,7 +33,6 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
     private List<GetBookReportListBean> data;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_row);
     private int column = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_col);
-    private String userType;
 
     @Override
     public int getRowCount() {
@@ -74,9 +73,6 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         viewHolder.bookReportListItemDelete.setTag(position);
         viewHolder.itemView.setTag(position);
         viewHolder.itemView.setOnClickListener(this);
-        if(Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
-            viewHolder.bookReportListItemShare.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -111,9 +107,8 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         ActivityManager.startReadingReportActivity(DRApplication.getInstance(), intent);
     }
 
-    public void setData(List<GetBookReportListBean> data, String userType) {
+    public void setData(List<GetBookReportListBean> data) {
         this.data = data;
-        this.userType = userType;
         notifyDataSetChanged();
     }
 

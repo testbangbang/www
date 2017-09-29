@@ -88,8 +88,8 @@ public class BookReportPresenter {
                 GetSharedImpressionResult result = rq.getResult();
                 if(result != null && result.list != null && result.list.size() > 0) {
                     data.addAll(result.list);
-                    bookReportView.setBookReportList(data);
                 }
+                bookReportView.setBookReportList(data);
             }
         });
     }

@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ShareBookReportAdapter;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.presenter.ShareBookReportPresenter;
@@ -98,17 +99,47 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
     }
 
     @Override
     public void setGroupData(List<GroupBean> groups) {
-        adapter.setData(groups ,impressionId);
+        adapter.setData(groups, impressionId);
     }
 
     @Override
     public void setGroupMemberResult(GroupMemberBean groupMembers) {
 
+    }
+
+    @OnClick({R.id.image_view_back, R.id.image, R.id.title_bar_title, R.id.title_bar_right_icon_one})
+    public void onViewClicked(View view) {
+        switch (view.getId()) {
+            case R.id.image_view_back:
+                finish();
+                break;
+            case R.id.image:
+                finish();
+                break;
+            case R.id.title_bar_title:
+                finish();
+                break;
+            case R.id.title_bar_right_icon_one:
+                shareToGroup();
+                break;
+        }
+    }
+
+    private void shareToGroup() {
+        if(adapter == null) {
+            return;
+        }
+
+        List<GroupBean> selectData = adapter.getSelectData();
+        if (selectData == null || selectData.size() == 0) {
+            CommonNotices.showMessage(DRApplication.getInstance(), getResources().getString(R.string.share_to_member_no_share));
+            return;
+        }
+        //TODO:share to group
     }
 }

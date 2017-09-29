@@ -81,7 +81,6 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     private int currentPage = 1;
     private int pages;
     private BookReportPresenter bookReportPresenter;
-    private String userType;
 
     @Override
     protected Integer getLayoutId() {
@@ -104,7 +103,6 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         bookReportListAdapter = new BookReportListAdapter();
         bookReportListRecycle.setAdapter(bookReportListAdapter);
         paginator = bookReportListRecycle.getPaginator();
-        userType = DRPreferenceManager.getUserType(DRApplication.getInstance(), "");
         initListener();
     }
 
@@ -164,7 +162,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     private void setData(List<GetBookReportListBean> list) {
         if(bookReportListAdapter != null) {
-            bookReportListAdapter.setData(list, userType);
+            bookReportListAdapter.setData(list);
             String format = DRApplication.getInstance().getResources().getString(R.string.fragment_speech_recording_all_number);
             bookReportListTotalSize.setText(String.format(format, list.size()));
             initPage();
