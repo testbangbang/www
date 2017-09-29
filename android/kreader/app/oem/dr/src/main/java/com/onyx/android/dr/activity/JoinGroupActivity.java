@@ -11,6 +11,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GroupAdapter;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.interfaces.JoinGroupView;
 import com.onyx.android.dr.presenter.JoinGroupPresenter;
 import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
@@ -20,6 +21,9 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -137,6 +141,11 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
         Device.currentDevice().enableWifiDetect(this);
         NetworkUtil.enableWiFi(this, true);
         CommonNotices.showMessage(this, getString(R.string.network_not_connected));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.apply_join_failed));
     }
 
     @Override

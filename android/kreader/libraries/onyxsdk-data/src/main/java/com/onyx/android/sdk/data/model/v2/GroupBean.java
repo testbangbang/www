@@ -12,8 +12,12 @@ public class GroupBean {
     public String updatedAt;
     public String createdAt;
     public String name;
-    public int __v;
+    public int applyCount;
+    public int devicesCount;
+    public int usersCount;
+    public String role;
     public String parent;
     public List<String> ancestors;
     public boolean isChecked;
+    public List<String> admin;
 }

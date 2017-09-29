@@ -154,7 +154,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadingRateEvent(ReadingRateEvent event) {
-        ActivityManager.startStatisticsActivity(this);
+        ActivityManager.startReadingRateActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

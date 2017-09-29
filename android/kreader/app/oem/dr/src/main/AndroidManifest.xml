@@ -270,6 +270,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
+            android:name=".activity.ReadingRateActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".statistics.StatisticsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 

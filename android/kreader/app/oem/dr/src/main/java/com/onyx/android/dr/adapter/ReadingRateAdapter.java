@@ -7,11 +7,8 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.presenter.JoinGroupPresenter;
-import com.onyx.android.sdk.data.model.CreatorBean;
-import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
-import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.dr.bean.ReadingRateBean;
+import com.onyx.android.dr.view.PageRecyclerView;
 
 import java.util.List;
 
@@ -19,21 +16,19 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by zhouzhiming on 2017/8/31.
+ * Created by zhouzhiming on 17-7-11.
  */
-public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.ViewHolder> {
-    private List<SearchGroupBean> dataList;
+public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRateAdapter.ViewHolder> {
+    private List<ReadingRateBean> dataList;
     private OnItemClickListener onItemClickListener;
-    private JoinGroupPresenter presenter;
 
-    public void setDataList(List<SearchGroupBean> dataList, JoinGroupPresenter presenter) {
+    public void setDataList(List<ReadingRateBean> dataList) {
         this.dataList = dataList;
-        this.presenter = presenter;
     }
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.item_group_info_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.good_sentence_notebook_row);
     }
 
     @Override
@@ -48,27 +43,25 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_group_info, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_reading_rate, null);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        final SearchGroupBean bean = dataList.get(position);
-        CreatorBean creator = bean.creator;
-        holder.groupName.setText(bean.name);
-        if (creator != null) {
-            holder.groupOwnerName.setText(creator.name);
-        }
-        holder.joinGroup.setOnClickListener(new View.OnClickListener() {
+        ReadingRateBean bean = dataList.get(position);
+        holder.time.setText(bean.getTime());
+        holder.bookName.setText(bean.getBookName());
+        holder.timeHorizon.setText(bean.getTimeHorizon());
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                JoinGroupBean joinGroupBean = new JoinGroupBean();
-                String[] array = new String[]{bean._id};
-                joinGroupBean.setGroups(array);
-                presenter.joinGroup(joinGroupBean);
             }
         });
+    }
+
+    @Override
+    public void onClick(View view) {
     }
 
     public interface OnItemClickListener {
@@ -81,12 +74,24 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.info_item_group_name)
-        TextView groupName;
-        @Bind(R.id.info_item_group_owner_name)
-        TextView groupOwnerName;
-        @Bind(R.id.info_item_group_join)
-        TextView joinGroup;
+        @Bind(R.id.reading_rate_item_time)
+        TextView time;
+        @Bind(R.id.reading_rate_item_book_name)
+        TextView bookName;
+        @Bind(R.id.reading_rate_item_time_horizon)
+        TextView timeHorizon;
+        @Bind(R.id.reading_rate_item_reading_quantity)
+        TextView readingQuantity;
+        @Bind(R.id.reading_rate_item_language_type)
+        TextView languageType;
+        @Bind(R.id.reading_rate_item_speech)
+        TextView speech;
+        @Bind(R.id.reading_rate_item_reading_summary)
+        TextView readingSummary;
+        @Bind(R.id.reading_rate_item_reader_response_piece)
+        TextView readerResponsePiece;
+        @Bind(R.id.reading_rate_item_reader_response_number)
+        TextView readerResponseNumber;
         View rootView;
 
         ViewHolder(View view) {

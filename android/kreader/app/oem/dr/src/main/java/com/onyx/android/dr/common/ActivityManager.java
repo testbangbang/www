@@ -42,6 +42,7 @@ import com.onyx.android.dr.activity.NewWordTypeActivity;
 import com.onyx.android.dr.activity.PayActivity;
 import com.onyx.android.dr.activity.PencilSketchActivity;
 import com.onyx.android.dr.activity.QueryRecordActivity;
+import com.onyx.android.dr.activity.ReadingRateActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
 import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
@@ -185,6 +186,13 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, MemorandumActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startReadingRateActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, ReadingRateActivity.class);
         context.startActivity(intent);
     }
 

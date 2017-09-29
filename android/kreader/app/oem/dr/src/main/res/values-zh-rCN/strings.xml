@@ -691,4 +691,12 @@
     <string name="app_market">应用市场</string>
     <string name="postil_count">批注数量</string>
     <string name="library_name">所在书架</string>
+    <string name="time_horizon">时长(分)</string>
+    <string name="reading_quantity">阅读量(字数)</string>
+    <string name="language_type">语种</string>
+    <string name="reading_rate_activity_speech">速度</string>
+    <string name="read_summary_content">阅读纪要(篇)</string>
+    <string name="reader_response_content">读后感(篇)</string>
+    <string name="reader_response_number">读后感(字数)</string>
+    <string name="apply_join_failed">申请加入失败</string>
 </resources>
