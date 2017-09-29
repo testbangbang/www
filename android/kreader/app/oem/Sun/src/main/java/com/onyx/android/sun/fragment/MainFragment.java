@@ -1,6 +1,6 @@
 package com.onyx.android.sun.fragment;
 
-import android.view.View;
+import android.databinding.ViewDataBinding;
 
 import com.onyx.android.sun.R;
 
@@ -9,18 +9,19 @@ import com.onyx.android.sun.R;
  */
 
 public class MainFragment extends BaseFragment {
-    @Override
-    protected void initListener() {
-
-    }
-
-    @Override
-    protected void initView(View rootView) {
-
-    }
 
     @Override
     protected void loadData() {
+
+    }
+
+    @Override
+    protected void initView(ViewDataBinding rootView) {
+
+    }
+
+    @Override
+    protected void initListener() {
 
     }
 

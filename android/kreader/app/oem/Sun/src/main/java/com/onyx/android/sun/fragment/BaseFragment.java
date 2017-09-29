@@ -3,6 +3,8 @@ package com.onyx.android.sun.fragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -17,7 +19,6 @@ import java.lang.reflect.Field;
  */
 public abstract class BaseFragment extends Fragment {
     private static final String STATUS_SAVE_IS_HIDDEN = "status_save_is_hidden";
-    View rootView;
     public boolean isStored;
 
     @Override
@@ -44,11 +45,12 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         int viewID = getRootView();
-        rootView = inflater.inflate(viewID, container, false);
+        ViewDataBinding binding = DataBindingUtil.inflate(inflater, viewID, container, false);
+        View view = binding.getRoot();
         loadData();
-        initView(rootView);
+        initView(binding);
         initListener();
-        return rootView;
+        return view;
     }
 
     @Override
@@ -61,11 +63,11 @@ public abstract class BaseFragment extends Fragment {
         super.onPause();
     }
 
-    protected abstract void initListener();
-
-    protected abstract void initView(View rootView);
-
     protected abstract void loadData();
+
+    protected abstract void initView(ViewDataBinding rootView);
+
+    protected abstract void initListener();
 
     protected abstract int getRootView();
 
