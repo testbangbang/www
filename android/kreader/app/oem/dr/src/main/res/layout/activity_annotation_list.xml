@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include
+        android:id="@+id/title_bar"
+        layout="@layout/title_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_stroke"
+        android:padding="@dimen/new_word_title_padding">
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="2"
+            android:text="@string/book_name" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="2"
+            android:text="@string/library_name" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_weight="1"
+            android:text="@string/postil_count" />
+
+        <View style="@style/vertical_view" />
+
+        <LinearLayout
+            android:layout_width="@dimen/new_word_activity_all_check_width"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/annotation_list_all_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scaleX="1.2"
+                android:scaleY="1.2"
+                android:src="@color/white" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_weight="1"
+                android:text="@string/good_sentence_activity_check_all" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <com.onyx.android.dr.view.PageRecyclerView
+        android:id="@+id/annotation_list_all_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <include
+        layout="@layout/page_indicator_layout"
+        android:visibility="visible" />
+
+</LinearLayout>
