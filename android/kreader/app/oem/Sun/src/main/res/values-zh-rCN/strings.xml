@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sun</string>
+    <string name="main_view">主页</string>
+    <string name="examination_work">作业考试</string>
+    <string name="goal_advanced">目标进阶</string>
+    <string name="study_management">学习管理</string>
+</resources>
