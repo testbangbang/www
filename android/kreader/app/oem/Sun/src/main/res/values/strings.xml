@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Sun</string>
+    <string name="main_view">main view</string>
+    <string name="examination_work">examination work</string>
+    <string name="goal_advanced">goal advanced</string>
+    <string name="study_management">study management</string>
+</resources>
