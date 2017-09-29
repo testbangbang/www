@@ -401,12 +401,8 @@ public class ReaderActivity extends OnyxBaseActivity {
                 if (!getReaderDataHolder().isDocumentInitRendered()) {
                     return;
                 }
-                if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
-                    surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
-                    getReaderDataHolder().redrawPage();
-                } else {
-                    onSurfaceViewSizeChanged();
-                }
+
+                onSurfaceViewSizeChanged();
             }
 
             @Override
