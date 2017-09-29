@@ -258,7 +258,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             @Override
             public void clicked() {
                 showNotationDialog();
-                Log.d("+++++++++", "clicked: " + bookReportDetailContents.getSelectionStart());
                 listener = null;
             }
         });
