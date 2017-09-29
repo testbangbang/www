@@ -140,6 +140,8 @@ public class PopupSelectionMenu extends AppCompatLinearLayout {
         webSearch = (ImageView) findViewById(R.id.web_search);
         pronounce1.setEnabled(false);
         pronounce2.setEnabled(false);
+        pronounce1.setVisibility(View.GONE);
+        pronounce2.setVisibility(View.GONE);
         mDictNextPage.setOnClickListener(new OnClickListener() {
 
             @Override
