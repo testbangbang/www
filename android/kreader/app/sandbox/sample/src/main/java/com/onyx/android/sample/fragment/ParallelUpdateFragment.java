@@ -1,16 +1,14 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.fragment;
 
-import android.annotation.TargetApi;
 import android.graphics.Color;
-import android.graphics.Rect;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayout;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+
+import com.onyx.android.sample.R;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -19,33 +17,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class ParallelUpdateActivity extends AppCompatActivity {
+public class ParallelUpdateFragment extends BaseTestFragment {
 
     private List<Button> buttonList = new ArrayList<>();
-    private Handler handler = new Handler(Looper.getMainLooper());
+    private GridLayout gridLayout;
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            updateButton();
+            triggerUpdate();
+        }
+    };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_parallel_update);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = View.inflate(getContext(), R.layout.activity_parallel_update, null);
+        gridLayout = (GridLayout) view.findViewById(R.id.grid_layout);
         addButtons();
+        return view;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         triggerUpdate();
     }
 
     private void triggerUpdate() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                updateButton();
-                triggerUpdate();
-            }
-        }, 1);
-
+        handler.removeCallbacks(runnable);
+        handler.postDelayed(runnable, 1);
     }
 
     private void updateButton() {
@@ -54,9 +54,8 @@ public class ParallelUpdateActivity extends AppCompatActivity {
     }
 
     private void addButtons() {
-        GridLayout gridLayout = (GridLayout)findViewById(R.id.grid_layout);
         for (int i = 0; i < 60; i++) {
-            Button btn = new Button(this);
+            Button btn = new Button(getActivity());
             btn.setId(i);
             final int id_ = btn.getId();
             btn.setText("button " + id_);
@@ -74,6 +73,9 @@ public class ParallelUpdateActivity extends AppCompatActivity {
         }
     }
 
-
-
+    @Override
+    public void stopTest() {
+        super.stopTest();
+        handler.removeCallbacks(runnable);
+    }
 }

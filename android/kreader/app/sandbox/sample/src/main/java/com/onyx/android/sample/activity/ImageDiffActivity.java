@@ -1,4 +1,4 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.activity;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.onyx.android.sample.R;
 import com.onyx.android.sample.utils.EpdHelper;
 import com.onyx.android.sample.utils.EpdManager;
 import com.onyx.android.sample.utils.ImageUtils;

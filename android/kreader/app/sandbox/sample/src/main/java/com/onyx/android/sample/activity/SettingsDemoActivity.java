@@ -1,9 +1,11 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.activity;
 
 import android.content.ComponentName;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+
+import com.onyx.android.sample.R;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;

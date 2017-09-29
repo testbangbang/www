@@ -1,4 +1,4 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.activity;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.onyx.android.sample.R;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.OnyxDownloadManager;

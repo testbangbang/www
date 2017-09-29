@@ -1,4 +1,4 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.activity;
 
 import android.content.Context;
 import android.graphics.Matrix;
@@ -13,6 +13,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.onyx.android.sample.R;
 import com.onyx.android.sample.device.DeviceConfig;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.WakeLockHolder;

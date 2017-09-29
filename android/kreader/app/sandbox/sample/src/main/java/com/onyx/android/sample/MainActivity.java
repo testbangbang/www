@@ -6,6 +6,20 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.onyx.android.sample.activity.EnvironmentDemoActivity;
+import com.onyx.android.sample.activity.EpdDemoActivity;
+import com.onyx.android.sample.fragment.RectangleUpdateFragment;
+import com.onyx.android.sample.activity.RefreshTestActivity;
+import com.onyx.android.sample.activity.FrontLightDemoActivity;
+import com.onyx.android.sample.activity.FullScreenDemoActivity;
+import com.onyx.android.sample.activity.ImageDiffActivity;
+import com.onyx.android.sample.fragment.ParallelUpdateFragment;
+import com.onyx.android.sample.activity.ScribbleStateDemoActivity;
+import com.onyx.android.sample.activity.ScribbleStylusSurfaceViewDemoActivity;
+import com.onyx.android.sample.activity.ScribbleStylusWebViewDemoActivity;
+import com.onyx.android.sample.activity.ScribbleTouchScreenDemoActivity;
+import com.onyx.android.sample.activity.SdkDataOTATestActivity;
+import com.onyx.android.sample.activity.SettingsDemoActivity;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 
 import butterknife.Bind;
@@ -30,20 +44,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button buttonFullScreen;
     @Bind(R.id.button_scribble_state)
     Button buttonScribbleState;
-    @Bind(R.id.button_parallel_update)
-    Button buttonParallelUpdate;
-    @Bind(R.id.button_fast_update)
-    Button buttonFastUpdate;
-    @Bind(R.id.button_overlay_update)
-    Button buttonOverlayUpdate;
-    @Bind(R.id.button_text_select)
-    Button buttonTextSelect;
-    @Bind(R.id.button_rect_update)
-    Button buttonRectUpdate;
+    @Bind(R.id.button_refresh_test)
+    Button buttonRefreshTest;
     @Bind(R.id.button_image_diff)
     Button buttonImageDiff;
-    @Bind(R.id.button_text_update)
-    Button buttonTextUpdate;
+
 
 
 
@@ -61,13 +66,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonFullScreen.setOnClickListener(this);
         buttonStylusWebviewScribble.setOnClickListener(this);
         buttonScribbleState.setOnClickListener(this);
-        buttonParallelUpdate.setOnClickListener(this);
-        buttonFastUpdate.setOnClickListener(this);
-        buttonOverlayUpdate.setOnClickListener(this);
-        buttonTextSelect.setOnClickListener(this);
-        buttonRectUpdate.setOnClickListener(this);
+        buttonRefreshTest.setOnClickListener(this);
         buttonImageDiff.setOnClickListener(this);
-        buttonTextUpdate.setOnClickListener(this);
         final View view = findViewById(android.R.id.content);
         EpdController.enablePost(view, 1);
     }
@@ -95,20 +95,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(new Intent(this, ScribbleStylusWebViewDemoActivity.class));
         } else if (v.equals(buttonScribbleState)) {
             startActivity(new Intent(this, ScribbleStateDemoActivity.class));
-        } else if (v.equals(buttonParallelUpdate)) {
-            startActivity(new Intent(this, ParallelUpdateActivity.class));
-        } else if (v.equals(buttonFastUpdate)) {
-            startActivity(new Intent(this, FastUpdateModeActivity.class));
-        } else if (v.equals(buttonOverlayUpdate)) {
-            startActivity(new Intent(this, OverlayUpdateActivity.class));
-        } else if (v.equals(buttonTextSelect)) {
-            startActivity(new Intent(this, TextSelectionActivity.class));
-        } else if (v.equals(buttonRectUpdate)) {
-            startActivity(new Intent(this, RectangleUpdateTest.class));
         } else if (v.equals(buttonImageDiff)) {
             startActivity(new Intent(this, ImageDiffActivity.class));
-        } else if (v.equals(buttonTextUpdate)) {
-            startActivity(new Intent(this, TextUpdateActivity.class));
+        } else if (v.equals(buttonRefreshTest)) {
+            startActivity(new Intent(this, RefreshTestActivity.class));
         }
     }
 

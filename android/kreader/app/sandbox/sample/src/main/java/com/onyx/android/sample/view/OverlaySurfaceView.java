@@ -1,4 +1,4 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.view;
 
 import android.app.Activity;
 import android.graphics.Canvas;
@@ -130,5 +130,9 @@ public class OverlaySurfaceView extends SurfaceView implements SurfaceHolder.Cal
         }
     }
 
+    public void stop() {
+        threadFlag = false;
+        thread.interrupt();
+    }
 
 }

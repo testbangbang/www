@@ -1,4 +1,4 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -23,16 +23,20 @@ import java.util.List;
 
 public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.Callback {
 
-    private UpdateMode currentMode = UpdateMode.A;
     private Handler handler = new Handler(Looper.getMainLooper());
     private SurfaceHolder holder;
     private Paint paint;
     private List<Rect> src = new ArrayList<>();
     com.onyx.android.sample.utils.RectUtils.RectResult rectResult = new com.onyx.android.sample.utils.RectUtils.RectResult();
-
-    public enum UpdateMode {
-        A, B, C, D, E
-    }
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            generateRectangles();
+            drawRectangle();
+            screenUpdate();
+            startUpdate();
+        }
+    };
 
     public RectangleSurfaceView(Context context) {
         this(context, null);
@@ -50,11 +54,6 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         setFocusable(true);
     }
 
-    public void setUpdateMode(final UpdateMode mode) {
-        currentMode = mode;
-        startUpdate();
-    }
-
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         startUpdate();
@@ -70,15 +69,8 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
     }
 
     private void startUpdate() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                generateRectangles();
-                drawRectangle();
-                screenUpdate();
-                startUpdate();
-            }
-        }, 8000);
+        handler.removeCallbacks(runnable);
+        handler.postDelayed(runnable, 8000);
     }
 
     private void screenUpdate() {
@@ -104,42 +96,26 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
     }
 
     private void generateRectangles() {
-
-        switch (currentMode) {
-            case A:
+        int mode = TestUtils.randInt(1, 5);
+        switch (mode) {
+            case 1:
                 generateRectanglesInterset();
                 break;
-            case B:
+            case 2:
                 generateRectanglesInside();
                 break;
-            case C:
+            case 3:
                 generateRectanglesContains();
                 break;
-            case D:
+            case 4:
                 generateRectanglesTopEdgeIntersect();
                 break;
-            case E:
+            case 5:
                 generateRectanglesTopEdgeLargeInterset();
                 break;
             default:
                 break;
         }
-    }
-
-    private void generateRectanglesTypeAA() {
-        int div = 3;
-        int left = TestUtils.randInt(0, getWidth() / div);
-        int top = TestUtils.randInt(0, getHeight() / div);
-        int width = TestUtils.randInt(getWidth() /  (div * 2), getWidth() /  div);
-        int height = TestUtils.randInt(getWidth() /  (div * 2), getHeight() / div);
-        Rect r1 = new Rect(left, top, left + width, top + height);
-
-        int left2 = left + width / 2;
-        int top2 = top + height / 2;
-        Rect r2 = new Rect(left2, top2, left2 + width, top2 + height);
-        rectResult.first = r1;
-        rectResult.second = r2;
-        rectResult.generate();
     }
 
     private void generateRectanglesInterset() {
@@ -265,5 +241,9 @@ public class RectangleSurfaceView extends SurfaceView implements SurfaceHolder.C
         }
 
         holder.unlockCanvasAndPost(canvas);
+    }
+
+    public void stop() {
+        handler.removeCallbacks(runnable);
     }
 }

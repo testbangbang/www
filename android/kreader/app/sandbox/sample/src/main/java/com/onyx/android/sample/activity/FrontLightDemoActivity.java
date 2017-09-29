@@ -1,10 +1,11 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.onyx.android.sample.R;
 import com.onyx.android.sdk.api.device.FrontLightController;
 
 import java.util.Collections;
