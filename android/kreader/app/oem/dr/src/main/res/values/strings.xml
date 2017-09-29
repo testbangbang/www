@@ -693,4 +693,12 @@
     <string name="app_market">App Market</string>
     <string name="postil_count">postil count</string>
     <string name="library_name">library</string>
+    <string name="time_horizon">time horizon(minute)</string>
+    <string name="reading_quantity">reading quantity(number of words)</string>
+    <string name="language_type">language type</string>
+    <string name="reading_rate_activity_speech">speech</string>
+    <string name="read_summary_content">read summary(piece)</string>
+    <string name="reader_response_content">reader response(piece)</string>
+    <string name="reader_response_number">reader response(number)</string>
+    <string name="apply_join_failed">apply join failed</string>
 </resources>

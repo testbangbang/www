@@ -167,8 +167,8 @@ public class StatisticsActivity extends ActionBarActivity {
                 dismissDialog();
                 if (e != null) {
                     Toast.makeText(StatisticsActivity.this, R.string.load_statistical_data_failed, Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                return;
+            }
                 StatisticsResult statisticsResult = statisticsRequest.getStatisticsResult();
                 dataStatisticsFragment.setStatisticsResult(statisticsResult);
                 readRecordFragment.setStatisticsResult(statisticsResult);

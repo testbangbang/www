@@ -2,17 +2,17 @@ package com.onyx.android.dr.util;
 
 import android.content.Context;
 import android.os.Environment;
-import android.os.SystemClock;
 import android.support.annotation.NonNull;
 
+import com.onyx.android.dr.bean.ReadingRateBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
-import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
+import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -137,6 +137,39 @@ public class ExportToHtmlUtils {
             sb.append("<th>");
             sb.append(bean.content);
             sb.append("</th>");
+            sb.append("</tr>");
+        }
+        sb.append("</table>");
+
+        PrintStream printStream = null;
+        try {
+            createCatalogue();
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.INFORMAL_ESSAY_HTML + "_" + time + Constants.UNIT);
+            file.createNewFile();
+            printStream = new PrintStream(new FileOutputStream(file));
+            printStream.println(sb.toString());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+        } catch (Exception e) {
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
+            e.printStackTrace();
+        } finally {
+            FileUtils.closeQuietly(printStream);
+        }
+    }
+
+    public static void exportReadingRateToHtml(Context context, List<String> htmlTitle, String title, List<ReadingRateBean> dataList) {
+        StringBuilder sb = getTitleStringBuilder(title);
+        sb.append("<table border=\"1\"><tr>");
+        for (int i = 0; i < htmlTitle.size(); i++) {
+            sb.append("<th>");
+            sb.append(htmlTitle.get(i));
+            sb.append("</th>");
+        }
+        sb.append("</tr>");
+        for (int i = 0; i < dataList.size(); i++) {
+            sb.append("<tr>");
+            ReadingRateBean bean = dataList.get(i);
             sb.append("</tr>");
         }
         sb.append("</table>");
