@@ -27,7 +27,7 @@ public class AccountLoadFromLocalAction extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 NeoAccountBase account = accountLoadRequest.getAccount();
                 if (account == null) {
-                    Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.account_no_log_in), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.account_no_log_in), Toast.LENGTH_SHORT).show();
                 } else {
                     token.append(account.token);
                     readerDataHolder.setAccount(account);
