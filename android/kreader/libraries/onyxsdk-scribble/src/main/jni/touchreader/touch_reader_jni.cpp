@@ -5,7 +5,7 @@
 
 static const char * rawTouchClassName = "com/onyx/android/sdk/scribble/touch/RawInputReader";
 
-TouchReader touchReader;
+static TouchReader touchReader;
 static jobject readerObject;
 static bool debug = false;
 
