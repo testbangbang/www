@@ -512,6 +512,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             }
 
             @Override
+            public void onSideReading(ReaderTabHostBroadcastReceiver.SideReadingCallback callback, String leftDocPath, String rightDocPath) {
+                onSideReadingCallback(callback, leftDocPath, rightDocPath);
+            }
+
+            @Override
             public void onGotoPageLink(String link) {
                 gotoPageLink(link);
             }
@@ -929,6 +934,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         if (tabManager.getOpenedTabs().size() > 1) {
             intent.putExtra(ReaderBroadcastReceiver.TAG_TAB_WIDGET_VISIBLE, tabWidgetVisible.get());
         }
+        if (isSideReading) {
+            intent.putExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, true);
+        }
         if (sideNoteMode) {
             intent.putExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, true);
         }
@@ -1235,16 +1243,48 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void showTabHostMenuDialog(final View menuButton) {
-        final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
+        ReaderBroadcastReceiver.sendShowTabHostMenuDialogIntent(this,
+                tabManager.getTabReceiver(getCurrentTabInHost()));
+//        final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
+//
+//        final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
+//        DataManager dataManager = new DataManager();
+//        dataManager.submit(ReaderTabHostActivity.this, metadataRequest, new BaseCallback() {
+//            @Override
+//            public void done(BaseRequest request, Throwable e) {
+//                showTabHostMenuDialog(menuButton, getRecentFiles(metadataRequest.getList()));
+//            }
+//        });
+    }
 
-        final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
-        DataManager dataManager = new DataManager();
-        dataManager.submit(ReaderTabHostActivity.this, metadataRequest, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                showTabHostMenuDialog(menuButton, getRecentFiles(metadataRequest.getList()));
-            }
-        });
+    private void onSideReadingCallback(ReaderTabHostBroadcastReceiver.SideReadingCallback callback,
+                                       String leftDocPath, String rightDocPath) {
+        switch (callback) {
+            case DOUBLE_OPEN:
+                startSideReadingMode(leftDocPath, leftDocPath, false);
+                isDoubleOpen = true;
+                isDoubleLinked = true;
+                break;
+            case SIDE_OPEN:
+                startSideReadingMode(leftDocPath, rightDocPath, false);
+                break;
+            case OPEN_NEW_DOC:
+                ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(leftDocPath);
+                if (tab != null) {
+                    reopenReaderTab(tab);
+                    return;
+                }
+                openDocWithTab(getCurrentTabInHost(), leftDocPath);
+                break;
+            case SWITCH_SIDE:
+                switchSideReadingTab();
+                break;
+            case QUIT_SIDE_READING:
+                if (isSideReading) {
+                    quitSideReadingMode();
+                }
+                break;
+        }
     }
 
     private void showTabHostMenuDialog(View menuButton, List<String> files) {

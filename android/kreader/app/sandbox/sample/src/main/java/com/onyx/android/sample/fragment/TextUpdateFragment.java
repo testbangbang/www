@@ -1,24 +1,26 @@
-package com.onyx.android.sample;
+package com.onyx.android.sample.fragment;
 
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.v7.app.AppCompatActivity;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayout;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.onyx.android.sample.R;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class TextUpdateActivity extends AppCompatActivity {
+public class TextUpdateFragment extends BaseTestFragment {
 
-    private List<Button> buttonList = new ArrayList<>();
-    private Handler handler = new Handler(Looper.getMainLooper());
     private TextView textView;
+    private GridLayout gridLayout;
+    private List<Button> buttonList = new ArrayList<>();
     private StringBuilder text = new StringBuilder();
     private static final String CLEAR = "Clear";
 
@@ -30,29 +32,36 @@ public class TextUpdateActivity extends AppCompatActivity {
         }
     };
 
+    @Nullable
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_text_update);
-
-        textView = (TextView) findViewById(R.id.textView);
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.activity_text_update, container, false);
+        textView = (TextView) view.findViewById(R.id.textView);
+        gridLayout = (GridLayout) view.findViewById(R.id.grid_layout);
         addButtons();
+        return view;
     }
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         triggerUpdate();
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
-        handler.removeCallbacks(runnable);
+        stopTest();
     }
 
     private void triggerUpdate() {
         handler.postDelayed(runnable, 1);
+    }
+
+    @Override
+    public void stopTest() {
+        super.stopTest();
+        handler.removeCallbacks(runnable);
     }
 
     private void updateViews() {
@@ -76,10 +85,9 @@ public class TextUpdateActivity extends AppCompatActivity {
     }
 
     private void addButtons() {
-        GridLayout gridLayout = (GridLayout)findViewById(R.id.grid_layout);
         final int N = 10;
         for (int i = 0; i <= N; i++) {
-            Button btn = new Button(this);
+            Button btn = new Button(getActivity());
             if (i == N) {
                 btn.setText(CLEAR);
             } else {
