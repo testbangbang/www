@@ -210,6 +210,7 @@ public class ShapeEventHandler {
                 continue;
             }
             list.add(fromHistorical(motionEvent, i));
+            eraserPointList.add(fromHistorical(motionEvent, i));
         }
         list.add(new TouchPoint(motionEvent));
         eraserPointList.add(new TouchPoint(motionEvent));
