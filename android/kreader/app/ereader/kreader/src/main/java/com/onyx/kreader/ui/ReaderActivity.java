@@ -538,7 +538,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         if (event != null && event.isRenderShapeData()) {
-            renderNoteShapes(true);
+            renderNoteShapes();
         }
     }
 
@@ -1082,16 +1082,11 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void renderNoteShapes() {
-        renderNoteShapes(false);
-    }
-
-    private void renderNoteShapes(boolean applyGCInterval) {
         List<PageInfo> pages = getReaderDataHolder().getVisiblePages();
         final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 pages,
                 getReaderDataHolder().getDisplayRect(),
-                applyGCInterval,
                 false);
         int uniqueId = getReaderDataHolder().getLastRequestSequence();
 
