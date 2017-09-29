@@ -45,6 +45,8 @@ import com.onyx.android.dr.activity.QueryRecordActivity;
 import com.onyx.android.dr.activity.RecordTimeSettingActivity;
 import com.onyx.android.dr.activity.SearchBookActivity;
 import com.onyx.android.dr.activity.SettingActivity;
+import com.onyx.android.dr.activity.ShareBookReportActivity;
+import com.onyx.android.dr.activity.ShareToMemberActivity;
 import com.onyx.android.dr.activity.ShoppingCartActivity;
 import com.onyx.android.dr.activity.SpeechRecordingActivity;
 import com.onyx.android.dr.activity.SummaryListActivity;
@@ -79,6 +81,13 @@ import java.io.File;
 public class ActivityManager {
     public static void startLoginActivity(Context context) {
         Intent intent = new Intent(context, LoginActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startShareBookReportActivity(Context context, String impressionId) {
+        Intent intent = new Intent(context, ShareBookReportActivity.class);
+        intent.putExtra(Constants.IMPRESSION_ID, impressionId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -283,6 +292,16 @@ public class ActivityManager {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.GROUP_ID, id);
         intent.setClass(context, GroupMemberActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startShareToMemberActivity(Context context, String id, String name, String impressionId) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.GROUP_ID, id);
+        intent.putExtra(Constants.GROUP_NAME, name);
+        intent.putExtra(Constants.IMPRESSION_ID, impressionId);
+        intent.setClass(context, ShareToMemberActivity.class);
         context.startActivity(intent);
     }
 

@@ -13,6 +13,7 @@ import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BringOutBookReportEvent;
 import com.onyx.android.dr.event.DeleteBookReportEvent;
+import com.onyx.android.dr.event.ShareBookReportEvent;
 import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
@@ -32,6 +33,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
     private List<GetBookReportListBean> data;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_row);
     private int column = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_col);
+    private String userType;
 
     @Override
     public int getRowCount() {
@@ -72,6 +74,9 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         viewHolder.bookReportListItemDelete.setTag(position);
         viewHolder.itemView.setTag(position);
         viewHolder.itemView.setOnClickListener(this);
+        if(Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+            viewHolder.bookReportListItemShare.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -87,7 +92,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
                 EventBus.getDefault().post(new BringOutBookReportEvent(bookReportBean));
                 break;
             case R.id.book_report_list_item_share:
-                ToastManage.showMessage(DRApplication.getInstance(),"share");
+                EventBus.getDefault().post(new ShareBookReportEvent(bookReportBean));
                 break;
             case R.id.book_report_list_item_delete:
                 EventBus.getDefault().post(new DeleteBookReportEvent(bookReportBean));
@@ -106,8 +111,9 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         ActivityManager.startReadingReportActivity(DRApplication.getInstance(), intent);
     }
 
-    public void setData(List<GetBookReportListBean> data) {
+    public void setData(List<GetBookReportListBean> data, String userType) {
         this.data = data;
+        this.userType = userType;
         notifyDataSetChanged();
     }
 

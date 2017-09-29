@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.WebViewJSEvent;
@@ -62,6 +63,8 @@ import butterknife.OnClick;
 public class BookReportDetailActivity extends BaseActivity implements BookReportView {
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
+    @Bind(R.id.image)
+    ImageView image;
     @Bind(R.id.title_bar_title)
     TextView titleBarTitle;
     @Bind(R.id.title_bar_right_select_time)
@@ -103,6 +106,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private float currentY;
     private NotationDialog notationDialog;
     private int screenHeight;
+    private CreateBookReportResult createBookReportResult;
 
     @Override
     protected Integer getLayoutId() {
@@ -117,6 +121,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Override
     protected void initView() {
         titleBarTitle.setText(getResources().getString(R.string.reader_response));
+        image.setImageResource(R.drawable.ic_reader_menu_idea);
         titleBarRightSelectTime.setVisibility(View.VISIBLE);
         titleBarRightSelectTime.setText(getResources().getString(R.string.Call_the_modified_file));
         titleBarRightIconOne.setVisibility(View.VISIBLE);
@@ -285,7 +290,24 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                 save();
                 break;
             case R.id.title_bar_right_icon_three:
+                share();
                 break;
+        }
+    }
+
+    private void share() {
+        if(Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+            return;
+        }
+
+        if(data != null) {
+            ActivityManager.startShareBookReportActivity(this, data._id);
+            return;
+        }
+
+        if(!StringUtils.isNullOrEmpty(bookId)) {
+            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id);
+            return;
         }
     }
 
@@ -381,7 +403,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     @Override
-    public void setCreateBookReportData() {
+    public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
+        this.createBookReportResult = createBookReportResult;
         isSave = true;
         bookReportDetailContents.setEnabled(false);
     }
@@ -417,6 +440,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     }
 
+    @Override
+    public void setLibraryId(String bookId, String libraryId) {
+        //bookReportPresenter.shareImpression(bookId, libraryId);
+    }
+
     private String insertJsTag() {
         StringBuilder sb = new StringBuilder();
         if (data != null && data.comments != null && data.comments.size() > 0) {
@@ -427,7 +455,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             for (CommentsBean bean : comments) {
                 int left = Integer.parseInt(bean.left) - currentPosition;
                 sb.append(content.substring(currentPosition, left));
-                String js = "<img id=\"" + bean._id + "\" src=\"file:///android_asset/audio.png\" onclick=\"addComment('" + bean.content + "')\"/>";
+                String js = "<img id=\"" + bean._id + "\" src=\"file:///android_asset/ic_postil.png\" onclick=\"addComment('" + bean.content + "')\"/>";
                 sb.append(js);
                 content = content.substring(left);
                 currentPosition = left;

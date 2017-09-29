@@ -4,6 +4,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.request.cloud.DeleteGroupMemberRequest;
 import com.onyx.android.dr.request.cloud.RequestGroupMember;
 import com.onyx.android.dr.request.cloud.SearchGroupMemberRequest;
+import com.onyx.android.dr.request.cloud.ShareBookReportRequest;
 import com.onyx.android.sdk.common.request.BaseCallback;
 
 
@@ -22,5 +23,9 @@ public class GroupMemberData {
 
     public void requestDeleteGroupMember(DeleteGroupMemberRequest req, BaseCallback baseCallback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void shareImpression(ShareBookReportRequest rq, BaseCallback callback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
     }
 }

@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
+import com.onyx.android.sdk.data.model.v2.GetSharedImpressionResult;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
@@ -25,6 +26,8 @@ import com.onyx.android.sdk.data.model.v2.NewPassword;
 import com.onyx.android.sdk.data.model.v2.PayBean;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
 import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
+import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
+import com.onyx.android.sdk.data.model.v2.ShareBookReportResult;
 import com.onyx.android.sdk.data.model.v2.SignUpBean;
 import com.onyx.android.sdk.data.model.v2.VerifyCode;
 
@@ -140,11 +143,18 @@ public interface ContentService {
     @POST("/api/impressions")
     Call<CreateBookReportResult> createImpression(@Body final CreateBookReportRequestBean bean);
 
-    @GET("/api/impressions")
+    @GET("/api/impressions/my")
     Call<GetBookReportList> getImpressionsList(@Query(Constant.GET_IMPRESSIONS_LIST_OFFSET) String offset,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
                                                @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
+
+    @GET("/api/librarys/{id}/impressions")
+    Call<GetSharedImpressionResult> getSharedImpression(@Path(Constant.ID_TAG) final String id,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_OFFSET) String offset,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
+                                                        @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
 
     @GET("/api/impressions/{id}")
     Call<CreateBookReportResult> getImpression(@Path(Constant.ID_TAG) final String id);
@@ -163,4 +173,7 @@ public interface ContentService {
 
     @PUT("users/password/{token}")
     Call<VerifyCode> setPassword(@Path(Constant.TOKEN_TAG) String token, @Body final NewPassword newPassword);
+
+    @POST("/api/librarys/{id}/impressions")
+    Call<ShareBookReportResult> shareImpression(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
 }

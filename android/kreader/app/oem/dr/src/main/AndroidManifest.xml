@@ -273,6 +273,12 @@
             android:name=".statistics.StatisticsActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
+        <activity android:name=".activity.ShareBookReportActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
+        <activity android:name=".activity.ShareToMemberActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
+
         <activity
             android:name=".activity.APPMarketActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

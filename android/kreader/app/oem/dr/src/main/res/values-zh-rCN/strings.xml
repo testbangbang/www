@@ -665,13 +665,17 @@
     <string name="notation_add_success">添加成功</string>
     <string name="notation_add_fail">添加失败</string>
     <string name="baidu_baike_parameter_error">参数错误</string>
+    <string name="share_book_impression_success">分享成功</string>
+    <string name="share_book_impression_fail">分享失败</string>
+    <string name="share_book_impression_to_group">分享至群组</string>
     <string name="clear_search_history">清除历史搜索记录</string>
     <string name="fourth_sequence">第四序列</string>
     <string name="french">法文</string>
     <string name="width_adaptive">适应宽度</string>
     <string name="menu_time_setting">时间设置</string>
+    <string name="share_to_member_count">组员人数：%d</string>
+    <string name="share_to_member_no_share">未选择分享对象</string>
     <string name="menu_tts_setting">文字转语音（TTS）输出</string>
-
     <string name="get_empty_download_link">无法取得下载链接</string>
     <string name="get_empty_content">没有取得内容</string>
     <string name="download_success">下载成功</string>

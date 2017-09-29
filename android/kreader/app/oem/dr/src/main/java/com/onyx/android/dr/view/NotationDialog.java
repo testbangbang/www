@@ -99,7 +99,7 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     }
 
     @Override
-    public void setCreateBookReportData() {
+    public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
 
     }
 
@@ -125,6 +125,11 @@ public class NotationDialog extends DialogFragment implements BookReportView {
         } else {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.notation_add_fail));
         }
+
+    }
+
+    @Override
+    public void setLibraryId(String bookId, String libraryId) {
 
     }
 }

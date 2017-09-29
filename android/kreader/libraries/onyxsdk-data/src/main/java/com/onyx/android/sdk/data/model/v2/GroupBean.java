@@ -15,4 +15,5 @@ public class GroupBean {
     public int __v;
     public String parent;
     public List<String> ancestors;
+    public boolean isChecked;
 }
