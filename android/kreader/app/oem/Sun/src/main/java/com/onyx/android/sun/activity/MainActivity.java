@@ -2,10 +2,8 @@ package com.onyx.android.sun.activity;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.databinding.DataBindingUtil;
-import android.os.Bundle;
+import android.databinding.ViewDataBinding;
 import android.support.design.widget.TabLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
@@ -24,8 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends AppCompatActivity implements MainView, View.OnClickListener {
-
+public class MainActivity extends BaseActivity implements MainView, View.OnClickListener {
     private ActivityMainBinding mainBinding;
     private User user = new User();
     private FragmentManager fragmentManager;
@@ -35,17 +32,17 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
     private Map<Integer, BaseFragment> childViewList = new HashMap<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mainBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void initView(ViewDataBinding binding) {
+        mainBinding = (ActivityMainBinding) binding;
         mainBinding.setVariable(BR.presenter, new MainPresenter());
         mainBinding.setVariable(BR.user, user);
         mainBinding.setListener(this);
-        initView();
-        initListener();
-    }
 
-    private void initView() {
         List<MainTabBean> mainTabList = AppConfigData.getMainTabList();
         for (MainTabBean mainTabBean : mainTabList) {
             TabLayout.Tab tab = mainBinding.mainActivityTab.newTab();
@@ -55,7 +52,8 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
         }
     }
 
-    private void initListener() {
+    @Override
+    protected void initListener() {
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
         mainBinding.mainActivityTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -80,6 +78,11 @@ public class MainActivity extends AppCompatActivity implements MainView, View.On
 
             }
         });
+    }
+
+    @Override
+    protected int getViewId() {
+        return R.layout.activity_main;
     }
 
     @Override
