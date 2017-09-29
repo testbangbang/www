@@ -46,6 +46,17 @@
             android:layout_height="match_parent"/>
 
         <ImageButton
+            android:id="@+id/side_note_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dialog_reader_menu_top_bar_function_icon_margin"
+            android:background="@drawable/imagebtn_bg"
+            android:nextFocusLeft="@id/layout_back_area"
+            android:padding="@dimen/dialog_reader_menu_top_bar_function_icon_padding"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_dialog_reader_menu_browse_write"/>
+
+        <ImageButton
             android:id="@+id/pre_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
