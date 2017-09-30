@@ -152,8 +152,6 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
 
-    private boolean isSideReadingMode = false;
-
     private long lastActivated = new Date().getTime();
 
     @Override
@@ -908,7 +906,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
         }
 
-        isSideReadingMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, false);
+        getReaderDataHolder().setSideReadingMode(getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, false));
 
         boolean sideNoteMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, false);
         if (sideNoteMode) {
@@ -1169,7 +1167,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             public void done(BaseRequest request, Throwable e) {
                 new ShowTabHostMenuDialogAction(surfaceView,
                         metadataRequest.getList(),
-                        isSideReadingMode).execute(getReaderDataHolder(), null);
+                        getReaderDataHolder().isSideReadingMode()).execute(getReaderDataHolder(), null);
             }
         });
 
