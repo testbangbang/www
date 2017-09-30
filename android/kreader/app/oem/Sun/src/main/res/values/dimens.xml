@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="level_one_heading_font">24sp</dimen>
+    <dimen name="level_two_heading_font">20sp</dimen>
+    <dimen name="level_three_heading_font">18sp</dimen>
+</resources>

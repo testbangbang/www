@@ -14,6 +14,7 @@ import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
+import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
@@ -125,7 +126,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                     baseFragment = new MainFragment();
                     break;
                 case ChildViewID.FRAGMENT_EXAMINATION_WORK:
-                    baseFragment = new MainFragment();
+                    baseFragment = new HomeWorkFragment();
                     break;
                 case ChildViewID.FRAGMENT_GOAL_ADVANCED:
                     baseFragment = new MainFragment();
