@@ -696,9 +696,12 @@
     <string name="time_horizon">time horizon(minute)</string>
     <string name="reading_quantity">reading quantity(number of words)</string>
     <string name="language_type">language type</string>
+    <string name="language_type_content">language type:</string>
     <string name="reading_rate_activity_speech">speech</string>
     <string name="read_summary_content">read summary(piece)</string>
     <string name="reader_response_content">reader response(piece)</string>
     <string name="reader_response_number">reader response(number)</string>
     <string name="apply_join_failed">apply join failed</string>
+    <string name="select_time_range">select time range</string>
+    <string name="select_group">select group</string>
 </resources>

@@ -4,12 +4,12 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
-import com.onyx.android.dr.bean.ReadingRateBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
@@ -158,7 +158,7 @@ public class ExportToHtmlUtils {
         }
     }
 
-    public static void exportReadingRateToHtml(Context context, List<String> htmlTitle, String title, List<ReadingRateBean> dataList) {
+    public static void exportReadingRateToHtml(Context context, List<String> htmlTitle, String title, List<ReadingRateEntity> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < htmlTitle.size(); i++) {
@@ -169,7 +169,7 @@ public class ExportToHtmlUtils {
         sb.append("</tr>");
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
-            ReadingRateBean bean = dataList.get(i);
+            ReadingRateEntity bean = dataList.get(i);
             sb.append("</tr>");
         }
         sb.append("</table>");

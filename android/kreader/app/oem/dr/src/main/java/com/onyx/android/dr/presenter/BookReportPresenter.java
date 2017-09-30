@@ -43,14 +43,14 @@ public class BookReportPresenter {
     }
 
     public void getImpressionsList() {
-        GetBookReportListRequestBean requstBean = new GetBookReportListRequestBean();
-        requstBean.offset = "1";
-        requstBean.limit = "4";
-        requstBean.order = "1";
-        requstBean.sortBy = "createdAt";
+        GetBookReportListRequestBean requestBean = new GetBookReportListRequestBean();
+        requestBean.offset = "1";
+        requestBean.limit = "4";
+        requestBean.order = "1";
+        requestBean.sortBy = "createdAt";
         final String libraryId = DRPreferenceManager.loadLibraryParentId(DRApplication.getInstance(), "");
 
-        final GetBookReportListRequest rq = new GetBookReportListRequest(requstBean);
+        final GetBookReportListRequest rq = new GetBookReportListRequest(requestBean);
         bookReportData.getImpressionsList(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

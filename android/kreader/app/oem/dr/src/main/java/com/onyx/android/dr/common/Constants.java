@@ -59,6 +59,7 @@ public class Constants {
     public static final int ENGLISH_TYPE = 0;
     public static final int CHINESE_TYPE = 1;
     public static final int OTHER_TYPE = 2;
+    public static final int All_TYPE = 3;
 
     public static final int ENGLISH_TAG = 0;
     public static final int CHINESE_TAG = 1;
@@ -68,6 +69,9 @@ public class Constants {
     public static final int DIALOG_VIEW_FIRST_TYPE = 0;
     public static final int DIALOG_VIEW_SECOND_TYPE = 1;
     public static final int DIALOG_VIEW_THIRD_TYPE = 2;
+
+    public static final int READING_RATE_DIALOG_EXPORT = 0;
+    public static final int READING_RATE_DIALOG_SHARE = 1;
 
     public static final int MY_NOTE_TO_INFORMAL_ESSAY = 0;
     public static final int RECORD_TIME_SETTING_TO_INFORMAL_ESSAY = 1;

@@ -10,10 +10,11 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ReadingRateAdapter;
-import com.onyx.android.dr.bean.ReadingRateBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.data.database.ReadingRateEntity;
+import com.onyx.android.dr.dialog.ReadingRateDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.ReadingRateView;
@@ -33,10 +34,13 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
+import static com.onyx.android.dr.common.Constants.READING_RATE_DIALOG_EXPORT;
+import static com.onyx.android.dr.common.Constants.READING_RATE_DIALOG_SHARE;
+
 /**
  * Created by zhouzhiming on 2017/9/27.
  */
-public class ReadingRateActivity extends BaseActivity implements ReadingRateView {
+public class ReadingRateActivity extends BaseActivity implements ReadingRateView, ReadingRateDialog.ReadingRateDialogInterface {
     @Bind(R.id.reading_rate_activity_recycler_view)
     PageRecyclerView recyclerView;
     @Bind(R.id.image)
@@ -54,9 +58,10 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private DividerItemDecoration dividerItemDecoration;
     private ReadingRateAdapter readingRateAdapter;
     private ReadingRatePresenter presenter;
-    private List<ReadingRateBean> readingRateList;
+    private List<ReadingRateEntity> readingRateList;
     private ArrayList<Boolean> listCheck;
     private PageIndicator pageIndicator;
+    private ReadingRateDialog timePickerDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -84,6 +89,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     protected void initData() {
         readingRateList = new ArrayList<>();
         listCheck = new ArrayList<>();
+        timePickerDialog = new ReadingRateDialog(this);
         initPageIndicator(pageIndicatorLayout);
         presenter = new ReadingRatePresenter(getApplicationContext(), this);
         presenter.getAllReadingRateData();
@@ -94,8 +100,6 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private void getIntentData() {
         image.setImageResource(R.drawable.reading_rate);
         title.setText(getString(R.string.reading_rate));
-        iconFour.setVisibility(View.VISIBLE);
-        iconThree.setVisibility(View.VISIBLE);
         iconFour.setImageResource(R.drawable.ic_reader_share);
         iconThree.setImageResource(R.drawable.ic_reader_note_export);
     }
@@ -106,10 +110,12 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     }
 
     @Override
-    public void setReadingRateData(List<ReadingRateBean> dataList) {
+    public void setReadingRateData(List<ReadingRateEntity> dataList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
+        iconFour.setVisibility(View.VISIBLE);
+        iconThree.setVisibility(View.VISIBLE);
         readingRateList = dataList;
         readingRateAdapter.setDataList(readingRateList);
         recyclerView.setAdapter(readingRateAdapter);
@@ -153,14 +159,19 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:
+                timePickerDialog.showDatePickerDialog(READING_RATE_DIALOG_SHARE);
                 break;
             case R.id.title_bar_right_icon_three:
-                exportData();
+                timePickerDialog.showDatePickerDialog(READING_RATE_DIALOG_EXPORT);
                 break;
             case R.id.title_bar_right_icon_two:
                 ActivityManager.startAddInformalEssayActivity(this);
                 break;
         }
+    }
+
+    @Override
+    public void positiveListener() {
     }
 
     private void exportData() {

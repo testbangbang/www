@@ -57,8 +57,6 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-import static android.R.attr.type;
-
 
 /**
  * Created by zhouzhiming on 17-6-26.
@@ -497,7 +495,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         queryDictTypeAdapter.notifyDataSetChanged();
         dictType = Constants.ENGLISH_TAG;
         wordQuery.requestFocus();
-        getDictData(type);
+        getDictData(dictType);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

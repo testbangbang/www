@@ -87,8 +87,8 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
         shareBookReportRecycler.addItemDecoration(dividerItemDecoration);
         adapter = new ShareBookReportAdapter();
         shareBookReportRecycler.setAdapter(adapter);
-    }
 
+    }
     @Override
     protected void initData() {
         impressionId = getIntent().getStringExtra(Constants.IMPRESSION_ID);

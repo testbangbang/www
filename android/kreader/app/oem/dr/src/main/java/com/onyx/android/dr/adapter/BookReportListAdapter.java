@@ -14,9 +14,9 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BringOutBookReportEvent;
 import com.onyx.android.dr.event.DeleteBookReportEvent;
 import com.onyx.android.dr.event.ShareBookReportEvent;
-import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -59,8 +59,9 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         BookReportViewHolder viewHolder = (BookReportViewHolder) holder;
         GetBookReportListBean bookReportListBean = data.get(position);
+        String time = DateTimeUtil.formatDate(bookReportListBean.updatedAt, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
         viewHolder.bookReportListItemBookName.setText(bookReportListBean.name);
-        viewHolder.bookReportListItemTime.setText(bookReportListBean.updatedAt + "");
+        viewHolder.bookReportListItemTime.setText(time);
         viewHolder.bookReportListItemPage.setText(bookReportListBean.pageNumber);
         String content = bookReportListBean.content;
         viewHolder.bookReportListItemWordCount.setText(content == null ? "0" : String.valueOf(content.length()));

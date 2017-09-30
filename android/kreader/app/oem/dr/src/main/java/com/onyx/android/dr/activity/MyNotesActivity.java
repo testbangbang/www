@@ -24,7 +24,6 @@ import com.onyx.android.dr.event.ReadingRateEvent;
 import com.onyx.android.dr.event.SketchEvent;
 import com.onyx.android.dr.interfaces.MyNotesView;
 import com.onyx.android.dr.presenter.MyNotesPresenter;
-import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.DeviceUtils;
@@ -88,6 +87,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
         myNotesPresenter.loadMyTracks(Constants.ACCOUNT_TYPE_MY_TRACKS);
         myNotesPresenter.loadMyThink(Constants.ACCOUNT_TYPE_MY_THINK);
         myNotesPresenter.loadMyCreation(Constants.ACCOUNT_TYPE_MY_CREATION);
+        myNotesPresenter.getImpressionsList();
         initTitleData();
         initEvent();
     }

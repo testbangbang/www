@@ -18,6 +18,7 @@ import com.onyx.android.dr.request.local.NewWordQueryByReadingMatter;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +30,7 @@ public class OperatingDataManager {
     private static OperatingDataManager instance = null;
     private List<NewWordNoteBookEntity> newWordList = new ArrayList<NewWordNoteBookEntity>();
     private List<GoodSentenceNoteEntity> goodSentenceList = new ArrayList<GoodSentenceNoteEntity>();
+    private List<GetBookReportListBean> data;
 
     private OperatingDataManager() {
     }

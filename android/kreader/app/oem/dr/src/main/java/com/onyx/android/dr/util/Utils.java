@@ -24,6 +24,7 @@ import android.widget.Toast;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.DictTypeBean;
+import com.onyx.android.dr.bean.LanguageTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.DictTypeConfig;
@@ -660,7 +661,7 @@ public class Utils {
             Toast.makeText(context, R.string.illegalInput, Toast.LENGTH_SHORT).show();
             return;
         }
-        ActivityManager.startBaiduBaiKeActivity(context,editQuery);
+        ActivityManager.startBaiduBaiKeActivity(context, editQuery);
     }
 
     public static int dip2px(Context context, float dpValue) {
@@ -1003,5 +1004,18 @@ public class Utils {
         attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
         dialog.getWindow().setAttributes(attributes);
         dialog.show();
+    }
+
+    public static List<LanguageTypeBean> getSpinnerData() {
+        List<LanguageTypeBean> dataList = new ArrayList<>();
+        String[] names = DRApplication.getInstance().getResources().getStringArray(R.array.reading_rate_dialog_spinner_data);
+        int[] numbers = DRApplication.getInstance().getResources().getIntArray(R.array.reading_rate_dialog_spinner_type);
+        for (int i = 0; i < names.length; i++) {
+            LanguageTypeBean bean = new LanguageTypeBean();
+            bean.setName(names[i]);
+            bean.setType(numbers[i]);
+            dataList.add(bean);
+        }
+        return dataList;
     }
 }

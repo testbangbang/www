@@ -19,6 +19,13 @@
 
         <View style="@style/vertical_view" />
 
+        <TextView
+            android:id="@+id/reading_rate_item_book_name"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/book_report_list_book_name" />
+
         <View style="@style/vertical_view" />
 
         <TextView
@@ -54,13 +61,6 @@
             android:layout_marginLeft="1dp"
             android:layout_weight="1"
             android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/reading_rate_item_book_name"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="2"
-            android:text="@string/book_report_list_book_name" />
 
         <View style="@style/vertical_view" />
 

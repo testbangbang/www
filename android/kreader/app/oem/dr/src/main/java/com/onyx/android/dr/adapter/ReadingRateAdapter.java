@@ -7,8 +7,9 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.ReadingRateBean;
+import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 
 import java.util.List;
 
@@ -19,10 +20,10 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-7-11.
  */
 public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRateAdapter.ViewHolder> {
-    private List<ReadingRateBean> dataList;
+    private List<ReadingRateEntity> dataList;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<ReadingRateBean> dataList) {
+    public void setDataList(List<ReadingRateEntity> dataList) {
         this.dataList = dataList;
     }
 
@@ -49,10 +50,13 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        ReadingRateBean bean = dataList.get(position);
-        holder.time.setText(bean.getTime());
-        holder.bookName.setText(bean.getBookName());
-        holder.timeHorizon.setText(bean.getTimeHorizon());
+        ReadingRateEntity bean = dataList.get(position);
+        String time = DateTimeUtil.formatDate(bean.time, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+        holder.time.setText(time);
+        holder.bookName.setText(bean.bookName);
+        holder.timeHorizon.setText(bean.timeHorizon);
+        holder.readingSummary.setText(bean.readSummaryPiece);
+        holder.languageType.setText(bean.language);
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +70,7 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
 
     public interface OnItemClickListener {
         void setOnItemClick(int position, boolean isCheck);
+
         void setOnItemCheckedChanged(int position, boolean isCheck);
     }
 

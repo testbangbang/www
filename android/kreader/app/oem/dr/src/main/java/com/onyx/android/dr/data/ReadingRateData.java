@@ -54,10 +54,13 @@ public class ReadingRateData {
 
     public ArrayList<String> getHtmlTitle(Context context) {
         htmlTitle = new ArrayList<String>();
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_time));
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_title));
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_word_number));
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_content));
+        htmlTitle.add(context.getString(R.string.book_report_list_time));
+        htmlTitle.add(context.getString(R.string.book_report_list_book_name));
+        htmlTitle.add(context.getString(R.string.time_horizon));
+        htmlTitle.add(context.getString(R.string.language_type));
+        htmlTitle.add(context.getString(R.string.read_summary_content));
+        htmlTitle.add(context.getString(R.string.reader_response_content));
+        htmlTitle.add(context.getString(R.string.reader_response_number));
         return htmlTitle;
     }
 }
