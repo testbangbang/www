@@ -2,9 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data class="HomeworkBinding">
+
         <variable
             name="listener"
-            type="android.view.View.OnClickListener"/>
+            type="android.view.View.OnClickListener" />
     </data>
 
     <LinearLayout
@@ -23,50 +24,50 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="20dp"
+                android:background="@{@drawable/tab_selector}"
                 android:gravity="center"
                 android:onClick="@{listener.onClick}"
+                android:padding="@{@dimen/homework_text_view_padding}"
                 android:text="@{@string/homework_unfinished}"
-                android:textSize="@{@dimen/level_two_heading_font}"
-                android:background="@{@drawable/tab_selector}"/>
+                android:textSize="@{@dimen/level_two_heading_font}" />
 
             <TextView
                 android:id="@+id/homework_finished"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:padding="20dp"
+                android:background="@{@drawable/tab_selector}"
                 android:gravity="center"
                 android:onClick="@{listener.onClick}"
+                android:padding="@{@dimen/homework_text_view_padding}"
                 android:text="@{@string/homework_finished}"
-                android:textSize="@{@dimen/level_two_heading_font}"
-                android:background="@{@drawable/tab_selector}"/>
+                android:textSize="@{@dimen/level_two_heading_font}" />
 
             <TextView
                 android:id="@+id/homework_study_report"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:background="@{@drawable/tab_selector}"
                 android:gravity="center"
-                android:padding="20dp"
                 android:onClick="@{listener.onClick}"
+                android:padding="@{@dimen/homework_text_view_padding}"
                 android:text="@{@string/study_report}"
-                android:textSize="@{@dimen/level_two_heading_font}"
-                android:background="@{@drawable/tab_selector}"/>
+                android:textSize="@{@dimen/level_two_heading_font}" />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/black"/>
+            android:layout_height="@{@dimen/line_height}"
+            android:background="@android:color/black" />
 
         <com.onyx.android.sun.view.PageRecyclerView
             android:id="@+id/homework_recycler_view"
             android:layout_width="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingBottom="10dp"
-            android:paddingRight="10dp"
             android:layout_height="0dp"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:paddingBottom="@{@dimen/homework_recycler_view_padding}"
+            android:paddingLeft="@{@dimen/homework_recycler_view_padding}"
+            android:paddingRight="@{@dimen/homework_recycler_view_padding}" />
     </LinearLayout>
 </layout>
