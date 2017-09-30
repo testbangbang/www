@@ -26,6 +26,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -199,6 +200,7 @@ public class NoteViewHelper {
         ConfigManager.init(context.getApplicationContext());
         deviceConfig = ConfigManager.getInstance().getDeviceConfig();
         mappingConfig = ConfigManager.getInstance().getMappingConfig();
+        BaseShape.setUseRawInput(deviceConfig.useRawInput());
     }
 
     private void initBigPenState(final Context context) {

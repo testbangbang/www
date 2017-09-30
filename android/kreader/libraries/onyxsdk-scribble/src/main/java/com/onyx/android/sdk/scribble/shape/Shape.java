@@ -172,5 +172,4 @@ public interface Shape {
 
     boolean canModified(int documentReviewRevision);
 
-    boolean useRawInput();
 }

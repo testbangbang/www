@@ -40,7 +40,6 @@ public class BaseShape implements Shape {
     private Path originDisplayPath;
     private int originWidth;
     private int originHeight;
-    private boolean useRawInput;
 
     private boolean isFormShape;
     private String formId;
@@ -55,6 +54,7 @@ public class BaseShape implements Shape {
     private float scale = 1.0f;
     private float orientation;
 
+    private static boolean useRawInput;
     /**
      * rectangle, circle, etc.
      * @return
@@ -509,7 +509,11 @@ public class BaseShape implements Shape {
         return revision >= documentReviewRevision;
     }
 
-    public boolean useRawInput() {
-        return ConfigManager.getInstance().getDeviceConfig().useRawInput();
+    public static boolean useRawInput() {
+        return useRawInput;
+    }
+
+    public static void setUseRawInput(boolean useRawInput) {
+        BaseShape.useRawInput = useRawInput;
     }
 }

@@ -32,6 +32,7 @@ import com.onyx.android.sdk.scribble.data.SpanLayoutData;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
@@ -84,6 +85,7 @@ public class NoteManager {
     public NoteManager(Context context) {
         appContext = context.getApplicationContext();
         ConfigManager.init(appContext);
+        BaseShape.setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
         getTouchHelper().setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
     }
 
