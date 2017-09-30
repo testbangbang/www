@@ -15,6 +15,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
@@ -195,8 +196,9 @@ public class NoteViewHelper {
     }
 
     private void initRawResource(final Context context) {
-        deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        mappingConfig = MappingConfig.sharedInstance(context, "note");
+        ConfigManager.init(context.getApplicationContext());
+        deviceConfig = ConfigManager.getInstance().getDeviceConfig();
+        mappingConfig = ConfigManager.getInstance().getMappingConfig();
     }
 
     private void initBigPenState(final Context context) {

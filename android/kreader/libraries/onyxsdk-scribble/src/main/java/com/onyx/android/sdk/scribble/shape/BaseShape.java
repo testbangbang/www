@@ -6,11 +6,13 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
+import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.List;
@@ -38,6 +40,7 @@ public class BaseShape implements Shape {
     private Path originDisplayPath;
     private int originWidth;
     private int originHeight;
+    private boolean useRawInput;
 
     private boolean isFormShape;
     private String formId;
@@ -504,5 +507,9 @@ public class BaseShape implements Shape {
     @Override
     public boolean canModified(int documentReviewRevision) {
         return revision >= documentReviewRevision;
+    }
+
+    public boolean useRawInput() {
+        return ConfigManager.getInstance().getDeviceConfig().useRawInput();
     }
 }
