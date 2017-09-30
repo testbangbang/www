@@ -171,4 +171,5 @@ public interface Shape {
     void setRevision(int revision);
 
     boolean canModified(int documentReviewRevision);
+
 }
