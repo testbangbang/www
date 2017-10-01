@@ -314,7 +314,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         findViewById(R.id.btn_menu).setVisibility(View.GONE);
         findViewById(R.id.btn_switch).setVisibility(View.GONE);
 
-        orientationBeforeSideReading = getRequestedOrientation();
+        orientationBeforeSideReading = DeviceUtils.getScreenOrientation(this);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
     }
 
