@@ -91,7 +91,7 @@ dependencies {
     compile project(':libraries:onyxsdk-ui')
     compile project(':libraries:cropimage')
     compile project(':libraries:onyxsdk-data')
-    compile (project(':libraries:onyxsdk-scribble')) {
+    compile(project(':libraries:onyxsdk-scribble')) {
         ['com.github.Raizlabs.DBFlow', 'com.alibaba'].each {
             exclude group: it
         }
@@ -99,5 +99,6 @@ dependencies {
 
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:appcompat-v7:25.3.1'
     testCompile 'junit:junit:4.12'
 }
