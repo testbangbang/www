@@ -215,6 +215,7 @@ public class ImageUtils {
     public static void drawRectanglesOnBitmap(final Bitmap bitmap, final List<Rect> list) {
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint();
+        canvas.drawColor(Color.WHITE);
 
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(3.0F);
