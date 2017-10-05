@@ -55,6 +55,10 @@ public class DeviceUtils {
     private final static String DEFAULT_TOUCH_DEVICE_PATH = "/dev/input/event1";
     public static final int NEVER_SLEEP = Integer.MAX_VALUE;
 
+    public static boolean isRk32xxDevice() {
+        return getSystemProperty("ro.board.platform").contains("3288");
+    }
+
     public static boolean isRkDevice() {
         return Build.HARDWARE.startsWith("rk");
     }
@@ -398,5 +402,17 @@ public class DeviceUtils {
         PackageManager packageManager = context.getPackageManager();
         ApplicationInfo applicationInfo = packageManager.getApplicationInfo(getPackageName(context), 0);
         return packageManager.getApplicationLabel(applicationInfo).toString();
+    }
+
+    public static String getSystemProperty(String key) {
+        String value = "";
+        try {
+            value = (String) Class.forName("android.os.SystemProperties")
+                    .getMethod("get", String.class).invoke(null, key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return value;
     }
 }
