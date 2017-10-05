@@ -196,10 +196,28 @@ public class CalligraphyActivity extends AppCompatActivity {
         canvas.drawLine(x3, y3, x4, y4, paint);
     }
 
+    public void drawWaterDrop(final Canvas canvas, final Paint pathPaint, final Paint paint) {
+        Path temp = new Path();
+        temp.moveTo(200,700);
+        temp.quadTo(50,900,200,910);
+        temp.quadTo(350,900,200,700);
+        canvas.drawPath(temp, pathPaint);
+
+        paint.setStrokeWidth(3.0f);
+        canvas.drawPoint(200, 700, paint);
+        canvas.drawPoint(50, 900, paint);
+        canvas.drawPoint(200, 910, paint);
+        canvas.drawPoint(350, 900, paint);
+        canvas.drawPoint(200, 700, paint);
+
+    }
+
     public void drawStroke2(float x1, float y1, float x2, float y2, boolean brushEnded) {
         if (!brushEnded) {
             return;
         }
+
+        Log.e("###########", "generate strokes");
 
         Canvas canvas = new Canvas(compareBitmap);
         Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -212,6 +230,7 @@ public class CalligraphyActivity extends AppCompatActivity {
         pathPaint.setColor(Color.BLACK);
         pathPaint.setStrokeWidth(1.0f);
 
+        drawWaterDrop(canvas, pathPaint, paint);
 
         path = new Path();
         TouchPoint touchPoint = points.get(0);
@@ -246,6 +265,7 @@ public class CalligraphyActivity extends AppCompatActivity {
             canvas.drawPoint(aCoordinates[0], aCoordinates[1], paint);
         }
 
+        Log.e("###########", "generate strokes finished");
 
         BitmapUtils.saveBitmap(compareBitmap, "/mnt/sdcard/quad.png");
         Log.e("###########", "bitmap saved");
