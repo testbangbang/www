@@ -585,6 +585,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
         }
+        ReaderDeviceManager.resetUpdateMode(getSurfaceView());
     }
 
     private boolean verifyReader() {
