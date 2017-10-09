@@ -55,6 +55,7 @@ public class BaseShape implements Shape {
 
     private PointF rotationCenterPoint = new PointF();
 
+    private static boolean useRawInput;
     /**
      * rectangle, circle, etc.
      * @return
@@ -538,5 +539,13 @@ public class BaseShape implements Shape {
     @Override
     public void setRotationPointYCoordinate(float yCoordinate) {
         rotationCenterPoint.y = yCoordinate;
+    }
+
+    public static boolean useRawInput() {
+        return useRawInput;
+    }
+
+    public static void setUseRawInput(boolean useRawInput) {
+        BaseShape.useRawInput = useRawInput;
     }
 }

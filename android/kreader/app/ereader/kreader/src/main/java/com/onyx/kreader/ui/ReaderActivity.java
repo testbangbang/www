@@ -41,10 +41,8 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.utils.TreeObserverUtils;
@@ -81,7 +79,6 @@ import com.onyx.kreader.ui.actions.StartSideNoteAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
-import com.onyx.kreader.ui.dialog.DialogTabHostMenu;
 import com.onyx.kreader.ui.events.BeforeDocumentCloseEvent;
 import com.onyx.kreader.ui.events.BeforeDocumentOpenEvent;
 import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
@@ -129,10 +126,8 @@ import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
 import org.greenrobot.eventbus.Subscribe;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -156,8 +151,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
 
     private PinchZoomingPopupMenu pinchZoomingPopupMenu;
-
-    private boolean isSideReadingMode = false;
 
     private long lastActivated = new Date().getTime();
 
@@ -406,12 +399,8 @@ public class ReaderActivity extends OnyxBaseActivity {
                 if (!getReaderDataHolder().isDocumentInitRendered()) {
                     return;
                 }
-                if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
-                    surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
-                    getReaderDataHolder().redrawPage();
-                } else {
-                    onSurfaceViewSizeChanged();
-                }
+
+                onSurfaceViewSizeChanged();
             }
 
             @Override
@@ -543,7 +532,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         if (event != null && event.isRenderShapeData()) {
-            renderShapeDataInBackground(true);
+            renderNoteShapes();
         }
     }
 
@@ -596,6 +585,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
         }
+        ReaderDeviceManager.resetUpdateMode(getSurfaceView());
     }
 
     private boolean verifyReader() {
@@ -652,12 +642,16 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (getReaderDataHolder() == null) {
             return;
         }
-        if (!getReaderDataHolder().isDocumentOpened() ||
-                !getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
+        if (!getReaderDataHolder().isDocumentOpened()) {
             return;
         }
 
-        renderShapeDataInBackground();
+        if (!getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
+            onDocumentDeactivated();
+            return;
+        }
+
+        renderNoteShapes();
     }
 
     @Subscribe
@@ -735,7 +729,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onDFBShapeFinished(final ShapeAddedEvent event) {
         if (new Date().getTime() - lastActivated < 5000) {
-            renderShapeDataInBackground();
+            renderNoteShapes();
         } else {
             new RenderStashShapesInBackgroundAction(getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
         }
@@ -913,7 +907,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
         }
 
-        isSideReadingMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, false);
+        getReaderDataHolder().setSideReadingMode(getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, false));
 
         boolean sideNoteMode = getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, false);
         if (sideNoteMode) {
@@ -1086,17 +1080,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
     }
 
-    private void renderShapeDataInBackground() {
-        renderShapeDataInBackground(false);
-    }
-
-    private void renderShapeDataInBackground(boolean applyGCInterval) {
+    private void renderNoteShapes() {
         List<PageInfo> pages = getReaderDataHolder().getVisiblePages();
         final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
                 getReaderDataHolder().getReader().getDocumentMd5(),
                 pages,
                 getReaderDataHolder().getDisplayRect(),
-                applyGCInterval,
                 false);
         int uniqueId = getReaderDataHolder().getLastRequestSequence();
 
@@ -1179,7 +1168,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             public void done(BaseRequest request, Throwable e) {
                 new ShowTabHostMenuDialogAction(surfaceView,
                         metadataRequest.getList(),
-                        isSideReadingMode).execute(getReaderDataHolder(), null);
+                        getReaderDataHolder().isSideReadingMode()).execute(getReaderDataHolder(), null);
             }
         });
 

@@ -98,7 +98,7 @@ public class DialogPreviewMenu extends Dialog {
 
     private List<MenuItem> initMainMenuContent() {
         List<MenuItem> menuItems = new ArrayList<>();
-        //menuItems.add(new MenuItem(CONTRAST, R.drawable.ic_contrast));
+        menuItems.add(new MenuItem(ORIENTATION, R.drawable.ic_rotate));
         menuItems.add(new MenuItem(A2, R.drawable.ic_a2));
         menuItems.add(new MenuItem(FULL_REFRESH, R.drawable.ic_regal));
         //menuItems.add(new MenuItem(BRIGHTNESS, R.drawable.ic_light));
@@ -120,7 +120,7 @@ public class DialogPreviewMenu extends Dialog {
 
             @Override
             public int getColumnCount() {
-                return 3;
+                return items.size();
             }
 
             @Override

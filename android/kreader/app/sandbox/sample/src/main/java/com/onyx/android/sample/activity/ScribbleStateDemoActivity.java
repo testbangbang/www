@@ -1,6 +1,7 @@
 package com.onyx.android.sample.activity;
 
 import android.app.Activity;
+import android.content.pm.ActivityInfo;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -57,48 +58,29 @@ public class ScribbleStateDemoActivity extends Activity {
     @OnClick(R.id.button_pen)
     void onButtonPenClicked() {
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_DRAWING);
-
-        setScribbleRegion(new Rect[] { new Rect(0, 0, 300, 300), new Rect(300, 400, 500, 600) });
+        setScribbleRegion(new Rect[] { new Rect(0, 0, surfaceView.getWidth(), surfaceView.getHeight())});
     }
 
     @OnClick(R.id.button_eraser)
     void onButtonEraserClicked() {
+        // test stop, when resume, it automatically starts pen.
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_STOP);
-
         surfaceView.invalidate();
     }
 
-    private float[] mapPoint(float x, float y) {
-        x = Math.min(Math.max(0, x), surfaceView.getWidth());
-        y = Math.min(Math.max(0, y), surfaceView.getHeight());
+    @OnClick(R.id.button_portrait)
+    void onButtonRotatePortrait() {
+        EpdController.setScreenHandWritingPenState(surfaceView, PEN_STOP);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+    }
 
-        final int viewLocation[] = {0, 0};
-        surfaceView.getLocationOnScreen(viewLocation);
-        final Matrix viewMatrix = new Matrix();
-        DeviceConfig deviceConfig = DeviceConfig.sharedInstance(this, "note");
-        viewMatrix.postRotate(deviceConfig.getViewPostOrientation());
-        viewMatrix.postTranslate(deviceConfig.getViewPostTx(), deviceConfig.getViewPostTy());
-
-        float screenPoints[] = {viewLocation[0] + x, viewLocation[1] + y};
-        float dst[] = {0, 0};
-        viewMatrix.mapPoints(dst, screenPoints);
-        return dst;
+    @OnClick(R.id.button_landscape)
+    void onButtonRotateLandscape() {
+        EpdController.setScreenHandWritingPenState(surfaceView, PEN_STOP);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     private void setScribbleRegion(Rect[] regionList) {
-        for (int i = 0; i < regionList.length; i++) {
-            Rect region = regionList[i];
-            float[] leftTop = mapPoint(region.left, region.top);
-            float[] rightBottom = mapPoint(region.right, region.bottom);
-
-            int left = (int) Math.min(leftTop[0], rightBottom[0]);
-            int top = (int) Math.min(leftTop[1], rightBottom[1]);
-            int right = (int) Math.max(leftTop[0], rightBottom[0]);
-            int bottom = (int) Math.max(leftTop[1], rightBottom[1]);
-
-            region.set(left, top, right, bottom);
-        }
-
         EpdController.setScreenHandWritingRegionLimit(surfaceView, regionList);
     }
 }

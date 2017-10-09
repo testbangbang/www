@@ -183,5 +183,4 @@ public interface Shape {
     float getRotationPointYCoordinate();
 
     void setRotationPointYCoordinate(float yCoordinate);
-
 }

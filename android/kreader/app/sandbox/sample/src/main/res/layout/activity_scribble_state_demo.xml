@@ -27,6 +27,19 @@
             android:layout_height="wrap_content"
             android:text="Eraser"/>
 
+        <Button
+            android:id="@+id/button_portrait"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Portrait"/>
+
+        <Button
+            android:id="@+id/button_landscape"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Landscape"/>
+
+
     </LinearLayout>
 
     <SurfaceView
