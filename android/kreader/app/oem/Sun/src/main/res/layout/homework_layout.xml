@@ -58,7 +58,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@{@dimen/line_height}"
+            android:layout_height="@dimen/line_height"
             android:background="@android:color/black" />
 
         <com.onyx.android.sun.view.PageRecyclerView
