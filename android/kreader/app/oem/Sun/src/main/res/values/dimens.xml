@@ -7,4 +7,16 @@
     <dimen name="homework_recycler_view_padding">10dp</dimen>
     <dimen name="line_height">1dp</dimen>
     <dimen name="item_homework_subject_padding">10dp</dimen>
+    <dimen name="main_fragment_score_text_margin_top">10dp</dimen>
+    <dimen name="large_heading_font">50sp</dimen>
+    <dimen name="fragment_content_margin">10dp</dimen>
+    <dimen name="main_fragment_title_width">150dp</dimen>
+    <dimen name="main_fragment_title_padding">5dp</dimen>
+    <dimen name="main_fragment_task_layout_height">200dp</dimen>
+    <dimen name="main_fragment_text_padding">10dp</dimen>
+    <dimen name="main_fragment_results_width">250dp</dimen>
+    <dimen name="main_fragment_score_title_margin_top">30dp</dimen>
+    <dimen name="main_fragment_score_dividing_line_width">230dp</dimen>
+    <dimen name="score_radar_chart_padding">60dp</dimen>
+    <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>

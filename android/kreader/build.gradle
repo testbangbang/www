@@ -20,7 +20,7 @@ allprojects {
     repositories {
         jcenter()
         maven { url "https://jitpack.io" }
-        maven { url  "http://dl.bintray.com/dasar/maven" }
+        maven { url "http://dl.bintray.com/dasar/maven" }
         maven { url "http://mvn.leancloud.cn/nexus/content/repositories/releases" }
         repositories {
             flatDir {
@@ -29,7 +29,6 @@ allprojects {
         }
     }
 }
-
 
 // Define versions in a single place
 ext {
@@ -82,7 +81,7 @@ ext {
     epublibVersion = "1.0"
 
     phone_supportLibraryVersion = '25.1.1'
-    phone_materialDialogsCommonVersion= '0.9.3.0'
+    phone_materialDialogsCommonVersion = '0.9.3.0'
 
     avoscloudVersion = 'v3.13.7'
     glideVersion = '3.7.0'
@@ -92,7 +91,9 @@ ext {
     androidtiffbitmapfactoryVersion = '0.9.7.6'
 
     //ui
-    flexboxVersion='0.3.0'
+    flexboxVersion = '0.3.0'
 
+    radarchartviewVersion = '0.1.0'
+    convertergsonVersion = '2.0.2'
 }
 
