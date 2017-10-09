@@ -1,13 +1,13 @@
 package com.onyx.android.sun.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.databinding.HomeworkItemBinding;
 import com.onyx.android.sun.view.PageRecyclerView;
 
@@ -30,12 +30,12 @@ public class HomeworkAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return 8;
+        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 1;
+        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_adapter_col);
     }
 
     @Override
@@ -62,12 +62,12 @@ public class HomeworkAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public void onClick(View view) {
         Object tag = view.getTag();
-        if(tag == null) {
+        if (tag == null) {
             return;
         }
     }
 
-    static class HomeworkViewHolder extends RecyclerView.ViewHolder{
+    static class HomeworkViewHolder extends RecyclerView.ViewHolder {
         private final HomeworkItemBinding bind;
 
         public HomeworkViewHolder(View itemView) {
