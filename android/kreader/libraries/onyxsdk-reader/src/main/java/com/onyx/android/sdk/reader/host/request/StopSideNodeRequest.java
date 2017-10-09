@@ -17,6 +17,7 @@ public class StopSideNodeRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
+        reader.getReaderLayoutManager().getPageManager().restoreScale();
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);
 
         drawVisiblePages(reader);
