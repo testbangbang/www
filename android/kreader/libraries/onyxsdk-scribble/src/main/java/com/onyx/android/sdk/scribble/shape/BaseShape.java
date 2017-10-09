@@ -6,13 +6,11 @@ import android.graphics.Path;
 import android.graphics.PointF;
 import android.graphics.RectF;
 
-import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
-import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 
 import java.util.List;
@@ -52,7 +50,10 @@ public class BaseShape implements Shape {
 
     private boolean selected = false;
     private float scale = 1.0f;
-    private float orientation;
+    private float orientation = 0f;
+    private float selectRectOrientation = 0f;
+
+    private PointF rotationCenterPoint = new PointF();
 
     private static boolean useRawInput;
     /**
@@ -249,6 +250,7 @@ public class BaseShape implements Shape {
     @Override
     public void onRotate(final float angle, PointF pointF) {
         normalizedPoints.rotateAllPoints(angle, pointF);
+        setSelectRectOrientation((getSelectRectOrientation() + angle) % 360);
         updatePoints();
     }
 
@@ -507,6 +509,36 @@ public class BaseShape implements Shape {
     @Override
     public boolean canModified(int documentReviewRevision) {
         return revision >= documentReviewRevision;
+    }
+
+    @Override
+    public float getSelectRectOrientation() {
+        return selectRectOrientation;
+    }
+
+    @Override
+    public void setSelectRectOrientation(float selectRectOrientation) {
+        this.selectRectOrientation = selectRectOrientation;
+    }
+
+    @Override
+    public float getRotationPointXCoordinate() {
+        return rotationCenterPoint.x;
+    }
+
+    @Override
+    public void setRotationPointXCoordinate(float xCoordinate) {
+        rotationCenterPoint.x = xCoordinate;
+    }
+
+    @Override
+    public float getRotationPointYCoordinate() {
+        return rotationCenterPoint.y;
+    }
+
+    @Override
+    public void setRotationPointYCoordinate(float yCoordinate) {
+        rotationCenterPoint.y = yCoordinate;
     }
 
     public static boolean useRawInput() {

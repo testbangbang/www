@@ -26,6 +26,9 @@ import java.util.Map;
  * Manager for a list of shapes in single page.
  * To make it easy for activity or other class to manage shapes.
  * ShapeManager->NotePage->Shape->ShapeModel
+ *
+ * ShapeTransform Logic:
+ * both shape and selected rectangle need transform.
  */
 public class NotePage {
 
@@ -44,7 +47,9 @@ public class NotePage {
     private Shape currentShape;
     private boolean loaded = false;
     private UndoRedoManager undoRedoManager = new UndoRedoManager();
-    private PointF rotateCacheRectTopLeft,rotateCacheRectTopRight;
+    private PointF rotateCacheRectTopLeft, rotateCacheRectTopRight;
+    private volatile SelectedRectF currentSelectedRectF = new SelectedRectF(new RectF());
+    private RectF rotateSelectedCachedRecF = new RectF();
 
     public void saveCurrentSelectShape() {
         if (preTransformShapeList.size() == 0) {
@@ -52,11 +57,9 @@ public class NotePage {
         }
     }
 
-    public void saveCurrentSelectPointRotationInitialPoint(){
+    public void saveCurrentSelectPointRotationInitialData(){
         rotateCacheRectTopLeft = new PointF(getSelectedRect().getRectF().left, getSelectedRect().getRectF().top);
         rotateCacheRectTopRight = new PointF(getSelectedRect().getRectF().right, getSelectedRect().getRectF().top);
-        Log.d("NotePage", "rotateCacheRectTopLeft:" + rotateCacheRectTopLeft);
-        Log.d("NotePage", "rotateCacheRectTopRight:" + rotateCacheRectTopRight);
     }
 
     private void deepCopyShapeList(List<Shape> sourceList, List<Shape> destinationList) {
@@ -207,7 +210,9 @@ public class NotePage {
     public void clearShapeSelectRecord() {
         for (Shape shape : selectedShapeList) {
             shape.setSelected(false);
+            shape.setSelectRectOrientation(0);
         }
+        clearSelectedRect();
         selectedShapeList.clear();
     }
 
@@ -356,7 +361,7 @@ public class NotePage {
         }
     }
 
-    public SelectedRectF getSelectedRect() {
+    private void buildSelectedRect(){
         //TODO:only consider 1 orientation shape circumstance.
         List<RectF> selectShapeRectList = new ArrayList<>();
         float orientation = 0f;
@@ -369,25 +374,62 @@ public class NotePage {
                     } else {
                         selectRect = shape.getBoundingRect();
                     }
-                }else {
+                } else {
                     selectRect = shape.getBoundingRect();
                 }
-                orientation = shape.getOrientation();
+                orientation = shape.getSelectRectOrientation();
                 selectShapeRectList.add(selectRect);
             }
         }
         if (selectShapeRectList.size() == 0) {
-            return new SelectedRectF(0,new RectF());
+            clearSelectedRect();
         } else {
-            RectF resultSelectRectF = new RectF();
-            for (RectF targetRect : selectShapeRectList) {
-                if (resultSelectRectF.contains(targetRect)&&orientation!=0){
-                    orientation = 0;
-                }
-                resultSelectRectF.union(targetRect);
-            }
-            return new SelectedRectF(orientation,resultSelectRectF);
+            currentSelectedRectF = unionSelectedShapeBoundingRect(orientation, selectShapeRectList);
         }
+    }
+
+    private void updateSelectedRect(ShapeTransformAction transformAction, float x, float y, float angle, float zoomFactor) {
+        Matrix transformMatrix = new Matrix();
+        switch (transformAction) {
+            case XAxisMirror:
+            case YAxisMirror:
+                buildSelectedRect();
+                break;
+            case Rotation:
+                Log.d("NotePage", "angle:" + angle);
+                currentSelectedRectF.setOrientation(currentSelectedRectF.getOrientation() + angle);
+                break;
+            case Move:
+                currentSelectedRectF.getRectF().offset(x, y);
+                break;
+            case Zoom:
+                transformMatrix.setScale(zoomFactor, zoomFactor);
+                transformMatrix.mapRect(currentSelectedRectF.getRectF());
+                break;
+        }
+    }
+
+    private void clearSelectedRect(){
+        currentSelectedRectF.setOrientation(0);
+        currentSelectedRectF.setRectF(new RectF());
+    }
+
+    public SelectedRectF getSelectedRect() {
+        if (currentSelectedRectF.getRectF().isEmpty()){
+            buildSelectedRect();
+        }
+        return currentSelectedRectF;
+    }
+
+    private SelectedRectF unionSelectedShapeBoundingRect(float orientation, List<RectF> selectShapeBoundingRect) {
+        RectF resultSelectRectF = new RectF();
+        for (RectF targetRect : selectShapeBoundingRect) {
+            if (resultSelectRectF.contains(targetRect) && Float.compare(orientation, 0) != 0) {
+                orientation = 0;
+            }
+            resultSelectRectF.union(targetRect);
+        }
+        return new SelectedRectF(orientation, resultSelectRectF);
     }
 
     public PointF getRotateExtendPoint() {
@@ -522,6 +564,7 @@ public class NotePage {
         }
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        updateSelectedRect(ShapeTransformAction.Zoom, 0, 0, 0, scale);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
@@ -538,6 +581,7 @@ public class NotePage {
         }
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        updateSelectedRect(ShapeTransformAction.Move, dX, dY,0,0);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
@@ -549,6 +593,7 @@ public class NotePage {
         if (selectedShapeList.size() <= 0) {
             return;
         }
+        Log.d("setRotationAngleToSelectShapeList", "angle:" + angle);
         for (Shape shape : selectedShapeList) {
             shape.onRotate(angle, originPoint);
         }
@@ -570,6 +615,7 @@ public class NotePage {
 
         dirtyShapeList.clear();
         dirtyShapeList.addAll(selectedShapeList);
+        updateSelectedRect(ShapeTransformAction.Rotation, 0, 0, angle, 0);
         if (addToActionHistory) {
             undoRedoManager.addToHistory(ShapeActions.
                     transformShapeListAction(preTransformShapeList, dirtyShapeList), false);
@@ -577,7 +623,7 @@ public class NotePage {
         }
     }
 
-    public void setMirrorEffectToSelectShapeList(MirrorType type, int translateDistance,boolean addToActionHistory) {
+    public void setMirrorEffectToSelectShapeList(MirrorType type, int translateDistance, boolean addToActionHistory) {
         if (selectedShapeList.size() <= 0) {
             return;
         }
