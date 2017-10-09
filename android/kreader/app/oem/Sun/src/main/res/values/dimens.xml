@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="level_one_heading_font">24sp</dimen>
+    <dimen name="level_two_heading_font">20sp</dimen>
+    <dimen name="level_three_heading_font">18sp</dimen>
+    <dimen name="homework_text_view_padding">20dp</dimen>
+    <dimen name="homework_recycler_view_padding">10dp</dimen>
+    <dimen name="line_height">1dp</dimen>
+    <dimen name="item_homework_subject_padding">10dp</dimen>
+</resources>

@@ -65,7 +65,7 @@ public abstract class BaseFragment extends Fragment {
 
     protected abstract void loadData();
 
-    protected abstract void initView(ViewDataBinding rootView);
+    protected abstract void initView(ViewDataBinding binding);
 
     protected abstract void initListener();
 

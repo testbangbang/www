@@ -4,4 +4,7 @@
     <string name="examination_work">作业考试</string>
     <string name="goal_advanced">目标进阶</string>
     <string name="study_management">学习管理</string>
+    <string name="homework_unfinished">待完成</string>
+    <string name="homework_finished">已完成</string>
+    <string name="study_report">学情报告</string>
 </resources>

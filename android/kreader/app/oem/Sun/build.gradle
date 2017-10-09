@@ -42,4 +42,5 @@ dependencies {
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile 'com.umeng.analytics:analytics:latest.integration'
+    compile project(path: ':libraries:onyxsdk-data')
 }
