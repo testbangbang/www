@@ -1,5 +1,6 @@
 package com.onyx.einfo.activity;
 
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
@@ -7,6 +8,7 @@ import android.databinding.DataBindingUtil;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,22 +20,31 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.AppDataInfo;
 import com.onyx.android.sdk.data.FileOperateMode;
+import com.onyx.android.sdk.data.GAdapterUtil;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.ViewType;
+import com.onyx.android.sdk.data.model.common.AppPreference;
+import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.einfo.R;
 import com.onyx.einfo.action.FileCopyAction;
+import com.onyx.einfo.action.FileDeleteAction;
+import com.onyx.einfo.action.FileOpenWithAction;
 import com.onyx.einfo.action.SortByProcessAction;
 import com.onyx.einfo.action.StorageDataLoadAction;
 import com.onyx.einfo.adapter.BindingViewHolder;
@@ -41,16 +52,22 @@ import com.onyx.einfo.adapter.PageAdapter;
 import com.onyx.einfo.databinding.ActivityStorageBinding;
 import com.onyx.einfo.databinding.FileDetailsItemBinding;
 import com.onyx.einfo.databinding.FileThumbnailItemBinding;
+import com.onyx.einfo.device.DeviceConfig;
+import com.onyx.einfo.dialog.DialogCreateNewFolder;
+import com.onyx.einfo.dialog.DialogFileProperty;
+import com.onyx.einfo.dialog.DialogRenameFile;
 import com.onyx.einfo.events.OperationEvent;
 import com.onyx.einfo.events.StorageItemViewModelClickEvent;
 import com.onyx.einfo.events.StorageItemViewModelLongClickEvent;
 import com.onyx.einfo.events.ViewTypeEvent;
 import com.onyx.einfo.holder.LibraryDataHolder;
 import com.onyx.einfo.manager.ConfigPreferenceManager;
+import com.onyx.einfo.model.FileModel;
 import com.onyx.einfo.model.OperationItem;
 import com.onyx.einfo.model.StorageItemViewModel;
 import com.onyx.einfo.model.StorageViewModel;
 
+import org.apache.commons.io.FilenameUtils;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -89,6 +106,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     private void prevBinding() {
         storageViewModel = new StorageViewModel(getEventBus());
+        storageViewModel.viewType.set(ConfigPreferenceManager.getStorageViewType(this));
         prevAddOperationItems();
         binding = DataBindingUtil.setContentView(this, R.layout.activity_storage);
         binding.setViewModel(storageViewModel);
@@ -120,10 +138,22 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     private void initToolbar() {
         initSupportActionBarWithCustomBackFunction();
+        actionBar.addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            //AppCompat would not called onOptionMenuClosed();
+            // Use this listener to obtain menu visibility.
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible) {
+                    if (getStorageViewModel().getSelectionMode() == SelectionMode.LONG_PRESS_MODE) {
+                        getStorageViewModel().setSelectionMode(SelectionMode.NORMAL_MODE);
+                    }
+                }
+            }
+        });
     }
 
     private void initRecyclerView() {
-        PageRecyclerView contentPageView = binding.contentPageView;
+        PageRecyclerView contentPageView = getContentView();
         contentPageView.setHasFixedSize(true);
         contentPageView.setLayoutManager(new DisableScrollGridManager(getApplicationContext()));
         contentPageView.setAdapter(new ManagerAdapter(this));
@@ -164,7 +194,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private void updatePageStatus(boolean resetPage) {
-        PageRecyclerView contentPageView = binding.contentPageView;
+        PageRecyclerView contentPageView = getContentView();
         if (contentPageView == null || contentPageView.getPaginator() == null) {
             Log.w(TAG, "detect the null contentPageView or Paginator");
             return;
@@ -178,12 +208,12 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private void gotoPage(int page) {
-        PageRecyclerView contentPageView = binding.contentPageView;
+        PageRecyclerView contentPageView = getContentView();
         contentPageView.gotoPage(page);
     }
 
     private void updateContentView() {
-        PageRecyclerView contentPageView = binding.contentPageView;
+        PageRecyclerView contentPageView = getContentView();
         if (contentPageView == null) {
             return;
         }
@@ -198,9 +228,13 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (getStorageViewModel().canGoUp()) {
-            loadData(getStorageViewModel().getParentFile());
-            return;
+        if (getStorageViewModel().isInMultiSelectionMode()) {
+            switchToNormalMode();
+        } else {
+            if (getStorageViewModel().canGoUp()) {
+                loadData(getStorageViewModel().getParentFile());
+                return;
+            }
         }
         super.onBackPressed();
     }
@@ -230,13 +264,130 @@ public class StorageActivity extends OnyxAppCompatActivity {
         return true;
     }
 
+    private void prepareRootOptionsMenu(Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            int id = item.getItemId();
+            if ((id == R.id.menu_properties && getStorageViewModel().getItemSelectedFileList().size() > 0) ||
+                    id == R.id.menu_search || id == R.id.menu_select_multiple || id == R.id.menu_delete) {
+                item.setVisible(true);
+                if (id == R.id.menu_delete) {
+                    item.setVisible(!getDeviceConfig().isContentReadOnly());
+                }
+            } else {
+                item.setVisible(false);
+            }
+        }
+    }
+
+    private boolean prepareReadOnlyItem(MenuItem item) {
+        int id = item.getItemId();
+        if (((id == R.id.menu_copy) ||
+                (id == R.id.menu_cut) ||
+                (id == R.id.menu_delete) ||
+                (id == R.id.menu_new_folder))) {
+            item.setVisible(!getDeviceConfig().isContentReadOnly());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isInStorageRoot() {
+        return getStorageViewModel().isStorageRoot(getStorageViewModel().getCurrentFile());
+    }
+
+    private void prepareLongPressOptionsMenu(Menu menu) {
+        if (isInStorageRoot()) {
+            prepareRootOptionsMenu(menu);
+            return;
+        }
+        FileModel model = getCurrentSelectedItem().getFileModel();
+        if (model.isGoUpType()) {
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                switch (item.getItemId()) {
+                    case R.id.menu_new_folder:
+                        if (getDeviceConfig().isContentReadOnly()) {
+                            item.setVisible(false);
+                        } else {
+                            item.setVisible(true);
+                        }
+                        break;
+                    default:
+                        item.setVisible(false);
+                }
+            }
+        } else if (model.isFileType()) {
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                if (!prepareReadOnlyItem(item)) {
+                    if (item.getItemId() == R.id.menu_new_shortcut) {
+                        item.setVisible(false);
+                    } else {
+                        item.setVisible(true);
+                    }
+                }
+                updateScreenSaverMenuItem(item, model.getFile());
+            }
+        } else {
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                int id = item.getItemId();
+                if (id == R.id.menu_open_with) {
+                    item.setVisible(false);
+                } else if (prepareReadOnlyItem(item)) {
+                } else if (id == R.id.menu_new_shortcut) {
+                    item.setVisible(!isInStorageRoot());
+                }
+                updateScreenSaverMenuItem(item, model.getFile());
+            }
+        }
+    }
+
+    private void updateScreenSaverMenuItem(MenuItem item, final File file) {
+        if (item.getItemId() == R.id.menu_screen_saver) {
+            if (getDeviceConfig().supportScreenSaver()) {
+                item.setEnabled(isScreenSaverFileSelected(file));
+            } else {
+                item.setVisible(false);
+            }
+        }
+    }
+
+    private boolean isScreenSaverFileSelected(final File file) {
+        return file != null && MimeTypeUtils.isScreenSaverFile(FilenameUtils.getExtension(file.getName()));
+    }
+
+    private void prepareNormalOptionsMenu(Menu menu) {
+        if (isInStorageRoot()) {
+            prepareRootOptionsMenu(menu);
+            return;
+        }
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            switch (item.getItemId()) {
+                case R.id.menu_search:
+                case R.id.menu_select_multiple:
+                    item.setVisible(true);
+                    break;
+                case R.id.menu_new_folder:
+                    item.setVisible(!getDeviceConfig().isContentReadOnly());
+                    break;
+                default:
+                    item.setVisible(false);
+                    break;
+            }
+        }
+    }
+
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         switch (getStorageViewModel().getSelectionMode()) {
+            case SelectionMode.LONG_PRESS_MODE:
+                prepareLongPressOptionsMenu(menu);
+                break;
             case SelectionMode.NORMAL_MODE:
-                for (int i = 0; i < menu.size(); i++) {
-                    menu.getItem(i).setVisible(true);
-                }
+                prepareNormalOptionsMenu(menu);
                 break;
             default:
                 for (int i = 0; i < menu.size(); i++) {
@@ -250,12 +401,159 @@ public class StorageActivity extends OnyxAppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.menu_open_with:
+                onFileOpenWith();
+                break;
+            case R.id.menu_properties:
+                onShowFileProperty(getCurrentSelectedItem().getFileModel().getFile());
+                return true;
+            case R.id.menu_search:
+                onSearchRequested();
+                return true;
             case R.id.menu_select_multiple:
                 getIntoMultiSelectionMode();
+                return true;
+            case R.id.menu_rename:
+                onFileRename(getCurrentSelectedItem());
+                return true;
+            case R.id.menu_cut:
+                fileOperateMode = FileOperateMode.Cut;
+                switchToPasteMode();
+                return true;
+            case R.id.menu_copy:
+                fileOperateMode = FileOperateMode.Copy;
+                switchToPasteMode();
+                return true;
+            case R.id.menu_delete:
+                showDeleteActionInform();
+                return true;
+            case R.id.menu_new_folder:
+                onShowNewFolderCreate();
+                return true;
+            case R.id.menu_new_shortcut:
+                setDirectoryToShortcut();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private StorageItemViewModel getCurrentSelectedItem() {
+        return getStorageViewModel().getItemSelectedItemModelList().get(0);
+    }
+
+    private File getCurrentSelectedFile() {
+        return getCurrentSelectedItem().getFileModel().getFile();
+    }
+
+    private void showDeleteActionInform() {
+        if (getStorageViewModel().getItemSelectedMap().isEmpty()) {
+            return;
+        }
+        String confirmMessage;
+        List<File> targetItemsList = getStorageViewModel().getItemSelectedFileList();
+        if (targetItemsList.size() == 1) {
+            confirmMessage = targetItemsList.get(0).getName();
+        } else {
+            confirmMessage = targetItemsList.size() + getResources().getString(R.string.items);
+        }
+        if (isInStorageRoot()) {
+            processShortCutDelete(targetItemsList);
+        } else {
+            showDeleteDialog(confirmMessage, targetItemsList);
+        }
+    }
+
+    private void onFileRename(final StorageItemViewModel model) {
+        final DialogRenameFile dlgRename = new DialogRenameFile();
+        final File originFile = model.getFileModel().getFile();
+        Bundle args = new Bundle();
+        args.putString(DialogRenameFile.ARGS_FILE_PATH, originFile.getAbsolutePath());
+        dlgRename.setArguments(args);
+        dlgRename.setOnRenameListener(new DialogRenameFile.OnRenameFinishedListener() {
+            @Override
+            public void onRenameFinish(String newFullPath,String newName) {
+                model.setFileModel(FileModel.create(new File(newFullPath), model.getFileModel().getThumbnail()));
+            }
+        });
+        dlgRename.show(getFragmentManager());
+    }
+
+    @Override
+    public boolean onSearchRequested() {
+        Bundle bundle = new Bundle();
+        bundle.putString(GAdapterUtil.FILE_PATH, getStorageViewModel().getCurrentFile().getAbsolutePath());
+        startSearch(null, false, bundle, false);
+        return true;
+    }
+
+    private void onFileOpenWith() {
+        final File file = getCurrentSelectedItem().getFileModel().getFile();
+        final FileOpenWithAction openWithAction = new FileOpenWithAction(this, file);
+        openWithAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                List<AppDataInfo> list = openWithAction.getAppDataInfoList();
+                if (CollectionUtils.isNullOrEmpty(list)) {
+                    openWithAction.showFileOpenWithDialog(StorageActivity.this, getDataHolder());
+                    return;
+                }
+                openWithAction.showAppListWithDialog(StorageActivity.this, file, list);
+            }
+        });
+    }
+
+    private void onShowFileProperty(File file) {
+        if (file == null) {
+            return;
+        }
+        DialogFileProperty dlgProperty = new DialogFileProperty();
+        Bundle args = new Bundle();
+        args.putString(DialogFileProperty.ARGS_FILE_PATH, file.getAbsolutePath());
+        dlgProperty.setArguments(args);
+        dlgProperty.show(getFragmentManager());
+    }
+
+    private void onShowNewFolderCreate() {
+        DialogCreateNewFolder dlgCreateDirectory = new DialogCreateNewFolder();
+        Bundle args = new Bundle();
+        args.putString(DialogCreateNewFolder.ARGS_PARENT_DIR,
+                getStorageViewModel().getCurrentFile().getAbsolutePath());
+        dlgCreateDirectory.setArguments(args);
+        dlgCreateDirectory.setOnCreatedListener(new DialogCreateNewFolder.OnCreateListener() {
+            @Override
+            public void onCreated(File file) {
+                reloadData();
+            }
+        });
+        dlgCreateDirectory.show(getFragmentManager());
+    }
+
+    private boolean containsShortcut(List<String> shortcutList, String newPath) {
+        for (String path : shortcutList) {
+            if (path.equals(newPath)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void setDirectoryToShortcut() {
+        List<String> shortcutList = StorageDataLoadAction.loadShortcutList(getApplicationContext());
+        if (CollectionUtils.getSize(shortcutList) + 3 >=
+                getRowCount(ViewType.Thumbnail) * getColCount(ViewType.Thumbnail)) {
+            ToastUtils.showToast(getApplicationContext(), R.string.shortcut_link_full);
+            return;
+        }
+        File selectedFile = getCurrentSelectedFile();
+        if (containsShortcut(shortcutList, selectedFile.getAbsolutePath())) {
+            ToastUtils.showToast(getApplicationContext(), R.string.shortcut_link_exist);
+            return;
+        }
+        shortcutList.add(selectedFile.getAbsolutePath());
+        boolean success = StorageDataLoadAction.saveShortcutList(getApplicationContext(), shortcutList);
+        ToastUtils.showToast(getApplicationContext(), success ? R.string.succeedSetting : R.string.failSetting);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -265,8 +563,10 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onViewTypeEvent(ViewTypeEvent event) {
-        PageRecyclerView contentView = binding.contentPageView;
+        ConfigPreferenceManager.setStorageViewType(getApplicationContext(), event.viewType);
+        PageRecyclerView contentView = getContentView();
         contentView.setAdapter(contentView.getAdapter());
+        updatePageStatus(false);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -285,6 +585,15 @@ public class StorageActivity extends OnyxAppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onItemLongClickEvent(StorageItemViewModelLongClickEvent event) {
+        switch (getStorageViewModel().getSelectionMode()) {
+            case SelectionMode.NORMAL_MODE:
+                getStorageViewModel().setSelectionMode(SelectionMode.LONG_PRESS_MODE);
+                getStorageViewModel().addItemSelected(event.model, true);
+                actionBar.openOptionsMenu();
+                break;
+            default:
+                break;
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)
@@ -300,6 +609,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
                 processFilePaste();
                 break;
             case OperationEvent.OPERATION_DELETE:
+                showDeleteActionInform();
                 break;
             case OperationEvent.OPERATION_CANCEL:
                 switchToNormalMode();
@@ -334,6 +644,65 @@ public class StorageActivity extends OnyxAppCompatActivity {
         });
     }
 
+    private void showDeleteDialog(String confirmMessage, final List<File> removeItemsList) {
+        final OnyxAlertDialog dialog = new OnyxAlertDialog();
+        dialog.setParams(new OnyxAlertDialog.Params().setAlertMsgString(confirmMessage)
+                .setTittleString(getString(R.string.delete))
+                .setPositiveAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        processFileDelete(removeItemsList);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeAction(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        getStorageViewModel().clearItemSelectedMap();
+                        dialog.dismiss();
+                    }
+                }));
+        dialog.show(getFragmentManager(), "DeleteDialog");
+    }
+
+    private void processShortCutDelete(List<File> removeItemsList) {
+        if (CollectionUtils.isNullOrEmpty(getStorageViewModel().getItemSelectedMap())) {
+            ToastUtils.showToast(getApplicationContext(), R.string.no_item_select);
+            return;
+        }
+        List<String> pathList = StorageDataLoadAction.loadShortcutList(getApplicationContext());
+        for (File file : removeItemsList) {
+            for (String path : pathList) {
+                if (file.getAbsolutePath().equals(path)) {
+                    pathList.remove(path);
+                    break;
+                }
+            }
+        }
+        StorageDataLoadAction.saveShortcutList(this, pathList);
+        switchToNormalMode();
+        reloadData();
+    }
+
+    private void processFileDelete(List<File> removeItemsList) {
+        if (CollectionUtils.isNullOrEmpty(removeItemsList)) {
+            ToastUtils.showToast(getApplicationContext(), R.string.no_item_select);
+            return;
+        }
+        final FileDeleteAction deleteAction = new FileDeleteAction(this, removeItemsList);
+        deleteAction.execute(getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    deleteAction.processFileException(StorageActivity.this, dataHolder, (Exception) e);
+                    return;
+                }
+                switchToNormalMode();
+                reloadData();
+            }
+        });
+    }
+
     private void processFileClick(File file) {
         if (file.isDirectory()) {
             loadData(file);
@@ -353,6 +722,14 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private void switchToNormalMode() {
         setFileOperateMode(FileOperateMode.ReadOnly);
         quitMultiSelectionMode(false, SelectionMode.NORMAL_MODE);
+        updateContentView();
+    }
+
+    private void switchToPasteMode() {
+        StorageViewModel viewModel = getStorageViewModel();
+        viewModel.setSelectionMode(SelectionMode.PASTE_MODE);
+        viewModel.switchOperationPanel(true, OperationEvent.OPERATION_PASTE, OperationEvent.OPERATION_CANCEL);
+        viewModel.setShowOperationFunc(true);
         updateContentView();
     }
 
@@ -380,16 +757,49 @@ public class StorageActivity extends OnyxAppCompatActivity {
         });
     }
 
+    private int getDrawable(File file) {
+        Integer res = ThumbnailUtils.defaultThumbnailMapping().get(FilenameUtils.getExtension(file.getName()));
+        if (res == null) {
+            return ThumbnailUtils.thumbnailUnknown();
+        }
+        return res;
+    }
+
     private void loadThumbnail(StorageItemViewModel itemModel) {
-        itemModel.setCoverThumbnail(BitmapFactory.decodeResource(getResources(), itemModel.isDocument.get() ?
-                R.drawable.unknown_document :
-                (itemModel.getFileModel().isGoUpType() ? R.drawable.directory_go_up : R.drawable.directory)));
+        FileModel fileModel = itemModel.getFileModel();
+        int res;
+        switch (fileModel.getType()) {
+            case FileModel.TYPE_DIRECTORY:
+                res = R.drawable.directory;
+                break;
+            case FileModel.TYPE_GO_UP:
+                res = R.drawable.directory_go_up;
+                break;
+            case FileModel.TYPE_SHORT_CUT:
+                res = R.drawable.directory_shortcut;
+                break;
+            case FileModel.TYPE_FILE:
+                res = getDrawable(fileModel.getFile());
+                break;
+            default:
+                res = R.drawable.unknown_document;
+                break;
+        }
+        itemModel.setCoverThumbnail(BitmapFactory.decodeResource(getResources(), res));
     }
 
     private void openFile(File file) {
-        Intent intent = ViewDocumentUtils.viewActionIntentWithMimeType(file);
+        Intent intent = MetadataUtils.putIntentExtraDataMetadata(
+                ViewDocumentUtils.viewActionIntentWithMimeType(file), null);
+        AppPreference app = AppPreference.getFileAppPreferMap().get(FilenameUtils.getExtension(file.getName()));
+        ComponentName componentName;
+        if (app != null) {
+            componentName = new ComponentName(app.packageName, app.className);
+        } else {
+            componentName = ViewDocumentUtils.getEduReaderComponentName();
+        }
         ResolveInfo info = ViewDocumentUtils.getDefaultActivityInfo(this, intent,
-                ViewDocumentUtils.getEduReaderComponentName().getPackageName());
+                componentName.getPackageName());
         if (info == null) {
             return;
         }
@@ -407,12 +817,20 @@ public class StorageActivity extends OnyxAppCompatActivity {
         return dataHolder;
     }
 
+    private DeviceConfig getDeviceConfig() {
+        return DeviceConfig.sharedInstance(getApplicationContext());
+    }
+
     private StorageViewModel getStorageViewModel() {
         return storageViewModel;
     }
 
     private ViewType getViewType() {
         return getStorageViewModel().getCurrentViewType();
+    }
+
+    private PageRecyclerView getContentView() {
+        return binding.contentPageView;
     }
 
     private static class FileThumbnailItemViewHolder extends BindingViewHolder<FileThumbnailItemBinding, StorageItemViewModel> {
@@ -438,11 +856,19 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private int getRowCountBasedViewType() {
-        return getViewType() == ViewType.Thumbnail ? 3 : 7;
+        return getRowCount(getViewType());
     }
 
     private int getColCountBasedViewType() {
-        return getViewType() == ViewType.Thumbnail ? 3 : 1;
+        return getColCount(getViewType());
+    }
+
+    private int getRowCount(ViewType viewType) {
+        return viewType == ViewType.Thumbnail ? 3 : 7;
+    }
+
+    private int getColCount(ViewType viewType) {
+        return viewType == ViewType.Thumbnail ? 3 : 1;
     }
 
     public class ManagerAdapter extends PageAdapter<RecyclerView.ViewHolder, StorageItemViewModel, StorageItemViewModel> {

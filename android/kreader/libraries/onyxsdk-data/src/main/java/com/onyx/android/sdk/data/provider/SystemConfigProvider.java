@@ -17,6 +17,7 @@ public class SystemConfigProvider {
     public static final int INT_INVALID = -1;
     public static final String KEY_CONTENT_SERVER_INFO = "sys.content_server_info";
     public static final String KEY_APP_PREFERENCE = "sys.app_preference";
+    public static final String KEY_STORAGE_FOLDER_SHORTCUT_LIST = "sys.storage_shortcut_list";
 
     public static String getStringValue(Context context, String key) {
         SystemKeyValueItem item = queryKeyValueItem(context, key);

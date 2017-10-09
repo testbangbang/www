@@ -20,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,6 +93,7 @@ public class StorageViewModel extends BaseObservable {
         int folderTotal = 0, fileTotal = 0;
         for (StorageItemViewModel model : sender) {
             switch (model.getFileModel().getType()) {
+                case FileModel.TYPE_SHORT_CUT:
                 case FileModel.TYPE_DIRECTORY:
                     folderTotal++;
                     break;
@@ -119,11 +121,7 @@ public class StorageViewModel extends BaseObservable {
     public void onViewChangeClick() {
         ViewType type = viewType.get();
         viewType.set(type == ViewType.Details ? ViewType.Thumbnail : ViewType.Details);
-        getEventBus().post(ViewTypeEvent.create(type));
-    }
-
-    public void onCopyClick() {
-        getEventBus().post(OperationEvent.create(OperationEvent.OPERATION_COPY));
+        getEventBus().post(ViewTypeEvent.create(viewType.get()));
     }
 
     private EventBus getEventBus() {
@@ -147,7 +145,7 @@ public class StorageViewModel extends BaseObservable {
         return file == null || isStorageRoot(file);
     }
 
-    private boolean isStorageRoot(File targetDirectory) {
+    public boolean isStorageRoot(File targetDirectory) {
         return EnvironmentUtil.getStorageRootDirectory().getAbsolutePath().contains(targetDirectory.getAbsolutePath());
     }
 
@@ -182,12 +180,23 @@ public class StorageViewModel extends BaseObservable {
         getItemSelectedMap().clear();
     }
 
+    public void addItemSelected(StorageItemViewModel itemModel, boolean clearBeforeAdd) {
+        if (clearBeforeAdd) {
+            clearItemSelectedMap();
+        }
+        getItemSelectedMap().put(itemModel, true);
+    }
+
     public List<File> getItemSelectedFileList() {
         List<File> fileList = new ArrayList<>();
         for (StorageItemViewModel model : getItemSelectedMap().keySet()) {
             fileList.add(model.getFileModel().getFile());
         }
         return fileList;
+    }
+
+    public List<StorageItemViewModel> getItemSelectedItemModelList() {
+        return Arrays.asList(getItemSelectedMap().keySet().toArray(new StorageItemViewModel[0]));
     }
 
     public boolean isItemSelected(StorageItemViewModel key) {

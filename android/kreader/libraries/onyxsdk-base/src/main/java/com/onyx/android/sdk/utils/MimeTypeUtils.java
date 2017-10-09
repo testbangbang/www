@@ -19,6 +19,7 @@ public class MimeTypeUtils {
     public static final Set<String> audioExtension = new HashSet<String>();
     public static final Set<String> docExtension = new HashSet<String>();
     public static final Set<String> picExtension = new HashSet<String>();
+    public static final Set<String> screenSaverExtension = new HashSet<>();
 
     public static final String[][] MIME_TYPE_BY_EXTENSION_MAP = new String[][]
             {
@@ -913,34 +914,48 @@ public class MimeTypeUtils {
     //TODO:need more extension
     public static Set<String> getImageExtension() {
         if (picExtension.isEmpty()) {
-            picExtension.add(".jpg");
-            picExtension.add(".jpeg");
-            picExtension.add(".bmp");
-            picExtension.add(".png");
-            picExtension.add(".gif");
-            picExtension.add(".tiff");
+            picExtension.add("jpg");
+            picExtension.add("jpeg");
+            picExtension.add("bmp");
+            picExtension.add("png");
+            picExtension.add("gif");
+            picExtension.add("tiff");
         }
         return picExtension;
     }
 
+    public static Set<String> getScreenSaverExtension() {
+        if (screenSaverExtension.isEmpty()) {
+            screenSaverExtension.add("jpg");
+            screenSaverExtension.add("jpeg");
+            screenSaverExtension.add("bmp");
+            screenSaverExtension.add("png");
+        }
+        return screenSaverExtension;
+    }
+
     public static Set<String> getDocumentExtension() {
         if (docExtension.isEmpty()) {
-            docExtension.add(".doc");
-            docExtension.add(".docx");
-            docExtension.add(".ppt");
-            docExtension.add(".pptx");
-            docExtension.add(".exl");
-            docExtension.add(".exlx");
-            docExtension.add(".pdf");
-            docExtension.add(".epub");
-            docExtension.add(".fb2");
-            docExtension.add(".txt");
-            docExtension.add(".mobi");
+            docExtension.add("doc");
+            docExtension.add("docx");
+            docExtension.add("ppt");
+            docExtension.add("pptx");
+            docExtension.add("exl");
+            docExtension.add("exlx");
+            docExtension.add("pdf");
+            docExtension.add("epub");
+            docExtension.add("fb2");
+            docExtension.add("txt");
+            docExtension.add("mobi");
         }
         return docExtension;
     }
 
     public static boolean isAudioFile(final String extension) {
         return getAudioExtension().contains(extension.toLowerCase());
+    }
+
+    public static boolean isScreenSaverFile(final String extension) {
+        return getScreenSaverExtension().contains(extension.toLowerCase());
     }
 }

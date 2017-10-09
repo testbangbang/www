@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -43,7 +44,7 @@ public class ThumbnailUtils {
     static private Map<String, Integer> defaultThumbnailMap = new HashMap<>();
 
     static public Map<String, Integer> defaultThumbnailMapping() {
-        if (defaultThumbnailMap == null) {
+        if (CollectionUtils.isNullOrEmpty(defaultThumbnailMap)) {
             defaultThumbnailMap = new HashMap<>();
             defaultThumbnailMap.put("acsm", R.drawable.acsm);
             defaultThumbnailMap.put("bmp", R.drawable.bmp);

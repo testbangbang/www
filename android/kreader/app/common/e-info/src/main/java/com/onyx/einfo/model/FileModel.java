@@ -11,6 +11,7 @@ public class FileModel {
     public static final int TYPE_DIRECTORY = 0;
     public static final int TYPE_FILE = 1;
     public static final int TYPE_GO_UP = 2;
+    public static final int TYPE_SHORT_CUT = 3;
 
     private File file;
     private Bitmap thumbnail;
@@ -30,6 +31,12 @@ public class FileModel {
         model.file = file;
         model.type = TYPE_GO_UP;
         model.name = name;
+        return model;
+    }
+
+    public static FileModel createShortcutModel(File file) {
+        FileModel model = create(file, null);
+        model.type = TYPE_SHORT_CUT;
         return model;
     }
 
