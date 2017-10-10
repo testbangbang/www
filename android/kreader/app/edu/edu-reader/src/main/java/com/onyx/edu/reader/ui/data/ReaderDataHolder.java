@@ -103,6 +103,8 @@ public class ReaderDataHolder {
     private int displayWidth;
     private int displayHeight;
     private int optionsSkippedTimes = 0;
+    static final int MAX_SKIP_TIMES = 5;
+    private int maxOptionsSkippedTimes = MAX_SKIP_TIMES;
     private int lastRequestSequence;
 
     /**
@@ -515,12 +517,24 @@ public class ReaderDataHolder {
         preRenderNext();
     }
 
+    public int getMaxOptionsSkippedTimes() {
+        return maxOptionsSkippedTimes;
+    }
+
+    public void setMaxOptionsSkippedTimes(int t) {
+        maxOptionsSkippedTimes = t;
+    }
+
+    public void resetMaxOptionsSkippedTimes() {
+        maxOptionsSkippedTimes = MAX_SKIP_TIMES;
+    }
+
     private void saveDocumentOptions(final BaseReaderRequest request) {
         if (!request.isSaveOptions()) {
             return;
         }
-        final int MAX_SKIP_TIMES = 5;
-        if (optionsSkippedTimes < MAX_SKIP_TIMES) {
+
+        if (optionsSkippedTimes < getMaxOptionsSkippedTimes()) {
             optionsSkippedTimes++;
         } else {
             submitNonRenderRequest(new SaveDocumentOptionsRequest());
