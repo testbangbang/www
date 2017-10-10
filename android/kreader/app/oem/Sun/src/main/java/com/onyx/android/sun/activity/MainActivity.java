@@ -72,13 +72,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
             }
         });
-
-        mainBinding.newsImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
     }
 
     @Override

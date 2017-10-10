@@ -1,12 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data class="MainBinding">
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener" />
+    </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fragment_content_margin"
+            android:background="@drawable/rectangle_stroke"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="@dimen/main_fragment_title_width"
+                    android:layout_height="@dimen/main_fragment_task_layout_height"
+                    android:orientation="vertical"
+                    android:padding="1dp">
+
+                    <TextView
+                        android:layout_width="@dimen/main_fragment_title_width"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/darker_gray"
+                        android:gravity="center"
+                        android:padding="@dimen/main_fragment_title_padding"
+                        android:text="@string/today_task"
+                        android:textSize="@dimen/level_one_heading_font" />
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_launcher" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="@dimen/main_fragment_task_layout_height"
+                    android:background="@android:color/black" />
+
+                <com.onyx.android.sun.view.PageRecyclerView
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/main_fragment_task_layout_height"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/view_all_task"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_gray_stroke"
+                android:gravity="center"
+                android:onClick="@{listener.onClick}"
+                android:padding="@dimen/main_fragment_text_padding"
+                android:text="@string/view_all" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/fragment_content_margin"
+            android:layout_weight="1"
+            android:background="@drawable/rectangle_stroke"
+            android:orientation="vertical"
+            android:padding="1dp">
+
+            <TextView
+                android:layout_width="@dimen/main_fragment_title_width"
+                android:layout_height="wrap_content"
+                android:background="@android:color/darker_gray"
+                android:gravity="center"
+                android:padding="@dimen/main_fragment_title_padding"
+                android:text="@string/personal_portrait"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/academic_ability_value" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="@dimen/main_fragment_results_width"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/main_fragment_score_text_margin_top"
+                    android:background="@drawable/rectangle_stroke"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/main_fragment_score_title_margin_top"
+                        android:gravity="center"
+                        android:text="@string/total_ability_value"
+                        android:textSize="@dimen/level_two_heading_font" />
+
+                    <TextView
+                        android:id="@+id/total_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
+                        android:gravity="center"
+                        android:textSize="@dimen/large_heading_font" />
+
+                    <TextView
+                        android:id="@+id/full_score"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
+                        android:gravity="center"
+                        android:textSize="@dimen/level_two_heading_font" />
+
+                    <View
+                        android:layout_width="@dimen/main_fragment_score_dividing_line_width"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/main_fragment_score_text_margin_top"
+                        android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
+                        android:background="@android:color/black" />
+
+                    <TextView
+                        android:id="@+id/grade_ranking_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
+                        android:gravity="center"
+                        android:onClick="@{listener.onClick}"
+                        android:textSize="@dimen/level_two_heading_font" />
+
+                    <TextView
+                        android:id="@+id/grade_ranking"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
+                        android:gravity="center"
+                        android:onClick="@{listener.onClick}"
+                        android:textSize="@dimen/level_two_heading_font" />
+                </LinearLayout>
+
+                <com.dzaitsev.android.widget.RadarChartView
+                    android:id="@+id/radar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/white"
+                    android:padding="@dimen/score_radar_chart_padding"
+                    app:axisColor="@android:color/darker_gray"
+                    app:axisTick="@dimen/score_radar_chart_axis_tick"
+                    app:axisWidth="1dp"
+                    app:chartColor="@android:color/black"
+                    app:chartStyle="fill"
+                    app:circlesOnly="false"
+                    app:endColor="@android:color/black"
+                    app:startColor="@android:color/white"
+                    app:textSize="@dimen/level_two_heading_font" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </layout>
