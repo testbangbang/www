@@ -27,9 +27,16 @@
             android:layout_height="wrap_content"
             android:text="Eraser"/>
 
+        <Button
+            android:id="@+id/button_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save Points"/>
+
+
     </LinearLayout>
 
-    <WebView
+    <SurfaceView
         android:id="@+id/surfaceview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
