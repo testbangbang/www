@@ -9,4 +9,8 @@ public class CreateInformalEssayBean {
     public String createdAt;
     public String user;
     public String _id;
+    public String title;
+    public String wordNumber;
+    public String content;
+    public long currentTime;
 }

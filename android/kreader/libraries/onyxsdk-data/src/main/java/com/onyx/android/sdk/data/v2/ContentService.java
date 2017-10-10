@@ -3,11 +3,14 @@ package com.onyx.android.sdk.data.v2;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.CreateReadingRateBean;
 import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 import com.onyx.android.sdk.data.model.GroupNameExistBean;
+import com.onyx.android.sdk.data.model.InformalEssayBean;
 import com.onyx.android.sdk.data.model.ProductCart;
 import com.onyx.android.sdk.data.model.ProductOrder;
 import com.onyx.android.sdk.data.model.ProductResult;
+import com.onyx.android.sdk.data.model.ReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.AddCommentRequestBean;
 import com.onyx.android.sdk.data.model.v2.AllGroupBean;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
@@ -18,6 +21,7 @@ import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
+import com.onyx.android.sdk.data.model.v2.GetInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetSharedImpressionResult;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
@@ -178,6 +182,15 @@ public interface ContentService {
     @POST("/api/librarys/{id}/impressions")
     Call<ShareBookReportResult> shareImpression(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
 
+    @POST("/api/librarys/{id}/informalEssay")
+    Call<ShareBookReportResult> shareInformalEssay(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
+
     @POST("/api/InformalEssays")
-    Call<CreateInformalEssayBean> uploadInformalEssay(@Query(Constant.WHERE_TAG) final String param);
+    Call<CreateInformalEssayBean> uploadInformalEssay(@Body InformalEssayBean param);
+
+    @GET("/api/InformalEssays")
+    Call<GetInformalEssayBean> getInformalEssay(@Query(Constant.WHERE_TAG) final String param);
+
+    @POST("/api/ReadRecords")
+    Call<CreateReadingRateBean> uploadReadingRate(@Body ReadingRateBean param);
 }
