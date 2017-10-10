@@ -9,7 +9,7 @@
     <string name="study_report">Learning report</string>
     <string name="today_task">Today task</string>
     <string name="view_all">View all</string>
-    <string name="personal_portrait" />
+    <string name="personal_portrait">Personal portrait</string>
     <string name="academic_ability_value">Academic ability value (click on the left side to see the total score and then the class, ranking in the rankings)</string>
     <string name="total_ability_value">Total ability value</string>
 </resources>

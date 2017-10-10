@@ -17,4 +17,10 @@ public class CloudApiContext {
         public static final String STARTTIME = "starttime";
         public static final String ENDTIME = "endtime";
     }
+
+    public static class Message{
+        public static final String STUDENTID = "studentId";
+        public static final String PAGE = "page";
+        public static final String SIZE = "size";
+    }
 }

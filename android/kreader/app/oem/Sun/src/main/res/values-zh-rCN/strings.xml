@@ -9,7 +9,7 @@
     <string name="study_report">学情报告</string>
     <string name="today_task">今日任务</string>
     <string name="view_all">查看全部</string>
-    <string name="personal_portrait" />
+    <string name="personal_portrait">个人画像</string>
     <string name="academic_ability_value">学科能力值(点击左侧查看个人总分再班级,年级中排行情况)</string>
     <string name="total_ability_value">总能力值</string>
 </resources>
