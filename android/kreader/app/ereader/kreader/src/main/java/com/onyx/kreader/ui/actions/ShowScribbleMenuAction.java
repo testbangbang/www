@@ -75,13 +75,6 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         this.actionCallback = actionCallback;
         this.disableMenuActions = disableMenuActions;
         this.showFullToolbar = showFullToolbar;
-
-        parent.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                bottomToolbar.dismissExpandedToolbar();
-            }
-        });
     }
 
     public void execute(ReaderDataHolder readerDataHolder,  BaseCallback callback) {
@@ -185,6 +178,17 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             public void onToggle(Object tag, boolean expand) {
                 ReaderMenuAction action = (ReaderMenuAction) tag;
                 actionCallback.onToggle(action, expand);
+                if (expand) {
+                    parent.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            bottomToolbar.dismissExpandedToolbar();
+                        }
+                    });
+                } else {
+                    parent.setOnClickListener(null);
+                    parent.setClickable(false);
+                }
             }
         });
         return toolbar;
