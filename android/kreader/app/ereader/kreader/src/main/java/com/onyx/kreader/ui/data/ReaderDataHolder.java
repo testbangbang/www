@@ -209,7 +209,7 @@ public class ReaderDataHolder {
 
     public boolean isNoteWritingProvider() {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
-                getHandlerManager().getActiveProvider().equals(HandlerManager.SIDE_NOTE_PROVIDER);
+                getHandlerManager().getActiveProviderName().equals(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
     public boolean inReadingProvider() {
