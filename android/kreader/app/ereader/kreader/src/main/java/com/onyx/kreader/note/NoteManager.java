@@ -62,7 +62,6 @@ public class NoteManager {
     private List<PageInfo> visiblePages = new ArrayList<>();
     private EventBus eventBus;
     private ReaderNoteDataInfo noteDataInfo = new ReaderNoteDataInfo();
-    private RectF visibleDrawRectF;
     private volatile boolean enableRawEventProcessor = false;
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
     private volatile boolean enableShortcutDrawing = false;
