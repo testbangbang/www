@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.transaction.ProcessDeleteModel;
 import com.onyx.android.sdk.data.transaction.ProcessSaveModel;
 import com.onyx.android.sdk.data.transaction.ProcessUpdateModel;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Method;
@@ -14,6 +15,7 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.Where;
 import com.raizlabs.android.dbflow.structure.BaseModel;
+import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 import com.raizlabs.android.dbflow.structure.database.transaction.FastStoreModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.ProcessModelTransaction;
 import com.raizlabs.android.dbflow.structure.database.transaction.Transaction;
@@ -67,6 +69,19 @@ public class StoreUtils {
         Transaction transaction = FlowManager.getDatabase(OnyxCloudDatabase.class)
                 .beginTransactionAsync(processModelTransaction).build();
         transaction.execute();
+    }
+
+    static public <T extends BaseData> void saveToLocal(Class<?> databaseClass, final List<T> list) {
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return;
+        }
+        final DatabaseWrapper database = FlowManager.getDatabase(databaseClass).getWritableDatabase();
+        database.beginTransaction();
+        for (T t : list) {
+            t.save();
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
     }
 
     static public <T extends BaseData> void saveToLocal(final ProductResult<T> productResult, final Class<T> clazz,
