@@ -42,6 +42,7 @@ import java.util.List;
 public class ShowSideScribbleMenuAction extends BaseAction {
 
     private ViewGroup parent;
+    private ReaderMenuAction parentAction;
     private MenuManager sideMenu;
     private ReaderDataHolder readerDataHolder;
     private View dividerLine;
@@ -231,7 +232,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         updateSideNotePositionText(readerDataHolder);
     }
 
-    private void showSubMenu(ReaderMenuAction parentAction, List<Integer> menuIds, int subLayoutId, ReaderMenuAction checkedMenuAction) {
+    private void showSubMenu(final ReaderMenuAction parentAction, List<Integer> menuIds, int subLayoutId, ReaderMenuAction checkedMenuAction) {
         if (sideMenu.getSubMenu() != null && sideMenu.getSubMenu().getParentMenuId() == parentAction.ordinal() && sideMenu.getSubMenu().isShowing()) {
             closeSubMenu(parent);
             return;
@@ -251,6 +252,16 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         }
         sideMenu.getSubMenu().setParentMenuId(parentAction.ordinal());
         updateMainMenuBg();
+
+        this.parentAction = parentAction;
+        actionCallback.onToggle(parentAction, true);
+
+        parent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeSubMenu(parent);
+            }
+        });
     }
 
 
@@ -271,6 +282,10 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private void closeSubMenu(final ViewGroup parent) {
         sideMenu.removeSubMenu(parent);
         updateMainMenuBg();
+
+        actionCallback.onToggle(parentAction, false);
+        parent.setOnClickListener(null);
+        parent.setClickable(false);
     }
 
     private void showCustomLineWidthDialog() {
