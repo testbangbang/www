@@ -27,7 +27,6 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.WebViewJSEvent;
@@ -314,14 +313,12 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         if (Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
             return;
         }
-
         if (data != null) {
-            ActivityManager.startShareBookReportActivity(this, data._id);
+//            ActivityManager.startShareBookReportActivity(this, data._id);
             return;
         }
-
         if (!StringUtils.isNullOrEmpty(bookId)) {
-            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id);
+//            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id);
             return;
         }
     }

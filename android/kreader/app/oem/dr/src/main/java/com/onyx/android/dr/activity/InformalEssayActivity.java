@@ -52,6 +52,8 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     ImageView iconThree;
     @Bind(R.id.title_bar_right_icon_two)
     ImageView iconTwo;
+    @Bind(R.id.title_bar_right_icon_one)
+    ImageView iconOne;
     @Bind(R.id.good_sentence_activity_all_check)
     CheckBox allCheck;
     @Bind(R.id.page_indicator_layout)
@@ -100,9 +102,11 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         iconFour.setVisibility(View.VISIBLE);
         iconThree.setVisibility(View.VISIBLE);
         iconTwo.setVisibility(View.VISIBLE);
+        iconOne.setVisibility(View.VISIBLE);
         iconFour.setImageResource(R.drawable.ic_reader_note_delet);
-        iconThree.setImageResource(R.drawable.ic_reader_note_export);
-        iconTwo.setImageResource(R.drawable.ic_reader_note_diary_set);
+        iconThree.setImageResource(R.drawable.ic_reader_share);
+        iconTwo.setImageResource(R.drawable.ic_reader_note_export);
+        iconOne.setImageResource(R.drawable.ic_reader_note_diary_set);
     }
 
     @Override
@@ -169,6 +173,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     @OnClick({R.id.title_bar_right_icon_four,
             R.id.menu_back,
             R.id.title_bar_right_icon_three,
+            R.id.title_bar_right_icon_one,
             R.id.title_bar_right_icon_two})
     public void onClick(View view) {
         switch (view.getId()) {
@@ -179,9 +184,12 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 deleteCheckedData();
                 break;
             case R.id.title_bar_right_icon_three:
-                exportData();
+//                ActivityManager.startShareBookReportActivity(this, Constants.INFORMAL_ESSAY, "", childrenId);
                 break;
             case R.id.title_bar_right_icon_two:
+                exportData();
+                break;
+            case R.id.title_bar_right_icon_one:
                 ActivityManager.startAddInformalEssayActivity(this);
                 break;
         }
@@ -269,6 +277,10 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
 
     @Override
     public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
+    }
+
+    @Override
+    public void createInformalEssay(boolean tag) {
     }
 
     @Override

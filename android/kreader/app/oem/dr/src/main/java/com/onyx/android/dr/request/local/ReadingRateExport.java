@@ -32,6 +32,6 @@ public class ReadingRateExport extends BaseDataRequest {
     }
 
     public void exportData() {
-        ExportToHtmlUtils.exportReadingRateToHtml(context, dataList, context.getString(R.string.infromal_essay_html), list);
+        ExportToHtmlUtils.exportReadingRateToHtml(context, dataList, context.getString(R.string.reading_rate_html), list);
     }
 }

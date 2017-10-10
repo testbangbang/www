@@ -65,7 +65,6 @@ import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.statistics.StatisticsActivity;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.Constant;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -86,9 +85,11 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startShareBookReportActivity(Context context, String impressionId) {
+    public static void startShareBookReportActivity(Context context, int type, String impressionId, String[] childrenId) {
         Intent intent = new Intent(context, ShareBookReportActivity.class);
         intent.putExtra(Constants.IMPRESSION_ID, impressionId);
+        intent.putExtra(Constants.CHILDREN_ID, childrenId);
+        intent.putExtra(Constants.SHARE_TYPE, type);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }

@@ -84,6 +84,10 @@ public class SpeechRecordingFragment extends BaseFragment implements InformalEss
         showData(dataList);
     }
 
+    @Override
+    public void createInformalEssay(boolean tag) {
+    }
+
     private void showData(List<InformalEssayEntity> dataList) {
         if (dataList != null && !dataList.isEmpty()) {
             allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));

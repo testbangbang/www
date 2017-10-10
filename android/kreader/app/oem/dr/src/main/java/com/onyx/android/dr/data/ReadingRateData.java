@@ -5,12 +5,10 @@ import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.request.local.InformalEssayDelete;
-import com.onyx.android.dr.request.local.InformalEssayInsert;
-import com.onyx.android.dr.request.local.InformalEssayQueryByTime;
-import com.onyx.android.dr.request.local.InformalEssayQueryByTitle;
 import com.onyx.android.dr.request.local.ReadingRateExport;
+import com.onyx.android.dr.request.local.ReadingRateInsert;
 import com.onyx.android.dr.request.local.ReadingRateQueryAll;
+import com.onyx.android.dr.request.local.ReadingRateQueryByTimeAndType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -32,19 +30,11 @@ public class ReadingRateData {
         submitRequest(context, req, baseCallback);
     }
 
-    public void getInformalEssayQueryByTitle(Context context, InformalEssayQueryByTitle req, BaseCallback baseCallback) {
+    public void getDataByTimeAndType(Context context, ReadingRateQueryByTimeAndType req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 
-    public void getInformalEssayByTime(Context context, InformalEssayQueryByTime req, BaseCallback baseCallback) {
-        submitRequest(context, req, baseCallback);
-    }
-
-    public void insertInformalEssay(Context context, InformalEssayInsert req, BaseCallback baseCallback) {
-        submitRequest(context, req, baseCallback);
-    }
-
-    public void deleteInformalEssay(Context context, InformalEssayDelete req, BaseCallback baseCallback) {
+    public void insertReadingRate(Context context, ReadingRateInsert req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 

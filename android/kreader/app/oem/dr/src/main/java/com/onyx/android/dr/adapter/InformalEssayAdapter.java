@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
@@ -82,6 +83,12 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
                         onItemClickListener.setOnItemClick(position, true);
                     }
                 }
+            }
+        });
+        holder.wordNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance());
             }
         });
     }

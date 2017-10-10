@@ -64,6 +64,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     private ShareBookReportAdapter adapter;
     private ShareBookReportPresenter shareBookReportPresenter;
     private String impressionId;
+    private String[] childrenId;
 
     @Override
     protected Integer getLayoutId() {
@@ -72,7 +73,6 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
 
     @Override
     protected void initConfig() {
-
     }
 
     @Override
@@ -89,9 +89,11 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
         shareBookReportRecycler.setAdapter(adapter);
 
     }
+
     @Override
     protected void initData() {
         impressionId = getIntent().getStringExtra(Constants.IMPRESSION_ID);
+        childrenId = getIntent().getStringArrayExtra(Constants.CHILDREN_ID);
         shareBookReportPresenter = new ShareBookReportPresenter(this);
         shareBookReportPresenter.getAllGroup();
     }
@@ -134,12 +136,13 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
         if(adapter == null) {
             return;
         }
-
         List<GroupBean> selectData = adapter.getSelectData();
         if (selectData == null || selectData.size() == 0) {
             CommonNotices.showMessage(DRApplication.getInstance(), getResources().getString(R.string.share_to_member_no_share));
             return;
         }
-        //TODO:share to group
+        for (GroupBean bean : selectData) {
+            shareBookReportPresenter.shareImpression(bean.library, impressionId);
+        }
     }
 }

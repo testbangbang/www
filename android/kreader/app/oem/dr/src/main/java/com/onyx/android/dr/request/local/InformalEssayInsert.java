@@ -30,7 +30,7 @@ public class InformalEssayInsert extends BaseDataRequest {
             infromalEssayInfo.insert();
         } else {
             infromalEssayEntity.currentTime = infromalEssayInfo.currentTime;
-            infromalEssayEntity.title = infromalEssayInfo.title;
+            infromalEssayEntity.content = infromalEssayInfo.content;
             infromalEssayEntity.wordNumber = infromalEssayInfo.wordNumber;
             infromalEssayEntity.update();
         }
@@ -41,7 +41,7 @@ public class InformalEssayInsert extends BaseDataRequest {
         if (dataList != null && dataList.size() > 0) {
             for (int i = 0; i < dataList.size(); i++) {
                 infromalEssayEntity = dataList.get(i);
-                if (infromalEssayInfo.content.equals(infromalEssayEntity.content)) {
+                if (infromalEssayInfo.title.equals(infromalEssayEntity.title)) {
                     weatherInsert = false;
                     return true;
                 }

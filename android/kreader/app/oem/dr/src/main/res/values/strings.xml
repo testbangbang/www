@@ -704,4 +704,5 @@
     <string name="apply_join_failed">apply join failed</string>
     <string name="select_time_range">select time range</string>
     <string name="select_group">select group</string>
+    <string name="reading_rate_html">reading rate html</string>
 </resources>

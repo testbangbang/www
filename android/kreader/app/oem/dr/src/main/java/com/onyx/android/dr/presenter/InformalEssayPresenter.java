@@ -10,6 +10,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.InformalEssayData;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.interfaces.InformalEssayView;
+import com.onyx.android.dr.request.cloud.CreateInformalEssayRequest;
 import com.onyx.android.dr.request.local.InformalEssayDelete;
 import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.request.local.InformalEssayInsert;
@@ -70,6 +71,16 @@ public class InformalEssayPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 informalEssayView.setInformalEssayByTime(req.getData());
+            }
+        });
+    }
+
+    public void createInformalEssay(String param) {
+        final CreateInformalEssayRequest req = new CreateInformalEssayRequest(param);
+        infromalEssayData.createInformalEssay(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                informalEssayView.createInformalEssay(req.getGroup() != null);
             }
         });
     }

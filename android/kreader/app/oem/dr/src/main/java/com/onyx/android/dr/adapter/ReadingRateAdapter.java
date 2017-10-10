@@ -55,7 +55,9 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
         holder.time.setText(time);
         holder.bookName.setText(bean.bookName);
         holder.timeHorizon.setText(bean.timeHorizon);
-        holder.readingSummary.setText(bean.readSummaryPiece);
+        holder.readingSummary.setText(String.valueOf(bean.readSummaryPiece));
+        holder.readerResponsePiece.setText(String.valueOf(bean.readerResponsePiece));
+        holder.readerResponseNumber.setText(String.valueOf(bean.readerResponseNumber));
         holder.languageType.setText(bean.language);
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override

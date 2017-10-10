@@ -12,7 +12,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ReadingRateAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.dialog.ReadingRateDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
@@ -23,12 +23,14 @@ import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
+import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.Bind;
@@ -62,6 +64,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private ArrayList<Boolean> listCheck;
     private PageIndicator pageIndicator;
     private ReadingRateDialog timePickerDialog;
+    private int type;
 
     @Override
     protected Integer getLayoutId() {
@@ -171,13 +174,34 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     }
 
     @Override
-    public void positiveListener() {
+    public void positiveListener(int type) {
+        this.type = type;
+        long startDateMillisecond = timePickerDialog.getStartDateMillisecond();
+        long endDateMillisecond = timePickerDialog.getEndDateMillisecond();
+        String language = timePickerDialog.getLanguage();
+        presenter.getDataByTimeAndType(language, startDateMillisecond, endDateMillisecond);
     }
 
-    private void exportData() {
-        if (readingRateList.size() > 0) {
-            ArrayList<String> htmlTitleData = presenter.getHtmlTitleData();
-            presenter.exportDataToHtml(this, listCheck, htmlTitleData, readingRateList);
+    @Override
+    public void setDataByTimeAndType(List<ReadingRateEntity> dataList, ArrayList<Boolean> listCheck) {
+        if (dataList.size() > 0) {
+            if (type == Constants.READING_RATE_DIALOG_EXPORT) {
+                ArrayList<String> htmlTitleData = presenter.getHtmlTitleData();
+                presenter.exportDataToHtml(this, htmlTitleData, dataList);
+            } else if(type == Constants.READING_RATE_DIALOG_SHARE) {
+                int length = dataList.size();
+                ShareBookReportRequestBean shareBookReportRequestBean = new ShareBookReportRequestBean();
+                String[] array = new String[]{};
+                for (int i = length - 1; i >= 0; i--) {
+                    if (listCheck.get(i)) {
+                        ReadingRateEntity bean = dataList.get(i);
+                        array = Arrays.copyOf(array, array.length + 1);
+//                        array[array.length - 1] = bean.id;
+                    }
+                }
+                shareBookReportRequestBean.setChildren(array);
+//                ActivityManager.startShareBookReportActivity(this, Constants.READING_RATE, "", shareBookReportRequestBean);
+            }
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
@@ -240,14 +264,6 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
         CommonNotices.showMessage(this, getString(R.string.export_failed));
-    }
-
-    @Override
-    public void setInformalEssayByTime(List<InformalEssayEntity> dataList) {
-    }
-
-    @Override
-    public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
     }
 
     @Override

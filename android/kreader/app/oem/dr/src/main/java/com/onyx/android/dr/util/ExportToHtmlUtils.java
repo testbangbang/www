@@ -13,6 +13,7 @@ import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -170,6 +171,28 @@ public class ExportToHtmlUtils {
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
             ReadingRateEntity bean = dataList.get(i);
+            String time = DateTimeUtil.formatDate(bean.time, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            sb.append("<th>");
+            sb.append(time);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.bookName);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.timeHorizon);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.language);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.readSummaryPiece);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.readerResponsePiece);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.readerResponseNumber);
+            sb.append("</th>");
             sb.append("</tr>");
         }
         sb.append("</table>");
@@ -178,7 +201,7 @@ public class ExportToHtmlUtils {
         try {
             createCatalogue();
             String time = TimeUtils.getNewTime(System.currentTimeMillis());
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.INFORMAL_ESSAY_HTML + "_" + time + Constants.UNIT);
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.READING_RATE_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());

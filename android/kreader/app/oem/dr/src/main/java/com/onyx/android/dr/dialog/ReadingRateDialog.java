@@ -50,6 +50,7 @@ public class ReadingRateDialog {
     public int firstSequenceType = Constants.ENGLISH_TYPE;
     public String language;
     private int number = 3;
+    private String confirm = "";
 
     public ReadingRateDialog(Context context) {
         super();
@@ -79,8 +80,7 @@ public class ReadingRateDialog {
         return inflate;
     }
 
-    private void initDialog(int type, View view) {
-        String confirm = "";
+    private void initDialog(final int type, View view) {
         if (type == Constants.READING_RATE_DIALOG_EXPORT) {
             confirm = context.getString(R.string.export);
         } else if(type == Constants.READING_RATE_DIALOG_SHARE) {
@@ -93,7 +93,7 @@ public class ReadingRateDialog {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         getDatePickerValue();
-                        readingRateDialogInterface.positiveListener();
+                        readingRateDialogInterface.positiveListener(type);
                     }
                 });
         alertDialog.setNegativeButton(context.getString(R.string.time_selector_dialog_cancel),
@@ -111,6 +111,7 @@ public class ReadingRateDialog {
         languageTypeAdapter = new DictLanguageTypeAdapter(context);
         spinnerData = Utils.getSpinnerData();
         languageTypeAdapter.setDatas(spinnerData);
+        spinner.setAdapter(languageTypeAdapter);
         spinner.setSelection(number);
         language = context.getResources().getString(R.string.all);
     }
@@ -182,7 +183,7 @@ public class ReadingRateDialog {
     }
 
     public interface ReadingRateDialogInterface {
-        void positiveListener();
+        void positiveListener(int type);
     }
 
     public int getYear() {

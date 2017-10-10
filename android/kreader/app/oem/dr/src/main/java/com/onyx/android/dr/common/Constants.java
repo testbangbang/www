@@ -90,6 +90,7 @@ public class Constants {
     public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word";
     public static final String MEMORANDUM_HTML = MY_NOTES_FOLDER + "/memorandum";
     public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay";
+    public static final String READING_RATE_HTML = MY_NOTES_FOLDER + "/reading_rate";
     public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence";
     public static final String UNIT = ".html";
 
@@ -139,6 +140,8 @@ public class Constants {
     public static final String BOOK_PAGE = "book_page";
     public static final String BOOK_ID = "book_id";
     public static final String IMPRESSION_ID = "impression_id";
+    public static final String CHILDREN_ID = "children_id";
+    public static final String SHARE_TYPE = "share_type";
     public static final String MARK_BOOK_ID = "mark_book_id";
     public static final String MARK_TOP = "mark_top";
     public static final String MARK_LEFT = "mark_left";
@@ -153,6 +156,10 @@ public class Constants {
     public static final int ACTION_ONE = 0;
     public static final int ACTION_TWO = 1;
     public static final int FOUR = 4;
+
+    public static final int INFORMAL_ESSAY = 0;
+    public static final int READING_RATE = 1;
+    public static final int READER_RESPONSE = 2;
 
     public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
     public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";

@@ -1,10 +1,14 @@
 package com.onyx.android.dr.request.local;
 
+import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.data.ReadingRateData;
 import com.onyx.android.dr.data.database.ReaderResponseEntity;
 import com.onyx.android.dr.data.database.ReaderResponseEntity_Table;
 import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity_Table;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -24,9 +28,14 @@ import java.util.List;
  * Created by zhouzhiming on 2017/7/6.
  */
 public class ReadingRateQueryAll extends BaseDataRequest {
+    private final ReadingRateData readingRateData;
     private List<ReadingRateEntity> readingRateList = new ArrayList<>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
     private long divisor = 1000*60;
+
+    public ReadingRateQueryAll(ReadingRateData readingRateData) {
+        this.readingRateData = readingRateData;
+    }
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
@@ -68,6 +77,12 @@ public class ReadingRateQueryAll extends BaseDataRequest {
             bean.readerResponsePiece = readerResponsePiece;
             bean.readerResponseNumber = readerResponseWordNumber;
             readingRateList.add(bean);
+            ReadingRateInsert req = new ReadingRateInsert(bean);
+            readingRateData.insertReadingRate(DRApplication.getInstance(), req, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                }
+            });
         }
     }
 

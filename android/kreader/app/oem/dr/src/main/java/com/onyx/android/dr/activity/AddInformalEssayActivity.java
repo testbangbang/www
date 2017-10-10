@@ -6,12 +6,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.InformalEssayBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.interfaces.InformalEssayView;
 import com.onyx.android.dr.presenter.InformalEssayPresenter;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.DefaultEditText;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -40,7 +42,7 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     TextView title;
     @Bind(R.id.image)
     ImageView image;
-    private InformalEssayPresenter infromalEssayPresenter;
+    private InformalEssayPresenter informalEssayPresenter;
 
     @Override
     protected Integer getLayoutId() {
@@ -57,7 +59,7 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
 
     @Override
     protected void initData() {
-        infromalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
+        informalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
         setTitleData();
     }
 
@@ -89,7 +91,7 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
                 finish();
                 break;
             case R.id.title_bar_right_icon_four:
-                insertData();
+                uploadData();
                 break;
             case R.id.add_infromal_essay_activity_file:
                 break;
@@ -111,8 +113,37 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
         bean.setTitle(title);
         bean.setContent(content);
         bean.setWordNumber(Utils.getStringLength(content));
-        infromalEssayPresenter.insertInformalEssay(bean);
+        informalEssayPresenter.insertInformalEssay(bean);
         finish();
+    }
+
+    private void uploadData() {
+        String title = titleEditText.getText().toString();
+        String content = contentEditText.getText().toString();
+        if (StringUtils.isNullOrEmpty(title)) {
+            CommonNotices.showMessage(this, getString(R.string.input_title));
+            return;
+        }
+        if (StringUtils.isNullOrEmpty(content)) {
+            CommonNotices.showMessage(this, getString(R.string.input_infromal_essay_content));
+            return;
+        }
+        InformalEssayBean bean = new InformalEssayBean();
+        bean.setTitle(title);
+        bean.setContent(content);
+        bean.setWordNumber(Utils.getStringLength(content));
+        bean.setCurrentTime(TimeUtils.getCurrentTimeMillis());
+        String json = JSON.toJSON(bean).toString();
+        informalEssayPresenter.createInformalEssay(json);
+    }
+
+    @Override
+    public void createInformalEssay(boolean tag) {
+        if (tag) {
+            finish();
+        }else{
+            CommonNotices.showMessage(this, getString(R.string.save_failed));
+        }
     }
 
     @Override
