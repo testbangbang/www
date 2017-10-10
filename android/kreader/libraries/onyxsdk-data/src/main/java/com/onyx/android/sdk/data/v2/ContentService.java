@@ -2,6 +2,7 @@ package com.onyx.android.sdk.data.v2;
 
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 import com.onyx.android.sdk.data.model.GroupNameExistBean;
 import com.onyx.android.sdk.data.model.ProductCart;
@@ -176,4 +177,7 @@ public interface ContentService {
 
     @POST("/api/librarys/{id}/impressions")
     Call<ShareBookReportResult> shareImpression(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
+
+    @POST("/api/InformalEssays")
+    Call<CreateInformalEssayBean> uploadInformalEssay(@Query(Constant.WHERE_TAG) final String param);
 }
