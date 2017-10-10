@@ -3,9 +3,15 @@ package com.onyx.android.sun.fragment;
 import android.databinding.ViewDataBinding;
 import android.view.View;
 
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.cloud.bean.PracticesResultBean;
 import com.onyx.android.sun.databinding.MainBinding;
+import com.onyx.android.sun.interfaces.MainFragmentView;
+import com.onyx.android.sun.presenter.MainFragmentPresenter;
+import com.onyx.android.sun.presenter.MainPresenter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -13,29 +19,21 @@ import java.util.TreeMap;
  * Created by hehai on 17-9-29.
  */
 
-public class MainFragment extends BaseFragment implements View.OnClickListener {
+public class MainFragment extends BaseFragment implements MainFragmentView, View.OnClickListener {
 
-    private Map<String, Float> scores = new TreeMap<>();
     private MainBinding mainBinding;
+    private MainFragmentPresenter presenter;
 
     @Override
     protected void loadData() {
-        scores.put("语文", 80F);
-        scores.put("数学", 90F);
-        scores.put("英语", 80F);
-        scores.put("物理", 100F);
-        scores.put("化学", 80F);
-        scores.put("生物", 60F);
-        scores.put("政治", 50F);
-        scores.put("历史", 40F);
-        scores.put("地理", 70F);
+        presenter = new MainFragmentPresenter(this);
+        presenter.getPractices();
+        presenter.getSubjectScore();
     }
 
     @Override
     protected void initView(ViewDataBinding rootView) {
         mainBinding = (MainBinding) rootView;
-        mainBinding.radarChart.setAxis(scores);
-        mainBinding.radarChart.setAxisTick(mainBinding.radarChart.getAxisMax()-0.5f);
     }
 
     @Override
@@ -55,7 +53,7 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.view_all_task:
                 // TODO: 17-10-9 view all
                 break;
@@ -63,6 +61,19 @@ public class MainFragment extends BaseFragment implements View.OnClickListener {
             case R.id.grade_ranking:
                 // TODO: 17-10-9 ranking
                 break;
+        }
+    }
+
+    @Override
+    public void setPractices(List<PracticesResultBean.DataBean.ContentBean> list) {
+
+    }
+
+    @Override
+    public void setSubjectScore(Map<String, Float> subjectScoreMap) {
+        if (!CollectionUtils.isNullOrEmpty(subjectScoreMap)){
+            mainBinding.radarChart.setAxis(subjectScoreMap);
+            mainBinding.radarChart.setAxisTick(mainBinding.radarChart.getAxisMax() - 0.5f);
         }
     }
 }
