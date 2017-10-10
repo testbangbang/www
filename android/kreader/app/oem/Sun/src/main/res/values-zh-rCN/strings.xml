@@ -7,9 +7,21 @@
     <string name="homework_unfinished">待完成</string>
     <string name="homework_finished">已完成</string>
     <string name="study_report">学情报告</string>
+    <string name="homework_course_Chinese">语文</string>
+    <string name="homework_course_mathematics">数学</string>
+    <string name="homework_course_English">英语</string>
+    <string name="homework_course_politic">政治</string>
+    <string name="homework_course_history">历史</string>
+    <string name="homework_course_creature">生物</string>
+    <string name="homework_course_all">全部</string>
+    <string name="homework_course_exercise">作业</string>
+    <string name="homework_course_test_paper">试卷</string>
+    <string name="homework_course_competition">竞赛</string>
+    <string name="homework_course_time">时间：</string>
     <string name="today_task">今日任务</string>
     <string name="view_all">查看全部</string>
     <string name="personal_portrait" />
     <string name="academic_ability_value">学科能力值(点击左侧查看个人总分再班级,年级中排行情况)</string>
     <string name="total_ability_value">总能力值</string>
+    <string name="confirm">确定</string>
 </resources>
