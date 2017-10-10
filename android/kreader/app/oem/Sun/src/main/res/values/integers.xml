@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="course_adapter_col">9</integer>
+    <integer name="course_adapter_row">1</integer>
+    <integer name="homework_adapter_col">1</integer>
+    <integer name="homework_adapter_row">8</integer>
+</resources>

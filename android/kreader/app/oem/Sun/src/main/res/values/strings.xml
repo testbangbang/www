@@ -7,9 +7,21 @@
     <string name="homework_unfinished">Pending</string>
     <string name="homework_finished">Completed</string>
     <string name="study_report">Learning report</string>
+    <string name="homework_course_Chinese">Chinese</string>
+    <string name="homework_course_mathematics">Mathematics</string>
+    <string name="homework_course_English">English</string>
+    <string name="homework_course_politic">Politic</string>
+    <string name="homework_course_history">History</string>
+    <string name="homework_course_creature">Creature</string>
+    <string name="homework_course_all">All</string>
+    <string name="homework_course_exercise">Exercise</string>
+    <string name="homework_course_test_paper">Paper</string>
+    <string name="homework_course_competition">Competition</string>
+    <string name="homework_course_time">Time：</string>
     <string name="today_task">Today task</string>
     <string name="view_all">View all</string>
     <string name="personal_portrait">Personal portrait</string>
     <string name="academic_ability_value">Academic ability value (click on the left side to see the total score and then the class, ranking in the rankings)</string>
     <string name="total_ability_value">Total ability value</string>
+    <string name="confirm">Yes</string>
 </resources>

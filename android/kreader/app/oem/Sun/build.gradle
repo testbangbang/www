@@ -44,6 +44,7 @@ dependencies {
     compile 'com.umeng.analytics:analytics:latest.integration'
     compile project(path: ':libraries:onyxsdk-data')
     compile "com.dzaitsev.android.widget:radarchartview:$radarchartviewVersion"
-
     compile "com.squareup.retrofit2:converter-gson:$rootProject.convertergsonVersion"
+    compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
+    compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
 }
