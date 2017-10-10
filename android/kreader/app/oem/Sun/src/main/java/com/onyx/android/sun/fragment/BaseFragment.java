@@ -47,8 +47,8 @@ public abstract class BaseFragment extends Fragment {
         int viewID = getRootView();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, viewID, container, false);
         View view = binding.getRoot();
-        loadData();
         initView(binding);
+        loadData();
         initListener();
         return view;
     }
