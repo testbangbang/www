@@ -40,7 +40,11 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
         noteManager.startRawEventProcessor();
         noteManager.resumeRawEventProcessor(getContext());
         noteManager.enableRawEventProcessor(true);
-        noteManager.setCurrentShapeType(noteManager.getNoteDocument().getCurrentShapeType());
+        // we don't want current shape to be eraser when entering note writing mode,
+        // which is confusing
+        noteManager.setCurrentShapeType(noteManager.isEraser() ?
+                ShapeFactory.SHAPE_PENCIL_SCRIBBLE :
+                noteManager.getNoteDocument().getCurrentShapeType());
         noteManager.setCurrentShapeColor(NoteDrawingArgs.defaultColor());
         noteManager.restoreStrokeWidth();
         noteManager.setNoteDirty(true);
