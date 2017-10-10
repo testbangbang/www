@@ -5,6 +5,7 @@ import com.onyx.android.sdk.data.model.*;
 import com.onyx.android.sdk.data.transaction.ProcessDeleteModel;
 import com.onyx.android.sdk.data.transaction.ProcessSaveModel;
 import com.onyx.android.sdk.data.transaction.ProcessUpdateModel;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.Method;
@@ -70,10 +71,9 @@ public class StoreUtils {
         transaction.execute();
     }
 
-    static public <T extends BaseData> void saveToLocal(Class<?> databaseClass, final List<T> list,
-                                                        final Class<T> clazz, boolean clearBeforeSave) {
-        if (clearBeforeSave) {
-            clearTable(clazz);
+    static public <T extends BaseData> void saveToLocal(Class<?> databaseClass, final List<T> list) {
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return;
         }
         final DatabaseWrapper database = FlowManager.getDatabase(databaseClass).getWritableDatabase();
         database.beginTransaction();

@@ -186,7 +186,7 @@ public class PushNotificationLoadRequest extends BaseCloudRequest {
         if (CollectionUtils.isNullOrEmpty(cloudList)) {
             return;
         }
-        StoreUtils.saveToLocal(PushDatabase.class, cloudList, PushNotification.class, false);
+        StoreUtils.saveToLocal(PushDatabase.class, cloudList);
     }
 
     private void clearPushNotification() {
