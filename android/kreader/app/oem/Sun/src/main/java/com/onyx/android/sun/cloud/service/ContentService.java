@@ -8,10 +8,10 @@ import retrofit2.http.GET;
 import retrofit2.http.Query;
 
 /**
- * Created by hehai on 17-10-9.
+ * Created by li on 2017/10/10.
  */
 
-public interface GetPracticesService {
+public interface ContentService {
     @GET("api/practice")
     Call<PracticesResultBean> getPractice(@Query(CloudApiContext.Practices.STATUS)String status,
                                           @Query(CloudApiContext.Practices.STUDENTID)String studentId,

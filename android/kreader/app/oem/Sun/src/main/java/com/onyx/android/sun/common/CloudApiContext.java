@@ -1,11 +1,35 @@
 package com.onyx.android.sun.common;
 
+import com.onyx.android.sun.cloud.service.ContentService;
+
+import java.util.concurrent.ConcurrentHashMap;
+
+import retrofit2.Retrofit;
+
 /**
- * Created by hehai on 17-10-9.
+ * Created by li on 2017/10/10.
  */
 
 public class CloudApiContext {
-    public static final String SUN_BASE_URL = "http://116.62.152.51:9001/";
+    public static final String BASE_URL = "http://116.62.152.51:9001/";
+    private static ConcurrentHashMap<String, Retrofit> retrofitMap = new ConcurrentHashMap<>();
+
+    public static final Retrofit getRetrofit(final String baseUrl) {
+        if(!retrofitMap.containsKey(baseUrl)) {
+            Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).build();
+            retrofitMap.put(baseUrl, retrofit);
+        }
+        return retrofitMap.get(baseUrl);
+    }
+
+    public static final Retrofit.Builder getBaseRetrofitBuilder(final String baseUrl) {
+        return new Retrofit.Builder().baseUrl(baseUrl)
+                .addConverterFactory(FastJsonConverterFactory.create());
+    }
+
+    public static final ContentService getService(final String baseUrl) {
+        return getRetrofit(baseUrl).create(ContentService.class);
+    }
 
     public static class Practices{
         public static final String STATUS = "status";

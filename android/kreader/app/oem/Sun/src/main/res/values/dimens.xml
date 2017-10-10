@@ -22,5 +22,7 @@
     <dimen name="main_fragment_score_title_margin_top">30dp</dimen>
     <dimen name="main_fragment_score_dividing_line_width">230dp</dimen>
     <dimen name="score_radar_chart_padding">60dp</dimen>
+    <dimen name="date_picker_confirm_margin_top">30dp</dimen>
+    <dimen name="date_picker_confirm_padding_top">10dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>

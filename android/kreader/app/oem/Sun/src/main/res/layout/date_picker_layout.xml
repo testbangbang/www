@@ -26,11 +26,11 @@
         android:id="@+id/sp_certain"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:paddingBottom="10dp"
-        android:paddingTop="10dp"
+        android:layout_marginTop="@dimen/date_picker_confirm_margin_top"
+        android:paddingBottom="@dimen/date_picker_confirm_padding_top"
+        android:paddingTop="@dimen/date_picker_confirm_padding_top"
         android:gravity="center"
-        android:text="确定"
+        android:text="@string/confirm"
         android:textSize="@dimen/level_one_heading_font"
         android:background="@android:color/darker_gray"/>
 </LinearLayout>
