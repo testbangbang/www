@@ -15,10 +15,12 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
+import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -132,8 +134,10 @@ public class NoteManager {
     }
 
     private void initNoteArgs(final Context context) {
-        noteConfig = DeviceConfig.sharedInstance(context, "note");
-        mappingConfig = MappingConfig.sharedInstance(context, "note");
+        ConfigManager.init(context.getApplicationContext());
+        noteConfig = ConfigManager.getInstance().getDeviceConfig();
+        mappingConfig = ConfigManager.getInstance().getMappingConfig();
+        BaseShape.setUseRawInput(noteConfig.useRawInput());
         enableShortcutDrawing = (noteConfig.isShortcutDrawingEnabled() && noteConfig.supportBigPen());
         enableShortcutErasing = (noteConfig.isShortcutErasingEnabled() && noteConfig.supportBigPen());
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());

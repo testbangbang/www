@@ -1,18 +1,20 @@
 package com.onyx.edu.note.handler;
 
-import android.graphics.RectF;
+import android.graphics.PointF;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.api.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.api.event.DrawingTouchEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.GetSelectedShapeListRequest;
 import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ScribbleMode;
+import com.onyx.android.sdk.scribble.data.SelectedRectF;
+import com.onyx.android.sdk.scribble.data.ShapeTransformAction;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.ui.data.MenuClickEvent;
@@ -83,7 +85,7 @@ public class ShapeTransformHandler extends BaseHandler {
     private BaseCallback actionDoneCallback = new BaseCallback() {
         @Override
         public void done(BaseRequest request, Throwable e) {
-            AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest)request;
+            AsyncBaseNoteRequest noteRequest = (AsyncBaseNoteRequest) request;
             noteManager.post(new RequestInfoUpdateEvent(noteRequest.getShapeDataInfo(), request, e));
         }
     };
@@ -92,13 +94,12 @@ public class ShapeTransformHandler extends BaseHandler {
     private TouchPoint mShapeSelectStartPoint = null;
     private TouchPoint mShapeSelectPoint = null;
     private ControlMode currentControlMode = ControlMode.SelectMode;
-    private TransformAction transformAction = TransformAction.Undefined;
+    private ShapeTransformAction transformAction = ShapeTransformAction.Undefined;
     private TouchPointList shapeSelectPoints;
-    private RectF selectedRectF;
+    private SelectedRectF selectedRectF;
 
     private enum ControlMode {SelectMode, OperatingMode}
 
-    private enum TransformAction {Undefined, Zoom, Move, Rotation, XAxisMirror, YAxisMirror}
 
     public ShapeTransformHandler(NoteManager noteManager) {
         super(noteManager);
@@ -293,29 +294,8 @@ public class ShapeTransformHandler extends BaseHandler {
         });
     }
 
-    private void detectTransformAction(RectF selectRect, MotionEvent event) {
-        //TODO:dynamic detectionRange By selectRect width/height?
-        final int detectionRange = 10;
-        RectF leftTopCornerRect = new RectF(selectRect.left - detectionRange, selectRect.top - detectionRange,
-                selectRect.left + detectionRange, selectRect.top + detectionRange);
-        RectF rightTopCornerRect = new RectF(selectRect.right - detectionRange, selectRect.top - detectionRange,
-                selectRect.right + detectionRange, selectRect.top + detectionRange);
-        RectF leftBottomCornerRect = new RectF(selectRect.left - detectionRange, selectRect.bottom - detectionRange,
-                selectRect.left + detectionRange, selectRect.bottom + detectionRange);
-        RectF rightBottomCornerRect = new RectF(selectRect.right - detectionRange, selectRect.bottom - detectionRange,
-                selectRect.right + detectionRange, selectRect.bottom + detectionRange);
-        List<RectF> detectRectFList = new ArrayList<>();
-        detectRectFList.add(leftTopCornerRect);
-        detectRectFList.add(rightTopCornerRect);
-        detectRectFList.add(leftBottomCornerRect);
-        detectRectFList.add(rightBottomCornerRect);
-        for (RectF rectF : detectRectFList) {
-            if (rectF.contains(event.getX(), event.getY())) {
-                transformAction = TransformAction.Zoom;
-                return;
-            }
-        }
-        transformAction = TransformAction.Move;
+    private void detectTransformAction(MotionEvent event) {
+        transformAction = selectedRectF.getTouchPointHitTest(new PointF(event.getX(), event.getY()));
     }
 
     private void onShapeSelecting(MotionEvent motionEvent) {
@@ -334,18 +314,21 @@ public class ShapeTransformHandler extends BaseHandler {
                 new ShapeSelectionAction(mShapeSelectStartPoint, mShapeSelectPoint).execute(noteManager, null);
                 break;
             case OperatingMode:
-                if (transformAction == TransformAction.Undefined) {
-                    detectTransformAction(selectedRectF, motionEvent);
+                if (transformAction == ShapeTransformAction.Undefined) {
+                    detectTransformAction(motionEvent);
                 }
                 switch (transformAction) {
                     case Move:
-                        new ChangeSelectedShapePositionAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        new ChangeSelectedShapePositionAction(mShapeSelectPoint,
+                                false).execute(noteManager, null);
                         break;
                     case Zoom:
-                        new ChangeSelectedShapeScaleAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        new ChangeSelectedShapeScaleAction(mShapeSelectPoint,
+                                false).execute(noteManager, null);
                         break;
                     case Rotation:
-                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint, false).execute(noteManager, null);
+                        new ChangeSelectedShapeRotationAction(mShapeSelectPoint,
+                                false).execute(noteManager, null);
                         break;
                 }
                 break;
@@ -353,7 +336,7 @@ public class ShapeTransformHandler extends BaseHandler {
 
         if (shapeSelectPoints != null) {
             int n = motionEvent.getHistorySize();
-            for(int i = 0; i < n; ++i) {
+            for (int i = 0; i < n; ++i) {
                 shapeSelectPoints.add(TouchPoint.fromHistorical(motionEvent, i));
             }
             shapeSelectPoints.add(new TouchPoint(motionEvent.getX(), motionEvent.getY(),
@@ -380,14 +363,14 @@ public class ShapeTransformHandler extends BaseHandler {
                         new ChangeSelectedShapeRotationAction(mShapeSelectPoint, true).execute(noteManager, null);
                         break;
                     case XAxisMirror:
-                        new MirrorSelectedShapeAction(MirrorType.XAxisMirror,true).execute(noteManager,null);
+                        new MirrorSelectedShapeAction(MirrorType.XAxisMirror, true).execute(noteManager, null);
                         break;
                     case YAxisMirror:
-                        new MirrorSelectedShapeAction(MirrorType.YAxisMirror,true).execute(noteManager,null);
+                        new MirrorSelectedShapeAction(MirrorType.YAxisMirror, true).execute(noteManager, null);
                         break;
                 }
                 selectedRectF = null;
-                transformAction = TransformAction.Undefined;
+                transformAction = ShapeTransformAction.Undefined;
                 break;
         }
     }

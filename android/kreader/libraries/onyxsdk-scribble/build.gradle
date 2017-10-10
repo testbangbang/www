@@ -31,6 +31,9 @@ android {
         versionName artifact.version
         multiDexEnabled true
 
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
+
+
         sourceSets.main {
             jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
             jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk

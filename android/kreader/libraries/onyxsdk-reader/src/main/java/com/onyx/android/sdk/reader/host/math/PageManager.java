@@ -24,6 +24,8 @@ public class PageManager {
 
     private int specialScale = PageConstants.SCALE_TO_PAGE;
     private float actualScale = 1.0f;
+    private int specialScaleBackup = specialScale;
+    private float actualScaleBackup = actualScale;
     private float topMargin = 0;
     private float leftMargin = 0;
     private float rightMargin = 0;
@@ -218,6 +220,16 @@ public class PageManager {
         } else if (isWidthCrop()) {
             scaleToWidthContent(pagePosition);
         }
+    }
+
+    public void saveScale() {
+        specialScaleBackup = specialScale;
+        actualScaleBackup = actualScale;
+    }
+
+    public void restoreScale() {
+        specialScale = specialScaleBackup;
+        actualScale = actualScaleBackup;
     }
 
     public boolean hasValidViewport() {

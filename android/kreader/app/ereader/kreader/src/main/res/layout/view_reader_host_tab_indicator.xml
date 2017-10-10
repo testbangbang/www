@@ -15,7 +15,7 @@
             android:padding="5dp"
             android:scaleType="fitCenter"
             android:layout_gravity="center"
-            android:src="@drawable/ic_settings"
+            android:src="@drawable/reader_tab_settings_image_selector"
             android:visibility="gone"/>
 
         <ImageView

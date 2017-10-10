@@ -18,6 +18,13 @@
         android:layout_alignParentTop="true">
 
         <Button
+            android:id="@+id/button_calligraphy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Calligraphy"/>
+
+
+        <Button
             android:id="@+id/button_environment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -77,35 +84,6 @@
             android:layout_height="wrap_content"
             android:text="Settings Demo" />
 
-        <Button
-            android:id="@+id/button_parallel_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Parallel Update Demo" />
-
-        <Button
-            android:id="@+id/button_fast_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Fast Update Demo" />
-
-        <Button
-            android:id="@+id/button_overlay_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Parallel Overlay Update Demo" />
-
-        <Button
-            android:id="@+id/button_text_select"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Text Select Demo" />
-
-        <Button
-            android:id="@+id/button_rect_update"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Rectangle Update Demo" />
 
         <Button
             android:id="@+id/button_image_diff"
@@ -114,10 +92,10 @@
             android:text="Show Image Diff" />
 
         <Button
-            android:id="@+id/button_text_update"
+            android:id="@+id/button_refresh_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Text Update Demo" />
+            android:text="Refresh Test Demo" />
 
     </LinearLayout>
 

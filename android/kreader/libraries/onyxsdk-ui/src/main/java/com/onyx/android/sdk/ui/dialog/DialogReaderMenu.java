@@ -28,6 +28,7 @@ public class DialogReaderMenu extends Dialog {
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
     private ReaderLayerMenuLayout menuLayout;
+    private ImageButton sideNoteButton;
     private ImageButton prevButton;
     private ImageButton nextButton;
     private SeekBar seekBarProgress;
@@ -68,6 +69,7 @@ public class DialogReaderMenu extends Dialog {
         });
 
         menuLayout = (ReaderLayerMenuLayout) findViewById(R.id.layout_reader_menu);
+        sideNoteButton = (ImageButton) findViewById(R.id.side_note_button);
         prevButton = (ImageButton) findViewById(R.id.pre_button);
         nextButton = (ImageButton) findViewById(R.id.next_button);
         seekBarProgress = (SeekBar) findViewById(R.id.seek_bar_page);
@@ -110,6 +112,13 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.GOTO_PAGE));
+            }
+        });
+
+        sideNoteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NOTE_SIDE_NOTE));
             }
         });
 
@@ -161,6 +170,10 @@ public class DialogReaderMenu extends Dialog {
         updatePageProgress(readerMenuState.getPageIndex());
         seekBarProgress.setMax(readerMenuState.getPageCount());
         seekBarProgress.setProgress(currentPage);
+
+        if (readerMenuState != null && !readerMenuState.isSupportingSideNote()) {
+            sideNoteButton.setVisibility(View.GONE);
+        }
     }
 
     private void updateWindowParameters(WindowParameters params) {

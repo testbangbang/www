@@ -177,7 +177,7 @@ public class ManagerActivity extends BaseManagerActivity {
                     @Override
                     public boolean onCreated(final String title) {
                         final CheckNoteNameLegalityAction<ManagerActivity> action =
-                                new CheckNoteNameLegalityAction<>(title, currentLibraryId, NoteModel.TYPE_LIBRARY, false, false);
+                                new CheckNoteNameLegalityAction<>(title, currentLibraryId, NoteModel.TYPE_LIBRARY, true, true);
                         action.execute(ManagerActivity.this, new BaseCallback() {
                             @Override
                             public void done(BaseRequest request, Throwable e) {
@@ -249,7 +249,7 @@ public class ManagerActivity extends BaseManagerActivity {
                 //TODO:we trust upper method would only pass doc or lib to here.
                 int itemType = Utils.isDocument(object) ? NoteModel.TYPE_DOCUMENT : NoteModel.TYPE_LIBRARY;
                 final CheckNoteNameLegalityAction<ManagerActivity> action =
-                        new CheckNoteNameLegalityAction<>(input, currentLibraryId, itemType, false, false);
+                        new CheckNoteNameLegalityAction<>(input, currentLibraryId, itemType, true, true);
                 action.execute(ManagerActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

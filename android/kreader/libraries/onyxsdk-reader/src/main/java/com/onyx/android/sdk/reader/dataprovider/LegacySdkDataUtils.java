@@ -138,8 +138,11 @@ public class LegacySdkDataUtils {
     }
 
     public static void recordStartReading(Context context, String documentPath) {
-        OnyxMetadata data = getMetadataByPath(documentPath);
-        OnyxHistoryEntryHelper.recordStartReading(context, data.getMD5(), data.getProgress());
+        try {
+            OnyxMetadata data = getMetadataByPath(documentPath);
+            OnyxHistoryEntryHelper.recordStartReading(context, data.getMD5(), data.getProgress());
+        } catch (Exception e) {
+        }
     }
 
     public static void recordFinishReading(Context context, int currentPage, int totalPage) {

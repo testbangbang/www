@@ -31,26 +31,26 @@ public class ChangeSelectedShapeScaleRequest extends AsyncBaseNoteRequest {
     private volatile TouchPoint touchPoint = null;
 
     @Override
-    public void execute(final NoteManager parent) throws Exception {
-        setResumeInputProcessor(parent.useDFBForCurrentState());
+    public void execute(final NoteManager manager) throws Exception {
+        setResumeInputProcessor(manager.useDFBForCurrentState());
         benchmarkStart();
-        parent.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
-        RectF originSelectedRect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
+        manager.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
+        RectF originSelectedRect = manager.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
         PointF originCenterPoint = new PointF(originSelectedRect.centerX(), originSelectedRect.centerY());
         if ((Float.compare(scaleSize, Float.MIN_VALUE) == 0) && touchPoint != null) {
             double newDistance = getTwoPointsDistance(new PointF(touchPoint.getX(), touchPoint.getY()), originCenterPoint);
             double originalDistance = getTwoPointsDistance(new PointF(originSelectedRect.left, originSelectedRect.top), originCenterPoint);
             scaleSize = ((float) newDistance / (float) originalDistance);
         }
-        parent.getNoteDocument().getCurrentPage(getContext()).setScaleToSelectShapeList(scaleSize, false);
-        renderCurrentPageInBitmap(parent);
-        RectF afterScaleRect = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
+        manager.getNoteDocument().getCurrentPage(getContext()).setScaleToSelectShapeList(scaleSize, false);
+        renderCurrentPageInBitmap(manager);
+        RectF afterScaleRect = manager.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
         PointF afterZoomCenterPoint = new PointF(afterScaleRect.centerX(), afterScaleRect.centerY());
-        parent.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(
+        manager.getNoteDocument().getCurrentPage(getContext()).setTranslateToSelectShapeList(
                 originCenterPoint.x - afterZoomCenterPoint.x,
                 originCenterPoint.y - afterZoomCenterPoint.y, isAddToHistory);
-        renderCurrentPageInBitmap(parent);
-        updateShapeDataInfo(parent);
+        renderCurrentPageInBitmap(manager);
+        updateShapeDataInfo(manager);
     }
 
     private float getTwoPointsDistance(PointF point1, PointF point2) {

@@ -15,8 +15,8 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
         android:largeHeap="true"
+        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".MainActivity">
             <intent-filter>
@@ -25,27 +25,24 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".EpdDemoActivity" />
-        <activity android:name=".ScribbleTouchScreenDemoActivity" />
-        <activity android:name=".ScribbleStylusSurfaceViewDemoActivity" />
-        <activity android:name=".ScribbleStylusWebViewDemoActivity" />
-        <activity android:name=".EnvironmentDemoActivity" />
-        <activity android:name=".FrontLightDemoActivity" />
-        <activity android:name=".SdkDataOTATestActivity" />
-        <activity android:name=".FullScreenDemoActivity"
+        <activity android:name=".activity.EpdDemoActivity" />
+        <activity android:name=".activity.ScribbleTouchScreenDemoActivity" />
+        <activity android:name=".activity.ScribbleStylusSurfaceViewDemoActivity" />
+        <activity android:name=".activity.ScribbleStylusWebViewDemoActivity" />
+        <activity android:name=".activity.EnvironmentDemoActivity" />
+        <activity android:name=".activity.FrontLightDemoActivity" />
+        <activity android:name=".activity.SdkDataOTATestActivity" />
+        <activity
+            android:name=".activity.FullScreenDemoActivity"
             android:label="@string/app_name"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
-             />
-
-        <activity android:name=".SettingsDemoActivity" />
-        <activity android:name=".ScribbleStateDemoActivity" />
-        <activity android:name=".ParallelUpdateActivity" />
-        <activity android:name=".FastUpdateModeActivity" />
-        <activity android:name=".OverlayUpdateActivity" />
-        <activity android:name=".TextSelectionActivity" />
-        <activity android:name=".RectangleUpdateTest" />
-        <activity android:name=".ImageDiffActivity" android:exported="true"></activity>
-        <activity android:name=".TextUpdateActivity" />
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
+        <activity android:name=".activity.SettingsDemoActivity" />
+        <activity android:name=".activity.ScribbleStateDemoActivity" />
+        <activity
+            android:name=".activity.ImageDiffActivity"
+            android:exported="true" />
+        <activity android:name=".activity.RefreshTestActivity" />
+        <activity android:name=".activity.CalligraphyActivity"></activity>
     </application>
 
 </manifest>

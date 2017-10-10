@@ -17,7 +17,10 @@ public class StartSideNodeRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         setSaveOptions(true);
+        
+        reader.getReaderLayoutManager().getPageManager().saveScale();
         reader.getReaderHelper().updateViewportSize(newWidth, newHeight);
+        reader.getReaderLayoutManager().scaleToPage(reader.getReaderLayoutManager().getCurrentPageName());
 
         drawVisiblePages(reader);
     }

@@ -15,6 +15,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
@@ -25,6 +26,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -195,8 +197,10 @@ public class NoteViewHelper {
     }
 
     private void initRawResource(final Context context) {
-        deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        mappingConfig = MappingConfig.sharedInstance(context, "note");
+        ConfigManager.init(context.getApplicationContext());
+        deviceConfig = ConfigManager.getInstance().getDeviceConfig();
+        mappingConfig = ConfigManager.getInstance().getMappingConfig();
+        BaseShape.setUseRawInput(deviceConfig.useRawInput());
     }
 
     private void initBigPenState(final Context context) {

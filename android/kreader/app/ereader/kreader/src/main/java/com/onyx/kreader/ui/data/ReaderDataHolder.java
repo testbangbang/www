@@ -82,6 +82,8 @@ public class ReaderDataHolder {
     private int optionsSkippedTimes = 0;
     private int lastRequestSequence;
 
+    private boolean isSideReadingMode = false;
+
     private boolean enteringSideNote = false;
     private boolean sideNoting = false;
     private int sideNotePage = 0;
@@ -207,7 +209,7 @@ public class ReaderDataHolder {
 
     public boolean isNoteWritingProvider() {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.SCRIBBLE_PROVIDER) ||
-                getHandlerManager().getActiveProvider().equals(HandlerManager.SIDE_NOTE_PROVIDER);
+                getHandlerManager().getActiveProviderName().equals(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
     public boolean inReadingProvider() {
@@ -650,8 +652,16 @@ public class ReaderDataHolder {
         this.lastRequestSequence = lastRequestSequence;
     }
 
+    public boolean isSideReadingMode() {
+        return isSideReadingMode;
+    }
+
+    public void setSideReadingMode(boolean sideReadingMode) {
+        isSideReadingMode = sideReadingMode;
+    }
+
     public boolean supportSideNote() {
-        return supportScalable();
+        return supportScalable() && !isSideReadingMode();
     }
 
     public boolean isEnteringSideNote() {

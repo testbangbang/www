@@ -804,14 +804,15 @@ public class ShowReaderMenuAction extends BaseAction {
         final ShowScribbleMenuAction.ActionCallback callback = new ShowScribbleMenuAction.ActionCallback() {
             @Override
             public void onClicked(final ReaderMenuAction action) {
-                if (processScribbleActionGroup(readerDataHolder, action)) {
-                    return;
-                }
                 processScribbleAction(readerDataHolder, action);
             }
 
             @Override
             public void onToggle(final ReaderMenuAction action, boolean expand){
+                final FlushNoteAction flushNoteAction = expand ?
+                        FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages()) :
+                        new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
+                flushNoteAction.execute(readerDataHolder, null);
             }
         };
         return callback;
