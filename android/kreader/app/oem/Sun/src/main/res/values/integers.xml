@@ -4,4 +4,6 @@
     <integer name="course_adapter_row">1</integer>
     <integer name="homework_adapter_col">1</integer>
     <integer name="homework_adapter_row">8</integer>
+    <integer name="today_task_adapter_row">3</integer>
+    <integer name="today_task_adapter_col">1</integer>
 </resources>

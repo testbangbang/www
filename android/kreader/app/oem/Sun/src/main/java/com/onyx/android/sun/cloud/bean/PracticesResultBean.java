@@ -27,6 +27,7 @@ public class PracticesResultBean {
             public String title;
             public String deadline;
             public String status;
+            public String practiceId;
         }
     }
 }

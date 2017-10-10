@@ -12,12 +12,16 @@ import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
+import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -132,5 +136,10 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             baseFragment.isStored = true;
         }
         return baseFragment;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToHomeworkEvent(ToHomeworkEvent event) {
+        mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_EXAMINATION_WORK).select();
     }
 }

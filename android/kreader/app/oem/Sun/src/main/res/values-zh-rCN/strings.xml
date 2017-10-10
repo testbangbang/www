@@ -24,4 +24,6 @@
     <string name="academic_ability_value">学科能力值(点击左侧查看个人总分再班级,年级中排行情况)</string>
     <string name="total_ability_value">总能力值</string>
     <string name="confirm">确定</string>
+    <string name="grade_ranking">年级排名</string>
+    <string name="full_score">满分: %d分</string>
 </resources>

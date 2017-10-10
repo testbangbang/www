@@ -24,4 +24,6 @@
     <string name="academic_ability_value">Academic ability value (click on the left side to see the total score and then the class, ranking in the rankings)</string>
     <string name="total_ability_value">Total ability value</string>
     <string name="confirm">Yes</string>
+    <string name="grade_ranking">Grade ranking</string>
+    <string name="full_score">full: %d</string>
 </resources>

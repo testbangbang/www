@@ -16,7 +16,7 @@
     <dimen name="fragment_content_margin">10dp</dimen>
     <dimen name="main_fragment_title_width">150dp</dimen>
     <dimen name="main_fragment_title_padding">5dp</dimen>
-    <dimen name="main_fragment_task_layout_height">200dp</dimen>
+    <dimen name="main_fragment_task_layout_height">275dp</dimen>
     <dimen name="main_fragment_text_padding">10dp</dimen>
     <dimen name="main_fragment_results_width">250dp</dimen>
     <dimen name="main_fragment_score_title_margin_top">30dp</dimen>
@@ -24,5 +24,14 @@
     <dimen name="score_radar_chart_padding">60dp</dimen>
     <dimen name="date_picker_confirm_margin_top">30dp</dimen>
     <dimen name="date_picker_confirm_padding_top">10dp</dimen>
+    <dimen name="item_today_task_course_width">80dp</dimen>
+    <dimen name="item_today_task_course_margin_right">200dp</dimen>
+    <dimen name="item_today_task_deadline_margin_left">20dp</dimen>
+    <dimen name="item_today_task_padding">10dp</dimen>
+    <dimen name="item_today_task_title_margin_left">50dp</dimen>
+    <dimen name="message_image_width">50dp</dimen>
+    <dimen name="main_activity_tab_indicator_height">5dp</dimen>
+    <dimen name="main_activity_tab_margin_right">100dp</dimen>
+    <dimen name="main_activity_title_padding">20dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>

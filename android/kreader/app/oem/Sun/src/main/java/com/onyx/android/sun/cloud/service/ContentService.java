@@ -1,5 +1,6 @@
 package com.onyx.android.sun.cloud.service;
 
+import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.sun.cloud.bean.PracticesResultBean;
 import com.onyx.android.sun.common.CloudApiContext;
 
@@ -21,4 +22,12 @@ public interface ContentService {
                                           @Query(CloudApiContext.Practices.TYPE)String type,
                                           @Query(CloudApiContext.Practices.STARTTIME)String starttime,
                                           @Query(CloudApiContext.Practices.ENDTIME)String endtime);
+
+    @GET("api/message/all")
+    Call<PracticesResultBean> getMessage(@Query(CloudApiContext.Message.STUDENTID) String studentId,
+                                         @Query(CloudApiContext.Message.PAGE) String page,
+                                         @Query(CloudApiContext.Message.SIZE) String size);
+
+    @GET("api/advanced/ability/own")
+    Call<PersonalAbilityResultBean> getSubjectAbility(@Query(CloudApiContext.SubjectAbility.ID) String id);
 }

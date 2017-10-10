@@ -53,6 +53,7 @@
                     android:background="@android:color/black" />
 
                 <com.onyx.android.sun.view.PageRecyclerView
+                    android:id="@+id/today_task_recycler"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/main_fragment_task_layout_height"
                     android:layout_weight="1" />
@@ -90,6 +91,8 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textSize="@dimen/level_two_heading_font"
+                android:layout_margin="@dimen/main_fragment_score_text_margin_top"
                 android:text="@string/academic_ability_value" />
 
             <LinearLayout
@@ -142,6 +145,7 @@
                         android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
                         android:gravity="center"
                         android:onClick="@{listener.onClick}"
+                        android:text="@string/grade_ranking"
                         android:textSize="@dimen/level_two_heading_font" />
 
                     <TextView
