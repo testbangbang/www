@@ -5,15 +5,14 @@ import android.view.View;
 
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sun.R;
-import com.onyx.android.sun.cloud.bean.PracticesResultBean;
+import com.onyx.android.sun.cloud.bean.ContentBean;
+import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.databinding.MainBinding;
 import com.onyx.android.sun.interfaces.MainFragmentView;
 import com.onyx.android.sun.presenter.MainFragmentPresenter;
-import com.onyx.android.sun.presenter.MainPresenter;
 
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 /**
  * Created by hehai on 17-9-29.
@@ -65,7 +64,7 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
     }
 
     @Override
-    public void setPractices(List<PracticesResultBean.DataBean.ContentBean> list) {
+    public void setPractices(List<ContentBean> list) {
 
     }
 

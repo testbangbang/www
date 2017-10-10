@@ -1,10 +1,9 @@
 package com.onyx.android.sun.requests;
 
-
 import android.util.Log;
 
+import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
-import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.cloud.service.ContentService;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.requests.requestTool.BaseCloudRequest;
@@ -17,16 +16,16 @@ import retrofit2.Response;
  * Created by li on 2017/10/10.
  */
 
-public class HomeworkUnfinishedRequest extends BaseCloudRequest {
-    private static final String TAG = HomeworkUnfinishedRequest.class.getSimpleName();
+public class HomeworkFinishedRequest extends BaseCloudRequest {
+    private static final String TAG = HomeworkFinishedRequest.class.getSimpleName();
     private HomeworkRequestBean requestBean;
-    private HomeworkUnfinishedResultBean resultBean;
+    private HomeworkFinishedResultBean resultBean;
 
-    public HomeworkUnfinishedRequest(HomeworkRequestBean requestBean) {
+    public HomeworkFinishedRequest(HomeworkRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
-    public HomeworkUnfinishedResultBean getResultBean() {
+    public HomeworkFinishedResultBean getResultBean() {
         return resultBean;
     }
 
@@ -34,8 +33,8 @@ public class HomeworkUnfinishedRequest extends BaseCloudRequest {
     public void execute(SunRequestManager helper) throws Exception {
         try {
             ContentService service = CloudApiContext.getService(CloudApiContext.BASE_URL);
-            Call<HomeworkUnfinishedResultBean> call = getCall(service);
-            Response<HomeworkUnfinishedResultBean> response = call.execute();
+            Call<HomeworkFinishedResultBean> call = getCall(service);
+            Response<HomeworkFinishedResultBean> response = call.execute();
             if (response.isSuccessful()) {
                 resultBean = response.body();
             }
@@ -45,8 +44,8 @@ public class HomeworkUnfinishedRequest extends BaseCloudRequest {
         }
     }
 
-    private Call<HomeworkUnfinishedResultBean> getCall(ContentService service) {
-        return service.getHomeworkUnfinished(requestBean.status, requestBean.studentId,
+    private Call<HomeworkFinishedResultBean> getCall(ContentService service) {
+        return service.getHomeworkFinished(requestBean.status, requestBean.studentId,
                 requestBean.page, requestBean.size,
                 requestBean.course, requestBean.type,
                 requestBean.starttime, requestBean.endtime);
