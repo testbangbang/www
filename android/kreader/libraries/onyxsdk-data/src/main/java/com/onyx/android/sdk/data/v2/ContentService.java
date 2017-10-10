@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.v2.InstallationIdBinding;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.model.v2.PushNotification;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -123,4 +124,7 @@ public interface ContentService {
 
     @POST("devices/updateInstallationIdByMac")
     Call<ResponseBody> updateInstallationIdByMac(@Body final InstallationIdBinding installationIdBinding);
+
+    @GET("messages/type/notification")
+    Call<QueryResult<PushNotification>> getPushNotificationResult(@Query(Constant.WHERE_TAG) final String param);
 }
