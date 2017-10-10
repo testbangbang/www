@@ -23,6 +23,7 @@ import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
+import com.onyx.android.sdk.data.model.ReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 
@@ -60,7 +61,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private DividerItemDecoration dividerItemDecoration;
     private ReadingRateAdapter readingRateAdapter;
     private ReadingRatePresenter presenter;
-    private List<ReadingRateEntity> readingRateList;
+    private List<ReadingRateBean> readingRateList;
     private ArrayList<Boolean> listCheck;
     private PageIndicator pageIndicator;
     private ReadingRateDialog timePickerDialog;
@@ -113,7 +114,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     }
 
     @Override
-    public void setReadingRateData(List<ReadingRateEntity> dataList) {
+    public void setReadingRateData(List<ReadingRateBean> dataList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
@@ -196,11 +197,10 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
                     if (listCheck.get(i)) {
                         ReadingRateEntity bean = dataList.get(i);
                         array = Arrays.copyOf(array, array.length + 1);
-//                        array[array.length - 1] = bean.id;
                     }
                 }
                 shareBookReportRequestBean.setChildren(array);
-//                ActivityManager.startShareBookReportActivity(this, Constants.READING_RATE, "", shareBookReportRequestBean);
+                ActivityManager.startShareBookReportActivity(this, "", array);
             }
         } else {
             CommonNotices.showMessage(this, getString(R.string.no_relevant_data));

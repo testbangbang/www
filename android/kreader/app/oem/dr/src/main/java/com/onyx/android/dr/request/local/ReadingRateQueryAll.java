@@ -1,12 +1,11 @@
 package com.onyx.android.dr.request.local;
 
-import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.data.ReadingRateData;
 import com.onyx.android.dr.data.database.ReaderResponseEntity;
 import com.onyx.android.dr.data.database.ReaderResponseEntity_Table;
-import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity_Table;
+import com.onyx.android.dr.request.cloud.CreateReadingRateRequest;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -14,6 +13,7 @@ import com.onyx.android.sdk.data.model.BaseStatisticsModel;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel;
 import com.onyx.android.sdk.data.model.OnyxStatisticsModel_Table;
+import com.onyx.android.sdk.data.model.ReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class ReadingRateQueryAll extends BaseDataRequest {
     private final ReadingRateData readingRateData;
-    private List<ReadingRateEntity> readingRateList = new ArrayList<>();
+    private List<ReadingRateBean> readingRateList = new ArrayList<>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
     private long divisor = 1000*60;
 
@@ -43,7 +43,7 @@ public class ReadingRateQueryAll extends BaseDataRequest {
         queryInformalEssayList();
     }
 
-    public List<ReadingRateEntity> getAllData() {
+    public List<ReadingRateBean> getAllData() {
         return readingRateList;
     }
 
@@ -67,18 +67,18 @@ public class ReadingRateQueryAll extends BaseDataRequest {
             CloudMetadata typeByBookName = getTypeByBookName(bookName);
             Integer readerResponsePiece = getReaderResponsePiece(bookName);
             Integer readerResponseWordNumber = getReaderResponseWordNumber(bookName);
-            ReadingRateEntity bean = new ReadingRateEntity();
-            bean.bookName = bookName;
-            bean.md5 = onyxStatisticsModel.getMd5();
-            bean.time = onyxStatisticsModel.getEventTime();
-            bean.timeHorizon = String.valueOf(readMinute);
-            bean.readSummaryPiece = readSummaryPiece;
-            bean.language = typeByBookName.getLanguage();
-            bean.readerResponsePiece = readerResponsePiece;
-            bean.readerResponseNumber = readerResponseWordNumber;
+            ReadingRateBean bean = new ReadingRateBean();
+            bean.setName(bookName);
+            bean.setBook(onyxStatisticsModel.getMd5());
+            bean.setRecordDate(onyxStatisticsModel.getEventTime());
+            bean.setReadTimeLong(String.valueOf(readMinute));
+            bean.setSummaryCount(readSummaryPiece);
+            bean.setLanguage(typeByBookName.getLanguage());
+            bean.setImpressionCount(readerResponsePiece);
+            bean.setImpressionWordsCount(readerResponseWordNumber);
             readingRateList.add(bean);
-            ReadingRateInsert req = new ReadingRateInsert(bean);
-            readingRateData.insertReadingRate(DRApplication.getInstance(), req, new BaseCallback() {
+            CreateReadingRateRequest request = new CreateReadingRateRequest(bean);
+            readingRateData.createReadingRate(request, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                 }

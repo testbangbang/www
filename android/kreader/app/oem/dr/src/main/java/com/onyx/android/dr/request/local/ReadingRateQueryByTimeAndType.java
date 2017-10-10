@@ -49,7 +49,7 @@ public class ReadingRateQueryByTimeAndType extends BaseDataRequest {
                 listCheck.clear();
                 for (int i = 0; i < essayList.size(); i++) {
                     ReadingRateEntity bean = essayList.get(i);
-                    long currentTime = TimeUtils.dateToLong(bean.time);
+                    long currentTime = TimeUtils.dateToLong(bean.recordDate);
                     if (currentTime >= startDateMillisecond &&
                             currentTime <= endDateMillisecond) {
                         if (!list.contains(bean)){
@@ -66,7 +66,7 @@ public class ReadingRateQueryByTimeAndType extends BaseDataRequest {
                 listCheck.clear();
                 for (int i = 0; i < essayList.size(); i++) {
                     ReadingRateEntity bean = essayList.get(i);
-                    long currentTime = TimeUtils.dateToLong(bean.time);
+                    long currentTime = TimeUtils.dateToLong(bean.recordDate);
                     if (currentTime >= startDateMillisecond &&
                             currentTime <= endDateMillisecond) {
                         if (!list.contains(bean)){

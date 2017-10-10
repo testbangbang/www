@@ -5,6 +5,7 @@ import android.content.Context;
 import com.onyx.android.dr.data.ReadingRateData;
 import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.interfaces.ReadingRateView;
+import com.onyx.android.dr.request.cloud.RequestGetReadingRate;
 import com.onyx.android.dr.request.local.ReadingRateExport;
 import com.onyx.android.dr.request.local.ReadingRateQueryAll;
 import com.onyx.android.dr.request.local.ReadingRateQueryByTimeAndType;
@@ -34,8 +35,16 @@ public class ReadingRatePresenter {
         readingRateData.getAllReadingRate(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                allData = req.getAllData();
-                readingRateView.setReadingRateData(allData);
+                readingRateView.setReadingRateData(req.getAllData());
+            }
+        });
+    }
+
+    public void getReadingRate(String param) {
+        final RequestGetReadingRate req = new RequestGetReadingRate(readingRateData, param);
+        readingRateData.getReadingRate(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
             }
         });
     }

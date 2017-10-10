@@ -131,4 +131,12 @@ public class DRPreferenceManager extends PreferenceManager {
         saveUserAccount(context,"");
         saveUserPassword(context,"");
     }
+
+    public static int getShareType(Context context, int defaultValue) {
+        return getIntValue(context, Constants.SHARE_TYPE, defaultValue);
+    }
+
+    public static void saveShareType(Context context, int bookshelfType) {
+        setIntValue(context, Constants.SHARE_TYPE, bookshelfType);
+    }
 }

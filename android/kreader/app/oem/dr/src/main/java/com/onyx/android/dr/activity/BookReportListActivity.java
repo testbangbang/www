@@ -18,6 +18,7 @@ import com.onyx.android.dr.event.ShareBookReportEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.GPaginator;
@@ -215,6 +216,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShareBookReportEvent(ShareBookReportEvent event) {
         GetBookReportListBean bookReportBean = event.getBookReportBean();
-        ActivityManager.startShareBookReportActivity(this, Constants.READER_RESPONSE, bookReportBean._id, childrenId);
+        DRPreferenceManager.saveShareType(DRApplication.getInstance(), Constants.READER_RESPONSE);
+        ActivityManager.startShareBookReportActivity(this, bookReportBean._id, childrenId);
     }
 }

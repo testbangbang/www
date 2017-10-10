@@ -6,9 +6,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.InformalEssayBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.interfaces.InformalEssayView;
@@ -16,6 +14,8 @@ import com.onyx.android.dr.presenter.InformalEssayPresenter;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.DefaultEditText;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.InformalEssayBean;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     }
 
     @Override
-    public void setInformalEssayData(List<InformalEssayEntity> dataList, ArrayList<Boolean>listCheck) {
+    public void setInformalEssayData(List<CreateInformalEssayBean> dataList, ArrayList<Boolean>listCheck) {
     }
 
     @Override
@@ -133,8 +133,7 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
         bean.setContent(content);
         bean.setWordNumber(Utils.getStringLength(content));
         bean.setCurrentTime(TimeUtils.getCurrentTimeMillis());
-        String json = JSON.toJSON(bean).toString();
-        informalEssayPresenter.createInformalEssay(json);
+        informalEssayPresenter.createInformalEssay(bean);
     }
 
     @Override

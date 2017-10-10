@@ -10,9 +10,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.InformalEssayAdapter;
+import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
@@ -23,6 +25,7 @@ import com.onyx.android.dr.presenter.InformalEssayPresenter;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -61,9 +64,13 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private DividerItemDecoration dividerItemDecoration;
     private InformalEssayAdapter informalEssayAdapter;
     private InformalEssayPresenter informalEssayPresenter;
-    private List<InformalEssayEntity> informalEssayList;
+    private List<CreateInformalEssayBean> informalEssayList;
     private ArrayList<Boolean> listCheck;
     private PageIndicator pageIndicator;
+    private String offset = "1";
+    private String limit = "200";
+    private String sortBy = "createdAt";
+    private String order = "-1";
 
     @Override
     protected Integer getLayoutId() {
@@ -99,10 +106,6 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private void getIntentData() {
         image.setImageResource(R.drawable.informal_essay);
         title.setText(getString(R.string.informal_essay));
-        iconFour.setVisibility(View.VISIBLE);
-        iconThree.setVisibility(View.VISIBLE);
-        iconTwo.setVisibility(View.VISIBLE);
-        iconOne.setVisibility(View.VISIBLE);
         iconFour.setImageResource(R.drawable.ic_reader_note_delet);
         iconThree.setImageResource(R.drawable.ic_reader_share);
         iconTwo.setImageResource(R.drawable.ic_reader_note_export);
@@ -113,14 +116,20 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     protected void onResume() {
         super.onResume();
         informalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
-        informalEssayPresenter.getAllInformalEssayData();
+        MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
+        String json = JSON.toJSON(bean).toString();
+        informalEssayPresenter.getInformalEssay(json);
     }
 
     @Override
-    public void setInformalEssayData(List<InformalEssayEntity> dataList, ArrayList<Boolean> checkList) {
+    public void setInformalEssayData(List<CreateInformalEssayBean> dataList, ArrayList<Boolean> checkList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
+        iconFour.setVisibility(View.VISIBLE);
+        iconThree.setVisibility(View.VISIBLE);
+        iconTwo.setVisibility(View.VISIBLE);
+        iconOne.setVisibility(View.VISIBLE);
         informalEssayList = dataList;
         listCheck = checkList;
         informalEssayAdapter.setDataList(informalEssayList, listCheck);
@@ -184,7 +193,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 deleteCheckedData();
                 break;
             case R.id.title_bar_right_icon_three:
-//                ActivityManager.startShareBookReportActivity(this, Constants.INFORMAL_ESSAY, "", childrenId);
+                informalEssayPresenter.shareInformalEssay(listCheck, informalEssayList);
                 break;
             case R.id.title_bar_right_icon_two:
                 exportData();

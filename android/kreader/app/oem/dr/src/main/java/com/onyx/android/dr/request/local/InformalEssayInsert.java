@@ -15,8 +15,8 @@ public class InformalEssayInsert extends BaseDataRequest {
     private boolean weatherInsert = true;
     private InformalEssayEntity infromalEssayEntity;
 
-    public InformalEssayInsert(InformalEssayEntity infromalEssayEntity) {
-        this.infromalEssayInfo = infromalEssayEntity;
+    public InformalEssayInsert(InformalEssayEntity informalEssayEntity) {
+        this.infromalEssayInfo = informalEssayEntity;
     }
 
     @Override

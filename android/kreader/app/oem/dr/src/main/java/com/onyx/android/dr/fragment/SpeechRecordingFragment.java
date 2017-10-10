@@ -9,8 +9,8 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SpeechRecordingAdapter;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.event.SearchKeywordEvent;
-import com.onyx.android.dr.interfaces.InformalEssayView;
-import com.onyx.android.dr.presenter.InformalEssayPresenter;
+import com.onyx.android.dr.interfaces.SpeechRecordingView;
+import com.onyx.android.dr.presenter.SpeechRecordingPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -28,14 +28,14 @@ import butterknife.Bind;
 /**
  * Created by zhouzhiming on 2017/9/6.
  */
-public class SpeechRecordingFragment extends BaseFragment implements InformalEssayView {
+public class SpeechRecordingFragment extends BaseFragment implements SpeechRecordingView {
     @Bind(R.id.fragment_speech_recording_recycler_view)
     PageRecyclerView recyclerView;
     @Bind(R.id.fragment_speech_recording_all_number)
     TextView allNumber;
     private DividerItemDecoration dividerItemDecoration;
     private SpeechRecordingAdapter speechRecordingAdapter;
-    private InformalEssayPresenter informalEssayPresenter;
+    private SpeechRecordingPresenter presenter;
     private List<InformalEssayEntity> informalEssayList;
     private int jumpSource = 0;
 
@@ -69,9 +69,9 @@ public class SpeechRecordingFragment extends BaseFragment implements InformalEss
     }
 
     private void loadInformalEssay() {
-        informalEssayPresenter = new InformalEssayPresenter(getActivity(), this);
-        informalEssayPresenter.getAllInformalEssayData();
-        informalEssayList = new ArrayList<InformalEssayEntity>();
+        presenter = new SpeechRecordingPresenter(getActivity(), this);
+        presenter.getAllInformalEssayData();
+        informalEssayList = new ArrayList<>();
     }
 
     @Override
@@ -82,10 +82,6 @@ public class SpeechRecordingFragment extends BaseFragment implements InformalEss
     @Override
     public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
         showData(dataList);
-    }
-
-    @Override
-    public void createInformalEssay(boolean tag) {
     }
 
     private void showData(List<InformalEssayEntity> dataList) {
@@ -99,10 +95,6 @@ public class SpeechRecordingFragment extends BaseFragment implements InformalEss
         speechRecordingAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void setInformalEssayByTime(List<InformalEssayEntity> dataList) {
-    }
-
     public void initEvent() {
     }
 
@@ -110,7 +102,7 @@ public class SpeechRecordingFragment extends BaseFragment implements InformalEss
     public void onSearchKeywordEvent(SearchKeywordEvent event) {
         String searchKeyword = DRPreferenceManager.getSearchKeyword(getActivity(), "");
         if (!StringUtils.isNullOrEmpty(searchKeyword)) {
-            informalEssayPresenter.getInformalEssayQueryByTitle(searchKeyword);
+            presenter.getInformalEssayQueryByTitle(searchKeyword);
         }
     }
 

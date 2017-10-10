@@ -29,14 +29,15 @@ public class ReadingRateInsert extends BaseDataRequest {
         if (!whetherInsert()) {
             readingRateInfo.insert();
         } else {
-            readingRateEntity.time = readingRateInfo.time;
-            readingRateEntity.timeHorizon = readingRateInfo.timeHorizon;
-            readingRateEntity.languageType = readingRateInfo.languageType;
-            readingRateEntity.readSummaryPiece = readingRateInfo.readSummaryPiece;
-            readingRateEntity.readerResponsePiece = readingRateInfo.readerResponsePiece;
-            readingRateEntity.readerResponseNumber = readingRateInfo.readerResponseNumber;
-            readingRateEntity.md5 = readingRateInfo.md5;
+            readingRateEntity.recordDate = readingRateInfo.recordDate;
+            readingRateEntity.book = readingRateInfo.book;
+            readingRateEntity.readTimeLong = readingRateInfo.readTimeLong;
+            readingRateEntity.wordsCount = readingRateInfo.wordsCount;
             readingRateEntity.language = readingRateInfo.language;
+            readingRateEntity.speed = readingRateInfo.speed;
+            readingRateEntity.summaryCount = readingRateInfo.summaryCount;
+            readingRateEntity.impressionCount = readingRateInfo.impressionCount;
+            readingRateEntity.impressionWordsCount = readingRateInfo.impressionWordsCount;
             readingRateEntity.update();
         }
     }
@@ -46,7 +47,7 @@ public class ReadingRateInsert extends BaseDataRequest {
         if (dataList != null && dataList.size() > 0) {
             for (int i = 0; i < dataList.size(); i++) {
                 readingRateEntity = dataList.get(i);
-                if (readingRateInfo.bookName.equals(readingRateEntity.bookName)) {
+                if (readingRateInfo.name.equals(readingRateEntity.name)) {
                     weatherInsert = false;
                     return true;
                 }

@@ -16,21 +16,23 @@ public class ReadingRateEntity extends BaseModel {
     @PrimaryKey(autoincrement = true)
     public long id;
     @Column
-    public Date time;
+    public Date recordDate;
     @Column
-    public String bookName;
+    public String name;
     @Column
-    public String timeHorizon;
+    public String book;
     @Column
-    public String languageType;
+    public String readTimeLong;
     @Column
-    public int readSummaryPiece;
-    @Column
-    public int readerResponsePiece;
-    @Column
-    public int readerResponseNumber;
-    @Column
-    public String md5;
+    public int wordsCount;
     @Column
     public String language;
+    @Column
+    public int speed;
+    @Column
+    public int summaryCount;
+    @Column
+    public int impressionCount;
+    @Column
+    public int impressionWordsCount;
 }

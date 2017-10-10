@@ -7,8 +7,8 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.model.ReadingRateBean;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 
 import java.util.List;
@@ -20,10 +20,10 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-7-11.
  */
 public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRateAdapter.ViewHolder> {
-    private List<ReadingRateEntity> dataList;
+    private List<ReadingRateBean> dataList;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<ReadingRateEntity> dataList) {
+    public void setDataList(List<ReadingRateBean> dataList) {
         this.dataList = dataList;
     }
 
@@ -50,14 +50,14 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        ReadingRateEntity bean = dataList.get(position);
-        String time = DateTimeUtil.formatDate(bean.time, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+        ReadingRateBean bean = dataList.get(position);
+        String time = DateTimeUtil.formatDate(bean.recordDate, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
         holder.time.setText(time);
-        holder.bookName.setText(bean.bookName);
-        holder.timeHorizon.setText(bean.timeHorizon);
-        holder.readingSummary.setText(String.valueOf(bean.readSummaryPiece));
-        holder.readerResponsePiece.setText(String.valueOf(bean.readerResponsePiece));
-        holder.readerResponseNumber.setText(String.valueOf(bean.readerResponseNumber));
+        holder.bookName.setText(bean.name);
+        holder.timeHorizon.setText(bean.readTimeLong);
+        holder.readingSummary.setText(String.valueOf(bean.summaryCount));
+        holder.readerResponsePiece.setText(String.valueOf(bean.impressionCount));
+        holder.readerResponseNumber.setText(String.valueOf(bean.impressionWordsCount));
         holder.languageType.setText(bean.language);
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override

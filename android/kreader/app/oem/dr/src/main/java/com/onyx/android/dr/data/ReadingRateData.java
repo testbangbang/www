@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.request.cloud.CreateReadingRateRequest;
+import com.onyx.android.dr.request.cloud.RequestGetReadingRate;
 import com.onyx.android.dr.request.local.ReadingRateExport;
 import com.onyx.android.dr.request.local.ReadingRateInsert;
 import com.onyx.android.dr.request.local.ReadingRateQueryAll;
@@ -40,6 +42,14 @@ public class ReadingRateData {
 
     public void exportReadingRate(Context context, ReadingRateExport req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
+    }
+
+    public void createReadingRate(CreateReadingRateRequest req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void getReadingRate(RequestGetReadingRate req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 
     public ArrayList<String> getHtmlTitle(Context context) {

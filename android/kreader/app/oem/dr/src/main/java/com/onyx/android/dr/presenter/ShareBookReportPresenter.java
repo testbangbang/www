@@ -9,6 +9,7 @@ import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.request.cloud.RequestGetMyGroup;
 import com.onyx.android.dr.request.cloud.RequestGroupMember;
 import com.onyx.android.dr.request.cloud.ShareBookReportRequest;
+import com.onyx.android.dr.request.cloud.ShareInformalEssayRequest;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
@@ -65,6 +66,25 @@ public class ShareBookReportPresenter {
         requestBean.child = impressionId;
         final ShareBookReportRequest rq = new ShareBookReportRequest(library, requestBean);
         groupMemberData.shareImpression(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ShareBookReportResult result = rq.getResult();
+                if(result != null) {
+                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                            .getResources().getString(R.string.share_book_impression_success));
+                }else {
+                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                            .getResources().getString(R.string.share_book_impression_fail));
+                }
+            }
+        });
+    }
+
+    public void shareInformalEssay(String library, String[] childrenId) {
+        ShareBookReportRequestBean requestBean = new ShareBookReportRequestBean();
+        requestBean.setChildren(childrenId);
+        final ShareInformalEssayRequest rq = new ShareInformalEssayRequest(library, requestBean);
+        groupMemberData.shareInformalEssay(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 ShareBookReportResult result = rq.getResult();

@@ -15,6 +15,7 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.presenter.ShareBookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
@@ -65,6 +66,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     private ShareBookReportPresenter shareBookReportPresenter;
     private String impressionId;
     private String[] childrenId;
+    private int shareType;
 
     @Override
     protected Integer getLayoutId() {
@@ -94,6 +96,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     protected void initData() {
         impressionId = getIntent().getStringExtra(Constants.IMPRESSION_ID);
         childrenId = getIntent().getStringArrayExtra(Constants.CHILDREN_ID);
+        shareType = DRPreferenceManager.getShareType(this, -1);
         shareBookReportPresenter = new ShareBookReportPresenter(this);
         shareBookReportPresenter.getAllGroup();
     }
@@ -106,7 +109,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
 
     @Override
     public void setGroupData(List<GroupBean> groups) {
-        adapter.setData(groups, impressionId);
+        adapter.setData(groups, impressionId, childrenId);
     }
 
     @Override
@@ -142,7 +145,13 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
             return;
         }
         for (GroupBean bean : selectData) {
-            shareBookReportPresenter.shareImpression(bean.library, impressionId);
+            if (shareType == Constants.INFORMAL_ESSAY) {
+                shareBookReportPresenter.shareInformalEssay(bean.library, childrenId);
+            }else if (shareType == Constants.READING_RATE) {
+
+            }else if (shareType == Constants.READER_RESPONSE) {
+                shareBookReportPresenter.shareImpression(bean.library, impressionId);
+            }
         }
     }
 }

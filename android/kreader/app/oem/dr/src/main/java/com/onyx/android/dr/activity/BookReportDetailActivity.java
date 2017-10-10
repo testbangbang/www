@@ -27,6 +27,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.WebViewJSEvent;
@@ -108,6 +109,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private int screenHeight;
     private CreateBookReportResult createBookReportResult;
     private OnLongClickTouchListener listener;
+    private String[] childrenId = new String[100];
 
     @Override
     protected Integer getLayoutId() {
@@ -314,11 +316,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             return;
         }
         if (data != null) {
-//            ActivityManager.startShareBookReportActivity(this, data._id);
+            ActivityManager.startShareBookReportActivity(this, data._id, childrenId);
             return;
         }
         if (!StringUtils.isNullOrEmpty(bookId)) {
-//            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id);
+            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id, childrenId);
             return;
         }
     }

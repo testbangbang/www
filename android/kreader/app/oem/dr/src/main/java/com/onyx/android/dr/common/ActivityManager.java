@@ -85,11 +85,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startShareBookReportActivity(Context context, int type, String impressionId, String[] childrenId) {
+    public static void startShareBookReportActivity(Context context, String impressionId, String[] childrenId) {
         Intent intent = new Intent(context, ShareBookReportActivity.class);
         intent.putExtra(Constants.IMPRESSION_ID, impressionId);
         intent.putExtra(Constants.CHILDREN_ID, childrenId);
-        intent.putExtra(Constants.SHARE_TYPE, type);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -304,12 +303,13 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startShareToMemberActivity(Context context, String id, String name, String impressionId) {
+    public static void startShareToMemberActivity(Context context, String id, String name, String impressionId, String[] childrenId) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.GROUP_ID, id);
         intent.putExtra(Constants.GROUP_NAME, name);
         intent.putExtra(Constants.IMPRESSION_ID, impressionId);
+        intent.putExtra(Constants.CHILDREN_ID, childrenId);
         intent.setClass(context, ShareToMemberActivity.class);
         context.startActivity(intent);
     }

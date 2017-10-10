@@ -88,6 +88,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
         myNotesPresenter.loadMyThink(Constants.ACCOUNT_TYPE_MY_THINK);
         myNotesPresenter.loadMyCreation(Constants.ACCOUNT_TYPE_MY_CREATION);
         myNotesPresenter.getImpressionsList();
+        myNotesPresenter.getAllReadingRateData();
         initTitleData();
         initEvent();
     }

@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 
 import java.util.List;
 
@@ -24,11 +24,11 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-7-11.
  */
 public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalEssayAdapter.ViewHolder> {
-    private List<InformalEssayEntity> dataList;
+    private List<CreateInformalEssayBean> dataList;
     private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<InformalEssayEntity> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<CreateInformalEssayBean> dataList, List<Boolean> listCheck) {
         this.dataList = dataList;
         this.listCheck = listCheck;
     }
@@ -56,7 +56,7 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        InformalEssayEntity bean = dataList.get(position);
+        CreateInformalEssayBean bean = dataList.get(position);
         long currentTime = bean.currentTime;
         holder.content.setText(bean.content);
         holder.time.setText(TimeUtils.getDate(currentTime));

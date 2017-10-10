@@ -6,12 +6,12 @@ import android.support.annotation.NonNull;
 
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -113,7 +113,7 @@ public class ExportToHtmlUtils {
         }
     }
 
-    public static void exportInfromalEssayToHtml(Context context, List<String> htmlTitle, String title, List<InformalEssayEntity> dataList) {
+    public static void exportInfromalEssayToHtml(Context context, List<String> htmlTitle, String title, List<CreateInformalEssayBean> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < htmlTitle.size(); i++) {
@@ -124,7 +124,7 @@ public class ExportToHtmlUtils {
         sb.append("</tr>");
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
-            InformalEssayEntity bean = dataList.get(i);
+            CreateInformalEssayBean bean = dataList.get(i);
             long currentTime = bean.currentTime;
             sb.append("<th>");
             sb.append(TimeUtils.getDate(currentTime));
@@ -171,27 +171,27 @@ public class ExportToHtmlUtils {
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
             ReadingRateEntity bean = dataList.get(i);
-            String time = DateTimeUtil.formatDate(bean.time, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            String time = DateTimeUtil.formatDate(bean.recordDate, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
             sb.append("<th>");
             sb.append(time);
             sb.append("</th>");
             sb.append("<th>");
-            sb.append(bean.bookName);
+            sb.append(bean.name);
             sb.append("</th>");
             sb.append("<th>");
-            sb.append(bean.timeHorizon);
+            sb.append(bean.readTimeLong);
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.language);
             sb.append("</th>");
             sb.append("<th>");
-            sb.append(bean.readSummaryPiece);
+            sb.append(bean.summaryCount);
             sb.append("</th>");
             sb.append("<th>");
-            sb.append(bean.readerResponsePiece);
+            sb.append(bean.impressionCount);
             sb.append("</th>");
             sb.append("<th>");
-            sb.append(bean.readerResponseNumber);
+            sb.append(bean.impressionWordsCount);
             sb.append("</th>");
             sb.append("</tr>");
         }
