@@ -179,6 +179,13 @@ public class OnyxToolbar extends ViewGroup {
         currentExpandedView = view;
     }
 
+    public void dismissExpandedToolbar() {
+        if (currentExpandedView != null) {
+            dismissExpandedToolbar(currentExpandedView);
+            clearState();
+        }
+    }
+
     public void dismissExpandedToolbar(View view) {
         if (currentExpandedToolbar != null) {
             removeView(currentExpandedToolbar);
