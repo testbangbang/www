@@ -24,7 +24,7 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
-        final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(), readerDataHolder.isSideNoting());
+        final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(), true);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }
 
@@ -67,7 +67,7 @@ public class SideNoteHandler extends BaseHandler {
     @Override
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (e.getPointerCount() > 1) {
-            return false;
+            return true;
         }
 
         return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
