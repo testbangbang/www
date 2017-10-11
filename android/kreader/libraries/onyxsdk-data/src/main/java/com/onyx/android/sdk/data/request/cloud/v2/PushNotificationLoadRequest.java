@@ -44,6 +44,7 @@ public class PushNotificationLoadRequest extends BaseCloudRequest {
     private boolean useMap;
     private Map<String, PushNotification> idMap = new HashMap<>();
     private QueryArgs queryArgs = new QueryArgs();
+    private boolean clearBeforeSave = true;
 
     public PushNotificationLoadRequest(List<String> idList, boolean useMap) {
         this.idList = idList;
@@ -73,8 +74,12 @@ public class PushNotificationLoadRequest extends BaseCloudRequest {
         return idMap;
     }
 
-    QueryResult<PushNotification> getQueryResult() {
+    public QueryResult<PushNotification> getQueryResult() {
         return result;
+    }
+
+    public void setClearBeforeSave(boolean clear) {
+        this.clearBeforeSave = clear;
     }
 
     @Override
@@ -190,7 +195,9 @@ public class PushNotificationLoadRequest extends BaseCloudRequest {
     }
 
     private void clearPushNotification() {
-        clearPushNotification(PushNotification_Table.type.eq(getQueryType()));
+        if (clearBeforeSave) {
+            clearPushNotification(PushNotification_Table.type.eq(getQueryType()));
+        }
     }
 
     private void clearPushNotification(Condition... conditions) {

@@ -56,4 +56,25 @@
     <dimen name="dialog_application_checkbox_text_size">22sp</dimen>
     <dimen name="dialog_application_list_item_image_size">48dp</dimen>
     <dimen name="dialog_app_open_list_item_height">112dp</dimen>
+
+    <dimen name="page_indicator_layout_refresh_image_size">52dp</dimen>
+    <dimen name="page_indicator_layout_refresh_image_margin">25dp</dimen>
+    <dimen name="page_indicator_layout_text_size">26dp</dimen>
+    <dimen name="page_indicator_layout_page_text_margin_left_right">5dp</dimen>
+
+    <dimen name="dialog_markdown_view_max_height">700dp</dimen>
+
+    <dimen name="message_notification_layout_radio_group_layout_margin">12dp</dimen>
+    <dimen name="message_notification_layout_radio_button_margin">10dp</dimen>
+    <dimen name="message_notification_layout_radio_button_padding">8dp</dimen>
+    <dimen name="message_notification_layout_radio_button_text_size">28sp</dimen>
+    <dimen name="message_notification_refresh_item_margin_left_right">25dp</dimen>
+    <dimen name="message_notification_content_layout_margin">50dp</dimen>
+    <dimen name="message_notification_layout_unread_image_size">18dp</dimen>
+    <dimen name="message_notification_layout_unread_image_margin_top">-8dp</dimen>
+    <dimen name="message_notification_layout_unread_image_margin_right">-13dp</dimen>
+    <dimen name="message_notification_layout_text_size">25sp</dimen>
+    <dimen name="message_notification_layout_text_margin_left_right">8dp</dimen>
+    <dimen name="message_notification_layout_order_text_size">26sp</dimen>
+
 </resources>

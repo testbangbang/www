@@ -128,6 +128,7 @@
     <string name="cloud_content_import_failed">Import failed</string>
 
     <string name="main_item_user_info_title">User Info</string>
+    <string name="main_item_message">Message</string>
 
     <string name="online_library_id_error">Online library ID has exception</string>
     <string name="online_library_load_error">Online library got the exception</string>
@@ -194,4 +195,12 @@
     <string name="delete_shortcut_link">Delete Shortcut Link</string>
     <string name="shortcut_link_full">Shortcut Link\'s full</string>
     <string name="shortcut_link_exist">Shortcut Link exist</string>
+
+    <string name="order_number">Order</string>
+    <string name="title">Title</string>
+    <string name="date">Date</string>
+    <string name="fetch_message_fail">Fetching message fail</string>
+    <string name="message_content">Message Content</string>
+    <string name="message_notification">Notification</string>
+    <string name="message_vote">Vote Result</string>
 </resources>

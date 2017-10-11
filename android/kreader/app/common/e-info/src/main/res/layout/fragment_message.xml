@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RadioGroup
+            android:id="@+id/radio_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/message_notification_layout_radio_group_layout_margin"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/radio_notification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/message_notification_layout_radio_button_margin"
+                android:background="@drawable/radiobutton_background"
+                android:button="@null"
+                android:checked="true"
+                android:padding="@dimen/message_notification_layout_radio_button_padding"
+                android:text="@string/message_notification"
+                android:textColor="@drawable/radiobutton_textcolor"
+                android:textSize="@dimen/message_notification_layout_radio_button_text_size" />
+
+            <RadioButton
+                android:id="@+id/radio_vote_result"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/message_notification_layout_radio_button_margin"
+                android:background="@drawable/radiobutton_background"
+                android:button="@null"
+                android:padding="@dimen/message_notification_layout_radio_button_padding"
+                android:text="@string/message_vote"
+                android:textColor="@drawable/radiobutton_textcolor"
+                android:textSize="@dimen/message_notification_layout_radio_button_text_size" />
+
+        </RadioGroup>
+
+        <ImageView
+            android:id="@+id/refresh"
+            android:layout_width="@dimen/page_indicator_layout_refresh_image_size"
+            android:layout_height="@dimen/page_indicator_layout_refresh_image_size"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/message_notification_refresh_item_margin_left_right"
+            android:layout_marginRight="@dimen/message_notification_refresh_item_margin_left_right"
+            android:layout_toLeftOf="@+id/page_panel"
+            android:src="@drawable/refresh_background" />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/message_notification_content_layout_margin"
+        android:background="@drawable/background_white_rectangle_black_border"
+        android:orientation="vertical">
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/content_pageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+
+</LinearLayout>

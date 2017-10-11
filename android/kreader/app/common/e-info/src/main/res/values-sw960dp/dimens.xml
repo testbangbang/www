@@ -48,4 +48,11 @@
     <dimen name="book_list_item_text_margin_left">26dp</dimen>
     <dimen name="book_list_item_author_text_margin_left">8dp</dimen>
     <dimen name="book_list_item_padding">14dp</dimen>
+
+    <dimen name="message_notification_layout_unread_image_size">18dp</dimen>
+    <dimen name="message_notification_layout_unread_image_margin_top">-8dp</dimen>
+    <dimen name="message_notification_layout_unread_image_margin_right">-13dp</dimen>
+    <dimen name="message_notification_layout_text_size">25sp</dimen>
+    <dimen name="message_notification_layout_text_margin_left_right">8dp</dimen>
+    <dimen name="message_notification_layout_order_text_size">26sp</dimen>
 </resources>
