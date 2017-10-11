@@ -3,43 +3,53 @@
     android:layout_width="450dp"
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
-    android:padding="10dp"
     android:orientation="vertical" >
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <ImageButton
-            android:id="@+id/image_button_browse_file"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/ic_dict_pack_up"/>
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="vertical">
         <TextView
             android:id="@+id/text_view_recent_open_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/image_button_browse_file"
+            android:textSize="@dimen/dialog_tab_host_menu_button_text_size"
             android:text="@string/dialog_tab_host_menu_recent_files" />
         <TextView
             android:id="@+id/text_view_recent_open_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_toLeftOf="@id/image_button_browse_file"
             android:layout_below="@id/text_view_recent_open_title"
             android:textColor="@android:color/darker_gray"
             android:text="@string/dialog_tab_host_menu_recent_files_description"
             />
-    </RelativeLayout>
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/black" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_tab"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@android:color/black" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="10dp"
         android:orientation="vertical">
 
         <LinearLayout
@@ -47,19 +57,57 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button_double_link"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dialog_tab_host_menu_open_same_doc" />
+                android:layout_weight="1">
 
-            <Button
-                android:id="@+id/button_side_open"
+                <ImageButton
+                    android:id="@+id/image_button_double_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:src="@drawable/dialog_tab_host_menu_double_link_button_image_selector" />
+
+                <Button
+                    android:id="@+id/button_double_link"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/image_button_double_link"
+                    android:layout_alignTop="@id/image_button_double_link"
+                    android:layout_alignBottom="@id/image_button_double_link"
+                    android:background="@color/transparent"
+                    android:textColor="@drawable/dialog_tab_host_menu_button_text_selector"
+                    android:textSize="@dimen/dialog_tab_host_menu_button_text_size"
+                    android:text="@string/dialog_tab_host_menu_open_same_doc" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dialog_tab_host_menu_open_two_doc"/>
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/image_button_side_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:src="@drawable/dialog_tab_host_menu_side_open_button_image_selector"/>
+
+                <Button
+                    android:id="@+id/button_side_open"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/image_button_side_open"
+                    android:layout_alignTop="@id/image_button_side_open"
+                    android:layout_alignBottom="@id/image_button_side_open"
+                    android:background="@color/transparent"
+                    android:textColor="@drawable/dialog_tab_host_menu_button_text_selector"
+                    android:textSize="@dimen/dialog_tab_host_menu_button_text_size"
+                    android:text="@string/dialog_tab_host_menu_open_two_doc" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 
@@ -68,29 +116,80 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/button_open_doc"
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dialog_tab_host_menu_open_doc"/>
+                android:layout_weight="1">
 
-            <Button
-                android:id="@+id/button_side_switch"
+                <ImageButton
+                    android:id="@+id/image_button_open_doc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:src="@drawable/dialog_tab_host_menu_open_doc_button_image_selector"/>
+
+                <Button
+                    android:id="@+id/button_open_doc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/image_button_open_doc"
+                    android:layout_alignTop="@id/image_button_open_doc"
+                    android:layout_alignBottom="@id/image_button_open_doc"
+                    android:background="@color/transparent"
+                    android:textColor="@drawable/dialog_tab_host_menu_button_text_selector"
+                    android:textSize="@dimen/dialog_tab_host_menu_button_text_size"
+                    android:text="@string/dialog_tab_host_menu_open_doc" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/dialog_tab_host_menu_switch_side"/>
+                android:layout_weight="1">
+
+                <ImageButton
+                    android:id="@+id/image_button_side_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transparent"
+                    android:src="@drawable/dialog_tab_host_menu_side_switch_button_image_selector"/>
+
+                <Button
+                    android:id="@+id/button_side_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/image_button_side_switch"
+                    android:layout_alignTop="@id/image_button_side_switch"
+                    android:layout_alignBottom="@id/image_button_side_switch"
+                    android:background="@color/transparent"
+                    android:textColor="@drawable/dialog_tab_host_menu_button_text_selector"
+                    android:textSize="@dimen/dialog_tab_host_menu_button_text_size"
+                    android:text="@string/dialog_tab_host_menu_switch_side" />
+
+            </RelativeLayout>
 
         </LinearLayout>
 
-        <Button
-            android:id="@+id/button_close"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/dialog_tab_host_menu_quit_side_reading"/>
-
     </LinearLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:background="@android:color/black" />
+
+    <Button
+        android:id="@+id/button_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="10dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:background="@android:color/black"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/dialog_tab_host_menu_button_text_size"
+        android:text="@string/dialog_tab_host_menu_quit_side_reading"/>
 
 </LinearLayout>

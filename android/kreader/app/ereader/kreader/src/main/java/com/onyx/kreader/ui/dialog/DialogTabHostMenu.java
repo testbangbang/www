@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.onyx.android.sdk.utils.FileUtils;
@@ -58,10 +59,13 @@ public class DialogTabHostMenu extends DialogBase {
 
                     disableButtons();
                     if (selectedFiles.size() == 1) {
+                        imageButtonDoubleLink.setEnabled(true);
                         buttonDoubleLink.setEnabled(true);
+                        imageButtonOpenDoc.setEnabled(true);
                         buttonOpenDoc.setEnabled(true);
                     }
                     if (selectedFiles.size() == 2) {
+                        imageButtonSideOpen.setEnabled(true);
                         buttonSideOpen.setEnabled(true);
                     }
                 }
@@ -74,12 +78,20 @@ public class DialogTabHostMenu extends DialogBase {
         }
     }
 
+    @Bind(R.id.image_button_double_link)
+    ImageButton imageButtonDoubleLink;
     @Bind(R.id.button_double_link)
     Button buttonDoubleLink;
+    @Bind(R.id.image_button_side_open)
+    ImageButton imageButtonSideOpen;
     @Bind(R.id.button_side_open)
     Button buttonSideOpen;
+    @Bind(R.id.image_button_open_doc)
+    ImageButton imageButtonOpenDoc;
     @Bind(R.id.button_open_doc)
     Button buttonOpenDoc;
+    @Bind(R.id.image_button_side_switch)
+    ImageButton imageButtonSideSwitch;
     @Bind(R.id.button_side_switch)
     Button buttonSideSwitch;
     @Bind(R.id.button_close)
@@ -169,11 +181,15 @@ public class DialogTabHostMenu extends DialogBase {
     }
 
     private void disableButtons() {
+        imageButtonDoubleLink.setEnabled(false);
         buttonDoubleLink.setEnabled(false);
+        imageButtonSideOpen.setEnabled(false);
         buttonSideOpen.setEnabled(false);
+        imageButtonOpenDoc.setEnabled(false);
         buttonOpenDoc.setEnabled(false);
 
         if (!isSideReading) {
+            imageButtonSideSwitch.setEnabled(false);
             buttonSideSwitch.setEnabled(false);
             buttonClose.setEnabled(false);
         }

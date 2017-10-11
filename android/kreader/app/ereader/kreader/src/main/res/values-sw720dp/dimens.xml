@@ -46,4 +46,5 @@
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
     <dimen name="dialog_text_style_view_page_width">620dp</dimen>
+    <dimen name="dialog_tab_host_menu_button_text_size">18sp</dimen>
 </resources>
