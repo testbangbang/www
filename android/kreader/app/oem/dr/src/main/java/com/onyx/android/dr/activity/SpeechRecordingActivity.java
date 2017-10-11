@@ -74,6 +74,8 @@ public class SpeechRecordingActivity extends BaseActivity
     Button cancel;
     @Bind(R.id.speech_recording_activity_save_container)
     LinearLayout saveContainer;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     private static final String RECORDER_STATE_KEY = "recorder_state";
     private static final String SAMPLE_INTERRUPTED_KEY = "sample_interrupted";
     private static final String MAX_FILE_SIZE_KEY = "max_file_size";
@@ -195,7 +197,7 @@ public class SpeechRecordingActivity extends BaseActivity
         sendBroadcast(intent);
     }
 
-    @OnClick({R.id.image_view_back,
+    @OnClick({R.id.menu_back,
             R.id.speech_recording_activity_record_playback,
             R.id.speech_recording_activity_stop,
             R.id.speech_recording_activity_setting,
@@ -232,6 +234,9 @@ public class SpeechRecordingActivity extends BaseActivity
                 recorder.delete();
                 saveContainer.setVisibility(View.GONE);
                 CommonNotices.showMessage(this, getString(R.string.please_record_again));
+                break;
+            case R.id.menu_back:
+                finish();
                 break;
         }
     }

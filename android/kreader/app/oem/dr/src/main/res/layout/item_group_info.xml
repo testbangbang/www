@@ -12,7 +12,7 @@
         <TextView
             android:id="@+id/info_item_group_name"
             style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
+            android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
             android:layout_weight="3"
             android:text="@string/join_group_name" />
 
@@ -30,7 +30,8 @@
         <LinearLayout
             android:layout_width="@dimen/info_item_group_join_container_width"
             android:layout_height="match_parent"
-            android:layout_marginLeft="1dp">
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="@dimen/new_word_item_order_number_margin_left">
 
             <TextView
                 android:id="@+id/info_item_group_join"

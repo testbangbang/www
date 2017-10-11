@@ -71,6 +71,12 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
                 }
             }
         });
+        holder.wordNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance());
+            }
+        });
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,12 +89,6 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
                         onItemClickListener.setOnItemClick(position, true);
                     }
                 }
-            }
-        });
-        holder.wordNumber.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance());
             }
         });
     }

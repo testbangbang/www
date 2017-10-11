@@ -183,7 +183,7 @@ public interface ContentService {
     Call<ShareBookReportResult> shareImpression(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
 
     @POST("/api/librarys/{id}/informalEssay")
-    Call<ShareBookReportResult> shareInformalEssay(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
+    Call<List<ShareBookReportResult>> shareInformalEssay(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
 
     @POST("/api/InformalEssays")
     Call<CreateInformalEssayBean> uploadInformalEssay(@Body InformalEssayBean param);

@@ -4,14 +4,17 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SpeechRecordingAdapter;
+import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.event.SearchKeywordEvent;
 import com.onyx.android.dr.interfaces.SpeechRecordingView;
 import com.onyx.android.dr.presenter.SpeechRecordingPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -36,8 +39,12 @@ public class SpeechRecordingFragment extends BaseFragment implements SpeechRecor
     private DividerItemDecoration dividerItemDecoration;
     private SpeechRecordingAdapter speechRecordingAdapter;
     private SpeechRecordingPresenter presenter;
-    private List<InformalEssayEntity> informalEssayList;
+    private List<CreateInformalEssayBean> informalEssayList;
     private int jumpSource = 0;
+    private String offset = "1";
+    private String limit = "200";
+    private String sortBy = "createdAt";
+    private String order = "-1";
 
     @Override
     protected void initListener() {
@@ -70,21 +77,23 @@ public class SpeechRecordingFragment extends BaseFragment implements SpeechRecor
 
     private void loadInformalEssay() {
         presenter = new SpeechRecordingPresenter(getActivity(), this);
-        presenter.getAllInformalEssayData();
+        MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
+        String json = JSON.toJSON(bean).toString();
+        presenter.getInformalEssay(json);
         informalEssayList = new ArrayList<>();
     }
 
     @Override
-    public void setInformalEssayData(List<InformalEssayEntity> dataList, ArrayList<Boolean> checkList) {
+    public void setInformalEssayData(List<CreateInformalEssayBean> dataList, ArrayList<Boolean> checkList) {
         showData(dataList);
     }
 
     @Override
     public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
-        showData(dataList);
+//        showData(dataList);
     }
 
-    private void showData(List<InformalEssayEntity> dataList) {
+    private void showData(List<CreateInformalEssayBean> dataList) {
         if (dataList != null && !dataList.isEmpty()) {
             allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
             informalEssayList.clear();

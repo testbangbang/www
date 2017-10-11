@@ -106,6 +106,22 @@ public class TimeUtils {
         return false;
     }
 
+    public static boolean compareDateAndTime(String DATE1, String DATE2) {
+        DateFormat df = new SimpleDateFormat(HOUR_AND_MINUTE);
+        try {
+            Date dt1 = df.parse(DATE1);
+            Date dt2 = df.parse(DATE2);
+            if (dt1.getTime() < dt2.getTime()) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return false;
+    }
+
     public static long getStartDateMillisecond(String startDate) {
         DateFormat dateFormat = new SimpleDateFormat(DATA_TIME_FORMAT);
         try {
@@ -133,6 +149,18 @@ public class TimeUtils {
     public static String getDateString(int year, int month, int day) {
         String date;
         date = year + "-" + month + "-" + day;
+        return date;
+    }
+
+    public static String getDateAndTimeString(int year, int month, int day, String time) {
+        String date;
+        date = year + "." + month + "." + day + " " +  time;
+        return date;
+    }
+
+    public static String getSecondDateAndTimeString(int year, int month, int day, String time) {
+        String date;
+        date = year + "-" + month + "-" + day + " " +  time;
         return date;
     }
 

@@ -28,19 +28,22 @@ import java.util.List;
 public class TimePickerDialog {
     private Context context;
     private AlertDialog.Builder alertDialog;
-    private int hour, minute;
     private TimePickerDialogInterface timePickerDialogInterface;
     private TimePicker timePicker;
     private TimePicker startTimePicker;
     private TimePicker endTimePicker;
     private DatePicker datePicker;
     private int tag = 0;
-    private int year, day, month;
     private String timeHorizon;
+    private String dateAndTimeHorizon;
     private DatePicker startDatePicker;
     private DatePicker endDatePicker;
     private long startDateMillisecond;
     private long endDateMillisecond;
+    private TimePicker startTimePickerAll;
+    private DatePicker startDatePickerAll;
+    private TimePicker endTimePickerAll;
+    private DatePicker endDatePickerAll;
 
     public TimePickerDialog(Context context) {
         super();
@@ -77,13 +80,20 @@ public class TimePickerDialog {
     private View initDateAndTimePicker() {
         View inflate = LayoutInflater.from(context).inflate(
                 R.layout.dialog_date_and_time_picker, null);
-        timePicker = (TimePicker) inflate
-                .findViewById(R.id.time_picker);
-        datePicker = (DatePicker) inflate
-                .findViewById(R.id.date_picker);
-        timePicker.setIs24HourView(true);
-        resizePikcer(timePicker);
-        resizePikcer(datePicker);
+        startTimePickerAll = (TimePicker) inflate
+                .findViewById(R.id.date_and_time_dialog_start_time_picker);
+        startDatePickerAll = (DatePicker) inflate
+                .findViewById(R.id.date_and_time_dialog_start_date_picker);
+        endTimePickerAll = (TimePicker) inflate
+                .findViewById(R.id.date_and_time_dialog_end_time_picker);
+        endDatePickerAll = (DatePicker) inflate
+                .findViewById(R.id.date_and_time_dialog_end_date_picker);
+        startTimePickerAll.setIs24HourView(true);
+        endTimePickerAll.setIs24HourView(true);
+        resizePikcer(startTimePickerAll);
+        resizePikcer(endTimePickerAll);
+        resizePikcer(startDatePickerAll);
+        resizePikcer(endDatePickerAll);
         return inflate;
     }
 
@@ -174,11 +184,28 @@ public class TimePickerDialog {
     }
 
     private void getDateAndPickerValue() {
-        year = datePicker.getYear();
-        month = datePicker.getMonth();
-        day = datePicker.getDayOfMonth();
-        hour = timePicker.getCurrentHour();
-        minute = timePicker.getCurrentMinute();
+        int startYear = startDatePickerAll.getYear();
+        int startMonth = startDatePickerAll.getMonth() + 1;
+        int startDay = startDatePickerAll.getDayOfMonth();
+        int endYear = endDatePickerAll.getYear();
+        int endMonth = endDatePickerAll.getMonth() + 1;
+        int endDay = endDatePickerAll.getDayOfMonth();
+        int startHour = startTimePickerAll.getCurrentHour();
+        int startMinute = startTimePickerAll.getCurrentMinute();
+        int endHour = endTimePickerAll.getCurrentHour();
+        int endMinute = endTimePickerAll.getCurrentMinute();
+        String startTime = Utils.getTimeAndMinuteSecond(startHour, startMinute);
+        String endTime = Utils.getTimeAndMinuteSecond(endHour, endMinute);
+        String startDateString = TimeUtils.getDateAndTimeString(startYear, startMonth, startDay, startTime);
+        String endDateString = TimeUtils.getDateAndTimeString(endYear, endMonth, endDay, endTime);
+        String secondStartDateString = TimeUtils.getSecondDateAndTimeString(startYear, startMonth, startDay, startTime);
+        String secondEndDateString = TimeUtils.getSecondDateAndTimeString(endYear, endMonth, endDay, endTime);
+        boolean tag = TimeUtils.compareDateAndTime(secondStartDateString, secondEndDateString);
+        if (tag) {
+            dateAndTimeHorizon = Utils.getDateAndTimeQuantum(startDateString, endDateString);
+        }else{
+            CommonNotices.showMessage(context, context.getString(R.string.end_date_must_more_than_start_date));
+        }
     }
 
     private void getTimePickerValue() {
@@ -218,28 +245,12 @@ public class TimePickerDialog {
         void positiveListener();
     }
 
-    public int getYear() {
-        return year;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
-    public int getMonth() {
-        return month + 1;
-    }
-
-    public int getMinute() {
-        return minute;
-    }
-
-    public int getHour() {
-        return hour;
-    }
-
     public String getTimeHorizon() {
         return timeHorizon;
+    }
+
+    public String getDateAndTimeHorizon() {
+        return dateAndTimeHorizon;
     }
 
     public long getStartDateMillisecond() {

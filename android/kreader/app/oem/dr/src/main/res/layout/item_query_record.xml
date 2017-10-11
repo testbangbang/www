@@ -13,7 +13,7 @@
         <TextView
             android:id="@+id/query_record_item_keyword"
             style="@style/good_sentence_item_textview"
-            android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
             android:layout_weight="1"
             android:text="@string/memorandum_activity_time" />
 
@@ -32,6 +32,7 @@
             android:id="@+id/query_record_item_paraphrase"
             style="@style/good_sentence_item_textview"
             android:layout_marginLeft="@dimen/title_interval_margin_left"
+            android:layout_marginRight="@dimen/title_interval_margin_left"
             android:layout_weight="4"
             android:ellipsize="end"
             android:text="@string/memorandum_activity_matter" />

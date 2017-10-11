@@ -43,7 +43,7 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     ImageView iconFour;
     private AddMemorandumPresenter addMemorandumPresenter;
     private TimePickerDialog timePickerDialog;
-    private String timeHorizon;
+    private String dateAndTimeHorizon;
 
     @Override
     protected Integer getLayoutId() {
@@ -70,8 +70,8 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
         addMemorandumPresenter = new AddMemorandumPresenter(getApplicationContext(), this);
         timePickerDialog = new TimePickerDialog(this);
     }
-
     private void setTitleData() {
+
         iconFour.setVisibility(View.VISIBLE);
         iconFour.setImageResource(R.drawable.ic_reader_note_diary_save);
         image.setImageResource(R.drawable.memorandum);
@@ -101,19 +101,19 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
                 insertData();
                 break;
             case R.id.add_memorandum_activity_start_time:
-                timePickerDialog.showTimePickerDialog();
+                timePickerDialog.showDateAndTimePickerDialog();
                 break;
         }
     }
 
     @Override
     public void positiveListener() {
-        timeHorizon = timePickerDialog.getTimeHorizon();
+        dateAndTimeHorizon = timePickerDialog.getDateAndTimeHorizon();
         EventBus.getDefault().post(new HourEvent());
     }
 
     private void insertData() {
-        if (StringUtils.isNullOrEmpty(timeHorizon)) {
+        if (StringUtils.isNullOrEmpty(dateAndTimeHorizon)) {
             CommonNotices.showMessage(this, getString(R.string.select_time));
             return;
         }
@@ -123,7 +123,7 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
             return;
         }
         MemorandumBean bean = new MemorandumBean();
-        bean.setTimeQuantum(timeHorizon);
+        bean.setTimeQuantum(dateAndTimeHorizon);
         bean.setMatter(content);
         addMemorandumPresenter.insertMemorandum(bean);
         finish();
@@ -131,10 +131,10 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHourEvent(HourEvent event) {
-        if (StringUtils.isNullOrEmpty(timeHorizon)) {
+        if (StringUtils.isNullOrEmpty(dateAndTimeHorizon)) {
             time.setText(getString(R.string.select_time));
         } else {
-            time.setText(timeHorizon);
+            time.setText(dateAndTimeHorizon);
         }
     }
 

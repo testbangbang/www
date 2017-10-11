@@ -42,9 +42,11 @@
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="2"
+                android:visibility="gone"
                 android:text="@string/memorandum_activity_time" />
 
-            <View style="@style/vertical_view" />
+            <View style="@style/vertical_view"
+                android:visibility="gone" />
 
             <TextView
                 style="@style/good_sentence_activity_textview"
@@ -57,7 +59,7 @@
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
-                android:layout_weight="4"
+                android:layout_weight="2"
                 android:text="@string/memorandum_activity_matter" />
 
             <View style="@style/vertical_view" />

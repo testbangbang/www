@@ -7,6 +7,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/title_interval_margin_left"
         android:layout_weight="2"
         android:orientation="horizontal">
 
@@ -79,9 +80,9 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
+            android:ellipsize="end"
             android:gravity="center"
             android:maxLines="3"
-            android:ellipsize="end"
             android:textSize="@dimen/level_two_heading_font" />
 
         <View
@@ -116,6 +117,7 @@
         android:layout_height="match_parent"
         android:layout_weight="3"
         android:gravity="center"
+        android:layout_marginRight="@dimen/book_report_list_item_bring_out_margin_right"
         android:orientation="horizontal">
 
         <TextView

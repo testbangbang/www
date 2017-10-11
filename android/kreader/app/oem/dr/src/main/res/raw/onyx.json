@@ -30,7 +30,8 @@
     "com.onyx.test",
     "com.onyx.appmarket",
     "com.android.vending",
-    "com.iflytek.speechcloud"
+    "com.iflytek.speechcloud",
+    "com.onyx.android.note"
   ],
   "test_apps": [
     "com.onyx.test",

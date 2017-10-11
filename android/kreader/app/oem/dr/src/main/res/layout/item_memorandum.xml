@@ -15,15 +15,17 @@
             style="@style/good_sentence_item_textview"
             android:layout_marginLeft="@dimen/title_interval_margin_left"
             android:layout_weight="2"
+            android:visibility="gone"
             android:text="@string/memorandum_activity_time" />
 
-        <View style="@style/good_sentence_item_view" />
+        <View style="@style/good_sentence_item_view"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/memorandum_item_time_quantum"
             style="@style/good_sentence_item_textview"
-            android:layout_marginLeft="@dimen/title_interval_margin_left"
             android:layout_weight="2"
+            android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
             android:text="@string/memorandum_activity_time_quantum" />
 
         <View style="@style/good_sentence_item_view" />
@@ -32,13 +34,14 @@
             android:id="@+id/memorandum_item_matter"
             style="@style/good_sentence_item_textview"
             android:layout_marginLeft="@dimen/title_interval_margin_left"
-            android:layout_weight="4"
+            android:layout_weight="2"
             android:text="@string/memorandum_activity_matter" />
 
         <View style="@style/good_sentence_item_view" />
 
         <LinearLayout
             android:layout_width="@dimen/new_word_activity_all_check_width"
+            android:layout_marginRight="@dimen/new_word_item_order_number_margin_left"
             android:layout_height="match_parent">
 
             <CheckBox
