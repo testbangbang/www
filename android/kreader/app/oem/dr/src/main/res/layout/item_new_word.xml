@@ -14,6 +14,7 @@
             android:id="@+id/new_word_item_order_number"
             style="@style/good_sentence_item_textview"
             android:layout_weight="1"
+            android:layout_marginLeft="@dimen/new_word_order_number_margin_left"
             android:text="@string/order_number" />
 
         <View style="@style/good_sentence_item_view" />
@@ -65,6 +66,7 @@
 
         <LinearLayout
             android:layout_width="@dimen/new_word_activity_all_check_width"
+            android:layout_marginRight="@dimen/new_word_item_order_number_margin_left"
             android:layout_height="match_parent">
 
             <CheckBox

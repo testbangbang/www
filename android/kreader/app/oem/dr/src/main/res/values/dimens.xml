@@ -467,5 +467,10 @@
     <dimen name="activity_home_app_item_download_button_padding">8dp</dimen>
     <dimen name="activity_home_app_item_download_button_text_size">23sp</dimen>
     <dimen name="reading_rate_dialog_spinner_margin_right">5dp</dimen>
+    <dimen name="new_word_item_order_number_margin_left">2dp</dimen>
+    <dimen name="infromal_essay_item_time_margin_left">3dp</dimen>
+    <dimen name="new_word_order_number_margin_left">3dp</dimen>
+    <dimen name="item_speech_recording_start_speech_margin_right">4dp</dimen>
+    <dimen name="book_report_list_item_bring_out_margin_right">-3dp</dimen>
     <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
 </resources>

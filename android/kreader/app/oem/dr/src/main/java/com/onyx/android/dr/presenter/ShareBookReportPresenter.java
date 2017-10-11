@@ -87,8 +87,8 @@ public class ShareBookReportPresenter {
         groupMemberData.shareInformalEssay(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                ShareBookReportResult result = rq.getResult();
-                if(result != null) {
+                List<ShareBookReportResult> result = rq.getResult();
+                if(result != null && result.size() > 0) {
                     CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
                             .getResources().getString(R.string.share_book_impression_success));
                 }else {

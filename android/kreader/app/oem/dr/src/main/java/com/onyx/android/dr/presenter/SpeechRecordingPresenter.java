@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.onyx.android.dr.data.InformalEssayData;
 import com.onyx.android.dr.interfaces.SpeechRecordingView;
+import com.onyx.android.dr.request.cloud.RequestGetInformalEssay;
 import com.onyx.android.dr.request.local.InformalEssayQueryAll;
 import com.onyx.android.dr.request.local.InformalEssayQueryByTitle;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -29,6 +30,16 @@ public class SpeechRecordingPresenter {
         infromalEssayData.getAllInformalEssay(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+            }
+        });
+    }
+
+    public void getInformalEssay(String param) {
+        final RequestGetInformalEssay req = new RequestGetInformalEssay(infromalEssayData, param);
+        infromalEssayData.getInformalEssay(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                speechRecordingView.setInformalEssayData(req.getGroup(), req.getCheckList());
             }
         });
     }

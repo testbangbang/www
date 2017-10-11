@@ -699,6 +699,10 @@ public class Utils {
         return hour + "-" + minute;
     }
 
+    public static String getDateAndTimeQuantum(String date1, String date2) {
+        return date1 + "--" + date2;
+    }
+
     public static List<DictTypeBean> getDictName(String catalogue) {
         List<File> files = getDictionaryFileList(catalogue);
         List<DictTypeBean> list = new ArrayList<DictTypeBean>();

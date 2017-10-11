@@ -9,8 +9,8 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.util.TimeUtils;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
 import java.util.List;
@@ -22,10 +22,10 @@ import butterknife.ButterKnife;
  * Created by zhouzhiming on 17-7-11.
  */
 public class SpeechRecordingAdapter extends PageRecyclerView.PageAdapter<SpeechRecordingAdapter.ViewHolder> {
-    private List<InformalEssayEntity> dataList;
+    private List<CreateInformalEssayBean> dataList;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<InformalEssayEntity> dataList) {
+    public void setDataList(List<CreateInformalEssayBean> dataList) {
         this.dataList = dataList;
     }
 
@@ -52,7 +52,7 @@ public class SpeechRecordingAdapter extends PageRecyclerView.PageAdapter<SpeechR
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        InformalEssayEntity bean = dataList.get(position);
+        CreateInformalEssayBean bean = dataList.get(position);
         long currentTime = bean.currentTime;
         holder.content.setText(bean.content);
         holder.time.setText(TimeUtils.getDate(currentTime));
@@ -61,7 +61,7 @@ public class SpeechRecordingAdapter extends PageRecyclerView.PageAdapter<SpeechR
         holder.startSpeech.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                InformalEssayEntity informalEssayEntity = dataList.get(position);
+                CreateInformalEssayBean informalEssayEntity = dataList.get(position);
                 ActivityManager.startSpeechRecordingActivity(DRApplication.getInstance(), informalEssayEntity.title, informalEssayEntity.content);
             }
         });

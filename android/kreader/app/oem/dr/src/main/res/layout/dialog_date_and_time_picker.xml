@@ -5,15 +5,48 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <DatePicker
-        android:id="@+id/date_picker"
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:calendarViewShown="false" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
-    <TimePicker
-        android:id="@+id/time_picker"
+        <TextView
+            style="@style/text_view_style"
+            android:text="@string/start_time" />
+
+        <DatePicker
+            android:id="@+id/date_and_time_dialog_start_date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false" />
+
+        <TimePicker
+            android:id="@+id/date_and_time_dialog_start_time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/text_view_style"
+            android:text="@string/end_time" />
+
+        <DatePicker
+            android:id="@+id/date_and_time_dialog_end_date_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:calendarViewShown="false" />
+
+        <TimePicker
+            android:id="@+id/date_and_time_dialog_end_time_picker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 </LinearLayout>
 

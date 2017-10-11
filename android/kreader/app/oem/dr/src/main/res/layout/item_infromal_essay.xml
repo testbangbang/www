@@ -13,8 +13,8 @@
         <TextView
             android:id="@+id/infromal_essay_item_time"
             style="@style/good_sentence_item_textview"
-            android:layout_marginLeft="@dimen/title_interval_margin_left"
             android:layout_weight="2"
+            android:layout_marginLeft="@dimen/infromal_essay_item_time_margin_left"
             android:text="@string/infromal_essay_activity_time" />
 
         <View style="@style/good_sentence_item_view" />
@@ -33,6 +33,7 @@
             style="@style/good_sentence_item_textview"
             android:layout_marginLeft="1dp"
             android:layout_weight="2"
+            android:clickable="true"
             android:text="@string/infromal_essay_activity_word_number" />
 
         <View style="@style/good_sentence_item_view" />
@@ -48,6 +49,7 @@
 
         <LinearLayout
             android:layout_width="@dimen/new_word_activity_all_check_width"
+            android:layout_marginRight="@dimen/new_word_item_order_number_margin_left"
             android:layout_height="match_parent">
 
             <CheckBox

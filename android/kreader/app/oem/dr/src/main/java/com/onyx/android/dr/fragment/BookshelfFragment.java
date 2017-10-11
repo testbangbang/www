@@ -71,6 +71,8 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
     TextView titleBarRightMenu;
     @Bind(R.id.title_bar_right_icon_one)
     ImageView share;
+    @Bind(R.id.title_bar_right_select_time)
+    TextView goBookMall;
     @Bind(R.id.bookshelf_book_search)
     ImageView bookshelfBookSearch;
     @Bind(R.id.bookshelf_type_toggle)
@@ -143,7 +145,9 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         listAdapter.setCanChecked(true);
         titleBar = rootView.findViewById(R.id.bookshelf_title_bar);
         share.setImageResource(R.drawable.ic_reader_share);
+        goBookMall.setText(getString(R.string.enter_bookstore));
         share.setVisibility(View.VISIBLE);
+        goBookMall.setVisibility(View.VISIBLE);
         image.setVisibility(View.GONE);
     }
 
@@ -224,7 +228,11 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         }
     }
 
-    @OnClick({R.id.menu_back, R.id.bookshelf_book_search, R.id.bookshelf_type_toggle, R.id.title_bar_right_icon_one})
+    @OnClick({R.id.menu_back,
+            R.id.bookshelf_book_search,
+            R.id.bookshelf_type_toggle,
+            R.id.title_bar_right_select_time,
+            R.id.title_bar_right_icon_one})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -238,6 +246,9 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
                 break;
             case R.id.title_bar_right_icon_one:
                 listAdapter.getSelectedMetadata();
+                break;
+            case R.id.title_bar_right_select_time:
+                ActivityManager.startEBookStoreActivity(getActivity());
                 break;
         }
     }

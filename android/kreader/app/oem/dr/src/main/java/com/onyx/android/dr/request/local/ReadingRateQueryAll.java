@@ -32,6 +32,8 @@ public class ReadingRateQueryAll extends BaseDataRequest {
     private List<ReadingRateBean> readingRateList = new ArrayList<>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
     private long divisor = 1000*60;
+    private String bookName = "";
+    private String language = "";
 
     public ReadingRateQueryAll(ReadingRateData readingRateData) {
         this.readingRateData = readingRateData;
@@ -61,10 +63,15 @@ public class ReadingRateQueryAll extends BaseDataRequest {
                 readTimes += statisticsModel.getDurationTime();
             }
             Metadata metadata = getBookName(onyxStatisticsModel.getMd5short());
-            long readMinute = readTimes/divisor;
-            String bookName = metadata.getTitle();
-            int readSummaryPiece = getReadSummaryPiece(bookName);
             CloudMetadata typeByBookName = getTypeByBookName(bookName);
+            long readMinute = readTimes/divisor;
+            if (metadata != null) {
+                bookName = metadata.getTitle();
+            }
+            if (typeByBookName != null) {
+                language = typeByBookName.getLanguage();
+            }
+            int readSummaryPiece = getReadSummaryPiece(bookName);
             Integer readerResponsePiece = getReaderResponsePiece(bookName);
             Integer readerResponseWordNumber = getReaderResponseWordNumber(bookName);
             ReadingRateBean bean = new ReadingRateBean();
@@ -73,7 +80,7 @@ public class ReadingRateQueryAll extends BaseDataRequest {
             bean.setRecordDate(onyxStatisticsModel.getEventTime());
             bean.setReadTimeLong(String.valueOf(readMinute));
             bean.setSummaryCount(readSummaryPiece);
-            bean.setLanguage(typeByBookName.getLanguage());
+            bean.setLanguage(language);
             bean.setImpressionCount(readerResponsePiece);
             bean.setImpressionWordsCount(readerResponseWordNumber);
             readingRateList.add(bean);
