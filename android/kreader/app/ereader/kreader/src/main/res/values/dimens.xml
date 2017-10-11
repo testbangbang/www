@@ -104,4 +104,5 @@
     <dimen name="side_scribble_item_img_size">44dp</dimen>
     <dimen name="side_scribble_checkbox_size">14dp</dimen>
     <dimen name="divider_line_size">2dp</dimen>
+    <dimen name="dialog_tab_host_menu_button_text_size">18sp</dimen>
 </resources>
