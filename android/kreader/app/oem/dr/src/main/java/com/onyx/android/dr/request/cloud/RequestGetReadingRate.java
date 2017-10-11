@@ -1,7 +1,6 @@
 package com.onyx.android.dr.request.cloud;
 
 import com.onyx.android.dr.data.ReadingRateData;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetInformalEssayBean;
@@ -51,25 +50,10 @@ public class RequestGetReadingRate extends AutoNetWorkConnectionBaseCloudRequest
                 listCheck.clear();
                 for (int i = 0; i < dataList.size(); i++) {
                     listCheck.add(false);
-                    insertInformalEssay(dataList.get(i));
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void insertInformalEssay(CreateInformalEssayBean bean) {
-        InformalEssayEntity entity = new InformalEssayEntity();
-        entity.currentTime = bean.currentTime;
-        entity.title = bean.title;
-        entity.wordNumber = bean.wordNumber;
-        entity.content = bean.content;
-//        final ReadingRateInsert req = new ReadingRateInsert(entity);
-//        readingRateData.insertReadingRate(DRApplication.getInstance(), req, new BaseCallback() {
-//            @Override
-//            public void done(BaseRequest request, Throwable e) {
-//            }
-//        });
     }
 }
