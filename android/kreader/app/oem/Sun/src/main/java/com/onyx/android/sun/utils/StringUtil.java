@@ -1,0 +1,31 @@
+package com.onyx.android.sun.utils;
+
+import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
+
+import java.util.HashMap;
+import java.util.Map;
+
+/**
+ * Created by li on 2017/10/11.
+ */
+
+public class StringUtil {
+    private static Map<String, String> homeworkMap = new HashMap<String, String>() {
+        {
+            put("task", SunApplication.getInstence().getResources().getString(R.string.homework_course_exercise));
+            put("exam", SunApplication.getInstence().getResources().getString(R.string.homework_course_test_paper));
+        }
+    };
+
+    public static String transitionHomeworkType(String str) {
+        if (!homeworkMap.containsKey(str)) {
+            return str;
+        }
+        return homeworkMap.get(str);
+    }
+
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.equals("");
+    }
+}

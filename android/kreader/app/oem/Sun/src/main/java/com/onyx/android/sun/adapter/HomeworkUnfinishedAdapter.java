@@ -8,25 +8,18 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
+import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.databinding.HomeworkItemBinding;
 import com.onyx.android.sun.view.PageRecyclerView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by li on 2017/9/30.
  */
 
-public class HomeworkAdapter extends PageRecyclerView.PageAdapter {
-    private final List<String> data;
-
-    public HomeworkAdapter() {
-        data = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            data.add("1." + i);
-        }
-    }
+public class HomeworkUnfinishedAdapter extends PageRecyclerView.PageAdapter {
+    private List<ContentBean> data;
 
     @Override
     public int getRowCount() {
@@ -65,6 +58,11 @@ public class HomeworkAdapter extends PageRecyclerView.PageAdapter {
         if (tag == null) {
             return;
         }
+    }
+
+    public void setData(List<ContentBean> data) {
+        this.data = data;
+        notifyDataSetChanged();
     }
 
     static class HomeworkViewHolder extends RecyclerView.ViewHolder {

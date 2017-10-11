@@ -27,14 +27,14 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
     public void testHomeworkUnfinished() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.course = "1";
+        //requestBean.course = "1";
         //requestBean.endtime = "2017-09-10";
-        requestBean.page = "1";
-        requestBean.size = "10";
+        //requestBean.page = "1";
+        //requestBean.size = "10";
         //requestBean.starttime = "2017-02-02";
         requestBean.status = "tbd";//completed  report
         requestBean.studentId = "2";
-        requestBean.type = "all";
+        //requestBean.type = "all";
 
         final HomeworkUnfinishedRequest rq = new HomeworkUnfinishedRequest(requestBean);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, new BaseCallback() {
@@ -57,6 +57,30 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestBean.size = "10";
         requestBean.starttime = "2017-02-02";
         requestBean.status = "completed";
+        requestBean.studentId = "2";
+        requestBean.type = "all";
+
+        final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                HomeworkFinishedResultBean resultBean = rq.getResultBean();
+                assertNotNull(resultBean);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testStudyReport() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        HomeworkRequestBean requestBean = new HomeworkRequestBean();
+        requestBean.course = "1";
+        requestBean.endtime = "2017-09-10";
+        requestBean.page = "1";
+        requestBean.size = "10";
+        requestBean.starttime = "2017-02-02";
+        requestBean.status = "report";
         requestBean.studentId = "2";
         requestBean.type = "all";
 

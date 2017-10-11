@@ -24,5 +24,8 @@
     <dimen name="score_radar_chart_padding">60dp</dimen>
     <dimen name="date_picker_confirm_margin_top">30dp</dimen>
     <dimen name="date_picker_confirm_padding_top">10dp</dimen>
+    <dimen name="homework_unfinished_time_margin">10dp</dimen>
+    <dimen name="homework_item_chapter_margin">10dp</dimen>
+    <dimen name="homework_item_icon_go_padding">10dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>
