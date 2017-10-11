@@ -7,8 +7,9 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.ReadingRateBean;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.model.ReadingRateBean;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 
 import java.util.List;
 
@@ -50,9 +51,14 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         ReadingRateBean bean = dataList.get(position);
-        holder.time.setText(bean.getTime());
-        holder.bookName.setText(bean.getBookName());
-        holder.timeHorizon.setText(bean.getTimeHorizon());
+        String time = DateTimeUtil.formatDate(bean.recordDate, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+        holder.time.setText(time);
+        holder.bookName.setText(bean.name);
+        holder.timeHorizon.setText(bean.readTimeLong);
+        holder.readingSummary.setText(String.valueOf(bean.summaryCount));
+        holder.readerResponsePiece.setText(String.valueOf(bean.impressionCount));
+        holder.readerResponseNumber.setText(String.valueOf(bean.impressionWordsCount));
+        holder.languageType.setText(bean.language);
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -66,6 +72,7 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
 
     public interface OnItemClickListener {
         void setOnItemClick(int position, boolean isCheck);
+
         void setOnItemCheckedChanged(int position, boolean isCheck);
     }
 

@@ -466,5 +466,6 @@
     <dimen name="activity_home_app_item_download_button_min_height">42dp</dimen>
     <dimen name="activity_home_app_item_download_button_padding">8dp</dimen>
     <dimen name="activity_home_app_item_download_button_text_size">23sp</dimen>
+    <dimen name="reading_rate_dialog_spinner_margin_right">5dp</dimen>
     <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
 </resources>

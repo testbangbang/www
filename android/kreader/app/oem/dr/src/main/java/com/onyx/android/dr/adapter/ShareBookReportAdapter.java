@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +30,7 @@ public class ShareBookReportAdapter extends PageRecyclerView.PageAdapter {
     private int column = DRApplication.getInstance().getResources().getInteger(R.integer.share_book_report_col);
     private List<GroupBean> selected;
     private String impressionId;
+    private String[] childrenId;
 
     @Override
     public int getRowCount() {
@@ -78,7 +78,7 @@ public class ShareBookReportAdapter extends PageRecyclerView.PageAdapter {
         }
         int position = (int) tag;
         GroupBean groupBean = data.get(position);
-        ActivityManager.startShareToMemberActivity(DRApplication.getInstance(), groupBean._id, groupBean.name, impressionId);
+        ActivityManager.startShareToMemberActivity(DRApplication.getInstance(), groupBean._id, groupBean.name, impressionId, childrenId);
     }
 
     public List<GroupBean> getSelectData() {
@@ -96,9 +96,10 @@ public class ShareBookReportAdapter extends PageRecyclerView.PageAdapter {
         return selected;
     }
 
-    public void setData(List<GroupBean> data, String impressionId) {
+    public void setData(List<GroupBean> data, String impressionId, String[] childrenId) {
         this.data = data;
         this.impressionId = impressionId;
+        this.childrenId = childrenId;
         notifyDataSetChanged();
     }
 

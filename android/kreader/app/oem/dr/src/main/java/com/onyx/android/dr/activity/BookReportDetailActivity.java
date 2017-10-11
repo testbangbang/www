@@ -109,6 +109,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private int screenHeight;
     private CreateBookReportResult createBookReportResult;
     private OnLongClickTouchListener listener;
+    private String[] childrenId = new String[100];
 
     @Override
     protected Integer getLayoutId() {
@@ -314,14 +315,12 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         if (Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
             return;
         }
-
         if (data != null) {
-            ActivityManager.startShareBookReportActivity(this, data._id);
+            ActivityManager.startShareBookReportActivity(this, data._id, childrenId);
             return;
         }
-
         if (!StringUtils.isNullOrEmpty(bookId)) {
-            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id);
+            ActivityManager.startShareBookReportActivity(this, createBookReportResult._id, childrenId);
             return;
         }
     }

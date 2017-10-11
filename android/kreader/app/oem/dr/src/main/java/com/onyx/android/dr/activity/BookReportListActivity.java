@@ -11,6 +11,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookReportListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BringOutBookReportEvent;
 import com.onyx.android.dr.event.DeleteBookReportEvent;
 import com.onyx.android.dr.event.ShareBookReportEvent;
@@ -81,6 +82,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     private int currentPage = 1;
     private int pages;
     private BookReportPresenter bookReportPresenter;
+    private String[] childrenId;
 
     @Override
     protected Integer getLayoutId() {
@@ -186,7 +188,6 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     @Override
     public void setLibraryId(String bookId, String libraryId) {
-        //bookReportPresenter.shareImpression(bookId, libraryId);
     }
 
     private void initPage() {
@@ -215,6 +216,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onShareBookReportEvent(ShareBookReportEvent event) {
         GetBookReportListBean bookReportBean = event.getBookReportBean();
-        ActivityManager.startShareBookReportActivity(this, bookReportBean._id);
+        DRPreferenceManager.saveShareType(DRApplication.getInstance(), Constants.READER_RESPONSE);
+        ActivityManager.startShareBookReportActivity(this, bookReportBean._id, childrenId);
     }
 }

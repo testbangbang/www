@@ -8,10 +8,11 @@ public class ReadingRateBean {
     private String bookName;
     private String timeHorizon;
     private String languageType;
-    private String readSummaryPiece;
-    private String readerResponsePiece;
-    private String readerResponseNumber;
+    private int readSummaryPiece;
+    private int readerResponsePiece;
+    private int readerResponseNumber;
     private String md5;
+    private String type;
 
     public String getTime() {
         return time;
@@ -45,27 +46,27 @@ public class ReadingRateBean {
         this.languageType = languageType;
     }
 
-    public String getReadSummaryPiece() {
+    public int getReadSummaryPiece() {
         return readSummaryPiece;
     }
 
-    public void setReadSummaryPiece(String readSummaryPiece) {
+    public void setReadSummaryPiece(int readSummaryPiece) {
         this.readSummaryPiece = readSummaryPiece;
     }
 
-    public String getReaderResponsePiece() {
+    public int getReaderResponsePiece() {
         return readerResponsePiece;
     }
 
-    public void setReaderResponsePiece(String readerResponsePiece) {
+    public void setReaderResponsePiece(int readerResponsePiece) {
         this.readerResponsePiece = readerResponsePiece;
     }
 
-    public String getReaderResponseNumber() {
+    public int getReaderResponseNumber() {
         return readerResponseNumber;
     }
 
-    public void setReaderResponseNumber(String readerResponseNumber) {
+    public void setReaderResponseNumber(int readerResponseNumber) {
         this.readerResponseNumber = readerResponseNumber;
     }
 

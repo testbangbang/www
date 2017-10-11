@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.request.cloud.CreateInformalEssayRequest;
+import com.onyx.android.dr.request.cloud.RequestGetInformalEssay;
 import com.onyx.android.dr.request.local.InformalEssayDelete;
 import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.request.local.InformalEssayInsert;
@@ -50,6 +52,14 @@ public class InformalEssayData {
 
     public void exportInformalEssay(Context context, InformalEssayExport req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
+    }
+
+    public void createInformalEssay(CreateInformalEssayRequest req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void getInformalEssay(RequestGetInformalEssay req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
     }
 
     public ArrayList<String> getHtmlTitle(Context context) {

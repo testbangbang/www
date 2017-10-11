@@ -378,5 +378,6 @@
     <dimen name="share_to_member_item_check_margin">10dp</dimen>
     <dimen name="share_to_member_count_padding">20dp</dimen>
     <dimen name="share_to_member_recycler_padding_bottom">10dp</dimen>
+    <dimen name="reading_rate_dialog_spinner_margin_right">5dp</dimen>
 </resources>
 

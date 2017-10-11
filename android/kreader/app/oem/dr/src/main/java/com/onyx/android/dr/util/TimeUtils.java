@@ -262,4 +262,9 @@ public class TimeUtils {
         int week = calender.get(Calendar.WEEK_OF_MONTH);
         return week + "";
     }
+
+    public static long dateToLong(Date date) {
+        long time = date.getTime();
+        return time;
+    }
 }

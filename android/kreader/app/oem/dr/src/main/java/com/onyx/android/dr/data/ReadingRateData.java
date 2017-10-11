@@ -5,12 +5,12 @@ import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.request.local.InformalEssayDelete;
-import com.onyx.android.dr.request.local.InformalEssayInsert;
-import com.onyx.android.dr.request.local.InformalEssayQueryByTime;
-import com.onyx.android.dr.request.local.InformalEssayQueryByTitle;
+import com.onyx.android.dr.request.cloud.CreateReadingRateRequest;
+import com.onyx.android.dr.request.cloud.RequestGetReadingRate;
 import com.onyx.android.dr.request.local.ReadingRateExport;
+import com.onyx.android.dr.request.local.ReadingRateInsert;
 import com.onyx.android.dr.request.local.ReadingRateQueryAll;
+import com.onyx.android.dr.request.local.ReadingRateQueryByTimeAndType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -32,19 +32,11 @@ public class ReadingRateData {
         submitRequest(context, req, baseCallback);
     }
 
-    public void getInformalEssayQueryByTitle(Context context, InformalEssayQueryByTitle req, BaseCallback baseCallback) {
+    public void getDataByTimeAndType(Context context, ReadingRateQueryByTimeAndType req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 
-    public void getInformalEssayByTime(Context context, InformalEssayQueryByTime req, BaseCallback baseCallback) {
-        submitRequest(context, req, baseCallback);
-    }
-
-    public void insertInformalEssay(Context context, InformalEssayInsert req, BaseCallback baseCallback) {
-        submitRequest(context, req, baseCallback);
-    }
-
-    public void deleteInformalEssay(Context context, InformalEssayDelete req, BaseCallback baseCallback) {
+    public void insertReadingRate(Context context, ReadingRateInsert req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 
@@ -52,12 +44,23 @@ public class ReadingRateData {
         submitRequest(context, req, baseCallback);
     }
 
+    public void createReadingRate(CreateReadingRateRequest req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void getReadingRate(RequestGetReadingRate req, BaseCallback baseCallback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, baseCallback);
+    }
+
     public ArrayList<String> getHtmlTitle(Context context) {
         htmlTitle = new ArrayList<String>();
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_time));
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_title));
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_word_number));
-        htmlTitle.add(context.getString(R.string.infromal_essay_activity_content));
+        htmlTitle.add(context.getString(R.string.book_report_list_time));
+        htmlTitle.add(context.getString(R.string.book_report_list_book_name));
+        htmlTitle.add(context.getString(R.string.time_horizon));
+        htmlTitle.add(context.getString(R.string.language_type));
+        htmlTitle.add(context.getString(R.string.read_summary_content));
+        htmlTitle.add(context.getString(R.string.reader_response_content));
+        htmlTitle.add(context.getString(R.string.reader_response_number));
         return htmlTitle;
     }
 }

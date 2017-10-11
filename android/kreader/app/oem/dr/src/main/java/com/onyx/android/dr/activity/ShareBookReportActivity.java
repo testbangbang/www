@@ -15,6 +15,7 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.presenter.ShareBookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
@@ -64,6 +65,8 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     private ShareBookReportAdapter adapter;
     private ShareBookReportPresenter shareBookReportPresenter;
     private String impressionId;
+    private String[] childrenId;
+    private int shareType;
 
     @Override
     protected Integer getLayoutId() {
@@ -72,7 +75,6 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
 
     @Override
     protected void initConfig() {
-
     }
 
     @Override
@@ -87,11 +89,14 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
         shareBookReportRecycler.addItemDecoration(dividerItemDecoration);
         adapter = new ShareBookReportAdapter();
         shareBookReportRecycler.setAdapter(adapter);
+
     }
 
     @Override
     protected void initData() {
         impressionId = getIntent().getStringExtra(Constants.IMPRESSION_ID);
+        childrenId = getIntent().getStringArrayExtra(Constants.CHILDREN_ID);
+        shareType = DRPreferenceManager.getShareType(this, -1);
         shareBookReportPresenter = new ShareBookReportPresenter(this);
         shareBookReportPresenter.getAllGroup();
     }
@@ -104,7 +109,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
 
     @Override
     public void setGroupData(List<GroupBean> groups) {
-        adapter.setData(groups, impressionId);
+        adapter.setData(groups, impressionId, childrenId);
     }
 
     @Override
@@ -134,12 +139,19 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
         if(adapter == null) {
             return;
         }
-
         List<GroupBean> selectData = adapter.getSelectData();
         if (selectData == null || selectData.size() == 0) {
             CommonNotices.showMessage(DRApplication.getInstance(), getResources().getString(R.string.share_to_member_no_share));
             return;
         }
-        //TODO:share to group
+        for (GroupBean bean : selectData) {
+            if (shareType == Constants.INFORMAL_ESSAY) {
+                shareBookReportPresenter.shareInformalEssay(bean.library, childrenId);
+            }else if (shareType == Constants.READING_RATE) {
+
+            }else if (shareType == Constants.READER_RESPONSE) {
+                shareBookReportPresenter.shareImpression(bean.library, impressionId);
+            }
+        }
     }
 }

@@ -694,9 +694,13 @@
     <string name="time_horizon">时长(分)</string>
     <string name="reading_quantity">阅读量(字数)</string>
     <string name="language_type">语种</string>
+    <string name="language_type_content">语种:</string>
     <string name="reading_rate_activity_speech">速度</string>
     <string name="read_summary_content">阅读纪要(篇)</string>
     <string name="reader_response_content">读后感(篇)</string>
     <string name="reader_response_number">读后感(字数)</string>
     <string name="apply_join_failed">申请加入失败</string>
+    <string name="select_time_range">选择时间范围</string>
+    <string name="select_group">选择群组</string>
+    <string name="reading_rate_html">阅读统计报表</string>
 </resources>

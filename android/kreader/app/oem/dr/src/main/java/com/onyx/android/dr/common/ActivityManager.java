@@ -65,7 +65,6 @@ import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.statistics.StatisticsActivity;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.Constant;
-import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.NetworkUtil;
@@ -86,9 +85,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startShareBookReportActivity(Context context, String impressionId) {
+    public static void startShareBookReportActivity(Context context, String impressionId, String[] childrenId) {
         Intent intent = new Intent(context, ShareBookReportActivity.class);
         intent.putExtra(Constants.IMPRESSION_ID, impressionId);
+        intent.putExtra(Constants.CHILDREN_ID, childrenId);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
@@ -303,12 +303,13 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startShareToMemberActivity(Context context, String id, String name, String impressionId) {
+    public static void startShareToMemberActivity(Context context, String id, String name, String impressionId, String[] childrenId) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.GROUP_ID, id);
         intent.putExtra(Constants.GROUP_NAME, name);
         intent.putExtra(Constants.IMPRESSION_ID, impressionId);
+        intent.putExtra(Constants.CHILDREN_ID, childrenId);
         intent.setClass(context, ShareToMemberActivity.class);
         context.startActivity(intent);
     }

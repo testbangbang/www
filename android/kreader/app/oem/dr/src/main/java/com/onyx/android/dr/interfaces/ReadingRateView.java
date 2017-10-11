@@ -1,8 +1,9 @@
 package com.onyx.android.dr.interfaces;
 
-import com.onyx.android.dr.bean.ReadingRateBean;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.data.database.ReadingRateEntity;
+import com.onyx.android.sdk.data.model.ReadingRateBean;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,6 +11,5 @@ import java.util.List;
  */
 public interface ReadingRateView {
     void setReadingRateData(List<ReadingRateBean> dataList);
-    void setInformalEssayByTime(List<InformalEssayEntity> dataList);
-    void setInformalEssayByTitle(List<InformalEssayEntity> dataList);
+    void setDataByTimeAndType(List<ReadingRateEntity> dataList, ArrayList<Boolean> listCheck);
 }

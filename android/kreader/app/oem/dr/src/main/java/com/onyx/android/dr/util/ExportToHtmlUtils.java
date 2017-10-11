@@ -4,15 +4,16 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
-import com.onyx.android.dr.bean.ReadingRateBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -112,7 +113,7 @@ public class ExportToHtmlUtils {
         }
     }
 
-    public static void exportInfromalEssayToHtml(Context context, List<String> htmlTitle, String title, List<InformalEssayEntity> dataList) {
+    public static void exportInfromalEssayToHtml(Context context, List<String> htmlTitle, String title, List<CreateInformalEssayBean> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < htmlTitle.size(); i++) {
@@ -123,7 +124,7 @@ public class ExportToHtmlUtils {
         sb.append("</tr>");
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
-            InformalEssayEntity bean = dataList.get(i);
+            CreateInformalEssayBean bean = dataList.get(i);
             long currentTime = bean.currentTime;
             sb.append("<th>");
             sb.append(TimeUtils.getDate(currentTime));
@@ -158,7 +159,7 @@ public class ExportToHtmlUtils {
         }
     }
 
-    public static void exportReadingRateToHtml(Context context, List<String> htmlTitle, String title, List<ReadingRateBean> dataList) {
+    public static void exportReadingRateToHtml(Context context, List<String> htmlTitle, String title, List<ReadingRateEntity> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < htmlTitle.size(); i++) {
@@ -169,7 +170,29 @@ public class ExportToHtmlUtils {
         sb.append("</tr>");
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
-            ReadingRateBean bean = dataList.get(i);
+            ReadingRateEntity bean = dataList.get(i);
+            String time = DateTimeUtil.formatDate(bean.recordDate, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            sb.append("<th>");
+            sb.append(time);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.name);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.readTimeLong);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.language);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.summaryCount);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.impressionCount);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.impressionWordsCount);
+            sb.append("</th>");
             sb.append("</tr>");
         }
         sb.append("</table>");
@@ -178,7 +201,7 @@ public class ExportToHtmlUtils {
         try {
             createCatalogue();
             String time = TimeUtils.getNewTime(System.currentTimeMillis());
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.INFORMAL_ESSAY_HTML + "_" + time + Constants.UNIT);
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.READING_RATE_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());

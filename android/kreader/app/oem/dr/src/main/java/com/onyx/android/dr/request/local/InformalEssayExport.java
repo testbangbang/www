@@ -3,9 +3,9 @@ package com.onyx.android.dr.request.local;
 import android.content.Context;
 
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.util.ExportToHtmlUtils;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 import java.util.ArrayList;
@@ -17,9 +17,9 @@ import java.util.List;
 public class InformalEssayExport extends BaseDataRequest {
     private final Context context;
     private final ArrayList<String> dataList;
-    private final List<InformalEssayEntity> infromalEssayList;
+    private final List<CreateInformalEssayBean> infromalEssayList;
 
-    public InformalEssayExport(Context context, ArrayList<String> dataList, List<InformalEssayEntity> infromalEssayList) {
+    public InformalEssayExport(Context context, ArrayList<String> dataList, List<CreateInformalEssayBean> infromalEssayList) {
         this.context = context;
         this.dataList = dataList;
         this.infromalEssayList = infromalEssayList;

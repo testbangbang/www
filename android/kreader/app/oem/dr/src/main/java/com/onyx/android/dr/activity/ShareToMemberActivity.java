@@ -17,6 +17,7 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.presenter.ShareBookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
@@ -73,6 +74,8 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
     private ShareToMemberAdapter adapter;
     private ShareBookReportPresenter presenter;
     private String impressionId;
+    private String[] childrenId;
+    private int shareType;
 
     @Override
     protected Integer getLayoutId() {
@@ -103,6 +106,8 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
         String id = getIntent().getStringExtra(Constants.GROUP_ID);
         String groupName = getIntent().getStringExtra(Constants.GROUP_NAME);
         impressionId = getIntent().getStringExtra(Constants.IMPRESSION_ID);
+        childrenId = getIntent().getStringArrayExtra(Constants.CHILDREN_ID);
+        shareType = DRPreferenceManager.getShareType(this, -1);
         titleBarTitle.setText(groupName);
         MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
         String json = JSON.toJSON(bean).toString();
@@ -111,7 +116,6 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
 
     @Override
     public void setGroupData(List<GroupBean> groups) {
-
     }
 
     @Override
@@ -126,7 +130,6 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // TODO: add setContentView(...) invocation
         ButterKnife.bind(this);
     }
 
@@ -156,7 +159,13 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
             return;
         }
         for (ListBean bean : selectedData) {
-            presenter.shareImpression(bean.child.library, impressionId);
+            if (shareType == Constants.INFORMAL_ESSAY) {
+                presenter.shareInformalEssay(bean.child.library, childrenId);
+            }else if (shareType == Constants.READING_RATE) {
+
+            }else if (shareType == Constants.READER_RESPONSE) {
+                presenter.shareImpression(bean.child.library, impressionId);
+            }
         }
     }
 }
