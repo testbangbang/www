@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.action.push.PushProductDownloadAction;
 import com.onyx.android.sdk.data.model.BaseData;
 import com.onyx.android.sdk.data.model.v2.PushFileEvent;
 import com.onyx.android.sdk.data.model.v2.PushLibraryClearEvent;
+import com.onyx.android.sdk.data.model.v2.PushNotification;
 import com.onyx.android.sdk.data.model.v2.PushProductEvent;
 import com.onyx.android.sdk.data.model.v2.PushTextEvent;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
@@ -23,7 +24,10 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.action.AuthTokenAction;
+import com.onyx.einfo.events.PushNotificationEvent;
 import com.raizlabs.android.dbflow.annotation.NotNull;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.HashMap;
@@ -73,6 +77,8 @@ public class PushManager {
             case Message.TYPE_LOGIN:
                 processLogin(message);
                 break;
+            case Message.TYPE_NOTIFICATION:
+                processNotification(message);
             default:
                 break;
         }
@@ -88,6 +94,14 @@ public class PushManager {
             return true;
         }
         return false;
+    }
+
+    private void processNotification(Message message) {
+        PushNotification pushNotification = JSONObjectParseUtils.parseObject(message.getContent(), PushNotification.class);
+        BaseData.asyncSave(pushNotification);
+        if (pushNotification != null) {
+            EventBus.getDefault().post(new PushNotificationEvent(pushNotification));
+        }
     }
 
     private void processLogin(Message message) {

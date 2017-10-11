@@ -20,8 +20,10 @@ import com.onyx.android.sdk.data.ViewType;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
+import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.einfo.R;
 import com.onyx.einfo.InfoApp;
 import com.onyx.einfo.action.ActionChain;
@@ -75,6 +77,7 @@ public class MainActivity extends BaseActivity {
     @Bind(R.id.contentViewPager)
     NoSwipePager pagerView;
 
+    private DialogProgressHolder progressHolder = new DialogProgressHolder();
     private List<TabLibrary> pageTabList = new ArrayList<>();
     private List<TabLibrary> tabLibraryList = new ArrayList<>();
     private List<GroupContainer> groupContainerList = new ArrayList<>();
@@ -103,6 +106,7 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
         EpdController.postInvalidate(getWindow().getDecorView().getRootView(), UpdateMode.GC);
+        Device.currentDevice().showSystemStatusBar(getApplicationContext());
     }
 
     @Override
@@ -119,6 +123,7 @@ public class MainActivity extends BaseActivity {
         actionChain.execute(InfoApp.getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                progressHolder.dismissProgressDialog(actionChain);
                 if (e != null || CollectionUtils.isNullOrEmpty(groupLoadAction.getContainerList())) {
                     ToastUtils.showToast(getApplicationContext(), R.string.online_group_load_error);
                     return;
@@ -127,15 +132,15 @@ public class MainActivity extends BaseActivity {
                 invalidateOptionsMenu();
             }
         });
+        progressHolder.showProgressDialog(this, actionChain, R.string.refreshing, null);
     }
 
     private void loadGroupLibraryList(List<GroupContainer> groupContainerList) {
-        List<Library> libraryList = new ArrayList<>();
-        if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
-            currentGroup = groupContainerList.get(0).group;
-            libraryList = groupContainerList.get(0).libraryList;
+        int index = ConfigPreferenceManager.getCloudGroupSelected(getApplicationContext());
+        if (index >= CollectionUtils.getSize(groupContainerList)) {
+            index = 0;
         }
-        notifyDataChanged(libraryList);
+        processGroupSelect(index);
     }
 
     private void notifyDataChanged(List<Library> list) {
@@ -148,12 +153,24 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private List<TabLibrary> getExtraCustomTabLibrary() {
-        List<TabLibrary> tabList = new ArrayList<>();
+    private TabLibrary getAccountTabLibrary() {
         TabLibrary tabLibrary = new TabLibrary(null);
         tabLibrary.action = TabAction.Account;
         tabLibrary.tabTitle = getString(R.string.main_item_user_info_title);
-        tabList.add(tabLibrary);
+        return tabLibrary;
+    }
+
+    private TabLibrary getMessageTabLibrary() {
+        TabLibrary tabLibrary = new TabLibrary(null);
+        tabLibrary.action = TabAction.Message;
+        tabLibrary.tabTitle = getString(R.string.main_item_message);
+        return tabLibrary;
+    }
+
+    private List<TabLibrary> getExtraCustomTabLibrary() {
+        List<TabLibrary> tabList = new ArrayList<>();
+        tabList.add(getMessageTabLibrary());
+        tabList.add(getAccountTabLibrary());
         return tabList;
     }
 
@@ -210,7 +227,8 @@ public class MainActivity extends BaseActivity {
             return null;
         }
         if (tabImageBitmap == null) {
-            int width = getDimensionPixelSize(R.dimen.tab_layout_tab_max_width) - getDimensionPixelSize(R.dimen.tab_layout_tab_image_margin);
+            int width = getDimensionPixelSize(R.dimen.tab_layout_tab_max_width) -
+                    getDimensionPixelSize(R.dimen.tab_layout_tab_image_margin);
             Bitmap src = BitmapFactory.decodeResource(getResources(), R.drawable.tab_background_selected);
             if (src == null) {
                 return null;
@@ -227,6 +245,9 @@ public class MainActivity extends BaseActivity {
     }
 
     private void addTabList(TabLayout tabLayout, List<TabLibrary> tabLibraryList) {
+        if (tabLayout == null) {
+            return;
+        }
         int position = 0;
         notifyTabLayoutChange(tabLayout, tabLibraryList);
         selectTab(tabLayout, position);
@@ -323,6 +344,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         ButterKnife.unbind(this);
+        progressHolder.dismissAllProgressDialog();
     }
 
     @Override
@@ -446,6 +468,7 @@ public class MainActivity extends BaseActivity {
         DialogSortBy dialog = getSortByDialog(contentList, new DialogSortBy.OnSortByListener() {
             @Override
             public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
+                ConfigPreferenceManager.setCloudGroupSelected(getApplicationContext(), position);
                 processGroupSelect(position);
             }
         });
@@ -481,7 +504,12 @@ public class MainActivity extends BaseActivity {
     }
 
     private void processGroupSelect(int index) {
-        notifyDataChanged(groupContainerList.get(index).libraryList);
+        List<Library> libraryList = new ArrayList<>();
+        if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            currentGroup = groupContainerList.get(index).group;
+            libraryList = groupContainerList.get(index).libraryList;
+        }
+        notifyDataChanged(libraryList);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

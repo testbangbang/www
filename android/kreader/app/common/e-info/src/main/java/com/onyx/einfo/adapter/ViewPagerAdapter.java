@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.einfo.fragment.AccountFragment;
 import com.onyx.einfo.fragment.ContentFragment;
+import com.onyx.einfo.fragment.MessageFragment;
 import com.onyx.einfo.model.TabAction;
 import com.onyx.einfo.model.TabLibrary;
 
@@ -41,8 +42,15 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
         if (tabLibrary.library != null) {
             f = getContentFragment(tabLibrary.library);
         } else {
-            if (tabLibrary.action == TabAction.Account) {
-                f = AccountFragment.newInstance();
+            switch (tabLibrary.action) {
+                case Account:
+                    f = AccountFragment.newInstance();
+                    break;
+                case Message:
+                    f = MessageFragment.newInstance();
+                    break;
+                default:
+                    break;
             }
         }
         return f;

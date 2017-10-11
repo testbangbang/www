@@ -18,6 +18,7 @@ public class ConfigPreferenceManager extends PreferenceManager {
     public static final String VIEW_TYPE_TAG = "viewType";
     public static final String CLOUD_SORT_BY_TAG = "cloud_sort_by";
     public static final String CLOUD_SORT_ORDER_TAG = "cloud_sort_order";
+    public static final String CLOUD_GROUP_SELECTED_TAG = "cloud_group_selected";
     public static final String STORAGE_SORT_BY_TAG = "storage_sort_by";
     public static final String STORAGE_SORT_ORDER_TAG = "storage_sort_order";
     public static final String STORAGE_VIEW_TYPE_TAG = "storage_view_type";
@@ -88,5 +89,13 @@ public class ConfigPreferenceManager extends PreferenceManager {
 
     public static void setStorageViewType(Context context, ViewType viewType) {
         setStringValue(context, STORAGE_VIEW_TYPE_TAG, viewType.toString());
+    }
+
+    public static int getCloudGroupSelected(Context context) {
+        return getIntValue(context, CLOUD_GROUP_SELECTED_TAG, 0);
+    }
+
+    public static void setCloudGroupSelected(Context context, int index) {
+        setIntValue(context, CLOUD_GROUP_SELECTED_TAG, index);
     }
 }

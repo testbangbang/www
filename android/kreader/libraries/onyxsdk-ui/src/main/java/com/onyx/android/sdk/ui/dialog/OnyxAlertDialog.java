@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +33,8 @@ public class OnyxAlertDialog extends DialogFragment {
     private RelativeLayout alertTittleBarLayout;
     private LinearLayout functionPanelLayout;
     private TextView tittleTextView, alertMessageView, pageSizeIndicator;
+    private ImageView closeButtonTopRight;
+    private ImageView prevPageView, nextPageView;
     private Button positiveButton;
 
     protected Button getPositiveButton() {
@@ -103,6 +106,9 @@ public class OnyxAlertDialog extends DialogFragment {
         ViewGroup viewGroup = (ViewGroup) view.findViewById(R.id.layout_dialog);
         alertTittleBarLayout = (RelativeLayout) view.findViewById(R.id.dialog_tittleBar);
         tittleTextView = (TextView) alertTittleBarLayout.findViewById(R.id.textView_title);
+        closeButtonTopRight = (ImageView) alertTittleBarLayout.findViewById(R.id.button_close);
+        prevPageView = (ImageView) alertTittleBarLayout.findViewById(R.id.button_previous);
+        nextPageView = (ImageView) alertTittleBarLayout.findViewById(R.id.button_next);
         pageSizeIndicator = (TextView) alertTittleBarLayout.findViewById(R.id.page_size_indicator);
         alertMessageView = (TextView) view.findViewById(R.id.alert_msg_text);
         functionPanelLayout = (LinearLayout) view.findViewById(R.id.btn_function_panel);
@@ -131,6 +137,12 @@ public class OnyxAlertDialog extends DialogFragment {
                 dismiss();
             }
         });
+        closeButtonTopRight.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         customByParams(view);
         return view;
     }
@@ -142,6 +154,20 @@ public class OnyxAlertDialog extends DialogFragment {
         } else {
             topDividerLine.setVisibility(View.GONE);
             alertTittleBarLayout.setVisibility(View.GONE);
+        }
+
+        if (params.enableCloseButtonTopRight) {
+            closeButtonTopRight.setVisibility(View.VISIBLE);
+        }
+        if (params.enablePageIndicatorPanel) {
+            prevPageView.setVisibility(View.VISIBLE);
+            nextPageView.setVisibility(View.VISIBLE);
+            if (params.prevPageAction != null) {
+                prevPageView.setOnClickListener(params.prevPageAction);
+            }
+            if (params.nextPageAction != null) {
+                nextPageView.setOnClickListener(params.nextPageAction);
+            }
         }
 
         setNegativeButton(params.enableNegativeButton, params.negativeButtonText, params.negativeAction);
@@ -256,6 +282,8 @@ public class OnyxAlertDialog extends DialogFragment {
         boolean enablePositiveButton = true;
         boolean enableNegativeButton = true;
         boolean enableNeutralButton = false;
+        boolean enableCloseButtonTopRight = false;
+        boolean enablePageIndicatorPanel = false;
         boolean enablePageIndicator = false;
         boolean canceledOnTouchOutside = true;
         boolean usePercentageWidth = true;
@@ -291,6 +319,7 @@ public class OnyxAlertDialog extends DialogFragment {
             }
         };
         View.OnClickListener positiveAction, negativeAction, neutralAction;
+        View.OnClickListener prevPageAction, nextPageAction;
         DialogInterface.OnKeyListener keyAction;
 
         public boolean isEnableTittle() {
@@ -374,6 +403,24 @@ public class OnyxAlertDialog extends DialogFragment {
             return this;
         }
 
+        public View.OnClickListener getPrevPageAction() {
+            return prevPageAction;
+        }
+
+        public Params setPrevPageAction(View.OnClickListener prevPageAction) {
+            this.prevPageAction = prevPageAction;
+            return this;
+        }
+
+        public View.OnClickListener getNextPageAction() {
+            return nextPageAction;
+        }
+
+        public Params setNextPageAction(View.OnClickListener nextPageAction) {
+            this.nextPageAction = nextPageAction;
+            return this;
+        }
+
         public int getCustomLayoutHeight() {
             return customLayoutHeight;
         }
@@ -403,6 +450,24 @@ public class OnyxAlertDialog extends DialogFragment {
 
         public Params setEnablePageIndicator(boolean enablePageIndicator) {
             this.enablePageIndicator = enablePageIndicator;
+            return this;
+        }
+
+        public boolean isEnableCloseButtonTopRight() {
+            return enableCloseButtonTopRight;
+        }
+
+        public Params setEnableCloseButtonTopRight(boolean enable) {
+            this.enableCloseButtonTopRight = enable;
+            return this;
+        }
+
+        public boolean isEnablePageIndicatorPanel() {
+            return enablePageIndicatorPanel;
+        }
+
+        public Params setEnablePageIndicatorPanel(boolean enable) {
+            this.enablePageIndicatorPanel = enable;
             return this;
         }
 

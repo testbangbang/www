@@ -10,6 +10,10 @@ import com.raizlabs.android.dbflow.annotation.Unique;
  */
 @Table(database = PushDatabase.class, allFields = true)
 public class PushNotification extends BaseData {
+    public enum Type {
+        Text, Vote
+    }
+
     public String _id;
     public String productId;
     public String title;

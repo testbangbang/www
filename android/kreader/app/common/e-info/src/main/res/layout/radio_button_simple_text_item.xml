@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RadioButton xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/message_notification_layout_radio_button_margin"
+    android:background="@drawable/radiobutton_background"
+    android:button="@null"
+    android:checked="true"
+    android:padding="@dimen/message_notification_layout_radio_button_padding"
+    android:text="content"
+    android:textColor="@drawable/radiobutton_textcolor"
+    android:textSize="@dimen/message_notification_layout_radio_button_text_size" />
