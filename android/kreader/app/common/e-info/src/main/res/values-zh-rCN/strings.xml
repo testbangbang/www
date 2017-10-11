@@ -122,6 +122,7 @@
     <string name="cloud_content_import_failed">导入失败</string>
 
     <string name="main_item_user_info_title">个人信息</string>
+    <string name="main_item_message">消息通知</string>
 
     <string name="online_library_id_error">在线书库id异常</string>
     <string name="online_library_load_error">获取书库异常</string>
@@ -187,4 +188,12 @@
     <string name="delete_shortcut_link">删除快捷方式</string>
     <string name="shortcut_link_full">快捷方式数量已满</string>
     <string name="shortcut_link_exist">快捷方式已经存在</string>
+
+    <string name="order_number">序号</string>
+    <string name="title">标题</string>
+    <string name="date">日期</string>
+    <string name="fetch_message_fail">获取消息失败了</string>
+    <string name="message_content">消息内容</string>
+    <string name="message_notification">通知</string>
+    <string name="message_vote">表决结果</string>
 </resources>

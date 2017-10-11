@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.onyx.android.sdk.ui.compat.AppCompatLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    app:alwaysLayoutImageView="true">
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1.5">
+
+        <TextView
+            android:id="@+id/text_view_order"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="@dimen/message_notification_layout_text_margin_left_right"
+            android:layout_marginRight="@dimen/message_notification_layout_text_margin_left_right"
+            android:gravity="center"
+            android:textSize="@dimen/message_notification_layout_order_text_size" />
+
+        <ImageView
+            android:id="@+id/text_view_un_read"
+            android:layout_width="@dimen/message_notification_layout_unread_image_size"
+            android:layout_height="@dimen/message_notification_layout_unread_image_size"
+            android:layout_alignRight="@+id/text_view_order"
+            android:layout_alignTop="@+id/text_view_order"
+            android:layout_marginRight="@dimen/message_notification_layout_unread_image_margin_right"
+            android:layout_marginTop="@dimen/message_notification_layout_unread_image_margin_top"
+            android:src="@drawable/icon_un_read" />
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/text_view_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/message_notification_layout_text_margin_left_right"
+        android:layout_marginRight="@dimen/message_notification_layout_text_margin_left_right"
+        android:layout_weight="6"
+        android:ellipsize="middle"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="@dimen/message_notification_layout_text_size" />
+
+    <View
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/text_view_date"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/message_notification_layout_text_margin_left_right"
+        android:layout_marginRight="@dimen/message_notification_layout_text_margin_left_right"
+        android:layout_weight="1.5"
+        android:ellipsize="middle"
+        android:gravity="center"
+        android:maxLines="2"
+        android:textSize="@dimen/message_notification_layout_text_size" />
+
+</com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
