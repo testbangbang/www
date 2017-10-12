@@ -606,7 +606,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(dataHolder.getVisiblePages());
             flushNoteAction.execute(dataHolder, null);
         } else {
-            FlushNoteAction flushNoteAction = new FlushNoteAction(dataHolder.getVisiblePages(), true, true, false, false);
+            FlushNoteAction flushNoteAction = FlushNoteAction.resumeAfterFlush(dataHolder.getVisiblePages());
             flushNoteAction.execute(dataHolder, null);
         }
         enableShortcut(!event.isUiOpen());

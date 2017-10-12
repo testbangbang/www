@@ -125,7 +125,7 @@ public class ShowTabHostMenuDialogAction extends BaseAction {
             public void onDismiss(DialogInterface dialog) {
                 dataHolder.removeActiveDialog(dlg);
                 if (isNoteWriting) {
-                    FlushNoteAction flushNoteAction = new FlushNoteAction(dataHolder.getVisiblePages(), true, true, false, false);
+                    FlushNoteAction flushNoteAction = FlushNoteAction.resumeAfterFlush(dataHolder.getVisiblePages());
                     flushNoteAction.execute(dataHolder, null);
                 }
             }
