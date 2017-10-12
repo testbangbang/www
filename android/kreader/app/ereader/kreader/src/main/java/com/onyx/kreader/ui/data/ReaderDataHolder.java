@@ -555,7 +555,7 @@ public class ReaderDataHolder {
         return readerPainter;
     }
 
-    private void addActiveDialog(Dialog dialog) {
+    public void addActiveDialog(Dialog dialog) {
         activeDialogs.add(dialog);
     }
 

@@ -17,6 +17,7 @@ public class DeleteNoteSubPageRequest extends ReaderBaseNoteRequest {
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
+        setResumeRawInputProcessor(true);
         noteManager.getNoteDocument().removePage(getContext(), pageName, subPageIndex);
     }
 }
