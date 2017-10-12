@@ -1099,17 +1099,19 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             return;
         }
 
+        int splitLineWidth = findViewById(R.id.dash_line_splitter).getWidth();
+
         if (isSideReadingLeft(tab)) {
             ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
                     tabManager.getTabReceiver(tab),
                     Gravity.BOTTOM | Gravity.LEFT,
-                    getTabContentWidth() / 2 - 2,
+                    (getTabContentWidth() - splitLineWidth) / 2,
                     tabContentHeight);
         } else {
             ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
                     tabManager.getTabReceiver(tab),
                     Gravity.BOTTOM | Gravity.RIGHT,
-                    getTabContentWidth() / 2 - 2,
+                    (getTabContentWidth() - splitLineWidth) / 2,
                     tabContentHeight);
         }
     }
