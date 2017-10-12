@@ -1159,7 +1159,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShowTabHostMenuDialogRequest(final ShowTabHostMenuDialogEvent event) {
-                final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
+        final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
 
         final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
         DataManager dataManager = new DataManager();
