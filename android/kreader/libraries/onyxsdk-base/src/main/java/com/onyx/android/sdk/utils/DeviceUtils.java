@@ -344,6 +344,13 @@ public class DeviceUtils {
         System.exit(1);
     }
 
+    public static boolean isReverseOrientation(int current, int target) {
+        return (current == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) ||
+                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+    }
+
     public static boolean isFullScreen(Activity activity) {
         if (Build.VERSION.SDK_INT >= 19) {
             int flag = activity.getWindow().getAttributes().flags;
