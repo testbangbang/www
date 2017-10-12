@@ -16,6 +16,7 @@ public class TimeUtils {
     public static final String NEW_DATA_TIME_FORMAT = "yyyy-MM-dd HH-mm-ss";
     public static final String HOUR_AND_MINUTE = "yyyy-MM-dd HH:mm";
     public static final String DATA_FORMAT = "yyyy-MM-dd";
+    public static final String SECOND_DATA_FORMAT = "yyyyMMdd";
     public static final String START_TIME = " 00:00:00";
     public static final String END_TIME = " 23:59:59";
     private static final int MILLISECOND = 1000;
@@ -25,6 +26,7 @@ public class TimeUtils {
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATA_TIME_FORMAT);
     public static final SimpleDateFormat NEW_DATE_FORMAT = new SimpleDateFormat(NEW_DATA_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(DATA_FORMAT);
+    public static final SimpleDateFormat SECOND_DATE_FORMAT_DATE = new SimpleDateFormat(SECOND_DATA_FORMAT);
 
     private TimeUtils() {
         throw new AssertionError();
@@ -294,5 +296,11 @@ public class TimeUtils {
     public static long dateToLong(Date date) {
         long time = date.getTime();
         return time;
+    }
+
+    public static String getDataStringPart() {
+        long timeMillis = System.currentTimeMillis();
+        String time = getTime(timeMillis, SECOND_DATE_FORMAT_DATE);
+        return time.substring(2);
     }
 }

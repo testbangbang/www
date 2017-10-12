@@ -17,16 +17,16 @@
         android:orientation="vertical"
         android:padding="@dimen/book_report_detail_layout_padding">
 
-        <TextView
+        <EditText
             android:id="@+id/book_report_detail_title"
-            android:layout_width="wrap_content"
+            android:layout_width="@dimen/book_report_detail_title_width"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:ellipsize="middle"
             android:singleLine="true"
             android:text="@string/title"
             android:textColor="@color/black"
-            android:textSize="@dimen/level_one_font_size" />
+            android:textSize="@dimen/level_two_font_size" />
 
         <FrameLayout
             android:layout_width="match_parent"

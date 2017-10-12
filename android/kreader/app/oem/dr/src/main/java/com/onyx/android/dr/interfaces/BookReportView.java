@@ -2,7 +2,6 @@ package com.onyx.android.dr.interfaces;
 
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
-import com.onyx.android.sdk.data.model.v2.GroupBean;
 
 import java.util.List;
 
@@ -11,8 +10,6 @@ import java.util.List;
  */
 
 public interface BookReportView {
-    void setCreateBookReportData(CreateBookReportResult createBookReportResult);
-
     void setBookReportList(List<GetBookReportListBean> list);
 
     void setDeleteResult();
@@ -22,4 +19,6 @@ public interface BookReportView {
     void addCommentResult(CreateBookReportResult result);
 
     void setLibraryId(String bookId, String libraryId);
+
+    void saveBookReportData(CreateBookReportResult createBookReportResult);
 }

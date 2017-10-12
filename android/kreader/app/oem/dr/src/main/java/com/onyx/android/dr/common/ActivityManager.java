@@ -175,9 +175,11 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startAddInformalEssayActivity(Context context) {
+    public static void startAddInformalEssayActivity(Context context, String title, String content) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.INFORMAL_ESSAY_TITLE, title);
+        intent.putExtra(Constants.INFORMAL_ESSAY_CONTENT, content);
         intent.setClass(context, AddInformalEssayActivity.class);
         context.startActivity(intent);
     }
@@ -209,8 +211,7 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startReadingReportListActivity(Context context) {
-        Intent intent = new Intent();
+    public static void startReadingReportListActivity(Context context, Intent intent) {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, BookReportListActivity.class);
         context.startActivity(intent);

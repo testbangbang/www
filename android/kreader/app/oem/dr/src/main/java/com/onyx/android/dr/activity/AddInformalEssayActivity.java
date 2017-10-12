@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.interfaces.InformalEssayView;
 import com.onyx.android.dr.presenter.InformalEssayPresenter;
@@ -60,7 +61,16 @@ public class AddInformalEssayActivity extends BaseActivity implements InformalEs
     @Override
     protected void initData() {
         informalEssayPresenter = new InformalEssayPresenter(getApplicationContext(), this);
+        getIntentData();
         setTitleData();
+    }
+
+    private void getIntentData() {
+        String informalEssayContent = getIntent().getStringExtra(Constants.INFORMAL_ESSAY_CONTENT);
+        String informalEssayTitle = getIntent().getStringExtra(Constants.INFORMAL_ESSAY_TITLE);
+        titleEditText.setText(informalEssayTitle);
+        contentEditText.setText(informalEssayContent);
+        Utils.movingCursor(titleEditText);
     }
 
     private void setTitleData() {

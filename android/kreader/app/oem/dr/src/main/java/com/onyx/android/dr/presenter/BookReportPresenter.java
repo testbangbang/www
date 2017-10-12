@@ -133,14 +133,7 @@ public class BookReportPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 CreateBookReportResult createBookReportResult = rq.getCreateBookReportResult();
-                if (createBookReportResult != null) {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.saved_successfully));
-                    bookReportView.setCreateBookReportData(createBookReportResult);
-                } else {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.save_failed));
-                }
+                bookReportView.saveBookReportData(createBookReportResult);
             }
         });
     }

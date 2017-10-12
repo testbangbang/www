@@ -155,8 +155,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
 
     @OnClick({R.id.title_bar_right_icon_four,
             R.id.menu_back,
-            R.id.title_bar_right_icon_three,
-            R.id.title_bar_right_icon_two})
+            R.id.title_bar_right_icon_three})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -167,9 +166,6 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
                 break;
             case R.id.title_bar_right_icon_three:
                 timePickerDialog.showDatePickerDialog(READING_RATE_DIALOG_EXPORT);
-                break;
-            case R.id.title_bar_right_icon_two:
-                ActivityManager.startAddInformalEssayActivity(this);
                 break;
         }
     }

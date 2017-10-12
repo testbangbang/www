@@ -38,6 +38,7 @@ import com.onyx.android.dr.presenter.BookReportPresenter;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.util.BookReportComparator;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.BookMarksPopupWindow;
 import com.onyx.android.dr.view.NotationDialog;
@@ -87,7 +88,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Bind(R.id.title_bar_right_menu)
     TextView titleBarRightMenu;
     @Bind(R.id.book_report_detail_title)
-    TextView bookReportDetailTitle;
+    EditText bookReportDetailTitle;
     @Bind(R.id.book_report_detail_contents)
     EditText bookReportDetailContents;
     @Bind(R.id.book_report_detail_web_view)
@@ -110,6 +111,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private CreateBookReportResult createBookReportResult;
     private OnLongClickTouchListener listener;
     private String[] childrenId = new String[100];
+    private String titleName;
 
     @Override
     protected Integer getLayoutId() {
@@ -164,7 +166,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             data = (GetBookReportListBean) serializableExtra;
             bookReportDetailContents.setText(data.content);
             bookReportDetailContents.setSelection(data.content.length());
-            bookReportDetailTitle.setText(data.name);
+            titleName = data.name;
             List<CommentsBean> comments = data.comments;
             if (comments != null && comments.size() > 0) {
                 bookReportWebContent.setVisibility(View.VISIBLE);
@@ -178,8 +180,10 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         bookPage = intent.getStringExtra(Constants.BOOK_PAGE);
         bookId = intent.getStringExtra(Constants.BOOK_ID);
         if (!StringUtils.isNullOrEmpty(bookName)) {
-            bookReportDetailTitle.setText(bookName);
+            titleName = bookName;
         }
+        bookReportDetailTitle.setText(titleName + getString(R.string.reader_response) + TimeUtils.getDataStringPart());
+        Utils.movingCursor(bookReportDetailTitle);
         initListener();
     }
 
@@ -344,7 +348,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         if (data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
             return;
         }
-
         if (data != null) {
             bookReportPresenter.deleteImpression(data._id);
             return;
@@ -354,9 +357,13 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
             return;
         }
-
-        if (!StringUtils.isNullOrEmpty(bookName) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
-            bookReportPresenter.createImpression(bookId, bookName, text, bookPage);
+        String title = bookReportDetailTitle.getText().toString();
+        if (StringUtils.isNullOrEmpty(title)) {
+            CommonNotices.showMessage(this, getResources().getString(R.string.input_title));
+            return;
+        }
+        if (!StringUtils.isNullOrEmpty(title) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
+            bookReportPresenter.createImpression(bookId, title, text, bookPage);
         }
     }
 
@@ -404,6 +411,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             public void onClick(View v) {
                 isSave = true;
                 dialog.dismiss();
+                finish();
             }
         });
 
@@ -416,7 +424,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         });
     }
 
-    @Override
     public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
         this.createBookReportResult = createBookReportResult;
         isSave = true;
@@ -425,7 +432,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     public void setBookReportList(List<GetBookReportListBean> list) {
-
     }
 
     @Override
@@ -436,7 +442,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     public void getBookReport(CreateBookReportResult result) {
-        //TODO: confirm not to export comments ?
         GetBookReportListBean getBookReportListBean = new GetBookReportListBean();
         getBookReportListBean.updatedAt = result.updatedAt;
         getBookReportListBean.name = result.name;
@@ -456,7 +461,19 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     public void setLibraryId(String bookId, String libraryId) {
-        //bookReportPresenter.shareImpression(bookId, libraryId);
+    }
+
+    @Override
+    public void saveBookReportData(CreateBookReportResult createBookReportResult) {
+        if (createBookReportResult != null) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                    .getResources().getString(R.string.saved_successfully));
+            setCreateBookReportData(createBookReportResult);
+            finish();
+        } else {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                    .getResources().getString(R.string.save_failed));
+        }
     }
 
     private String insertJsTag() {

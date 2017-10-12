@@ -39,7 +39,7 @@ public class SettingActivity extends BaseActivity {
     private FragmentManager fragmentManager;
     private FragmentTransaction fragmentTransaction;
     private int tag = -1;
-    private Map<Integer, BaseFragment> childViewList = new HashMap<Integer, BaseFragment>();
+    private Map<Integer, BaseFragment> childViewList = new HashMap<>();
     private int currentPageID = -1;
 
     @Override

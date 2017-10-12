@@ -41,6 +41,7 @@ public class Constants {
     public static final String EDITQUERY = "editQuery";
     public static final String LOCATION = "location";
     public static final String DICTTYPE = "dictType";
+    public static final String READER_RESPONSE_TYPE = "reader_response_type";
     public static final String NEW_WORD_BEAN = "New_Word_Bean";
     public static final String FRAGMENT_TYPE = "fragment_type";
     public static final String MINUTE_POSITION = "minutePosition";
@@ -160,6 +161,9 @@ public class Constants {
     public static final int INFORMAL_ESSAY = 0;
     public static final int READING_RATE = 1;
     public static final int READER_RESPONSE = 2;
+
+    public static final int BOOK_SOURCE = 0;
+    public static final int MY_NOTE_SOURCE = 1;
 
     public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
     public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";

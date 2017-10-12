@@ -14,7 +14,7 @@
             android:id="@+id/reading_rate_item_time"
             style="@style/good_sentence_activity_textview"
             android:layout_weight="2"
-            android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
+            android:layout_marginLeft="@dimen/reading_rate_item_time_margin_left"
             android:text="@string/book_report_list_time" />
 
         <View style="@style/vertical_view" />

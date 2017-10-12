@@ -1,5 +1,6 @@
 package com.onyx.android.dr.activity;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -17,6 +18,7 @@ import com.onyx.android.dr.event.DeleteBookReportEvent;
 import com.onyx.android.dr.event.ShareBookReportEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
@@ -25,6 +27,7 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -83,6 +86,9 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     private int pages;
     private BookReportPresenter bookReportPresenter;
     private String[] childrenId;
+    private String bookName;
+    private String bookPage;
+    private String bookId;
 
     @Override
     protected Integer getLayoutId() {
@@ -130,10 +136,33 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Override
     protected void initData() {
         bookReportPresenter = new BookReportPresenter(this);
+        initIntentAndTitleData();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         bookReportPresenter.getImpressionsList();
     }
 
-    @OnClick({R.id.image_view_back, R.id.title_bar_title, R.id.book_report_list_page_left, R.id.book_report_list_page_right})
+    private void initIntentAndTitleData() {
+        int type = getIntent().getIntExtra(Constants.JUMP_SOURCE, -1);
+        if (type == Constants.MY_NOTE_SOURCE) {
+            titleBarRightIconFour.setVisibility(View.GONE);
+        } else if (type == Constants.BOOK_SOURCE) {
+            titleBarRightIconFour.setVisibility(View.VISIBLE);
+            titleBarRightIconFour.setImageResource(R.drawable.ic_reader_note_diary_set);
+            bookName = getIntent().getStringExtra(Constants.BOOK_NAME);
+            bookPage = getIntent().getStringExtra(Constants.BOOK_PAGE);
+            bookId = getIntent().getStringExtra(Constants.BOOK_ID);
+        }
+    }
+
+    @OnClick({R.id.image_view_back,
+            R.id.title_bar_title,
+            R.id.book_report_list_page_left,
+            R.id.title_bar_right_icon_four,
+            R.id.book_report_list_page_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.image_view_back:
@@ -148,12 +177,18 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
             case R.id.book_report_list_page_right:
                 bookReportListRecycle.nextPage();
                 break;
+            case R.id.title_bar_right_icon_four:
+                startToActivity();
+                break;
         }
     }
 
-    @Override
-    public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
-
+    private void startToActivity() {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.BOOK_NAME, bookName);
+        intent.putExtra(Constants.BOOK_PAGE, bookPage);
+        intent.putExtra(Constants.BOOK_ID, bookId);
+        ActivityManager.startReadingReportActivity(this, intent);
     }
 
     @Override
@@ -163,7 +198,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     private void setData(List<GetBookReportListBean> list) {
-        if(bookReportListAdapter != null) {
+        if (bookReportListAdapter != null) {
             bookReportListAdapter.setData(list);
             String format = DRApplication.getInstance().getResources().getString(R.string.fragment_speech_recording_all_number);
             bookReportListTotalSize.setText(String.format(format, list.size()));
@@ -178,16 +213,18 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     @Override
     public void getBookReport(CreateBookReportResult result) {
-
     }
 
     @Override
     public void addCommentResult(CreateBookReportResult result) {
-
     }
 
     @Override
     public void setLibraryId(String bookId, String libraryId) {
+    }
+
+    @Override
+    public void saveBookReportData(CreateBookReportResult createBookReportResult) {
     }
 
     private void initPage() {
@@ -218,5 +255,11 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         GetBookReportListBean bookReportBean = event.getBookReportBean();
         DRPreferenceManager.saveShareType(DRApplication.getInstance(), Constants.READER_RESPONSE);
         ActivityManager.startShareBookReportActivity(this, bookReportBean._id, childrenId);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().post(new RedrawPageEvent());
     }
 }

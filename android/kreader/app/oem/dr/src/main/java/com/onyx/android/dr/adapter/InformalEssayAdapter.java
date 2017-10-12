@@ -56,7 +56,7 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        CreateInformalEssayBean bean = dataList.get(position);
+        final CreateInformalEssayBean bean = dataList.get(position);
         long currentTime = bean.currentTime;
         holder.content.setText(bean.content);
         holder.time.setText(TimeUtils.getDate(currentTime));
@@ -71,10 +71,10 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
                 }
             }
         });
-        holder.wordNumber.setOnClickListener(new View.OnClickListener() {
+        holder.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance());
+                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance(), bean.title, bean.content);
             }
         });
         holder.rootView.setOnClickListener(new View.OnClickListener() {
