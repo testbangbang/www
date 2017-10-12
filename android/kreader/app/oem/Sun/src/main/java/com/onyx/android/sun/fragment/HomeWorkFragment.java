@@ -8,8 +8,10 @@ import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.adapter.CourseAdapter;
 import com.onyx.android.sun.adapter.HomeworkFinishedAdapter;
 import com.onyx.android.sun.adapter.HomeworkUnfinishedAdapter;
+import com.onyx.android.sun.adapter.StudyReportAdapter;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
+import com.onyx.android.sun.cloud.bean.QuestionDetail;
 import com.onyx.android.sun.databinding.HomeworkBinding;
 import com.onyx.android.sun.interfaces.HomeworkView;
 import com.onyx.android.sun.presenter.HomeworkPresenter;
@@ -45,12 +47,14 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     private HomeworkPresenter homeworkPresenter;
     private HomeworkUnfinishedAdapter homeworkUnfinishedAdapter;
     private HomeworkFinishedAdapter homeworkFinishedAdapter;
+    private StudyReportAdapter studyReportAdapter;
 
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
         homeworkPresenter.getHomeworkUnfinishedData();
         homeworkPresenter.getHomeworkFinishedData(null,null,null,null);
+        homeworkPresenter.getStudyReportData(null);
     }
 
     @Override
@@ -77,6 +81,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
         homeworkBinding.homeworkStateRecyclerView.setAdapter(courseStateAdapter);
 
         homeworkFinishedAdapter = new HomeworkFinishedAdapter();
+        studyReportAdapter = new StudyReportAdapter();
         homeworkBinding.setListener(this);
         setSelected(R.id.homework_unfinished);
         timePickerDialog = new TimePickerDialog(getActivity());
@@ -129,6 +134,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
         homeworkBinding.homeworkStudyReport.setSelected(R.id.homework_study_report == id);
 
         homeworkBinding.setIsVisible(R.id.homework_finished == id);
+        homeworkBinding.setShowCourse(R.id.homework_finished == id || R.id.homework_study_report == id);
     }
 
     @Override
@@ -158,5 +164,17 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
             Collections.sort(content, new HomeworkFinishComparator());
             homeworkFinishedAdapter.setData(content);
         }
+    }
+
+    @Override
+    public void setReportData(List<FinishContent> content) {
+        if(studyReportAdapter != null) {
+            studyReportAdapter.setData(content);
+        }
+    }
+
+    @Override
+    public void setTaskDetail(QuestionDetail data) {
+
     }
 }

@@ -33,4 +33,6 @@
     <string name="homework_item_fill_homework">Fill homework</string>
     <string name="homework_item_submit_already">Submitted</string>
     <string name="homework_item_correct_already">Corrected</string>
+    <string name="file_homework_record">Answer record</string>
+    <string name="file_homework_commit">Submit</string>
 </resources>

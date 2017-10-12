@@ -5,11 +5,13 @@ import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
+import com.onyx.android.sun.cloud.bean.TaskBean;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.data.HomeworkData;
 import com.onyx.android.sun.interfaces.HomeworkView;
 import com.onyx.android.sun.requests.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
+import com.onyx.android.sun.requests.TaskDetailRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 
@@ -70,6 +72,47 @@ public class HomeworkPresenter {
                 List<FinishContent> content = data.content;
                 if (content != null && content.size() > 0) {
                     homeworkView.setFinishedData(content);
+                }
+            }
+        });
+    }
+
+    public void getStudyReportData(String course) {
+        HomeworkRequestBean requestBean = new HomeworkRequestBean();
+        requestBean.status = CloudApiContext.Practices.REPORT_STATE;
+        requestBean.course = course;
+        requestBean.studentId = "2";
+
+        final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
+        homeworkData.getHomeworkFinishedData(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                HomeworkFinishedResultBean resultBean = rq.getResultBean();
+                if (resultBean == null || resultBean.data == null) {
+                    return;
+                }
+
+                HomeworkFinishedResultBean.FinishData data = resultBean.data;
+                List<FinishContent> content = data.content;
+                if (content != null && content.size() > 0) {
+                    homeworkView.setReportData(content);
+                }
+            }
+        });
+    }
+
+    public void getTaskDetail(int id) {
+        final TaskDetailRequest rq = new TaskDetailRequest(1);
+        homeworkData.getTaskDetail(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                TaskBean taskBean = rq.getTaskBean();
+                if(taskBean == null) {
+                    return;
+                }
+
+                if (taskBean.data != null) {
+                    homeworkView.setTaskDetail(taskBean.data);
                 }
             }
         });

@@ -3,6 +3,7 @@ package com.onyx.android.sun.data;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.requests.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
+import com.onyx.android.sun.requests.TaskDetailRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.SunRequestManager;
 
@@ -16,6 +17,10 @@ public class HomeworkData {
     }
 
     public void getHomeworkFinishedData(HomeworkFinishedRequest rq, BaseCallback callback) {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, callback);
+    }
+
+    public void getTaskDetail(TaskDetailRequest rq, BaseCallback callback) {
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, callback);
     }
 }

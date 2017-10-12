@@ -10,7 +10,10 @@ import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.databinding.HomeworkItemBinding;
+import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -58,6 +61,9 @@ public class HomeworkUnfinishedAdapter extends PageRecyclerView.PageAdapter {
         if (tag == null) {
             return;
         }
+        int position = (int) tag;
+        ContentBean contentBean = data.get(position);
+        EventBus.getDefault().post(new UnfinishedEvent(contentBean.id, contentBean.type, contentBean.title));
     }
 
     public void setData(List<ContentBean> data) {

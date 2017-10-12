@@ -33,4 +33,6 @@
     <string name="homework_item_fill_homework">补作业</string>
     <string name="homework_item_submit_already">已提交</string>
     <string name="homework_item_correct_already">已批改</string>
+    <string name="file_homework_record">答题记录</string>
+    <string name="file_homework_commit">提交</string>
 </resources>

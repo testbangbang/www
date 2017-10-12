@@ -12,12 +12,19 @@ import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
+import com.onyx.android.sun.event.FillHomeworkEvent;
+import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
+import com.onyx.android.sun.fragment.FillHomeworkFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.HashMap;
 import java.util.List;
@@ -127,10 +134,19 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_STUDY_MANAGEMENT:
                     baseFragment = new MainFragment();
                     break;
+                case ChildViewID.FRAGMENT_FILL_HOMEWORK:
+                    baseFragment = new FillHomeworkFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
         }
         return baseFragment;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUnfinishedEvent(UnfinishedEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_FILL_HOMEWORK);
+        EventBus.getDefault().post(new FillHomeworkEvent(event.getId(), event.getType(), event.getTitle()));
     }
 }

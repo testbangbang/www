@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.HandlerFinishContent;
 import com.onyx.android.sun.databinding.ItemContentBinding;
@@ -30,12 +31,12 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return 9;
+        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_finish_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 1;
+        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_finish_col);
     }
 
     @Override
