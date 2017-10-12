@@ -603,11 +603,11 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (event.isUiOpen()) {
-            StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, false);
-            stopNoteActionChain.execute(getReaderDataHolder(), null);
+            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(dataHolder.getVisiblePages());
+            flushNoteAction.execute(dataHolder, null);
         } else {
-            final StartNoteRequest request = new StartNoteRequest(getReaderDataHolder().getVisiblePages());
-            getReaderDataHolder().getNoteManager().submit(getReaderDataHolder().getContext(), request, null);
+            FlushNoteAction flushNoteAction = new FlushNoteAction(dataHolder.getVisiblePages(), true, true, false, false);
+            flushNoteAction.execute(dataHolder, null);
         }
         enableShortcut(!event.isUiOpen());
     }
