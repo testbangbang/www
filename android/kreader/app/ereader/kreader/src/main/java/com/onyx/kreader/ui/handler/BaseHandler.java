@@ -12,19 +12,16 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
-import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.NextScreenAction;
 import com.onyx.kreader.ui.actions.PanAction;
 import com.onyx.kreader.ui.actions.PinchZoomAction;
 import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.actions.ViewImageAction;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
@@ -274,10 +271,10 @@ public abstract class BaseHandler {
         if (!readerDataHolder.getReaderViewInfo().canPan()) {
             PageTurningDirection direction = PageTurningDetector.detectHorizontalTuring(readerDataHolder.getContext(), -offsetX);
             if (direction == PageTurningDirection.Left) {
-                beforePageChangeByUser();
+                beforePageChangeByUser(readerDataHolder);
                 prevPage(readerDataHolder);
             } else if (direction == PageTurningDirection.Right) {
-                beforePageChangeByUser();
+                beforePageChangeByUser(readerDataHolder);
                 nextPage(readerDataHolder);
             }
             return;
@@ -361,7 +358,7 @@ public abstract class BaseHandler {
         return point;
     }
 
-    public void beforePageChangeByUser() {
+    public void beforePageChangeByUser(ReaderDataHolder readerDataHolder) {
     }
 
     public void showReaderMenu(ReaderDataHolder readerDataHolder) {

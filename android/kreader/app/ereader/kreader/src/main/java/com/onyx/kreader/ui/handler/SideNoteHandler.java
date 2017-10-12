@@ -120,13 +120,12 @@ public class SideNoteHandler extends BaseHandler {
         flushNoteAction.execute(getParent().getReaderDataHolder(), null);
     }
 
-    public void beforePageChangeByUser() {
-
+    public void beforeChangePosition(ReaderDataHolder readerDataHolder) {
+        FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
     }
 
     public void afterChangePosition(final ReaderDataHolder readerDataHolder) {
-        final ResumeDrawingAction action = new ResumeDrawingAction(readerDataHolder.getVisiblePages());
-        action.execute(readerDataHolder, null);
+        FlushNoteAction.resumeAfterFlush(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
     }
 
     public void close(final ReaderDataHolder readerDataHolder) {

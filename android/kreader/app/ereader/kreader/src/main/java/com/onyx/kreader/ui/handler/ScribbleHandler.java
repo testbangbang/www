@@ -128,7 +128,7 @@ public class ScribbleHandler extends BaseHandler {
         flushNoteAction.execute(getParent().getReaderDataHolder(), null);
     }
 
-    public void beforePageChangeByUser() {
+    public void beforePageChangeByUser(ReaderDataHolder readerDataHolder) {
 
     }
 
