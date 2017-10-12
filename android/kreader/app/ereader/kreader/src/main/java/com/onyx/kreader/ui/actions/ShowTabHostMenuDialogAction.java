@@ -1,5 +1,6 @@
 package com.onyx.kreader.ui.actions;
 
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.view.Gravity;
 import android.view.SurfaceView;
@@ -10,6 +11,9 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.StopNoteActionChain;
+import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -63,7 +67,7 @@ public class ShowTabHostMenuDialogAction extends BaseAction {
     }
 
     private void showTabHostMenuDialog(final ReaderDataHolder dataHolder, List<String> files) {
-        DialogTabHostMenu dlg = new DialogTabHostMenu(dataHolder.getContext(), files, isSideReadingMode,
+        final DialogTabHostMenu dlg = new DialogTabHostMenu(dataHolder.getContext(), files, isSideReadingMode,
                 new DialogTabHostMenu.Callback() {
 
                     @Override
@@ -113,6 +117,25 @@ public class ShowTabHostMenuDialogAction extends BaseAction {
         WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
         lp.x = location[0] + 10;
         lp.y = location[1];
+
+        final boolean isNoteWriting = dataHolder.isNoteWritingProvider();
+
+        dlg.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                dataHolder.removeActiveDialog(dlg);
+                if (isNoteWriting) {
+                    FlushNoteAction flushNoteAction = new FlushNoteAction(dataHolder.getVisiblePages(), true, true, false, false);
+                    flushNoteAction.execute(dataHolder, null);
+                }
+            }
+        });
+
+        dataHolder.addActiveDialog(dlg);
+        if (isNoteWriting) {
+            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(dataHolder.getVisiblePages());
+            flushNoteAction.execute(dataHolder, null);
+        }
 
         dlg.show();
     }
