@@ -9,12 +9,10 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,31 +30,21 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.QueryArgs;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
-import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
-import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
-import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
-import com.onyx.android.sdk.reader.utils.PdfWriterUtils;
-import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
-import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
+import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceReceiver;
-import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TreeObserverUtils;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
-import com.onyx.kreader.ui.dialog.DialogTabHostMenu;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -179,11 +167,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         ReaderTabManager.ReaderTab[] allTabs = ReaderTabManager.ReaderTab.values();
         for (ReaderTabManager.ReaderTab tab : allTabs) {
             if (tab != currentTab) {
-                moveReaderTabToBack(tab);
+                ReaderTabActivityManager.moveReaderTabToBack(this, tabManager, tab);
             }
         }
 
-        moveReaderTabToBack(currentTab);
+        ReaderTabActivityManager.moveReaderTabToBack(this, tabManager, currentTab);
         finish();
     }
 
@@ -200,7 +188,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         btnMenu.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showTabHostMenuDialog(btnMenu);
+                ReaderTabActivityManager.showTabHostMenuDialog(ReaderTabHostActivity.this,
+                        tabManager, getCurrentTabInHost());
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
@@ -238,7 +227,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
                     reopenReaderTab(tab);
                 }
-                onTabSwitched(tab);
+                ReaderTabActivityManager.notifyTabActivated(ReaderTabHostActivity.this, tabManager, tab);
             }
         });
 
@@ -277,7 +266,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         saveReaderTabState();
 
         tabBeforeSideReading = getCurrentTabInHost();
-        ReaderBroadcastReceiver.sendStopNoteIntent(this, tabManager.getTabReceiver(tabBeforeSideReading));
+        ReaderTabActivityManager.notifyStopNoteWriting(this, tabManager, tabBeforeSideReading);
 
         isSideReading = true;
 
@@ -297,18 +286,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         setSideReadingLeft(leftTab);
         setSideReadingRight(rightTab);
 
-        addReaderTab(leftTab, left, false);
-        addReaderTab(rightTab, right, false);
+        addOpenedTab(leftTab, left);
+        addOpenedTab(rightTab, right);
         rebuildTabWidget();
 
-        bringReaderTabToFront(leftTab);
-        openDocWithTab(leftTab, left, false);
+        ReaderTabActivityManager.bringTabToFront(this, tabManager, leftTab, tabWidgetVisible.get());
+        openDocWithTab(leftTab, left);
 
-        bringReaderTabToFront(rightTab);
-        openDocWithTab(rightTab, right, sideNoteMode);
-
-        bringReaderTabToFront(getSideReadingLeft());
-        bringReaderTabToFront(getSideReadingRight());
+        ReaderTabActivityManager.bringTabToFront(this, tabManager, rightTab, tabWidgetVisible.get());
+        openDocWithTab(rightTab, right);
 
         findViewById(R.id.dash_line_splitter).setVisibility(View.VISIBLE);
         findViewById(R.id.btn_menu).setVisibility(View.GONE);
@@ -342,29 +328,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         tabBeforeSideReading = null;
 
         setRequestedOrientation(orientationBeforeSideReading);
-    }
-
-    private void startSideNote(String path) {
-        File noteFile = getNoteFile(path);
-        if (!noteFile.exists()) {
-            try {
-                FileUtils.copyFile(new File("/sdcard/blanknote.pdf"), noteFile);
-                PdfWriterUtils.setDocumentTitle(noteFile.getAbsolutePath(),
-                        FileUtils.getBaseName(noteFile.getName()));
-            } catch (Exception e) {
-                // TODO string res
-                Toast.makeText(this, "creating note file failed!", Toast.LENGTH_LONG).show();
-                return;
-            }
-        }
-
-        startSideReadingMode(path, noteFile.getAbsolutePath(), true);
-    }
-
-    private File getNoteFile(String docPath) {
-        String dir = FileUtils.getParent(docPath);
-        String basename = FileUtils.getBaseName(docPath);
-        return new File(dir, basename + "-note.pdf");
     }
 
     private void switchSideReadingTab() {
@@ -411,18 +374,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return true;
     }
 
-    private ReaderTabManager.ReaderTab findOpenedTabByPath(final String path) {
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            if (entry.getValue().compareTo(path) == 0) {
-                return entry.getKey();
-
-            }
-        }
-        return null;
-    }
-
     private boolean closeTabIfOpenFileFailed(final String path) {
-        final ReaderTabManager.ReaderTab tab = findOpenedTabByPath(path);
+        final ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
         if (tab == null) {
             return false;
         }
@@ -431,21 +384,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return true;
     }
 
-    private boolean gotoPageLink(final String link) {
+    private void gotoPageLink(final String link) {
         ReaderTabManager.ReaderTab tab = getCurrentTabInHost();
-        if (tab == null) {
-            return false;
-        }
 
-        if (!isDoubleLinked) {
-            ReaderBroadcastReceiver.sendGotoPageLinkIntent(this, tabManager.getTabReceiver(tab), link);
-            return true;
+        ReaderTabManager.ReaderTab dst = tab;
+        if (isDoubleLinked) {
+            dst = isSideReadingLeft(tab) ? getSideReadingRight() : getSideReadingLeft();
         }
-
-        ReaderTabManager.ReaderTab dst = tab == getSideReadingLeft() ?
-                getSideReadingRight() : getSideReadingLeft();
-        ReaderBroadcastReceiver.sendGotoPageLinkIntent(this, tabManager.getTabReceiver(dst), link);
-        return true;
+        ReaderTabActivityManager.notifyGotoPageLink(this, tabManager, dst, link);
     }
 
     private void updateTabLayoutState(boolean show) {
@@ -462,7 +408,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
                     if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
                         if (getCurrentTabInHost() != entry.getKey()) {
-                            bringReaderTabToFront(entry.getKey());
+                            ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get());
                         }
                         return;
                     }
@@ -480,7 +426,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 Debug.d("onChangeOrientation, current: " + current + ", target: " + orientation);
                 setRequestedOrientation(orientation);
                 SingletonSharedPreference.setScreenOrientation(orientation);
-                if (current != orientation && isReverseOrientation(current, orientation)) {
+                if (current != orientation && DeviceUtils.isReverseOrientation(current, orientation)) {
                     onScreenOrientationChanged();
                 }
             }
@@ -523,12 +469,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             @Override
             public void onEnableDebugLog() {
-                enableDebugLog(true);
+                setEnableDebugLog(true);
+                ReaderTabActivityManager.enableDebugLog(ReaderTabHostActivity.this, tabManager, true);
             }
 
             @Override
             public void onDisableDebugLog() {
-                enableDebugLog(false);
+                setEnableDebugLog(false);
+                ReaderTabActivityManager.enableDebugLog(ReaderTabHostActivity.this, tabManager, false);
             }
         });
 
@@ -574,19 +522,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         closeReaderIfFileNotExists();
     }
 
-    private boolean isReverseOrientation(int current, int target) {
-        return (current == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT) ||
-                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT && target == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT) ||
-                (current == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) ||
-                (current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE && target == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-    }
-
     private void onScreenOrientationChanged() {
         Debug.d(TAG, "onScreenOrientationChanged");
         int current = DeviceUtils.getScreenOrientation(this);
         if (isSideReading && (current == ActivityInfo.SCREEN_ORIENTATION_PORTRAIT ||
                 current == ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT)) {
             quitSideReadingMode();
+            return;
         }
 
         showTabWidgetOnCondition();
@@ -595,16 +537,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         // in some cases, tab host activity will be blocked by tab activity, so force it to be front
         bringSelfToFront();
         if (StringUtils.isNotBlank(pathToContinueOpenAfterRotation)) {
-            openDocWithTab(pathToContinueOpenAfterRotation);
+            openDocFromIntent(pathToContinueOpenAfterRotation);
             pathToContinueOpenAfterRotation = null;
         } else if (tabManager.getOpenedTabs().size() > 0) {
             ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
             if (isSideReading) {
-                bringReaderTabToFront(getSideReadingLeft());
-                bringReaderTabToFront(getSideReadingRight());
+                ReaderTabActivityManager.bringTabToFront(this, tabManager, getSideReadingLeft(), tabWidgetVisible.get());
+                ReaderTabActivityManager.bringTabToFront(this, tabManager, getSideReadingRight(), tabWidgetVisible.get());
             }
 
-            bringReaderTabToFront(currentTab);
+            ReaderTabActivityManager.bringTabToFront(this, tabManager, currentTab, tabWidgetVisible.get());
         }
     }
 
@@ -640,8 +582,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         tabIndicator.findViewById(R.id.image_button_menu).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                bringReaderTabToFront(tab);
-                showTabHostMenuDialog(v);
+                ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, tab, tabWidgetVisible.get());
+                ReaderTabActivityManager.showTabHostMenuDialog(ReaderTabHostActivity.this, tabManager, tab);
             }
         });
 
@@ -662,6 +604,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void rebuildTabWidget() {
+        Debug.d(TAG, "rebuilding tab widget:");
         insideTabChanging = true;
         try {
             ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
@@ -676,9 +619,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     reverseList.add(0, entry);
                 }
 
-                Debug.d(TAG, "rebuilding tab widget:");
                 for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : reverseList) {
-                    Debug.d(TAG, "rebuilding: " + entry.getKey());
                     addTabToHost(entry.getKey(), entry.getValue());
                 }
 
@@ -745,6 +686,31 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return tabHost.getHeight() - tabHost.getTabWidget().getHeight() - divider.getHeight();
     }
 
+    private int getTabWindowGravity(ReaderTabManager.ReaderTab tab) {
+        if (!isSideReading) {
+            return Gravity.BOTTOM;
+        }
+
+        if (isSideReadingLeft(tab)) {
+            return Gravity.BOTTOM | Gravity.LEFT;
+        } else {
+            return Gravity.BOTTOM | Gravity.RIGHT;
+        }
+    }
+
+    private int getTabWindowWidth(ReaderTabManager.ReaderTab tab) {
+        if (!isSideReading) {
+            return WindowManager.LayoutParams.MATCH_PARENT;
+        }
+
+        int splitLineWidth = findViewById(R.id.dash_line_splitter).getWidth();
+        return (getTabContentWidth() - splitLineWidth) / 2;
+    }
+
+    private int getTabWindowHeight(ReaderTabManager.ReaderTab tab) {
+        return getTabContentHeight();
+    }
+
     private void acquireStartupWakeLock() {
         if (startupWakeLock == null) {
             startupWakeLock = new WakeLockHolder();
@@ -770,10 +736,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     updateReaderTabWindowHeight();
                     bringSelfToFront();
                     if (isSideReading) {
-                        bringReaderTabToFront(getSideReadingLeft());
-                        bringReaderTabToFront(getSideReadingRight());
+                        ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, getSideReadingLeft(), tabWidgetVisible.get());
+                        ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, getSideReadingRight(), tabWidgetVisible.get());
                     }
-                    bringReaderTabToFront(getCurrentTabInHost());
+                    ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, getCurrentTabInHost(), tabWidgetVisible.get());
                 }
             });
         }
@@ -787,7 +753,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 if (tab == currentTab) {
                     continue;
                 }
-                closeTabActivity(tab);
+                ReaderTabActivityManager.closeTabActivity(this, tabManager, tab);
             }
         }
 
@@ -796,7 +762,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
         if (!tabManager.supportMultipleTabs()) {
             tabWidgetVisible.set(true);
-            updateTabWidgetVisibilityOnOpenedReaderTabs(true);
+            ReaderTabActivityManager.updateTabWidgetVisibilityOnOpenedReaderTabs(this, tabManager, true);
         }
     }
 
@@ -863,7 +829,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                         pathToContinueOpenAfterRotation = path;
                         return;
                     }
-                    openDocWithTab(path);
+                    openDocFromIntent(path);
                 } finally {
                     releaseStartupWakeLock();
                 }
@@ -880,8 +846,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         int current = DeviceUtils.getScreenOrientation(this);
         Debug.d("current orientation: " + current + ", target orientation: " + target);
         if (current != target) {
+            //noinspection ResourceType
             setRequestedOrientation(target);
-            if (isReverseOrientation(current, target)) {
+            if (DeviceUtils.isReverseOrientation(current, target)) {
                 // reverse orientation will not trigger onConfigurationChanged() in activity,
                 // so we process as orientation not changed
                 return false;
@@ -891,7 +858,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return false;
     }
 
-    private void openDocWithTab(String path) {
+    private void openDocFromIntent(String path) {
         // ensure tab host is visible before opening the doc
         bringSelfToFront();
 
@@ -903,48 +870,22 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
 
         tab = getFreeReaderTab();
-        openDocWithTab(tab, path);
+        openDocWithTab(tab, path, getIntent());
+        addOpenedTab(tab, path);
+        updateReaderTab(tab);
     }
 
     private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path) {
-        openDocWithTab(tab, path, false);
-        addReaderTab(tab, path, true);
+        openDocWithTab(tab, path, null);
     }
 
-    private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path, boolean sideNoteMode) {
-        Debug.d(TAG, "openDocWithTab: " + tab + ", " + path);
-        Intent intent = new Intent(this, tabManager.getTabActivity(tab));
-        intent.setAction(Intent.ACTION_VIEW);
-        intent.setDataAndType(Uri.fromFile(new File(path)), getIntent().getType());
-        intent.putExtras(getIntent());
-        final int tabContentHeight = getTabContentHeight();
-        intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, tabContentHeight);
-        if (isSideReading) {
-            if (isSideReadingLeft(tab)) {
-                intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_GRAVITY, Gravity.BOTTOM | Gravity.LEFT);
-            } else {
-                intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_GRAVITY, Gravity.BOTTOM | Gravity.RIGHT);
-            }
-            intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_WIDTH, getTabContentWidth() / 2 - 2);
-        }
+    private void openDocWithTab(ReaderTabManager.ReaderTab tab, String path, Intent srcIntent) {
+        final int gravity = getTabWindowGravity(tab);
+        final int width = getTabWindowWidth(tab);
+        final int height = getTabWindowHeight(tab);
 
-        if (enableDebugLog != null) {
-            intent.putExtra(ReaderBroadcastReceiver.TAG_ENABLE_DEBUG, enableDebugLog.get());
-        }
-        if (tabManager.getOpenedTabs().size() > 1) {
-            intent.putExtra(ReaderBroadcastReceiver.TAG_TAB_WIDGET_VISIBLE, tabWidgetVisible.get());
-        }
-        if (isSideReading) {
-            intent.putExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, true);
-        }
-        if (sideNoteMode) {
-            intent.putExtra(ReaderBroadcastReceiver.TAG_SIDE_NOTE_MODE, true);
-        }
-
-        ReaderBroadcastReceiver.sendStartReaderIntent(this, intent,
-                tabManager.getTabReceiver(tab),
-                tabManager.getTabActivity(tab)
-        );
+        ReaderTabActivityManager.openDocument(this, tabManager, tab, srcIntent, path,
+                gravity, width, height, tabWidgetVisible.get(), isSideReading);
     }
 
     private ReaderTabManager.ReaderTab getFreeReaderTab() {
@@ -953,15 +894,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             return tab;
         }
         tab = tabManager.reuseOpenedTab();
-//        closeTabActivity(tab);
         return tab;
     }
 
-    private void addReaderTab(ReaderTabManager.ReaderTab tab, String path, boolean updateTabState) {
+    private void addOpenedTab(ReaderTabManager.ReaderTab tab, String path) {
         tabManager.addOpenedTab(tab, path);
-        if (updateTabState) {
-            updateReaderTab(tab);
-        }
     }
 
     private void updateReaderTab(ReaderTabManager.ReaderTab tab) {
@@ -977,7 +914,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void closeReaderTab(ReaderTabManager.ReaderTab tab, boolean closeTabActivity, boolean cleanUpTabWidget) {
         if (closeTabActivity) {
-            closeTabActivity(tab);
+            ReaderTabActivityManager.closeTabActivity(this, tabManager, tab);
         }
         tabManager.removeOpenedTab(tab);
 
@@ -995,14 +932,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
     }
 
-    private void closeTabActivity(ReaderTabManager.ReaderTab tab) {
-        ReaderBroadcastReceiver.sendCloseReaderIntent(this, tabManager.getTabReceiver(tab));
-    }
-
     private void reopenReaderTab(ReaderTabManager.ReaderTab tab) {
-        if (!bringReaderTabToFront(tab)) {
+        if (!ReaderTabActivityManager.bringTabToFront(this, tabManager, tab, tabWidgetVisible.get())) {
             openDocWithTab(tab, tabManager.getOpenedTabs().get(tab));
         }
+        updateCurrentTabInHost(tab);
+        updateReaderTabWindowHeight(tab);
     }
 
     private boolean bringSelfToFront() {
@@ -1022,56 +957,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return false;
     }
 
-    private boolean bringReaderTabToFront(ReaderTabManager.ReaderTab tab) {
-        if (!tabManager.getOpenedTabs().containsKey(tab)) {
-            return false;
-        }
-
-        String clzName = tabManager.getTabActivity(tab).getName();
-        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
-            int nSize = tasksList.size();
-            for (int i = 0; i < nSize; i++) {
-                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                    Debug.d(TAG, "bring tab to front succeeded: " + tab);
-                    updateCurrentTabInHost(tab);
-                    updateReaderTabWindowHeight(tab);
-                    am.moveTaskToFront(tasksList.get(i).id, 0);
-
-                    if (!tabManager.supportMultipleTabs() || tabManager.getOpenedTabs().size() <= 1) {
-                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(this,
-                                tabManager.getTabReceiver(tab), true);
-                    } else {
-                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(this,
-                                tabManager.getTabReceiver(tab), tabWidgetVisible.get());
-                    }
-                    return true;
-                }
-            }
-        }
-        Debug.d(TAG, "bring tab to front failed: " + tab);
-        return false;
-    }
-
-    private boolean moveReaderTabToBack(ReaderTabManager.ReaderTab tab) {
-        String clzName = tabManager.getTabActivity(tab).getName();
-        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
-            int nSize = tasksList.size();
-            for (int i = 0; i < nSize; i++) {
-                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                    Debug.d(TAG, "move tab to back succeeded: " + tab);
-                    ReaderBroadcastReceiver.sendMoveTaskToBackIntent(this, tabManager.getTabReceiver(tab));
-                    return true;
-                }
-            }
-        }
-        Debug.d(TAG, "move tab to back failed: " + tab);
-        return false;
-    }
-
     private void updateReaderTabWindowHeight() {
         if (isSideReading) {
             updateReaderTabWindowHeight(getSideReadingLeft());
@@ -1084,45 +969,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void updateReaderTabWindowHeight(ReaderTabManager.ReaderTab tab) {
-        final int tabContentHeight = getTabContentHeight();
-        Debug.d(TAG, "updateReaderTabWindowHeight: " + tab + ", " + tabContentHeight);
-        if (!tabManager.getOpenedTabs().containsKey(tab)) {
-            return;
-        }
+        final int gravity = getTabWindowGravity(tab);
+        final int width = getTabWindowWidth(tab);
+        final int height = getTabWindowHeight(tab);
 
-        if (!isSideReading) {
-            ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
-                    tabManager.getTabReceiver(tab),
-                    Gravity.BOTTOM,
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    tabContentHeight);
-            return;
-        }
-
-        int splitLineWidth = findViewById(R.id.dash_line_splitter).getWidth();
-
-        if (isSideReadingLeft(tab)) {
-            ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
-                    tabManager.getTabReceiver(tab),
-                    Gravity.BOTTOM | Gravity.LEFT,
-                    (getTabContentWidth() - splitLineWidth) / 2,
-                    tabContentHeight);
-        } else {
-            ReaderBroadcastReceiver.sendResizeReaderWindowIntent(this,
-                    tabManager.getTabReceiver(tab),
-                    Gravity.BOTTOM | Gravity.RIGHT,
-                    (getTabContentWidth() - splitLineWidth) / 2,
-                    tabContentHeight);
-        }
-    }
-
-    private void onTabSwitched(final ReaderTabManager.ReaderTab tab) {
-        Debug.d(getClass(), "onTabSwitched: " + tab);
-        final String path = tabManager.getOpenedTabs().get(tab);
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            ReaderBroadcastReceiver.sendDocumentActivatedIntent(this,
-                    tabManager.getTabReceiver(entry.getKey()), path);
-        }
+        ReaderTabActivityManager.updateTabWindow(this, tabManager, tab,
+                gravity, width, height);
     }
 
     private void saveReaderTabState() {
@@ -1142,59 +994,13 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         rebuildTabWidget();
     }
 
-    private void enableDebugLog(boolean enabled) {
-        Log.d(TAG.getSimpleName(), "enableDebugLog: " + enabled);
-        setEnableDebugLog(enabled);
-        enableDebugLogOnOpenedReaderTabs(enabled);
-    }
-
-    private void enableDebugLogOnOpenedReaderTabs(boolean enabled) {
-        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
-            int nSize = tasksList.size();
-            for (int i = 0; i < nSize; i++) {
-                for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
-                    String clzName = tabManager.getTabActivity(tab).getName();
-                    if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                        Debug.d(TAG, "set debug log: " + tab + ", " + enabled);
-                        if (enabled) {
-                            ReaderBroadcastReceiver.sendEnableDebugLogIntent(this, tabManager.getTabReceiver(tab));
-                        } else {
-                            ReaderBroadcastReceiver.sendDisableDebugLogIntent(this, tabManager.getTabReceiver(tab));
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     private void updateTabWidgetVisibility(boolean visible) {
         setTabWidgetVisible(visible);
         showTabWidgetOnCondition();
         updateReaderTabWindowHeight();
-        updateTabWidgetVisibilityOnOpenedReaderTabs(visible);
+        ReaderTabActivityManager.updateTabWidgetVisibilityOnOpenedReaderTabs(this, tabManager, visible);
 
         saveReaderTabState();
-    }
-
-    private void updateTabWidgetVisibilityOnOpenedReaderTabs(boolean visible) {
-        ActivityManager am = (ActivityManager) getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
-            int nSize = tasksList.size();
-            for (int i = 0; i < nSize; i++) {
-                for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
-                    String clzName = tabManager.getTabActivity(tab).getName();
-                    if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                        Debug.d(TAG, "update tab widget visibility: " + tab + ", " + visible);
-                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(this, tabManager.getTabReceiver(tab), visible);
-                        break;
-                    }
-                }
-            }
-        }
     }
 
     private void showDialog(Dialog dlg) {
@@ -1205,58 +1011,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 sendBroadcast(new Intent(com.onyx.kreader.note.receiver.DeviceReceiver.SYSTEM_UI_DIALOG_CLOSE_ACTION));
                 tabHost.setBackgroundColor(Color.WHITE);
                 if (isSideReading) {
-                    bringReaderTabToFront(getSideReadingLeft());
-                    bringReaderTabToFront(getSideReadingRight());
+                    ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, getSideReadingLeft(), tabWidgetVisible.get());
+                    ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, getSideReadingRight(), tabWidgetVisible.get());
                 } else if (getCurrentTabInHost() != null) {
-                    bringReaderTabToFront(getCurrentTabInHost());
+                    ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, getCurrentTabInHost(), tabWidgetVisible.get());
                 }
             }
         });
         bringSelfToFront();
         dlg.show();
         sendBroadcast(new Intent(com.onyx.kreader.note.receiver.DeviceReceiver.SYSTEM_UI_DIALOG_OPEN_ACTION));
-    }
-
-    private boolean isValidFilePath(String path) {
-        if (StringUtils.isNullOrEmpty(path)) {
-            return false;
-        }
-        File file = new File(path);
-        return file.exists() && file.isFile();
-    }
-
-    private ArrayList<String> getRecentFiles(List<Metadata> list) {
-        ArrayList<String> files = new ArrayList<>();
-        if (CollectionUtils.isNullOrEmpty(list)) {
-            for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-                if (isValidFilePath(entry.getValue())) {
-                    files.add(entry.getValue());
-                }
-            }
-            return files;
-        }
-
-        for (Metadata data : list) {
-            if (isValidFilePath(data.getNativeAbsolutePath())) {
-                files.add(data.getNativeAbsolutePath());
-            }
-        }
-        return files;
-    }
-
-    private void showTabHostMenuDialog(final View menuButton) {
-        ReaderBroadcastReceiver.sendShowTabHostMenuDialogIntent(this,
-                tabManager.getTabReceiver(getCurrentTabInHost()));
-//        final QueryArgs queryArgs = QueryBuilder.recentReadingQuery(SortBy.RecentlyRead, SortOrder.Desc);
-//
-//        final MetadataRequest metadataRequest = new MetadataRequest(queryArgs);
-//        DataManager dataManager = new DataManager();
-//        dataManager.submit(ReaderTabHostActivity.this, metadataRequest, new BaseCallback() {
-//            @Override
-//            public void done(BaseRequest request, Throwable e) {
-//                showTabHostMenuDialog(menuButton, getRecentFiles(metadataRequest.getList()));
-//            }
-//        });
     }
 
     private void onSideReadingCallback(ReaderTabHostBroadcastReceiver.SideReadingCallback callback,
@@ -1289,60 +1053,4 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
     }
 
-    private void showTabHostMenuDialog(View menuButton, List<String> files) {
-        DialogTabHostMenu dlg = new DialogTabHostMenu(ReaderTabHostActivity.this, files, isSideReading,
-                new DialogTabHostMenu.Callback() {
-
-                    @Override
-                    public void onLinkedOpen(String path) {
-                        startSideReadingMode(path, path, false);
-
-                        isDoubleOpen = true;
-                        isDoubleLinked = true;
-                    }
-
-                    @Override
-                    public void onSideOpen(String left, String right) {
-                        startSideReadingMode(left, right, false);
-                    }
-
-                    @Override
-                    public void onSideNote(String path) {
-                        startSideNote(path);
-                    }
-
-                    @Override
-                    public void onOpenDoc(String path) {
-                        ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
-                        if (tab != null) {
-                            reopenReaderTab(tab);
-                            return;
-                        }
-                        openDocWithTab(getCurrentTabInHost(), path);
-                    }
-
-                    @Override
-                    public void onSideSwitch() {
-                        switchSideReadingTab();
-                    }
-
-                    @Override
-                    public void onClosing() {
-                        if (isSideReading) {
-                            quitSideReadingMode();
-                            return;
-                        }
-                    }
-                });
-
-        int[] location = new int[2];
-        menuButton.getLocationOnScreen(location);
-
-        dlg.getWindow().setGravity(Gravity.LEFT | Gravity.TOP);
-        WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
-        lp.x = location[0] + 10;
-        lp.y = location[1] + tabWidget.getHeight();
-        
-        showDialog(dlg);
-    }
 }
