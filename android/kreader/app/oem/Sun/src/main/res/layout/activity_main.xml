@@ -48,7 +48,7 @@
                 android:layout_height="@dimen/message_image_width"
                 android:layout_alignParentRight="true"
                 android:onClick="@{listener.onClick}"
-                android:src="@{haveNew?@drawable/ic_launcher:@drawable/ic_launcher_round}" />
+                android:src="@{haveNew?@drawable/ic_prompt:@drawable/ic_prompt}" />
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/main_activity_tab"

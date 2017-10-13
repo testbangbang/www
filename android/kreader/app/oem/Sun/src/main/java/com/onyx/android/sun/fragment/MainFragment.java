@@ -1,9 +1,12 @@
 package com.onyx.android.sun.fragment;
 
 import android.databinding.ViewDataBinding;
+import android.support.v4.util.TimeUtils;
 import android.view.View;
 
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DatabaseUtils;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.adapter.TodayTaskAdapter;
@@ -18,7 +21,10 @@ import com.onyx.android.sun.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -36,6 +42,8 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
         presenter = new MainFragmentPresenter(this);
         presenter.getPractices();
         presenter.getSubjectScore();
+        Date date = new Date(System.currentTimeMillis());
+        mainBinding.setDate(DateTimeUtil.formatDate(date, new SimpleDateFormat("MM-dd", Locale.getDefault())));
     }
 
     @Override

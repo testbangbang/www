@@ -33,5 +33,6 @@
     <dimen name="main_activity_tab_indicator_height">5dp</dimen>
     <dimen name="main_activity_tab_margin_right">100dp</dimen>
     <dimen name="main_activity_title_padding">20dp</dimen>
+    <dimen name="main_fragment_calendar_margin_top">50dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>

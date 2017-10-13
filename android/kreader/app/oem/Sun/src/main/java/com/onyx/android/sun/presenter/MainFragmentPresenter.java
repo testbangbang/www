@@ -1,6 +1,7 @@
 package com.onyx.android.sun.presenter;
 
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.sun.cloud.bean.PracticesRequestBean;
 import com.onyx.android.sun.data.MainFragmentData;
@@ -9,6 +10,10 @@ import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
 import com.onyx.android.sun.requests.SubjectAbilityRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by hehai on 17-9-29.
@@ -26,7 +31,8 @@ public class MainFragmentPresenter {
     public void getPractices() {
         PracticesRequestBean requestBean = new PracticesRequestBean();
         requestBean.course = "1";
-        requestBean.endtime = "2017-09-10";
+        Date date = new Date(System.currentTimeMillis());
+        requestBean.endtime = DateTimeUtil.formatDate(date, new SimpleDateFormat("yy-MM-dd", Locale.getDefault()));
         requestBean.page = "1";
         requestBean.size = "10";
         requestBean.starttime = "2017-02-02";
@@ -37,7 +43,7 @@ public class MainFragmentPresenter {
         mainFragmentData.getPractices(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (req.getResultBean() != null && req.getResultBean().data != null&& !CollectionUtils.isNullOrEmpty(req.getResultBean().data.content)) {
+                if (req.getResultBean() != null && req.getResultBean().data != null && !CollectionUtils.isNullOrEmpty(req.getResultBean().data.content)) {
                     mainFragmentView.setPractices(req.getResultBean().data.content);
                 }
             }
