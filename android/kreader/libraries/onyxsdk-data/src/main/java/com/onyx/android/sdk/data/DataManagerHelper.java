@@ -42,7 +42,7 @@ import java.util.Map;
 public class DataManagerHelper {
 
     private static DataProviderBase getDataProviderBase() {
-        return DataProviderManager.getRemoteDataProvider();
+        return DataProviderManager.getLocalDataProvider();
     }
 
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
