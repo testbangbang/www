@@ -14,6 +14,7 @@ import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
@@ -153,6 +154,11 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToHomeworkEvent(ToHomeworkEvent event) {
+        mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_EXAMINATION_WORK).select();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

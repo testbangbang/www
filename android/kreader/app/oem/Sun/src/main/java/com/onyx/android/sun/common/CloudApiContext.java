@@ -46,4 +46,14 @@ public class CloudApiContext {
         public static final String FINISHED_STATE = "completed";
         public static final String REPORT_STATE = "report";
     }
+
+    public static class Message{
+        public static final String STUDENTID = "studentId";
+        public static final String PAGE = "page";
+        public static final String SIZE = "size";
+    }
+
+    public static class SubjectAbility {
+        public static final String ID = "id";
+    }
 }

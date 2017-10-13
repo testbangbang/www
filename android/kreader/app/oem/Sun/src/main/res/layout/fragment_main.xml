@@ -7,6 +7,10 @@
         <variable
             name="listener"
             type="android.view.View.OnClickListener" />
+
+        <variable
+            name="date"
+            type="String" />
     </data>
 
     <LinearLayout
@@ -41,10 +45,15 @@
                         android:text="@string/today_task"
                         android:textSize="@dimen/level_one_heading_font" />
 
-                    <ImageView
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/ic_launcher" />
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/main_fragment_calendar_margin_top"
+                        android:background="@drawable/ic_calendar"
+                        android:gravity="center"
+                        android:text="@{date}"
+                        android:textSize="@dimen/level_two_heading_font" />
                 </LinearLayout>
 
                 <View
@@ -53,6 +62,7 @@
                     android:background="@android:color/black" />
 
                 <com.onyx.android.sun.view.PageRecyclerView
+                    android:id="@+id/today_task_recycler"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/main_fragment_task_layout_height"
                     android:layout_weight="1" />
@@ -90,7 +100,9 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/academic_ability_value" />
+                android:layout_margin="@dimen/main_fragment_score_text_margin_top"
+                android:text="@string/academic_ability_value"
+                android:textSize="@dimen/level_two_heading_font" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -142,6 +154,7 @@
                         android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
                         android:gravity="center"
                         android:onClick="@{listener.onClick}"
+                        android:text="@string/grade_ranking"
                         android:textSize="@dimen/level_two_heading_font" />
 
                     <TextView
