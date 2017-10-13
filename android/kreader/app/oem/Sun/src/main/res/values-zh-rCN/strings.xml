@@ -20,10 +20,12 @@
     <string name="homework_course_time">时间：</string>
     <string name="today_task">今日任务</string>
     <string name="view_all">查看全部</string>
-    <string name="personal_portrait" />
+    <string name="personal_portrait">个人画像</string>
     <string name="academic_ability_value">学科能力值(点击左侧查看个人总分再班级,年级中排行情况)</string>
     <string name="total_ability_value">总能力值</string>
     <string name="confirm">确定</string>
+    <string name="grade_ranking">年级排名</string>
+    <string name="full_score">满分: %d分</string>
     <string name="homework_unfinished_title_format">[%1$s] %2$s</string>
     <string name="homework_item_deadline_format">截止日期：%1$s</string>
     <string name="homework_item_submit_format">提交时间：%1$s</string>
