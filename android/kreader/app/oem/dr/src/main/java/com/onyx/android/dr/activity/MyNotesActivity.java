@@ -1,5 +1,6 @@
 package com.onyx.android.dr.activity;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -165,7 +166,8 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderResponseEvent(ReaderResponseEvent event) {
-        ActivityManager.startReadingReportListActivity(this);
+        Intent intent = new Intent();
+        ActivityManager.startReadingReportListActivity(this, intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

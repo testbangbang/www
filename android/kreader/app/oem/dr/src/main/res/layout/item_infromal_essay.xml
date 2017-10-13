@@ -33,7 +33,6 @@
             style="@style/good_sentence_item_textview"
             android:layout_marginLeft="1dp"
             android:layout_weight="2"
-            android:clickable="true"
             android:text="@string/infromal_essay_activity_word_number" />
 
         <View style="@style/good_sentence_item_view" />

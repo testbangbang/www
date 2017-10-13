@@ -106,6 +106,10 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private void getIntentData() {
         image.setImageResource(R.drawable.informal_essay);
         title.setText(getString(R.string.informal_essay));
+        iconFour.setVisibility(View.VISIBLE);
+        iconThree.setVisibility(View.VISIBLE);
+        iconTwo.setVisibility(View.VISIBLE);
+        iconOne.setVisibility(View.VISIBLE);
         iconFour.setImageResource(R.drawable.ic_reader_note_delet);
         iconThree.setImageResource(R.drawable.ic_reader_share);
         iconTwo.setImageResource(R.drawable.ic_reader_note_export);
@@ -126,10 +130,6 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
-        iconFour.setVisibility(View.VISIBLE);
-        iconThree.setVisibility(View.VISIBLE);
-        iconTwo.setVisibility(View.VISIBLE);
-        iconOne.setVisibility(View.VISIBLE);
         informalEssayList = dataList;
         listCheck = checkList;
         informalEssayAdapter.setDataList(informalEssayList, listCheck);
@@ -199,7 +199,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
                 exportData();
                 break;
             case R.id.title_bar_right_icon_one:
-                ActivityManager.startAddInformalEssayActivity(this);
+                ActivityManager.startAddInformalEssayActivity(this, "", "");
                 break;
         }
     }

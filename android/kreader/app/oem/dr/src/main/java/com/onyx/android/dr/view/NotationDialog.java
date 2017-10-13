@@ -99,11 +99,6 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     }
 
     @Override
-    public void setCreateBookReportData(CreateBookReportResult createBookReportResult) {
-
-    }
-
-    @Override
     public void setBookReportList(List<GetBookReportListBean> list) {
 
     }
@@ -131,5 +126,9 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     @Override
     public void setLibraryId(String bookId, String libraryId) {
 
+    }
+
+    @Override
+    public void saveBookReportData(CreateBookReportResult createBookReportResult) {
     }
 }

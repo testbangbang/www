@@ -95,6 +95,7 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
         }
         presenter.getNowReading();
         presenter.loadData("");
+        libraryAdapter.notifyDataSetChanged();
     }
 
     @Override

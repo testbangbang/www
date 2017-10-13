@@ -24,7 +24,7 @@
         <TextView
             style="@style/good_sentence_activity_textview"
             android:layout_weight="3"
-            android:text="@string/book_report_list_book_name" />
+            android:text="@string/dialog_title" />
 
         <View style="@style/vertical_view" />
 
@@ -62,7 +62,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:paddingBottom="10dp" />
+        android:paddingBottom="@dimen/book_report_list_recycle_padding_bottom" />
 
     <TextView
         android:layout_width="match_parent"

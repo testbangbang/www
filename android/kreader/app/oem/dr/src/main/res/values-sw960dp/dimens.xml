@@ -384,5 +384,9 @@
     <dimen name="new_word_order_number_margin_left">3dp</dimen>
     <dimen name="item_speech_recording_start_speech_margin_right">4dp</dimen>
     <dimen name="book_report_list_item_bring_out_margin_right">-3dp</dimen>
+    <dimen name="book_report_list_item_page_margin_right">-1dp</dimen>
+    <dimen name="book_report_list_recycle_padding_bottom">4dp</dimen>
+    <dimen name="reading_rate_item_time_margin_left">3dp</dimen>
+    <dimen name="book_report_detail_title_width">300dp</dimen>
 </resources>
 
