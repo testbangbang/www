@@ -22,7 +22,7 @@ import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -150,7 +150,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentAnnotations(final Context context, final Reader reader) {
-        final List<Annotation> annotations = ContentSdKDataUtils.getDataProvider().loadAnnotations(
+        final List<Annotation> annotations = ContentSdkDataUtils.getDataProvider().loadAnnotations(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
@@ -184,7 +184,7 @@ public class ReaderUserDataInfo {
 
     public boolean loadPageAnnotationsForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
-            final List<Annotation> annotations = ContentSdKDataUtils.getDataProvider().loadAnnotations(
+            final List<Annotation> annotations = ContentSdkDataUtils.getDataProvider().loadAnnotations(
                     reader.getPlugin().displayName(),
                     reader.getDocumentMd5(),
                     PagePositionUtils.getPageNumber(pageInfo.getName()),
@@ -201,7 +201,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadPageAnnotationsForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        final List<Annotation> annotations = ContentSdKDataUtils.getDataProvider().loadAnnotations(
+        final List<Annotation> annotations = ContentSdkDataUtils.getDataProvider().loadAnnotations(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
@@ -266,7 +266,7 @@ public class ReaderUserDataInfo {
 
     private boolean loadBookmarksForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
-            final Bookmark bookmark = ContentSdKDataUtils.getDataProvider().loadBookmark(reader.getPlugin().displayName(),
+            final Bookmark bookmark = ContentSdkDataUtils.getDataProvider().loadBookmark(reader.getPlugin().displayName(),
                     reader.getDocumentMd5(), PagePositionUtils.getPageNumber(pageInfo.getName()));
             if (bookmark != null) {
                 pageBookmarkMap.put(pageInfo.getName(), bookmark);
@@ -276,7 +276,7 @@ public class ReaderUserDataInfo {
     }
 
     private boolean loadBookmarksForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        List<Bookmark> bookmarks = ContentSdKDataUtils.getDataProvider().loadBookmarks(
+        List<Bookmark> bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
@@ -296,7 +296,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentBookmarks(final Context context, final Reader reader) {
-        List<Bookmark> bookmarks = ContentSdKDataUtils.getDataProvider().loadBookmarks(
+        List<Bookmark> bookmarks = ContentSdkDataUtils.getDataProvider().loadBookmarks(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());

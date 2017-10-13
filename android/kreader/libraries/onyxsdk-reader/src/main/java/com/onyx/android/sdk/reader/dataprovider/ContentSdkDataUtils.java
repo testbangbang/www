@@ -22,8 +22,8 @@ import java.util.List;
  * Created by suicheng on 2017/4/12.
  */
 
-public class ContentSdKDataUtils {
-    private static final String TAG = ContentSdKDataUtils.class.getSimpleName();
+public class ContentSdkDataUtils {
+    private static final String TAG = ContentSdkDataUtils.class.getSimpleName();
 
     public static boolean saveMetadata(final Context context, final String documentPath,
                                        final ReaderDocumentMetadata docMetadata) {
