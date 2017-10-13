@@ -228,7 +228,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             @Override
             public void onGlobalLayout() {
                 TreeObserverUtils.removeGlobalOnLayoutListener(surfaceView.getViewTreeObserver(), this);
-                if (!getReaderDataHolder().isDocumentOpened()) {
+                if (OpenDocumentAction.processOrientation && !getReaderDataHolder().isDocumentOpened()) {
                     openFileFromIntentImpl();
                     return;
                 }

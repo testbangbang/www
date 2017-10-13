@@ -104,7 +104,7 @@ public class ContentSdKDataUtils {
         metadata.setPublisher(docMetadata.getPublisher());
     }
 
-    private static DataProviderBase getDataProvider() {
-        return DataProviderManager.getLocalDataProvider();
+    public static DataProviderBase getDataProvider() {
+        return DataProviderManager.getRemoteDataProvider();
     }
 }

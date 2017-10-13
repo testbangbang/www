@@ -2,27 +2,31 @@ package com.onyx.android.sdk.reader.common;
 
 import android.content.Context;
 import android.graphics.PointF;
-
 import android.graphics.RectF;
+
 import com.onyx.android.sdk.data.model.*;
-import com.onyx.android.sdk.data.provider.DataProviderManager;
+
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.data.model.Bookmark;
+import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.provider.SearchHistoryProvider;
 import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.android.sdk.reader.api.ReaderDocumentCategory;
+import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioButton;
 import com.onyx.android.sdk.reader.api.ReaderFormRadioGroup;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.reader.api.ReaderImage;
-import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
-import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.api.ReaderNavigator;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
@@ -146,7 +150,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentAnnotations(final Context context, final Reader reader) {
-        final List<Annotation> annotations = DataProviderManager.getLocalDataProvider().loadAnnotations(
+        final List<Annotation> annotations = ContentSdKDataUtils.getDataProvider().loadAnnotations(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
@@ -180,7 +184,7 @@ public class ReaderUserDataInfo {
 
     public boolean loadPageAnnotationsForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
-            final List<Annotation> annotations = DataProviderManager.getLocalDataProvider().loadAnnotations(
+            final List<Annotation> annotations = ContentSdKDataUtils.getDataProvider().loadAnnotations(
                     reader.getPlugin().displayName(),
                     reader.getDocumentMd5(),
                     PagePositionUtils.getPageNumber(pageInfo.getName()),
@@ -197,7 +201,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadPageAnnotationsForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        final List<Annotation> annotations = DataProviderManager.getLocalDataProvider().loadAnnotations(
+        final List<Annotation> annotations = ContentSdKDataUtils.getDataProvider().loadAnnotations(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Annotation_Table.pageNumber).ascending());
@@ -262,7 +266,7 @@ public class ReaderUserDataInfo {
 
     private boolean loadBookmarksForFixedDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
         for (PageInfo pageInfo : visiblePages) {
-            final Bookmark bookmark = DataProviderManager.getLocalDataProvider().loadBookmark(reader.getPlugin().displayName(),
+            final Bookmark bookmark = ContentSdKDataUtils.getDataProvider().loadBookmark(reader.getPlugin().displayName(),
                     reader.getDocumentMd5(), PagePositionUtils.getPageNumber(pageInfo.getName()));
             if (bookmark != null) {
                 pageBookmarkMap.put(pageInfo.getName(), bookmark);
@@ -272,7 +276,7 @@ public class ReaderUserDataInfo {
     }
 
     private boolean loadBookmarksForFlowDocument(final Context context, final Reader reader, final List<PageInfo> visiblePages) {
-        List<Bookmark> bookmarks = DataProviderManager.getLocalDataProvider().loadBookmarks(
+        List<Bookmark> bookmarks = ContentSdKDataUtils.getDataProvider().loadBookmarks(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
@@ -292,7 +296,7 @@ public class ReaderUserDataInfo {
     }
 
     public boolean loadDocumentBookmarks(final Context context, final Reader reader) {
-        List<Bookmark> bookmarks = DataProviderManager.getLocalDataProvider().loadBookmarks(
+        List<Bookmark> bookmarks = ContentSdKDataUtils.getDataProvider().loadBookmarks(
                 reader.getPlugin().displayName(),
                 reader.getDocumentMd5(),
                 OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());

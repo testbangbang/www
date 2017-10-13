@@ -36,11 +36,13 @@ import com.onyx.android.sdk.utils.DeviceUtils;
  * 4. restoreWithOptions.
  */
 public class OpenDocumentAction extends BaseAction {
+
+    public static final boolean processOrientation = false;
+
     private Activity activity;
     private String documentPath;
     private DataManager dataProvider;
     private boolean canceled = false;
-    private boolean processOrientation = false;
 
     public OpenDocumentAction(final Activity activity, final String path) {
         this.activity = activity;
