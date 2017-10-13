@@ -73,10 +73,12 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
             TimeViewHolder timeViewHolder = (TimeViewHolder) holder;
             ItemTimeBinding timeBinding = timeViewHolder.getTimeBinding();
             timeBinding.setCorrectTime(submitTimes.get(position));
+            timeBinding.executePendingBindings();
         } else if (holder instanceof ContentViewHolder) {
             ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
             ItemContentBinding contentBinding = contentViewHolder.getContentBinding();
             contentBinding.setContent(contents.get(position));
+            contentBinding.executePendingBindings();
         }
     }
 

@@ -48,6 +48,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     private HomeworkUnfinishedAdapter homeworkUnfinishedAdapter;
     private HomeworkFinishedAdapter homeworkFinishedAdapter;
     private StudyReportAdapter studyReportAdapter;
+    private DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void loadData() {
@@ -61,7 +62,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     protected void initView(ViewDataBinding binding) {
         homeworkBinding = (HomeworkBinding)binding;
         homeworkBinding.homeworkRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         homeworkBinding.homeworkRecyclerView.addItemDecoration(dividerItemDecoration);
         homeworkUnfinishedAdapter = new HomeworkUnfinishedAdapter();
@@ -108,13 +109,17 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
         switch (view.getId()) {
             case R.id.homework_finished:
                 setSelected(R.id.homework_finished);
+                dividerItemDecoration.setDrawLine(false);
                 homeworkBinding.homeworkRecyclerView.setAdapter(homeworkFinishedAdapter);
                 break;
             case R.id.homework_unfinished:
                 setSelected(R.id.homework_unfinished);
+                dividerItemDecoration.setDrawLine(true);
                 homeworkBinding.homeworkRecyclerView.setAdapter(homeworkUnfinishedAdapter);
                 break;
             case R.id.homework_study_report:
+                dividerItemDecoration.setDrawLine(true);
+                homeworkBinding.homeworkRecyclerView.setAdapter(studyReportAdapter);
                 setSelected(R.id.homework_study_report);
                 break;
             case R.id.homework_start_time:
