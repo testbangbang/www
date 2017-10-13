@@ -4,7 +4,6 @@ import android.util.Log;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
@@ -181,13 +180,13 @@ public abstract class BaseReaderRequest extends BaseRequest {
     public void saveReaderOptions(final Reader reader) {
         if (reader.getDocument().saveOptions()) {
             reader.saveOptions();
-            saveToDocumentOptionsToLocalProvider(reader);
+            saveToDocumentOptions(reader);
         }
         saveToLegacyDataProvider(reader);
     }
 
-    private void saveToDocumentOptionsToLocalProvider(final Reader reader) {
-        DataProviderManager.getLocalDataProvider().saveDocumentOptions(getContext(),
+    private void saveToDocumentOptions(final Reader reader) {
+        ContentSdKDataUtils.getDataProvider().saveDocumentOptions(getContext(),
                 reader.getDocumentPath(),
                 reader.getDocumentMd5(),
                 reader.getDocumentOptions().toJSONString());
