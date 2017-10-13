@@ -34,6 +34,7 @@ public class MessagesTest extends ApplicationTestCase<SunApplication> {
             public void done(BaseRequest request, Throwable e) {
                 PracticesResultBean resultBean = rq.getResultBean();
                 assertNotNull(resultBean);
+                assertTrue(resultBean.msg.equals("ok"));
                 countDownLatch.countDown();
             }
         });

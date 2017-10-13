@@ -30,6 +30,7 @@ public class SubjectAbilityTest extends ApplicationTestCase<SunApplication> {
             public void done(BaseRequest request, Throwable e) {
                 PersonalAbilityResultBean resultBean = rq.getResultBean();
                 assertNotNull(resultBean);
+                assertTrue(resultBean.msg.equals("ok"));
                 countDownLatch.countDown();
             }
         });
