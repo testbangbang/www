@@ -4,7 +4,7 @@ package com.onyx.android.sun.cloud.bean;
  * Created by hehai on 17-10-9.
  */
 
-public class PracticesRequestBean {
+public class HomeworkRequestBean {
     public String status;
     public String studentId;
     public String page;

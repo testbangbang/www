@@ -1,5 +1,6 @@
 package com.onyx.android.sun.common;
 
+import com.onyx.android.sdk.data.v1.FastJsonConverterFactory;
 import com.onyx.android.sun.cloud.service.ContentService;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,5 +41,9 @@ public class CloudApiContext {
         public static final String TYPE = "type";
         public static final String STARTTIME = "starttime";
         public static final String ENDTIME = "endtime";
+        public static final String ID = "id";
+        public static final String UNFINISHED_STATE = "tbd";
+        public static final String FINISHED_STATE = "completed";
+        public static final String REPORT_STATE = "report";
     }
 }
