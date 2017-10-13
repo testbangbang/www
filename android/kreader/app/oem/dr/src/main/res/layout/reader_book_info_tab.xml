@@ -21,6 +21,6 @@
     <TextView
         android:id="@+id/book_info_note"
         style="@style/BookInfoTabStyle"
-        android:text="笔记" />
+        android:text="@string/postil" />
 
 </LinearLayout>

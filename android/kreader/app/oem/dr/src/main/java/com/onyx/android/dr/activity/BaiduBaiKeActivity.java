@@ -9,8 +9,11 @@ import android.webkit.WebViewClient;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.reader.dialog.DialogDict;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import butterknife.Bind;
 
@@ -74,5 +77,11 @@ public class BaiduBaiKeActivity extends BaseActivity {
             EpdController.disableA2ForSpecificView(baiduBaikeContent);
         }
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().post(new RedrawPageEvent());
     }
 }

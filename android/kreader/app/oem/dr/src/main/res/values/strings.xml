@@ -705,4 +705,6 @@
     <string name="select_time_range">select time range</string>
     <string name="select_group">select group</string>
     <string name="reading_rate_html">reading rate html</string>
+    <string name="new_words_review_title_hint">No new words to review, please add.</string>
+    <string name="good_sentence_title_hint">Without this article or this page, please add</string>
 </resources>

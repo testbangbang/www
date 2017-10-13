@@ -97,7 +97,6 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     @Override
     protected void initConfig() {
-
     }
 
     @Override

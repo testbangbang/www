@@ -703,4 +703,6 @@
     <string name="select_time_range">选择时间范围</string>
     <string name="select_group">选择群组</string>
     <string name="reading_rate_html">阅读统计报表</string>
+    <string name="new_words_review_title_hint">没有要复习的生词，请先添加!</string>
+    <string name="good_sentence_title_hint">没有本文或本页的好句，请先添加!</string>
 </resources>
