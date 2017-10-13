@@ -14,8 +14,8 @@
     <string name="homework_course_history">History</string>
     <string name="homework_course_creature">Creature</string>
     <string name="homework_course_all">All</string>
-    <string name="homework_course_exercise">Exercise</string>
-    <string name="homework_course_test_paper">Paper</string>
+    <string name="homework_course_exercise">Task</string>
+    <string name="homework_course_test_paper">Exam</string>
     <string name="homework_course_competition">Competition</string>
     <string name="homework_course_time">Time：</string>
     <string name="today_task">Today task</string>
@@ -26,4 +26,15 @@
     <string name="confirm">Yes</string>
     <string name="grade_ranking">Grade ranking</string>
     <string name="full_score">full: %d</string>
+    <string name="homework_unfinished_title_format">[%1$s] %2$s</string>
+    <string name="homework_item_deadline_format">Deadline:%1$s</string>
+    <string name="homework_item_submit_format">Submit time：%1$s</string>
+    <string name="homework_item_correct_format">Correct time：%1$s</string>
+    <string name="homework_item_deadline_pass">(pass)</string>
+    <string name="blank"></string>
+    <string name="homework_item_fill_homework">Fill homework</string>
+    <string name="homework_item_submit_already">Submitted</string>
+    <string name="homework_item_correct_already">Corrected</string>
+    <string name="file_homework_record">Answer record</string>
+    <string name="file_homework_commit">Submit</string>
 </resources>

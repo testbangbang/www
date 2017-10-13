@@ -34,5 +34,11 @@
     <dimen name="main_activity_tab_margin_right">100dp</dimen>
     <dimen name="main_activity_title_padding">20dp</dimen>
     <dimen name="main_fragment_calendar_margin_top">50dp</dimen>
+    <dimen name="homework_unfinished_time_margin">10dp</dimen>
+    <dimen name="homework_item_chapter_margin">10dp</dimen>
+    <dimen name="homework_item_icon_go_padding">10dp</dimen>
+    <dimen name="subject_question_item_height">40dp</dimen>
+    <dimen name="title_bar_height">40dp</dimen>
+    <dimen name="title_bar_margin">10dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>

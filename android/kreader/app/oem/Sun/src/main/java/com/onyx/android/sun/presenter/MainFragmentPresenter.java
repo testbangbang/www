@@ -2,8 +2,8 @@ package com.onyx.android.sun.presenter;
 
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DateTimeUtil;
+import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
-import com.onyx.android.sun.cloud.bean.PracticesRequestBean;
 import com.onyx.android.sun.data.MainFragmentData;
 import com.onyx.android.sun.interfaces.MainFragmentView;
 import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
@@ -29,7 +29,7 @@ public class MainFragmentPresenter {
     }
 
     public void getPractices() {
-        PracticesRequestBean requestBean = new PracticesRequestBean();
+        HomeworkRequestBean requestBean = new HomeworkRequestBean();
         requestBean.course = "1";
         Date date = new Date(System.currentTimeMillis());
         requestBean.endtime = DateTimeUtil.formatDate(date, new SimpleDateFormat("yy-MM-dd", Locale.getDefault()));

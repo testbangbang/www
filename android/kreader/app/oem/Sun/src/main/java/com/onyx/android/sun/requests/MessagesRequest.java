@@ -1,7 +1,7 @@
 package com.onyx.android.sun.requests;
 
-import com.onyx.android.sun.cloud.bean.PracticesRequestBean;
-import com.onyx.android.sun.cloud.bean.PracticesResultBean;
+import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
+import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.cloud.service.ContentService;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.requests.requestTool.BaseCloudRequest;
@@ -15,18 +15,18 @@ import retrofit2.Response;
  */
 
 public class MessagesRequest extends BaseCloudRequest {
-    private PracticesRequestBean requestBean;
-    private PracticesResultBean resultBean;
+    private HomeworkRequestBean requestBean;
+    private HomeworkUnfinishedResultBean resultBean;
 
-    public void setRequestBean(PracticesRequestBean requestBean) {
+    public void setRequestBean(HomeworkRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
-    public PracticesResultBean getResultBean() {
+    public HomeworkUnfinishedResultBean getResultBean() {
         return resultBean;
     }
 
-    public MessagesRequest(PracticesRequestBean requestBean) {
+    public MessagesRequest(HomeworkRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
@@ -38,8 +38,8 @@ public class MessagesRequest extends BaseCloudRequest {
     private void executeCloudRequest() {
         try {
             ContentService service = CloudApiContext.getService(CloudApiContext.BASE_URL);
-            Call<PracticesResultBean> call = getCall(service);
-            Response<PracticesResultBean> response = call.execute();
+            Call<HomeworkUnfinishedResultBean> call = getCall(service);
+            Response<HomeworkUnfinishedResultBean> response = call.execute();
             if (response.isSuccessful()) {
                 resultBean = response.body();
             }
@@ -48,7 +48,7 @@ public class MessagesRequest extends BaseCloudRequest {
         }
     }
 
-    private Call<PracticesResultBean> getCall(ContentService service) {
+    private Call<HomeworkUnfinishedResultBean> getCall(ContentService service) {
         return service.getMessage(requestBean.studentId,
                 requestBean.page, requestBean.size);
     }

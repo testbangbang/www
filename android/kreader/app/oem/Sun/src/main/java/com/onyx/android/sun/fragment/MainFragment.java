@@ -11,7 +11,8 @@ import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.adapter.TodayTaskAdapter;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
-import com.onyx.android.sun.cloud.bean.PracticesResultBean;
+import com.onyx.android.sun.cloud.bean.ContentBean;
+import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.databinding.MainBinding;
 import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.interfaces.MainFragmentView;
@@ -86,7 +87,7 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
     }
 
     @Override
-    public void setPractices(List<PracticesResultBean.DataBean.ContentBean> list) {
+    public void setPractices(List<ContentBean> list) {
         adapter.setData(list);
     }
 

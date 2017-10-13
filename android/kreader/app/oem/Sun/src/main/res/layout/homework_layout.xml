@@ -12,6 +12,10 @@
         <variable
             name="isVisible"
             type="boolean" />
+
+        <variable
+            name="showCourse"
+            type="boolean"/>
     </data>
 
     <LinearLayout
@@ -78,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/homework_course_margin_top"
-                android:visibility="@{isVisible ? View.VISIBLE : View.GONE}" />
+                android:visibility="@{showCourse ? View.VISIBLE : View.GONE}" />
 
             <RelativeLayout
                 android:layout_width="match_parent"

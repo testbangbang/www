@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
-import com.onyx.android.sun.cloud.bean.PracticesResultBean;
+import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.databinding.TodayTaskItemBinding;
 import com.onyx.android.sun.view.PageRecyclerView;
 
@@ -19,12 +19,12 @@ import java.util.List;
  */
 
 public class TodayTaskAdapter extends PageRecyclerView.PageAdapter<TodayTaskAdapter.ViewHolder> {
-    private List<PracticesResultBean.DataBean.ContentBean> data;
+    private List<ContentBean> data;
 
     public TodayTaskAdapter() {
     }
 
-    public void setData(List<PracticesResultBean.DataBean.ContentBean> data) {
+    public void setData(List<ContentBean> data) {
         this.data = data;
         notifyDataSetChanged();
     }

@@ -26,4 +26,15 @@
     <string name="confirm">确定</string>
     <string name="grade_ranking">年级排名</string>
     <string name="full_score">满分: %d分</string>
+    <string name="homework_unfinished_title_format">[%1$s] %2$s</string>
+    <string name="homework_item_deadline_format">截止日期：%1$s</string>
+    <string name="homework_item_submit_format">提交时间：%1$s</string>
+    <string name="homework_item_correct_format">批改时间：%1$s</string>
+    <string name="homework_item_deadline_pass">(已过)</string>
+    <string name="blank"></string>
+    <string name="homework_item_fill_homework">补作业</string>
+    <string name="homework_item_submit_already">已提交</string>
+    <string name="homework_item_correct_already">已批改</string>
+    <string name="file_homework_record">答题记录</string>
+    <string name="file_homework_commit">提交</string>
 </resources>

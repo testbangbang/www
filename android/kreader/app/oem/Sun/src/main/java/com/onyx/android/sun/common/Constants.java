@@ -12,4 +12,6 @@ public class Constants {
     public static final String UTF_8 = "UTF-8";
     public static final String POST = "POST";
     public static boolean isUseCache = true;
+    public static final String QUESTION_TYPE_CHOICE = "choice";
+    public static final String QUESTION_TYPE_OBJECTIVE = "objective";
 }
