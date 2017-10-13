@@ -26,7 +26,7 @@ import com.onyx.android.sdk.reader.api.ReaderTextStyleManager;
 import com.onyx.android.sdk.reader.api.ReaderView;
 import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
-import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentMetadataImpl;
@@ -134,12 +134,12 @@ public class ReaderHelper {
         if (getDocument().readMetadata(metadata)) {
             documentMetadata = metadata;
             LegacySdkDataUtils.saveMetadata(context, path, metadata);
-            ContentSdKDataUtils.saveMetadata(context, path, metadata);
+            ContentSdkDataUtils.saveMetadata(context, path, metadata);
         }
     }
 
     private void saveThumbnail(final Context context, final String path) {
-        if (LegacySdkDataUtils.hasThumbnail(context, path) && ContentSdKDataUtils.hasThumbnail(context, path)) {
+        if (LegacySdkDataUtils.hasThumbnail(context, path) && ContentSdkDataUtils.hasThumbnail(context, path)) {
             return;
         }
         WindowManager window = (WindowManager)context.getSystemService(Context.WINDOW_SERVICE);
@@ -155,7 +155,7 @@ public class ReaderHelper {
             bitmap.eraseColor(Color.WHITE);
             if (getDocument().readCover(bitmap.getBitmap())) {
                 LegacySdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
-                ContentSdKDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
+                ContentSdkDataUtils.saveThumbnail(context, path, bitmap.getBitmap());
             }
         } finally {
             bitmap.close();

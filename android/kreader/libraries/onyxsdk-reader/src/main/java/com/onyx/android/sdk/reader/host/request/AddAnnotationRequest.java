@@ -3,9 +3,8 @@ package com.onyx.android.sdk.reader.host.request;
 import android.graphics.RectF;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
-import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.reader.dataprovider.ContentSdKDataUtils;
+import com.onyx.android.sdk.reader.dataprovider.ContentSdkDataUtils;
 import com.onyx.android.sdk.reader.host.layout.LayoutProviderUtils;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
@@ -37,7 +36,7 @@ public class AddAnnotationRequest extends BaseReaderRequest {
 
     public void execute(final Reader reader) throws Exception {
         annotation = createAnnotation(reader);
-        ContentSdKDataUtils.getDataProvider().addAnnotation(annotation);
+        ContentSdkDataUtils.getDataProvider().addAnnotation(annotation);
         LayoutProviderUtils.updateReaderViewInfo(reader, createReaderViewInfo(), reader.getReaderLayoutManager());
     }
 
