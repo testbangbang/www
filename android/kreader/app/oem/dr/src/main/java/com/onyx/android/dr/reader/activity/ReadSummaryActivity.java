@@ -30,6 +30,8 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
+import static com.onyx.android.dr.R.id.new_words_review_recycler;
+
 /**
  * Created by hehai on 17-8-18.
  */
@@ -52,10 +54,14 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     EditText editReadSummary;
     @Bind(R.id.new_words_review_title)
     TextView newWordsReviewTitle;
-    @Bind(R.id.new_words_review_recycler)
+    @Bind(new_words_review_recycler)
     PageRecyclerView newWordsReviewRecycler;
     @Bind(R.id.good_sentence_title)
     TextView goodSentenceTitle;
+    @Bind(R.id.new_words_review_title_hint)
+    TextView newWordsReviewTitleHint;
+    @Bind(R.id.good_sentence_title_hint)
+    TextView goodSentenceTitleHint;
     @Bind(R.id.good_sentence_recycler)
     PageRecyclerView goodSentenceRecycler;
     private NewWordsReviewListAdapter newWordsReviewListAdapter;
@@ -125,11 +131,28 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
 
     @Override
     public void setNewWordList(List<ReadSummaryNewWordReviewBean> newWordList) {
-        newWordsReviewListAdapter.setList(newWordList);
+        if (newWordList == null || newWordList.size() <= 0) {
+            newWordsReviewTitleHint.setVisibility(View.VISIBLE);
+            newWordsReviewRecycler.setVisibility(View.GONE);
+            newWordsReviewTitleHint.setText(getString(R.string.new_words_review_title_hint));
+        } else {
+            newWordsReviewTitleHint.setVisibility(View.GONE);
+            newWordsReviewRecycler.setVisibility(View.VISIBLE);
+            newWordsReviewListAdapter.setList(newWordList);
+        }
     }
 
     @Override
     public void setGoodSentenceList(List<ReadSummaryGoodSentenceReviewBean> goodSentenceList) {
+        if (goodSentenceList == null || goodSentenceList.size() <= 0) {
+            goodSentenceTitleHint.setVisibility(View.VISIBLE);
+            goodSentenceRecycler.setVisibility(View.GONE);
+            goodSentenceTitleHint.setText(getString(R.string.good_sentence_title_hint));
+        } else {
+            goodSentenceTitleHint.setVisibility(View.GONE);
+            goodSentenceRecycler.setVisibility(View.VISIBLE);
+            goodSentenceReviewListAdapter.setList(goodSentenceList);
+        }
         goodSentenceReviewListAdapter.setList(goodSentenceList);
     }
 

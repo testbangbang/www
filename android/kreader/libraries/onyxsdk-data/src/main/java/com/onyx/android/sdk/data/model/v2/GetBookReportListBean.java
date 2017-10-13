@@ -17,6 +17,7 @@ public class GetBookReportListBean implements Serializable{
     public String book;
     public String user;
     public String pageNumber;
+    public String title;
     public int __v;
     public List<CommentsBean> comments;
 }

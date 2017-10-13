@@ -27,8 +27,6 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.GoodSentenceBean;
-import com.onyx.android.dr.bean.NewWordBean;
-import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
@@ -60,7 +58,6 @@ import com.onyx.android.dr.reader.event.ReaderMainMenuTopSearchEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopShelfEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopUserEvent;
 import com.onyx.android.dr.reader.event.ReaderMenuMorePressEvent;
-import com.onyx.android.dr.reader.event.ReaderWordQueryMenuEvent;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.event.ScreenshotsSucceedEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
@@ -198,7 +195,6 @@ public class ReaderActivity extends Activity implements ReaderView {
 
     @Override
     public void showThrowable(Throwable throwable) {
-
     }
 
     private void initView() {
@@ -220,7 +216,6 @@ public class ReaderActivity extends Activity implements ReaderView {
 
             @Override
             public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
             }
 
             @Override

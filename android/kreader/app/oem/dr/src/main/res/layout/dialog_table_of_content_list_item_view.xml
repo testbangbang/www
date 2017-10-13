@@ -14,7 +14,7 @@
         android:layout_marginRight="5dp"
         android:layout_toLeftOf="@+id/text_view_page"
         android:src="@drawable/ic_dialog_reader_bookmark_black"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/text_view_page"
@@ -23,8 +23,9 @@
         android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:text=""
+        android:textColor="@color/black"
         android:textSize="@dimen/level_two_font_size"
-        android:visibility="gone" />
+        android:visibility="visible" />
 
     <TextView
         android:id="@+id/text_view_title"
@@ -35,6 +36,7 @@
         android:layout_toLeftOf="@+id/image_view_bookmark"
         android:ellipsize="end"
         android:paddingTop="5dp"
+        android:textColor="@color/black"
         android:singleLine="true"
         android:textSize="@dimen/level_two_font_size" />
 
@@ -61,6 +63,7 @@
             android:layout_marginLeft="5dp"
             android:ellipsize="end"
             android:maxLines="2"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_two_font_size" />
     </LinearLayout>
 
@@ -84,6 +87,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/book_info_mark_topic"
             android:text="2016-07-07 13:42"
+            android:textColor="@color/black"
             android:textSize="@dimen/level_two_font_size" />
 
         <LinearLayout
@@ -94,6 +98,7 @@
             android:layout_toLeftOf="@+id/delete_layout"
             android:background="@drawable/image_btn_bg"
             android:gravity="center"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:padding="5dp">
 
@@ -101,6 +106,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="5dp"
+                android:visibility="gone"
                 android:src="@drawable/ic_dialog_reader_edit_black" />
 
             <TextView
@@ -117,6 +123,7 @@
             android:layout_alignParentRight="true"
             android:background="@drawable/image_btn_bg"
             android:gravity="center"
+            android:visibility="gone"
             android:orientation="horizontal"
             android:padding="5dp">
 

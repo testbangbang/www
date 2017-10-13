@@ -8,6 +8,7 @@
     <TextView
         android:id="@+id/item_summary_time"
         style="@style/good_sentence_activity_textview"
+        android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
         android:layout_weight="1"
         android:text="@string/time" />
 
@@ -41,6 +42,7 @@
         android:layout_width="@dimen/new_word_activity_all_check_width"
         android:layout_height="@dimen/item_summary_list_height"
         android:layout_gravity="center"
+        android:layout_marginRight="@dimen/new_word_item_order_number_margin_left"
         android:gravity="center">
 
         <CheckBox
