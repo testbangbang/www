@@ -53,8 +53,12 @@ public class QuestionView extends LinearLayout {
             generateChoice(questionData.selection);
         } else if (Constants.QUESTION_TYPE_OBJECTIVE.equals(questionData.type)) {
             setType(R.id.subjective_item);
-            //generateSubject(questionData.selection);
+            generateSubject(questionData.selection);
         }
+    }
+
+    private void generateSubject(List<Map<String, String>> selection) {
+        //TODO:
     }
 
     private void generateChoice(List<Map<String, String>> selection) {

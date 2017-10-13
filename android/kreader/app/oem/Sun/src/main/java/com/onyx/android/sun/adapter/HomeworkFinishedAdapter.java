@@ -3,6 +3,7 @@ package com.onyx.android.sun.adapter;
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +27,8 @@ import java.util.List;
 public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
     private List<HandlerFinishContent> contents = new ArrayList<HandlerFinishContent>();
     private List<String> submitTimes = new ArrayList<>();
-    private static final int TIME_TYPE = 1;
-    private static final int CONTENT_TYPE = 2;
+    private static final int TIME_TYPE = 0;
+    private static final int CONTENT_TYPE = 1;
 
     @Override
     public int getRowCount() {
@@ -46,7 +47,10 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getItemViewType(int position) {
-        return contents == null ? super.getItemViewType(position) : contents.get(position).type;
+        if (position < contents.size()) {
+            return contents.get(position).type;
+        }
+        return 0;
     }
 
     @Override
