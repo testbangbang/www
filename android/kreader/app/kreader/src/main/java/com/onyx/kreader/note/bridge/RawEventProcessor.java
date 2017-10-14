@@ -44,11 +44,14 @@ public class RawEventProcessor extends NoteEventProcessorBase {
     private String inputDevice = "/dev/input/event1";
 
     private volatile int px, py, pressure;
+    private volatile int pressedX, pressedY, pressedPressure;
+    private volatile long pressedTs;
     private volatile boolean erasing = false;
     private volatile boolean shortcutDrawing = false;
     private volatile boolean shortcutErasing = false;
     private volatile boolean pressed = false;
     private volatile boolean lastPressed = false;
+    private volatile boolean lastPressedAndMoved = false;
     private volatile boolean stop = false;
     private volatile FileInputStream fileInputStream;
     private volatile DataInputStream dataInputStream;
@@ -175,15 +178,25 @@ public class RawEventProcessor extends NoteEventProcessorBase {
         } else if (type == EV_SYN) {
             if (pressed && pressure > 0) {
                 if (!lastPressed) {
-                    pressReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                    pressedX = px;
+                    pressedY = py;
+                    pressedPressure = pressure;
+                    pressedTs = ts;
                     lastPressed = true;
                 } else {
+                    if (!lastPressedAndMoved) {
+                        pressReceived(pressedX, pressedY, pressedPressure, PEN_SIZE, pressedTs, erasing);
+                    }
                     moveReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                    lastPressedAndMoved = true;
                 }
             }
             if (pressure <= 0 && lastPressed) {
-                releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                if (lastPressedAndMoved) {
+                    releaseReceived(px, py, pressure, PEN_SIZE, ts, erasing);
+                }
                 lastPressed = false;
+                lastPressedAndMoved = false;
             }
         } else if (type == EV_KEY) {
             if (code == BTN_TOUCH)  {
