@@ -1,43 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/item_infromal_essay_linearlayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginLeft="@dimen/query_record_item_keyword_margin_left"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/query_record_item_keyword"
-            style="@style/good_sentence_item_textview"
-            android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
-            android:layout_weight="1"
+            style="@style/reading_rate_item_text_view_style"
             android:text="@string/memorandum_activity_time" />
 
-        <View style="@style/good_sentence_item_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/query_record_item_source_dictionary"
-            style="@style/good_sentence_item_textview"
-            android:layout_marginLeft="@dimen/title_interval_margin_left"
-            android:layout_weight="2"
+            style="@style/reading_rate_item_text_view_style"
             android:text="@string/memorandum_activity_time_quantum" />
 
-        <View style="@style/good_sentence_item_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/query_record_item_paraphrase"
-            style="@style/good_sentence_item_textview"
-            android:layout_marginLeft="@dimen/title_interval_margin_left"
-            android:layout_marginRight="@dimen/title_interval_margin_left"
-            android:layout_weight="4"
-            android:ellipsize="end"
+            style="@style/reading_rate_item_text_view_style"
             android:text="@string/memorandum_activity_matter" />
 
+        <View style="@style/view_vertical_direction" />
     </LinearLayout>
-
-    <View style="@style/Horizontal_view" />
 </LinearLayout>

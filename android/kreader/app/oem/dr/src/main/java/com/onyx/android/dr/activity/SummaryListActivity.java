@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -18,6 +17,7 @@ import com.onyx.android.dr.interfaces.SummaryView;
 import com.onyx.android.dr.presenter.SummaryListPresenter;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.event.ReadingSummaryMenuEvent;
+import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
@@ -70,7 +70,8 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
 
     @Override
     protected void initView() {
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
         summaryListRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         summaryListRecycler.addItemDecoration(dividerItemDecoration);
         listAdapter = new SummaryListAdapter();

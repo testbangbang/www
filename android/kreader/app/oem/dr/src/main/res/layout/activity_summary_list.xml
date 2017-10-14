@@ -68,7 +68,8 @@
         android:id="@+id/summary_list_all_recycler"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/reading_rate_activity_recycler_view_padding_bottom" />
 
     <include
         layout="@layout/page_indicator_layout"

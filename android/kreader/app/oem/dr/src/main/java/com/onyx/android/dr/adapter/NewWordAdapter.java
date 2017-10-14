@@ -37,7 +37,7 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.new_word_notebook_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.good_sentence_notebook_row);
     }
 
     @Override

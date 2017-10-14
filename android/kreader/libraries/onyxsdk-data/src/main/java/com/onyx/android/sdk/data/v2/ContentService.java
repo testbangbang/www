@@ -22,6 +22,7 @@ import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.GetInformalEssayBean;
+import com.onyx.android.sdk.data.model.v2.GetReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.GetSharedImpressionResult;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
@@ -185,6 +186,9 @@ public interface ContentService {
     @POST("/api/librarys/{id}/informalEssay")
     Call<List<ShareBookReportResult>> shareInformalEssay(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
 
+    @POST("/api/librarys/{id}/readRecords")
+    Call<List<ShareBookReportResult>> shareReadingRate(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
+
     @POST("/api/InformalEssays")
     Call<CreateInformalEssayBean> uploadInformalEssay(@Body InformalEssayBean param);
 
@@ -193,4 +197,7 @@ public interface ContentService {
 
     @POST("/api/ReadRecords")
     Call<CreateReadingRateBean> uploadReadingRate(@Body ReadingRateBean param);
+
+    @GET("/api/ReadRecords")
+    Call<GetReadingRateBean> getReadingRate(@Query(Constant.WHERE_TAG) final String param);
 }

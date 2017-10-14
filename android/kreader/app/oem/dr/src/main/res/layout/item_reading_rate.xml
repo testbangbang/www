@@ -2,92 +2,105 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/item_infromal_essay_linearlayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
         android:orientation="horizontal">
 
         <TextView
             android:id="@+id/reading_rate_item_time"
-            style="@style/good_sentence_activity_textview"
-            android:layout_weight="2"
-            android:layout_marginLeft="@dimen/reading_rate_item_time_margin_left"
+            style="@style/reading_rate_item_text_view_style"
             android:text="@string/book_report_list_time" />
 
-        <View style="@style/vertical_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/reading_rate_item_book_name"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="2"
+            style="@style/reading_rate_item_text_view_style"
             android:text="@string/book_report_list_book_name" />
 
-        <View style="@style/vertical_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/reading_rate_item_time_horizon"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="1"
+            style="@style/reading_rate_item_text_view_style"
             android:text="@string/time_horizon" />
 
-        <View style="@style/vertical_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/reading_rate_item_reading_quantity"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="1"
-            android:text="@string/reading_quantity"
-            android:visibility="gone" />
-
-        <View style="@style/vertical_view" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/reading_rate_item_language_type"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="1" />
+            style="@style/reading_rate_item_text_view_style"
+            android:textSize="@dimen/level_two_heading_font" />
 
-        <View style="@style/vertical_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
 
-        <TextView
-            android:id="@+id/reading_rate_item_speech"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="1"
-            android:visibility="gone" />
-
-        <View style="@style/vertical_view" />
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/reading_rate_item_reading_summary"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="1" />
+            style="@style/reading_rate_item_text_view_style"
+            android:textSize="@dimen/level_two_heading_font" />
 
-        <View style="@style/vertical_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/reading_rate_item_reader_response_piece"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_weight="1" />
+            style="@style/reading_rate_item_text_view_style"
+            android:textSize="@dimen/level_two_heading_font" />
 
-        <View style="@style/vertical_view" />
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:layout_marginRight="@dimen/reading_rate_item_reader_response_number_margin_right"
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/reading_rate_item_reader_response_number"
-            style="@style/good_sentence_activity_textview"
-            android:layout_marginLeft="1dp"
-            android:layout_marginRight="@dimen/new_word_item_order_number_margin_left"
-            android:layout_weight="1" />
+            style="@style/reading_rate_item_text_view_style"
+            android:textSize="@dimen/level_two_heading_font" />
 
+        <View style="@style/view_vertical_direction" />
     </LinearLayout>
-
-    <View style="@style/Horizontal_view" />
 </LinearLayout>

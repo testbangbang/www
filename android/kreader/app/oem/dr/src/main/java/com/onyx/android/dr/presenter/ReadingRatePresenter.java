@@ -45,6 +45,7 @@ public class ReadingRatePresenter {
         readingRateData.getReadingRate(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                readingRateView.getReadingRateData(req.getGroup());
             }
         });
     }

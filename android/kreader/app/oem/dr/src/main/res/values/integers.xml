@@ -35,7 +35,7 @@
     <integer name="my_notes_column">3</integer>
     <integer name="good_sentence_tab_column">1</integer>
     <integer name="good_sentence_tab_row">3</integer>
-    <integer name="good_sentence_notebook_row">20</integer>
+    <integer name="good_sentence_notebook_row">10</integer>
     <integer name="query_recor_row">20</integer>
     <integer name="query_record_column">1</integer>
     <integer name="dict_spinner_tab_row">16</integer>
@@ -68,7 +68,7 @@
     <integer name="new_word_review_col">1</integer>
     <integer name="good_sentence_review_row">3</integer>
     <integer name="good_sentence_review_col">1</integer>
-    <integer name="item_group_info_row">15</integer>
+    <integer name="item_group_info_row">12</integer>
     <integer name="group_member_tab_row">15</integer>
     <integer name="group_member_tab_column">4</integer>
     <integer name="pay_qr_code_width">250</integer>
@@ -80,7 +80,7 @@
     <integer name="search_result_row">4</integer>
     <integer name="search_result_col">1</integer>
     <integer name="report_list_col">1</integer>
-    <integer name="report_list_row">7</integer>
+    <integer name="report_list_row">10</integer>
     <integer name="second_popup_adapter_row">8</integer>
     <integer name="book_marks_row">1</integer>
     <integer name="book_marks_col">1</integer>
@@ -89,4 +89,5 @@
     <integer name="query_word_list_limit">10</integer>
     <integer name="share_to_member_row">8</integer>
     <integer name="share_to_member_col">3</integer>
+    <integer name="manager_group_adapter_row">12</integer>
 </resources>

@@ -56,7 +56,7 @@
                 android:id="@+id/new_words_review_title_hint"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:textColor="@color/black"
                 android:textSize="@dimen/level_two_font_size"
                 android:visibility="gone" />
@@ -65,9 +65,9 @@
                 android:id="@+id/new_words_review_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/new_words_review_title_hint"
                 android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/new_words_review_title_hint" />
         </RelativeLayout>
     </LinearLayout>
 

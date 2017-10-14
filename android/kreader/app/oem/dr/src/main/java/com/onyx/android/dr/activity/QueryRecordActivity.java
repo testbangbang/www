@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.util.DisplayMetrics;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -31,6 +30,7 @@ import com.onyx.android.dr.presenter.QueryRecordPresenter;
 import com.onyx.android.dr.util.DictPreference;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.AutoPagedWebView;
+import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
@@ -114,7 +114,8 @@ public class QueryRecordActivity extends BaseActivity implements QueryRecordView
 
     private void initRecyclerView() {
         dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
+                new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
         queryRecordAdapter = new QueryRecordAdapter();
         queryRecordRecyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         queryRecordRecyclerView.addItemDecoration(dividerItemDecoration);

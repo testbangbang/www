@@ -7,9 +7,11 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ReadingRateAdapter;
+import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
@@ -19,10 +21,12 @@ import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.ReadingRateView;
 import com.onyx.android.dr.presenter.ReadingRatePresenter;
+import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
+import com.onyx.android.sdk.data.model.CreateReadingRateBean;
 import com.onyx.android.sdk.data.model.ReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -61,11 +65,15 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private DividerItemDecoration dividerItemDecoration;
     private ReadingRateAdapter readingRateAdapter;
     private ReadingRatePresenter presenter;
-    private List<ReadingRateBean> readingRateList;
+    private List<CreateReadingRateBean> readingRateList;
     private ArrayList<Boolean> listCheck;
     private PageIndicator pageIndicator;
     private ReadingRateDialog timePickerDialog;
     private int type;
+    private String offset = "1";
+    private String limit = "200";
+    private String sortBy = "createdAt";
+    private String order = "-1";
 
     @Override
     protected Integer getLayoutId() {
@@ -84,9 +92,10 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private void initRecyclerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         readingRateAdapter = new ReadingRateAdapter();
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
-        recyclerView.addItemDecoration(dividerItemDecoration);
     }
 
     @Override
@@ -96,7 +105,9 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
         timePickerDialog = new ReadingRateDialog(this);
         initPageIndicator(pageIndicatorLayout);
         presenter = new ReadingRatePresenter(getApplicationContext(), this);
-        presenter.getAllReadingRateData();
+        MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
+        String json = JSON.toJSON(bean).toString();
+        presenter.getReadingRate(json);
         getIntentData();
         initEvent();
     }
@@ -115,6 +126,10 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
 
     @Override
     public void setReadingRateData(List<ReadingRateBean> dataList) {
+    }
+
+    @Override
+    public void getReadingRateData(List<CreateReadingRateBean> dataList) {
         if (dataList == null || dataList.size() <= 0) {
             return;
         }
@@ -185,17 +200,17 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
             if (type == Constants.READING_RATE_DIALOG_EXPORT) {
                 ArrayList<String> htmlTitleData = presenter.getHtmlTitleData();
                 presenter.exportDataToHtml(this, htmlTitleData, dataList);
-            } else if(type == Constants.READING_RATE_DIALOG_SHARE) {
+            } else if (type == Constants.READING_RATE_DIALOG_SHARE) {
                 int length = dataList.size();
                 ShareBookReportRequestBean shareBookReportRequestBean = new ShareBookReportRequestBean();
                 String[] array = new String[]{};
                 for (int i = length - 1; i >= 0; i--) {
-                    if (listCheck.get(i)) {
-                        ReadingRateEntity bean = dataList.get(i);
-                        array = Arrays.copyOf(array, array.length + 1);
-                    }
+                    ReadingRateEntity bean = dataList.get(i);
+                    array = Arrays.copyOf(array, array.length + 1);
+                    array[array.length - 1] = bean.cloudId;
                 }
                 shareBookReportRequestBean.setChildren(array);
+                DRPreferenceManager.saveShareType(DRApplication.getInstance(), Constants.READING_RATE);
                 ActivityManager.startShareBookReportActivity(this, "", array);
             }
         } else {

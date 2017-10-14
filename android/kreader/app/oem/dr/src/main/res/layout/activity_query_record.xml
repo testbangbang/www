@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,32 +11,8 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
-        android:id="@+id/query_record_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top"
-            android:text="@string/query_record_activity_hint"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font" />
-
-        <View style="@style/Horizontal_view" />
-
-        <include
-            layout="@layout/page_indicator_layout"
-            android:visibility="visible" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_bar"
-        android:layout_above="@id/query_record_activity_bottom"
         android:orientation="vertical">
 
         <LinearLayout
@@ -70,10 +46,34 @@
             <View style="@style/vertical_view" />
 
         </LinearLayout>
-
-        <com.onyx.android.dr.view.PageRecyclerView
-            android:id="@+id/query_record_activity_recyclerview"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
-</RelativeLayout>
+
+    <com.onyx.android.dr.view.PageRecyclerView
+        android:id="@+id/query_record_activity_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/reading_rate_activity_recycler_view_padding_bottom" />
+
+    <LinearLayout
+        android:id="@+id/query_record_activity_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top"
+            android:text="@string/query_record_activity_hint"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <View style="@style/Horizontal_view" />
+
+        <include
+            layout="@layout/page_indicator_layout"
+            android:visibility="visible" />
+    </LinearLayout>
+</LinearLayout>

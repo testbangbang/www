@@ -293,9 +293,16 @@ public class TimeUtils {
         return week + "";
     }
 
-    public static long dateToLong(Date date) {
-        long time = date.getTime();
-        return time;
+    public static long dateToLong(String content) {
+        DateFormat df = new SimpleDateFormat(HOUR_AND_MINUTE);
+        try {
+            Date parse = df.parse(content);
+            long time = parse.getTime();
+            return time;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return 0;
     }
 
     public static String getDataStringPart() {

@@ -44,7 +44,7 @@ public class ManageGroupAdapter extends PageRecyclerView.PageAdapter<ManageGroup
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.item_group_info_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.manager_group_adapter_row);
     }
 
     @Override

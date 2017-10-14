@@ -37,7 +37,7 @@ public class QueryRecordAdapter extends PageRecyclerView.PageAdapter implements 
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.query_recor_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.good_sentence_notebook_row);
     }
 
     @Override

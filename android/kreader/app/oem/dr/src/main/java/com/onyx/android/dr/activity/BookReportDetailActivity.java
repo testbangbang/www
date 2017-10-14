@@ -362,8 +362,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             CommonNotices.showMessage(this, getResources().getString(R.string.input_title));
             return;
         }
-        if (!StringUtils.isNullOrEmpty(title) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
-            bookReportPresenter.createImpression(bookId, title, text, bookPage);
+        if (!StringUtils.isNullOrEmpty(bookName) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
+            bookReportPresenter.createImpression(bookId, bookName, title, text, bookPage);
         }
     }
 
@@ -437,7 +437,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Override
     public void setDeleteResult() {
         String content = bookReportDetailContents.getText().toString();
-        bookReportPresenter.createImpression(data.book, data.name, content, data.pageNumber);
+        String title = bookReportDetailTitle.getText().toString();
+        bookReportPresenter.createImpression(data.book, data.name, title, content, data.pageNumber);
     }
 
     @Override

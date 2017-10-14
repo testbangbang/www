@@ -162,7 +162,7 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
             if (shareType == Constants.INFORMAL_ESSAY) {
                 presenter.shareInformalEssay(bean.child.library, childrenId);
             }else if (shareType == Constants.READING_RATE) {
-
+                presenter.shareReadingRate(bean.child.library, childrenId);
             }else if (shareType == Constants.READER_RESPONSE) {
                 presenter.shareImpression(bean.child.library, impressionId);
             }

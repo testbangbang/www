@@ -14,7 +14,6 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.dr.event.ArticleRepeatAfterEvent;
 import com.onyx.android.dr.event.SearchKeywordEvent;
@@ -26,7 +25,7 @@ import com.onyx.android.dr.fragment.PronounceEvaluationFragment;
 import com.onyx.android.dr.fragment.SpeechRecordingFragment;
 import com.onyx.android.dr.interfaces.HearAndSpeakView;
 import com.onyx.android.dr.util.DRPreferenceManager;
-import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.dr.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -191,12 +190,9 @@ public class HearAndSpeakActivity extends BaseActivity implements HearAndSpeakVi
             number++;
         } else {
             String text = searchEditText.getText().toString();
-            if (!StringUtils.isNullOrEmpty(text)) {
-                DRPreferenceManager.saveSearchKeyword(this, text);
-                EventBus.getDefault().post(new SearchKeywordEvent());
-            } else {
-                CommonNotices.showMessage(this, getString(R.string.hint_input_search_word));
-            }
+            DRPreferenceManager.saveSearchKeyword(this, text);
+            Utils.hideSoftWindow(this);
+            EventBus.getDefault().post(new SearchKeywordEvent());
         }
     }
 

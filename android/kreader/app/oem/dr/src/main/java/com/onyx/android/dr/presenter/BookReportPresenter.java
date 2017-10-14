@@ -56,7 +56,7 @@ public class BookReportPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetBookReportList bookReportList = rq.getBookReportList();
                 if (data == null) {
-                    data = new ArrayList<GetBookReportListBean>();
+                    data = new ArrayList<>();
                 } else {
                     data.clear();
                 }
@@ -122,9 +122,10 @@ public class BookReportPresenter {
         });
     }
 
-    public void createImpression(String bookId, String bookName, String content, String currentPage) {
+    public void createImpression(String bookId, String bookName, String title, String content, String currentPage) {
         CreateBookReportRequestBean requestBean = new CreateBookReportRequestBean();
         requestBean.setName(bookName);
+        requestBean.setTitle(title);
         requestBean.setBook(bookId);
         requestBean.setContent(content);
         requestBean.setPageNumber(currentPage);

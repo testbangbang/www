@@ -17,6 +17,7 @@ import com.onyx.android.sdk.data.model.ReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
@@ -34,6 +35,7 @@ public class ReadingRateQueryAll extends BaseDataRequest {
     private long divisor = 1000*60;
     private String bookName = "";
     private String language = "";
+    private String bookId = "";
 
     public ReadingRateQueryAll(ReadingRateData readingRateData) {
         this.readingRateData = readingRateData;
@@ -70,14 +72,16 @@ public class ReadingRateQueryAll extends BaseDataRequest {
             }
             if (typeByBookName != null) {
                 language = typeByBookName.getLanguage();
+                bookId = typeByBookName.getCloudId();
             }
             int readSummaryPiece = getReadSummaryPiece(bookName);
             Integer readerResponsePiece = getReaderResponsePiece(bookName);
             Integer readerResponseWordNumber = getReaderResponseWordNumber(bookName);
+            String time = DateTimeUtil.formatDate(onyxStatisticsModel.getEventTime(), DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
             ReadingRateBean bean = new ReadingRateBean();
             bean.setName(bookName);
-            bean.setBook(onyxStatisticsModel.getMd5());
-            bean.setRecordDate(onyxStatisticsModel.getEventTime());
+            bean.setBook(bookId);
+            bean.setRecordDate(time);
             bean.setReadTimeLong(String.valueOf(readMinute));
             bean.setSummaryCount(readSummaryPiece);
             bean.setLanguage(language);

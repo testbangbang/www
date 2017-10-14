@@ -1,13 +1,11 @@
 package com.onyx.android.sdk.data.model;
 
-import java.util.Date;
-
 /**
  * Created by zhouzhiming on 17-6-28.
  */
 
 public class ReadingRateBean {
-    public Date recordDate;
+    public String recordDate;
     public String name;
     public String book;
     public String readTimeLong;
@@ -18,11 +16,11 @@ public class ReadingRateBean {
     public int impressionCount;
     public int impressionWordsCount;
 
-    public Date getRecordDate() {
+    public String getRecordDate() {
         return recordDate;
     }
 
-    public void setRecordDate(Date recordDate) {
+    public void setRecordDate(String recordDate) {
         this.recordDate = recordDate;
     }
 
