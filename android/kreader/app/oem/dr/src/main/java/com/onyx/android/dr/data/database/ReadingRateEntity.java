@@ -5,8 +5,6 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import java.util.Date;
-
 /**
  * Created by zhouzhiming on 2017/7/12.
  */
@@ -16,13 +14,15 @@ public class ReadingRateEntity extends BaseModel {
     @PrimaryKey(autoincrement = true)
     public long id;
     @Column
-    public Date recordDate;
+    public String recordDate;
+    @Column
+    public String cloudId;
     @Column
     public String name;
     @Column
     public String book;
     @Column
-    public String readTimeLong;
+    public int readTimeLong;
     @Column
     public int wordsCount;
     @Column

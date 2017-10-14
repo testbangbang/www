@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -11,35 +11,12 @@
         android:layout_height="wrap_content" />
 
     <LinearLayout
-        android:id="@+id/reading_rate_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top"
-            android:text="@string/informal_essay_activity_hint"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/level_one_heading_font" />
-
-        <View style="@style/Horizontal_view" />
-
-        <include
-            layout="@layout/page_indicator_layout"
-            android:visibility="visible" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/title_bar"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/title_bar"
+        android:orientation="vertical">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -65,20 +42,20 @@
 
             <TextView
                 style="@style/reading_rate_activity_text_view"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
                 android:text="@string/time_horizon" />
 
             <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/reading_rate_activity_text_view"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/reading_quantity" />
+                android:text="@string/reading_quantity"
+                android:visibility="gone" />
 
             <View style="@style/vertical_view" />
 
@@ -93,42 +70,67 @@
             <TextView
                 style="@style/reading_rate_activity_text_view"
                 android:layout_marginLeft="1dp"
-                android:visibility="gone"
                 android:layout_weight="1"
-                android:text="@string/reading_rate_activity_speech" />
+                android:text="@string/reading_rate_activity_speech"
+                android:visibility="gone" />
 
             <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/reading_rate_activity_text_view"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
                 android:text="@string/read_summary_content" />
 
             <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/reading_rate_activity_text_view"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
                 android:text="@string/reader_response_content" />
 
             <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/reading_rate_activity_text_view"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
-                android:layout_gravity="center_horizontal"
                 android:text="@string/reader_response_number" />
 
         </LinearLayout>
-
-        <com.onyx.android.dr.view.PageRecyclerView
-            android:id="@+id/reading_rate_activity_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
     </LinearLayout>
-</RelativeLayout>
+
+    <com.onyx.android.dr.view.PageRecyclerView
+        android:id="@+id/reading_rate_activity_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/reading_rate_activity_recycler_view_padding_bottom" />
+
+    <LinearLayout
+        android:id="@+id/reading_rate_activity_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/new_word_activity_radio_group_padding_top"
+            android:text="@string/informal_essay_activity_hint"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <View style="@style/Horizontal_view" />
+
+        <include
+            layout="@layout/page_indicator_layout"
+            android:visibility="visible" />
+
+    </LinearLayout>
+</LinearLayout>

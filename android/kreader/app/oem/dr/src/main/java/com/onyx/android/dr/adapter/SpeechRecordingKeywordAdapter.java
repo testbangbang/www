@@ -3,12 +3,15 @@ package com.onyx.android.dr.adapter;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
-import com.onyx.android.sdk.data.model.CreateReadingRateBean;
 
 import java.util.List;
 
@@ -18,11 +21,11 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-7-11.
  */
-public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRateAdapter.ViewHolder> {
-    private List<CreateReadingRateBean> dataList;
+public class SpeechRecordingKeywordAdapter extends PageRecyclerView.PageAdapter<SpeechRecordingKeywordAdapter.ViewHolder> {
+    private List<InformalEssayEntity> dataList;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<CreateReadingRateBean> dataList) {
+    public void setDataList(List<InformalEssayEntity> dataList) {
         this.dataList = dataList;
     }
 
@@ -43,23 +46,23 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_reading_rate, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_speech_recording, null);
         return new ViewHolder(inflate);
     }
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        CreateReadingRateBean bean = dataList.get(position);
-        holder.time.setText(bean.recordDate);
-        holder.bookName.setText(bean.name);
-        holder.timeHorizon.setText(String.valueOf(bean.readTimeLong));
-        holder.readingSummary.setText(String.valueOf(bean.summaryCount));
-        holder.readerResponsePiece.setText(String.valueOf(bean.impressionCount));
-        holder.readerResponseNumber.setText(String.valueOf(bean.impressionWordsCount));
-        holder.languageType.setText(bean.language);
-        holder.rootView.setOnClickListener(new View.OnClickListener() {
+        InformalEssayEntity bean = dataList.get(position);
+        long currentTime = bean.currentTime;
+        holder.content.setText(bean.content);
+        holder.time.setText(TimeUtils.getDate(currentTime));
+        holder.title.setText(bean.title);
+        holder.wordNumber.setText(bean.wordNumber);
+        holder.startSpeech.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                InformalEssayEntity informalEssayEntity = dataList.get(position);
+                ActivityManager.startSpeechRecordingActivity(DRApplication.getInstance(), informalEssayEntity.title, informalEssayEntity.content);
             }
         });
     }
@@ -79,20 +82,16 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.reading_rate_item_time)
+        @Bind(R.id.item_speech_recording_start_speech)
+        ImageView startSpeech;
+        @Bind(R.id.item_speech_recording_content)
+        TextView content;
+        @Bind(R.id.item_speech_recording_time)
         TextView time;
-        @Bind(R.id.reading_rate_item_book_name)
-        TextView bookName;
-        @Bind(R.id.reading_rate_item_time_horizon)
-        TextView timeHorizon;
-        @Bind(R.id.reading_rate_item_language_type)
-        TextView languageType;
-        @Bind(R.id.reading_rate_item_reading_summary)
-        TextView readingSummary;
-        @Bind(R.id.reading_rate_item_reader_response_piece)
-        TextView readerResponsePiece;
-        @Bind(R.id.reading_rate_item_reader_response_number)
-        TextView readerResponseNumber;
+        @Bind(R.id.item_speech_recording_title)
+        TextView title;
+        @Bind(R.id.item_speech_recording_number)
+        TextView wordNumber;
         View rootView;
 
         ViewHolder(View view) {

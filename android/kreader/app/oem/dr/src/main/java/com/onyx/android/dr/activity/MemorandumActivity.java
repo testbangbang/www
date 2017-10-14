@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -18,6 +17,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.interfaces.MemorandumView;
 import com.onyx.android.dr.presenter.MemorandumPresenter;
+import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
@@ -75,7 +75,8 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
 
     private void initRecyclerView() {
         dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
+                new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
         memorandumAdapter = new MemorandumAdapter();
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         recyclerView.addItemDecoration(dividerItemDecoration);

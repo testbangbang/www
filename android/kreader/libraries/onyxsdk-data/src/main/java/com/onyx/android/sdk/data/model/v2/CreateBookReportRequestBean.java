@@ -9,6 +9,7 @@ import java.util.List;
 
 public class CreateBookReportRequestBean implements Serializable{
     private String name;
+    private String title;
     private String content;
     private String book;
     private String pageNumber;
@@ -52,5 +53,13 @@ public class CreateBookReportRequestBean implements Serializable{
 
     public void setComments(List<CommentsBean> comments) {
         this.comments = comments;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 }

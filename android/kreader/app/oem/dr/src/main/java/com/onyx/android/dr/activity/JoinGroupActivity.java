@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -14,6 +13,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.interfaces.JoinGroupView;
 import com.onyx.android.dr.presenter.JoinGroupPresenter;
+import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
 import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.device.Device;
@@ -70,7 +70,8 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
 
     private void initRecyclerView() {
         dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
+                new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
         groupAdapter = new GroupAdapter();
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         recyclerView.addItemDecoration(dividerItemDecoration);

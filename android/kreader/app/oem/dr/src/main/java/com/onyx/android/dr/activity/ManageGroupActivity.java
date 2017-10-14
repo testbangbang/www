@@ -14,6 +14,7 @@ import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.ManageGroupView;
 import com.onyx.android.dr.presenter.ManageGroupPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.AllGroupBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -60,6 +61,10 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
 
     private void initRecyclerView() {
         manageGroupAdapter = new ManageGroupAdapter();
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
+        recyclerView.addItemDecoration(dividerItemDecoration);
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
     }
 

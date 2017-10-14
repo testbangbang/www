@@ -1,6 +1,5 @@
 package com.onyx.android.dr.activity;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -16,6 +15,7 @@ import com.onyx.android.dr.adapter.AnnotationListAdapter;
 import com.onyx.android.dr.bean.AnnotationStatisticsBean;
 import com.onyx.android.dr.interfaces.AnnotationView;
 import com.onyx.android.dr.presenter.AnnotationListPresenter;
+import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
@@ -65,7 +65,9 @@ public class AnnotationListActivity extends BaseActivity implements AnnotationVi
 
     @Override
     protected void initView() {
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
         annotationListRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         annotationListRecycler.addItemDecoration(dividerItemDecoration);
         listAdapter = new AnnotationListAdapter();

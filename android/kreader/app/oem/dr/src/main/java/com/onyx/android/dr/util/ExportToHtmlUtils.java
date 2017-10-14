@@ -13,7 +13,6 @@ import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
-import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -171,9 +170,8 @@ public class ExportToHtmlUtils {
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
             ReadingRateEntity bean = dataList.get(i);
-            String time = DateTimeUtil.formatDate(bean.recordDate, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
             sb.append("<th>");
-            sb.append(time);
+            sb.append(bean.recordDate);
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.name);

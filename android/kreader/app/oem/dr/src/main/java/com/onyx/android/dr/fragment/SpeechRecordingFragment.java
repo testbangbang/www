@@ -1,22 +1,26 @@
 package com.onyx.android.dr.fragment;
 
-import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
-import android.widget.TextView;
+import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SpeechRecordingAdapter;
+import com.onyx.android.dr.adapter.SpeechRecordingKeywordAdapter;
 import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.event.SearchKeywordEvent;
 import com.onyx.android.dr.interfaces.SpeechRecordingView;
 import com.onyx.android.dr.presenter.SpeechRecordingPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
+import com.onyx.android.dr.view.DividerItemDecoration;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,17 +38,19 @@ import butterknife.Bind;
 public class SpeechRecordingFragment extends BaseFragment implements SpeechRecordingView {
     @Bind(R.id.fragment_speech_recording_recycler_view)
     PageRecyclerView recyclerView;
-    @Bind(R.id.fragment_speech_recording_all_number)
-    TextView allNumber;
-    private DividerItemDecoration dividerItemDecoration;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
     private SpeechRecordingAdapter speechRecordingAdapter;
+    private SpeechRecordingKeywordAdapter speechRecordingKeywordAdapter;
     private SpeechRecordingPresenter presenter;
     private List<CreateInformalEssayBean> informalEssayList;
+    private List<InformalEssayEntity> informalEssayKeywordList;
     private int jumpSource = 0;
     private String offset = "1";
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";
+    private PageIndicator pageIndicator;
 
     @Override
     protected void initListener() {
@@ -61,16 +67,19 @@ public class SpeechRecordingFragment extends BaseFragment implements SpeechRecor
     }
 
     private void initRecyclerView() {
-        dividerItemDecoration =
-                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
-        speechRecordingAdapter = new SpeechRecordingAdapter();
-        recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
         recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
+        speechRecordingAdapter = new SpeechRecordingAdapter();
+        speechRecordingKeywordAdapter = new SpeechRecordingKeywordAdapter();
     }
 
     @Override
     protected void loadData() {
         EventBus.getDefault().register(this);
+        initPageIndicator(pageIndicatorLayout);
         loadInformalEssay();
         initEvent();
     }
@@ -81,6 +90,7 @@ public class SpeechRecordingFragment extends BaseFragment implements SpeechRecor
         String json = JSON.toJSON(bean).toString();
         presenter.getInformalEssay(json);
         informalEssayList = new ArrayList<>();
+        informalEssayKeywordList = new ArrayList<>();
     }
 
     @Override
@@ -90,21 +100,95 @@ public class SpeechRecordingFragment extends BaseFragment implements SpeechRecor
 
     @Override
     public void setInformalEssayByTitle(List<InformalEssayEntity> dataList) {
-//        showData(dataList);
+        showKeywordData(dataList);
     }
 
     private void showData(List<CreateInformalEssayBean> dataList) {
         if (dataList != null && !dataList.isEmpty()) {
-            allNumber.setText(getString(R.string.fragment_speech_recording_all_number) + dataList.size() + getString(R.string.data_unit));
             informalEssayList.clear();
             informalEssayList = dataList;
         }
         speechRecordingAdapter.setDataList(informalEssayList);
         recyclerView.setAdapter(speechRecordingAdapter);
         speechRecordingAdapter.notifyDataSetChanged();
+        updatePageIndicator();
+    }
+
+    private void showKeywordData(List<InformalEssayEntity> dataList) {
+        if (dataList != null && !dataList.isEmpty()) {
+            informalEssayList.clear();
+            informalEssayKeywordList.clear();
+            informalEssayKeywordList = dataList;
+        }
+        speechRecordingKeywordAdapter.setDataList(informalEssayKeywordList);
+        recyclerView.setAdapter(speechRecordingKeywordAdapter);
+        speechRecordingKeywordAdapter.notifyDataSetChanged();
+        updatePageIndicator();
     }
 
     public void initEvent() {
+        recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
+            }
+        });
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), recyclerView.getPaginator());
+        pageIndicator.showRefresh(false);
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                recyclerView.prevPage();
+            }
+
+            @Override
+            public void next() {
+                recyclerView.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(speechRecordingAdapter.getRowCount(), speechRecordingAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+        recyclerView.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = speechRecordingAdapter.getDataCount();
+        getPagination().resize(speechRecordingAdapter.getRowCount(), speechRecordingAdapter.getColumnCount(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

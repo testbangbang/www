@@ -38,6 +38,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/rectangle_stroke"
+        android:layout_marginTop="@dimen/new_word_activity_radio_group_padding_top"
         android:padding="@dimen/new_word_title_padding">
 
         <TextView
@@ -106,7 +107,7 @@
     <com.onyx.android.dr.view.PageRecyclerView
         android:id="@+id/new_word_activity_recyclerview"
         android:layout_width="match_parent"
-        android:paddingBottom="10dp"
+        android:paddingBottom="@dimen/good_sentence_activity_recyclerview_padding_bottom"
         android:layout_weight="1"
         android:layout_height="0dp" />
 

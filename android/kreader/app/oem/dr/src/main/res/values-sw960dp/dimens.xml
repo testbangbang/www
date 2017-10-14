@@ -380,13 +380,22 @@
     <dimen name="share_to_member_recycler_padding_bottom">10dp</dimen>
     <dimen name="reading_rate_dialog_spinner_margin_right">5dp</dimen>
     <dimen name="new_word_item_order_number_margin_left">2dp</dimen>
-    <dimen name="infromal_essay_item_time_margin_left">3dp</dimen>
+    <dimen name="infromal_essay_item_time_margin_left">2dp</dimen>
     <dimen name="new_word_order_number_margin_left">3dp</dimen>
-    <dimen name="item_speech_recording_start_speech_margin_right">4dp</dimen>
+    <dimen name="item_speech_recording_start_speech_margin_right">2dp</dimen>
     <dimen name="book_report_list_item_bring_out_margin_right">-3dp</dimen>
     <dimen name="book_report_list_item_page_margin_right">-1dp</dimen>
-    <dimen name="book_report_list_recycle_padding_bottom">4dp</dimen>
+    <dimen name="book_report_list_recycle_padding_bottom">8dp</dimen>
     <dimen name="reading_rate_item_time_margin_left">3dp</dimen>
     <dimen name="book_report_detail_title_width">300dp</dimen>
+    <dimen name="reading_rate_activity_recycler_view_padding_bottom">8dp</dimen>
+    <dimen name="reading_rate_item_reader_response_number_margin_right">1dp</dimen>
+    <dimen name="good_sentence_activity_recyclerview_padding_bottom">12dp</dimen>
+    <dimen name="item_speech_recording_time_margin_left">3dp</dimen>
+    <dimen name="manage_group_info_item_serial_number_margin_left">1dp</dimen>
+    <dimen name="manage_group_info_item_serial_number_margin_right">3dp</dimen>
+    <dimen name="info_item_group_name_margin_left">1dp</dimen>
+    <dimen name="query_record_item_keyword_margin_left">3dp</dimen>
+    <dimen name="recording_start_speech_margin_left">5dp</dimen>
 </resources>
 

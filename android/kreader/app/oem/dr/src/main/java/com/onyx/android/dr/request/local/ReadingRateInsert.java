@@ -38,6 +38,7 @@ public class ReadingRateInsert extends BaseDataRequest {
             readingRateEntity.summaryCount = readingRateInfo.summaryCount;
             readingRateEntity.impressionCount = readingRateInfo.impressionCount;
             readingRateEntity.impressionWordsCount = readingRateInfo.impressionWordsCount;
+            readingRateEntity.cloudId = readingRateInfo.cloudId;
             readingRateEntity.update();
         }
     }

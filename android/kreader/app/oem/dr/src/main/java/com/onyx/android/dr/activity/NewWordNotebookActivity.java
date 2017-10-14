@@ -94,6 +94,8 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     private void initRecyclerView() {
         dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
+        newWordRecyclerView.addItemDecoration(dividerItemDecoration);
         newWordAdapter = new NewWordAdapter();
         DisableScrollGridManager disableScrollGridManager = new DisableScrollGridManager(DRApplication.getInstance());
         disableScrollGridManager.setScrollEnable(true);
