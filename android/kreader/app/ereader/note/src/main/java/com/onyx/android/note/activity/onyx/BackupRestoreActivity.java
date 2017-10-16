@@ -113,6 +113,8 @@ public class BackupRestoreActivity extends AppCompatActivity{
                 viewHolder.setText(R.id.size, FileUtils.getFileSize(fileInfo.getSize()));
                 viewHolder.setText(R.id.time, DateTimeUtil.formatDate(new Date(fileInfo.getLastModified()), DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMMSS));
                 viewHolder.setImageResource(R.id.restore, fileInfo.isLocal() ? R.drawable.local_backup : R.drawable.cloud_backup);
+                viewHolder.setClickable(R.id.restore, false);
+                viewHolder.setBackgroundResource(R.id.restore, R.color.transparent);
                 viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

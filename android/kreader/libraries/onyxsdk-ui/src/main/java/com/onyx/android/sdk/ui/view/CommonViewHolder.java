@@ -59,6 +59,12 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
         return this;
     }
 
+    public CommonViewHolder setClickable(int viewId, boolean clickable) {
+        View view = getView(viewId);
+        view.setClickable(clickable);
+        return this;
+    }
+
     public CommonViewHolder setBackgroundColor(int viewId, int color) {
         View view = getView(viewId);
         view.setBackgroundColor(color);
