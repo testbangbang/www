@@ -809,10 +809,14 @@ public class ShowReaderMenuAction extends BaseAction {
 
             @Override
             public void onToggle(final ReaderMenuAction action, boolean expand){
-                final FlushNoteAction flushNoteAction = expand ?
-                        FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages()) :
-                        new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
-                flushNoteAction.execute(readerDataHolder, null);
+                if (action == ReaderMenuAction.SCRIBBLE_SHAPE ||
+                        action == ReaderMenuAction.SCRIBBLE_WIDTH ||
+                        action == ReaderMenuAction.SCRIBBLE_ERASER) {
+                    final FlushNoteAction flushNoteAction = expand ?
+                            FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages()) :
+                            new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
+                    flushNoteAction.execute(readerDataHolder, null);
+                }
             }
         };
         return callback;
