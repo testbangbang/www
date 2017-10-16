@@ -55,7 +55,6 @@ public class SlideshowHandler extends BaseHandler {
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
     private PendingIntent pendingIntent;
     private boolean screenOff = false;
-    private Thread thread = null;
 
     private BaseCallback pageLimitCallback = new BaseCallback() {
         @Override
@@ -77,19 +76,23 @@ public class SlideshowHandler extends BaseHandler {
                 screenOff = false;
                 setAlarm();
             } else if (action.equals(slideShowAction)) {
-                if (!screenOff) {
-                    wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 1000);
-                    if (!activated) {
-                        return;
-                    }
-                    loopNextScreen();
-                    setAlarm();
-                    //just keep screen on
-                    sendKeyCode(KeyEvent.KEYCODE_0);
-                }
+                nextScreen(context);
             }
         }
     };
+
+    private void nextScreen(Context context) {
+        if (!screenOff) {
+            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 1000);
+            if (!activated) {
+                return;
+            }
+            loopNextScreen();
+            setAlarm();
+            //just keep screen on
+            sendKeyCode(KeyEvent.KEYCODE_0);
+        }
+    }
 
     private void sendKeyCode(final int keyCode) {
         new Thread () {
