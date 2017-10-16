@@ -13,6 +13,7 @@
 #include <stdint.h>
 #include <dirent.h>
 #include <fcntl.h>
+#include <sys/eventfd.h>
 #include <sys/ioctl.h>
 #include <sys/inotify.h>
 #include <sys/limits.h>
@@ -21,9 +22,11 @@
 #include <errno.h>
 
 TouchReader::TouchReader() :
-    limitArray(nullptr), excludeArray(nullptr), shortcutDrawing(false), shortcutErasing(false)
+    fd(0), efd(0), nfds(2), ufds(NULL),
+    limitArray(nullptr), excludeArray(nullptr), shortcutDrawing(false), shortcutErasing(false),
+    pressed(false)
 {
-
+    ufds = (pollfd *)calloc(nfds, sizeof(ufds[0]));
 }
 
 TouchReader::~TouchReader() {
@@ -188,13 +191,31 @@ void TouchReader::processEvent(void *userData, onTouchPointReceived callback, in
 void TouchReader::readTouchEventLoop(void *userData, onTouchPointReceived callback){
     running = true;
     struct input_event event;
-    while (running && fd > 0) {
-        int res = read(fd, &event, sizeof(event));
-        if (res < (int)sizeof(event)) {
-            continue;
-        }
-        processEvent(userData, callback, event.type, event.code, event.value, event.time.tv_usec);
+
+    efd = eventfd(0, 0);
+    if (efd < 0) {
+        LOGE("init touch reader failed!");
+        return;
     }
+
+    ufds[0].fd = fd;
+    ufds[0].events = POLLIN;
+    ufds[1].fd = efd;
+    ufds[1].events = POLLIN;
+
+    while (running && ufds != 0) {
+        poll(ufds, nfds, -1);
+        if (ufds[0].revents && ufds[0].revents & POLLIN) {
+            int res = read(ufds[0].fd, &event, sizeof(event));
+            if (res < (int)sizeof(event)) {
+                continue;
+            }
+            processEvent(userData, callback, event.type, event.code, event.value, event.time.tv_usec);
+        }
+    }
+
+    close(efd);
+    efd = 0;
 }
 
 std::string TouchReader::findDevice() {
@@ -222,11 +243,17 @@ void TouchReader::closeDevice(){
     if (debug) {
         LOGI("touch reader closeDevice fd %d", fd);
     }
+
     if (fd > 0) {
         close(fd);
         fd = 0;
     }
     running = false;
+
+    if (efd > 0) {
+        uint64_t i = 0;
+        write(efd, &i, sizeof(i));
+    }
 }
 
 void TouchReader::setLimitRegion(float *array, int len) {
