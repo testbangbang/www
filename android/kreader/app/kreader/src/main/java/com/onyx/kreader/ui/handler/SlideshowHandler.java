@@ -40,7 +40,8 @@ import static android.content.Context.ALARM_SERVICE;
  */
 public class SlideshowHandler extends BaseHandler {
 
-    private static Intent intent = new Intent(SlideshowHandler.class.getCanonicalName());
+    private static String slideShowAction = SlideshowHandler.class.getCanonicalName();
+    private static Intent intent = new Intent(slideShowAction);
     private static final String TAG = SlideshowHandler.class.getSimpleName();
     private boolean activated;
     private ReaderDataHolder readerDataHolder;
@@ -53,6 +54,8 @@ public class SlideshowHandler extends BaseHandler {
     private int intervalInSeconds = 3;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
     private PendingIntent pendingIntent;
+    private boolean screenOff = false;
+    private Thread thread = null;
 
     private BaseCallback pageLimitCallback = new BaseCallback() {
         @Override
@@ -67,19 +70,23 @@ public class SlideshowHandler extends BaseHandler {
         @Override
         public void onReceive(Context context, Intent intent) {
             Debug.d(getClass(), "onReceive: " + intent.getAction());
-            if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
-                cancelAlarm();
-                wakeLockHolder.releaseWakeLock();
-                quit();
-            } else {
-                wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 1000);
-                if (!activated) {
-                    return;
-                }
-                loopNextScreen();
+            String action = intent.getAction();
+            if (action.equals(Intent.ACTION_SCREEN_OFF)) {
+                screenOff = true;
+            } else if (action.equals(Intent.ACTION_SCREEN_ON)){
+                screenOff = false;
                 setAlarm();
-                //just keep screen on
-                sendKeyCode(KeyEvent.KEYCODE_0);
+            } else if (action.equals(slideShowAction)) {
+                if (!screenOff) {
+                    wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 1000);
+                    if (!activated) {
+                        return;
+                    }
+                    loopNextScreen();
+                    setAlarm();
+                    //just keep screen on
+                    sendKeyCode(KeyEvent.KEYCODE_0);
+                }
             }
         }
     };
@@ -95,13 +102,6 @@ public class SlideshowHandler extends BaseHandler {
                 }
             }
         }.start();
-    }
-
-    private void cancelAlarm() {
-        AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
-        if (am != null) {
-            am.cancel(pendingIntent);
-        }
     }
 
     public static HandlerInitialState createInitialState(RelativeLayout parentLayout, int maxPageCount, int intervalInSeconds) {
@@ -131,6 +131,7 @@ public class SlideshowHandler extends BaseHandler {
         activated = true;
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
+        filter.addAction(Intent.ACTION_SCREEN_ON);
         filter.addAction(intent.getAction());
         readerDataHolder.getContext().registerReceiver(broadcastReceiver, filter);
         readerDataHolder.getEventBus().register(this);
@@ -259,7 +260,7 @@ public class SlideshowHandler extends BaseHandler {
 
     private void setAlarm() {
         AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
-        if (am != null) {
+        if (am != null && !screenOff) {
             am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + intervalInSeconds * 1000,
                     pendingIntent);
         }
