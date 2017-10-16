@@ -1,6 +1,8 @@
 #ifndef TOUCH_READER_H
 #define TOUCH_READER_H
 
+#include <sys/poll.h>
+
 class TouchReader {
 
 public:
@@ -36,6 +38,9 @@ private:
     bool debug = true;
 
     int fd;
+    int efd;
+    int nfds;
+    pollfd *ufds;
     int px, py, pressure;
     int state, lastState;
     bool volatile running;
