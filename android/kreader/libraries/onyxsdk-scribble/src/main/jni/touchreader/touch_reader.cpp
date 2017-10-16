@@ -30,6 +30,9 @@ TouchReader::TouchReader() :
 }
 
 TouchReader::~TouchReader() {
+    free(ufds);
+    ufds = 0;
+
     closeDevice();
     clearLimitArray();
     clearExcludeArray();
