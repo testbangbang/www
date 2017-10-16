@@ -37,4 +37,6 @@
     <string name="homework_item_correct_already">已批改</string>
     <string name="file_homework_record">答题记录</string>
     <string name="file_homework_commit">提交</string>
+    <string name="patient_wait_for_correct">请耐心等待老师批改</string>
+    <string name="timer_in_second_switch_to_homework">%ds后跳转到作业列表</string>
 </resources>

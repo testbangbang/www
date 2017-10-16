@@ -14,7 +14,10 @@ import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.HandlerFinishContent;
 import com.onyx.android.sun.databinding.ItemContentBinding;
 import com.onyx.android.sun.databinding.ItemTimeBinding;
+import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -78,13 +81,22 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
             ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
             ItemContentBinding contentBinding = contentViewHolder.getContentBinding();
             contentBinding.setContent(contents.get(position));
+            contentViewHolder.itemView.setOnClickListener(this);
+            contentViewHolder.itemView.setTag(position);
             contentBinding.executePendingBindings();
         }
     }
 
     @Override
     public void onClick(View view) {
+        Object tag = view.getTag();
+        if(tag == null) {
+            return;
+        }
 
+        int position = (int) tag;
+        HandlerFinishContent handlerFinishContent = contents.get(position);
+        EventBus.getDefault().post(new ToCorrectEvent(handlerFinishContent.content.correctTime != null));
     }
 
     public void setData(List<FinishContent> data) {

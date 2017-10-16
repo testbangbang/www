@@ -14,10 +14,12 @@ import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
+import com.onyx.android.sun.fragment.CorrectFragment;
 import com.onyx.android.sun.fragment.FillHomeworkFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
@@ -138,6 +140,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_FILL_HOMEWORK:
                     baseFragment = new FillHomeworkFragment();
                     break;
+                case ChildViewID.FRAGMENT_CORRECT:
+                    baseFragment = new CorrectFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -171,5 +176,12 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToHomeworkFragmentEvent(BackToHomeworkFragmentEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_EXAMINATION_WORK);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToCorrectEvent(ToCorrectEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_CORRECT);
+        CorrectFragment correctFragment = (CorrectFragment) getPageView(ChildViewID.FRAGMENT_CORRECT);
+        correctFragment.setStartTimer(event.isHasCorrected());
     }
 }
