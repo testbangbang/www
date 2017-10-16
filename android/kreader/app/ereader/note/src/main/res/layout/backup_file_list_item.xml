@@ -48,7 +48,6 @@
             android:layout_height="wrap_content">
 
             <com.onyx.android.sdk.ui.view.CustomIconView
-                android:background="@drawable/imagebtn_bg"
                 android:id="@+id/restore"
                 android:layout_width="?attr/actionBarSize"
                 android:layout_height="?attr/actionBarSize"
