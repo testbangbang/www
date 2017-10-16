@@ -280,8 +280,10 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void closeSubMenu(final ViewGroup parent) {
-        sideMenu.removeSubMenu(parent);
-        updateMainMenuBg();
+        if (sideMenu.getMainMenu() != null) {
+            sideMenu.removeSubMenu(parent);
+            updateMainMenuBg();
+        }
 
         actionCallback.onToggle(parentAction, false);
         parent.setOnClickListener(null);
