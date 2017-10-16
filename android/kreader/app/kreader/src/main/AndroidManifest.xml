@@ -282,6 +282,24 @@
 
         <receiver android:name=".ui.receiver.NetworkConnectChangedReceiver">
         </receiver>
+
+        <service
+            android:name=".ui.ReaderSetDocumentTitleService"
+            android:enabled="true"
+            android:exported="true"
+            android:process=":setdocumenttitleservice">
+            <intent-filter>
+                <action android:name="com.onyx.android.sdk.data.IntentFactory.ACTION_SET_DOCUMENT_TITLE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data
+                    android:host="*"
+                    android:scheme="file" />
+                <data
+                    android:host="*"
+                    android:scheme="content" />
+                <data android:mimeType="application/pdf" />
+            </intent-filter>
+        </service>
     </application>
 
 
