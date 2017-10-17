@@ -53,7 +53,6 @@ public class SlideshowHandler extends BaseHandler {
     private int intervalInSeconds = 3;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
     private PendingIntent pendingIntent;
-    private boolean screenOff = false;
 
     private BaseCallback pageLimitCallback = new BaseCallback() {
         @Override
@@ -70,9 +69,9 @@ public class SlideshowHandler extends BaseHandler {
             Debug.d(getClass(), "onReceive: " + intent.getAction());
             String action = intent.getAction();
             if (action.equals(Intent.ACTION_SCREEN_OFF)) {
-                screenOff = true;
+                activated = false;
             } else if (action.equals(Intent.ACTION_SCREEN_ON)){
-                screenOff = false;
+                activated = true;
                 setAlarm();
             } else if (action.equals(slideShowAction)) {
                 nextScreen(context);
@@ -81,16 +80,14 @@ public class SlideshowHandler extends BaseHandler {
     };
 
     private void nextScreen(Context context) {
-        if (!screenOff) {
-            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 1000);
-            if (!activated) {
-                return;
-            }
-            loopNextScreen();
-            setAlarm();
-            //just keep screen on
-            sendKeyCode(KeyEvent.KEYCODE_0);
+        if (!activated) {
+            return;
         }
+        wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 1000);
+        loopNextScreen();
+        setAlarm();
+        //just keep screen on
+        sendKeyCode(KeyEvent.KEYCODE_0);
     }
 
     private void sendKeyCode(final int keyCode) {
@@ -258,7 +255,7 @@ public class SlideshowHandler extends BaseHandler {
 
     private void setAlarm() {
         AlarmManager am = (AlarmManager)readerDataHolder.getContext().getSystemService(ALARM_SERVICE);
-        if (am != null && !screenOff) {
+        if (am != null && activated) {
             am.set(AlarmManager.RTC_WAKEUP, Calendar.getInstance().getTimeInMillis() + intervalInSeconds * 1000,
                     pendingIntent);
         }
