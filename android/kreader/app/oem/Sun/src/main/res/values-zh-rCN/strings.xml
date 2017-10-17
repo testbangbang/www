@@ -37,4 +37,8 @@
     <string name="homework_item_correct_already">已批改</string>
     <string name="file_homework_record">答题记录</string>
     <string name="file_homework_commit">提交</string>
+    <string name="save">保存</string>
+    <string name="add_page">增加页</string>
+    <string name="delete_page">删除页</string>
+    <string name="answer_page_format">答题页%d</string>
 </resources>

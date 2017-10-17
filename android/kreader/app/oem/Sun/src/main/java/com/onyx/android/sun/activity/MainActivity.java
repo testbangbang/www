@@ -11,6 +11,7 @@ import com.onyx.android.sun.R;
 import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
+import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.FillHomeworkEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
@@ -90,6 +91,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.news_image:
+                ManagerActivityUtils.startScribbleActivity(this, "11111", "第一单元单元测验", "1.斯是陋室,惟吾德馨.");
                 break;
         }
     }

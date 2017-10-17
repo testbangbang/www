@@ -37,4 +37,8 @@
     <string name="homework_item_correct_already">Corrected</string>
     <string name="file_homework_record">Answer record</string>
     <string name="file_homework_commit">Submit</string>
+    <string name="save">save</string>
+    <string name="add_page">add page</string>
+    <string name="delete_page">delete page</string>
+    <string name="answer_page_format">answer page %d</string>
 </resources>
