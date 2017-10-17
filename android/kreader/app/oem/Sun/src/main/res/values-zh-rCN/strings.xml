@@ -41,4 +41,6 @@
     <string name="add_page">增加页</string>
     <string name="delete_page">删除页</string>
     <string name="answer_page_format">答题页%d</string>
+    <string name="patient_wait_for_correct">请耐心等待老师批改</string>
+    <string name="timer_in_second_switch_to_homework">%ds后跳转到作业列表</string>
 </resources>

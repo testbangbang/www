@@ -85,7 +85,6 @@ public abstract class BaseHandler {
 
     @Subscribe
     public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent event) {
-        Log.e(TAG, "onRawTouchPointListReceivedEvent: ===================================" + event.getTouchPointList());
         Shape shape = createNewShape(noteManager.inSpanLayoutMode(),
                 noteManager.getShapeDataInfo().getCurrentShapeType());
         shape.addPoints(event.getTouchPointList());
@@ -103,7 +102,6 @@ public abstract class BaseHandler {
 
     @Subscribe
     public void onDrawingTouchEvent(DrawingTouchEvent event) {
-        Log.e(TAG, "onDrawingTouchEvent: ========================" + event.getMotionEvent());
         forwardDrawing(event.getMotionEvent());
     }
 
@@ -193,8 +191,6 @@ public abstract class BaseHandler {
     }
 
     private TouchPoint touchPointFromNormalized(final TouchPoint normalized) {
-        // TODO
-        //return viewToEpdMatrix.mapWithOffset(normalized, viewPosition[0], viewPosition[1]);
         return normalized;
     }
 

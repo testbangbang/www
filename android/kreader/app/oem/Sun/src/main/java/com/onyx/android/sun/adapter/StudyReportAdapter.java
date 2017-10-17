@@ -47,6 +47,7 @@ public class StudyReportAdapter extends PageRecyclerView.PageAdapter {
         StudyReportViewHolder viewHolder = (StudyReportViewHolder) holder;
         ItemStudyReportBinding studyReportBinding = viewHolder.getStudyReportBinding();
         studyReportBinding.setContent(data.get(position));
+        studyReportBinding.executePendingBindings();
     }
 
     @Override

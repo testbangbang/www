@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.databinding.ViewDataBinding;
 import android.support.design.widget.TabLayout;
+import android.view.KeyEvent;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
@@ -13,17 +14,19 @@ import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
-import com.onyx.android.sun.event.FillHomeworkEvent;
+import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
+import com.onyx.android.sun.fragment.CorrectFragment;
+import com.onyx.android.sun.fragment.FillHomeworkFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -138,11 +141,25 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_FILL_HOMEWORK:
                     baseFragment = new FillHomeworkFragment();
                     break;
+                case ChildViewID.FRAGMENT_CORRECT:
+                    baseFragment = new CorrectFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
         }
         return baseFragment;
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        BaseFragment currentFragment = getPageView(currentPageID);
+        if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            if (currentFragment != null && currentFragment.onKeyBack()) {
+                return true;
+            }
+        }
+        return super.dispatchKeyEvent(event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -153,6 +170,19 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUnfinishedEvent(UnfinishedEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_FILL_HOMEWORK);
-        EventBus.getDefault().post(new FillHomeworkEvent(event.getId(), event.getType(), event.getTitle()));
+        FillHomeworkFragment fillHomeworkFragment = (FillHomeworkFragment) getPageView(ChildViewID.FRAGMENT_FILL_HOMEWORK);
+        fillHomeworkFragment.setTaskId(event.getId(), event.getType(), event.getTitle());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToHomeworkFragmentEvent(BackToHomeworkFragmentEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_EXAMINATION_WORK);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToCorrectEvent(ToCorrectEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_CORRECT);
+        CorrectFragment correctFragment = (CorrectFragment) getPageView(ChildViewID.FRAGMENT_CORRECT);
+        correctFragment.setStartTimer(event.isHasCorrected());
     }
 }

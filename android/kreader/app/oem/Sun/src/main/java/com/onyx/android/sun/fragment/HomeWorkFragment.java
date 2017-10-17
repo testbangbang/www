@@ -48,20 +48,21 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     private HomeworkUnfinishedAdapter homeworkUnfinishedAdapter;
     private HomeworkFinishedAdapter homeworkFinishedAdapter;
     private StudyReportAdapter studyReportAdapter;
+    private DividerItemDecoration dividerItemDecoration;
 
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
         homeworkPresenter.getHomeworkUnfinishedData();
-        homeworkPresenter.getHomeworkFinishedData(null,null,null,null);
+        homeworkPresenter.getHomeworkFinishedData(null, null, null, null);
         homeworkPresenter.getStudyReportData(null);
     }
 
     @Override
     protected void initView(ViewDataBinding binding) {
-        homeworkBinding = (HomeworkBinding)binding;
+        homeworkBinding = (HomeworkBinding) binding;
         homeworkBinding.homeworkRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         homeworkBinding.homeworkRecyclerView.addItemDecoration(dividerItemDecoration);
         homeworkUnfinishedAdapter = new HomeworkUnfinishedAdapter();
@@ -107,25 +108,41 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.homework_finished:
-                setSelected(R.id.homework_finished);
-                homeworkBinding.homeworkRecyclerView.setAdapter(homeworkFinishedAdapter);
+                finished();
                 break;
             case R.id.homework_unfinished:
-                setSelected(R.id.homework_unfinished);
-                homeworkBinding.homeworkRecyclerView.setAdapter(homeworkUnfinishedAdapter);
+                unfinished();
                 break;
             case R.id.homework_study_report:
-                setSelected(R.id.homework_study_report);
+                studyReport();
                 break;
             case R.id.homework_start_time:
-                timePickerDialog.show();
-                timePickerDialog.setId(R.id.homework_start_time);
+                showDialog(R.id.homework_start_time);
                 break;
             case R.id.homework_end_time:
-                timePickerDialog.show();
-                timePickerDialog.setId(R.id.homework_end_time);
+                showDialog(R.id.homework_end_time);
                 break;
         }
+    }
+
+    private void showDialog(int id) {
+        timePickerDialog.show();
+        timePickerDialog.setId(id);
+    }
+
+    private void studyReport() {
+        setSelected(R.id.homework_study_report);
+        homeworkBinding.homeworkRecyclerView.setAdapter(studyReportAdapter);
+    }
+
+    private void unfinished() {
+        setSelected(R.id.homework_unfinished);
+        homeworkBinding.homeworkRecyclerView.setAdapter(homeworkUnfinishedAdapter);
+    }
+
+    private void finished() {
+        setSelected(R.id.homework_finished);
+        homeworkBinding.homeworkRecyclerView.setAdapter(homeworkFinishedAdapter);
     }
 
     private void setSelected(int id) {
@@ -135,6 +152,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
 
         homeworkBinding.setIsVisible(R.id.homework_finished == id);
         homeworkBinding.setShowCourse(R.id.homework_finished == id || R.id.homework_study_report == id);
+        dividerItemDecoration.setDrawLine(R.id.homework_finished != id);
     }
 
     @Override
@@ -152,7 +170,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void setUnfinishedData(List<ContentBean> content) {
-        if(homeworkUnfinishedAdapter != null) {
+        if (homeworkUnfinishedAdapter != null) {
             Collections.sort(content);
             homeworkUnfinishedAdapter.setData(content);
         }
@@ -160,7 +178,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void setFinishedData(List<FinishContent> content) {
-        if(homeworkFinishedAdapter != null) {
+        if (homeworkFinishedAdapter != null) {
             Collections.sort(content, new HomeworkFinishComparator());
             homeworkFinishedAdapter.setData(content);
         }
@@ -168,7 +186,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void setReportData(List<FinishContent> content) {
-        if(studyReportAdapter != null) {
+        if (studyReportAdapter != null) {
             studyReportAdapter.setData(content);
         }
     }
