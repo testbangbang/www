@@ -93,18 +93,4 @@ public abstract class BaseFragment extends Fragment {
         outState.putBoolean(STATUS_SAVE_IS_HIDDEN, true);
         super.onSaveInstanceState(outState);
     }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        try {
-            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
-            childFragmentManager.setAccessible(true);
-            childFragmentManager.set(this, null);
-        } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 }

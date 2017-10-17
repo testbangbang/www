@@ -1,7 +1,7 @@
 package com.onyx.android.sun.common;
 
-import com.onyx.android.sdk.data.v1.FastJsonConverterFactory;
 import com.onyx.android.sun.cloud.service.ContentService;
+import com.onyx.android.sun.cloud.service.FastJsonConverterFactory;
 
 import java.util.concurrent.ConcurrentHashMap;
 

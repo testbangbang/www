@@ -12,6 +12,7 @@ import com.onyx.android.sun.R;
 import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
+import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.sun.event.ToCorrectEvent;
