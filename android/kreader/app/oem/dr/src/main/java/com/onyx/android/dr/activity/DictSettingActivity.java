@@ -22,11 +22,14 @@ import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.dialog.SelectAlertDialog;
+import com.onyx.android.dr.event.DictSettingSuccessEvent;
 import com.onyx.android.dr.interfaces.DictSettingView;
 import com.onyx.android.dr.presenter.DictSettingPresenter;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -349,6 +352,7 @@ public class DictSettingActivity extends BaseActivity implements DictSettingView
         dictSettingPresenter.saveSettingData(saveLanguageData);
         finish();
         if (jumpSource == Constants.DICT_QUERY) {
+            EventBus.getDefault().post(new DictSettingSuccessEvent());
             ActivityManager.startDictQueryActivity(DRApplication.getInstance());
         }
     }

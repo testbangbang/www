@@ -28,16 +28,16 @@ public class DictTypeConfig {
 
     public void loadDictInfo(Context context) {
         dictLanguageData.clear();
-        DictTypeBean dictData = new DictTypeBean(context.getResources().getString(R.string.english_query), new EnglishQueryEvent(), Constants.ENGLISH_TYPE);
+        DictTypeBean dictData = new DictTypeBean(context.getResources().getString(R.string.english_query), new EnglishQueryEvent(), Constants.ENGLISH_TAG);
         dictLanguageData.add(dictData);
 
-        dictData = new DictTypeBean(context.getResources().getString(R.string.chinese_query_content), new ChineseQueryEvent(), Constants.CHINESE_TYPE);
+        dictData = new DictTypeBean(context.getResources().getString(R.string.chinese_query_content), new ChineseQueryEvent(), Constants.CHINESE_TAG);
         dictLanguageData.add(dictData);
 
-        dictData = new DictTypeBean(context.getResources().getString(R.string.japanese_query_content), new JapaneseQueryEvent(), Constants.OTHER_TYPE);
+        dictData = new DictTypeBean(context.getResources().getString(R.string.japanese_query_content), new JapaneseQueryEvent(), Constants.JAPANESE_TAG);
         dictLanguageData.add(dictData);
 
-        dictData = new DictTypeBean(context.getResources().getString(R.string.french_query_content), new FrenchQueryEvent(), Constants.OTHER_TYPE);
+        dictData = new DictTypeBean(context.getResources().getString(R.string.french_query_content), new FrenchQueryEvent(), Constants.FRENCH_TAG);
         dictLanguageData.add(dictData);
     }
 

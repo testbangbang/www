@@ -13,6 +13,9 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SummaryListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.SummaryView;
 import com.onyx.android.dr.presenter.SummaryListPresenter;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
@@ -27,6 +30,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -82,7 +86,7 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
         titleBarRightIconOne.setVisibility(View.VISIBLE);
         titleBarRightIconTwo.setVisibility(View.VISIBLE);
         titleBarRightIconOne.setImageResource(R.drawable.ic_reader_share);
-        titleBarRightIconTwo.setImageResource(R.drawable.ic_reader_choose_delet);
+        titleBarRightIconTwo.setImageResource(R.drawable.ic_reader_note_export);
         initPageIndicator(pageIndicatorLayout);
         summaryListRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
@@ -125,7 +129,7 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
                 finish();
                 break;
             case R.id.title_bar_right_icon_one:
-                share();
+                exportData();
                 break;
             case R.id.title_bar_right_icon_two:
                 delete();
@@ -141,8 +145,14 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
         presenter.removeSummary(selectedList);
     }
 
-    private void share() {
-        // TODO: 17-9-20 share
+    private void exportData() {
+        List<ReadSummaryEntity> selectedList = listAdapter.getSelectedList();
+        if (selectedList.size() > 0) {
+            ArrayList<String> htmlTitleData = presenter.getHtmlTitleData();
+            presenter.exportDataToHtml(htmlTitleData, selectedList);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -174,13 +184,11 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
 
             @Override
             public void gotoPage(int page) {
-
             }
         });
         pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
             @Override
             public void onRefresh() {
-
             }
         });
     }
@@ -202,5 +210,15 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
         pageIndicator.resetGPaginator(getPagination());
         pageIndicator.updateTotal(totalCount);
         pageIndicator.updateCurrentPage(totalCount);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_success));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 }

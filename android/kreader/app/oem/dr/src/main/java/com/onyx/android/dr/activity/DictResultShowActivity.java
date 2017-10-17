@@ -17,6 +17,7 @@ import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.data.database.DictSettingEntity;
 import com.onyx.android.dr.data.database.QueryRecordEntity;
 import com.onyx.android.dr.event.DictFunctionVisibleEvent;
 import com.onyx.android.dr.event.GoodSentenceNotebookEvent;
@@ -170,6 +171,10 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
 
     @Override
     public void setDictTypeData(List<DictTypeBean> dictData) {
+    }
+
+    @Override
+    public void setDictSettingData(List<DictSettingEntity> dictData) {
     }
 
     private void getIntentData() {

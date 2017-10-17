@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.GoodSentenceBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
@@ -312,6 +313,12 @@ public class ReaderActivity extends Activity implements ReaderView {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                finish();
+                ActivityManager.startMainActivity(this);
+                break;
+        }
         if (readerPresenter.getHandlerManger().onKeyDown(keyCode, event)) {
             return true;
         }

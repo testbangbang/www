@@ -497,7 +497,9 @@ public class SpeechRecordingActivity extends BaseActivity
         boolean ongoing = state == Recorder.RECORDING_STATE || state == Recorder.PLAYING_STATE;
         long time = ongoing ? recorder.progress() : recorder.sampleLength();
         String timeStr = String.format(timerFormat, time / SIXTY, time % SIXTY);
-        mTimerView.setText(timeStr);
+        if (mTimerView != null) {
+            mTimerView.setText(timeStr);
+        }
         if (state == Recorder.PLAYING_STATE) {
             long value = PROGRESS_VALUE * time / recorder.sampleLength();
             stateProgressBar.setProgress((int) value);

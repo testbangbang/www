@@ -10,11 +10,15 @@ import android.net.Uri;
 import android.provider.Settings;
 import android.util.Log;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.reader.activity.ReaderActivity;
 import com.onyx.android.dr.reader.common.ReaderConstants;
 import com.onyx.android.dr.reader.data.OpenBookParam;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.utils.CloudUtils;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -134,5 +138,24 @@ public class ReaderUtil {
 
         intent.setDataAndType(uri, "application/JEB");
         context.startActivity(intent);
+    }
+
+    public static String getDataSaveFilePath(Metadata book) {
+        if (checkBookMetadataPathValid(book)) {
+            return book.getNativeAbsolutePath();
+        }
+        String fileName = FileUtils.fixNotAllowFileName(book.getName() + "." + book.getType());
+        if (StringUtils.isBlank(fileName)) {
+            return null;
+        }
+        return new File(CloudUtils.dataCacheDirectory(DRApplication.getInstance(), book.getGuid()), fileName)
+                .getAbsolutePath();
+    }
+
+    public static boolean checkBookMetadataPathValid(Metadata book) {
+        if (StringUtils.isNotBlank(book.getNativeAbsolutePath()) && new File(book.getNativeAbsolutePath()).exists()) {
+            return true;
+        }
+        return false;
     }
 }

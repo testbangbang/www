@@ -13,6 +13,9 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.AnnotationListAdapter;
 import com.onyx.android.dr.bean.AnnotationStatisticsBean;
+import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.AnnotationView;
 import com.onyx.android.dr.presenter.AnnotationListPresenter;
 import com.onyx.android.dr.view.DividerItemDecoration;
@@ -22,6 +25,10 @@ import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -32,7 +39,6 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 17-7-11.
  */
 public class AnnotationListActivity extends BaseActivity implements AnnotationView {
-
     @Bind(R.id.image)
     ImageView image;
     @Bind(R.id.title_bar_title)
@@ -78,7 +84,7 @@ public class AnnotationListActivity extends BaseActivity implements AnnotationVi
         titleBarRightIconOne.setVisibility(View.VISIBLE);
         titleBarRightIconTwo.setVisibility(View.VISIBLE);
         titleBarRightIconOne.setImageResource(R.drawable.ic_reader_share);
-        titleBarRightIconTwo.setImageResource(R.drawable.ic_reader_choose_delet);
+        titleBarRightIconTwo.setImageResource(R.drawable.ic_reader_note_export);
         initPageIndicator(pageIndicatorLayout);
         annotationListRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
@@ -121,7 +127,7 @@ public class AnnotationListActivity extends BaseActivity implements AnnotationVi
                 finish();
                 break;
             case R.id.title_bar_right_icon_one:
-                share();
+                exportData();
                 break;
             case R.id.title_bar_right_icon_two:
                 delete();
@@ -137,9 +143,16 @@ public class AnnotationListActivity extends BaseActivity implements AnnotationVi
         presenter.removeAnnotation(selectedList);
     }
 
-    private void share() {
-        // TODO: 17-9-20 share
+    private void exportData() {
+        List<AnnotationStatisticsBean> selectedList = listAdapter.getSelectedList();
+        if (selectedList.size() > 0) {
+            ArrayList<String> htmlTitleData = presenter.getHtmlTitleData();
+            presenter.exportDataToHtml(htmlTitleData, selectedList);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        }
     }
+
 
     private void initPageIndicator(ViewGroup parentView) {
         if (parentView == null) {
@@ -162,13 +175,11 @@ public class AnnotationListActivity extends BaseActivity implements AnnotationVi
 
             @Override
             public void gotoPage(int page) {
-
             }
         });
         pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
             @Override
             public void onRefresh() {
-
             }
         });
     }
@@ -190,5 +201,15 @@ public class AnnotationListActivity extends BaseActivity implements AnnotationVi
         pageIndicator.resetGPaginator(getPagination());
         pageIndicator.updateTotal(totalCount);
         pageIndicator.updateCurrentPage(totalCount);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_success));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 }

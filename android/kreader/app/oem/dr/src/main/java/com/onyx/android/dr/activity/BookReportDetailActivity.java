@@ -129,11 +129,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         image.setImageResource(R.drawable.ic_reader_menu_idea);
         titleBarRightSelectTime.setVisibility(View.VISIBLE);
         titleBarRightSelectTime.setText(getResources().getString(R.string.Call_the_modified_file));
-        titleBarRightIconOne.setVisibility(View.VISIBLE);
+        titleBarRightIconOne.setVisibility(View.GONE);
         titleBarRightIconOne.setImageResource(R.drawable.ic_reader_note_export);
         titleBarRightIconTwo.setVisibility(View.VISIBLE);
         titleBarRightIconTwo.setImageDrawable(getResources().getDrawable(R.drawable.ic_reader_note_diary_save));
-        titleBarRightIconThree.setVisibility(View.VISIBLE);
+        titleBarRightIconThree.setVisibility(View.GONE);
         titleBarRightIconThree.setImageDrawable(getResources().getDrawable(R.drawable.ic_reader_share));
         bookReportDetailContents.setHighlightColor(Color.TRANSPARENT);
         userType = DRPreferenceManager.getUserType(DRApplication.getInstance(), "");
@@ -431,7 +431,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     @Override
-    public void setBookReportList(List<GetBookReportListBean> list) {
+    public void setBookReportList(List<GetBookReportListBean> list, List<Boolean> listCheck) {
     }
 
     @Override
@@ -443,11 +443,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     public void getBookReport(CreateBookReportResult result) {
-        GetBookReportListBean getBookReportListBean = new GetBookReportListBean();
-        getBookReportListBean.updatedAt = result.updatedAt;
-        getBookReportListBean.name = result.name;
-        getBookReportListBean.content = result.content;
-        bookReportPresenter.bringOutReport(getBookReportListBean);
     }
 
     @Override

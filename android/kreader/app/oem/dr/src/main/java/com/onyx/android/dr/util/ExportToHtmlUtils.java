@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 
+import com.onyx.android.dr.bean.AnnotationStatisticsBean;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity;
@@ -11,6 +12,7 @@ import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
 import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
+import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -20,6 +22,7 @@ import org.greenrobot.eventbus.EventBus;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.text.ParseException;
 import java.util.List;
 
 
@@ -107,7 +110,7 @@ public class ExportToHtmlUtils {
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
-        }finally {
+        } finally {
             FileUtils.closeQuietly(printStream);
         }
     }
@@ -256,7 +259,7 @@ public class ExportToHtmlUtils {
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
-        }finally {
+        } finally {
             FileUtils.closeQuietly(printStream);
         }
     }
@@ -298,12 +301,12 @@ public class ExportToHtmlUtils {
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
-        }finally {
+        } finally {
             FileUtils.closeQuietly(printStream);
         }
     }
 
-    public static void exportBookReportToHtml(String title, List<String> titleList, GetBookReportListBean bookReportListBean) {
+    public static void exportBookReportToHtml(String title, List<String> titleList, List<GetBookReportListBean> dataList) {
         StringBuilder sb = getTitleStringBuilder(title);
         sb.append("<table border=\"1\"><tr>");
         for (int i = 0; i < titleList.size(); i++) {
@@ -312,35 +315,132 @@ public class ExportToHtmlUtils {
             sb.append("</th>");
         }
         sb.append("</tr>");
-
-        sb.append("<tr>");
-        sb.append("<th>");
-        sb.append(bookReportListBean.updatedAt);
-        sb.append("</th>");
-        sb.append("<th>");
-        sb.append(bookReportListBean.name);
-        sb.append("</th>");
-        sb.append("<th>");
-        sb.append("000");
-        sb.append("</th>");
-        sb.append("<th>");
-        sb.append(bookReportListBean.content);
-        sb.append("</th>");
-        sb.append("<th>");
-        sb.append(bookReportListBean.content == null ? 0 :bookReportListBean.content.length());
-        sb.append("</th>");
-        sb.append("</tr>");
+        for (int i = 0; i < dataList.size(); i++) {
+            sb.append("<tr>");
+            GetBookReportListBean bean = dataList.get(i);
+            sb.append("<th>");
+            sb.append(bean.updatedAt);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.title);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.pageNumber);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.content);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.content == null ? 0 : bean.content.length());
+            sb.append("</th>");
+            sb.append("</tr>");
+        }
         sb.append("</table>");
-
         PrintStream printStream = null;
         try {
             createCatalogue();
-            File file = new File(Environment.getExternalStorageDirectory(), Constants.MY_NOTES_FOLDER + File.separator +
-            bookReportListBean.name + TimeUtils.getCurrentMillTimeInString() + Constants.UNIT);
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.MEMORANDUM_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb);
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
         } catch (Exception e) {
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
+            e.printStackTrace();
+        } finally {
+            FileUtils.closeQuietly(printStream);
+        }
+    }
+
+    public static void exportAnnotationDataToHtml(String title, List<String> titleList, List<AnnotationStatisticsBean> dataList) {
+        StringBuilder sb = getTitleStringBuilder(title);
+        sb.append("<table border=\"1\"><tr>");
+        for (int i = 0; i < titleList.size(); i++) {
+            sb.append("<th>");
+            sb.append(titleList.get(i));
+            sb.append("</th>");
+        }
+        sb.append("</tr>");
+        for (int i = 0; i < dataList.size(); i++) {
+            sb.append("<tr>");
+            AnnotationStatisticsBean bean = dataList.get(i);
+            String time = "";
+            try {
+                time = TimeUtils.formatDate(bean.getTime());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            sb.append("<th>");
+            sb.append(time);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.getBook().getName());
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.getLibrary().getName());
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(String.valueOf(bean.getCount()));
+            sb.append("</th>");
+            sb.append("</tr>");
+        }
+        sb.append("</table>");
+        PrintStream printStream = null;
+        try {
+            createCatalogue();
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.ANNOTATION_HTML + "_" + time + Constants.UNIT);
+            file.createNewFile();
+            printStream = new PrintStream(new FileOutputStream(file));
+            printStream.println(sb);
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+        } catch (Exception e) {
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
+            e.printStackTrace();
+        } finally {
+            FileUtils.closeQuietly(printStream);
+        }
+    }
+
+    public static void exportSummaryDataToHtml(String title, List<String> titleList, List<ReadSummaryEntity> dataList) {
+        StringBuilder sb = getTitleStringBuilder(title);
+        sb.append("<table border=\"1\"><tr>");
+        for (int i = 0; i < titleList.size(); i++) {
+            sb.append("<th>");
+            sb.append(titleList.get(i));
+            sb.append("</th>");
+        }
+        sb.append("</tr>");
+        for (int i = 0; i < dataList.size(); i++) {
+            sb.append("<tr>");
+            ReadSummaryEntity bean = dataList.get(i);
+            sb.append("<th>");
+            sb.append(bean.time);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.bookName);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.pageNumber);
+            sb.append("</th>");
+            sb.append("<th>");
+            sb.append(bean.summary);
+            sb.append("</th>");
+            sb.append("</tr>");
+        }
+        sb.append("</table>");
+        PrintStream printStream = null;
+        try {
+            createCatalogue();
+            String time = TimeUtils.getNewTime(System.currentTimeMillis());
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.SUMMARY_HTML + "_" + time + Constants.UNIT);
+            file.createNewFile();
+            printStream = new PrintStream(new FileOutputStream(file));
+            printStream.println(sb);
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+        } catch (Exception e) {
+            EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
         } finally {
             FileUtils.closeQuietly(printStream);

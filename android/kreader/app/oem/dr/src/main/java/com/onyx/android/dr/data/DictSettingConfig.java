@@ -1,8 +1,15 @@
 package com.onyx.android.dr.data;
 
+import android.content.Context;
+
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.LanguageTypeBean;
+import com.onyx.android.dr.request.local.DictSettingDeleteRequest;
+import com.onyx.android.dr.request.local.DictSettingInsert;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,5 +30,18 @@ public class DictSettingConfig {
             dataList.add(bean);
         }
         return dataList;
+    }
+
+    public void submitRequest(Context context, final BaseDataRequest req, final BaseCallback callBack) {
+        DataManager dataManager = DRApplication.getDataManager();
+        dataManager.submit(context, req, callBack);
+    }
+
+    public void insertDictSetting(Context context, DictSettingInsert req, BaseCallback baseCallback) {
+        submitRequest(context, req, baseCallback);
+    }
+
+    public void deleteDictSetting(Context context, DictSettingDeleteRequest req, BaseCallback baseCallback) {
+        submitRequest(context, req, baseCallback);
     }
 }

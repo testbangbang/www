@@ -91,7 +91,7 @@ public class NotationDialog extends DialogFragment implements BookReportView {
 
     private void addComment() {
         String content = notationDialogMark.getText().toString();
-        if(StringUtils.isNullOrEmpty(content)) {
+        if (StringUtils.isNullOrEmpty(content)) {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.no_content));
             return;
         }
@@ -99,33 +99,28 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     }
 
     @Override
-    public void setBookReportList(List<GetBookReportListBean> list) {
-
+    public void setBookReportList(List<GetBookReportListBean> list, List<Boolean> listCheck) {
     }
 
     @Override
     public void setDeleteResult() {
-
     }
 
     @Override
     public void getBookReport(CreateBookReportResult result) {
-
     }
 
     @Override
     public void addCommentResult(CreateBookReportResult result) {
-        if(result != null) {
+        if (result != null) {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.notation_add_success));
         } else {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.notation_add_fail));
         }
-
     }
 
     @Override
     public void setLibraryId(String bookId, String libraryId) {
-
     }
 
     @Override

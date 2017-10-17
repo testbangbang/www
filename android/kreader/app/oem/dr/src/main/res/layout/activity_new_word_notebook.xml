@@ -51,7 +51,7 @@
         <TextView
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="2"
+            android:layout_weight="4"
             android:text="@string/new_word_activity_new_word" />
 
         <View style="@style/vertical_view" />

@@ -9,10 +9,15 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.AnnotationStatisticsBean;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
+import java.io.File;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +73,24 @@ public class AnnotationListAdapter extends PageRecyclerView.PageAdapter<Annotati
                 statisticsBean.setChecked(isChecked);
             }
         });
+        holder.itemAnnotationBookName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openCloudFile(statisticsBean.getBook());
+            }
+        });
+    }
+
+    private void openCloudFile(final Metadata book) {
+        String path = ReaderUtil.getDataSaveFilePath(book);
+        if (StringUtils.isNullOrEmpty(path)) {
+            return;
+        }
+        File file = new File(path);
+        if (!file.exists()) {
+            return;
+        }
+        ActivityManager.openBook(DRApplication.getInstance(), book, path);
     }
 
     public void setReadAnnotationList(List<AnnotationStatisticsBean> readAnnotationList) {
@@ -77,7 +100,6 @@ public class AnnotationListAdapter extends PageRecyclerView.PageAdapter<Annotati
 
     @Override
     public void onClick(View v) {
-
     }
 
     static class ViewHolder extends PageRecyclerView.ViewHolder {

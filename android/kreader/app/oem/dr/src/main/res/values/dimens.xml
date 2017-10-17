@@ -470,7 +470,7 @@
     <dimen name="new_word_item_order_number_margin_left">2dp</dimen>
     <dimen name="infromal_essay_item_time_margin_left">2dp</dimen>
     <dimen name="new_word_order_number_margin_left">3dp</dimen>
-    <dimen name="item_speech_recording_start_speech_margin_right">2dp</dimen>
+    <dimen name="item_speech_recording_start_speech_margin_right">7dp</dimen>
     <dimen name="book_report_list_item_bring_out_margin_right">-3dp</dimen>
     <dimen name="book_report_list_item_page_margin_right">-1dp</dimen>
     <dimen name="book_report_list_recycle_padding_bottom">8dp</dimen>
@@ -485,5 +485,8 @@
     <dimen name="info_item_group_name_margin_left">1dp</dimen>
     <dimen name="query_record_item_keyword_margin_left">3dp</dimen>
     <dimen name="recording_start_speech_margin_left">5dp</dimen>
+    <dimen name="book_report_list_layout_padding_bottom">6dp</dimen>
+    <dimen name="book_report_list_item_time_margin_left">1dp</dimen>
+    <dimen name="book_report_list_item_summary_margin_left">2dp</dimen>
     <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
 </resources>

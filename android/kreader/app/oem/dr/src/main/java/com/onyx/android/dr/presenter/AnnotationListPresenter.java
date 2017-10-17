@@ -1,14 +1,18 @@
 package com.onyx.android.dr.presenter;
 
+import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.AnnotationStatisticsBean;
 import com.onyx.android.dr.data.AnnotationData;
 import com.onyx.android.dr.interfaces.AnnotationView;
+import com.onyx.android.dr.request.local.ExportAnnotationListRequest;
 import com.onyx.android.dr.request.local.RequestGetAnnotationList;
 import com.onyx.android.dr.request.local.RequestRemoveAnnotationList;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,6 +46,21 @@ public class AnnotationListPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 getAnnotationList();
+            }
+        });
+    }
+
+    public ArrayList<String> getHtmlTitleData() {
+        ArrayList<String> htmlTitle = annotationData.getHtmlTitle(DRApplication.getInstance());
+        return htmlTitle;
+    }
+
+    public void exportDataToHtml(ArrayList<String> dataList, List<AnnotationStatisticsBean> list) {
+        String title = DRApplication.getInstance().getResources().getString(R.string.postil);
+        final ExportAnnotationListRequest req = new ExportAnnotationListRequest(title, dataList, list);
+        annotationData.exportAnnotation(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
             }
         });
     }

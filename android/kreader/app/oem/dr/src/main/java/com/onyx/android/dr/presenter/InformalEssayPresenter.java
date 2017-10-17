@@ -12,8 +12,8 @@ import com.onyx.android.dr.data.InformalEssayData;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.interfaces.InformalEssayView;
 import com.onyx.android.dr.request.cloud.CreateInformalEssayRequest;
+import com.onyx.android.dr.request.cloud.DeleteInformalEssayRequest;
 import com.onyx.android.dr.request.cloud.RequestGetInformalEssay;
-import com.onyx.android.dr.request.local.InformalEssayDelete;
 import com.onyx.android.dr.request.local.InformalEssayExport;
 import com.onyx.android.dr.request.local.InformalEssayInsert;
 import com.onyx.android.dr.request.local.InformalEssayQueryAll;
@@ -96,9 +96,9 @@ public class InformalEssayPresenter {
         });
     }
 
-    public void deleteNewWord(long time) {
-        final InformalEssayDelete req = new InformalEssayDelete(time, true);
-        infromalEssayData.deleteInformalEssay(context, req, new BaseCallback() {
+    public void deleteInformalEssay(String id) {
+        final DeleteInformalEssayRequest rq = new DeleteInformalEssayRequest(id);
+        infromalEssayData.deleteCloudInformalEssay(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
             }
@@ -139,14 +139,14 @@ public class InformalEssayPresenter {
         for (int i = length - 1; i >= 0; i--) {
             if (listCheck.get(i)) {
                 //delete basedata data
-                CreateInformalEssayBean bean = exportList.get(i);
-                deleteNewWord(bean.currentTime);
-                exportList.remove(i);
+                CreateInformalEssayBean bean = list.get(i);
+                deleteInformalEssay(bean._id);
+                list.remove(i);
                 listCheck.remove(i);
                 informalEssayAdapter.notifyItemRemoved(i);
-                informalEssayAdapter.notifyItemRangeChanged(0, exportList.size());
             }
         }
+        informalEssayAdapter.notifyItemRangeChanged(0, list.size());
     }
 
     public void shareInformalEssay(ArrayList<Boolean> listCheck, List<CreateInformalEssayBean> list) {

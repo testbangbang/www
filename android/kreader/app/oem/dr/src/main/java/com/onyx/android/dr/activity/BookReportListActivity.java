@@ -2,6 +2,8 @@ package com.onyx.android.dr.activity;
 
 import android.content.Intent;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -12,15 +14,14 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookReportListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.event.BringOutBookReportEvent;
-import com.onyx.android.dr.event.DeleteBookReportEvent;
-import com.onyx.android.dr.event.ShareBookReportEvent;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
-import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.GPaginator;
@@ -31,6 +32,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -52,13 +54,13 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Bind(R.id.title_bar_right_select_time)
     TextView titleBarRightSelectTime;
     @Bind(R.id.title_bar_right_icon_one)
-    ImageView titleBarRightIconOne;
+    ImageView iconOne;
     @Bind(R.id.title_bar_right_icon_two)
-    ImageView titleBarRightIconTwo;
+    ImageView iconTwo;
     @Bind(R.id.title_bar_right_icon_three)
-    ImageView titleBarRightIconThree;
+    ImageView iconThree;
     @Bind(R.id.title_bar_right_icon_four)
-    ImageView titleBarRightIconFour;
+    ImageView iconFour;
     @Bind(R.id.title_bar_right_shopping_cart)
     TextView titleBarRightShoppingCart;
     @Bind(R.id.title_bar_right_container)
@@ -79,16 +81,18 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     ImageButton pageLeft;
     @Bind(R.id.book_report_list_page_right)
     ImageButton PageRight;
+    @Bind(R.id.book_report_list_all_check)
+    CheckBox allCheck;
     private BookReportListAdapter bookReportListAdapter;
     private GPaginator paginator;
     private List<GetBookReportListBean> list;
     private int currentPage = 1;
     private int pages;
     private BookReportPresenter bookReportPresenter;
-    private String[] childrenId;
     private String bookName;
     private String bookPage;
     private String bookId;
+    private List<Boolean> listCheck;
 
     @Override
     protected Integer getLayoutId() {
@@ -101,8 +105,6 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     @Override
     protected void initView() {
-        titleBarTitle.setText(getResources().getString(R.string.reader_response));
-        image.setImageResource(R.drawable.ic_reader_menu_idea);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         bookReportListRecycle.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
@@ -110,6 +112,14 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         bookReportListAdapter = new BookReportListAdapter();
         bookReportListRecycle.setAdapter(bookReportListAdapter);
         paginator = bookReportListRecycle.getPaginator();
+    }
+
+    @Override
+    protected void initData() {
+        bookReportPresenter = new BookReportPresenter(this);
+        list = new ArrayList<>();
+        listCheck = new ArrayList<>();
+        initIntentAndTitleData();
         initListener();
     }
 
@@ -125,17 +135,37 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
                 setCurrentPage(nextPosition, pageSize);
             }
         });
+        bookReportListAdapter.setOnItemListener(new BookReportListAdapter.OnItemClickListener() {
+            @Override
+            public void setOnItemClick(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
+
+            @Override
+            public void setOnItemCheckedChanged(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
+        });
+        allCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
+                if (isCheck) {
+                    for (int i = 0, j = list.size(); i < j; i++) {
+                        listCheck.set(i, true);
+                    }
+                } else {
+                    for (int i = 0, j = list.size(); i < j; i++) {
+                        listCheck.set(i, false);
+                    }
+                }
+                bookReportListAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     private void setCurrentPage(int prevPosition, int pageSize) {
         currentPage = prevPosition / pageSize + 1;
         setPage(currentPage);
-    }
-
-    @Override
-    protected void initData() {
-        bookReportPresenter = new BookReportPresenter(this);
-        initIntentAndTitleData();
     }
 
     @Override
@@ -147,27 +177,53 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     private void initIntentAndTitleData() {
         int type = getIntent().getIntExtra(Constants.JUMP_SOURCE, -1);
         if (type == Constants.MY_NOTE_SOURCE) {
-            titleBarRightIconFour.setVisibility(View.GONE);
+            iconOne.setVisibility(View.GONE);
         } else if (type == Constants.BOOK_SOURCE) {
-            titleBarRightIconFour.setVisibility(View.VISIBLE);
-            titleBarRightIconFour.setImageResource(R.drawable.ic_reader_note_diary_set);
+            iconOne.setVisibility(View.VISIBLE);
+            iconOne.setImageResource(R.drawable.ic_reader_note_diary_set);
             bookName = getIntent().getStringExtra(Constants.BOOK_NAME);
             bookPage = getIntent().getStringExtra(Constants.BOOK_PAGE);
             bookId = getIntent().getStringExtra(Constants.BOOK_ID);
         }
+        titleBarTitle.setText(getResources().getString(R.string.reader_response));
+        image.setImageResource(R.drawable.ic_reader_menu_idea);
+        iconFour.setVisibility(View.VISIBLE);
+        iconThree.setVisibility(View.VISIBLE);
+        iconTwo.setVisibility(View.VISIBLE);
+        iconFour.setImageResource(R.drawable.ic_reader_note_delet);
+        iconThree.setImageResource(R.drawable.ic_reader_share);
+        iconTwo.setImageResource(R.drawable.ic_reader_note_export);
     }
 
-    @OnClick({R.id.image_view_back,
-            R.id.title_bar_title,
+
+    @Override
+    public void setBookReportList(List<GetBookReportListBean> list, List<Boolean> listCheck) {
+        if (list != null && listCheck != null) {
+            this.list = list;
+            this.listCheck = listCheck;
+        }
+        setData(list);
+    }
+
+    private void setData(List<GetBookReportListBean> list) {
+        if (bookReportListAdapter != null) {
+            bookReportListAdapter.setData(list, listCheck);
+            String format = DRApplication.getInstance().getResources().getString(R.string.fragment_speech_recording_all_number);
+            bookReportListTotalSize.setText(String.format(format, list.size()));
+            initPage();
+        }
+    }
+
+    @OnClick({R.id.menu_back,
             R.id.book_report_list_page_left,
+            R.id.title_bar_right_icon_one,
+            R.id.title_bar_right_icon_two,
+            R.id.title_bar_right_icon_three,
             R.id.title_bar_right_icon_four,
             R.id.book_report_list_page_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
-                finish();
-                break;
-            case R.id.title_bar_title:
+            case R.id.menu_back:
                 finish();
                 break;
             case R.id.book_report_list_page_left:
@@ -176,8 +232,17 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
             case R.id.book_report_list_page_right:
                 bookReportListRecycle.nextPage();
                 break;
-            case R.id.title_bar_right_icon_four:
+            case R.id.title_bar_right_icon_one:
                 startToActivity();
+                break;
+            case R.id.title_bar_right_icon_two:
+                exportData();
+                break;
+            case R.id.title_bar_right_icon_three:
+                bookReportPresenter.shareReadingRate(listCheck, list);
+                break;
+            case R.id.title_bar_right_icon_four:
+                deleteCheckedData();
                 break;
         }
     }
@@ -190,18 +255,20 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         ActivityManager.startReadingReportActivity(this, intent);
     }
 
-    @Override
-    public void setBookReportList(List<GetBookReportListBean> list) {
-        this.list = list;
-        setData(list);
+    private void deleteCheckedData() {
+        if (list.size() > 0) {
+            bookReportPresenter.remoteAdapterData(listCheck, bookReportListAdapter, list);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        }
     }
 
-    private void setData(List<GetBookReportListBean> list) {
-        if (bookReportListAdapter != null) {
-            bookReportListAdapter.setData(list);
-            String format = DRApplication.getInstance().getResources().getString(R.string.fragment_speech_recording_all_number);
-            bookReportListTotalSize.setText(String.format(format, list.size()));
-            initPage();
+    private void exportData() {
+        if (list.size() > 0) {
+            ArrayList<String> htmlTitleData = bookReportPresenter.getHtmlTitleData();
+            bookReportPresenter.exportDataToHtml(listCheck, htmlTitleData, list);
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
         }
     }
 
@@ -237,23 +304,13 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDeleteBookReportEvent(DeleteBookReportEvent event) {
-        GetBookReportListBean bookReportBean = event.getBookReportBean();
-        bookReportPresenter.deleteImpression(bookReportBean._id);
-        list.remove(bookReportBean);
+    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_success));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnBringOutBookReportEvent(BringOutBookReportEvent event) {
-        GetBookReportListBean bookReportBean = event.getBookReportBean();
-        bookReportPresenter.bringOutReport(bookReportBean);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onShareBookReportEvent(ShareBookReportEvent event) {
-        GetBookReportListBean bookReportBean = event.getBookReportBean();
-        DRPreferenceManager.saveShareType(DRApplication.getInstance(), Constants.READER_RESPONSE);
-        ActivityManager.startShareBookReportActivity(this, bookReportBean._id, childrenId);
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 
     @Override

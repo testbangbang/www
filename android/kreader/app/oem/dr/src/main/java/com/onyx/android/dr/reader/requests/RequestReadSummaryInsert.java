@@ -10,7 +10,6 @@ import com.raizlabs.android.dbflow.sql.language.Select;
 /**
  * Created by hehai on 17-8-24.
  */
-
 public class RequestReadSummaryInsert extends BaseDataRequest {
     private ReadSummaryEntity readSummaryEntity;
 

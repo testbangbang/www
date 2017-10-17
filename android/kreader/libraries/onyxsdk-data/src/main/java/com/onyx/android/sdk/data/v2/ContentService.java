@@ -168,6 +168,9 @@ public interface ContentService {
     @DELETE("/api/impressions/{id}")
     Call<String> deleteImpression(@Path(Constant.ID_TAG) final String id);
 
+    @DELETE("/api/InformalEssays/{id}")
+    Call<String> deleteInformalEssay(@Path(Constant.ID_TAG) final String id);
+
     @POST("/api/impressions/{id}/addComment")
     Call<CreateBookReportResult> addComment(@Path(Constant.ID_TAG) String id, @Body AddCommentRequestBean bean);
 
@@ -181,7 +184,7 @@ public interface ContentService {
     Call<VerifyCode> setPassword(@Path(Constant.TOKEN_TAG) String token, @Body final NewPassword newPassword);
 
     @POST("/api/librarys/{id}/impressions")
-    Call<ShareBookReportResult> shareImpression(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
+    Call<List<ShareBookReportResult>> shareImpression(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
 
     @POST("/api/librarys/{id}/informalEssay")
     Call<List<ShareBookReportResult>> shareInformalEssay(@Path(Constant.ID_TAG) String id, @Body ShareBookReportRequestBean bean);
