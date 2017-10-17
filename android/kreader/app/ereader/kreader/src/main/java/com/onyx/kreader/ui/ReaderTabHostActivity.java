@@ -408,7 +408,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
                     if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
                         if (getCurrentTabInHost() != entry.getKey()) {
-                            ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get());
+                            if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
+                                updateCurrentTabInHost(entry.getKey());
+                            }
                         }
                         return;
                     }
