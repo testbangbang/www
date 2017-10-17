@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.view.View;
 
 import com.onyx.android.sdk.utils.Debug;
 
@@ -126,8 +127,12 @@ public class ReaderTabActivityManager {
         }
     }
 
-    public static void showTabHostMenuDialog(Context context, ReaderTabManager tabManager, ReaderTabManager.ReaderTab tab) {
-        ReaderBroadcastReceiver.sendShowTabHostMenuDialogIntent(context, tabManager.getTabReceiver(tab));
+    public static void showTabHostMenuDialog(Context context, ReaderTabManager tabManager, ReaderTabManager.ReaderTab tab, View buttonMenu) {
+        int[] location = new int[2];
+        buttonMenu.getLocationOnScreen(location);
+        int x = location[0] + 10;
+        int y = buttonMenu.getHeight();
+        ReaderBroadcastReceiver.sendShowTabHostMenuDialogIntent(context, tabManager.getTabReceiver(tab), x, y);
     }
 
     public static void notifyGotoPageLink(Context context, ReaderTabManager tabManager, ReaderTabManager.ReaderTab tab, String link) {
