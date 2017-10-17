@@ -3,13 +3,13 @@ package com.onyx.android.libsetting.view.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.percent.PercentLayoutHelper;
 import android.support.percent.PercentRelativeLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -169,7 +169,12 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
         } else {
             binding.deviceInfoEnterImageView.setVisibility(View.GONE);
             binding.backGroundImageView.setVisibility(View.GONE);
-            binding.infoArea.setBackground(getResources().getDrawable(R.drawable.image_button_bg));
+            Drawable drawable = getResources().getDrawable(R.drawable.image_button_bg);
+            if (CommonUtil.apiLevelCheck(Build.VERSION_CODES.JELLY_BEAN)) {
+                binding.infoArea.setBackground(drawable);
+            } else {
+                binding.infoArea.setBackgroundDrawable(drawable);
+            }
             binding.macQrCodeLayout.setVisibility(View.GONE);
         }
     }
