@@ -70,5 +70,7 @@
     <dimen name="dialog_loading_msg_X_axis_padding">5dp</dimen>
     <dimen name="view_pinch_zooming_message_font_size">25sp</dimen>
     <dimen name="view_pinch_zooming_message_scale_size">48sp</dimen>
-    <dimen name="dialog_tab_host_menu_button_text_size">18sp</dimen>
+    <dimen name="dialog_tab_host_menu_button_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_item_view_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_window_width">240dp</dimen>
 </resources>

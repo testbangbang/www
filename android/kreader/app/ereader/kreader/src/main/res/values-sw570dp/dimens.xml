@@ -53,5 +53,7 @@
     <dimen name="dialog_text_style_title_view_width">100dp</dimen>
     <dimen name="dict_name_text_view_layout_width">200dp</dimen>
     <dimen name="dialog_dict_top_layout_margin">15dp</dimen>
-    <dimen name="dialog_tab_host_menu_button_text_size">18sp</dimen>
+    <dimen name="dialog_tab_host_menu_button_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_item_view_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_window_width">285dp</dimen>
 </resources>

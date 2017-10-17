@@ -56,5 +56,7 @@
     <dimen name="dialog_search_list_item_page_text_size">22sp</dimen>
     <dimen name="dialog_quick_view_page_text_size">24sp</dimen>
     <dimen name="dialog_search_list_item_text_size">20sp</dimen>
-    <dimen name="dialog_tab_host_menu_button_text_size">18sp</dimen>
+    <dimen name="dialog_tab_host_menu_button_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_item_view_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_window_width">600dp</dimen>
 </resources>
