@@ -48,6 +48,13 @@ public class DialogTabHostMenu extends DialogBase {
             textView = (TextView)itemView.findViewById(R.id.textview);
             checkBox = (CheckBox)itemView.findViewById(R.id.checkbox);
 
+            textView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    checkBox.setChecked(!checkBox.isChecked());
+                }
+            });
+
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

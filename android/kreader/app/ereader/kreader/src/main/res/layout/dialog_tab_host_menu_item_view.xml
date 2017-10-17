@@ -4,10 +4,11 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="10dp">
 
-    <CheckBox
+    <com.onyx.android.sdk.ui.view.OnyxCheckBox
         android:id="@+id/checkbox"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/dialog_tab_host_menu_item_view_text_size"
         android:layout_alignParentRight="true"/>
 
     <TextView
@@ -15,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toLeftOf="@id/checkbox"
-        android:textSize="20sp"
+        android:textSize="@dimen/dialog_tab_host_menu_item_view_text_size"
         android:maxLines="1"
         android:ellipsize="middle"/>
 
