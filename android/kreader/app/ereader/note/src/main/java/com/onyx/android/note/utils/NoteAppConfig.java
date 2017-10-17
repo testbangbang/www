@@ -34,6 +34,7 @@ public class NoteAppConfig {
     public static final String USE_MX_UI_STYLE = "use_mx_ui_style";
     //once use edu config.hide import/export function.give extra shape and less note background.
     public static final String USE_EDU_CONFIG = "use_edu_config";
+    public static final String DISABLE_IMPORT = "disable_import";
     static public final boolean useDebugConfig = false;
 
     static public NoteAppConfig sharedInstance(Context context) {
@@ -178,5 +179,12 @@ public class NoteAppConfig {
 
     public boolean useEduConfig(){
         return backend.hasKey(USE_EDU_CONFIG) && backend.getBoolean(USE_EDU_CONFIG);
+    }
+
+    public boolean disableImport(){
+     if (!backend.hasKey(DISABLE_IMPORT)){
+         return false;
+     }
+     return backend.getBoolean(DISABLE_IMPORT,false);
     }
 }
