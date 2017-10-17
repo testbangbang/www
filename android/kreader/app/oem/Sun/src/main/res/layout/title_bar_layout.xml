@@ -18,6 +18,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/icon_back"
+                android:drawablePadding="@dimen/title_bar_title_drawable_padding"
+                android:gravity="center_vertical"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <View
@@ -29,10 +31,13 @@
                 android:id="@+id/title_bar_record"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/title_bar_record_margin_right"
                 android:text="@string/file_homework_record"
+                android:drawableLeft="@drawable/icon_homework_record"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <Button
+                android:id="@+id/title_bar_submit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/title_button_selector"

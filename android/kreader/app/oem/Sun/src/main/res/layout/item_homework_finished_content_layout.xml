@@ -10,24 +10,32 @@
             type="com.onyx.android.sun.cloud.bean.HandlerFinishContent" />
     </data>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
+
+        <View
+            android:layout_width="@dimen/line_height"
+            android:layout_height="match_parent"
+            android:background="@android:color/black" />
 
         <TextView
+            android:id="@+id/homework_finished_unit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/homework_finished_item_margin_left"
             android:text="1.1"
             android:textSize="@dimen/level_three_heading_font" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_marginLeft="@dimen/homework_item_chapter_margin"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@id/homework_finished_unit"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/homework_item_chapter_margin">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -42,17 +50,21 @@
                 android:textSize="@dimen/level_three_heading_font" />
         </LinearLayout>
 
-        <View
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:drawablePadding="@dimen/homework_item_icon_go_padding"
             android:drawableRight="@drawable/icon_go"
             android:text="@{StringUtil.isNullOrEmpty(content.content.correctTime) ? @string/homework_item_submit_already : @string/homework_item_correct_already}"
             android:textSize="@dimen/level_three_heading_font" />
-    </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_height"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/homework_finished_item_margin_left"
+            android:background="@android:color/black" />
+    </RelativeLayout>
 </layout>
