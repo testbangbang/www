@@ -913,6 +913,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
         }
 
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
+
         releaseStartupWakeLock();
     }
 
