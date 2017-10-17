@@ -649,6 +649,16 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return Enum.valueOf(ReaderTabManager.ReaderTab.class, tabHost.getCurrentTabTag());
     }
 
+    private void updateTabTitle(ReaderTabManager.ReaderTab tab, String title) {
+        final TabWidget tabWidget = tabHost.getTabWidget();
+        for (int i = 0; i < tabWidget.getTabCount(); i++) {
+            if (tabWidget.getChildTabViewAt(i).getTag() == tab) {
+                ((TextView)tabWidget.getChildAt(i).findViewById(R.id.text_view_title)).setText(title);
+                break;
+            }
+        }
+    }
+
     private boolean isShowingTabWidget() {
         return ReaderTabManager.supportMultipleTabs() && tabWidgetVisible.get();
     }
@@ -1041,6 +1051,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     return;
                 }
                 openDocWithTab(getCurrentTabInHost(), leftDocPath);
+                updateTabTitle(getCurrentTabInHost(), FileUtils.getFileName(leftDocPath));
                 break;
             case SWITCH_SIDE:
                 switchSideReadingTab();
