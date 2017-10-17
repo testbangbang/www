@@ -47,7 +47,6 @@ public class CorrectFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnTimerEvent(TimerEvent event) {
-        Log.d("---------", "OnTimerEvent: ");
         correctDataBinding.setCount(event.getResult());
     }
 

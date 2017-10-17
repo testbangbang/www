@@ -11,6 +11,7 @@ import org.greenrobot.eventbus.EventBus;
 
 public class TimerEvent {
     private static final int COUNT_DOWN_WHAT = 0x1000;
+    private static final int EACH_SECOND = 1000;
     private int result;
     private int count;
 
@@ -20,21 +21,25 @@ public class TimerEvent {
             super.handleMessage(msg);
             switch (msg.what) {
                 case COUNT_DOWN_WHAT:
-                    count--;
-                    TimerEvent timerEvent = new TimerEvent();
-                    timerEvent.setResult(count);
-                    EventBus.getDefault().post(timerEvent);
-                    if (count > 0) {
-                        handle.sendEmptyMessageDelayed(COUNT_DOWN_WHAT, 1000);
-                    }
+                    handleCountDown();
                     break;
             }
         }
     };
 
+    private void handleCountDown() {
+        count--;
+        TimerEvent timerEvent = new TimerEvent();
+        timerEvent.setResult(count);
+        EventBus.getDefault().post(timerEvent);
+        if (count > 0) {
+            handle.sendEmptyMessageDelayed(COUNT_DOWN_WHAT, EACH_SECOND);
+        }
+    }
+
     public void timeCountDown(int count) {
         this.count = count;
-        handle.sendEmptyMessageDelayed(COUNT_DOWN_WHAT, 1000);
+        handle.sendEmptyMessageDelayed(COUNT_DOWN_WHAT, EACH_SECOND);
     }
 
     public void setResult(int result) {
