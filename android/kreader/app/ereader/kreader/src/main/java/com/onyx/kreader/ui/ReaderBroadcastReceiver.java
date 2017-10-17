@@ -42,6 +42,8 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG_WINDOW_GRAVITY = "com.onyx.kreader.WINDOW_GRAVITY";
     public static final String TAG_WINDOW_WIDTH = "com.onyx.kreader.WINDOW_WIDTH";
     public static final String TAG_WINDOW_HEIGHT = "com.onyx.kreader.WINDOW_HEIGHT";
+    public static final String TAG_WINDOW_LEFT = "com.onyx.kreader.WINDOW_LEFT";
+    public static final String TAG_WINDOW_TOP = "com.onyx.kreader.WINDOW_TOP";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.DOCUMENT_PATH";
     public static final String TAG_TAB_WIDGET_VISIBLE = "com.onyx.kreader.TAB_WIDGET_VISIBLE";
     public static final String TAG_PAGE_LINK = "com.onyx.kreader.PAGE_LINK";
@@ -110,9 +112,11 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
         sendBroadcast(context, intent);
     }
 
-    public static void sendShowTabHostMenuDialogIntent(Context context, Class clazz) {
+    public static void sendShowTabHostMenuDialogIntent(Context context, Class clazz, int dialogWindowLeft, int dialogWindowTop) {
         Intent intent = new Intent(context, clazz);
         intent.setAction(ACTION_SHOW_TAB_HOST_MENU_DIALOG);
+        intent.putExtra(TAG_WINDOW_LEFT, dialogWindowLeft);
+        intent.putExtra(TAG_WINDOW_TOP, dialogWindowTop);
         sendBroadcast(context, intent);
     }
 
@@ -167,7 +171,8 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
             String link = intent.getStringExtra(ReaderBroadcastReceiver.TAG_PAGE_LINK);
             eventBus.post(new GotoPageLinkEvent(link));
         } else if (intent.getAction().equals(ACTION_SHOW_TAB_HOST_MENU_DIALOG)) {
-            eventBus.post(new ShowTabHostMenuDialogEvent());
+            eventBus.post(new ShowTabHostMenuDialogEvent(intent.getIntExtra(TAG_WINDOW_LEFT, 0),
+                    intent.getIntExtra(TAG_WINDOW_TOP, 0)));
         } else if (intent.getAction().equals(ACTION_ENABLE_DEBUG_LOG)) {
             Debug.setDebug(true);
         } else if (intent.getAction().equals(ACTION_DISABLE_DEBUG_LOG)) {

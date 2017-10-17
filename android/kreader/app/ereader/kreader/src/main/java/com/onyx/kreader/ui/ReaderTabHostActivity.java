@@ -189,7 +189,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onClick(View v) {
                 ReaderTabActivityManager.showTabHostMenuDialog(ReaderTabHostActivity.this,
-                        tabManager, getCurrentTabInHost());
+                        tabManager, getCurrentTabInHost(), btnMenu);
             }
         });
         btnSwitch = (ImageView) findViewById(R.id.btn_switch);
@@ -408,7 +408,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
                     if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
                         if (getCurrentTabInHost() != entry.getKey()) {
-                            ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get());
+                            if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
+                                updateCurrentTabInHost(entry.getKey());
+                            }
                         }
                         return;
                     }
@@ -579,11 +581,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 .setContent(android.R.id.tabcontent));
         tabWidget.getChildTabViewAt(tabWidget.getTabCount() - 1).setTag(tab);
 
-        tabIndicator.findViewById(R.id.image_button_menu).setOnClickListener(new View.OnClickListener() {
+        final View button = tabIndicator.findViewById(R.id.image_button_menu);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, tab, tabWidgetVisible.get());
-                ReaderTabActivityManager.showTabHostMenuDialog(ReaderTabHostActivity.this, tabManager, tab);
+                ReaderTabActivityManager.showTabHostMenuDialog(ReaderTabHostActivity.this, tabManager, tab, button);
             }
         });
 
