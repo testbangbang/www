@@ -92,7 +92,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
 
     private T reLoginToCloud(CloudManager parent) {
         try {
-            deleteBeforeAccount();
+            deleteAllAccount();
             resetToken(parent);
             account = LoginToCloud(getContext(), parent);
         } catch (Exception e) {
@@ -106,7 +106,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
         updateTokenHeader(parent, null);
     }
 
-    private void deleteBeforeAccount() {
+    private void deleteAllAccount() {
         FlowManager.getContext().getContentResolver().delete(providerUri, null, null);
     }
 
@@ -173,7 +173,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
             return;
         }
         try {
-            deleteBeforeAccount();
+            deleteAllAccount();
             account.beforeSave();
             ContentUtils.insert(providerUri, account);
         } catch (Exception e) {
