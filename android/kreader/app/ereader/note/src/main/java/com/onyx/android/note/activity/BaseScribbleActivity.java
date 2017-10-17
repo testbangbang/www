@@ -47,6 +47,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -441,7 +442,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     private void drawStashShape(final Canvas canvas, final Paint paint) {
         final RenderContext renderContext = RenderContext.create(canvas, paint, null);
-        final List<Shape> stash = getNoteViewHelper().getDirtyStash();
+        final List<Shape> stash = new ArrayList<>();
+        //TODO:use add all to avoid dirty stash get detach when iterating.
+        stash.addAll(getNoteViewHelper().getDirtyStash());
         for (Shape shape : stash) {
             shape.render(renderContext);
         }

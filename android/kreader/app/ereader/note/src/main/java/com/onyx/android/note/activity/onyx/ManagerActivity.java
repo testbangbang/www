@@ -401,7 +401,11 @@ public class ManagerActivity extends BaseManagerActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         menu.findItem(R.id.export).setVisible(NoteAppConfig.sharedInstance(this).isEnableExport());
-        menu.findItem(R.id.import_scribble).setVisible(!NoteAppConfig.sharedInstance(this).useEduConfig());
+        if (NoteAppConfig.sharedInstance(this).useEduConfig()) {
+            menu.findItem(R.id.import_scribble).setVisible(false);
+        } else {
+            menu.findItem(R.id.import_scribble).setVisible(!NoteAppConfig.sharedInstance(this).disableImport());
+        }
         if (chosenItemsList.size() <= 0 ||
                 (Utils.getItemType((chosenItemsList.get(0))) == DataItemType.TYPE_CREATE)) {
             menu.findItem(R.id.delete).setEnabled(false);

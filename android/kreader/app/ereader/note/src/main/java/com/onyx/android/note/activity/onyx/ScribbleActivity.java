@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -884,8 +885,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onBackgroundChanged(int type) {
-        if (type == NoteBackgroundType.FILE){
-            if (!isPictureEditMode){
+        if (type == NoteBackgroundType.FILE) {
+            if (!isPictureEditMode) {
                 return;
             }
             setBackgroundType(type);
@@ -917,7 +918,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
         setBackgroundType(type);
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
-                new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
+                new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing() &&
+                        ShapeFactory.createShape(shapeDataInfo.getCurrentShapeType()).supportDFB());
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 
