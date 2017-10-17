@@ -62,7 +62,6 @@ import com.onyx.kreader.note.actions.RenderStashShapesInBackgroundAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
-import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
 import com.onyx.kreader.ui.actions.ChangeViewConfigAction;
 import com.onyx.kreader.ui.actions.CloseActionChain;
@@ -1168,7 +1167,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             public void done(BaseRequest request, Throwable e) {
                 new ShowTabHostMenuDialogAction(surfaceView,
                         metadataRequest.getList(),
-                        getReaderDataHolder().isSideReadingMode()).execute(getReaderDataHolder(), null);
+                        getReaderDataHolder().isSideReadingMode(),
+                        event.dialogWindowLeft, event.dialogWindowTop).execute(getReaderDataHolder(), null);
             }
         });
 

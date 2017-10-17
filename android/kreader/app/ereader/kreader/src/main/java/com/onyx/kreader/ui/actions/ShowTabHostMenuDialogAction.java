@@ -32,11 +32,16 @@ public class ShowTabHostMenuDialogAction extends BaseAction {
     private SurfaceView surfaceView;
     private List<Metadata> list;
     private boolean isSideReadingMode;
+    private int dialogWindowLeft;
+    private int dialogWindowTop;
 
-    public ShowTabHostMenuDialogAction(SurfaceView surfaceView, List<Metadata> list, boolean isSideReadingMode) {
+    public ShowTabHostMenuDialogAction(SurfaceView surfaceView, List<Metadata> list, boolean isSideReadingMode,
+                                       int dialogWindowLeft, int dialogWindowTop) {
         this.surfaceView = surfaceView;
         this.list = list;
         this.isSideReadingMode = isSideReadingMode;
+        this.dialogWindowLeft = dialogWindowLeft;
+        this.dialogWindowTop = dialogWindowTop;
     }
 
     @Override
@@ -110,13 +115,10 @@ public class ShowTabHostMenuDialogAction extends BaseAction {
                     }
                 });
 
-        int[] location = new int[2];
-        surfaceView.getLocationOnScreen(location);
-
         dlg.getWindow().setGravity(Gravity.LEFT | Gravity.TOP);
         WindowManager.LayoutParams lp = dlg.getWindow().getAttributes();
-        lp.x = location[0] + 10;
-        lp.y = location[1];
+        lp.x = dialogWindowLeft;
+        lp.y = dialogWindowTop;
 
         final boolean isNoteWriting = dataHolder.isNoteWritingProvider();
 
