@@ -91,7 +91,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.news_image:
-                ManagerActivityUtils.startScribbleActivity(this, "11111", "第一单元单元测验", "1.斯是陋室,惟吾德馨.");
                 break;
         }
     }
