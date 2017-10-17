@@ -66,5 +66,7 @@
     <dimen name="view_common_statistics_item_text_size">22sp</dimen>
     <dimen name="dialog_text_style_title_text_size">20sp</dimen>
     <dimen name="activity_multiple_reader_tab_height">50dp</dimen>
-    <dimen name="dialog_tab_host_menu_button_text_size">18sp</dimen>
+    <dimen name="dialog_tab_host_menu_button_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_item_view_text_size">16sp</dimen>
+    <dimen name="dialog_tab_host_menu_window_width">400dp</dimen>
 </resources>
