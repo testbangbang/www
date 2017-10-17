@@ -2,9 +2,13 @@ package com.onyx.android.sdk.data.v1;
 
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.data.v2.TokenHeaderInterceptor;
+import com.onyx.android.sdk.utils.CollectionUtils;
 
+import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import okhttp3.Authenticator;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
 
@@ -13,6 +17,7 @@ import retrofit2.Retrofit;
  */
 public class ServiceFactory {
     private static ConcurrentHashMap<String, Retrofit> retrofitMap = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<String, OkHttpClient> clientMap = new ConcurrentHashMap<>();
 
     private static Retrofit getRetrofit(String baseUrl) {
         if (!retrofitMap.containsKey(baseUrl)) {
@@ -25,7 +30,17 @@ public class ServiceFactory {
     public static Retrofit.Builder getBaseRetrofitBuilder(final String baseUrl) {
         return new Retrofit.Builder()
                 .baseUrl(baseUrl)
+                .client(getBaseOkClientBuilder(baseUrl))
                 .addConverterFactory(FastJsonConverterFactory.create());
+    }
+
+    public static OkHttpClient getBaseOkClientBuilder(final String baseUrl) {
+        if (clientMap.containsKey(baseUrl)) {
+            return clientMap.get(baseUrl);
+        }
+        OkHttpClient client = new OkHttpClient().newBuilder().build();
+        clientMap.put(baseUrl, client);
+        return client;
     }
 
     public static final OnyxAccountService getAccountService(final String baseUrl) {
@@ -88,11 +103,63 @@ public class ServiceFactory {
         return getRetrofit(baseUrl).create(service);
     }
 
+    private static void addInterceptors(OkHttpClient.Builder builder, List<Interceptor> interList) {
+        if (CollectionUtils.isNullOrEmpty(interList)) {
+            return;
+        }
+        for (Interceptor interceptor : interList) {
+            builder.addInterceptor(interceptor);
+        }
+    }
+
+    private static void addNetworkInterceptors(OkHttpClient.Builder builder, List<Interceptor> interList) {
+        if (CollectionUtils.isNullOrEmpty(interList)) {
+            return;
+        }
+        for (Interceptor interceptor : interList) {
+            builder.addNetworkInterceptor(interceptor);
+        }
+    }
+
+    private static void removeInterceptors(OkHttpClient.Builder builder, Class clazz) {
+        if (!CollectionUtils.isNullOrEmpty(builder.interceptors())) {
+            for (Interceptor interceptor : builder.interceptors()) {
+                if (clazz.isInstance(interceptor)) {
+                    builder.interceptors().remove(interceptor);
+                    removeInterceptors(builder, clazz);
+                }
+            }
+        }
+    }
+
+    private static void restoreBuilderFromClient(OkHttpClient okHttpClient, OkHttpClient.Builder builder) {
+        if (okHttpClient == null || builder == null) {
+            return;
+        }
+        addInterceptors(builder, okHttpClient.interceptors());
+        addNetworkInterceptors(builder, okHttpClient.networkInterceptors());
+        builder.authenticator(okHttpClient.authenticator());
+    }
+
     public static Retrofit addRetrofitTokenHeader(final String baseUrl, final String tokenKey, final String token) {
-        OkHttpClient httpClient = new OkHttpClient.Builder()
-                .addInterceptor(new TokenHeaderInterceptor(tokenKey, token)).build();
-        Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).client(httpClient).build();
+        OkHttpClient okHttpClient = clientMap.get(baseUrl);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if (okHttpClient != null) {
+            restoreBuilderFromClient(okHttpClient, builder);
+            removeInterceptors(builder, TokenHeaderInterceptor.class);
+        }
+        builder.addInterceptor(new TokenHeaderInterceptor(tokenKey, token));
+        okHttpClient = builder.build();
+        Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).client(okHttpClient).build();
         retrofitMap.put(baseUrl, retrofit);
+        clientMap.put(baseUrl, okHttpClient);
         return retrofit;
+    }
+
+    public static void addAuthenticator(final String baseUrl, Authenticator auth) {
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        restoreBuilderFromClient(clientMap.get(baseUrl), builder);
+        builder.authenticator(auth);
+        clientMap.put(baseUrl, builder.build());
     }
 }

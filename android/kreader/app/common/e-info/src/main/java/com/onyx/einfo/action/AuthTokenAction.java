@@ -6,6 +6,7 @@ import android.util.Log;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.model.v2.InstallationIdBinding;
 import com.onyx.android.sdk.data.request.cloud.v2.BindingInfoSaveRequest;
+import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.im.push.LeanCloudManager;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.einfo.R;
@@ -30,6 +31,7 @@ import com.onyx.android.sdk.data.request.cloud.v2.CloudIndexServiceRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.einfo.net.AuthenticatorImpl;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -77,6 +79,9 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
                     Log.w(TAG, "indexService error,ready to use backup service");
                     useFallbackServerCloudConf(dataHolder.getContext(), dataHolder.getCloudManager());
                 }
+                ServiceFactory.addAuthenticator(dataHolder.getCloudManager().getCloudConf().getApiBase(),
+                        new AuthenticatorImpl(dataHolder.getContext().getApplicationContext(),
+                                dataHolder.getCloudManager()));
             }
         });
     }
