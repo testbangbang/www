@@ -22,6 +22,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@id/text_view_recent_open_title"
             android:textColor="@android:color/darker_gray"
+            android:textSize="@dimen/dialog_tab_host_menu_button_text_size"
             android:text="@string/dialog_tab_host_menu_recent_files_description"
             />
     </LinearLayout>
