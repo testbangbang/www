@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener" />
+
+        <variable
+            name="question"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/title_bar"
+            layout="@layout/title_bar_layout" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/scribble_content_layout_padding"
+            android:text="@{question}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingLeft="@dimen/scribble_content_layout_padding"
+            android:paddingRight="@dimen/scribble_content_layout_padding"
+            android:orientation="vertical">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
+
+            <SurfaceView
+                android:id="@+id/surface_view"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@android:color/black" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/scribble_content_layout_padding">
+
+            <TextView
+                android:id="@+id/scribble_save"
+                android:layout_width="@dimen/scribble_button_width"
+                android:layout_height="@dimen/scribble_button_width"
+                android:background="@drawable/rectangle_stroke"
+                android:drawablePadding="@dimen/scribble_button_drawable_padding"
+                android:drawableTop="@drawable/icon_save"
+                android:gravity="center"
+                android:onClick="@{listener.onClick}"
+                android:padding="@dimen/scribble_button_padding"
+                android:text="@string/save" />
+
+            <com.onyx.android.sun.view.PageRecyclerView
+                android:id="@+id/shape_page_recycler"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/scribble_button_width"
+                android:layout_marginLeft="@dimen/scribble_button_padding"
+                android:layout_marginRight="@dimen/scribble_button_padding"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/scribble_add_page"
+                android:layout_width="@dimen/scribble_button_width"
+                android:layout_height="@dimen/scribble_button_width"
+                android:layout_marginRight="@dimen/scribble_button_padding"
+                android:background="@drawable/rectangle_stroke"
+                android:drawablePadding="@dimen/scribble_button_drawable_padding"
+                android:drawableTop="@drawable/icon_add_page"
+                android:gravity="center"
+                android:onClick="@{listener.onClick}"
+                android:padding="@dimen/scribble_button_padding"
+                android:text="@string/add_page" />
+
+            <TextView
+                android:id="@+id/scribble_delete_page"
+                android:layout_width="@dimen/scribble_button_width"
+                android:layout_height="@dimen/scribble_button_width"
+                android:layout_alignParentRight="true"
+                android:background="@drawable/rectangle_stroke"
+                android:drawablePadding="@dimen/scribble_button_drawable_padding"
+                android:drawableTop="@drawable/icon_delete_page"
+                android:gravity="center"
+                android:onClick="@{listener.onClick}"
+                android:padding="@dimen/scribble_button_padding"
+                android:text="@string/delete_page" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

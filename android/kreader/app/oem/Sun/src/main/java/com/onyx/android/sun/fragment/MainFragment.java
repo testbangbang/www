@@ -15,6 +15,7 @@ import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.databinding.MainBinding;
 import com.onyx.android.sun.event.ToHomeworkEvent;
+import com.onyx.android.sun.event.ToRankingEvent;
 import com.onyx.android.sun.interfaces.MainFragmentView;
 import com.onyx.android.sun.presenter.MainFragmentPresenter;
 import com.onyx.android.sun.view.DisableScrollGridManager;
@@ -81,7 +82,7 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
                 break;
             case R.id.grade_ranking_title:
             case R.id.grade_ranking:
-                // TODO: 17-10-9 ranking
+                EventBus.getDefault().post(new ToRankingEvent());
                 break;
         }
     }

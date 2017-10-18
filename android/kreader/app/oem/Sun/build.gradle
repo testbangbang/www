@@ -43,12 +43,15 @@ dependencies {
     compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
     compile "com.android.support:design:$rootProject.supportLibraryVersion"
     compile 'com.umeng.analytics:analytics:latest.integration'
-    compile project(path: ':libraries:onyxsdk-data')
     compile "com.dzaitsev.android.widget:radarchartview:$radarchartviewVersion"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.convertergsonVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
-    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
-    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
+    compile(project(path: ':libraries:onyxsdk-scribble')) {
+        ['org.objenesis', 'com.alibaba','org.greenrobot:eventbus'].each {
+            exclude group: it
+        }
+    }
 }
+
+

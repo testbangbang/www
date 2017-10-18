@@ -37,6 +37,11 @@
     <string name="homework_item_correct_already">Corrected</string>
     <string name="file_homework_record">Answer record</string>
     <string name="file_homework_commit">Submit</string>
+    <string name="save">save</string>
+    <string name="add_page">add page</string>
+    <string name="delete_page">delete page</string>
+    <string name="answer_page_format">answer page %d</string>
     <string name="patient_wait_for_correct">Be patient and wait for teacher to correct</string>
     <string name="timer_in_second_switch_to_homework">After %ds jump to homework list</string>
+    <string name="total_score_ranking">Total score ranking</string>
 </resources>

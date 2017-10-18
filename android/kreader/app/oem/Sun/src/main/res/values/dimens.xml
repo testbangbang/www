@@ -40,9 +40,17 @@
     <dimen name="subject_question_item_height">40dp</dimen>
     <dimen name="title_bar_height">40dp</dimen>
     <dimen name="title_bar_margin">10dp</dimen>
+    <dimen name="scribble_button_width">100dp</dimen>
+    <dimen name="scribble_button_drawable_padding">10dp</dimen>
+    <dimen name="scribble_button_padding">10dp</dimen>
+    <dimen name="scribble_content_layout_padding">20dp</dimen>
     <dimen name="title_bar_title_drawable_padding">10dp</dimen>
     <dimen name="title_bar_record_margin_right">10dp</dimen>
     <dimen name="homework_finished_item_margin_left">20dp</dimen>
     <dimen name="fill_homework_recycler_view_padding">10dp</dimen>
+    <dimen name="ranking_fragment_user_info_layout_padding">20dp</dimen>
+    <dimen name="ranking_fragment_user_name_margin_left">10dp</dimen>
+    <dimen name="item_ranking_padding">30dp</dimen>
+    <dimen name="item_ranking_name_margin_left">20dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>
