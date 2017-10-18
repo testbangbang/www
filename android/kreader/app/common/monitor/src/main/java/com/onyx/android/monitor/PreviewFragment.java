@@ -201,7 +201,7 @@ public class PreviewFragment extends Fragment
             mCameraDevice = cameraDevice;
             EpdController.setUpdListSize(1);
             createCameraPreviewSession();
-            openA2();
+            enterA2();
             startGcTimer(gcRefreshRunnable);
         }
 
@@ -288,7 +288,6 @@ public class PreviewFragment extends Fragment
      */
     private int mSensorOrientation;
 
-    private boolean isUsingA2 = false;
     private AlertDialog exitConfirmDialog;
     private DialogPreviewMenu menuDialog;
     private Handler handler = new Handler(Looper.getMainLooper());
@@ -727,7 +726,7 @@ public class PreviewFragment extends Fragment
                 mImageReader = null;
             }
             stopGcTimer(gcRefreshRunnable);
-            closeA2();
+            exitA2();
             EpdController.resetUpdListSize();
         } catch (InterruptedException e) {
             throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
@@ -1071,8 +1070,8 @@ public class PreviewFragment extends Fragment
     }
 
     private void gcRefreshOnce() {
-        closeA2();
-        openA2();
+        exitA2();
+        enterA2();
     }
 
     private void startGcTimer(Runnable runnable) {
@@ -1085,22 +1084,12 @@ public class PreviewFragment extends Fragment
         handler.removeCallbacks(runnable);
     }
 
-    private void openA2() {
-        if (!isUsingA2) {
-            toggleA2();
-        }
+    private void enterA2() {
+        EpdController.applyApplicationFastMode(TAG, true, true);
     }
 
-    private void closeA2() {
-        if (isUsingA2) {
-            toggleA2();
-        }
-    }
-
-    private void toggleA2() {
-        getActivity().sendBroadcast(new Intent(Constant.A2_ACTION));
-        isUsingA2 = !isUsingA2;
-        Log.i(TAG, "Using A2 refresh mode : " + isUsingA2);
+    private void exitA2() {
+        EpdController.applyApplicationFastMode(TAG, false, true);
     }
 
 }
