@@ -1,6 +1,7 @@
 package com.onyx.android.dr.interfaces;
 
 import com.onyx.android.dr.bean.DictTypeBean;
+import com.onyx.android.dr.data.database.DictSettingEntity;
 
 import java.util.List;
 
@@ -9,4 +10,5 @@ import java.util.List;
  */
 public interface DictResultShowView {
     void setDictTypeData(List<DictTypeBean> dictData);
+    void setDictSettingData(List<DictSettingEntity> dictData);
 }

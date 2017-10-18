@@ -10,7 +10,7 @@ import java.util.List;
  */
 
 public interface BookReportView {
-    void setBookReportList(List<GetBookReportListBean> list);
+    void setBookReportList(List<GetBookReportListBean> list, List<Boolean> listCheck);
 
     void setDeleteResult();
 

@@ -5,6 +5,8 @@ import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportResult;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 
+import java.util.List;
+
 import retrofit2.Response;
 
 /**
@@ -14,7 +16,7 @@ import retrofit2.Response;
 public class ShareBookReportRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private ShareBookReportRequestBean requestBean;
     private String id;
-    private ShareBookReportResult result;
+    private List<ShareBookReportResult> result;
 
     public ShareBookReportRequest(String libraryId, ShareBookReportRequestBean bean) {
         this.id = libraryId;
@@ -23,14 +25,14 @@ public class ShareBookReportRequest extends AutoNetWorkConnectionBaseCloudReques
 
     @Override
     public void execute(CloudManager parent) throws Exception {
-        Response<ShareBookReportResult> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
+        Response<List<ShareBookReportResult>> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
                 .shareImpression(id, requestBean));
         if(response != null) {
             result = response.body();
         }
     }
 
-    public ShareBookReportResult getResult() {
+    public List<ShareBookReportResult> getResult() {
         return result;
     }
 }

@@ -5,16 +5,19 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.GoodSentenceBean;
 import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.data.BookReportData;
 import com.onyx.android.dr.data.GoodSentenceData;
 import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.data.database.ReaderResponseEntity;
 import com.onyx.android.dr.request.local.GoodSentenceInsert;
 import com.onyx.android.dr.request.local.GoodSentenceQueryByPageNumber;
 import com.onyx.android.dr.request.local.GoodSentenceQueryByReadingMatter;
 import com.onyx.android.dr.request.local.NewWordInsert;
 import com.onyx.android.dr.request.local.NewWordQueryByPageNumber;
 import com.onyx.android.dr.request.local.NewWordQueryByReadingMatter;
+import com.onyx.android.dr.request.local.ReaderResponseInsert;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -84,6 +87,27 @@ public class OperatingDataManager {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.already_add_new_word_notebook));
         }
         newWordData.insertNewWord(DRApplication.getInstance(), req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+            }
+        });
+    }
+
+    public void insertReaderResponse(GetBookReportListBean bean) {
+        ReaderResponseEntity entity = new ReaderResponseEntity();
+        BookReportData bookReportData = new BookReportData();
+        entity.bookName = bean.name;
+        entity.wordNumber = bean.content.length();
+        entity.bookId = bean.book;
+        entity.createdAt = bean.createdAt;
+        entity.updatedAt = bean.updatedAt;
+        entity.cloudId = bean._id;
+        entity.content = bean.content;
+        entity.pageNumber = bean.pageNumber;
+        entity.user = bean.user;
+        entity.title = bean.title;
+        final ReaderResponseInsert req = new ReaderResponseInsert(entity);
+        bookReportData.insertReaderResponse(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
             }

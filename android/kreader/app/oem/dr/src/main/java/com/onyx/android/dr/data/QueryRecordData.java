@@ -4,6 +4,7 @@ package com.onyx.android.dr.data;
 import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.request.local.DictSettingQueryAll;
 import com.onyx.android.dr.request.local.QueryRecordInsert;
 import com.onyx.android.dr.request.local.QueryRecordQueryAll;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -25,6 +26,10 @@ public class QueryRecordData {
     }
 
     public void insertQueryRecord(Context context, QueryRecordInsert req, BaseCallback baseCallback) {
+        submitRequest(context, req, baseCallback);
+    }
+
+    public void getDictSetting(Context context, DictSettingQueryAll req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 }

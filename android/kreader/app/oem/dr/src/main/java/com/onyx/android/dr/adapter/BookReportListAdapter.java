@@ -5,20 +5,17 @@ import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.event.BringOutBookReportEvent;
-import com.onyx.android.dr.event.DeleteBookReportEvent;
-import com.onyx.android.dr.event.ShareBookReportEvent;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.DateTimeUtil;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -29,10 +26,18 @@ import butterknife.ButterKnife;
  * Created by li on 2017/9/15.
  */
 
-public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
+public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookReportListAdapter.ViewHolder> {
     private List<GetBookReportListBean> data;
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_row);
     private int column = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_col);
+    private OnItemClickListener onItemClickListener;
+    private List<Boolean> listCheck;
+
+    public void setData(List<GetBookReportListBean> data, List<Boolean> listCheck) {
+        this.data = data;
+        this.listCheck = listCheck;
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getRowCount() {
@@ -50,54 +55,63 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
     }
 
     @Override
-    public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
         View view = View.inflate(DRApplication.getInstance(), R.layout.book_report_list_item, null);
-        return new BookReportViewHolder(view);
+        return new ViewHolder(view);
     }
 
     @Override
-    public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        BookReportViewHolder viewHolder = (BookReportViewHolder) holder;
-        GetBookReportListBean bookReportListBean = data.get(position);
+    public void onPageBindViewHolder(final ViewHolder holder, final int position) {
+        final GetBookReportListBean bookReportListBean = data.get(position);
         String time = DateTimeUtil.formatDate(bookReportListBean.updatedAt, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
-        viewHolder.bookReportListItemBookName.setText(bookReportListBean.title);
-        viewHolder.bookReportListItemTime.setText(time);
-        viewHolder.bookReportListItemPage.setText(bookReportListBean.pageNumber);
+        holder.bookReportListItemBookName.setText(bookReportListBean.title);
+        holder.bookReportListItemTime.setText(time);
+        holder.bookReportListItemPage.setText(bookReportListBean.pageNumber);
         String content = bookReportListBean.content;
-        viewHolder.bookReportListItemWordCount.setText(content == null ? "0" : String.valueOf(content.length()));
-        viewHolder.bookReportListItemSummary.setText(content == null ? "" : content);
-        viewHolder.bookReportListItemBringOut.setOnClickListener(this);
-        viewHolder.bookReportListItemBringOut.setTag(position);
-        viewHolder.bookReportListItemShare.setOnClickListener(this);
-        viewHolder.bookReportListItemShare.setTag(position);
-        viewHolder.bookReportListItemDelete.setOnClickListener(this);
-        viewHolder.bookReportListItemDelete.setTag(position);
-        viewHolder.itemView.setTag(position);
-        viewHolder.itemView.setOnClickListener(this);
+        holder.bookReportListItemWordCount.setText(content == null ? "0" : String.valueOf(content.length()));
+        holder.bookReportListItemSummary.setText(content == null ? "" : content);
+        holder.checkBox.setChecked(listCheck.get(position));
+        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.setOnItemCheckedChanged(position, b);
+                }
+            }
+        });
+        holder.bookReportListItemSummary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startBookReportDetailActivity(bookReportListBean);
+            }
+        });
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (onItemClickListener != null) {
+                    if (holder.checkBox.isChecked()) {
+                        holder.checkBox.setChecked(false);
+                        onItemClickListener.setOnItemClick(position, false);
+                    } else {
+                        holder.checkBox.setChecked(true);
+                        onItemClickListener.setOnItemClick(position, true);
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
-        Object position = v.getTag();
-        if(position == null) {
-            return;
-        }
-        GetBookReportListBean bookReportBean = data.get((Integer) position);
+    }
 
-        switch (v.getId()) {
-            case R.id.book_report_list_item_bring_out:
-                EventBus.getDefault().post(new BringOutBookReportEvent(bookReportBean));
-                break;
-            case R.id.book_report_list_item_share:
-                EventBus.getDefault().post(new ShareBookReportEvent(bookReportBean));
-                break;
-            case R.id.book_report_list_item_delete:
-                EventBus.getDefault().post(new DeleteBookReportEvent(bookReportBean));
-                break;
-            default:
-                startBookReportDetailActivity(bookReportBean);
-                break;
-        }
+    public interface OnItemClickListener {
+        void setOnItemClick(int position, boolean isCheck);
+        void setOnItemCheckedChanged(int position, boolean isCheck);
+    }
+
+    public void setOnItemListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
     }
 
     private void startBookReportDetailActivity(GetBookReportListBean bookReportBean) {
@@ -108,12 +122,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         ActivityManager.startReadingReportActivity(DRApplication.getInstance(), intent);
     }
 
-    public void setData(List<GetBookReportListBean> data) {
-        this.data = data;
-        notifyDataSetChanged();
-    }
-
-    static class BookReportViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.book_report_list_item_time)
         TextView bookReportListItemTime;
         @Bind(R.id.book_report_list_item_book_name)
@@ -124,15 +133,13 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter {
         TextView bookReportListItemSummary;
         @Bind(R.id.book_report_list_item_word_count)
         TextView bookReportListItemWordCount;
-        @Bind(R.id.book_report_list_item_bring_out)
-        TextView bookReportListItemBringOut;
-        @Bind(R.id.book_report_list_item_share)
-        TextView bookReportListItemShare;
-        @Bind(R.id.book_report_list_item_delete)
-        TextView bookReportListItemDelete;
+        @Bind(R.id.book_report_list_item_check)
+        CheckBox checkBox;
+        View rootView;
 
-        BookReportViewHolder(View view) {
+        ViewHolder(View view) {
             super(view);
+            this.rootView = view;
             ButterKnife.bind(this, view);
         }
     }

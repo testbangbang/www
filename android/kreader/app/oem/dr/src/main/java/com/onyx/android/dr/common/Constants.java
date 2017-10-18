@@ -60,7 +60,6 @@ public class Constants {
     public static final int ENGLISH_TYPE = 0;
     public static final int CHINESE_TYPE = 1;
     public static final int OTHER_TYPE = 2;
-    public static final int All_TYPE = 3;
 
     public static final int ENGLISH_TAG = 0;
     public static final int CHINESE_TAG = 1;
@@ -93,6 +92,8 @@ public class Constants {
     public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay";
     public static final String READING_RATE_HTML = MY_NOTES_FOLDER + "/reading_rate";
     public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence";
+    public static final String ANNOTATION_HTML = MY_NOTES_FOLDER + "/annotation";
+    public static final String SUMMARY_HTML = MY_NOTES_FOLDER + "/summary";
     public static final String UNIT = ".html";
 
     public static final String ACCOUNT = "account";
@@ -143,6 +144,7 @@ public class Constants {
     public static final String IMPRESSION_ID = "impression_id";
     public static final String CHILDREN_ID = "children_id";
     public static final String SHARE_TYPE = "share_type";
+    public static final String DICT_SETTING_DATA = "dict_setting_data";
     public static final String MARK_BOOK_ID = "mark_book_id";
     public static final String MARK_TOP = "mark_top";
     public static final String MARK_LEFT = "mark_left";

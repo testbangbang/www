@@ -5,34 +5,18 @@ import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
 import com.raizlabs.android.dbflow.structure.BaseModel;
 
-import java.util.Date;
-
 /**
  * Created by zhouzhiming on 2017/7/12.
  */
 @Table(database = DRDatabase.class)
-public class ReaderResponseEntity extends BaseModel {
+public class DictSettingEntity extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)
     public long id;
     @Column
-    public String bookName;
+    public String tabName;
     @Column
-    public Integer wordNumber;
+    public int type;
     @Column
-    public String bookId;
-    @Column
-    public Date updatedAt;
-    @Column
-    public Date createdAt;
-    @Column
-    public String cloudId;
-    @Column
-    public String content;
-    @Column
-    public String pageNumber;
-    @Column
-    public String user;
-    @Column
-    public String title;
+    public long currentTime;
 }

@@ -22,10 +22,11 @@ import com.onyx.android.dr.bean.DictTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.data.DictTypeConfig;
+import com.onyx.android.dr.data.database.DictSettingEntity;
 import com.onyx.android.dr.dialog.AlertInfoDialog;
 import com.onyx.android.dr.event.ChineseQueryEvent;
 import com.onyx.android.dr.event.ClearHistoryEvent;
+import com.onyx.android.dr.event.DictSettingSuccessEvent;
 import com.onyx.android.dr.event.EnglishQueryEvent;
 import com.onyx.android.dr.event.FrenchQueryEvent;
 import com.onyx.android.dr.event.JapaneseQueryEvent;
@@ -113,14 +114,17 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     private List<DictTypeBean> chineseDictName;
     private List<DictTypeBean> japaneseDictName;
     private List<DictTypeBean> frenchDictName;
-    private int dictType = Constants.ENGLISH_TYPE;
+    private int dictType;
     private AlertInfoDialog alertDialog;
     private static CustomDialog dialog;
     private boolean isActivityShow = false;
+    private boolean tag = false;
     private int limit;
+    private int number = 0;
     private SearchDropDownListView searchDropDownListView;
     private List<String> headwordHistory = null;
     private EditText exchangeView = wordQuery;
+    private List<DictTypeBean> dictLanguageData;
 
     @Override
     protected Integer getLayoutId() {
@@ -146,6 +150,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     @Override
     protected void initData() {
         queryDictTypeAdapter = new QueryDictTypeAdapter();
+        dictLanguageData = new ArrayList<>();
         dictPresenter = new DictFunctionPresenter(this);
         dictTypeRecyclerView.setAdapter(queryDictTypeAdapter);
         limit = getResources().getInteger(R.integer.query_word_list_limit);
@@ -170,15 +175,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     protected void onResume() {
         super.onResume();
         DRApplication.getInstance().initDictDatas();
-        List<DictTypeBean> dictLanguageData = DictTypeConfig.dictLanguageData;
-        if (dictLanguageData == null || dictLanguageData.size() <= 0) {
-            dictPresenter.loadData(this);
-            dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
-        } else {
-            intContainerVisible(dictLanguageData);
-            languageQueryTypeAdapter.setMenuDatas(dictLanguageData);
-            languageQueryTypeAdapter.notifyDataSetChanged();
-        }
+        dictPresenter.getDictSettingData();
     }
 
     @Override
@@ -186,13 +183,39 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         if (dictData == null || dictData.size() <= 0) {
             return;
         }
-        intContainerVisible(dictData);
+        intContainerVisible(tag);
         languageQueryTypeAdapter.setMenuDatas(dictData);
         languageQueryTypeAdapter.notifyDataSetChanged();
     }
 
-    public void intContainerVisible(List<DictTypeBean> dictLanguageData) {
-        int type = dictType;
+    @Override
+    public void setDictSettingData(List<DictSettingEntity> dictData) {
+        dictLanguageData.clear();
+        if (dictData == null || dictData.size() <= 0) {
+            dictType = Constants.ENGLISH_TYPE;
+        } else {
+            dictLanguageData = dictPresenter.getSaveDictSettingData(dictData);
+            if (number == 0) {
+                dictType = dictLanguageData.get(0).getType();
+            }
+        }
+        if (dictLanguageData == null || dictLanguageData.size() <= 0) {
+            dictPresenter.loadData(this);
+            dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
+        } else {
+            intContainerVisible(tag);
+            languageQueryTypeAdapter.setMenuDatas(dictLanguageData);
+            languageQueryTypeAdapter.notifyDataSetChanged();
+        }
+    }
+
+    public void intContainerVisible(boolean tag) {
+        int type;
+        if(tag){
+            type = dictLanguageData.get(0).getType();
+        }else {
+            type = dictType;
+        }
         getDictData(type);
         languageQueryTypeAdapter.setSelectedPosition(type);
         englishDictName = Utils.getEnglishDictData();
@@ -424,6 +447,8 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     }
 
     public void startDictResultShowActivity(EditText editText) {
+        tag = false;
+        number++;
         String editQueryString = editText.getText().toString();
         editQueryString = Utils.trim(editQueryString);
         if (!StringUtils.isNullOrEmpty(editQueryString)) {
@@ -483,6 +508,11 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onEventMainThread(SelectHeadwordEvent event) {
         selectHeadword(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDictSettingSuccessEvent(DictSettingSuccessEvent event) {
+        tag = true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

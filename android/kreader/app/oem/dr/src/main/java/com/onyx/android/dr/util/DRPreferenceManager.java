@@ -118,18 +118,18 @@ public class DRPreferenceManager extends PreferenceManager {
         return getBooleanValue(context, Constants.AUTO_LOGIN_FLAG, defaultValue);
     }
 
-    public static boolean isSaveUserInfo(Context context){
-        String account = getUserAccount(context,null);
-        String password = getUserPassword(context,null);
-        if(StringUtils.isNotBlank(account) && StringUtils.isNotBlank(password)){
+    public static boolean isSaveUserInfo(Context context) {
+        String account = getUserAccount(context, null);
+        String password = getUserPassword(context, null);
+        if (StringUtils.isNotBlank(account) && StringUtils.isNotBlank(password)) {
             return true;
         }
         return false;
     }
 
-    public static void cleanUserInfo(Context context){
-        saveUserAccount(context,"");
-        saveUserPassword(context,"");
+    public static void cleanUserInfo(Context context) {
+        saveUserAccount(context, "");
+        saveUserPassword(context, "");
     }
 
     public static int getShareType(Context context, int defaultValue) {

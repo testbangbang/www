@@ -150,7 +150,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
             }else if (shareType == Constants.READING_RATE) {
                 shareBookReportPresenter.shareReadingRate(bean.library, childrenId);
             }else if (shareType == Constants.READER_RESPONSE) {
-                shareBookReportPresenter.shareImpression(bean.library, impressionId);
+                shareBookReportPresenter.shareImpression(bean.library, childrenId);
             }
         }
     }

@@ -74,8 +74,8 @@
 
             <ImageButton
                 android:id="@+id/speech_recording_activity_setting"
-                style="@style/media_button"
-                android:layout_height="match_parent"
+                android:layout_width="@dimen/speech_recording_activity_start_lecture_width"
+                android:layout_height="@dimen/speech_recording_activity_start_lecture_width"
                 android:src="@drawable/ic_rec_setting" />
 
             <ImageButton
@@ -85,16 +85,16 @@
                 android:src="@drawable/ic_listen_speak" />
 
             <ImageButton
+                android:id="@+id/speech_recording_activity_stop"
+                android:layout_width="@dimen/speech_recording_activity_start_lecture_width"
+                android:layout_height="@dimen/speech_recording_activity_start_lecture_width"
+                android:src="@drawable/ic_rec_pause" />
+
+            <ImageButton
                 android:id="@+id/speech_recording_activity_record_playback"
                 android:layout_width="@dimen/speech_recording_activity_start_lecture_width"
                 android:layout_height="@dimen/speech_recording_activity_start_lecture_width"
                 android:src="@drawable/ic_rec_play_black" />
-
-            <ImageButton
-                android:id="@+id/speech_recording_activity_stop"
-                style="@style/media_button"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_rec_pause" />
 
             <LinearLayout
                 android:layout_width="match_parent"

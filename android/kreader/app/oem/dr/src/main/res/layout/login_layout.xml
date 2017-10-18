@@ -61,6 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/user_info_text_view_width"
             android:text="@string/auto_login"
+            android:visibility="invisible"
             android:textSize="@dimen/level_two_font_size" />
 
         <TextView

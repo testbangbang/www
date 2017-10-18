@@ -20,7 +20,7 @@ import butterknife.ButterKnife;
 /**
  * Created by zhouzhiming on 17-6-28.
  */
-public class LanguageQueryTypeAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
+public class LanguageQueryTypeAdapter extends PageRecyclerView.PageAdapter {
     private List<DictTypeBean> dictDatas;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
     public int selectedPosition = 0;
@@ -67,30 +67,26 @@ public class LanguageQueryTypeAdapter extends PageRecyclerView.PageAdapter imple
     }
 
     @Override
-    public void onPageBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onPageBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         ViewHolder viewHolder = (ViewHolder) holder;
-        DictTypeBean dictData = dictDatas.get(position);
+       final DictTypeBean dictData = dictDatas.get(position);
         viewHolder.tabMenuTitle.setText(dictData.getTabName());
-        viewHolder.rootView.setTag(position);
-        if (selectedPosition == position) {
+        viewHolder.rootView.setTag(dictData.getType());
+        if (selectedPosition == dictData.getType()) {
             viewHolder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke_focused);
             viewHolder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.white));
         } else {
             viewHolder.tabMenuTitle.setBackgroundResource(R.drawable.rectangle_stroke);
             viewHolder.tabMenuTitle.setTextColor(DRApplication.getInstance().getResources().getColor(R.color.black));
         }
-        viewHolder.rootView.setOnClickListener(this);
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getTag() == null) {
-            return;
-        }
-        int position = (int) v.getTag();
-        selectedPosition = position;
-        notifyDataSetChanged();
-        EventBus.getDefault().post(dictDatas.get(position).getEventBean());
+        viewHolder.rootView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                selectedPosition = dictData.getType();
+                notifyDataSetChanged();
+                EventBus.getDefault().post(dictDatas.get(position).getEventBean());
+            }
+        });
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

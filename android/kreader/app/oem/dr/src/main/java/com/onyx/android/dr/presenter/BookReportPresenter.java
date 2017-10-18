@@ -2,7 +2,10 @@ package com.onyx.android.dr.presenter;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.adapter.BookReportListAdapter;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.BookReportData;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.request.cloud.AddCommentRequest;
@@ -26,7 +29,10 @@ import com.onyx.android.sdk.data.model.v2.GetSharedImpressionResult;
 import com.onyx.android.sdk.data.request.data.db.GetBookLibraryIdRequest;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import static com.onyx.android.dr.R.string.please_select_export_data;
 
 /**
  * Created by li on 2017/9/19.
@@ -36,6 +42,7 @@ public class BookReportPresenter {
     private BookReportView bookReportView;
     private BookReportData bookReportData;
     private List<GetBookReportListBean> data;
+    private List<Boolean> listCheck;
 
     public BookReportPresenter(BookReportView bookReportView) {
         this.bookReportView = bookReportView;
@@ -49,19 +56,22 @@ public class BookReportPresenter {
         requestBean.order = "1";
         requestBean.sortBy = "createdAt";
         final String libraryId = DRPreferenceManager.loadLibraryParentId(DRApplication.getInstance(), "");
-
         final GetBookReportListRequest rq = new GetBookReportListRequest(requestBean);
         bookReportData.getImpressionsList(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetBookReportList bookReportList = rq.getBookReportList();
+                ArrayList<Boolean> checkList = rq.getCheckList();
                 if (data == null) {
                     data = new ArrayList<>();
+                    listCheck = new ArrayList<>();
                 } else {
                     data.clear();
+                    listCheck.clear();
                 }
                 if (bookReportList != null && bookReportList.list != null && bookReportList.list.size() > 0) {
                     data.addAll(bookReportList.list);
+                    listCheck.addAll(checkList);
                 }
                 getSharedImpressions(libraryId);
             }
@@ -80,12 +90,34 @@ public class BookReportPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSharedImpressionResult result = rq.getResult();
+                ArrayList<Boolean> checkList = rq.getCheckList();
                 if(result != null && result.list != null && result.list.size() > 0) {
                     data.addAll(result.list);
+                    listCheck.addAll(checkList);
                 }
-                bookReportView.setBookReportList(data);
+                bookReportView.setBookReportList(data, listCheck);
             }
         });
+    }
+
+    public void remoteAdapterData(List<Boolean> listCheck, BookReportListAdapter adapter, List<GetBookReportListBean> list) {
+        List<GetBookReportListBean> exportList = getData(listCheck, list);
+        if (exportList == null || exportList.isEmpty()) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(please_select_export_data));
+            return;
+        }
+        int length = listCheck.size();
+        for (int i = length - 1; i >= 0; i--) {
+            if (listCheck.get(i)) {
+                //delete basedata data
+                GetBookReportListBean bean = list.get(i);
+                deleteImpression(bean._id);
+                list.remove(i);
+                listCheck.remove(i);
+                adapter.notifyItemRemoved(i);
+            }
+        }
+        adapter.notifyItemRangeChanged(0, list.size());
     }
 
     public void deleteImpression(String id) {
@@ -98,28 +130,43 @@ public class BookReportPresenter {
         });
     }
 
-    public void bringOutReport(GetBookReportListBean bookReportBean) {
-        List<String> titleList = new ArrayList<>();
-        titleList.add(DRApplication.getInstance().getResources().getString(R.string.book_report_list_time));
-        titleList.add(DRApplication.getInstance().getResources().getString(R.string.book_report_list_book_name));
-        titleList.add(DRApplication.getInstance().getResources().getString(R.string.book_report_list_pages));
-        titleList.add(DRApplication.getInstance().getResources().getString(R.string.book_report_list_summary));
-        titleList.add(DRApplication.getInstance().getResources().getString(R.string.book_report_list_word_count));
+    public ArrayList<String> getHtmlTitleData() {
+        ArrayList<String> htmlTitle = bookReportData.getHtmlTitle(DRApplication.getInstance());
+        return htmlTitle;
+    }
 
+    public void exportDataToHtml(List<Boolean> listCheck, ArrayList<String> dataList, List<GetBookReportListBean> list) {
+        List<GetBookReportListBean> exportNewWordList = getData(listCheck, list);
+        if (exportNewWordList == null || exportNewWordList.isEmpty()) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(please_select_export_data));
+            return;
+        }
         String title = DRApplication.getInstance().getResources().getString(R.string.reader_response);
-        final BringOutBookReportRequest rq = new BringOutBookReportRequest(title, titleList, bookReportBean);
-        bookReportData.bringOutReport(rq, new BaseCallback() {
+        final BringOutBookReportRequest req = new BringOutBookReportRequest(title, dataList, exportNewWordList);
+        bookReportData.bringOutReport(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.export_success));
-                } else {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.export_failed));
-                }
             }
         });
+    }
+
+    public void shareReadingRate(List<Boolean> listCheck, List<GetBookReportListBean> list) {
+        List<GetBookReportListBean> exportList = getData(listCheck, list);
+        if (exportList == null || exportList.isEmpty()) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(please_select_export_data));
+            return;
+        }
+        int length = exportList.size();
+        String[] array = new String[]{};
+        for (int i = length - 1; i >= 0; i--) {
+            if (listCheck.get(i)) {
+                GetBookReportListBean bean = exportList.get(i);
+                array = Arrays.copyOf(array, array.length + 1);
+                array[array.length - 1] = bean._id;
+            }
+        }
+        DRPreferenceManager.saveShareType(DRApplication.getInstance(), Constants.READER_RESPONSE);
+        ActivityManager.startShareBookReportActivity(DRApplication.getInstance(), "", array);
     }
 
     public void createImpression(String bookId, String bookName, String title, String content, String currentPage) {
@@ -180,5 +227,19 @@ public class BookReportPresenter {
                 }
             }
         });
+    }
+
+    private List<GetBookReportListBean> getData(List<Boolean> listCheck, List<GetBookReportListBean> list) {
+        List<GetBookReportListBean> exportList = new ArrayList<>();
+        for (int i = 0, j = list.size(); i < j; i++) {
+            Boolean aBoolean = listCheck.get(i);
+            if (aBoolean) {
+                GetBookReportListBean bean = list.get(i);
+                if (!exportList.contains(bean)) {
+                    exportList.add(bean);
+                }
+            }
+        }
+        return exportList;
     }
 }
