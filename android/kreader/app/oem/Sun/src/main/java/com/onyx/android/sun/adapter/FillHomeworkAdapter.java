@@ -1,7 +1,6 @@
 package com.onyx.android.sun.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
+import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.cloud.bean.QuestionData;
 import com.onyx.android.sun.databinding.ItemFillHomeworkBinding;
 import com.onyx.android.sun.view.PageRecyclerView;
@@ -44,10 +44,11 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter {
     }
 
     @Override
-    public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
         FillHomeworkViewHolder viewHolder = (FillHomeworkViewHolder) holder;
         ItemFillHomeworkBinding fillHomeworkBinding = viewHolder.getFillHomeworkBinding();
-        fillHomeworkBinding.itemHomeworkQuestion.setQuestionData(data.get(position).exercise);
+        final Question questions = data.get(position).exercise;
+        fillHomeworkBinding.itemHomeworkQuestion.setQuestionData(questions);
         fillHomeworkBinding.executePendingBindings();
     }
 
