@@ -1,0 +1,55 @@
+package com.onyx.android.sun.fragment;
+
+import android.databinding.ViewDataBinding;
+import android.view.View;
+
+import com.onyx.android.sun.R;
+import com.onyx.android.sun.databinding.RankingBinding;
+import com.onyx.android.sun.event.ToMainFragmentEvent;
+
+import org.greenrobot.eventbus.EventBus;
+
+/**
+ * Created by hehai on 17-10-17.
+ */
+
+public class RankingFragment extends BaseFragment implements View.OnClickListener {
+
+    private RankingBinding rankingBinding;
+
+    @Override
+    protected void loadData() {
+    }
+
+    @Override
+    protected void initView(ViewDataBinding binding) {
+        rankingBinding = (RankingBinding) binding;
+        rankingBinding.rankingTitleBar.titleBarRecord.setVisibility(View.GONE);
+        rankingBinding.rankingTitleBar.titleBarSubmit.setVisibility(View.GONE);
+        rankingBinding.rankingTitleBar.setTitle(getString(R.string.total_score_ranking));
+    }
+
+    @Override
+    protected void initListener() {
+        rankingBinding.rankingTitleBar.setListener(this);
+    }
+
+    @Override
+    protected int getRootView() {
+        return R.layout.fragment_ranking;
+    }
+
+    @Override
+    public boolean onKeyBack() {
+        return false;
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.title_bar_title:
+                EventBus.getDefault().post(new ToMainFragmentEvent());
+                break;
+        }
+    }
+}

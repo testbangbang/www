@@ -64,6 +64,8 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
         scribbleBinding.shapePageRecycler.addItemDecoration(dividerItemDecoration);
         shapePageAdapter = new ShapePageAdapter();
         scribbleBinding.shapePageRecycler.setAdapter(shapePageAdapter);
+        scribbleBinding.titleBar.titleBarRecord.setVisibility(View.GONE);
+        scribbleBinding.titleBar.titleBarSubmit.setVisibility(View.GONE);
     }
 
     @Override

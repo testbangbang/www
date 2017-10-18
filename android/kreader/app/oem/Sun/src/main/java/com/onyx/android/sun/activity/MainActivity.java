@@ -17,6 +17,8 @@ import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
+import com.onyx.android.sun.event.ToMainFragmentEvent;
+import com.onyx.android.sun.event.ToRankingEvent;
 import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
@@ -24,6 +26,7 @@ import com.onyx.android.sun.fragment.CorrectFragment;
 import com.onyx.android.sun.fragment.FillHomeworkFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
+import com.onyx.android.sun.fragment.RankingFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
 
@@ -144,6 +147,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_CORRECT:
                     baseFragment = new CorrectFragment();
                     break;
+                case ChildViewID.FRAGMENT_RANKING:
+                    baseFragment = new RankingFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -184,5 +190,15 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         switchCurrentFragment(ChildViewID.FRAGMENT_CORRECT);
         CorrectFragment correctFragment = (CorrectFragment) getPageView(ChildViewID.FRAGMENT_CORRECT);
         correctFragment.setStartTimer(event.isHasCorrected());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToRankingEvent(ToRankingEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_RANKING);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToMainFragmentEvent(ToMainFragmentEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
     }
 }
