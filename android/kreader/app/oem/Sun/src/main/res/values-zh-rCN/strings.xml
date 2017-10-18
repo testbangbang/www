@@ -43,4 +43,5 @@
     <string name="answer_page_format">答题页%d</string>
     <string name="patient_wait_for_correct">请耐心等待老师批改</string>
     <string name="timer_in_second_switch_to_homework">%ds后跳转到作业列表</string>
+    <string name="total_score_ranking">总分排行榜</string>
 </resources>
