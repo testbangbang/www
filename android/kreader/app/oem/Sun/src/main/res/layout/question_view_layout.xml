@@ -22,8 +22,19 @@
         <LinearLayout
             android:id="@+id/subjective_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone" />
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/subjective_image"
+                android:layout_width="100dp"
+                android:layout_height="100dp" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_height"
+                android:background="@android:color/black" />
+        </LinearLayout>
     </FrameLayout>
 </LinearLayout>
