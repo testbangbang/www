@@ -7,4 +7,6 @@ package com.onyx.android.sdk.data.model.v2;
 public class AuthToken {
     public String token;
     public long expires_in;
+    public int code;
+    public MessageBean message;
 }

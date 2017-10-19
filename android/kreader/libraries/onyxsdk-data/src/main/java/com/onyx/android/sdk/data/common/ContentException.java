@@ -89,7 +89,7 @@ public class ContentException extends Exception {
     public static class CloudException extends ContentException {
 
         public CloudException(ResultCode resultCode) {
-            super(exceptionFromResultCode(resultCode));
+            super(exceptionFromResultCode(resultCode).getCode(), exceptionFromResultCode(resultCode).getMessage());
             setCode(resultCode == null ? UNKNOWN_EXCEPTION : resultCode.code);
         }
     }

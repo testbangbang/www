@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.model.v2.AddCommentRequestBean;
 import com.onyx.android.sdk.data.model.v2.AllGroupBean;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
+import com.onyx.android.sdk.data.model.v2.ChangePendingGroupBean;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
@@ -30,6 +31,7 @@ import com.onyx.android.sdk.data.model.v2.IndexService;
 import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
 import com.onyx.android.sdk.data.model.v2.NewPassword;
 import com.onyx.android.sdk.data.model.v2.PayBean;
+import com.onyx.android.sdk.data.model.v2.PendingGroupBean;
 import com.onyx.android.sdk.data.model.v2.ProductRequestBean;
 import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
@@ -134,11 +136,17 @@ public interface ContentService {
     @GET("/api/groups/me")
     Call<List<AllGroupBean>> getAllGroups();
 
+    @GET("/api/JoinGroups/pending")
+    Call<List<PendingGroupBean>> getPendingGroups();
+
     @GET("/api/groups/{id}/users")
     Call<GroupMemberBean> getGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.WHERE_TAG) final String param);
 
     @GET("/api/groups/{id}/searchUsers")
     Call<GroupMemberBean> searchGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.TEXT_TAG) final String offset);
+
+    @GET("/api/JoinGroups/{id}/change")
+    Call<ChangePendingGroupBean> changePendingGroupState(@Path(Constant.ID_TAG) final String id, @Query(Constant.STATUS_TAG) final int param);
 
     @DELETE("/api/groups/{id}/users")
     Call<DeleteGroupMemberBean> deleteGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.USERS_TAG) final DeleteGroupMemberBean bean);
