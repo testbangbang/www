@@ -28,4 +28,19 @@ public class StringUtil {
     public static boolean isNullOrEmpty(String str) {
         return str == null || str.equals("");
     }
+
+    public static String distinguishAnswer(String answer) {
+        if (isNullOrEmpty(answer)) {
+            return SunApplication.getInstence().getResources().getString(R.string.no_answer);
+        } else {
+            return answer;
+        }
+    }
+
+    public static boolean isNotFillAnswer(String answer) {
+        if (isNullOrEmpty(answer)) {
+            return true;
+        }
+        return false;
+    }
 }

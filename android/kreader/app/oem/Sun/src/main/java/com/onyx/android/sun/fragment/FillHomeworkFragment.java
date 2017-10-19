@@ -50,6 +50,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkRecycler.addItemDecoration(dividerItemDecoration);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setText(
                 String.format(getResources().getString(R.string.homework_unfinished_title_format), StringUtil.transitionHomeworkType(type), title));
+        fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
         fillHomeworkAdapter = new FillHomeworkAdapter();
         fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setOnClickListener(this);
@@ -93,7 +94,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     public void setTaskDetail(QuestionDetail data) {
         List<QuestionData> questions = data.data;
         if (fillHomeworkAdapter != null && questions != null && questions.size() > 0) {
-            fillHomeworkAdapter.setData(questions);
+            fillHomeworkAdapter.setData(questions, title);
         }
     }
 
@@ -101,7 +102,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         this.id = id;
         this.type = type;
         this.title = title;
-        if(homeworkPresenter != null) {
+        if (homeworkPresenter != null) {
             homeworkPresenter.getTaskDetail(id);
         }
     }
@@ -113,10 +114,20 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
                 EventBus.getDefault().post(new BackToHomeworkFragmentEvent());
                 break;
             case R.id.title_bar_record:
-                fillHomeworkBinding.fillHomeworkRecycler.setAdapter(homeworkRecordAdapter);
+                setTitleBarRecord();
                 break;
             case R.id.title_bar_submit:
                 break;
+        }
+    }
+
+    private void setTitleBarRecord() {
+        if (getResources().getString(R.string.file_homework_record).equals(fillHomeworkBinding.fillHomeworkTitleBar.getRecord())) {
+            fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.question));
+            fillHomeworkBinding.fillHomeworkRecycler.setAdapter(homeworkRecordAdapter);
+        } else {
+            fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
+            fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
         }
     }
 }

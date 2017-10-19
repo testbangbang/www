@@ -3,22 +3,39 @@
 
     <data class="ItemHomeworkRecordBinding">
 
+        <variable
+            name="title"
+            type="String" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/text_unselected_state"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/item_homework_record_padding">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/level_one_heading_font" />
-
-        <com.onyx.android.sun.view.PageRecyclerView
-            android:id="@+id/homework_record_recycler"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@drawable/text_unselected_state"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/item_homework_record_text_padding"
+                android:text="@{title}"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_height"
+                android:background="@android:color/black" />
+
+            <com.onyx.android.sun.view.PageRecyclerView
+                android:id="@+id/homework_record_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

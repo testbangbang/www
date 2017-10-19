@@ -34,6 +34,7 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
     private final Paint weakPaint;
     private boolean drawWeakLine;
     private int space = 0;
+    private boolean isVerticalSpace;
 
     public DividerItemDecoration(Context context, int orientation) {
         final TypedArray a = context.obtainStyledAttributes(ATTRS);
@@ -140,11 +141,18 @@ public class DividerItemDecoration extends RecyclerView.ItemDecoration {
         this.space = space;
     }
 
+    public void setVerticalSpace(boolean b) {
+        this.isVerticalSpace = b;
+    }
+
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if (space != 0) {
+        if (!isVerticalSpace) {
             outRect.right = space;
             outRect.left = space;
+        } else {
+            outRect.bottom = space;
+            outRect.top = space;
         }
     }
 

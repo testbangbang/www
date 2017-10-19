@@ -9,11 +9,10 @@ import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.GeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
+
 import java.util.ArrayList;
 import java.util.List;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
 
 /**

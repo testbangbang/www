@@ -21,6 +21,7 @@ import java.util.List;
 
 public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter {
     private List<QuestionData> data;
+    private String title;
 
     @Override
     public int getRowCount() {
@@ -48,7 +49,7 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter {
         FillHomeworkViewHolder viewHolder = (FillHomeworkViewHolder) holder;
         ItemFillHomeworkBinding fillHomeworkBinding = viewHolder.getFillHomeworkBinding();
         final Question questions = data.get(position).exercise;
-        fillHomeworkBinding.itemHomeworkQuestion.setQuestionData(questions);
+        fillHomeworkBinding.itemHomeworkQuestion.setQuestionData(questions, title);
         fillHomeworkBinding.executePendingBindings();
     }
 
@@ -57,8 +58,9 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter {
 
     }
 
-    public void setData(List<QuestionData> data) {
+    public void setData(List<QuestionData> data, String title) {
         this.data = data;
+        this.title = title;
         notifyDataSetChanged();
     }
 

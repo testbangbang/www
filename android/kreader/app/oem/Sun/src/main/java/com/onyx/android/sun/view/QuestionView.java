@@ -14,9 +14,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
+import com.onyx.android.sun.common.ManagerActivityUtils;
 
 import java.util.List;
 import java.util.Map;
@@ -32,6 +34,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     private LinearLayout subjectiveGroup;
     private Question questionData;
     private ImageView subjectiveImage;
+    private String title;
 
     public QuestionView(Context context) {
         this(context, null);
@@ -57,8 +60,9 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
 
     }
 
-    public void setQuestionData(Question questionData) {
+    public void setQuestionData(Question questionData, String title) {
         this.questionData = questionData;
+        this.title = title;
         questionTitle.setText(questionData.id + "." + questionData.question);
         if (Constants.QUESTION_TYPE_CHOICE.equals(questionData.type)) {
             setVisibleType(R.id.choice_item);
@@ -121,6 +125,6 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        CommonNotices.show("item...");
+        ManagerActivityUtils.startScribbleActivity(SunApplication.getInstence(), questionData.id + "", title, questionData.question);
     }
 }

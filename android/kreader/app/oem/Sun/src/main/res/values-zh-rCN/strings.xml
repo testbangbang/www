@@ -44,4 +44,6 @@
     <string name="patient_wait_for_correct">请耐心等待老师批改</string>
     <string name="timer_in_second_switch_to_homework">%ds后跳转到作业列表</string>
     <string name="total_score_ranking">总分排行榜</string>
+    <string name="no_answer">未答</string>
+    <string name="question">题目</string>
 </resources>

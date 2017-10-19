@@ -12,6 +12,7 @@ import com.onyx.android.sun.scribble.ScribbleActivity;
 public class ManagerActivityUtils {
     public static void startScribbleActivity(Context context, String questionID, String questionTitle, String question) {
         Intent intent = new Intent(context, ScribbleActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(Constants.QUESTION_ID, questionID);
         intent.putExtra(Constants.QUESTION_TITLE, questionTitle);
         intent.putExtra(Constants.QUESTION_TAG, question);
