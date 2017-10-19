@@ -85,8 +85,12 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
         TextView bookName;
         @Bind(R.id.reading_rate_item_time_horizon)
         TextView timeHorizon;
+        @Bind(R.id.reading_rate_item_reading_quantity)
+        TextView readingQuantity;
         @Bind(R.id.reading_rate_item_language_type)
         TextView languageType;
+        @Bind(R.id.reading_rate_item_language_speech)
+        TextView speech;
         @Bind(R.id.reading_rate_item_reading_summary)
         TextView readingSummary;
         @Bind(R.id.reading_rate_item_reader_response_piece)

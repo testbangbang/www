@@ -92,6 +92,14 @@ public class ManageGroupAdapter extends PageRecyclerView.PageAdapter<ManageGroup
                 }
             }
         });
+        holder.news.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!StringUtils.isNullOrEmpty(bean.applyCount + tag) && bean.role.equals(groupOwner)){
+                    ActivityManager.startApplyForGroupActivity(DRApplication.getInstance());
+                }
+            }
+        });
     }
 
     private void showDialog(final String childId, final int position) {

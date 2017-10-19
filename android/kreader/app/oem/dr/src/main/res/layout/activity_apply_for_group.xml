@@ -15,6 +15,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/apply_for_group_activity_all_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/join_group_activity_all_number_padding"
+            android:text="@string/apply_for_group_activity_application"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -24,7 +34,15 @@
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_weight="1"
-                android:text="@string/order_number" />
+                android:text="@string/memorandum_activity_time" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/good_sentence_activity_textview"
+                android:layout_marginLeft="1dp"
+                android:layout_weight="1"
+                android:text="@string/proposer" />
 
             <View style="@style/vertical_view" />
 
@@ -32,36 +50,12 @@
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="2"
-                android:text="@string/group_manager_group_name" />
-
-            <View style="@style/vertical_view" />
-
-            <TextView
-                style="@style/good_sentence_activity_textview"
-                android:layout_marginLeft="1dp"
-                android:layout_weight="1"
-                android:text="@string/group_manager_identity" />
-
-            <View style="@style/vertical_view" />
-
-            <TextView
-                style="@style/good_sentence_activity_textview"
-                android:layout_marginLeft="1dp"
-                android:layout_weight="1"
-                android:text="@string/number_of_people" />
-
-            <View style="@style/vertical_view" />
-
-            <TextView
-                style="@style/good_sentence_activity_textview"
-                android:layout_marginLeft="1dp"
-                android:layout_weight="1"
-                android:text="@string/news" />
+                android:text="@string/application_note" />
 
             <View style="@style/vertical_view" />
 
             <LinearLayout
-                android:layout_width="@dimen/group_manager_activity_manager_container_width"
+                android:layout_width="@dimen/apply_for_group_activity_container_width"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="1dp">
 
@@ -69,14 +63,16 @@
                     style="@style/good_sentence_activity_textview"
                     android:layout_marginLeft="1dp"
                     android:layout_weight="2"
-                    android:text="@string/join" />
+                    android:text="@string/manage" />
 
             </LinearLayout>
         </LinearLayout>
-
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/group_manager_activity_recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
     </LinearLayout>
+
+    <com.onyx.android.sdk.ui.view.PageRecyclerView
+        android:id="@+id/apply_for_group_activity_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:paddingBottom="@dimen/reading_rate_activity_recycler_view_padding_bottom"  />
 </LinearLayout>

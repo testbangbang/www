@@ -112,6 +112,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
     @Override
     public void setGroupMemberResult(GroupMemberBean bean) {
         if (bean.list == null || bean.list.size() <= 0) {
+            allNumber.setText(getString(R.string.member_number) + getString(R.string.zero_people));
             return;
         }
         groupList.clear();

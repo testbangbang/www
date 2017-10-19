@@ -90,6 +90,12 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     ImageView iconTwo;
     @Bind(R.id.title_bar_right_icon_one)
     ImageView iconOne;
+    @Bind(R.id.activity_dict_result_no_data_hint)
+    TextView noDataHint;
+    @Bind(R.id.dict_result_activity_function_panel)
+    LinearLayout functionPanel;
+    @Bind(R.id.activity_dict_result_no_data_container)
+    LinearLayout noDataContainer;
     private DictFunctionPresenter dictPresenter;
     private DictionaryManager dictionaryManager;
     private QueryWordRequest queryWordRequest;
@@ -301,9 +307,11 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
-                    if (queryWordRequest.queryResult == null || resultView == null) {
+                    if (queryWordRequest.queryResult == null || queryWordRequest.queryResult.size() <= 0) {
+                        setViewGone();
                         return;
                     }
+                    setViewVisible();
                     resultView.loadResultAsHtml(queryWordRequest.queryResult);
                     getSoundData(queryWordRequest.queryResult);
                     addSearchResult(queryWordRequest.queryResult);
@@ -322,9 +330,21 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
                 }
             });
             if (!bRet) {
-                CommonNotices.showMessage(this, getString(R.string.headword_search_empty));
+                setViewGone();
             }
         }
+    }
+
+    private void setViewGone() {
+        noDataContainer.setVisibility(View.VISIBLE);
+        functionPanel.setVisibility(View.GONE);
+        resultView.setVisibility(View.GONE);
+    }
+
+    private void setViewVisible() {
+        noDataContainer.setVisibility(View.GONE);
+        functionPanel.setVisibility(View.VISIBLE);
+        resultView.setVisibility(View.VISIBLE);
     }
 
     private void reset() {

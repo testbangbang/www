@@ -1,13 +1,21 @@
 package com.onyx.android.dr.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.presenter.JoinGroupPresenter;
+import com.onyx.android.dr.util.Utils;
+import com.onyx.android.dr.view.DefaultEditText;
 import com.onyx.android.sdk.data.model.CreatorBean;
 import com.onyx.android.sdk.data.model.v2.JoinGroupBean;
 import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
@@ -25,10 +33,18 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
     private List<SearchGroupBean> dataList;
     private OnItemClickListener onItemClickListener;
     private JoinGroupPresenter presenter;
+    private Context context;
+    private SelectAlertDialog selectTimeDialog;
+    private Button cancel;
+    private Button confirm;
+    private DefaultEditText content;
+    private TextView title;
 
-    public void setDataList(List<SearchGroupBean> dataList, JoinGroupPresenter presenter) {
+    public void setDataList(Context context, List<SearchGroupBean> dataList, JoinGroupPresenter presenter) {
         this.dataList = dataList;
         this.presenter = presenter;
+        this.context = context;
+        loadDialog();
     }
 
     @Override
@@ -63,12 +79,54 @@ public class GroupAdapter extends PageRecyclerView.PageAdapter<GroupAdapter.View
         holder.joinGroup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                loadDialogData(bean);
+            }
+        });
+    }
+
+    private void loadDialog() {
+        LinearLayout view = (LinearLayout) LayoutInflater.from(context).inflate(
+                R.layout.dialog_application_note, null);
+        selectTimeDialog = new SelectAlertDialog(context);
+        // find id
+        title = (TextView) view.findViewById(R.id.application_note_dialog_title);
+        content = (DefaultEditText) view.findViewById(R.id.application_note_dialog_content);
+        confirm = (Button) view.findViewById(R.id.application_note_dialog_confirm);
+        cancel = (Button) view.findViewById(R.id.application_note_dialog_cancel);
+        //set data
+        WindowManager.LayoutParams attributes = selectTimeDialog.getWindow().getAttributes();
+        Float heightProportion = Float.valueOf(content.getResources().getString(R.string.application_note_dialog_height));
+        Float widthProportion = Float.valueOf(content.getResources().getString(R.string.application_note_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
+        selectTimeDialog.getWindow().setAttributes(attributes);
+        selectTimeDialog.setView(view);
+    }
+
+    private void loadDialogData(final SearchGroupBean bean) {
+        title.setText(DRApplication.getInstance().getString(R.string.application_note));
+        content.setText("");
+        confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String info = content.getText().toString();
                 JoinGroupBean joinGroupBean = new JoinGroupBean();
                 String[] array = new String[]{bean._id};
                 joinGroupBean.setGroups(array);
+                joinGroupBean.setInfo(info);
                 presenter.joinGroup(joinGroupBean);
+                selectTimeDialog.dismiss();
             }
         });
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (selectTimeDialog.isShowing()) {
+                    selectTimeDialog.dismiss();
+                }
+            }
+        });
+        selectTimeDialog.show();
     }
 
     public interface OnItemClickListener {

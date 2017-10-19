@@ -7,13 +7,6 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.data.MenuBean;
-import com.onyx.android.dr.event.AccountAvailableEvent;
-import com.onyx.android.dr.event.LoginFailedEvent;
-import com.onyx.android.dr.event.WifiConnectedEvent;
-import com.onyx.android.dr.presenter.MainPresenter;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.lang.reflect.Method;
 import java.util.List;
@@ -44,7 +37,6 @@ public class LogoActivity extends BaseActivity implements MainView {
         }else{
             ActivityManager.startLoginActivity(this);
         }
-
         stopBootAnimation();
         finish();
     }

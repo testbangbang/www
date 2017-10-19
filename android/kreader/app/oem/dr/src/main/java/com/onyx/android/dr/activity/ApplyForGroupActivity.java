@@ -7,20 +7,16 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.adapter.ManageGroupAdapter;
+import com.onyx.android.dr.adapter.ApplyForGroupAdapter;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.event.ExportHtmlFailedEvent;
-import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
-import com.onyx.android.dr.interfaces.ManageGroupView;
-import com.onyx.android.dr.presenter.ManageGroupPresenter;
-import com.onyx.android.dr.util.DRPreferenceManager;
-import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
-import com.onyx.android.sdk.data.model.v2.AllGroupBean;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.interfaces.ApplyForGroupView;
+import com.onyx.android.dr.presenter.ApplyForGroupPresenter;
+import com.onyx.android.dr.view.DividerItemDecoration;
+import com.onyx.android.sdk.data.model.v2.ChangePendingGroupBean;
+import com.onyx.android.sdk.data.model.v2.PendingGroupBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,18 +27,20 @@ import butterknife.OnClick;
 /**
  * Created by zhouzhiming on 2017/10/9.
  */
-public class ApplyForGroupActivity extends BaseActivity implements ManageGroupView {
+public class ApplyForGroupActivity extends BaseActivity implements ApplyForGroupView {
     @Bind(R.id.menu_back)
     LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView title;
     @Bind(R.id.image)
     ImageView image;
-    @Bind(R.id.group_manager_activity_recycler_view)
+    @Bind(R.id.apply_for_group_activity_recycler_view)
     PageRecyclerView recyclerView;
-    private ManageGroupPresenter presenter;
-    private ManageGroupAdapter manageGroupAdapter;
-    private List<AllGroupBean> groupList;
+    @Bind(R.id.apply_for_group_activity_all_number)
+    TextView allNumber;
+    private ApplyForGroupPresenter presenter;
+    private ApplyForGroupAdapter applyForGroupAdapter;
+    private List<PendingGroupBean> groupList;
 
     @Override
     protected Integer getLayoutId() {
@@ -59,14 +57,18 @@ public class ApplyForGroupActivity extends BaseActivity implements ManageGroupVi
     }
 
     private void initRecyclerView() {
-        manageGroupAdapter = new ManageGroupAdapter();
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration.setDrawLine(true);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        applyForGroupAdapter = new ApplyForGroupAdapter();
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
     }
 
     @Override
     protected void initData() {
-        presenter = new ManageGroupPresenter(this);
-        presenter.getAllGroup();
+        presenter = new ApplyForGroupPresenter(this);
+        presenter.getPendingGroups();
         groupList = new ArrayList<>();
         initTitleData();
         initEvent();
@@ -78,25 +80,27 @@ public class ApplyForGroupActivity extends BaseActivity implements ManageGroupVi
     }
 
     @Override
-    public void setGroupMemberResult(List<AllGroupBean> list) {
+    public void setGetPendingGroupResult(List<PendingGroupBean> list) {
         if (list == null || list.size() <= 0) {
+            allNumber.setText(getString(R.string.apply_for_group_activity_application) + getString(R.string.zero_data_unit));
             return;
         }
         groupList = list;
-        manageGroupAdapter.setDataList(this, groupList, presenter);
-        recyclerView.setAdapter(manageGroupAdapter);
+        allNumber.setText(getString(R.string.apply_for_group_activity_application) + groupList.size() + getString(R.string.data_unit));
+        applyForGroupAdapter.setDataList(this, groupList, presenter);
+        recyclerView.setAdapter(applyForGroupAdapter);
     }
 
     @Override
-    public void setExitGroupResult(DeleteGroupMemberBean result) {
+    public void setDisposePendingGroupResult(ChangePendingGroupBean result) {
         if (result != null) {
-            CommonNotices.showMessage(this, getString(R.string.exit_success));
-            String position = DRPreferenceManager.getExitGroupPosition(this, "");
-            Integer tag = Integer.valueOf(position);
-            groupList.remove(tag);
-            manageGroupAdapter.notifyItemRemoved(tag);
+            if (result.status == Constants.PASS_TAG) {
+                CommonNotices.showMessage(this, getString(R.string.pass_success));
+            }else if(result.status == Constants.REFUSE_TAG) {
+                CommonNotices.showMessage(this, getString(R.string.refuse_success));
+            }
         } else {
-            CommonNotices.showMessage(this, getString(R.string.exit_failed));
+            CommonNotices.showMessage(this, getString(R.string.pass_failed));
         }
     }
 
@@ -110,16 +114,6 @@ public class ApplyForGroupActivity extends BaseActivity implements ManageGroupVi
                 finish();
                 break;
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.export_success));
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 
     @Override

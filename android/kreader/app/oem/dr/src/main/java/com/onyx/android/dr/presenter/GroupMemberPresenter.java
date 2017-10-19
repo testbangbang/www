@@ -1,6 +1,9 @@
 package com.onyx.android.dr.presenter;
 
+import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GroupMemberAdapter;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.GroupMemberData;
 import com.onyx.android.dr.interfaces.GroupMemberView;
 import com.onyx.android.dr.request.cloud.DeleteGroupMemberRequest;
@@ -66,6 +69,11 @@ public class GroupMemberPresenter {
     }
 
     public void remoteAdapterData(String id, ArrayList<Boolean> listCheck, GroupMemberAdapter adapter, List<ListBean> list) {
+        List<ListBean> dataList = getData(listCheck, list);
+        if (dataList == null || dataList.isEmpty()) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_select_delete_data));
+           return;
+        }
         int length = listCheck.size();
         DeleteGroupMemberBean deleteGroupMemberBean = new DeleteGroupMemberBean();
         String[] array = new String[]{};

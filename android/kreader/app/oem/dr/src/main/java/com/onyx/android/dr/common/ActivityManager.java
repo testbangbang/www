@@ -12,6 +12,7 @@ import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.AnnotationListActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
+import com.onyx.android.dr.activity.ApplyForGroupActivity;
 import com.onyx.android.dr.activity.BaiduBaiKeActivity;
 import com.onyx.android.dr.activity.BookDetailActivity;
 import com.onyx.android.dr.activity.BookReportDetailActivity;
@@ -293,6 +294,13 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, ManageGroupActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startApplyForGroupActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, ApplyForGroupActivity.class);
         context.startActivity(intent);
     }
 
