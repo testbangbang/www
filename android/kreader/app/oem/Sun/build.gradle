@@ -47,6 +47,9 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:$rootProject.convertergsonVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
     compile(project(path: ':libraries:onyxsdk-scribble')) {
         ['org.objenesis', 'com.alibaba','org.greenrobot:eventbus'].each {
             exclude group: it
