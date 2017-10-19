@@ -11,6 +11,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.api.TouchHelper;
@@ -360,15 +361,15 @@ public class NoteManager {
         return shapeStash.size() > 0;
     }
 
-    public void undo(final Context context, final String pageName, int subPage) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
+    public void undo(final Context context, final PageRange range, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, range, subPage);
         if (readerNotePage != null) {
             readerNotePage.undo();
         }
     }
 
-    public void redo(final Context context, final String pageName, int subPage) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
+    public void redo(final Context context, final PageRange range, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, range, subPage);
         if (readerNotePage != null) {
             readerNotePage.redo();
         }

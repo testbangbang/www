@@ -12,7 +12,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 public class PageInfo {
 
     private String name;
-    private String position;
+    private PageRange pageRange;
     private int subPage = 0;
 
     private int pageOrientation;      // degree 0, 90, 180, 270.
@@ -31,12 +31,12 @@ public class PageInfo {
     private int specialScale = PageConstants.SCALE_INVALID;
 
     public PageInfo(final String name, final float nw, final float nh) {
-        this(name, name, nw, nh);
+        this(name, name, name, nw, nh);
     }
 
-    public PageInfo(final String name, final String position, final float nw, final float nh) {
+    public PageInfo(final String name, final String startPosition, String endPosition, final float nw, final float nh) {
         this.name = name;
-        this.position = position;
+        pageRange = new PageRange(startPosition, endPosition);
         originWidth = nw;
         originHeight = nh;
         positionRect.set(0, 0, nw, nh);
@@ -44,7 +44,8 @@ public class PageInfo {
 
     public PageInfo(final PageInfo pageInfo) {
         name = pageInfo.getName();
-        position = pageInfo.getPosition();
+        pageRange = new PageRange(pageInfo.getRange().startPosition,
+                pageInfo.getRange().endPosition);
         originWidth = pageInfo.getOriginWidth();
         originHeight = pageInfo.getOriginHeight();
         positionRect.set(pageInfo.positionRect);
@@ -156,18 +157,19 @@ public class PageInfo {
     }
 
     public String getPositionSafely() {
-        if (StringUtils.isNullOrEmpty(position)) {
+        if (StringUtils.isNullOrEmpty(pageRange.startPosition)) {
             return name;
         }
-        return position;
+        return pageRange.startPosition;
     }
 
     public String getPosition() {
-        return position;
+        assert pageRange != null;
+        return pageRange.startPosition;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public PageRange getRange() {
+        return pageRange;
     }
 
     public int getSubPage() {

@@ -1,6 +1,11 @@
 package com.onyx.kreader.note.data;
 
+import com.onyx.android.sdk.data.PageRange;
+
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -15,70 +20,177 @@ import java.util.List;
 public class ReaderNotePageNameMap {
 
     private LinkedHashMap<String, List<String>> data = new LinkedHashMap<>();
+    private Comparator<String> comparator = new Comparator<String>() {
+        @Override
+        public int compare(String lhs, String rhs) {
+            try {
+                int left = Integer.parseInt(lhs);
+                int right = Integer.parseInt(rhs);
+                return left - right;
+            } catch (NumberFormatException e) {
+                return lhs.compareTo(rhs);
+            }
+        }
+    };
 
     public ReaderNotePageNameMap() {
     }
 
-    public void add(final String pageName, final String subPageUniqueId) {
-        getPageList(pageName, true).add(subPageUniqueId);
-    }
-
-    public void add(final String pageName, int index, final String subPageUniqueId) {
-        if (getPageList(pageName, true).size() < index) {
-            for (int i = getPageList(pageName, true).size(); i < index; i++) {
-                getPageList(pageName, true).add(i, null);
-            }
+    public int getSubPageCount(final PageRange range) {
+        List<String> pageList = getSortedNameList(range);
+        int count = 0;
+        for (String page : pageList) {
+            count += data.get(page).size();
         }
-        getPageList(pageName, true).add(index, subPageUniqueId);
+        return count;
     }
 
-    public void set(final String pageName, int index, final String subPageUniqueId) {
-        List<String> list = getPageList(pageName, true);
-        if (list.size() > index) {
-            list.set(index, subPageUniqueId);
+    public String getSubPageUniqueId(final String pageName, int subPageIndex) {
+        return getSubPageUniqueId(new PageRange(pageName, pageName), subPageIndex);
+    }
+
+    public String getSubPageUniqueId(final PageRange range, int subPageIndex) {
+        if (subPageIndex < 0) {
+            return null;
+        }
+
+        List<String> pageList = getSortedNameList(range);
+        if (pageList.isEmpty()) {
+            return null;
+        }
+
+        List<String> list = null;
+        for (String p : pageList) {
+            list = data.get(p);
+            int idx = subPageIndex - list.size();
+            if (idx <= 0) {
+                break;
+            }
+            subPageIndex = idx;
+        }
+
+        if (subPageIndex >= list.size()) {
+            return null;
+        }
+
+        return list.get(subPageIndex);
+    }
+
+    public void add(final String pageName, final String subPageUniqueId) {
+        add(new PageRange(pageName, pageName), subPageUniqueId);
+    }
+
+    public void add(final PageRange range, final String subPageUniqueId) {
+        List<String> pageList = getSortedNameList(range);
+        if (pageList.isEmpty()) {
+            data.put(range.startPosition, Arrays.asList(new String[] { subPageUniqueId }));
             return;
         }
 
-        for (int i = list.size(); i < index; i++) {
-            list.add(i, null);
-        }
-        list.add(index, subPageUniqueId);
+        data.get(pageList.get(pageList.size() - 1)).add(subPageUniqueId);
     }
 
-    public List<String> getPageList(final String pageName, boolean create) {
-        if (data.containsKey(pageName)) {
-            return data.get(pageName);
+    public void add(final String pageName, int index, final String subPageUniqueId) {
+        add(new PageRange(pageName, pageName), index, subPageUniqueId);
+    }
+
+    public void add(final PageRange range, int subPageIndex, final String subPageUniqueId) {
+        List<String> pageList = getSortedNameList(range);
+        if (pageList.isEmpty()) {
+            data.put(range.startPosition, new ArrayList<String>());
+            for (int i = 0; i < subPageIndex; i++) {
+                data.get(range.startPosition).add(i, null);
+            }
+            data.get(range.startPosition).add(subPageIndex, subPageUniqueId);
+            return;
         }
-        if (!create) {
-            return null;
+
+        List<String> list = null;
+        for (String p : pageList) {
+            list = data.get(p);
+            int idx = subPageIndex - list.size();
+            if (idx <= 0) {
+                break;
+            }
+            subPageIndex = idx;
         }
-        List<String> list = new ArrayList<>();
-        data.put(pageName, list);
-        return list;
+
+        for (int i = list.size(); i < subPageIndex; i++) {
+            list.add(i, null);
+        }
+        list.add(subPageIndex, subPageUniqueId);
+    }
+
+    public void set(final String pageName, int index, final String subPageUniqueId) {
+        set(new PageRange(pageName, pageName), index, subPageUniqueId);
+    }
+
+    public void set(final PageRange range, int subPageIndex, final String subPageUniqueId) {
+        List<String> pageList = getSortedNameList(range);
+        if (pageList.isEmpty()) {
+            data.put(range.startPosition, new ArrayList<String>());
+            for (int i = 0; i < subPageIndex; i++) {
+                data.get(range.startPosition).add(i, null);
+            }
+            data.get(range.startPosition).add(subPageIndex, subPageUniqueId);
+            return;
+        }
+
+        List<String> list = null;
+        for (String p : pageList) {
+            list = data.get(p);
+            int idx = subPageIndex - list.size();
+            if (idx <= 0) {
+                break;
+            }
+            subPageIndex = idx;
+        }
+
+        if (list.size() > subPageIndex) {
+            list.set(subPageIndex, subPageUniqueId);
+            return;
+        }
+
+        for (int i = list.size(); i < subPageIndex; i++) {
+            list.add(i, null);
+        }
+        list.add(subPageIndex, subPageUniqueId);
     }
 
     public void remove(final String pageName) {
         data.remove(pageName);
     }
 
-    public boolean remove(final String pageName, final String subPageUniqueId) {
-        final List<String> list = getPageList(pageName, false);
-        if (list == null) {
-            return false;
+    public String removeSubPage(final String pageName, final int subPageIndex) {
+        return removeSubPage(new PageRange(pageName, pageName), subPageIndex);
+    }
+
+    public String removeSubPage(final PageRange range, final int subPageIndex) {
+        List<String> pageList = getSortedNameList(range);
+        if (pageList.isEmpty()) {
+            return null;
         }
-        return list.remove(subPageUniqueId);
+
+        int idx = subPageIndex;
+        List<String> list = null;
+        for (String p : pageList) {
+            list = data.get(p);
+            int i = subPageIndex - list.size();
+            if (i < 0) {
+                break;
+            }
+            idx = i;
+        }
+
+        if (idx >= list.size()) {
+            return null;
+        }
+
+        return list.remove(idx);
     }
 
     public int size() {
         return data.size();
-    }
-
-    public int size(final String pageName) {
-        final List<String> list = getPageList(pageName, false);
-        if (list == null) {
-            return 0;
-        }
-        return list.size();
     }
 
     public void clear() {
@@ -100,5 +212,17 @@ public class ReaderNotePageNameMap {
 
     public List<String> nameList() {
         return new ArrayList<>(data.keySet());
+    }
+
+    private List<String> getSortedNameList(final PageRange range) {
+        ArrayList<String> list = new ArrayList<>();
+        for (String name : data.keySet()) {
+            if (comparator.compare(name, range.startPosition) >= 0 &&
+                    comparator.compare(name, range.endPosition) <= 0) {
+                list.add(name);
+            }
+        }
+        Collections.sort(list, comparator);
+        return list;
     }
 }

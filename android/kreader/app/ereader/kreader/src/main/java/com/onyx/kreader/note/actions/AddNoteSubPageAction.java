@@ -15,17 +15,17 @@ import com.onyx.kreader.ui.events.ShapeRenderFinishEvent;
 
 public class AddNoteSubPageAction extends BaseAction {
 
-    private String pageName;
+    private PageInfo pageInfo;
     private int subPageIndex;
 
-    public AddNoteSubPageAction(final String pageName, final int subPageIndex) {
-        this.pageName = pageName;
-        this.subPageIndex = subPageIndex + 1;
+    public AddNoteSubPageAction(final PageInfo pageInfo, final int subPageIndex) {
+        this.pageInfo = pageInfo;
+        this.subPageIndex = subPageIndex;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final AddNoteSubPageRequest request = new AddNoteSubPageRequest(pageName, subPageIndex);
+        final AddNoteSubPageRequest request = new AddNoteSubPageRequest(pageInfo, subPageIndex);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, baseCallback);
     }
 
