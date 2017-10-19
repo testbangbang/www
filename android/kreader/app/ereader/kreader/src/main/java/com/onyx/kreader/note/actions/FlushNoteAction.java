@@ -43,11 +43,6 @@ public class FlushNoteAction extends BaseAction {
         return flushNoteAction;
     }
 
-    public static FlushNoteAction resumeAfterFlush(List<PageInfo> list) {
-        final FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
-        return flushNoteAction;
-    }
-
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         final List<Shape> stash = noteManager.detachShapeStash();
