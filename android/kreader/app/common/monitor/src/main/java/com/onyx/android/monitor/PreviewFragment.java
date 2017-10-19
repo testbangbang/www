@@ -6,7 +6,6 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -52,7 +51,7 @@ import com.onyx.android.monitor.dialog.ConnectErrorDialog;
 import com.onyx.android.monitor.dialog.DialogPreviewMenu;
 import com.onyx.android.monitor.dialog.ErrorDialog;
 import com.onyx.android.monitor.event.ChangeOrientationEvent;
-import com.onyx.android.monitor.event.DismissMenuEvent;
+import com.onyx.android.monitor.event.CloseAppEvent;
 import com.onyx.android.monitor.event.FullRefreshEvent;
 import com.onyx.android.monitor.event.MenuKeyEvent;
 import com.onyx.android.monitor.event.SettingsChangedEvent;
@@ -1033,8 +1032,8 @@ public class PreviewFragment extends Fragment
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDismissMenu(final DismissMenuEvent event) {
-        getMenuDialog().dismiss();
+    public void onDismissMenu(final CloseAppEvent event) {
+        getActivity().finish();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -13,7 +14,7 @@ import android.widget.ImageView;
 import com.onyx.android.monitor.R;
 import com.onyx.android.monitor.SingletonSharedPreference;
 import com.onyx.android.monitor.event.ChangeOrientationEvent;
-import com.onyx.android.monitor.event.DismissMenuEvent;
+import com.onyx.android.monitor.event.CloseAppEvent;
 import com.onyx.android.monitor.event.FullRefreshEvent;
 import com.onyx.android.monitor.event.SettingsChangedEvent;
 import com.onyx.android.monitor.view.MenuItem;
@@ -54,6 +55,8 @@ public class DialogPreviewMenu extends Dialog {
         public void MenuItemValueChanged(MenuItem menuItem, Object newValue) {
             if (menuItem.getId() == A2) {
                 SingletonSharedPreference.setGcIntervalTime(getContext(), (int)newValue);
+                resetSubMenu();
+                dismiss();
             }
             EventBus.getDefault().post(new SettingsChangedEvent(menuItem.getId()));
         }
@@ -71,9 +74,11 @@ public class DialogPreviewMenu extends Dialog {
         switch (menuItem.getId()) {
             case FULL_REFRESH:
                 EventBus.getDefault().post(new FullRefreshEvent());
+                dismiss();
                 break;
             case EXIT:
-                EventBus.getDefault().post(new DismissMenuEvent());
+                dismiss();
+                EventBus.getDefault().post(new CloseAppEvent());
                 break;
             case ORIENTATION:
                 dismiss();
@@ -101,7 +106,6 @@ public class DialogPreviewMenu extends Dialog {
         menuItems.add(new MenuItem(ORIENTATION, R.drawable.ic_rotate));
         menuItems.add(new MenuItem(A2, R.drawable.ic_a2));
         menuItems.add(new MenuItem(FULL_REFRESH, R.drawable.ic_regal));
-        //menuItems.add(new MenuItem(BRIGHTNESS, R.drawable.ic_light));
         menuItems.add(new MenuItem(EXIT, R.drawable.ic_close));
         return menuItems;
     }
@@ -159,6 +163,9 @@ public class DialogPreviewMenu extends Dialog {
         return null;
     }
 
+    private void resetSubMenu() {
+        currentParentMenuItem = null;
+    }
 
     private View createSubSeekBarMenuView(final MenuItem menuItem , final int stringResId, int initialValue, int minValue, int maxValue, final PreviewMenuCallback callback) {
         SeekBarWithEditTextView seekBarWithEditTextView = (SeekBarWithEditTextView) LayoutInflater.from(getContext()).inflate(R.layout.contrast_menu_layout, null);
@@ -170,6 +177,15 @@ public class DialogPreviewMenu extends Dialog {
             }
         });
         return seekBarWithEditTextView;
+    }
+
+    @Override
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            dismiss();
+            return true;
+        }
+        return super.onTouchEvent(event);
     }
 
     private static class MainMenuItemViewHolder extends RecyclerView.ViewHolder {
@@ -197,4 +213,5 @@ public class DialogPreviewMenu extends Dialog {
         updateContent();
         super.show();
     }
+
 }
