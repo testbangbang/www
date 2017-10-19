@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.cloud.bean.Question;
+import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
 
 import java.util.List;
@@ -23,11 +25,13 @@ import java.util.Map;
  * Created by li on 2017/10/12.
  */
 
-public class QuestionView extends LinearLayout {
+public class QuestionView extends LinearLayout implements View.OnClickListener {
     private Context context;
     private TextView questionTitle;
     private RadioGroup choiceGroup;
     private LinearLayout subjectiveGroup;
+    private Question questionData;
+    private ImageView subjectiveImage;
 
     public QuestionView(Context context) {
         this(context, null);
@@ -37,6 +41,11 @@ public class QuestionView extends LinearLayout {
         super(context, attrs);
         this.context = context;
         init();
+        initListener();
+    }
+
+    private void initListener() {
+        subjectiveGroup.setOnClickListener(this);
     }
 
     private void init() {
@@ -44,15 +53,18 @@ public class QuestionView extends LinearLayout {
         questionTitle = (TextView) view.findViewById(R.id.question_title);
         choiceGroup = (RadioGroup) view.findViewById(R.id.choice_item);
         subjectiveGroup = (LinearLayout) view.findViewById(R.id.subjective_item);
+        subjectiveImage = (ImageView) view.findViewById(R.id.subjective_image);
+
     }
 
     public void setQuestionData(Question questionData) {
+        this.questionData = questionData;
         questionTitle.setText(questionData.id + "." + questionData.question);
         if (Constants.QUESTION_TYPE_CHOICE.equals(questionData.type)) {
-            setType(R.id.choice_item);
+            setVisibleType(R.id.choice_item);
             generateChoice(questionData.selection);
         } else if (Constants.QUESTION_TYPE_OBJECTIVE.equals(questionData.type)) {
-            setType(R.id.subjective_item);
+            setVisibleType(R.id.subjective_item);
             generateSubject(questionData.selection);
         }
     }
@@ -62,6 +74,9 @@ public class QuestionView extends LinearLayout {
     }
 
     private void generateChoice(List<Map<String, String>> selection) {
+        if (choiceGroup.getChildCount() > 0) {
+            choiceGroup.removeAllViews();
+        }
         for (int i = 0; i < selection.size(); i++) {
             Map<String, String> detail = selection.get(i);
             String select = detail.get("key") + "." + detail.get("value");
@@ -70,7 +85,7 @@ public class QuestionView extends LinearLayout {
         }
     }
 
-    private CompoundButton getCompoundButton(String detail, boolean isMulti) {
+    private CompoundButton getCompoundButton(final String detail, boolean isMulti) {
         CompoundButton button = null;
         if (isMulti) {
             button = new CheckBox(context);
@@ -81,21 +96,31 @@ public class QuestionView extends LinearLayout {
         button.setText(detail);
         button.setGravity(Gravity.LEFT | Gravity.CENTER);
         button.setTextSize(20);
+        final String key = detail.substring(0, 1);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                //TODO:
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    questionData.userAnswer = key;
+                }
             }
         });
-
+        if (key.equals(questionData.userAnswer)) {
+            button.setChecked(true);
+        }
         LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         params.setMargins(10, 10, 10, 10);
         button.setLayoutParams(params);
         return button;
     }
 
-    private void setType(int id) {
+    private void setVisibleType(int id) {
         choiceGroup.setVisibility(R.id.choice_item == id ? VISIBLE : GONE);
         subjectiveGroup.setVisibility(R.id.subjective_item == id ? VISIBLE : GONE);
+    }
+
+    @Override
+    public void onClick(View v) {
+        CommonNotices.show("item...");
     }
 }

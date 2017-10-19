@@ -12,4 +12,5 @@ public class Question {
     public String type;
     public int id;
     public List<Map<String, String>> selection;
+    public String userAnswer = "";
 }

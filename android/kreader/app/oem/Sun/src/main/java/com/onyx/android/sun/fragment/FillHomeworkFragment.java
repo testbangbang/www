@@ -101,6 +101,9 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         this.id = id;
         this.type = type;
         this.title = title;
+        if(homeworkPresenter != null) {
+            homeworkPresenter.getTaskDetail(id);
+        }
     }
 
     @Override
