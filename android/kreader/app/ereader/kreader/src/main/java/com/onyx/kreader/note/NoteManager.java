@@ -60,6 +60,7 @@ public class NoteManager {
     private DeviceConfig noteConfig;
     private MappingConfig mappingConfig;
     private boolean sideNoting = false;
+    private int sideNoteStartSubPageIndex = 0;
     private List<PageInfo> visiblePages = new ArrayList<>();
     private EventBus eventBus;
     private ReaderNoteDataInfo noteDataInfo = new ReaderNoteDataInfo();
@@ -332,8 +333,16 @@ public class NoteManager {
         this.sideNoting = sideNoting;
     }
 
+    public int getSideNoteStartSubPageIndex() {
+        return sideNoteStartSubPageIndex;
+    }
+
+    public void setSideNoteStartSubPageIndex(int sideNoteStartSubPageIndex) {
+        this.sideNoteStartSubPageIndex = sideNoteStartSubPageIndex;
+    }
+
     public boolean isSidePage(PageInfo pageInfo) {
-        return pageInfo.getSubPage() > 0;
+        return pageInfo.getSubPage() >= getSideNoteStartSubPageIndex();
     }
 
     public void setVisiblePages(final List<PageInfo> list) {

@@ -687,6 +687,10 @@ public class ReaderDataHolder {
         }
     }
 
+    public int getSideNoteStartSubPageIndex() {
+        return supportScalable() ? 1 : 0;
+    }
+
     public int getSideNotePage() {
         return sideNotePage;
     }
