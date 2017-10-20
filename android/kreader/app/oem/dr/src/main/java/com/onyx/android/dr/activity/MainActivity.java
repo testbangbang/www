@@ -4,7 +4,6 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
@@ -87,24 +86,17 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected Integer getLayoutId() {
-        Log.i("MainActivity", "hhhhhhhhhhhh--hghhhhhhhhhhhhh");
-        if(!DRApplication.getInstance().isLoginSuccess()){
-            ActivityManager.startLoginActivity(this);
-        }
-        Log.i("MainActivity", "hhhhhhhhhhhh--hghhhhhhhhhhhhh");
         return R.layout.activity_main;
     }
 
     @Override
     protected void initConfig() {
-        Log.i("MainActivity", "hhhhhhhhhhhh--hghhhhhhhhhhhhh");
         mainPresenter = new MainPresenter(this);
         MainTabMenuConfig.loadMenuInfo(this);
     }
 
     @Override
     protected void initView() {
-        Log.i("MainActivity", "hhhhhhhhhhhh--hghhhhhhhhhhhhh");
         initTabMenu();
     }
 
@@ -347,7 +339,6 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("MainActivity", "hhhhhhhhhhhh--hghhhhhhhhhhhhh");
     }
 
     @Override

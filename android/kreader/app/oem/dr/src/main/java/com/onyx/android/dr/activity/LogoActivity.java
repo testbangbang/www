@@ -14,7 +14,6 @@ import java.util.List;
 /**
  * Created by hehai on 17-9-9.
  */
-
 public class LogoActivity extends BaseActivity implements MainView {
     @Override
     protected Integer getLayoutId() {

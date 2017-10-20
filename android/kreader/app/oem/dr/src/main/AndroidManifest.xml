@@ -42,9 +42,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
-            android:theme="@style/OnyxAppCompat"
-            android:windowSoftInputMode="stateAlwaysHidden" >
+            android:name=".activity.LogoActivity"
+            android:theme="@style/OnyxAppCompat" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -52,6 +51,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/OnyxAppCompat"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".activity.LoginActivity"
