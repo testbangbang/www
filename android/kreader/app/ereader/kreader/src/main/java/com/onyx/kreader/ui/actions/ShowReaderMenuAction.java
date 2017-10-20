@@ -599,8 +599,8 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void addSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
-        new AddNoteSubPageAction(readerDataHolder.getCurrentPageName(),
-                readerDataHolder.getSideNotePage() + 1).execute(readerDataHolder, new BaseCallback() {
+        new AddNoteSubPageAction(readerDataHolder.getFirstPageInfo(),
+                readerDataHolder.getSubPageIndex() + 1).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -612,8 +612,8 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     private static void deleteSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
-        new DeleteNoteSubPageAction(readerDataHolder.getCurrentPageName(),
-                readerDataHolder.getSideNotePage()).execute(readerDataHolder, new BaseCallback() {
+        new DeleteNoteSubPageAction(readerDataHolder.getFirstPageInfo(),
+                readerDataHolder.getSubPageIndex()).execute(readerDataHolder, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null) {
@@ -627,7 +627,7 @@ public class ShowReaderMenuAction extends BaseAction {
                     return;
                 }
 
-                new AddNoteSubPageAction(readerDataHolder.getCurrentPageName(),
+                new AddNoteSubPageAction(readerDataHolder.getFirstPageInfo(),
                         0).execute(readerDataHolder, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

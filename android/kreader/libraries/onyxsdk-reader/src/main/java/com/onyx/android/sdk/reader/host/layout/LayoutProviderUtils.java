@@ -160,14 +160,15 @@ public class LayoutProviderUtils {
                                                           final ReaderLayoutManager layoutManager) {
         clear(layoutManager);
         String startPage = PagePositionUtils.fromPageNumber(reader.getNavigator().getScreenStartPageNumber());
-        addPage(layoutManager, startPage, reader.getNavigator().getScreenStartPosition());
+        addPage(layoutManager, startPage, reader.getNavigator().getScreenStartPosition(),
+                reader.getNavigator().getScreenEndPosition());
         layoutManager.getPageManager().gotoPage(reader.getNavigator().getScreenStartPosition());
         for (int i = reader.getNavigator().getScreenStartPageNumber() + 1;
              i <= reader.getNavigator().getScreenEndPageNumber();
              i++) {
             String page = PagePositionUtils.fromPageNumber(i);
             String pos = reader.getNavigator().getPositionByPageNumber(i);
-            addPage(layoutManager, page, pos);
+            addPage(layoutManager, page, pos, reader.getNavigator().getScreenEndPosition());
         }
         layoutManager.getPageManager().getVisiblePages().addAll(layoutManager.getPageManager().getPageInfoList());
     }
@@ -236,15 +237,15 @@ public class LayoutProviderUtils {
     }
 
     static public void addPage(final ReaderLayoutManager layoutManager, final String name) {
-        addPage(layoutManager, name, name);
+        addPage(layoutManager, name, name, name);
     }
 
-    static public void addPage(final ReaderLayoutManager layoutManager, final String name, final String position) {
-        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(position);
+    static public void addPage(final ReaderLayoutManager layoutManager, final String name, final String startPosition, String endPosition) {
+        PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(startPosition);
         if (pageInfo == null) {
-            RectF size = layoutManager.getReaderDocument().getPageOriginSize(position);
-            pageInfo = new PageInfo(name, position, size.width(), size.height());
-            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(position));
+            RectF size = layoutManager.getReaderDocument().getPageOriginSize(startPosition);
+            pageInfo = new PageInfo(name, startPosition, endPosition, size.width(), size.height());
+            pageInfo.setIsTextPage(layoutManager.getReaderDocument().isTextPage(startPosition));
         }
         layoutManager.getPageManager().add(pageInfo);
     }
@@ -260,12 +261,13 @@ public class LayoutProviderUtils {
     }
 
     static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name) {
-        addSinglePage(layoutManager, name, name);
+        addSinglePage(layoutManager, name, name, name);
     }
 
-    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name, final String position) {
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name,
+                                     final String startPosition, String endPosition) {
         LayoutProviderUtils.clear(layoutManager);
-        LayoutProviderUtils.addPage(layoutManager, name, position);
+        LayoutProviderUtils.addPage(layoutManager, name, startPosition, endPosition);
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
         LayoutProviderUtils.resetViewportPosition(layoutManager);
     }

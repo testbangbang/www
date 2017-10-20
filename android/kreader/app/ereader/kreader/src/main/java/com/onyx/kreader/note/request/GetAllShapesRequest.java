@@ -1,5 +1,6 @@
 package com.onyx.kreader.note.request;
 
+import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNotePage;
@@ -18,7 +19,7 @@ public class GetAllShapesRequest extends ReaderBaseNoteRequest{
     public void execute(NoteManager noteManager) throws Exception {
         List<String> pageList = noteManager.getNoteDocument().getPageList();
         for (String page : pageList) {
-            ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), page, 0);
+            ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), new PageRange(page, page), 0);
             if (notePage != null) {
                 if (!notePage.isLoaded()) {
                     notePage.loadPage(getContext());

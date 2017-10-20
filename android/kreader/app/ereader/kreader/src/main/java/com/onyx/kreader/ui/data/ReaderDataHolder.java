@@ -87,7 +87,6 @@ public class ReaderDataHolder {
     private boolean enteringSideNote = false;
     private boolean sideNoting = false;
     private int sideNotePage = 0;
-    private int sideNotePageCount = 1;
 
     private ReaderPainter readerPainter = new ReaderPainter();
 
@@ -166,13 +165,18 @@ public class ReaderDataHolder {
         if (firstPage == null) {
             return pages;
         }
+        if (!supportScalable()) {
+            firstPage.setSubPage(-1);
+        }
 
-        pages.addAll(getReaderViewInfo().getVisiblePages());
+        pages.add(firstPage);
 
         if (sideNoting) {
-            PageInfo subNotePage = new PageInfo(firstPage.getName(), firstPage.getPosition(),
+            PageInfo subNotePage = new PageInfo(firstPage.getName(),
+                    firstPage.getRange().startPosition,
+                    firstPage.getRange().endPosition,
                     displayWidth / 2, displayHeight);
-            subNotePage.setSubPage(sideNotePage + 1);
+            subNotePage.setSubPage(getSubPageIndex());
             subNotePage.setPosition(displayWidth / 2, 0);
             subNotePage.updateDisplayRect(subNotePage.getPositionRect());
             pages.add(subNotePage);
@@ -528,8 +532,8 @@ public class ReaderDataHolder {
         if (left == null || right == null) {
             return false;
         }
-        String leftPage = left.getFirstVisiblePageName();
-        String rightPage = right.getFirstVisiblePageName();
+        String leftPage = left.getFirstVisiblePage().getPositionSafely();
+        String rightPage = right.getFirstVisiblePage().getPositionSafely();
         return leftPage.compareTo(rightPage) == 0;
     }
 
@@ -661,7 +665,7 @@ public class ReaderDataHolder {
     }
 
     public boolean supportSideNote() {
-        return supportScalable() && !isSideReadingMode();
+        return !isSideReadingMode();
     }
 
     public boolean isEnteringSideNote() {
@@ -683,8 +687,16 @@ public class ReaderDataHolder {
         }
     }
 
+    public int getSideNoteStartSubPageIndex() {
+        return supportScalable() ? 1 : 0;
+    }
+
     public int getSideNotePage() {
         return sideNotePage;
+    }
+
+    public int getSubPageIndex() {
+        return supportScalable() ? sideNotePage + 1 : sideNotePage;
     }
 
     public void setSideNotePage(int sideNotePage) {
@@ -692,7 +704,10 @@ public class ReaderDataHolder {
     }
 
     public int getSideNotePageCount() {
-        int count = noteManager.getNoteDocument().getSubPageCount(getCurrentPageName()) - 1;
+        int count = noteManager.getNoteDocument().getSubPageCount(getFirstPageInfo().getRange());
+        if (supportScalable()) {
+            count -= 1;
+        }
         return count <= 0 ? 1 : count;
     }
 

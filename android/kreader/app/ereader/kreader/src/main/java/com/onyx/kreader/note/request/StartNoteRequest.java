@@ -18,6 +18,7 @@ import java.util.List;
 public class StartNoteRequest extends ReaderBaseNoteRequest {
 
     private boolean sideNoting = false;
+    private int sideNoteStartSubPageIndex = 0;
 
     public StartNoteRequest(final List<PageInfo> list) {
         setAbortPendingTasks(false);
@@ -25,17 +26,19 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
         setResetNoteDataInfo(false);
     }
 
-    public StartNoteRequest(final List<PageInfo> list, boolean sideNoting) {
+    public StartNoteRequest(final List<PageInfo> list, boolean sideNoting, int sideNoteStartSubPageIndex) {
         setAbortPendingTasks(false);
         setVisiblePages(list);
         setResetNoteDataInfo(false);
 
         this.sideNoting = sideNoting;
+        this.sideNoteStartSubPageIndex = sideNoteStartSubPageIndex;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
         ensureDocumentOpened(noteManager);
         noteManager.setSideNoting(sideNoting);
+        noteManager.setSideNoteStartSubPageIndex(sideNoteStartSubPageIndex);
         noteManager.setVisiblePages(getVisiblePages());
         noteManager.startRawEventProcessor();
         noteManager.resumeRawEventProcessor(getContext());

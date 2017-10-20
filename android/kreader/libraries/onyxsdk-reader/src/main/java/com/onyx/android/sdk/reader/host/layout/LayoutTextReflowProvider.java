@@ -106,7 +106,8 @@ public class LayoutTextReflowProvider extends LayoutProvider {
             return false;
         }
         String page = PagePositionUtils.fromPageNumber(getLayoutManager().getNavigator().getScreenStartPageNumber());
-        LayoutProviderUtils.addSinglePage(getLayoutManager(), page, position);
+        String endPosition = getLayoutManager().getNavigator().getScreenEndPosition();
+        LayoutProviderUtils.addSinglePage(getLayoutManager(), page, position, endPosition);
         if (!getPageManager().gotoPage(position)) {
             return false;
         }

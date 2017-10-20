@@ -15,7 +15,6 @@ import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -190,9 +189,6 @@ public class ReaderPainter {
                                    final ReaderViewInfo viewInfo,
                                    final NoteManager noteManager,
                                    List<PageInfo> visiblePages) {
-        if (!viewInfo.supportScalable) {
-            return;
-        }
         drawShapes(context, canvas, paint, userDataInfo, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo, visiblePages);
         drawShapeEraser(context, canvas, paint, noteManager);
@@ -324,7 +320,7 @@ public class ReaderPainter {
     }
 
     private boolean isShapeOnThePage(NoteManager noteManager, PageInfo pageInfo, Shape shape) {
-        String subPageId = noteManager.getNoteDocument().getPageUniqueId(pageInfo.getName(),
+        String subPageId = noteManager.getNoteDocument().getSubPageUniqueId(pageInfo.getRange(),
                 pageInfo.getSubPage());
         if (subPageId == null) {
             return false;
