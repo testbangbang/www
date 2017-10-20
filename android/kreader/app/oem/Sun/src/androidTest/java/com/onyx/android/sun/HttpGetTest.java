@@ -41,9 +41,6 @@ public class HttpGetTest extends ApplicationTestCase<SunApplication> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkFinishedResultBean resultBean = rq.getResultBean();
-                if (resultBean == null || resultBean.data == null) {
-                    return;
-                }
                 assertNotNull(resultBean);
                 assertNotNull(resultBean.data);
                 countDownLatch.countDown();
@@ -66,9 +63,6 @@ public class HttpGetTest extends ApplicationTestCase<SunApplication> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkUnfinishedResultBean resultBean = rq.getHomeworkUnfinishedResultBean();
-                if (resultBean == null || resultBean.data == null) {
-                    return;
-                }
                 assertNotNull(resultBean);
                 assertNotNull(resultBean.data);
                 countDownLatch.countDown();

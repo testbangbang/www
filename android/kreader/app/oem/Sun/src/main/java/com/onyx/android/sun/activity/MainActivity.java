@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.databinding.ViewDataBinding;
 import android.support.design.widget.TabLayout;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -12,7 +11,6 @@ import com.android.databinding.library.baseAdapters.BR;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
-import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
@@ -46,7 +44,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private FragmentTransaction transaction;
     private BaseFragment currentFragment;
     private Map<Integer, BaseFragment> childViewList = new HashMap<>();
-    private MainPresenter mMainPresenter;
 
     @Override
     protected void initData() {
@@ -56,8 +53,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Override
     protected void initView(ViewDataBinding binding) {
         mainBinding = (ActivityMainBinding) binding;
-        mMainPresenter = new MainPresenter(this);
-        mainBinding.setVariable(BR.presenter, mMainPresenter);
+        mainBinding.setVariable(BR.presenter, new MainPresenter());
         mainBinding.setVariable(BR.user, user);
         mainBinding.setListener(this);
 
@@ -100,7 +96,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.news_image:
-                mMainPresenter.getNewMessages("1","10","2");
                 break;
         }
     }
@@ -170,15 +165,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             }
         }
         return super.dispatchKeyEvent(event);
-    }
-
-    @Override
-    public void setOnGetNewMessageData(List<ContentBean> content) {
-        Log.i("test== size ",content.size()+"");
-        for (ContentBean bean: content){
-            Log.i("test==  ",bean.course);
-            Log.i("test==  ",bean.title);
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
