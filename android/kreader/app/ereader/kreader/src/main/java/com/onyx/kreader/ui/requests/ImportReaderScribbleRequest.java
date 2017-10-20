@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteException;
 import android.net.Uri;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
@@ -233,7 +234,7 @@ public class ImportReaderScribbleRequest extends BaseReaderRequest {
             if (pageNameMap == null ) {
                 pageNameMap = new ReaderNotePageNameMap();
             }
-            pageNameMap.add(pageUniqueId, subPageUniqueId);
+            pageNameMap.add(new PageRange(pageUniqueId, pageUniqueId), subPageUniqueId);
             noteModel.setReaderNotePageNameMap(pageNameMap);
             noteModel.setCreatedAt(shapeModel.getCreatedAt());
         }

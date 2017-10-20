@@ -1,7 +1,7 @@
 package com.onyx.kreader.note.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.kreader.note.request.AddNoteSubPageRequest;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.note.request.DeleteNoteSubPageRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -12,17 +12,17 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 public class DeleteNoteSubPageAction extends BaseAction {
 
-    private String pageName;
+    private PageInfo pageInfo;
     private int subPageIndex;
 
-    public DeleteNoteSubPageAction(final String pageName, final int subPageIndex) {
-        this.pageName = pageName;
-        this.subPageIndex = subPageIndex + 1;
+    public DeleteNoteSubPageAction(final PageInfo pageInfo, final int subPageIndex) {
+        this.pageInfo = pageInfo;
+        this.subPageIndex = subPageIndex;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
-        final DeleteNoteSubPageRequest request = new DeleteNoteSubPageRequest(pageName, subPageIndex);
+        final DeleteNoteSubPageRequest request = new DeleteNoteSubPageRequest(pageInfo, subPageIndex);
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, baseCallback);
     }
 

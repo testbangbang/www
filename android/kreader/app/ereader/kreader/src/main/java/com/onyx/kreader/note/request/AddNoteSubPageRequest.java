@@ -1,5 +1,6 @@
 package com.onyx.kreader.note.request;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.note.NoteManager;
 
 /**
@@ -8,15 +9,16 @@ import com.onyx.kreader.note.NoteManager;
 
 public class AddNoteSubPageRequest extends ReaderBaseNoteRequest {
 
-    private String pageName;
+    private PageInfo pageInfo;
     private int subPageIndex;
 
-    public AddNoteSubPageRequest(final String pageName, final int subPageIndex) {
-        this.pageName = pageName;
+    public AddNoteSubPageRequest(final PageInfo pageInfo, final int subPageIndex) {
+        this.pageInfo = pageInfo;
         this.subPageIndex = subPageIndex;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
-        noteManager.getNoteDocument().addPage(pageName, subPageIndex);
+        noteManager.getNoteDocument().addPage(pageInfo.getRange(),
+                subPageIndex);
     }
 }

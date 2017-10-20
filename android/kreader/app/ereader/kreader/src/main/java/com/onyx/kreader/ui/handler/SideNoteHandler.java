@@ -6,6 +6,7 @@ import android.view.ScaleGestureDetector;
 
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
+import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -121,7 +122,7 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public void beforeChangePosition(ReaderDataHolder readerDataHolder) {
-        FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
+        new StopNoteAction(false).execute(readerDataHolder, null);
     }
 
     public void afterChangePosition(final ReaderDataHolder readerDataHolder) {

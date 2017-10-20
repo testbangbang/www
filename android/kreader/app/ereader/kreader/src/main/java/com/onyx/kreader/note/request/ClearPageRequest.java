@@ -1,7 +1,6 @@
 package com.onyx.kreader.note.request;
 
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.kreader.note.NoteManager;
 
 import java.util.ArrayList;
@@ -21,7 +20,8 @@ public class ClearPageRequest extends ReaderBaseNoteRequest {
 
     public void execute(final NoteManager noteManager) throws Exception {
         for (PageInfo p : pageInfo) {
-            noteManager.getNoteDocument().clearPage(getContext(), p.getName(), p.getSubPage());
+            noteManager.getNoteDocument().clearPage(getContext(), p.getRange(),
+                    p.getSubPage());
         }
         renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(true);

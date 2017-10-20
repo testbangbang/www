@@ -27,7 +27,8 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
             List<TouchPointList> normalizedList = normalizeOnPage(pageInfo);
 
             final float radius = noteManager.getNoteDrawingArgs().eraserRadius / pageInfo.getActualScale();
-            final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), pageInfo.getName(), pageInfo.getSubPage());
+            final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(),
+                    pageInfo.getRange(), pageInfo.getSubPage());
             if (notePage != null) {
                 for (TouchPointList list : normalizedList) {
                     notePage.removeShapesByTouchPointList(list, radius);

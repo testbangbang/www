@@ -1,5 +1,6 @@
 package com.onyx.kreader.note.request;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.note.NoteManager;
 
 /**
@@ -8,16 +9,17 @@ import com.onyx.kreader.note.NoteManager;
 
 public class DeleteNoteSubPageRequest extends ReaderBaseNoteRequest {
 
-    private String pageName;
+    private PageInfo pageInfo;
     private int subPageIndex;
 
-    public DeleteNoteSubPageRequest(final String pageName, final int subPageIndex) {
-        this.pageName = pageName;
+    public DeleteNoteSubPageRequest(final PageInfo pageInfo, final int subPageIndex) {
+        this.pageInfo = pageInfo;
         this.subPageIndex = subPageIndex;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
         setResumeRawInputProcessor(true);
-        noteManager.getNoteDocument().removePage(getContext(), pageName, subPageIndex);
+        noteManager.getNoteDocument().removePage(getContext(), pageInfo.getRange(),
+                subPageIndex);
     }
 }

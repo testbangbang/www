@@ -90,7 +90,7 @@ public class ShapeEventHandler {
     }
 
     private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        ReaderNotePage page = noteManager.getNoteDocument().ensurePageExist(null, pageInfo.getName(), pageInfo.getSubPage());
+        ReaderNotePage page = noteManager.getNoteDocument().ensurePageExist(null, pageInfo.getRange(), pageInfo.getSubPage());
         Shape shape = ShapeFactory.createShape(noteManager.getNoteDrawingArgs().getCurrentShapeType());
         onDownMessage(shape);
         shape.setStrokeWidth(noteManager.getNoteDrawingArgs().strokeWidth / pageInfo.getActualScale());
@@ -295,7 +295,7 @@ public class ShapeEventHandler {
         resetCurrentShape();
         if (shortcutDrawing) {
             getEventBus().post(new ShortcutDrawingFinishedEvent());
-        } else {
+        } else if (noteManager.isDFBForCurrentShape()) {
             getEventBus().post(new ShapeAddedEvent());
         }
     }
