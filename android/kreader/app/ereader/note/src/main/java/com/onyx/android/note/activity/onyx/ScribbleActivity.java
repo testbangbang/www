@@ -976,8 +976,12 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     @Override
     public void onBackPressed() {
-        getNoteViewHelper().pauseDrawing();
-        onSave(true);
+        if (getScribbleSubMenu().isShow()) {
+            getScribbleSubMenu().dismiss();
+        }else {
+            getNoteViewHelper().pauseDrawing();
+            onSave(true);
+        }
     }
 
     private void saveEditPic() {
