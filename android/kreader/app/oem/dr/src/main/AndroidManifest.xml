@@ -43,15 +43,19 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.LogoActivity"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/OnyxAppCompat" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/OnyxAppCompat"
+            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".activity.LoginActivity"
@@ -208,6 +212,10 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
+            android:name=".activity.ApplyForGroupActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <activity
             android:name=".activity.GroupMemberActivity"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
@@ -239,11 +247,6 @@
         <activity
             android:name=".activity.PayActivity"
             android:theme="@style/WifiDialogStyle" />
-
-        <activity
-            android:name=".activity.MainActivity"
-            android:theme="@style/OnyxAppCompat"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".activity.ShoppingCartActivity"

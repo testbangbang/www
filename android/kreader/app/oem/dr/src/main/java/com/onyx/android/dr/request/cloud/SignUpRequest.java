@@ -2,14 +2,16 @@ package com.onyx.android.dr.request.cloud;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.bean.SignUpInfo;
+import com.onyx.android.dr.event.SignUpEvent;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.SignUpBean;
-import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import retrofit2.Response;
 
@@ -34,15 +36,22 @@ public class SignUpRequest extends AutoNetWorkConnectionBaseCloudRequest {
         signUp(parent);
     }
 
-    private void signUp(CloudManager parent) throws Exception {
+    private void signUp(CloudManager parent){
         SignUpBean signUpBean = new SignUpBean();
         signUpBean.name = signUpInfo.name;
         signUpBean.email = signUpInfo.email;
         signUpBean.password = signUpInfo.password;
         signUpBean.groupId = signUpInfo.groupId;
         signUpBean.info = JSON.toJSON(signUpInfo.info).toString();
-        Response<AuthToken> response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
-                .signUp(signUpBean));
+        Response<AuthToken> response = null;
+        try {
+            response = executeCall(ServiceFactory.getContentService(parent.getCloudConf().getApiBase())
+                    .signUp(signUpBean));
+        } catch (Exception e) {
+            String message = e.getMessage();
+            EventBus.getDefault().post(new SignUpEvent(message));
+            e.printStackTrace();
+        }
         if (response.isSuccessful()) {
             authToken = response.body();
             parent.setToken(authToken.token);

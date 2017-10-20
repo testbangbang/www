@@ -23,6 +23,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.AccountAvailableEvent;
 import com.onyx.android.dr.event.LoginFailedEvent;
+import com.onyx.android.dr.event.SignUpEvent;
 import com.onyx.android.dr.presenter.LoginPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.RegularUtil;
@@ -124,7 +125,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
     ImageView registerShowPassword;
     @Bind(R.id.sign_up_show_password)
     ImageView signUpShowPassword;
-
     private LoginPresenter loginPresenter;
     private View identity_layout;
     private View login_layout;
@@ -150,7 +150,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
     private boolean isRegisterShowPassword = false;
     private boolean isSignUpShowPassword = false;
 
-
     @Override
     protected Integer getLayoutId() {
         return R.layout.activity_login;
@@ -158,7 +157,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     protected void initConfig() {
-
     }
 
     @Override
@@ -224,7 +222,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
 
     @Override
     public void setAccountInfo(NeoAccountBase accountInfo) {
-
     }
 
     @Override
@@ -251,8 +248,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
             CommonNotices.showMessage(this, getString(R.string.sign_up_succeed));
         } else if (!DRApplication.getInstance().isHaveIndexService()) {
             CommonNotices.showMessage(this, getString(R.string.no_logon_server));
-        } else {
-            CommonNotices.showMessage(this, getString(R.string.sign_up_failed));
         }
         dismissAllProgressDialog();
     }
@@ -642,5 +637,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
             CommonNotices.showMessage(this, getString(R.string.username_or_password_error));
         }
         dismissAllProgressDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSignUpEvent(SignUpEvent event) {
+        CommonNotices.showMessage(this, event.getMessage());
     }
 }

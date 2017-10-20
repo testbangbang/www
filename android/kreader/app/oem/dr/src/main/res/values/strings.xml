@@ -305,11 +305,13 @@
     <string name="add_memorandum_activity_dialog_height" format="float" type="dimen">0.38</string>
     <string name="add_memorandum_activity_dialog_width" format="float" type="dimen">0.8</string>
     <string name="query_record_activity_dialog_height" format="float" type="dimen">0.8</string>
+    <string name="application_note_dialog_height" format="float" type="dimen">0.38</string>
     <string name="dict_select_dialog_height" format="float" type="dimen">0.5</string>
     <string name="dict_select_dialog_width" format="float" type="dimen">0.6</string>
     <string name="speech_recording_activity_dialog_height" format="float" type="dimen">0.25</string>
     <string name="dict_download_hint_dialog_height" format="float" type="dimen">0.25</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
+    <string name="application_note_dialog_width" format="float" type="dimen">0.6</string>
     <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
     <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
     <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
@@ -707,4 +709,18 @@
     <string name="reading_rate_html">reading rate html</string>
     <string name="new_words_review_title_hint">No new words to review, please add.</string>
     <string name="good_sentence_title_hint">Without this article or this page, please add</string>
+    <string name="proposer">proposer</string>
+    <string name="application_note">application note</string>
+    <string name="apply_for_group_item_refuse">refuse</string>
+    <string name="apply_for_group_item_pass">pass</string>
+    <string name="apply_for_group_activity_application">application: </string>
+    <string name="pass_success">pass success</string>
+    <string name="pass_failed">pass failed</string>
+    <string name="refuse_success">refuse success</string>
+    <string name="zero_data_unit">zero</string>
+    <string name="zero_people">zero people</string>
+    <string name="input_application_note">input application note</string>
+    <string name="send">send</string>
+    <string name="apply_for_group_item_already_pass">already_pass</string>
+    <string name="apply_for_group_item_already_refuse">already refuse</string>
 </resources>

@@ -122,11 +122,12 @@ public class JoinGroupActivity extends BaseActivity implements JoinGroupView {
     @Override
     public void setSearchGroupResult(List<SearchGroupBean> list) {
         if (list == null || list.size() <= 0) {
+            allNumber.setText(getString(R.string.join_group_activity_all_number) + getString(R.string.zero_data_unit));
             return;
         }
         groupList = list;
         allNumber.setText(getString(R.string.join_group_activity_all_number) + groupList.size() + getString(R.string.data_unit));
-        groupAdapter.setDataList(groupList, joinGroupPresenter);
+        groupAdapter.setDataList(this, groupList, joinGroupPresenter);
         recyclerView.setAdapter(groupAdapter);
     }
 

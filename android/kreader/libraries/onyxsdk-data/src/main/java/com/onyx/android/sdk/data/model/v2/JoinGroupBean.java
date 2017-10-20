@@ -8,6 +8,7 @@ public class JoinGroupBean {
     public String createdAt;
     public String user;
     public String group;
+    public String info;
     public String _id;
     public int status;
     private String[] groups;
@@ -18,5 +19,13 @@ public class JoinGroupBean {
 
     public void setGroups(String[] groups) {
         this.groups = groups;
+    }
+
+    public String getInfo() {
+        return info;
+    }
+
+    public void setInfo(String info) {
+        this.info = info;
     }
 }
