@@ -51,7 +51,7 @@ public class ReaderNoteDataProvider {
                                                  final String pageUniqueId,
                                                  final String subPageUniqueId) {
         Select select = new Select();
-        Where where = select.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ReaderNoteShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        Where where = select.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.documentUniqueId.eq(documentUniqueId));
         if (StringUtils.isNotBlank(subPageUniqueId)) {
             where = where.and(ReaderNoteShapeModel_Table.subPageUniqueId.eq(subPageUniqueId));
         }
@@ -141,10 +141,7 @@ public class ReaderNoteDataProvider {
 
     public static boolean removePage(final Context context, final String pageName, final String subPageUniqueId) {
         Delete delete = new Delete();
-        Where where = delete.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.pageUniqueId.eq(pageName));
-        if (StringUtils.isNotBlank(subPageUniqueId)) {
-            where = where.and(ReaderNoteShapeModel_Table.subPageUniqueId.eq(subPageUniqueId));
-        }
+        Where where = delete.from(ReaderNoteShapeModel.class).where(ReaderNoteShapeModel_Table.subPageUniqueId.eq(subPageUniqueId));
         where.query();
         return true;
     }
