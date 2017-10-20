@@ -45,10 +45,6 @@ public class ReaderNotePageNameMap {
         return count;
     }
 
-    public String getSubPageUniqueId(final String pageName, int subPageIndex) {
-        return getSubPageUniqueId(new PageRange(pageName, pageName), subPageIndex);
-    }
-
     public String getSubPageUniqueId(final PageRange range, int subPageIndex) {
         if (subPageIndex < 0) {
             return null;
@@ -76,10 +72,6 @@ public class ReaderNotePageNameMap {
         return list.get(subPageIndex);
     }
 
-    public void add(final String pageName, final String subPageUniqueId) {
-        add(new PageRange(pageName, pageName), subPageUniqueId);
-    }
-
     public void add(final PageRange range, final String subPageUniqueId) {
         List<String> pageList = getSortedNameList(range);
         if (pageList.isEmpty()) {
@@ -88,10 +80,6 @@ public class ReaderNotePageNameMap {
         }
 
         data.get(pageList.get(pageList.size() - 1)).add(subPageUniqueId);
-    }
-
-    public void add(final String pageName, int index, final String subPageUniqueId) {
-        add(new PageRange(pageName, pageName), index, subPageUniqueId);
     }
 
     public void add(final PageRange range, int subPageIndex, final String subPageUniqueId) {
@@ -119,10 +107,6 @@ public class ReaderNotePageNameMap {
             list.add(i, null);
         }
         list.add(subPageIndex, subPageUniqueId);
-    }
-
-    public void set(final String pageName, int index, final String subPageUniqueId) {
-        set(new PageRange(pageName, pageName), index, subPageUniqueId);
     }
 
     public void set(final PageRange range, int subPageIndex, final String subPageUniqueId) {
@@ -155,14 +139,6 @@ public class ReaderNotePageNameMap {
             list.add(i, null);
         }
         list.add(subPageIndex, subPageUniqueId);
-    }
-
-    public void remove(final String pageName) {
-        data.remove(pageName);
-    }
-
-    public String removeSubPage(final String pageName, final int subPageIndex) {
-        return removeSubPage(new PageRange(pageName, pageName), subPageIndex);
     }
 
     public String removeSubPage(final PageRange range, final int subPageIndex) {
