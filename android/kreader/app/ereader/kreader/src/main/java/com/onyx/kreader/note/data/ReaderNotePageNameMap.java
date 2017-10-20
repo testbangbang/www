@@ -45,7 +45,7 @@ public class ReaderNotePageNameMap {
         return count;
     }
 
-    public String getSubPageUniqueId(final PageRange range, int subPageIndex) {
+    public String getSubPageUniqueId(final PageRange range, final int subPageIndex) {
         if (subPageIndex < 0) {
             return null;
         }
@@ -56,20 +56,20 @@ public class ReaderNotePageNameMap {
         }
 
         List<String> list = null;
-        for (String p : pageList) {
-            list = data.get(p);
-            int idx = subPageIndex - list.size();
-            if (idx <= 0) {
+        int idx = subPageIndex;
+        for (int i = 0; i < pageList.size(); i++) {
+            list = data.get(pageList.get(i));
+            if (idx < list.size() || i == pageList.size() - 1) {
                 break;
             }
-            subPageIndex = idx;
+            idx -= list.size();
         }
 
-        if (subPageIndex >= list.size()) {
+        if (idx >= list.size()) {
             return null;
         }
 
-        return list.get(subPageIndex);
+        return list.get(idx);
     }
 
     public void add(final PageRange range, final String subPageUniqueId) {
@@ -94,19 +94,19 @@ public class ReaderNotePageNameMap {
         }
 
         List<String> list = null;
-        for (String p : pageList) {
-            list = data.get(p);
-            int idx = subPageIndex - list.size();
-            if (idx <= 0) {
+        int idx = subPageIndex;
+        for (int i = 0; i < pageList.size(); i++) {
+            list = data.get(pageList.get(i));
+            if (idx <= list.size() || i == pageList.size() - 1) {
                 break;
             }
-            subPageIndex = idx;
+            idx -= list.size();
         }
 
-        for (int i = list.size(); i < subPageIndex; i++) {
+        for (int i = list.size(); i < idx; i++) {
             list.add(i, null);
         }
-        list.add(subPageIndex, subPageUniqueId);
+        list.add(idx, subPageUniqueId);
     }
 
     public void set(final PageRange range, int subPageIndex, final String subPageUniqueId) {
@@ -121,24 +121,24 @@ public class ReaderNotePageNameMap {
         }
 
         List<String> list = null;
-        for (String p : pageList) {
-            list = data.get(p);
-            int idx = subPageIndex - list.size();
-            if (idx <= 0) {
+        int idx = subPageIndex;
+        for (int i = 0; i < pageList.size(); i++) {
+            list = data.get(pageList.get(i));
+            if (idx < list.size() || i == pageList.size() - 1) {
                 break;
             }
-            subPageIndex = idx;
+            idx -= list.size();
         }
 
-        if (list.size() > subPageIndex) {
-            list.set(subPageIndex, subPageUniqueId);
+        if (idx < list.size()) {
+            list.set(idx, subPageUniqueId);
             return;
         }
 
-        for (int i = list.size(); i < subPageIndex; i++) {
+        for (int i = list.size(); i < idx; i++) {
             list.add(i, null);
         }
-        list.add(subPageIndex, subPageUniqueId);
+        list.add(idx, subPageUniqueId);
     }
 
     public String removeSubPage(final PageRange range, final int subPageIndex) {
@@ -147,15 +147,14 @@ public class ReaderNotePageNameMap {
             return null;
         }
 
-        int idx = subPageIndex;
         List<String> list = null;
-        for (String p : pageList) {
-            list = data.get(p);
-            int i = subPageIndex - list.size();
-            if (i < 0) {
+        int idx = subPageIndex;
+        for (int i = 0; i < pageList.size(); i++) {
+            list = data.get(pageList.get(i));
+            if (idx < list.size() || i == pageList.size() - 1) {
                 break;
             }
-            idx = i;
+            idx -= list.size();
         }
 
         if (idx >= list.size()) {
