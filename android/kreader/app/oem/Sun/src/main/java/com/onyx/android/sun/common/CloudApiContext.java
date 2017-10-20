@@ -13,6 +13,7 @@ import retrofit2.Retrofit;
 
 public class CloudApiContext {
     public static final String BASE_URL = "http://116.62.152.51:9001/";
+//    public static final String BASE_URL = "http://120.55.45.184:9001/";
     private static ConcurrentHashMap<String, Retrofit> retrofitMap = new ConcurrentHashMap<>();
 
     public static final Retrofit getRetrofit(final String baseUrl) {
