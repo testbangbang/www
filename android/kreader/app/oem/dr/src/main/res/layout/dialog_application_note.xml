@@ -16,7 +16,7 @@
         android:gravity="center"
         android:padding="@dimen/dialog_title_padding"
         android:text="@string/dialog_title"
-        android:textColor="@color/black"
+        android:textColor="@android:color/black"
         android:textSize="@dimen/level_one_font_size" />
 
     <View style="@style/Horizontal_view" />
