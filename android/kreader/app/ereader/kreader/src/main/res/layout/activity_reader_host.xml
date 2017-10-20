@@ -29,7 +29,8 @@
                     android:padding="5dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_settings"
-                    android:layout_alignParentLeft="true"/>
+                    android:layout_alignParentLeft="true"
+                    android:visibility="gone"/>
 
                 <ImageView
                     android:id="@+id/btn_switch"

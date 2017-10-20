@@ -25,7 +25,8 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     public void onActivate(final ReaderDataHolder readerDataHolder, final HandlerInitialState initialState) {
-        final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(), true);
+        final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
+                true, readerDataHolder.getSideNoteStartSubPageIndex());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
     }
 

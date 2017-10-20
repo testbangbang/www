@@ -147,7 +147,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getPenShapeMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_PENCIL.ordinal());
-        menuActions.add(ReaderMenuAction.SCRIBBLE_BRUSH.ordinal());
+//        menuActions.add(ReaderMenuAction.SCRIBBLE_BRUSH.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_LINE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_TRIANGLE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_CIRCLE.ordinal());
