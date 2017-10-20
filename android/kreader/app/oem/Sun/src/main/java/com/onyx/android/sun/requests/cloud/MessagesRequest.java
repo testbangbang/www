@@ -1,7 +1,4 @@
-package com.onyx.android.sun.requests;
-
-
-import android.util.Log;
+package com.onyx.android.sun.requests.cloud;
 
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
@@ -14,15 +11,14 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Created by li on 2017/10/10.
+ * Created by hehai on 17-10-9.
  */
 
-public class HomeworkUnfinishedRequest extends BaseCloudRequest {
-    private static final String TAG = HomeworkUnfinishedRequest.class.getSimpleName();
+public class MessagesRequest extends BaseCloudRequest {
     private HomeworkRequestBean requestBean;
     private HomeworkUnfinishedResultBean resultBean;
 
-    public HomeworkUnfinishedRequest(HomeworkRequestBean requestBean) {
+    public void setRequestBean(HomeworkRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
@@ -30,8 +26,16 @@ public class HomeworkUnfinishedRequest extends BaseCloudRequest {
         return resultBean;
     }
 
+    public MessagesRequest(HomeworkRequestBean requestBean) {
+        this.requestBean = requestBean;
+    }
+
     @Override
     public void execute(SunRequestManager helper) throws Exception {
+        executeCloudRequest();
+    }
+
+    private void executeCloudRequest() {
         try {
             ContentService service = CloudApiContext.getService(CloudApiContext.BASE_URL);
             Call<HomeworkUnfinishedResultBean> call = getCall(service);
@@ -40,15 +44,12 @@ public class HomeworkUnfinishedRequest extends BaseCloudRequest {
                 resultBean = response.body();
             }
         } catch (Exception e) {
-            Log.i(TAG, e.toString());
             setException(e);
         }
     }
 
     private Call<HomeworkUnfinishedResultBean> getCall(ContentService service) {
-        return service.getHomeworkUnfinished(requestBean.status, requestBean.studentId,
-                requestBean.page, requestBean.size,
-                requestBean.course, requestBean.type,
-                requestBean.starttime, requestBean.endtime);
+        return service.getMessage(requestBean.studentId,
+                requestBean.page, requestBean.size);
     }
 }

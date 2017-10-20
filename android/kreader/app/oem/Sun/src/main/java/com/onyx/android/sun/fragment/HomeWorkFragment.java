@@ -29,20 +29,20 @@ import java.util.List;
 
 public class HomeWorkFragment extends BaseFragment implements View.OnClickListener, TimePickerDialog.TimePickerDialogInterface, HomeworkView {
     private HomeworkBinding homeworkBinding;
-    private String[] course = new String[]{SunApplication.getInstence().getResources().getString(R.string.homework_course_Chinese),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_mathematics),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_English),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_politic),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_history),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_creature),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_mathematics),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_mathematics),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_mathematics)};
+    private String[] course = new String[]{SunApplication.getInstance().getResources().getString(R.string.homework_course_Chinese),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_mathematics),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_English),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_politic),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_history),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_creature),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_mathematics),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_mathematics),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_mathematics)};
 
-    private String[] courseState = new String[]{SunApplication.getInstence().getResources().getString(R.string.homework_course_all),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_exercise),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_test_paper),
-            SunApplication.getInstence().getResources().getString(R.string.homework_course_competition)};
+    private String[] courseState = new String[]{SunApplication.getInstance().getResources().getString(R.string.homework_course_all),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_exercise),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_test_paper),
+            SunApplication.getInstance().getResources().getString(R.string.homework_course_competition)};
     private TimePickerDialog timePickerDialog;
     private HomeworkPresenter homeworkPresenter;
     private HomeworkUnfinishedAdapter homeworkUnfinishedAdapter;
@@ -61,21 +61,21 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void initView(ViewDataBinding binding) {
         homeworkBinding = (HomeworkBinding) binding;
-        homeworkBinding.homeworkRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
-        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        homeworkBinding.homeworkRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
+        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         homeworkBinding.homeworkRecyclerView.addItemDecoration(dividerItemDecoration);
         homeworkUnfinishedAdapter = new HomeworkUnfinishedAdapter();
         homeworkBinding.homeworkRecyclerView.setAdapter(homeworkUnfinishedAdapter);
 
-        homeworkBinding.homeworkCourseRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
+        homeworkBinding.homeworkCourseRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         dividerItemDecoration.setSpace(10);
         homeworkBinding.homeworkCourseRecyclerView.addItemDecoration(dividerItemDecoration);
         CourseAdapter courseAdapter = new CourseAdapter();
         courseAdapter.setData(course);
         homeworkBinding.homeworkCourseRecyclerView.setAdapter(courseAdapter);
 
-        homeworkBinding.homeworkStateRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
+        homeworkBinding.homeworkStateRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         homeworkBinding.homeworkStateRecyclerView.addItemDecoration(dividerItemDecoration);
         CourseAdapter courseStateAdapter = new CourseAdapter();
         courseStateAdapter.setData(courseState);

@@ -1,18 +1,15 @@
 package com.onyx.android.sun.fragment;
 
 import android.databinding.ViewDataBinding;
-import android.support.v4.util.TimeUtils;
 import android.view.View;
 
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.DatabaseUtils;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.adapter.TodayTaskAdapter;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.sun.cloud.bean.ContentBean;
-import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.databinding.MainBinding;
 import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.event.ToRankingEvent;
@@ -51,8 +48,8 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
     @Override
     protected void initView(ViewDataBinding rootView) {
         mainBinding = (MainBinding) rootView;
-        mainBinding.todayTaskRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        mainBinding.todayTaskRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         mainBinding.todayTaskRecycler.addItemDecoration(dividerItemDecoration);
         adapter = new TodayTaskAdapter();

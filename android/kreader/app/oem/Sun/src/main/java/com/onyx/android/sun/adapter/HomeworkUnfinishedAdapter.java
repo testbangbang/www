@@ -26,12 +26,12 @@ public class HomeworkUnfinishedAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_adapter_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_adapter_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_adapter_col);
     }
 
     @Override

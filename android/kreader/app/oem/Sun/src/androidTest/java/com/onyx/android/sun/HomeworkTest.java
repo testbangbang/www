@@ -6,9 +6,9 @@ import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.cloud.bean.TaskBean;
-import com.onyx.android.sun.requests.HomeworkFinishedRequest;
-import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
-import com.onyx.android.sun.requests.TaskDetailRequest;
+import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
+import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
+import com.onyx.android.sun.requests.cloud.TaskDetailRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 import com.onyx.android.sun.requests.requestTool.SunRequestManager;
@@ -37,7 +37,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestBean.type = "all";
 
         final HomeworkUnfinishedRequest rq = new HomeworkUnfinishedRequest(requestBean);
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, new BaseCallback() {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkUnfinishedResultBean resultBean = rq.getResultBean();
@@ -62,7 +62,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestBean.type = "all";
 
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, new BaseCallback() {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkFinishedResultBean resultBean = rq.getResultBean();
@@ -87,7 +87,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestBean.type = "all";
 
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, new BaseCallback() {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkFinishedResultBean resultBean = rq.getResultBean();
@@ -102,7 +102,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
     public void testGetTaskDetail() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final TaskDetailRequest rq = new TaskDetailRequest(1);
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, new BaseCallback() {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 TaskBean taskBean = rq.getTaskBean();

@@ -66,7 +66,7 @@ public class PieChart extends View {
         paint.setAntiAlias(true);
         paintOuter = new Paint();
         paintOuter.setStyle(Paint.Style.STROKE);
-        paintOuter.setColor(getResources().getColor(R.color.chart_black));
+        paintOuter.setColor(getResources().getColor(R.color.black));
         paintOuter.setAntiAlias(true);
     }
 
