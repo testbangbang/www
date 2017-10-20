@@ -295,7 +295,7 @@ public class ShapeEventHandler {
         resetCurrentShape();
         if (shortcutDrawing) {
             getEventBus().post(new ShortcutDrawingFinishedEvent());
-        } else {
+        } else if (noteManager.isDFBForCurrentShape()) {
             getEventBus().post(new ShapeAddedEvent());
         }
     }
