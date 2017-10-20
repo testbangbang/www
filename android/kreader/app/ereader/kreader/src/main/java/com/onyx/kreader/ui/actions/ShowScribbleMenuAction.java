@@ -555,6 +555,13 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         parent.removeView(topToolbar);
         parent.removeView(bottomToolbar);
         parent.removeView(fullToolbar);
+
+        onClose();
+    }
+
+    private void onClose() {
+        parent.setOnClickListener(null);
+        parent.setClickable(false);
     }
 
     @Subscribe
