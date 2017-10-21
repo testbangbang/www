@@ -388,7 +388,6 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
         return R.layout.device_setting_fragment;
     }
 
-
     @Override
     public void setLatestVersionMessage(DeviceVersionEntity entity) {
         if (entity == null || StringUtils.isNullOrEmpty(entity.Ver) || entity.Ver.equals(ApkUtils.getSoftwareVersionName())) {
