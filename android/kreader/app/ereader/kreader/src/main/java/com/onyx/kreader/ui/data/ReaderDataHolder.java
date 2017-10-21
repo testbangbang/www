@@ -703,6 +703,14 @@ public class ReaderDataHolder {
         this.sideNotePage = sideNotePage;
     }
 
+    public void setSideNotePageBySubPageIndex(int subPageIndex) {
+        this.sideNotePage = subPageIndex - getSideNoteStartSubPageIndex();
+    }
+
+    public boolean isSideNotePage(PageInfo pageInfo) {
+        return pageInfo.getSubPage() >= getSideNoteStartSubPageIndex();
+    }
+
     public int getSideNotePageCount() {
         int count = noteManager.getNoteDocument().getSubPageCount(getFirstPageInfo().getRange());
         if (supportScalable()) {

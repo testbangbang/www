@@ -53,6 +53,7 @@ import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportScribbleAction;
 import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
+import com.onyx.kreader.ui.actions.GotoSideNotePageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -692,12 +693,21 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new GotoPositionAction(previewViewHolder.getPage().getName()).execute(readerDataHolder, new BaseCallback() {
-                            @Override
-                            public void done(BaseRequest request, Throwable e) {
-                                DialogTableOfContent.this.dismiss();
-                            }
-                        });
+                        if (!readerDataHolder.isSideNotePage(previewViewHolder.getPage())) {
+                            new GotoPositionAction(previewViewHolder.getPage().getName()).execute(readerDataHolder, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    DialogTableOfContent.this.dismiss();
+                                }
+                            });
+                        } else {
+                            new GotoSideNotePageAction(previewViewHolder.getPage()).execute(readerDataHolder, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    DialogTableOfContent.this.dismiss();
+                                }
+                            });
+                        }
                     }
                 });
                 previewViewHolder.getCloseView().setVisibility(View.VISIBLE);
