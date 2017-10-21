@@ -1,13 +1,20 @@
 package com.onyx.android.sun.cloud.service;
 
-import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
+import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
+import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.TaskBean;
+import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
 import com.onyx.android.sun.common.CloudApiContext;
 
+import okhttp3.RequestBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
+import retrofit2.http.Field;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -46,4 +53,14 @@ public interface ContentService {
 
     @GET("api/advanced/ability/own")
     Call<PersonalAbilityResultBean> getSubjectAbility(@Query(CloudApiContext.SubjectAbility.ID) String id);
+
+    @FormUrlEncoded
+    @POST("api/user/login")
+    Call<UserLoginResultBean> userLogin(@Field(CloudApiContext.UserLogin.ACCOUNT) String account,
+                                        @Field(CloudApiContext.UserLogin.MD5PASSWORD) String md5Password);
+
+    @POST("api/practice/{id}")
+    Call<SubmitPracticeResultBean> submitPractice(@Path(CloudApiContext.Practices.ID) int id,
+                                                  @Query(CloudApiContext.Practices.STUDENTID)int studentId,
+                                                  @Body RequestBody practiceBeanBody);
 }
