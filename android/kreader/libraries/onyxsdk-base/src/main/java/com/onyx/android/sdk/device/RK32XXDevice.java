@@ -148,6 +148,7 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodSetSystemUpdateModeAndScheme = null;
 
     private static Method sMethodApplyApplicationFastMode = null;
+    private static Method sMethodApplyApplicationFastModeWithRepeat = null;
 
     /**
      * View.resetWaveformAndScheme()
@@ -778,6 +779,7 @@ public class RK32XXDevice extends BaseDevice {
             // signature of "public void resetWaveformAndScheme()"
             sMethodClearSystemUpdateModeAndScheme = ReflectUtil.getMethodSafely(cls, "resetWaveformAndScheme");
             sMethodApplyApplicationFastMode = ReflectUtil.getMethodSafely(cls, "applyApplicationFastMode", String.class, boolean.class, boolean.class);
+            sMethodApplyApplicationFastModeWithRepeat = ReflectUtil.getMethodSafely(cls, "applyApplicationFastMode", String.class, boolean.class, boolean.class, int.class, int.class);
             sMethodEnableScreenUpdate = ReflectUtil.getMethodSafely(cls, "enableScreenUpdate", boolean.class);
             sMethodSetDisplayScheme = ReflectUtil.getMethodSafely(cls, "setDisplayScheme", int.class);
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
@@ -875,6 +877,12 @@ public class RK32XXDevice extends BaseDevice {
 
     public boolean applyApplicationFastMode(final String application, boolean enable, boolean clear) {
         Object res = ReflectUtil.invokeMethodSafely(sMethodApplyApplicationFastMode, null, application, enable, clear);
+        return res != null;
+    }
+
+    @Override
+    public boolean applyApplicationFastMode(String application, boolean enable, boolean clear, UpdateMode repeatMode, int repeatLimit) {
+        Object res = ReflectUtil.invokeMethodSafely(sMethodApplyApplicationFastModeWithRepeat, null, application, enable, clear, getUpdateMode(repeatMode), repeatLimit);
         return res != null;
     }
 
@@ -1122,4 +1130,5 @@ public class RK32XXDevice extends BaseDevice {
     public void setUpdListSize(int size) {
         ReflectUtil.invokeMethodSafely(sMethodSetUpdListSize, null, size);
     }
+
 }
