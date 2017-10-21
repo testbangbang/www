@@ -223,6 +223,10 @@ public class BaseDevice {
         return false;
     }
 
+    public boolean applyApplicationFastMode(final String application, boolean enable, boolean clear, UpdateMode repeatMode, int repeatLimit) {
+        return false;
+    }
+
     public boolean setDisplayScheme(int scheme) {
         return false;
     }
@@ -479,4 +483,5 @@ public class BaseDevice {
 
     public void setUpdListSize(int size) {
     }
+
 }

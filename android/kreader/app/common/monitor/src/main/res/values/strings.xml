@@ -11,6 +11,5 @@
         ]]>
     </string>
     <string name="exit_confirm">Exit Monitor?</string>
-    <string name="refresh_time">Refresh time</string>
-    <string name="contrast_value">Contrast value</string>
+    <string name="full_refresh_interval_count">Full Refresh interval count</string>
 </resources>
