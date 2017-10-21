@@ -127,6 +127,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private List<Integer> getMainMenuActions() {
         List<Integer> menuActions = new ArrayList<>();
         menuActions.add(ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal());
+        menuActions.add(ReaderMenuAction.SCRIBBLE_CLOSE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_PREV_PAGE.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_POSITION.ordinal());
         menuActions.add(ReaderMenuAction.SCRIBBLE_SIDE_NOTE_NEXT_PAGE.ordinal());
