@@ -2,6 +2,7 @@ package com.onyx.kreader.note.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.GetNotePageListRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
@@ -14,7 +15,7 @@ import java.util.List;
  */
 public class GetNotePageListAction extends BaseAction{
 
-    List<String> scribblePages;
+    List<PageInfo> scribblePages;
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
@@ -30,7 +31,7 @@ public class GetNotePageListAction extends BaseAction{
         });
     }
 
-    public List<String> getScribblePages() {
+    public List<PageInfo> getScribblePages() {
         return scribblePages;
     }
 

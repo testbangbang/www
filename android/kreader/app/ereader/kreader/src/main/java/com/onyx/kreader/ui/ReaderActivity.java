@@ -111,6 +111,7 @@ import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.ShowTabHostMenuDialogEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
+import com.onyx.kreader.ui.events.StartSideNoteEvent;
 import com.onyx.kreader.ui.events.StopNoteEvent;
 import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.events.UpdateScribbleMenuEvent;
@@ -234,7 +235,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 }
                 if (getReaderDataHolder().isEnteringSideNote()) {
                     getReaderDataHolder().setEnteringSideNote(false);
-                    startSideNote();
+                    startSideNote(null);
                 }
             }
         });
@@ -1265,7 +1266,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         return extraView;
     }
 
-    public void startSideNote() {
+    @Subscribe
+    public void startSideNote(StartSideNoteEvent event) {
         if (!isLandscapeViewport()) {
             getReaderDataHolder().setEnteringSideNote(true);
             ReaderTabHostBroadcastReceiver.sendChangeOrientationIntent(this,

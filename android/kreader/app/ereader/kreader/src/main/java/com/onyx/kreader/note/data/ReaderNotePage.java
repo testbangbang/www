@@ -184,24 +184,6 @@ public class ReaderNotePage {
         lastMatrix.set(renderContext.matrix);
     }
 
-    /**
-     * return null if not exists
-     * @param context
-     * @param docUniqueId
-     * @param pageName
-     * @param subPageName
-     * @return
-     */
-    public static final ReaderNotePage loadPage(final Context context, final String docUniqueId, final String pageName, final String subPageName) {
-        final List<ShapeModel> list = ShapeDataProvider.loadShapeList(context, docUniqueId, pageName, subPageName);
-        final ReaderNotePage notePage = createPage(context, docUniqueId, pageName, subPageName);
-        for(ShapeModel model : list) {
-            final Shape shape = ShapeFactory.shapeFromModel(model);
-            notePage.addShapeFromModel(shape);
-        }
-        return notePage;
-    }
-
     public void loadPage(final Context context) {
         newAddedShapeList.clear();
         removedShapeList.clear();

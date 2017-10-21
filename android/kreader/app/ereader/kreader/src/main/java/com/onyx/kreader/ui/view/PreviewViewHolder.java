@@ -7,13 +7,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.kreader.R;
 
 /**
  * Created by ming on 16/9/23.
  */
 public class PreviewViewHolder extends RecyclerView.ViewHolder {
-    private int page;
+    private PageInfo page;
     private String pagePosition;
     private ImageView imageView;
     private TextView pageTextView;
@@ -31,7 +33,7 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
         container = (RelativeLayout) itemView.findViewById(R.id.item_container);
     }
 
-    public void bindPreview(Bitmap bitmap, int page) {
+    public void bindPreview(Bitmap bitmap, PageInfo page) {
         this.page = page;
         this.bitmap = bitmap;
         if (bitmap != null && !bitmap.isRecycled()) {
@@ -39,10 +41,10 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
         }
         pageTextView.setVisibility(View.GONE);
         pageText.setVisibility(View.VISIBLE);
-        pageText.setText(String.valueOf(page + 1));
+        pageText.setText(String.valueOf(PagePositionUtils.getPageNumber(page.getName()) + 1));
     }
 
-    public void bindPreview(Bitmap bitmap, int page, String pagePosition) {
+    public void bindPreview(Bitmap bitmap, PageInfo page, String pagePosition) {
         bindPreview(bitmap, page);
         this.pagePosition = pagePosition;
     }
@@ -51,7 +53,7 @@ public class PreviewViewHolder extends RecyclerView.ViewHolder {
         return container;
     }
 
-    public int getPage() {
+    public PageInfo getPage() {
         return page;
     }
 

@@ -53,6 +53,7 @@ import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportScribbleAction;
 import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
+import com.onyx.kreader.ui.actions.GotoSideNotePageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -63,6 +64,8 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -94,11 +97,12 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
     private List<PageRecyclerView> viewList = new ArrayList<>();
     private List<Bookmark> bookmarkList = new ArrayList<>();
     private List<Annotation> annotationList = new ArrayList<>();
-    private SparseArray<Bitmap> scribblePreviewMap = new SparseArray<>();
-    private SparseArray<PageInfo> pageInfoMap = new SparseArray<>();
+    private List<PageInfo> scribblePageList = new ArrayList<>();
+    private HashMap<PageInfo, Bitmap> scribblePreviewMap = new HashMap<>();
+    private HashMap<PageInfo, PageInfo> pageInfoMap = new HashMap<>();
     private PageRecyclerView scribblePageView;
     private GetScribbleBitmapAction getScribbleBitmapAction;
-    private List<String> requestPages;
+    private List<PageInfo> requestPages;
     private boolean loadedScribble = false;
     private View.OnFocusChangeListener onFocusChangeListener;
 
@@ -375,7 +379,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
     private void initViewPager(final ReaderDocumentTableOfContent tableOfContent,
                                final List<Bookmark> bookmarks,
                                final List<Annotation> annotations,
-                               final List<String> scribblePages) {
+                               final List<PageInfo> scribblePages) {
         viewList.add(initTocView(readerDataHolder, tableOfContent));
         viewList.add(initBookmarkView(readerDataHolder, bookmarks));
         viewList.add(initAnnotationsView(readerDataHolder, annotations));
@@ -453,9 +457,9 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 Toast.makeText(getContext(), getContext().getString(R.string.no_data), Toast.LENGTH_SHORT).show();
                 return;
             }
-            List<String> requestPages = new ArrayList<>();
-            for (int i = 0; i < scribblePreviewMap.size(); i++) {
-                requestPages.add(String.valueOf(scribblePreviewMap.keyAt(i)));
+            List<PageInfo> requestPages = new ArrayList<>();
+            for (int i = 0; i < scribblePageList.size(); i++) {
+                requestPages.add(scribblePageList.get(i));
             }
             new ExportScribbleAction(requestPages).execute(readerDataHolder, new BaseCallback() {
                 @Override
@@ -657,9 +661,10 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
         return view;
     }
 
-    private PageRecyclerView initScribbleView(final ReaderDataHolder readerDataHolder, List<String> scribblePages) {
-        for (String page : scribblePages) {
-            scribblePreviewMap.put(Integer.valueOf(page), null);
+    private PageRecyclerView initScribbleView(final ReaderDataHolder readerDataHolder, List<PageInfo> scribblePages) {
+        for (PageInfo page : scribblePages) {
+            scribblePageList.add(page);
+            scribblePreviewMap.put(page, null);
         }
         scribblePageView = new PageRecyclerView(viewPager.getContext());
         final int padding = DimenUtils.dip2px(getContext(), 10);
@@ -688,12 +693,21 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 previewViewHolder.getContainer().setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        new GotoPositionAction(PagePositionUtils.fromPageNumber(previewViewHolder.getPage())).execute(readerDataHolder, new BaseCallback() {
-                            @Override
-                            public void done(BaseRequest request, Throwable e) {
-                                DialogTableOfContent.this.dismiss();
-                            }
-                        });
+                        if (!readerDataHolder.isSideNotePage(previewViewHolder.getPage())) {
+                            new GotoPositionAction(previewViewHolder.getPage().getName()).execute(readerDataHolder, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    DialogTableOfContent.this.dismiss();
+                                }
+                            });
+                        } else {
+                            new GotoSideNotePageAction(previewViewHolder.getPage()).execute(readerDataHolder, new BaseCallback() {
+                                @Override
+                                public void done(BaseRequest request, Throwable e) {
+                                    DialogTableOfContent.this.dismiss();
+                                }
+                            });
+                        }
                     }
                 });
                 previewViewHolder.getCloseView().setVisibility(View.VISIBLE);
@@ -703,7 +717,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
             @Override
             public void onPageBindViewHolder(RecyclerView.ViewHolder holder, final int position) {
                 final PreviewViewHolder previewViewHolder = (PreviewViewHolder) holder;
-                final int page = scribblePreviewMap.keyAt(position);
+                final PageInfo page = scribblePageList.get(position);
                 Bitmap scribbleBitmap = scribblePreviewMap.get(page);
                 previewViewHolder.getCloseView().setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -735,7 +749,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
         return scribblePageView;
     }
 
-    private void removeScribble(final int page, final int position) {
+    private void removeScribble(final PageInfo page, final int position) {
         PageInfo pageInfo = pageInfoMap.get(page);
         if (pageInfo != null) {
             new ClearPageAction(Arrays.asList(new PageInfo[] { pageInfo })).execute(readerDataHolder, new BaseCallback() {
@@ -761,18 +775,17 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
 
         requestPages = new ArrayList<>();
         for (int i = pageBegin; i <= pageEnd; i++) {
-            requestPages.add(String.valueOf(scribblePreviewMap.keyAt(i)));
+            requestPages.add(scribblePageList.get(i));
         }
 
         getScribbleBitmapAction = new GetScribbleBitmapAction(requestPages, 300, 400);
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
-            public void onNext(String page, Bitmap bitmap, PageInfo pageInfo) {
-                int pageNumber = Integer.valueOf(page);
-                scribblePreviewMap.put(pageNumber, bitmap);
-                pageInfoMap.put(pageNumber, pageInfo);
+            public void onNext(PageInfo page, Bitmap bitmap, PageInfo pageInfo) {
+                scribblePreviewMap.put(page, bitmap);
+                pageInfoMap.put(page, pageInfo);
                 loadedScribble = true;
-                scribblePageView.getPageAdapter().notifyItemChanged(scribblePreviewMap.indexOfKey(pageNumber));
+                scribblePageView.getPageAdapter().notifyItemChanged(scribblePageList.indexOf(page));
             }
         });
     }

@@ -34,6 +34,11 @@ public class PageInfo {
         this(name, name, name, nw, nh);
     }
 
+    public PageInfo(final String name, final int subPage, final float nw, final float nh) {
+        this(name, name, name, nw, nh);
+        this.subPage = subPage;
+    }
+
     public PageInfo(final String name, final String startPosition, String endPosition, final float nw, final float nh) {
         this.name = name;
         pageRange = new PageRange(startPosition, endPosition);
