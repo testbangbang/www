@@ -2,13 +2,13 @@ package com.onyx.kreader.note.data;
 
 import android.content.Context;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.scribble.data.*;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.note.model.ReaderNoteDataProvider;
 import com.onyx.kreader.note.model.ReaderNoteDocumentModel;
-import org.apache.commons.collections4.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -197,39 +197,31 @@ public class ReaderNoteDocument {
         return pageMap;
     }
 
-    public int getSubPageCount(final String pageName) {
-        List<String> list = getPageIndex().getPageList(pageName, false);
-        if (list == null) {
-            return 0;
-        }
-        return list.size();
+    public int getSubPageCount(final PageRange range) {
+        return getPageIndex().getSubPageCount(range);
     }
 
-    public ReaderNotePage createPage(final String pageName, int subPageIndex) {
+    public ReaderNotePage createPage(final PageRange range, int subPageIndex) {
         String subPageId = ShapeUtils.generateUniqueId();
-        createIndexEntry(pageName, subPageIndex, subPageId);
-        ReaderNotePage readerNotePage = ensureDataEntry(pageName, subPageId);
+        createIndexEntry(range, subPageIndex, subPageId);
+        ReaderNotePage readerNotePage = ensureDataEntry(range.startPosition, subPageId);
         readerNotePage.setLoaded(true);
         return readerNotePage;
     }
 
-    public ReaderNotePage addPage(final String pageName, int subPageIndex) {
+    public ReaderNotePage addPage(final PageRange range, int subPageIndex) {
         String subPageId = ShapeUtils.generateUniqueId();
-        addIndexEntry(pageName, subPageIndex, subPageId);
-        ReaderNotePage readerNotePage = ensureDataEntry(pageName, subPageId);
+        addIndexEntry(range, subPageIndex, subPageId);
+        ReaderNotePage readerNotePage = ensureDataEntry(range.startPosition, subPageId);
         readerNotePage.setLoaded(true);
         return readerNotePage;
     }
 
-    public String clearPage(final Context context, final String pageName, final int subPageIndex) {
-        final List<String> list = getPageIndex().getPageList(pageName, false);
-        if (CollectionUtils.isEmpty(list)) {
+    public String clearPage(final Context context, final PageRange range, final int subPageIndex) {
+        final String subPageUniqueId = getPageIndex().getSubPageUniqueId(range, subPageIndex);
+        if (subPageUniqueId == null) {
             return null;
         }
-        if (subPageIndex < 0 || subPageIndex >= list.size()) {
-            return null;
-        }
-        final String subPageUniqueId = list.get(subPageIndex);
         final ReaderNotePage notePage = getPageMap().get(subPageUniqueId);
         if (notePage == null) {
             return null;
@@ -239,64 +231,49 @@ public class ReaderNoteDocument {
         return subPageUniqueId;
     }
 
-    public String removePage(final Context context, final String pageName, final int subPageIndex) {
-        final List<String> list = getPageIndex().getPageList(pageName, false);
-        if (CollectionUtils.isEmpty(list)) {
+    public String removePage(final Context context, final PageRange range, final int subPageIndex) {
+        String subPageId = getPageIndex().removeSubPage(range, subPageIndex);
+        if (subPageId == null) {
             return null;
         }
-        if (subPageIndex < 0 || subPageIndex >= list.size()) {
-            return null;
-        }
-        final String subPageUniqueId = list.get(subPageIndex);
-        getPageMap().remove(subPageUniqueId);
-        getPageIndex().remove(pageName, subPageUniqueId);
-        if (list == null || list.size() == 0) {
-            getPageIndex().remove(pageName);
-        }
-        return subPageUniqueId;
+        getPageMap().remove(subPageId);
+        return subPageId;
     }
 
-    private void createIndexEntry(final String pageName, int index, final String pageUniqueId) {
-        getPageIndex().set(pageName, index, pageUniqueId);
+    private void createIndexEntry(final PageRange range, int index, final String subPageUniqueId) {
+        getPageIndex().set(range, index, subPageUniqueId);
     }
 
-    private void addIndexEntry(final String pageName, int index, final String pageUniqueId) {
-        getPageIndex().add(pageName, index, pageUniqueId);
+    private void addIndexEntry(final PageRange range, int index, final String subPageUniqueId) {
+        getPageIndex().add(range, index, subPageUniqueId);
     }
 
-    private ReaderNotePage ensureDataEntry(final String pageName, final String pageUniqueId) {
-        if (!getPageMap().containsKey(pageUniqueId)) {
-            final ReaderNotePage notePage = new ReaderNotePage(getDocumentUniqueId(), pageName, pageUniqueId);
-            getPageMap().put(pageUniqueId, notePage);
+    private ReaderNotePage ensureDataEntry(final String pagePosition, final String subPageUniqueId) {
+        if (!getPageMap().containsKey(subPageUniqueId)) {
+            final ReaderNotePage notePage = new ReaderNotePage(getDocumentUniqueId(), pagePosition, subPageUniqueId);
+            getPageMap().put(subPageUniqueId, notePage);
         }
-        return getPageMap().get(pageUniqueId);
+        return getPageMap().get(subPageUniqueId);
     }
 
-    public String getPageUniqueId(final String pageName, int index) {
-        final List<String> list = getPageIndex().getPageList(pageName, false);
-        if (list == null) {
-            return null;
-        }
-        if (index < 0 || index >= list.size()) {
-            return null;
-        }
-        return list.get(index);
+    public String getSubPageUniqueId(final PageRange range, int subPageIndex) {
+        return getPageIndex().getSubPageUniqueId(range, subPageIndex);
     }
 
     public boolean loadPages(final Context context, final List<PageInfo> visiblePages) {
         for(PageInfo pageInfo: visiblePages) {
-            loadPage(context, pageInfo.getName(), pageInfo.getSubPage());
+            loadPage(context, pageInfo.getRange(), pageInfo.getSubPage());
         }
         return true;
     }
 
-    public ReaderNotePage loadPage(final Context context, final String pageName, int subPageIndex) {
+    public ReaderNotePage loadPage(final Context context, final PageRange range, int subPageIndex) {
         ReaderNotePage notePage;
-        final String pageUniqueId = getPageUniqueId(pageName, subPageIndex);
+        final String pageUniqueId = getSubPageUniqueId(range, subPageIndex);
         if (StringUtils.isNullOrEmpty(pageUniqueId)) {
             return null;
         }
-        notePage = ensureDataEntry(pageName, pageUniqueId);
+        notePage = ensureDataEntry(range.startPosition, pageUniqueId);
         if (notePage != null && notePage.isLoaded()) {
             return notePage;
         }
@@ -304,16 +281,16 @@ public class ReaderNoteDocument {
         return notePage;
     }
 
-    public ReaderNotePage ensurePageExist(final Context context, final String pageName, String subPageId) {
-        return ensureDataEntry(pageName, subPageId);
+    public ReaderNotePage ensurePageExist(final Context context, final String pagePosition, String subPageId) {
+        return ensureDataEntry(pagePosition, subPageId);
     }
 
-    public ReaderNotePage ensurePageExist(final Context context, final String pageName, int subPageIndex) {
-        final ReaderNotePage readerNotePage = loadPage(context, pageName, subPageIndex);
+    public ReaderNotePage ensurePageExist(final Context context, final PageRange range, int subPageIndex) {
+        final ReaderNotePage readerNotePage = loadPage(context, range, subPageIndex);
         if (readerNotePage != null) {
             return readerNotePage;
         }
-        return createPage(pageName, subPageIndex);
+        return createPage(range, subPageIndex);
     }
 
     public final List<String> getPageList() {
@@ -322,18 +299,18 @@ public class ReaderNoteDocument {
 
     public final List<String> getNoEmptyPageList(final Context context) {
         List<String> pageList = new ArrayList<>();
-        for (String pageName : getPageList()) {
-            String pageUniqueId = getPageUniqueId(pageName, 0);
+        for (String page : getPageList()) {
+            String pageUniqueId = getSubPageUniqueId(new PageRange(page, page), 0);
             ReaderNotePage notePage = pageMap.get(pageUniqueId);
             if (notePage == null) {
-                notePage = loadPage(context, pageName, 0);
+                notePage = loadPage(context, new PageRange(page, page), 0);
             }
             if (notePage == null) {
                 continue;
             }
             List<Shape> shapeList = notePage.getShapeList();
             if (shapeList != null && shapeList.size() > 0) {
-                pageList.add(pageName);
+                pageList.add(page);
             }
         }
         return pageList;

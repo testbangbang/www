@@ -11,6 +11,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.api.TouchHelper;
@@ -59,6 +60,7 @@ public class NoteManager {
     private DeviceConfig noteConfig;
     private MappingConfig mappingConfig;
     private boolean sideNoting = false;
+    private int sideNoteStartSubPageIndex = 0;
     private List<PageInfo> visiblePages = new ArrayList<>();
     private EventBus eventBus;
     private ReaderNoteDataInfo noteDataInfo = new ReaderNoteDataInfo();
@@ -331,8 +333,16 @@ public class NoteManager {
         this.sideNoting = sideNoting;
     }
 
+    public int getSideNoteStartSubPageIndex() {
+        return sideNoteStartSubPageIndex;
+    }
+
+    public void setSideNoteStartSubPageIndex(int sideNoteStartSubPageIndex) {
+        this.sideNoteStartSubPageIndex = sideNoteStartSubPageIndex;
+    }
+
     public boolean isSidePage(PageInfo pageInfo) {
-        return pageInfo.getSubPage() > 0;
+        return pageInfo.getSubPage() >= getSideNoteStartSubPageIndex();
     }
 
     public void setVisiblePages(final List<PageInfo> list) {
@@ -360,15 +370,15 @@ public class NoteManager {
         return shapeStash.size() > 0;
     }
 
-    public void undo(final Context context, final String pageName, int subPage) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
+    public void undo(final Context context, final PageRange range, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, range, subPage);
         if (readerNotePage != null) {
             readerNotePage.undo();
         }
     }
 
-    public void redo(final Context context, final String pageName, int subPage) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, subPage);
+    public void redo(final Context context, final PageRange range, int subPage) {
+        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, range, subPage);
         if (readerNotePage != null) {
             readerNotePage.redo();
         }

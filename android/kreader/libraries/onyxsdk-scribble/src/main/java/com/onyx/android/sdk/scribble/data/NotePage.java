@@ -350,7 +350,10 @@ public class NotePage {
             return;
         }
         final Matrix renderMatrix = new Matrix();
-        for (Shape shape : shapeList) {
+        //TODO: fix concurrent modification exception.
+        final List<Shape> renderShapeList = new ArrayList<>();
+        renderShapeList.addAll(shapeList);
+        for (Shape shape : renderShapeList) {
             renderMatrix.reset();
             renderMatrix.postScale(shape.getScale(), shape.getScale());
             renderContext.setMatrix(renderMatrix);

@@ -215,7 +215,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             for (PageInfo page : getVisiblePages()) {
                 updateMatrix(renderMatrix, page);
                 renderContext.update(bitmap, canvas, paint, renderMatrix);
-                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getName(), page.getSubPage());
+                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getRange(), page.getSubPage());
                 if (notePage != null) {
                     notePage.render(renderContext, null);
                     rendered = true;
@@ -299,22 +299,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         }
         canvas.drawPath(path, paint);
         return true;
-    }
-
-    public void currentPageAsVisiblePage(final NoteManager noteManager) {
-        final ReaderNotePage notePage = noteManager.getNoteDocument().loadPage(getContext(), "", 0);
-        getVisiblePages().clear();
-        PageInfo pageInfo = new PageInfo(notePage.getPageUniqueId(), getViewportSize().width(), getViewportSize().height());
-        pageInfo.updateDisplayRect(new RectF(0, 0, getViewportSize().width(), getViewportSize().height()));
-        getVisiblePages().add(pageInfo);
-    }
-
-    public void renderCurrentPage(final NoteManager helper) {
-        if (!isRender()) {
-            return;
-        }
-        currentPageAsVisiblePage(helper);
-        renderVisiblePages(helper);
     }
 
     private void updateShapeDataInfo(final NoteManager parent) {

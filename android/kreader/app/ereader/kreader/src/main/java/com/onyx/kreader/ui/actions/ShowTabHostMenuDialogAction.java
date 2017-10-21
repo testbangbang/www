@@ -12,6 +12,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.note.actions.FlushNoteAction;
+import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.ReaderActivity;
@@ -127,8 +128,7 @@ public class ShowTabHostMenuDialogAction extends BaseAction {
             public void onDismiss(DialogInterface dialog) {
                 dataHolder.removeActiveDialog(dlg);
                 if (isNoteWriting) {
-                    FlushNoteAction flushNoteAction = FlushNoteAction.resumeAfterFlush(dataHolder.getVisiblePages());
-                    flushNoteAction.execute(dataHolder, null);
+                    new ResumeDrawingAction(dataHolder.getVisiblePages()).execute(dataHolder, null);
                 }
             }
         });

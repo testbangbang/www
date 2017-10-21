@@ -59,6 +59,7 @@ import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.RenderStashShapesInBackgroundAction;
+import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
@@ -602,11 +603,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (event.isUiOpen()) {
-            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(dataHolder.getVisiblePages());
-            flushNoteAction.execute(dataHolder, null);
+            FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getReaderDataHolder().getVisiblePages());
+            flushNoteAction.execute(getReaderDataHolder(), null);
         } else {
-            FlushNoteAction flushNoteAction = FlushNoteAction.resumeAfterFlush(dataHolder.getVisiblePages());
-            flushNoteAction.execute(dataHolder, null);
+            new ResumeDrawingAction(getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
         }
         enableShortcut(!event.isUiOpen());
     }

@@ -1,6 +1,5 @@
 package com.onyx.android.sdk.reader.host.request;
 
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -57,11 +56,15 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
             reader.getNavigator().gotoPosition(pagePosition);
         }
 
-        String position = reader.getNavigator().getScreenStartPosition();
-        if (StringUtils.isNullOrEmpty(position)) {
-            position = page;
+        String startPosition = reader.getNavigator().getScreenStartPosition();
+        if (StringUtils.isNullOrEmpty(startPosition)) {
+            startPosition = page;
         }
-        PageInfo pageInfo = new PageInfo(page, position, origin.width(), origin.height());
+        String endPosition = reader.getNavigator().getScreenEndPosition();
+        if (StringUtils.isNullOrEmpty(endPosition)) {
+            endPosition = page;
+        }
+        PageInfo pageInfo = new PageInfo(page, startPosition, endPosition, origin.width(), origin.height());
         if (reader.getRendererFeatures().supportScale()) {
             this.pageInfo = LayoutProviderUtils.drawPageWithScaleToPage(pageInfo, bitmap, reader.getRenderer());
         } else {
