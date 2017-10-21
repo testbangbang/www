@@ -241,7 +241,7 @@ public class DialogQuickPreview extends OnyxBaseDialog {
                 return;
             }
 
-            holder.bindPreview(entry.getValue(), entry.getKey().getPageNumber(), entry.getKey().getPosition());
+            holder.bindPreview(entry.getValue(), entry.getKey(), entry.getKey().getPosition());
         }
 
         @Override
