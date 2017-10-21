@@ -4,7 +4,10 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.manager.OTAManager;
+import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sun.common.AppConfigData;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
@@ -44,6 +47,7 @@ public class SunApplication extends Application {
         initDatabases(this, databaseHolderList());
         AppConfigData.loadMainTabData(instance);
         OnyxDownloadManager.init(instance);
+        OTAManager.sharedInstance().getCloudStore().setCloudConf(CloudConf.create(Constant.CN_HOST_BASE, Constant.CN_API_BASE, Constant.DEFAULT_CLOUD_STORAGE));
     }
 
     private void initContext() {

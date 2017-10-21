@@ -11,7 +11,6 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.liulishuo.filedownloader.BaseDownloadTask;
-import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
@@ -19,7 +18,6 @@ import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.request.cloud.ApplicationUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.CloudFileDownloadRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
-import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.DownloadUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.PackageUtils;
@@ -151,7 +149,6 @@ public class ApkUtils {
         List<ApplicationUpdate> list = new ArrayList<>();
         list.add(appUpdate);
         final ApplicationUpdateRequest applicationUpdateRequest = new ApplicationUpdateRequest(list);
-        OTAManager.sharedInstance().getCloudStore().setCloudConf(CloudConf.create(Constant.CN_HOST_BASE, Constant.CN_API_BASE, Constant.DEFAULT_CLOUD_STORAGE));
         OTAManager.sharedInstance().getCloudStore().submitRequest(SunApplication.getInstance(), applicationUpdateRequest, new com.onyx.android.sdk.common.request.BaseCallback() {
             @Override
             public void done(com.onyx.android.sdk.common.request.BaseRequest request, Throwable e) {

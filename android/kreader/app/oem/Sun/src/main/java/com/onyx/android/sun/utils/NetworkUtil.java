@@ -6,6 +6,8 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiManager;
 
+import com.onyx.android.sun.common.ManagerActivityUtils;
+
 import java.util.List;
 
 /**
@@ -25,8 +27,6 @@ public class NetworkUtil {
     }
 
     public static int getConfiguredNetworks(Context context) {
-        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = manager.getActiveNetworkInfo();
         WifiManager wifiManager = (WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (wifiManager != null) {
             List<WifiConfiguration> netlist = wifiManager.getConfiguredNetworks();
@@ -39,8 +39,12 @@ public class NetworkUtil {
     }
 
     public static void toggleWiFi(Context context, boolean enabled) {
-        WifiManager wm = (WifiManager) context.getApplicationContext()
-                .getSystemService(Context.WIFI_SERVICE);
-        wm.setWifiEnabled(enabled);
+        if (!NetworkUtil.isNetworkConnected(context) && getConfiguredNetworks(context) == 0) {
+            ManagerActivityUtils.startWifiActivity(context);
+        } else {
+            WifiManager wm = (WifiManager) context
+                    .getSystemService(Context.WIFI_SERVICE);
+            wm.setWifiEnabled(enabled);
+        }
     }
 }

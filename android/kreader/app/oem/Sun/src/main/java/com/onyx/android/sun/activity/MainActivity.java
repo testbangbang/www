@@ -24,6 +24,7 @@ import com.onyx.android.sun.event.ApkDownloadSucceedEvent;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.sun.event.HaveNewVersionApkEvent;
 import com.onyx.android.sun.event.HaveNewVersionEvent;
+import com.onyx.android.sun.event.StartDownloadingEvent;
 import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.event.ToMainFragmentEvent;
@@ -220,7 +221,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
     }
 
-
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHaveNewVersionApkEvent(HaveNewVersionApkEvent event) {
         ApplicationUpdate applicationUpdate = event.getApplicationUpdate();
@@ -266,5 +266,11 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdateDownloadSucceedEvent(UpdateDownloadSucceedEvent event) {
         ApkUtils.firmwareLocal();
+        dismissAllProgressDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStartDownloadingEvent(StartDownloadingEvent event) {
+        showProgressDialog(event, R.string.downloading, null);
     }
 }
