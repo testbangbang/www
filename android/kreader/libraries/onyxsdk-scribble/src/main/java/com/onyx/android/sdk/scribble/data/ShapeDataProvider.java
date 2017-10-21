@@ -38,7 +38,8 @@ public class ShapeDataProvider {
                                                  final String pageUniqueId,
                                                  final String subPageName) {
         Select select = new Select();
-        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));        if (StringUtils.isNotBlank(subPageName)) {
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
+        if (StringUtils.isNotBlank(subPageName)) {
             where = where.and(ShapeModel_Table.subPageName.eq(subPageName));
         }
 
