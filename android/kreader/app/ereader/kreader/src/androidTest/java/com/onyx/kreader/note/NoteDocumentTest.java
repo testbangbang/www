@@ -5,6 +5,7 @@ import android.graphics.Matrix;
 import android.test.ActivityInstrumentationTestCase2;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.NormalPencilShape;
@@ -64,7 +65,7 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
         final String pageName = "0";
         final ReaderNoteDocument src = new ReaderNoteDocument();
         src.open(getActivity(), docId, null);
-        final ReaderNotePage page = src.createPage(pageName, pageName, 0);
+        final ReaderNotePage page = src.createPage(new PageRange(pageName, pageName), 0);
         assertTrue(page.getShapeList().size() == 0);
         final Shape shape = randomShape(docId, page.getPageUniqueId(), 10, 100);
         page.addShape(shape, false);
@@ -74,7 +75,7 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
 
         final ReaderNoteDocument dst = new ReaderNoteDocument();
         dst.open(getActivity(), docId, null);
-        final ReaderNotePage resultPage = dst.loadPage(getActivity(), pageName, pageName, 0);
+        final ReaderNotePage resultPage = dst.loadPage(getActivity(), new PageRange(pageName, pageName), 0);
         assertNotNull(resultPage);
         assertNotNull(resultPage.getShapeList());
         assertTrue(resultPage.getShapeList().size() == 1);
@@ -97,7 +98,7 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
             LinkedHashMap<String, ReaderNotePage> subPageMap = new LinkedHashMap<>();
             int subPageCount = TestUtils.randInt(2, 5);
             for(int k = 0; k < subPageCount; ++k) {
-                final ReaderNotePage page = src.createPage(pageName, pageName, k);
+                final ReaderNotePage page = src.createPage(new PageRange(pageName, pageName), k);
                 assertTrue(page.getShapeList().size() == 0);
                 int shapeCount = TestUtils.randInt(10, 20);
                 for (int j = 0; j < shapeCount; ++j) {
@@ -118,9 +119,9 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
 
         for(int i = 0; i < pageCount; ++i) {
             String pageName = String.valueOf(i);
-            int subPageCount = dst.getSubPageCount(pageName, pageName);
+            int subPageCount = dst.getSubPageCount(new PageRange(pageName, pageName));
             for(int j = 0; j < subPageCount; ++j) {
-                final ReaderNotePage resultPage = dst.loadPage(getActivity(), pageName, pageName, j);
+                final ReaderNotePage resultPage = dst.loadPage(getActivity(), new PageRange(pageName, pageName), j);
                 final LinkedHashMap<String, ReaderNotePage> map = origin.get(pageName);
                 final ReaderNotePage originPage = map.get(resultPage.getSubPageUniqueId());
 
@@ -154,7 +155,7 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
             LinkedHashMap<String, ReaderNotePage> subPageMap = new LinkedHashMap<>();
             int subPageCount = TestUtils.randInt(2, 5);
             for(int k = 0; k < subPageCount; ++k) {
-                final ReaderNotePage page = src.createPage(pageName, pageName, k);
+                final ReaderNotePage page = src.createPage(new PageRange(pageName, pageName), k);
                 assertTrue(page.getShapeList().size() == 0);
                 int shapeCount = TestUtils.randInt(10, 20);
                 for (int j = 0; j < shapeCount; ++j) {
@@ -175,9 +176,9 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
 
         for(int i = 0; i < pageCount; ++i) {
             String pageName = String.valueOf(i);
-            int subPageCount = temp.getSubPageCount(pageName, pageName);
+            int subPageCount = temp.getSubPageCount(new PageRange(pageName, pageName));
             int subPageIndex = TestUtils.randInt(0, subPageCount);
-            temp.clearPage(getActivity(), pageName, pageName, subPageIndex);
+            temp.clearPage(getActivity(), new PageRange(pageName, pageName), subPageIndex);
         }
         temp.save(getActivity(), "some title");
 
@@ -187,12 +188,12 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
         verify.open(getActivity(), docId, null);
         for(int i = 0; i < pageCount; ++i) {
             String pageName = String.valueOf(i);
-            int subPageCount = verify.getSubPageCount(pageName, pageName);
+            int subPageCount = verify.getSubPageCount(new PageRange(pageName, pageName));
             LinkedHashMap<String, ReaderNotePage> originSubPageList = origin.get(pageName);
             assertTrue(subPageCount + 1 == originSubPageList.size());
 
             for(int j = 0; j < subPageCount; ++j) {
-                final ReaderNotePage resultPage = verify.loadPage(getActivity(), pageName, pageName, j);
+                final ReaderNotePage resultPage = verify.loadPage(getActivity(), new PageRange(pageName, pageName), j);
                 final LinkedHashMap<String, ReaderNotePage> map = origin.get(pageName);
                 final ReaderNotePage originPage = map.get(resultPage.getSubPageUniqueId());
 
@@ -254,7 +255,7 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
         int pages = TestUtils.randInt(10, 20);
         for(int i = 0; i < pages; ++i) {
             String pageName = String.valueOf(i);
-            final ReaderNotePage page = src.createPage(pageName, pageName, 0);
+            final ReaderNotePage page = src.createPage(new PageRange(pageName, pageName), 0);
             assertTrue(page.getShapeList().size() == 0);
             int shapes = TestUtils.randInt(100, 200);
             for(int s = 0; s < shapes; ++s) {
@@ -279,7 +280,7 @@ public class NoteDocumentTest extends ActivityInstrumentationTestCase2<ReaderTes
         int pages = TestUtils.randInt(10, 20);
         for(int i = 0; i < pages; ++i) {
             String pageName = String.valueOf(i);
-            final ReaderNotePage page = src.createPage(pageName, pageName, 0);
+            final ReaderNotePage page = src.createPage(new PageRange(pageName, pageName), 0);
             assertTrue(page.getShapeList().size() == 0);
             int shapes = TestUtils.randInt(100, 200);
             for(int s = 0; s < shapes; ++s) {
