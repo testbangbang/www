@@ -44,6 +44,10 @@ public class TimeUtils {
         return getTime(timeInMillis, NEW_DATE_FORMAT);
     }
 
+    public static String getAllDate(long timeInMillis) {
+        return getTime(timeInMillis, NEW_DATE_FORMAT);
+    }
+
     public static String getDate(long timeInMillis) {
         return getTime(timeInMillis, DATE_FORMAT_DATE);
     }

@@ -431,6 +431,7 @@ public class ReaderMainMenuDialog extends Dialog implements View.OnClickListener
             pageInfoMenuBookName.setText(readerPresenter.isFluent() ? title : ReadPageInfo.getReadBookName(readerPresenter));
         }
         pageInfoMenuPage.setText(ReadPageInfo.getReadProgress(readerPresenter, currentPage));
+        ReadPageInfo.setReadTime();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

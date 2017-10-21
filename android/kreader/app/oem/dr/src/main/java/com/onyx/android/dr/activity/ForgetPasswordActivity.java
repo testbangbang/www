@@ -8,11 +8,15 @@ import android.widget.TextView;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.GetVerificationCodeFailedEvent;
 import com.onyx.android.dr.interfaces.ForgetPasswordView;
 import com.onyx.android.dr.presenter.ForgetPasswordPresenter;
 import com.onyx.android.dr.util.RegularUtil;
 import com.onyx.android.sdk.data.model.v2.VerifyCode;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.Bind;
 import butterknife.OnClick;
@@ -74,6 +78,7 @@ public class ForgetPasswordActivity extends BaseActivity implements ForgetPasswo
     @Override
     protected void initData() {
         presenter = new ForgetPasswordPresenter(this);
+        verifyCode = new VerifyCode();
     }
 
     @OnClick({R.id.get_verification_code, R.id.forget_password_prev_button, R.id.forget_password_next_button})
@@ -180,5 +185,10 @@ public class ForgetPasswordActivity extends BaseActivity implements ForgetPasswo
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGetVerificationCodeFailedEvent(GetVerificationCodeFailedEvent event) {
+        CommonNotices.showMessage(this, event.getMessage());
     }
 }

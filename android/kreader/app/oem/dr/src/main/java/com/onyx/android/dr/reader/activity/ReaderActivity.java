@@ -338,6 +338,7 @@ public class ReaderActivity extends Activity implements ReaderView {
 
     private void updatePageProgress() {
         readProgress.setText(ReadPageInfo.getReadProgress(readerPresenter));
+        ReadPageInfo.setReadTime();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

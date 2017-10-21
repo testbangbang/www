@@ -1,6 +1,8 @@
 package com.onyx.android.dr.reader.common;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -13,12 +15,23 @@ public class ReadPageInfo {
         int pageCount = readerPresenter.getReader().getNavigator().getTotalPage();
         String pageName = readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName();
         int currentPage = Integer.parseInt(pageName);
-        return String.format("%d/%d", currentPage + 1, pageCount);
+        String progress = String.format("%d/%d", currentPage + 1, pageCount);
+        DRApplication.getInstance().setProgress(progress);
+        DRApplication.getInstance().setPath(readerPresenter.getReader().getDocumentPath());
+        return progress;
     }
 
     public static String getReadProgress(ReaderPresenter readerPresenter,int currentPage){
         int pageCount = readerPresenter.getReader().getNavigator().getTotalPage();
-        return String.format("%d/%d", currentPage + 1, pageCount);
+        String progress = String.format("%d/%d", currentPage + 1, pageCount);
+        DRApplication.getInstance().setProgress(progress);
+        DRApplication.getInstance().setPath(readerPresenter.getReader().getDocumentPath());
+        return progress;
+    }
+
+    public static void setReadTime(){
+        long currentTimeMillis = TimeUtils.getCurrentTimeMillis();
+        DRApplication.getInstance().setTime(currentTimeMillis);
     }
 
     public static String getReadBookName(ReaderPresenter readerPresenter){

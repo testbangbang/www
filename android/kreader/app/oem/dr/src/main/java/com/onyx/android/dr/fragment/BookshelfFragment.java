@@ -145,6 +145,7 @@ public class BookshelfFragment extends BaseFragment implements BookshelfView {
         listAdapter.setCanChecked(true);
         titleBar = rootView.findViewById(R.id.bookshelf_title_bar);
         share.setImageResource(R.drawable.ic_reader_share);
+        share.setVisibility(View.GONE);
         goBookMall.setText(getString(R.string.enter_bookstore));
         share.setVisibility(View.VISIBLE);
         goBookMall.setVisibility(View.VISIBLE);

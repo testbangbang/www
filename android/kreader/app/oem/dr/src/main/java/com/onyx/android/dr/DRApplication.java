@@ -41,6 +41,9 @@ public class DRApplication extends MultiDexApplication {
     private int apkDownloadReference;
     private boolean isLogin = false;
     private boolean haveIndexService;
+    public String progress;
+    public String path;
+    public long time;
 
     public boolean isLogin() {
         return isLogin;
@@ -189,5 +192,29 @@ public class DRApplication extends MultiDexApplication {
 
     public void setHaveIndexService(boolean haveIndexService) {
         this.haveIndexService = haveIndexService;
+    }
+
+    public String getProgress() {
+        return progress;
+    }
+
+    public void setProgress(String progress) {
+        this.progress = progress;
+    }
+
+    public String getPath() {
+        return path;
+    }
+
+    public void setPath(String path) {
+        this.path = path;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
     }
 }
