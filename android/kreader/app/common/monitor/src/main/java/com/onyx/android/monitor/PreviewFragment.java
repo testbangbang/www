@@ -30,7 +30,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
-import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v13.app.FragmentCompat;
@@ -59,6 +58,7 @@ import com.onyx.android.monitor.view.AutoFitTextureView;
 import com.onyx.android.monitor.event.ConnectEvent;
 import com.onyx.android.monitor.view.MenuItem;
 import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -201,7 +201,6 @@ public class PreviewFragment extends Fragment
             EpdController.setUpdListSize(1);
             createCameraPreviewSession();
             enterA2();
-            startGcTimer(gcRefreshRunnable);
         }
 
         @Override
@@ -289,14 +288,6 @@ public class PreviewFragment extends Fragment
 
     private AlertDialog exitConfirmDialog;
     private DialogPreviewMenu menuDialog;
-    private Handler handler = new Handler(Looper.getMainLooper());
-    private Runnable gcRefreshRunnable = new Runnable() {
-        @Override
-        public void run() {
-            gcRefreshOnce();
-            startGcTimer(this);
-        }
-    };
 
     /**
      * A {@link CameraCaptureSession.CaptureCallback} that handles events related to JPEG capture.
@@ -724,7 +715,6 @@ public class PreviewFragment extends Fragment
                 mImageReader.close();
                 mImageReader = null;
             }
-            stopGcTimer(gcRefreshRunnable);
             exitA2();
             EpdController.resetUpdListSize();
         } catch (InterruptedException e) {
@@ -1038,9 +1028,8 @@ public class PreviewFragment extends Fragment
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSettingsChanged(final SettingsChangedEvent event) {
-        if (event.getId() == MenuItem.MenuId.A2) {
-            stopGcTimer(gcRefreshRunnable);
-            startGcTimer(gcRefreshRunnable);
+        if (event.getId() == MenuItem.MenuId.FULL_REFRESH_INTERVAL) {
+            toggleA2Mode();
         }
     }
 
@@ -1069,26 +1058,20 @@ public class PreviewFragment extends Fragment
     }
 
     private void gcRefreshOnce() {
-        exitA2();
-        enterA2();
-    }
-
-    private void startGcTimer(Runnable runnable) {
-        long delay = SingletonSharedPreference.getGcIntervalTime(getActivity()) * 60 * 1000;
-        Log.i(TAG, "GC refresh once after " + delay/60/1000 + " minutes!");
-        handler.postDelayed(runnable, delay);
-    }
-
-    private void stopGcTimer(Runnable runnable) {
-        handler.removeCallbacks(runnable);
+        EpdController.refreshScreen(getView(), UpdateMode.GC);
     }
 
     private void enterA2() {
-        EpdController.applyApplicationFastMode(TAG, true, true);
+        EpdController.applyApplicationFastMode(TAG, true, true, UpdateMode.GC, SingletonSharedPreference.getGcIntervalCount(getActivity()));
     }
 
     private void exitA2() {
         EpdController.applyApplicationFastMode(TAG, false, true);
+    }
+
+    private void toggleA2Mode() {
+        exitA2();
+        enterA2();
     }
 
 }

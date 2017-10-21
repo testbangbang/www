@@ -107,6 +107,11 @@ public abstract class EpdController
         return true;
     }
 
+    public static boolean applyApplicationFastMode(final String application, boolean enable, boolean clear, UpdateMode repeatMode, int repeatLimit) {
+        Device.currentDevice().applyApplicationFastMode(application, enable, clear, repeatMode, repeatLimit);
+        return true;
+    }
+
     public static boolean setDisplayScheme(int scheme) {
         Device.currentDevice().setDisplayScheme(scheme);
         return true;
@@ -292,4 +297,5 @@ public abstract class EpdController
     public static void resetUpdListSize() {
         Device.currentDevice().setUpdListSize(-1);
     }
+
 }
