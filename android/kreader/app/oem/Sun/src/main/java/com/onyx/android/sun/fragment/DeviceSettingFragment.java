@@ -65,11 +65,9 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     private DeviceSettingPresenter deviceSettingPresenter;
     private DeviceSettingAdapter deviceSettingAdapter;
 
-
     private RelativeLayout pagerRefreshView;
     private PageRecyclerView pageRefreshRecyclerView;
     private TextView pageRefreshSave = null;
-
 
     private RelativeLayout lockScreenTimeView;
     private PageRecyclerView lockScreenTimeRecyclerView;
@@ -430,13 +428,6 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
         return updateUrl;
     }
 
-//    @Subscribe(threadMode = ThreadMode.MAIN)
-//    public void onEventMainThread(ReportDownloadProcessEvent event) {
-//        if (reference == event.getReference() && DownloadTaskManager.getInstance().isDownloaded(event.getState())) {
-//            ApkUtils.installApk(getActivity(), path);
-//        }
-//    }
-
     @Override
     public boolean onKeyBack() {
         switch (currentPageID) {
@@ -518,7 +509,6 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
             builder.setPositiveButton(getString(R.string.local_update), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-//                    ManagerActivityUtils.startOtaUpdateActivity(getActivity(), path);
                     dialog.dismiss();
                 }
             }).setNegativeButton(getString(R.string.online_update), new DialogInterface.OnClickListener() {
