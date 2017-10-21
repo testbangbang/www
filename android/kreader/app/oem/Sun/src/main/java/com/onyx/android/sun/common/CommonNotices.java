@@ -1,6 +1,5 @@
 package com.onyx.android.sun.common;
 
-import android.content.Context;
 import android.widget.Toast;
 
 import com.onyx.android.sun.SunApplication;
@@ -11,6 +10,6 @@ import com.onyx.android.sun.SunApplication;
 
 public class CommonNotices {
     public static void show(String message) {
-        Toast.makeText(SunApplication.getInstence(), message, Toast.LENGTH_LONG).show();
+        Toast.makeText(SunApplication.getInstance(), message, Toast.LENGTH_LONG).show();
     }
 }

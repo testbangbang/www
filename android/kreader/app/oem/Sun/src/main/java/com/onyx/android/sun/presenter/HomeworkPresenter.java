@@ -9,9 +9,9 @@ import com.onyx.android.sun.cloud.bean.TaskBean;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.data.HomeworkData;
 import com.onyx.android.sun.interfaces.HomeworkView;
-import com.onyx.android.sun.requests.HomeworkFinishedRequest;
-import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
-import com.onyx.android.sun.requests.TaskDetailRequest;
+import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
+import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
+import com.onyx.android.sun.requests.cloud.TaskDetailRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 

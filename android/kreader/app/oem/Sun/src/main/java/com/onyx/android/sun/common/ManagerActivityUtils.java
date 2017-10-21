@@ -3,6 +3,7 @@ package com.onyx.android.sun.common;
 import android.content.Context;
 import android.content.Intent;
 
+import com.onyx.android.sun.activity.WifiActivity;
 import com.onyx.android.sun.scribble.ScribbleActivity;
 
 /**
@@ -15,6 +16,18 @@ public class ManagerActivityUtils {
         intent.putExtra(Constants.QUESTION_ID, questionID);
         intent.putExtra(Constants.QUESTION_TITLE, questionTitle);
         intent.putExtra(Constants.QUESTION_TAG, question);
+        context.startActivity(intent);
+    }
+
+    public static void startResetDeviceActivity(Context context) {
+        Intent intent = new Intent("android.settings.PRIVACY_SETTINGS");
+        intent.setClassName("com.android.settings", "com.android.settings.PrivacySettings");
+        context.startActivity(intent);
+    }
+
+    public static void startWifiActivity(Context context) {
+        Intent intent = new Intent(context, WifiActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 }

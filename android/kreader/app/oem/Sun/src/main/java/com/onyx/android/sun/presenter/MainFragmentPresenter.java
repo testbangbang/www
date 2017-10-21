@@ -6,8 +6,8 @@ import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.sun.data.MainFragmentData;
 import com.onyx.android.sun.interfaces.MainFragmentView;
-import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
-import com.onyx.android.sun.requests.SubjectAbilityRequest;
+import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
+import com.onyx.android.sun.requests.cloud.SubjectAbilityRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 

@@ -1,4 +1,4 @@
-package com.onyx.android.sun.requests;
+package com.onyx.android.sun.requests.cloud;
 
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.sun.cloud.service.ContentService;

@@ -2,7 +2,12 @@ package com.onyx.android.sun;
 
 import android.app.Application;
 import android.content.Context;
+import android.support.multidex.MultiDex;
 
+import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.manager.OTAManager;
+import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sun.common.AppConfigData;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
@@ -11,8 +16,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.GeneratedDatabaseHolder;
 import java.util.ArrayList;
 import java.util.List;
-import com.raizlabs.android.dbflow.config.FlowConfig;
-import com.raizlabs.android.dbflow.config.FlowManager;
+
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
 
@@ -21,30 +25,33 @@ import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
  */
 
 public class SunApplication extends Application {
-    private static SunApplication instence;
+    private static SunApplication instance;
     private NoteManager noteManager;
 
     public NoteManager getNoteManager() {
         if (noteManager == null) {
-            noteManager = new NoteManager(instence);
+            noteManager = new NoteManager(instance);
         }
         return noteManager;
     }
 
-    public static SunApplication getInstence() {
-        return instence;
+    public static SunApplication getInstance() {
+        return instance;
     }
 
     @Override
     public void onCreate() {
         super.onCreate();
         initContext();
+        MultiDex.install(instance);
         initDatabases(this, databaseHolderList());
-        AppConfigData.loadMainTabData(instence);
+        AppConfigData.loadMainTabData(instance);
+        OnyxDownloadManager.init(instance);
+        OTAManager.sharedInstance().getCloudStore().setCloudConf(CloudConf.create(Constant.CN_HOST_BASE, Constant.CN_API_BASE, Constant.DEFAULT_CLOUD_STORAGE));
     }
 
     private void initContext() {
-        instence = this;
+        instance = this;
     }
 
     public void initDatabases(final Context context, final List<Class<? extends DatabaseHolder>> list) {
