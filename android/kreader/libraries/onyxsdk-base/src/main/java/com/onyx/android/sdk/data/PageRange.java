@@ -12,4 +12,8 @@ public class PageRange {
         startPosition = start;
         endPosition = end;
     }
+
+    public static PageRange create(final String start, final String end) {
+        return new PageRange(start, end);
+    }
 }

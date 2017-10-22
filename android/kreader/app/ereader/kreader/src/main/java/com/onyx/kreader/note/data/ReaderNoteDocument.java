@@ -300,12 +300,13 @@ public class ReaderNoteDocument {
     public final List<PageInfo> getNoEmptyPageList(final Context context) {
         List<PageInfo> pageList = new ArrayList<>();
         for (String page : getPageList()) {
-            int count = getSubPageCount(new PageRange(page, page));
+            final PageRange pageRange = PageRange.create(page, page);
+            int count = getSubPageCount(pageRange);
             for (int i = 0; i < count; i++) {
-                String pageUniqueId = getSubPageUniqueId(new PageRange(page, page), i);
+                String pageUniqueId = getSubPageUniqueId(pageRange, i);
                 ReaderNotePage notePage = pageMap.get(pageUniqueId);
                 if (notePage == null) {
-                    notePage = loadPage(context, new PageRange(page, page), i);
+                    notePage = loadPage(context, pageRange, i);
                 }
                 if (notePage == null) {
                     continue;
