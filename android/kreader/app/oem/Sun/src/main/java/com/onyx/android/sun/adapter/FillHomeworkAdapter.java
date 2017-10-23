@@ -11,6 +11,8 @@ import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.cloud.bean.QuestionData;
 import com.onyx.android.sun.databinding.ItemFillHomeworkBinding;
+import com.onyx.android.sun.interfaces.OnCheckAnswerListener;
+import com.onyx.android.sun.presenter.FillHomeworkPresenter;
 import com.onyx.android.sun.view.PageRecyclerView;
 
 import java.util.List;
@@ -19,9 +21,10 @@ import java.util.List;
  * Created by li on 2017/10/13.
  */
 
-public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter {
+public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements OnCheckAnswerListener {
     private List<QuestionData> data;
     private String title;
+    private FillHomeworkPresenter fillHomeworkPresenter = new FillHomeworkPresenter();
 
     @Override
     public int getRowCount() {
@@ -50,6 +53,7 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter {
         ItemFillHomeworkBinding fillHomeworkBinding = viewHolder.getFillHomeworkBinding();
         final Question questions = data.get(position).exercise;
         fillHomeworkBinding.itemHomeworkQuestion.setQuestionData(questions, title);
+        fillHomeworkBinding.itemHomeworkQuestion.setOnCheckAnswerListener(this);
         fillHomeworkBinding.executePendingBindings();
     }
 
@@ -62,6 +66,11 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter {
         this.data = data;
         this.title = title;
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void checkAnswerListener(Question question) {
+        fillHomeworkPresenter.insertAnswer(question);
     }
 
     static class FillHomeworkViewHolder extends RecyclerView.ViewHolder {

@@ -46,4 +46,8 @@
     <string name="total_score_ranking">Total score ranking</string>
     <string name="no_answer">Unfilled</string>
     <string name="question">Question</string>
+    <string name="knowledge_point">Knowledge:%s</string>
+    <string name="cognitive_level">Cognitive level:%s</string>
+    <string name="correct_rate">Correct rate:%s</string>
+    <string name="count_down">Count down:%s</string>
 </resources>

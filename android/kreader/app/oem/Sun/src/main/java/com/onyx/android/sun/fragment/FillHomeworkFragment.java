@@ -1,8 +1,10 @@
 package com.onyx.android.sun.fragment;
 
 import android.databinding.ViewDataBinding;
+import android.graphics.Bitmap;
 import android.view.View;
 
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.adapter.FillHomeworkAdapter;
@@ -11,8 +13,11 @@ import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionData;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
+import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.databinding.FillHomeworkBinding;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.sun.event.SubjectiveResultEvent;
+import com.onyx.android.sun.event.UnansweredEvent;
 import com.onyx.android.sun.interfaces.HomeworkView;
 import com.onyx.android.sun.presenter.HomeworkPresenter;
 import com.onyx.android.sun.utils.StringUtil;
@@ -20,6 +25,8 @@ import com.onyx.android.sun.view.DisableScrollGridManager;
 import com.onyx.android.sun.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -98,6 +105,11 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         }
     }
 
+    @Override
+    public void setAnswerRecord(List<TaskAndAnswerEntity> taskList) {
+        homeworkRecordAdapter.setData(taskList);
+    }
+
     public void setTaskId(int id, String type, String title) {
         this.id = id;
         this.type = type;
@@ -125,9 +137,22 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         if (getResources().getString(R.string.file_homework_record).equals(fillHomeworkBinding.fillHomeworkTitleBar.getRecord())) {
             fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.question));
             fillHomeworkBinding.fillHomeworkRecycler.setAdapter(homeworkRecordAdapter);
+            //TODO:fake id
+            homeworkPresenter.getAllQuestion("1", null);
         } else {
             fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
             fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUnansweredEvent(UnansweredEvent event) {
+        setTitleBarRecord();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSubjectiveResultEvent(SubjectiveResultEvent event) {
+        //TODO: assign value
+        Bitmap bitmap = NoteDataProvider.loadThumbnail(SunApplication.getInstence(), event.getQuestionId());
     }
 }

@@ -55,5 +55,7 @@
     <dimen name="item_homework_record_padding">10dp</dimen>
     <dimen name="item_homework_result_text_padding">10dp</dimen>
     <dimen name="item_homework_record_text_padding">20dp</dimen>
+    <dimen name="question_view_correct_padding">10dp</dimen>
+    <dimen name="question_view_correct_icon_margin_top">5dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
 </resources>

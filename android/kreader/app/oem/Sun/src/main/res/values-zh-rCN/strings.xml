@@ -46,4 +46,8 @@
     <string name="total_score_ranking">总分排行榜</string>
     <string name="no_answer">未答</string>
     <string name="question">题目</string>
+    <string name="knowledge_point">知识点：%s</string>
+    <string name="cognitive_level">认知水平：%s</string>
+    <string name="correct_rate">正确率：%s</string>
+    <string name="count_down">倒计时：%s</string>
 </resources>

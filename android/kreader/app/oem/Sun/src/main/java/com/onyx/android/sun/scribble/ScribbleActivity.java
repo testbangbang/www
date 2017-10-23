@@ -21,9 +21,11 @@ import com.onyx.android.sun.adapter.ShapePageAdapter;
 import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.databinding.ActivityScribbleBinding;
 import com.onyx.android.sun.event.ShapePageItemEvent;
+import com.onyx.android.sun.event.SubjectiveResultEvent;
 import com.onyx.android.sun.view.DisableScrollGridManager;
 import com.onyx.android.sun.view.DividerItemDecoration;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
@@ -165,7 +167,7 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
                 scribbleHandler.saveDocument(questionID, questionTitle, true, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-
+                        EventBus.getDefault().post(new SubjectiveResultEvent(questionID));
                     }
                 });
             }
