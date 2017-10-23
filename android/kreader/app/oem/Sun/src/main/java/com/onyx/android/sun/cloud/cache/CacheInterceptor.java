@@ -24,7 +24,7 @@ public class CacheInterceptor implements Interceptor {
     @Override
     public Response intercept(Chain chain) throws IOException {
         Request request = chain.request();
-        boolean netAvailable = NetworkUtil.isWiFiConnected(SunApplication.getInstence());
+        boolean netAvailable = NetworkUtil.isWiFiConnected(SunApplication.getInstance());
 
         if (netAvailable) {
             request = request.newBuilder()

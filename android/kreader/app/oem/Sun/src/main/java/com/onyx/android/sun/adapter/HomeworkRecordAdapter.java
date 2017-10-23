@@ -1,7 +1,6 @@
 package com.onyx.android.sun.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,7 +32,7 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
     private final List<AnswerRecordBean> data = new ArrayList<>();
 
     public HomeworkRecordAdapter() {
-        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         /*for (int i = 0; i < 2; i++) {
             AnswerRecordBean bean = new AnswerRecordBean();
@@ -66,12 +65,12 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_record_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_record_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_record_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_record_col);
     }
 
     @Override
@@ -92,7 +91,7 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
         AnswerRecordBean answerRecordBean = data.get(position);
         homeworkRecordBinding.setTitle(answerRecordBean.title);
         HomeworkResultAdapter homeworkResultAdapter = new HomeworkResultAdapter();
-        homeworkRecordBinding.homeworkRecordRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
+        homeworkRecordBinding.homeworkRecordRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         homeworkRecordBinding.homeworkRecordRecycler.addItemDecoration(dividerItemDecoration);
         if("客观题".equals(answerRecordBean.title)) {
             homeworkResultAdapter.setRowOrCol(2, 9);

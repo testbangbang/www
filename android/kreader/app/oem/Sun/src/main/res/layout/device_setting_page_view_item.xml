@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/device_setting_padding_top"
+    android:paddingTop="@dimen/device_setting_padding_top">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/device_setting_details"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/device_setting_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:textSize="@dimen/level_one_heading_font"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/device_setting_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/device_setting_padding_top"
+            android:maxLines="1"
+            android:text="@string/device_setting_device_information"
+            android:textSize="@dimen/level_three_heading_font" />
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/device_setting_details"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerInParent="true"
+        android:src="@drawable/details" />
+</RelativeLayout>

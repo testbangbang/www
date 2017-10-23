@@ -51,7 +51,7 @@ public final class CacheManager {
     }
 
     private CacheManager() {
-        File diskCacheDir = getDiskCacheDir(SunApplication.getInstence(), CACHE_DIR);
+        File diskCacheDir = getDiskCacheDir(SunApplication.getInstance(), CACHE_DIR);
         if (!diskCacheDir.exists()) {
             boolean b = diskCacheDir.mkdirs();
             Log.d(TAG, "!diskCacheDir.exists() --- diskCacheDir.mkdirs()=" + b);
@@ -59,7 +59,7 @@ public final class CacheManager {
         if (diskCacheDir.getUsableSpace() > DISK_CACHE_SIZE) {
             try {
                 mDiskLruCache = DiskLruCache.open(diskCacheDir,
-                        getAppVersion(SunApplication.getInstence()), 1/*How many value the key corresponds to*/, DISK_CACHE_SIZE);
+                        getAppVersion(SunApplication.getInstance()), 1/*How many value the key corresponds to*/, DISK_CACHE_SIZE);
                 Log.d(TAG, "mDiskLruCache created");
             } catch (IOException e) {
                 e.printStackTrace();

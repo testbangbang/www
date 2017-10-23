@@ -28,12 +28,12 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.fill_homework_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.fill_homework_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.fill_homework_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.fill_homework_col);
     }
 
     @Override

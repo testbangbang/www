@@ -58,4 +58,30 @@
     <dimen name="question_view_correct_padding">10dp</dimen>
     <dimen name="question_view_correct_icon_margin_top">5dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
+    <dimen name="device_setting_page_margin_left">20dp</dimen>
+    <dimen name="device_setting_padding_top">15dp</dimen>
+    <dimen name="page_refresh_item_padding_top">30dp</dimen>
+    <dimen name="device_setting_automatic_shutdown_item_height">100dp</dimen>
+    <dimen name="device_setting_device_information">5dp</dimen>
+    <dimen name="line_width">2dp</dimen>
+    <dimen name="book_detail_dialog_contain_close_margin_left">20dp</dimen>
+    <dimen name="book_detail_dialog_contain_close_margin_right">16dp</dimen>
+    <dimen name="book_detail_dialog_contain_close_margin_top">20dp</dimen>
+    <dimen name="book_detail_dialog_contain_close_margin_bottom">20dp</dimen>
+    <dimen name="book_detail_dialog_message_margin_left">20dp</dimen>
+    <dimen name="book_detail_dialog_message_margin_top">20dp</dimen>
+    <dimen name="book_detail_dialog_contain_go_margin_top">80dp</dimen>
+    <dimen name="book_detail_dialog_contain_go_margin_bottom">20dp</dimen>
+    <dimen name="dialog_button_padding">10dp</dimen>
+    <dimen name="wifi_dialog_margin_left">10dp</dimen>
+    <dimen name="wifi_dialog_margin_right">10dp</dimen>
+    <dimen name="wifi_dialog_padding">10dp</dimen>
+    <dimen name="wifi_switch_margin_left">10dp</dimen>
+    <dimen name="wifi_recycle_view_margin_top">20dp</dimen>
+    <dimen name="wifi_view_item_padding_top">8dp</dimen>
+    <dimen name="wifi_view_item_margin_left">10dp</dimen>
+    <dimen name="wifi_view_item_margin_top">5dp</dimen>
+    <dimen name="wifi_view_item_margin_right">10dp</dimen>
+    <dimen name="device_setting_title_font_size">20sp</dimen>
+    <dimen name="device_setting_setting_font_size">16sp</dimen>
 </resources>

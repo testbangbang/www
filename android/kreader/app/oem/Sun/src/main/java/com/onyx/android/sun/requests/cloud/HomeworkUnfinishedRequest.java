@@ -1,4 +1,7 @@
-package com.onyx.android.sun.requests;
+package com.onyx.android.sun.requests.cloud;
+
+
+import android.util.Log;
 
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
@@ -11,14 +14,15 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Created by hehai on 17-10-9.
+ * Created by li on 2017/10/10.
  */
 
-public class MessagesRequest extends BaseCloudRequest {
+public class HomeworkUnfinishedRequest extends BaseCloudRequest {
+    private static final String TAG = HomeworkUnfinishedRequest.class.getSimpleName();
     private HomeworkRequestBean requestBean;
     private HomeworkUnfinishedResultBean resultBean;
 
-    public void setRequestBean(HomeworkRequestBean requestBean) {
+    public HomeworkUnfinishedRequest(HomeworkRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
@@ -26,16 +30,8 @@ public class MessagesRequest extends BaseCloudRequest {
         return resultBean;
     }
 
-    public MessagesRequest(HomeworkRequestBean requestBean) {
-        this.requestBean = requestBean;
-    }
-
     @Override
     public void execute(SunRequestManager helper) throws Exception {
-        executeCloudRequest();
-    }
-
-    private void executeCloudRequest() {
         try {
             ContentService service = CloudApiContext.getService(CloudApiContext.BASE_URL);
             Call<HomeworkUnfinishedResultBean> call = getCall(service);
@@ -44,12 +40,15 @@ public class MessagesRequest extends BaseCloudRequest {
                 resultBean = response.body();
             }
         } catch (Exception e) {
+            Log.i(TAG, e.toString());
             setException(e);
         }
     }
 
     private Call<HomeworkUnfinishedResultBean> getCall(ContentService service) {
-        return service.getMessage(requestBean.studentId,
-                requestBean.page, requestBean.size);
+        return service.getHomeworkUnfinished(requestBean.status, requestBean.studentId,
+                requestBean.page, requestBean.size,
+                requestBean.course, requestBean.type,
+                requestBean.starttime, requestBean.endtime);
     }
 }

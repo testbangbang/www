@@ -6,4 +6,6 @@
     <color name="gray">#44000000</color>
     <color name="litter_gray">#22000000</color>
     <color name="white">#ffffffff</color>
+    <color name="black">#000</color>
+    <color name="chart_gray">#33000000</color>
 </resources>

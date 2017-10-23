@@ -27,12 +27,12 @@ public class ShapePageAdapter extends PageRecyclerView.PageAdapter<ShapePageAdap
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.shape_page_adapter_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.shape_page_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.shape_page_adapter_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.shape_page_adapter_col);
     }
 
     @Override
@@ -48,7 +48,7 @@ public class ShapePageAdapter extends PageRecyclerView.PageAdapter<ShapePageAdap
 
     @Override
     public void onPageBindViewHolder(ViewHolder holder, int position) {
-        holder.getBind().setText(String.format(SunApplication.getInstence().getResources().getString(R.string.answer_page_format), (position + 1)));
+        holder.getBind().setText(String.format(SunApplication.getInstance().getResources().getString(R.string.answer_page_format), (position + 1)));
         holder.getBind().itemShapePage.setOnClickListener(this);
         holder.getBind().itemShapePage.setTag(position);
     }

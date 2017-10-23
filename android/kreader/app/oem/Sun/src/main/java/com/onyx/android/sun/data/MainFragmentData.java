@@ -3,8 +3,8 @@ package com.onyx.android.sun.data;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
-import com.onyx.android.sun.requests.HomeworkUnfinishedRequest;
-import com.onyx.android.sun.requests.SubjectAbilityRequest;
+import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
+import com.onyx.android.sun.requests.cloud.SubjectAbilityRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 import com.onyx.android.sun.requests.requestTool.SunRequestManager;
@@ -24,7 +24,7 @@ public class MainFragmentData {
     }
 
     public void getSubjectScore(final SubjectAbilityRequest req, final BaseCallback baseCallback) {
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), req, new BaseCallback() {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 scores.clear();
@@ -42,6 +42,6 @@ public class MainFragmentData {
     }
 
     public void getPractices(HomeworkUnfinishedRequest req, BaseCallback baseCallback) {
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), req, baseCallback);
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), req, baseCallback);
     }
 }

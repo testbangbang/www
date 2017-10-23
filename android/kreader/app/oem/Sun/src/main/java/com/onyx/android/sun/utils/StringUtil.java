@@ -13,8 +13,8 @@ import java.util.Map;
 public class StringUtil {
     private static Map<String, String> homeworkMap = new HashMap<String, String>() {
         {
-            put("task", SunApplication.getInstence().getResources().getString(R.string.homework_course_exercise));
-            put("exam", SunApplication.getInstence().getResources().getString(R.string.homework_course_test_paper));
+            put("task", SunApplication.getInstance().getResources().getString(R.string.homework_course_exercise));
+            put("exam", SunApplication.getInstance().getResources().getString(R.string.homework_course_test_paper));
         }
     };
 
