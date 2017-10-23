@@ -1,9 +1,11 @@
 package com.onyx.android.dr.request.cloud;
 
+import com.onyx.android.dr.event.GetVerificationCodeFailedEvent;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.v2.VerifyCode;
-import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+
+import org.greenrobot.eventbus.EventBus;
 
 import retrofit2.Response;
 
@@ -36,6 +38,8 @@ public class RequestPhoneVerify extends AutoNetWorkConnectionBaseCloudRequest {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            String message = e.getMessage();
+            EventBus.getDefault().post(new GetVerificationCodeFailedEvent(message));
         }
     }
 }

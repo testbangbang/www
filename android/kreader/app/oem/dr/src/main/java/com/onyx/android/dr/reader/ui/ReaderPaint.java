@@ -41,6 +41,8 @@ public class ReaderPaint {
     private static boolean debugTestOffsetTouchPointCircle = false;
     private static boolean debugPageInfo = false;
     private SingletonSharedPreference.AnnotationHighlightStyle annotationHighlightStyle;
+    private int rightOffset = 1;
+    private int bottomOffset = 9;
 
     public ReaderPaint() {
 
@@ -231,7 +233,7 @@ public class ReaderPaint {
         }
         RectF end = rectangles.get(rectangles.size() - 1);
         Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_dialog_reader_choose_label_sign);
-        canvas.drawBitmap(bitmap, end.right, end.top - bitmap.getHeight(), null);
+        canvas.drawBitmap(bitmap, end.right + rightOffset, end.top - bitmap.getHeight() + bottomOffset, null);
     }
 
     private void drawSelectionCursor(Canvas canvas, Paint paint, PixelXorXfermode xor, ReaderSelectionManager selectionManager) {

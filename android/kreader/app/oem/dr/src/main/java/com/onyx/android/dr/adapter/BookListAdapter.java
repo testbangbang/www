@@ -67,6 +67,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     private boolean showCheckbox;
     private boolean canChecked;
     private Set<Metadata> selectedMetadata = new HashSet<>();
+    private ArrayList<Metadata> visibleNewBookList;
 
     public BookListAdapter(Context context, LibraryDataHolder dataHolder) {
         this.context = context;
@@ -118,7 +119,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         viewHolder.titleView.setVisibility(isShowName ? View.VISIBLE : View.GONE);
         viewHolder.timeView.setVisibility(isShowTime ? View.VISIBLE : View.GONE);
         viewHolder.titleView.setText(String.valueOf(eBook.getName()));
-        viewHolder.timeView.setText(TimeUtils.getStringByDate(eBook.getCreatedAt()));
+        viewHolder.timeView.setText(getReadTime(eBook));
 
         Bitmap bitmap = getBitmap(eBook.getAssociationId());
         if (bitmap == null) {
@@ -382,12 +383,17 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
     private int getReadRecords(Metadata metadata) {
         Cursor cursor = null;
         int progress = 0;
+        String string;
         try {
             ContentResolver resolver = DRApplication.getInstance().getContentResolver();
             Uri uri = Uri.parse(Constants.READ_HISTORY_URI);
             cursor = resolver.query(uri, new String[]{"Progress"}, "Location=?", new String[]{metadata.getNativeAbsolutePath()}, null);
             if (cursor != null && cursor.moveToFirst()) {
-                String string = cursor.getString(0);
+                if (metadata.getNativeAbsolutePath().equals(DRApplication.getInstance().getPath())){
+                    string = DRApplication.getInstance().getProgress();
+                }else{
+                    string = cursor.getString(0);
+                }
                 if (!StringUtils.isNullOrEmpty(string)) {
                     String[] split = string.split("/");
                     int i = Integer.valueOf(split[0]) * 100 / Integer.valueOf(split[1]);
@@ -402,6 +408,17 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
             }
         }
         return progress;
+    }
+
+    private String getReadTime(Metadata metadata) {
+        String date = "";
+        if (metadata.getNativeAbsolutePath().equals(DRApplication.getInstance().getPath())){
+            long time = DRApplication.getInstance().getTime();
+            date = TimeUtils.getTime(time);
+        }else{
+            date = TimeUtils.getStringByDate(metadata.getUpdatedAt());
+        }
+        return date;
     }
 }
 

@@ -2,6 +2,7 @@ package com.onyx.android.dr.activity;
 
 import android.content.Intent;
 import android.view.KeyEvent;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -69,6 +70,12 @@ public class BaiduBaiKeActivity extends BaseActivity {
         WebSettings webSettings = baiduBaikeContent.getSettings();
         webSettings.setTextSize(WebSettings.TextSize.LARGER);
         baiduBaikeContent.loadUrl(DialogDict.BAIDU_BAIKE + keyword);
+        baiduBaikeContent.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                return true;
+            }
+        });
     }
 
     @Override
