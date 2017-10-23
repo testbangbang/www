@@ -90,6 +90,8 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
             mAdapter.addObject(createScreenRefreshItem(R.string.every_5_pages, 5));
             mAdapter.addObject(createScreenRefreshItem(R.string.every_7_pages, 7));
             mAdapter.addObject(createScreenRefreshItem(R.string.every_9_pages, 9));
+            mAdapter.addObject(createScreenRefreshItem(R.string.every_30_pages, 30));
+            mAdapter.addObject(createScreenRefreshItem(R.string.every_50_pages, 50));
             mAdapter.addObject(createScreenRefreshItem(R.string.never, Integer.MAX_VALUE));
         }
         return mAdapter;
