@@ -22,14 +22,14 @@ public:
 
     bool isOpened() const;
 
-    bool writeLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness,
+    bool writeLine(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness,
                    const PointF &start, const PointF &end);
-    bool writePolyLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness,
+    bool writePolyLine(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness,
                       const std::vector<PointF> &points);
-    bool writePolygon(const int page, const RectF &rect, const uint32_t color, const float strokeThickness,
+    bool writePolygon(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness,
                       const std::vector<PointF> &points);
-    bool writeSquare(const int page, const RectF &rect, const uint32_t color, const float strokeThickness);
-    bool writeCircle(const int page, const RectF &rect, const uint32_t color, const float strokeThickness);
+    bool writeSquare(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness);
+    bool writeCircle(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness);
 
     bool writeAnnotation(const PageAnnotation &annotation);
 

@@ -34,42 +34,42 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils
 /*
  * Class:     com_onyx_android_sdk_reader_utils_PdfWriterUtils
  * Method:    writeLine
- * Signature: (I[FIFFFFF)Z
+ * Signature: (II[FIFFFFF)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeLine
-  (JNIEnv *, jclass, jint, jfloatArray, jint, jfloat, jfloat, jfloat, jfloat, jfloat);
+  (JNIEnv *, jclass, jint, jint, jfloatArray, jint, jfloat, jfloat, jfloat, jfloat, jfloat);
 
 /*
  * Class:     com_onyx_android_sdk_reader_utils_PdfWriterUtils
  * Method:    writePolyLine
- * Signature: (I[FIF[F)Z
+ * Signature: (II[FIF[F)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolyLine
-  (JNIEnv *, jclass, jint, jfloatArray, jint, jfloat, jfloatArray);
+  (JNIEnv *, jclass, jint, jint, jfloatArray, jint, jfloat, jfloatArray);
 
 /*
  * Class:     com_onyx_android_sdk_reader_utils_PdfWriterUtils
  * Method:    writePolygon
- * Signature: (I[FIF[F)Z
+ * Signature: (II[FIF[F)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolygon
-  (JNIEnv *, jclass, jint, jfloatArray, jint, jfloat, jfloatArray);
+  (JNIEnv *, jclass, jint, jint, jfloatArray, jint, jfloat, jfloatArray);
 
 /*
  * Class:     com_onyx_android_sdk_reader_utils_PdfWriterUtils
  * Method:    writeSquare
- * Signature: (I[FIF)Z
+ * Signature: (II[FIF)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeSquare
-  (JNIEnv *, jclass, jint, jfloatArray, jint, jfloat);
+  (JNIEnv *, jclass, jint, jint, jfloatArray, jint, jfloat);
 
 /*
  * Class:     com_onyx_android_sdk_reader_utils_PdfWriterUtils
  * Method:    writeCircle
- * Signature: (I[FIF)Z
+ * Signature: (II[FIF)Z
  */
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeCircle
-  (JNIEnv *, jclass, jint, jfloatArray, jint, jfloat);
+  (JNIEnv *, jclass, jint, jint, jfloatArray, jint, jfloat);
 
 /*
  * Class:     com_onyx_android_sdk_reader_utils_PdfWriterUtils

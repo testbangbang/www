@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.requests;
 import android.graphics.Color;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.BrushScribbleShape;
@@ -21,6 +22,7 @@ import com.onyx.android.sdk.reader.utils.PdfWriterUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -32,16 +34,18 @@ public class ExportNotesRequest extends BaseReaderRequest {
 
     private List<Annotation> annotations = new ArrayList<>();
     private List<Shape> shapes = new ArrayList<>();
+    private HashMap<String, PageInfo> subPageMap = new HashMap<>();
 
-
-    public ExportNotesRequest(List<Annotation> annotations, List<Shape> shapes) {
+    public ExportNotesRequest(List<Annotation> annotations, List<Shape> shapes, HashMap<String, PageInfo> subPageMap) {
         if (annotations != null) {
             this.annotations.addAll(annotations);
         }
         if (shapes != null) {
             this.shapes.addAll(shapes);
         }
-
+        if (subPageMap != null) {
+            this.subPageMap.putAll(subPageMap);
+        }
     }
 
     public ExportNotesRequest(List<Annotation> annotations) {
@@ -157,8 +161,16 @@ public class ExportNotesRequest extends BaseReaderRequest {
         return rect;
     }
 
+    private int getSubPageIndex(final Shape shape) {
+        if (!subPageMap.containsKey(shape.getSubPageUniqueId())) {
+            return 0;
+        }
+        return subPageMap.get(shape.getSubPageUniqueId()).getSubPage();
+    }
+
     private boolean writePolyLine(final Shape line, final int color) {
         int page = Integer.parseInt(line.getPageUniqueId());
+        int subPage = getSubPageIndex(line);
         float[] boundingRect = getBoundingRect(line);
         float[] vertices = new float[line.getPoints().size() * 2];
         for (int i = 0; i < line.getPoints().size(); i++) {
@@ -166,37 +178,41 @@ public class ExportNotesRequest extends BaseReaderRequest {
             vertices[i * 2] = point.getX();
             vertices[(i * 2) + 1] = point.getY();
         }
-        return PdfWriterUtils.writePolyLine(page, boundingRect, color,
+        return PdfWriterUtils.writePolyLine(page, subPage, boundingRect, color,
                 line.getStrokeWidth(), vertices);
     }
 
     private boolean writeLine(final LineShape line, final int color) {
         int page = Integer.parseInt(line.getPageUniqueId());
+        int subPage = getSubPageIndex(line);
         float[] boundingRect = getBoundingRect(line);
         float startX = line.getPoints().get(0).x;
         float startY = line.getPoints().get(0).y;
         float endX = line.getPoints().get(1).x;
         float endY = line.getPoints().get(1).y;
-        return PdfWriterUtils.writeLine(page, boundingRect, color,
+        return PdfWriterUtils.writeLine(page, subPage, boundingRect, color,
                 line.getStrokeWidth(), startX, startY, endX, endY);
     }
 
     private boolean writeSquare(final RectangleShape square, final int color) {
         int page = Integer.parseInt(square.getPageUniqueId());
+        int subPage = getSubPageIndex(square);
         float[] boundingRect = getBoundingRect(square);
-        return PdfWriterUtils.writeSquare(page, boundingRect, color,
+        return PdfWriterUtils.writeSquare(page, subPage, boundingRect, color,
                 square.getStrokeWidth());
     }
 
     private boolean writeCircle(final CircleShape circle, final int color) {
         int page = Integer.parseInt(circle.getPageUniqueId());
+        int subPage = getSubPageIndex(circle);
         float[] boundingRect = getBoundingRect(circle);
-        return PdfWriterUtils.writeCircle(page, boundingRect, color,
+        return PdfWriterUtils.writeCircle(page, subPage, boundingRect, color,
                 circle.getStrokeWidth());
     }
 
     private boolean writeTriangle(final TriangleShape triangle, final int color) {
         int page = Integer.parseInt(triangle.getPageUniqueId());
+        int subPage = getSubPageIndex(triangle);
         float[] boundingRect = getBoundingRect(triangle);
         float[] vertices = new float[6];
         vertices[0] = triangle.getBoundingRect().centerX();
@@ -205,7 +221,7 @@ public class ExportNotesRequest extends BaseReaderRequest {
         vertices[3] = triangle.getBoundingRect().bottom;
         vertices[4] = triangle.getBoundingRect().right;
         vertices[5] = triangle.getBoundingRect().bottom;
-        return PdfWriterUtils.writePolygon(page, boundingRect, color,
+        return PdfWriterUtils.writePolygon(page, subPage, boundingRect, color,
                 triangle.getStrokeWidth(), vertices);
     }
 

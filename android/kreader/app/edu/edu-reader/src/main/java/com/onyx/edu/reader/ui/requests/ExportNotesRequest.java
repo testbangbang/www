@@ -166,7 +166,7 @@ public class ExportNotesRequest extends BaseReaderRequest {
             vertices[i * 2] = point.getX();
             vertices[(i * 2) + 1] = point.getY();
         }
-        return PdfWriterUtils.writePolyLine(page, boundingRect, color,
+        return PdfWriterUtils.writePolyLine(page, 0, boundingRect, color,
                 line.getStrokeWidth(), vertices);
     }
 
@@ -177,21 +177,21 @@ public class ExportNotesRequest extends BaseReaderRequest {
         float startY = line.getPoints().get(0).y;
         float endX = line.getPoints().get(1).x;
         float endY = line.getPoints().get(1).y;
-        return PdfWriterUtils.writeLine(page, boundingRect, color,
+        return PdfWriterUtils.writeLine(page, 0, boundingRect, color,
                 line.getStrokeWidth(), startX, startY, endX, endY);
     }
 
     private boolean writeSquare(final RectangleShape square, final int color) {
         int page = Integer.parseInt(square.getPageUniqueId());
         float[] boundingRect = getBoundingRect(square);
-        return PdfWriterUtils.writeSquare(page, boundingRect, color,
+        return PdfWriterUtils.writeSquare(page, 0, boundingRect, color,
                 square.getStrokeWidth());
     }
 
     private boolean writeCircle(final CircleShape circle, final int color) {
         int page = Integer.parseInt(circle.getPageUniqueId());
         float[] boundingRect = getBoundingRect(circle);
-        return PdfWriterUtils.writeCircle(page, boundingRect, color,
+        return PdfWriterUtils.writeCircle(page, 0, boundingRect, color,
                 circle.getStrokeWidth());
     }
 
@@ -205,7 +205,7 @@ public class ExportNotesRequest extends BaseReaderRequest {
         vertices[3] = triangle.getBoundingRect().bottom;
         vertices[4] = triangle.getBoundingRect().right;
         vertices[5] = triangle.getBoundingRect().bottom;
-        return PdfWriterUtils.writePolygon(page, boundingRect, color,
+        return PdfWriterUtils.writePolygon(page, 0, boundingRect, color,
                 triangle.getStrokeWidth(), vertices);
     }
 

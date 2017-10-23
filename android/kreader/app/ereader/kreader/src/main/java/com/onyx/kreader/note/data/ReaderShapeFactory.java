@@ -87,6 +87,7 @@ public class ReaderShapeFactory {
     private static void syncShapeDataFromModel(final Shape shape, final ReaderNoteShapeModel model) {
         shape.setDocumentUniqueId(model.getDocumentUniqueId());
         shape.setPageUniqueId(model.getPageUniqueId());
+        shape.setSubPageUniqueId(model.getSubPageUniqueId());
         shape.setColor(model.getColor());
         shape.setStrokeWidth(model.getThickness());
         shape.setShapeUniqueId(model.getShapeUniqueId());
