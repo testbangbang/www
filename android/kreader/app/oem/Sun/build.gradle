@@ -31,6 +31,12 @@ android {
             signingConfig signingConfigs.release
         }
     }
+
+    android {
+        lintOptions {
+            abortOnError false
+        }
+    }
 }
 
 dependencies {

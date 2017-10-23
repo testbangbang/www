@@ -50,8 +50,8 @@
     <string name="device_setting_language_settings">language settings</string>
     <string name="device_setting_device_information">Device Information</string>
     <string name="device_setting_page_refresh_rate">The page refresh rate</string>
-    <string name="reset">恢复出厂设置</string>
-    <string name="reset_device_information">重置设备信息</string>
+    <string name="reset">Reset</string>
+    <string name="reset_device_information">Reset device information</string>
     <string name="device_setting_stores_information">Stores information</string>
     <string name="device_setting_system_update">System update</string>
     <string name="device_setting_version_update_record">Version update record</string>
