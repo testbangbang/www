@@ -100,7 +100,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void skipToMainActivity() {
-        Intent intent = new Intent(SunApplication.getInstence(),MainActivity.class);
+        Intent intent = new Intent(SunApplication.getInstance(),MainActivity.class);
         startActivity(intent);
     }
 

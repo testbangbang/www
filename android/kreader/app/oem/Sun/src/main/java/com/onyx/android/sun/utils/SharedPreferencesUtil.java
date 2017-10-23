@@ -89,7 +89,7 @@ public class SharedPreferencesUtil {
     }
 
     private static SharedPreferences getSharedPreferences(String name) {
-        return SunApplication.getInstence().getSharedPreferences(name, Context.MODE_PRIVATE);
+        return SunApplication.getInstance().getSharedPreferences(name, Context.MODE_PRIVATE);
     }
 
 }
