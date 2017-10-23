@@ -203,4 +203,26 @@ public class StringUtils {
         }
         return resultWidth;
     }
+
+    public static boolean isChinese(char c) {
+        Character.UnicodeBlock ub = Character.UnicodeBlock.of(c);
+        return (ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_COMPATIBILITY_IDEOGRAPHS
+                || ub == Character.UnicodeBlock.CJK_UNIFIED_IDEOGRAPHS_EXTENSION_A
+                || ub == Character.UnicodeBlock.GENERAL_PUNCTUATION
+                || ub == Character.UnicodeBlock.CJK_SYMBOLS_AND_PUNCTUATION
+                || ub == Character.UnicodeBlock.HALFWIDTH_AND_FULLWIDTH_FORMS);
+    }
+
+    public static boolean isChinese(String s) {
+        if (isNullOrEmpty(s)) {
+            return false;
+        }
+        for (int i = 0; i < s.length(); i++) {
+            if (isChinese(s.charAt(i))) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
