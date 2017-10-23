@@ -8,26 +8,41 @@ import android.view.KeyEvent;
 import android.view.View;
 
 import com.android.databinding.library.baseAdapters.BR;
+import com.onyx.android.sdk.data.model.ApplicationUpdate;
+import com.onyx.android.sdk.data.model.Firmware;
+import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
+import com.onyx.android.sun.common.CommonNotices;
+import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
+import com.onyx.android.sun.event.ApkDownloadSucceedEvent;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.sun.event.HaveNewVersionApkEvent;
+import com.onyx.android.sun.event.HaveNewVersionEvent;
+import com.onyx.android.sun.event.StartDownloadingEvent;
 import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.event.ToMainFragmentEvent;
 import com.onyx.android.sun.event.ToRankingEvent;
 import com.onyx.android.sun.event.UnfinishedEvent;
+import com.onyx.android.sun.event.UpdateDownloadSucceedEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
 import com.onyx.android.sun.fragment.CorrectFragment;
+import com.onyx.android.sun.fragment.DeviceSettingFragment;
 import com.onyx.android.sun.fragment.FillHomeworkFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.fragment.RankingFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
+import com.onyx.android.sun.utils.ApkUtils;
+import com.onyx.android.sun.utils.SystemUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -96,6 +111,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.news_image:
+                switchCurrentFragment(ChildViewID.FRAGMENT_DEVICE_SETTING);
                 break;
         }
     }
@@ -149,6 +165,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_RANKING:
                     baseFragment = new RankingFragment();
                     break;
+                case ChildViewID.FRAGMENT_DEVICE_SETTING:
+                    baseFragment = new DeviceSettingFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -198,6 +217,60 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToMainFragmentEvent(ToMainFragmentEvent event) {
+        mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_MAIN).select();
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHaveNewVersionApkEvent(HaveNewVersionApkEvent event) {
+        ApplicationUpdate applicationUpdate = event.getApplicationUpdate();
+        Map<String, List<String>> changeLogs = applicationUpdate.changeLogs;
+        String[] downloadUrlList = applicationUpdate.downloadUrlList;
+        String language = getResources().getConfiguration().locale.toString();
+        String message = String.format(getString(R.string.current_version), SystemUtils.getAPPVersionCode(this)) + "--->";
+        message += String.format(getString(R.string.update_version), applicationUpdate.versionCode) + "\n";
+        message += getString(R.string.update_content);
+        if (changeLogs != null && changeLogs.size() > 0) {
+            List<String> messageList = changeLogs.get(language);
+            for (int i = 0; i < messageList.size(); i++) {
+                message += messageList.get(i);
+                message += "\n";
+            }
+        }
+        if (downloadUrlList == null || downloadUrlList.length <= 0) {
+            CommonNotices.show(getString(R.string.without_new_version));
+            return;
+        }
+        ApkUtils.showNewApkDialog(SunApplication.getInstance(), message, downloadUrlList[0]);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHaveNewVersionEvent(HaveNewVersionEvent event) {
+        FirmwareUpdateRequest request = event.getRequest();
+        Firmware resultFirmware = request.getResultFirmware();
+        String changeLog = resultFirmware.getChangeLog();
+        if (StringUtils.isNullOrEmpty(changeLog)) {
+            changeLog = resultFirmware.buildDisplayId;
+        }
+        String downloadUrl = resultFirmware.getUrl();
+        if (StringUtils.isNotBlank(downloadUrl)) {
+            ApkUtils.showLocalCheckDialog(this, changeLog, downloadUrl);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onApkDownloadSucceedEvent(ApkDownloadSucceedEvent event) {
+        ApkUtils.installApk(SunApplication.getInstance(), Constants.APK_DOWNLOAD_PATH);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateDownloadSucceedEvent(UpdateDownloadSucceedEvent event) {
+        ApkUtils.firmwareLocal();
+        dismissAllProgressDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onStartDownloadingEvent(StartDownloadingEvent event) {
+        showProgressDialog(event, R.string.downloading, null);
     }
 }

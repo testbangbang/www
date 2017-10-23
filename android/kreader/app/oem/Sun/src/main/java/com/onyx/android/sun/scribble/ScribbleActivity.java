@@ -2,7 +2,6 @@ package com.onyx.android.sun.scribble;
 
 import android.content.Intent;
 import android.databinding.ViewDataBinding;
-import android.graphics.Bitmap;
 import android.view.SurfaceHolder;
 import android.view.View;
 
@@ -16,7 +15,6 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.activity.BaseActivity;
-import com.onyx.android.sun.adapter.HomeworkUnfinishedAdapter;
 import com.onyx.android.sun.adapter.ShapePageAdapter;
 import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.databinding.ActivityScribbleBinding;
@@ -25,9 +23,6 @@ import com.onyx.android.sun.view.DisableScrollGridManager;
 import com.onyx.android.sun.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.Subscribe;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by hehai on 17-10-13.
@@ -53,13 +48,13 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void initView(ViewDataBinding binding) {
         scribbleBinding = (ActivityScribbleBinding) binding;
-        noteManager = SunApplication.getInstence().getNoteManager();
+        noteManager = SunApplication.getInstance().getNoteManager();
         mViewModel = new ScribbleViewModel(this);
         scribbleHandler = new ScribbleHandler(noteManager);
         scribbleHandler.onStrokeWidthChanged(ScribbleSubMenuID.Thickness.THICKNESS_ULTRA_BOLD);
         noteManager.getDirtyStash();
-        scribbleBinding.shapePageRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        scribbleBinding.shapePageRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(false);
         scribbleBinding.shapePageRecycler.addItemDecoration(dividerItemDecoration);
         shapePageAdapter = new ShapePageAdapter();

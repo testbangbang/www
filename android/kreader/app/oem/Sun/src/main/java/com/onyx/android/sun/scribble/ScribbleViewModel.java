@@ -49,7 +49,7 @@ public class ScribbleViewModel extends BaseObservable {
 
     ScribbleViewModel(Context context) {
         // Force use of Application Context.
-        mNoteManager = SunApplication.getInstence().getNoteManager();
+        mNoteManager = SunApplication.getInstance().getNoteManager();
         mNoteManager.registerEventBus(this);
     }
 

@@ -15,16 +15,20 @@ android {
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
 
     dataBinding {
         enabled = true
     }
-
+    lintOptions {
+        abortOnError false
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
         }
     }
 
@@ -53,11 +57,13 @@ dependencies {
     compile "com.squareup.retrofit2:converter-gson:$rootProject.convertergsonVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
-    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
-    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
-    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
     compile(project(path: ':libraries:onyxsdk-scribble')) {
-        ['org.objenesis', 'com.alibaba','org.greenrobot:eventbus'].each {
+        ['org.objenesis', 'com.alibaba', 'org.greenrobot:eventbus'].each {
+            exclude group: it
+        }
+    }
+    compile(project(path: ':libraries:onyxsdk-settings')) {
+        ['org.objenesis', 'com.alibaba', 'org.greenrobot:eventbus'].each {
             exclude group: it
         }
     }

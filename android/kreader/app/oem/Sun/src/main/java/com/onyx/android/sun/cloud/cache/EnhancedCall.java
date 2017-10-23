@@ -55,7 +55,7 @@ public class EnhancedCall<T> {
 
             @Override
             public void onFailure(Call<T> call, Throwable t) {
-                if (!mUseCache || NetworkUtil.isNetworkConnected(SunApplication.getInstence())) {
+                if (!mUseCache || NetworkUtil.isNetworkConnected(SunApplication.getInstance())) {
                     enhancedCallback.onFailure(call, t);
                     return;
                 }
@@ -103,7 +103,7 @@ public class EnhancedCall<T> {
             Response<T> response = mCall.execute();
             t = response.body();
         } catch (IOException e) {
-            if (mUseCache && !NetworkUtil.isNetworkConnected(SunApplication.getInstence())) {
+            if (mUseCache && !NetworkUtil.isNetworkConnected(SunApplication.getInstance())) {
                 Request request = mCall.request();
                 String url = request.url().toString();
                 RequestBody requestBody = request.body();

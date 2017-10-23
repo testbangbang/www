@@ -45,8 +45,8 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     @Override
     protected void initView(ViewDataBinding binding) {
         fillHomeworkBinding = (FillHomeworkBinding) binding;
-        fillHomeworkBinding.fillHomeworkRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        fillHomeworkBinding.fillHomeworkRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         fillHomeworkBinding.fillHomeworkRecycler.addItemDecoration(dividerItemDecoration);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setText(
                 String.format(getResources().getString(R.string.homework_unfinished_title_format), StringUtil.transitionHomeworkType(type), title));

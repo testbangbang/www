@@ -8,4 +8,44 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="BookDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
+
+    <style name="WifiDialogStyle" parent="Base.Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@android:color/black</item>
+        <item name="colorPrimaryDark">@android:color/black</item>
+        <item name="colorControlNormal">@android:color/black</item>
+        <!--Disable OverFlown Button(3-dot button)-->
+        <item name="actionOverflowButtonStyle">@null</item>
+        <!--Remove 1px shadow between status bar and window content-->
+        <item name="android:windowContentOverlay">@android:color/transparent</item>
+        <item name="popupMenuStyle">@style/OnyxAppCompat.ToolBar.Popup</item>
+        <item name="android:dropDownListViewStyle">@style/OnyxAppCompat.PopupMenuListView</item>
+        <item name="android:textColorPrimary">@color/primary_text_device_default_light</item>
+        <item name="android:textAppearance">@style/OnyxAppCompat.TextAppearance.Light</item>
+        <item name="android:textAppearanceLarge">@style/OnyxAppCompat.TextAppearance.Light.Large
+        </item>
+        <item name="android:textAppearanceMedium">@style/OnyxAppCompat.TextAppearance.Light.Medium
+        </item>
+        <item name="android:textAppearanceSmall">@style/OnyxAppCompat.TextAppearance.Light.Small
+        </item>
+        <item name="android:textAppearanceButton">@style/OnyxAppCompat.TextAppearance.Light.Button
+        </item>
+        <item name="textAppearanceLargePopupMenu">
+            @style/OnyxAppCompat.TextAppearance.Light.PopupMenu.Large
+        </item>
+        <item name="textAppearanceSmallPopupMenu">
+            @style/OnyxAppCompat.TextAppearance.Light.PopupMenu.Small
+        </item>
+        <item name="editTextStyle">@style/OnyxAppCompat.EditTextStyle</item>
+
+        <item name="android:listDivider">@android:color/black</item>
+        <item name="preferenceTheme">@style/OnyxAppCompat.PreferenceTheme</item>
+        <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
+        <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
 </resources>
