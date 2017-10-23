@@ -1,7 +1,6 @@
 package com.onyx.android.sun.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,17 +21,17 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
     private DividerItemDecoration dividerItemDecoration;
 
     public HomeworkRecordAdapter() {
-        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstence(), DividerItemDecoration.VERTICAL_LIST);
+        dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
     }
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_record_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_record_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_record_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_record_col);
     }
 
     @Override
@@ -50,7 +49,7 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         HomeworkRecordViewHolder viewHolder = (HomeworkRecordViewHolder) holder;
         ItemHomeworkRecordBinding homeworkRecordBinding = viewHolder.getHomeworkRecordBinding();
-        homeworkRecordBinding.homeworkRecordRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstence()));
+        homeworkRecordBinding.homeworkRecordRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         homeworkRecordBinding.homeworkRecordRecycler.addItemDecoration(dividerItemDecoration);
     }
 

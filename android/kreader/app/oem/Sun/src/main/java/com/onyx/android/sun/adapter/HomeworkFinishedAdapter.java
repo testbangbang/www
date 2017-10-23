@@ -1,9 +1,7 @@
 package com.onyx.android.sun.adapter;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,12 +33,12 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_finish_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_finish_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_finish_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_finish_col);
     }
 
     @Override

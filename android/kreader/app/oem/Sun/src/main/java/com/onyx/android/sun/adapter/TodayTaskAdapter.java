@@ -31,12 +31,12 @@ public class TodayTaskAdapter extends PageRecyclerView.PageAdapter<TodayTaskAdap
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.today_task_adapter_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.today_task_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.today_task_adapter_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.today_task_adapter_col);
     }
 
     @Override

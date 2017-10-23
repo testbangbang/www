@@ -23,12 +23,12 @@ public class StudyReportAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_study_report_row);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_study_report_row);
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstence().getResources().getInteger(R.integer.homework_study_report_col);
+        return SunApplication.getInstance().getResources().getInteger(R.integer.homework_study_report_col);
     }
 
     @Override

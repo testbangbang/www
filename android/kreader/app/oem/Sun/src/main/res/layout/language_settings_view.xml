@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/language_settings_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:paddingBottom="@dimen/page_refresh_item_padding_top"
+        android:paddingTop="@dimen/page_refresh_item_padding_top"
+        android:text="@string/device_setting_language_settings_title"
+        android:textSize="@dimen/level_one_heading_font"
+        android:textStyle="bold" />
+
+    <View
+        android:id="@+id/language_settings_title_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/language_settings_title"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:background="@android:color/black" />
+
+    <com.onyx.android.sun.view.PageRecyclerView
+        android:id="@+id/language_settings_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/language_settings_title_bottom"
+        android:layout_above="@+id/language_settings_save_top"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:layout_weight="1" />
+
+    <View
+        android:id="@+id/language_settings_save_top"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/language_settings_save"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/language_settings_save"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:paddingBottom="@dimen/device_setting_padding_top"
+        android:paddingTop="@dimen/device_setting_padding_top"
+        android:text="@string/device_setting_page_refresh_save"
+        android:textSize="@dimen/level_one_heading_font"
+        android:textStyle="bold" />
+</RelativeLayout>
