@@ -1168,6 +1168,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     public void setKeyboardInput(boolean keyboardInput) {
         isKeyboardInput = keyboardInput;
+        getNoteViewHelper().setEnableTouchEvent(!isKeyboardInput);
     }
 
     @Override
