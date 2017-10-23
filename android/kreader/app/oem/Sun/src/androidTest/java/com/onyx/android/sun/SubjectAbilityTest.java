@@ -3,8 +3,6 @@ package com.onyx.android.sun;
 import android.test.ApplicationTestCase;
 
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
-import com.onyx.android.sun.cloud.bean.PracticesRequestBean;
-import com.onyx.android.sun.cloud.bean.PracticesResultBean;
 import com.onyx.android.sun.requests.cloud.SubjectAbilityRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
