@@ -261,9 +261,13 @@ public class ScribbleActivity extends BaseScribbleActivity {
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncWithCallback(true, true, null);
                 toggleLineLayoutMode();
-                switchScribbleMode(isLineLayoutMode());
+                syncWithCallback(true, true, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        switchScribbleMode(isLineLayoutMode());
+                    }
+                });
             }
         });
 
@@ -1164,6 +1168,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     public void setKeyboardInput(boolean keyboardInput) {
         isKeyboardInput = keyboardInput;
+        getNoteViewHelper().setEnableTouchEvent(!isKeyboardInput);
     }
 
     @Override
