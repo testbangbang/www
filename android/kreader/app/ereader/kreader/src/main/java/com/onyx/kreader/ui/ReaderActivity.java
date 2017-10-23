@@ -89,6 +89,7 @@ import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
 import com.onyx.kreader.ui.events.DocumentOpenEvent;
 import com.onyx.kreader.ui.events.ForceCloseEvent;
 import com.onyx.kreader.ui.events.GotoPageLinkEvent;
+import com.onyx.kreader.ui.events.HideTabWidgetEvent;
 import com.onyx.kreader.ui.events.LayoutChangeEvent;
 import com.onyx.kreader.ui.events.MoveTaskToBackEvent;
 import com.onyx.kreader.ui.events.OpenDocumentFailedEvent;
@@ -110,6 +111,7 @@ import com.onyx.kreader.ui.events.ShortcutErasingStartEvent;
 import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
 import com.onyx.kreader.ui.events.DocumentActivatedEvent;
 import com.onyx.kreader.ui.events.ShowTabHostMenuDialogEvent;
+import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
 import com.onyx.kreader.ui.events.SlideshowStartEvent;
 import com.onyx.kreader.ui.events.StartSideNoteEvent;
 import com.onyx.kreader.ui.events.StopNoteEvent;
@@ -659,10 +661,26 @@ public class ReaderActivity extends OnyxBaseActivity {
         Debug.d(getClass(), "onUpdateTabWidgetVisibility: " + event.visible);
         if (!event.visible) {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
+            getReaderDataHolder().setButtonShowTabWidgetVisible(true);
         } else {
             buttonShowTabWidget.setVisibility(View.GONE);
+            getReaderDataHolder().setButtonShowTabWidgetVisible(false);
         }
         getReaderDataHolder().getEventBus().post(new UpdateScribbleMenuEvent());
+    }
+
+    @Subscribe
+    public void onShowTabWidget(final ShowTabWidgetEvent event) {
+        buttonShowTabWidget.setVisibility(View.GONE);
+        getReaderDataHolder().setButtonShowTabWidgetVisible(false);
+        ReaderTabHostBroadcastReceiver.sendShowTabWidgetEvent(this);
+    }
+
+    @Subscribe
+    public void onHideTabWidget(final HideTabWidgetEvent event) {
+        buttonShowTabWidget.setVisibility(View.VISIBLE);
+        getReaderDataHolder().setButtonShowTabWidgetVisible(true);
+        ReaderTabHostBroadcastReceiver.sendHideTabWidgetEvent(this);
     }
 
     @Subscribe
@@ -905,6 +923,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         Debug.d(getClass(), "postDocumentInitRendered: tab widget visible -> " + tabWidgetVisible);
         if (!tabWidgetVisible) {
             buttonShowTabWidget.setVisibility(View.VISIBLE);
+            getReaderDataHolder().setButtonShowTabWidgetVisible(true);
         }
 
         getReaderDataHolder().setSideReadingMode(getIntent().getBooleanExtra(ReaderBroadcastReceiver.TAG_SIDE_READING_MODE, false));
