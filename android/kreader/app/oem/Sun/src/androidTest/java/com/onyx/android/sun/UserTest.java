@@ -73,7 +73,7 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
         submitPracticeRequestBean.practiceListBody = requestBody;
 
         final SubmitPracticeRequest submitPracticeRequest = new SubmitPracticeRequest(submitPracticeRequestBean);
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), submitPracticeRequest, new BaseCallback() {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), submitPracticeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 SubmitPracticeResultBean loginResultBean = submitPracticeRequest.getResult();
