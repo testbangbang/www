@@ -210,6 +210,21 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         action.execute(this, callback);
     }
 
+    protected void syncWithCallback(boolean render,
+                                    boolean resume,
+                                    boolean clearDetachStash,
+                                    final BaseCallback callback) {
+        final List<Shape> stash = getNoteViewHelper().detachStash();
+        if (clearDetachStash) {
+            stash.clear();
+        }
+        final DocumentFlushAction<BaseScribbleActivity> action = new DocumentFlushAction<>(stash,
+                render,
+                resume,
+                shapeDataInfo.getDrawingArgs());
+        action.execute(this, callback);
+    }
+
     protected void registerDeviceReceiver() {
         deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
             @Override

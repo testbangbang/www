@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -262,7 +261,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void onClick(View v) {
                 toggleLineLayoutMode();
-                syncWithCallback(true, true, new BaseCallback() {
+                syncWithCallback(true, true, !isLineLayoutMode(), new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         switchScribbleMode(isLineLayoutMode());
