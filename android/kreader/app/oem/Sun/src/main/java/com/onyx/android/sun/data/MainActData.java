@@ -11,6 +11,6 @@ import com.onyx.android.sun.requests.requestTool.SunRequestManager;
 
 public class MainActData {
     public void getNewMessage(GetNewMessageRequest rq, BaseCallback callback) {
-        SunRequestManager.getInstance().submitRequest(SunApplication.getInstence(), rq, callback);
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
     }
 }
