@@ -348,8 +348,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
         setViewListener();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
 
-        if (DeviceConfig.sharedInstance(getContext()).isDisableNoteFunc() ||
-                !readerDataHolder.isFixedPageDocument()) {
+        if (DeviceConfig.sharedInstance(getContext()).isDisableNoteFunc()) {
             btnScribble.setVisibility(View.GONE);
         }
         if (!Device.detectDevice().isTouchable(readerDataHolder.getContext())){
