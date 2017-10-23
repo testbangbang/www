@@ -18,15 +18,21 @@ public class ExportScribbleRequest extends BaseReaderRequest {
 
     private Bitmap bitmap;
     private PageInfo page;
+    private boolean isSideNotePage;
 
-    public ExportScribbleRequest(Bitmap bitmap, PageInfo page) {
+    public ExportScribbleRequest(Bitmap bitmap, PageInfo page, boolean isSideNotePage) {
         this.bitmap = bitmap;
         this.page = page;
+        this.isSideNotePage = isSideNotePage;
     }
 
     @Override
     public void execute(Reader reader) throws Exception {
-        File file = new File(ExportUtils.getExportScribblePath(reader.getDocumentPath(), page.getName()));
+        String pageName = page.getName();
+        if (isSideNotePage) {
+            pageName = pageName + "_" + page.getSubPage();
+        }
+        File file = new File(ExportUtils.getExportScribblePath(reader.getDocumentPath(), pageName));
         FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.PNG, 100);
     }
 }
