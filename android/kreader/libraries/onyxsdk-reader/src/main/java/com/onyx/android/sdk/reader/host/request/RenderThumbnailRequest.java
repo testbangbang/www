@@ -30,7 +30,6 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         page = p;
         bitmap = bmp;
         this.pagePosition = pagePosition;
-        setAbortPendingTasks(true);
     }
 
     public RenderThumbnailRequest(final String p, final String pagePosition, final ReaderBitmap bmp, final boolean renderByPage) {
