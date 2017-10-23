@@ -176,6 +176,16 @@ public:
             delete doc_;
             doc_ = nullptr;
         }
+        for (auto entry : subPages_) {
+            delete entry.second;
+        }
+    }
+
+    PoDoFo::PdfPage *getPage(int page, int subPage, bool create) {
+        if (subPage == 0) {
+            return getPage(page);
+        }
+        return getSubPage(page, subPage, create);
     }
 
     PoDoFo::PdfPage *getPage(int page) {
@@ -187,10 +197,64 @@ public:
         return pdfPage;
     }
 
+    PoDoFo::PdfPage *getSubPage(int page, int subPage, bool create) {
+        PoDoFo::PdfPage *pdfPage = doc_->GetPage(page);
+        if (!pdfPage) {
+            return nullptr;
+        }
+        auto pageList = subPages_[page];
+        if (pageList) {
+            for (auto it = pageList->cbegin(); it != pageList->cend(); ++it) {
+                if (it->first == subPage) {
+                    return it->second;
+                }
+            }
+        }
+
+        if (!create) {
+            return nullptr;
+        }
+
+        PoDoFo::PdfPage *subPdfPage = new PoDoFo::PdfPage(pdfPage->GetMediaBox(), doc_);
+        if (!subPages_[page]) {
+            subPages_[page] = new std::vector<std::pair<int, PoDoFo::PdfPage*>>();
+        }
+        subPages_[page]->push_back(std::pair<int, PoDoFo::PdfPage*>(subPage, subPdfPage));
+
+        return subPdfPage;
+    }
+
+    void insertSubPages() {
+        std::vector<int> pagesWithSubPage;
+        for (auto entry : subPages_) {
+            pagesWithSubPage.push_back(entry.first);
+        }
+        std::sort(pagesWithSubPage.begin(), pagesWithSubPage.end(), std::greater<int>());
+        for (auto page : pagesWithSubPage) {
+            insertSubPages(doc_, page, subPages_[page]);
+        }
+    }
+
+    void insertSubPages(int srcPage, PoDoFo::PdfDocument *dstDoc, int nAtIndex) {
+        auto subPageList = subPages_[srcPage];
+        if (!subPageList) {
+            return;
+        }
+        insertSubPages(dstDoc, nAtIndex, subPageList);
+    }
+
+    void insertSubPages(PoDoFo::PdfDocument *doc, int pageIndex, std::vector<std::pair<int, PoDoFo::PdfPage*>> *subPages) {
+        for (size_t i = 0; i < subPages->size(); i++) {
+            doc->GetPagesTree()->InsertPage(pageIndex + static_cast<int>(i),
+                                            subPages->at(i).second);
+        };
+    }
+
 public:
     std::string docPath_;
     PoDoFo::PdfMemDocument *doc_;
     std::set<int, std::greater<int>> pagesWithAnnotation_;
+    std::map<int, std::vector<std::pair<int, PoDoFo::PdfPage*>>*> subPages_;
 };
 
 OnyxPdfWriter::OnyxPdfWriter()
@@ -226,6 +290,7 @@ bool OnyxPdfWriter::saveAs(const std::string &path, bool savePagesWithAnnotation
     }
 
     if (!savePagesWithAnnotation) {
+        impl->insertSubPages();
         impl->doc_->Write(path.c_str());
         return true;
     }
@@ -233,6 +298,7 @@ bool OnyxPdfWriter::saveAs(const std::string &path, bool savePagesWithAnnotation
     PoDoFo::PdfMemDocument copy;
     for (const auto page : impl->pagesWithAnnotation_) {
         copy.InsertExistingPageAt(*impl->doc_, page, -1);
+        impl->insertSubPages(page, &copy, 0);
     }
     copy.Write(path.c_str());
     return true;
@@ -253,7 +319,7 @@ bool OnyxPdfWriter::isOpened() const
     return impl->doc_ && impl->doc_->IsLoaded();
 }
 
-bool OnyxPdfWriter::writeLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness, const PointF &start, const PointF &end)
+bool OnyxPdfWriter::writeLine(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness, const PointF &start, const PointF &end)
 {
     using namespace PoDoFo;
 
@@ -261,7 +327,7 @@ bool OnyxPdfWriter::writeLine(const int page, const RectF &rect, const uint32_t 
         return false;
     }
 
-    PdfPage *pdfPage = impl->getPage(page);
+    PdfPage *pdfPage = impl->getPage(page, subPage, true);
     if (!pdfPage) {
         return false;
     }
@@ -290,7 +356,7 @@ bool OnyxPdfWriter::writeLine(const int page, const RectF &rect, const uint32_t 
     return true;
 }
 
-bool OnyxPdfWriter::writePolyLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness, const std::vector<PointF> &points)
+bool OnyxPdfWriter::writePolyLine(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness, const std::vector<PointF> &points)
 {
     using namespace PoDoFo;
 
@@ -298,7 +364,7 @@ bool OnyxPdfWriter::writePolyLine(const int page, const RectF &rect, const uint3
         return false;
     }
 
-    PdfPage *pdfPage = impl->getPage(page);
+    PdfPage *pdfPage = impl->getPage(page, subPage, true);
     if (!pdfPage) {
         return false;
     }
@@ -339,7 +405,7 @@ bool OnyxPdfWriter::writePolyLine(const int page, const RectF &rect, const uint3
     return true;
 }
 
-bool OnyxPdfWriter::writePolygon(const int page, const RectF &rect, const uint32_t color, const float strokeThickness, const std::vector<PointF> &points)
+bool OnyxPdfWriter::writePolygon(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness, const std::vector<PointF> &points)
 {
     using namespace PoDoFo;
 
@@ -347,7 +413,7 @@ bool OnyxPdfWriter::writePolygon(const int page, const RectF &rect, const uint32
         return false;
     }
 
-    PdfPage *pdfPage = impl->getPage(page);
+    PdfPage *pdfPage = impl->getPage(page, subPage, true);
     if (!pdfPage) {
         return false;
     }
@@ -397,7 +463,7 @@ bool OnyxPdfWriter::writePolygon(const int page, const RectF &rect, const uint32
     return true;
 }
 
-bool OnyxPdfWriter::writeSquare(const int page, const RectF &rect, const uint32_t color, const float strokeThickness)
+bool OnyxPdfWriter::writeSquare(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness)
 {
     using namespace PoDoFo;
 
@@ -405,7 +471,7 @@ bool OnyxPdfWriter::writeSquare(const int page, const RectF &rect, const uint32_
         return false;
     }
 
-    PdfPage *pdfPage = impl->getPage(page);
+    PdfPage *pdfPage = impl->getPage(page, subPage, true);
     if (!pdfPage) {
         return false;
     }
@@ -429,7 +495,7 @@ bool OnyxPdfWriter::writeSquare(const int page, const RectF &rect, const uint32_
     return true;
 }
 
-bool OnyxPdfWriter::writeCircle(const int page, const RectF &rect, const uint32_t color, const float strokeThickness)
+bool OnyxPdfWriter::writeCircle(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness)
 {
     using namespace PoDoFo;
 
@@ -437,7 +503,7 @@ bool OnyxPdfWriter::writeCircle(const int page, const RectF &rect, const uint32_
         return false;
     }
 
-    PdfPage *pdfPage = impl->getPage(page);
+    PdfPage *pdfPage = impl->getPage(page, subPage, true);
     if (!pdfPage) {
         return false;
     }

@@ -96,7 +96,7 @@ jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeHighlight(JN
     return g_writer.writeAnnotation(annotation);
 }
 
-jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeLine(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloat startX, jfloat startY, jfloat endX, jfloat endY)
+jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeLine(JNIEnv *env, jclass, jint page, jint subPage, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloat startX, jfloat startY, jfloat endX, jfloat endY)
 {
     if (!g_writer.isOpened()) {
         return false;
@@ -106,11 +106,11 @@ jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeLine(JNIEnv 
     if (!readRectFromArray(env, rectArray, &rect)) {
         return false;
     }
-    return g_writer.writeLine(page, rect, static_cast<uint_t>(color), strokeThickness,
+    return g_writer.writeLine(page, subPage, rect, static_cast<uint_t>(color), strokeThickness,
                               PointF(startX, startY), PointF(endX, endY));
 }
 
-jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolyLine(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloatArray verticeArray)
+jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolyLine(JNIEnv *env, jclass, jint page, jint subPage, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloatArray verticeArray)
 {
     if (!g_writer.isOpened()) {
         return false;
@@ -128,10 +128,10 @@ jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolyLine(JNI
     if (!readPointsFromArray(env, verticeArray, &points)) {
         return false;
     }
-    return g_writer.writePolyLine(page, rect, static_cast<uint_t>(color), strokeThickness, points);
+    return g_writer.writePolyLine(page, subPage, rect, static_cast<uint_t>(color), strokeThickness, points);
 }
 
-jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolygon(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloatArray verticeArray)
+jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolygon(JNIEnv *env, jclass, jint page, jint subPage, jfloatArray rectArray, jint color, jfloat strokeThickness, jfloatArray verticeArray)
 {
     if (!g_writer.isOpened()) {
         return false;
@@ -149,10 +149,10 @@ jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writePolygon(JNIE
     if (!readPointsFromArray(env, verticeArray, &points)) {
         return false;
     }
-    return g_writer.writePolygon(page, rect, static_cast<uint_t>(color), strokeThickness, points);
+    return g_writer.writePolygon(page, subPage, rect, static_cast<uint_t>(color), strokeThickness, points);
 }
 
-jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeSquare(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness)
+jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeSquare(JNIEnv *env, jclass, jint page, jint subPage, jfloatArray rectArray, jint color, jfloat strokeThickness)
 {
     if (!g_writer.isOpened()) {
         return false;
@@ -162,10 +162,10 @@ jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeSquare(JNIEn
     if (!readRectFromArray(env, rectArray, &rect)) {
         return false;
     }
-    return g_writer.writeSquare(page, rect, static_cast<uint_t>(color), strokeThickness);
+    return g_writer.writeSquare(page, subPage, rect, static_cast<uint_t>(color), strokeThickness);
 }
 
-jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeCircle(JNIEnv *env, jclass, jint page, jfloatArray rectArray, jint color, jfloat strokeThickness)
+jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeCircle(JNIEnv *env, jclass, jint page, jint subPage, jfloatArray rectArray, jint color, jfloat strokeThickness)
 {
     if (!g_writer.isOpened()) {
         return false;
@@ -175,7 +175,7 @@ jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeCircle(JNIEn
     if (!readRectFromArray(env, rectArray, &rect)) {
         return false;
     }
-    return g_writer.writeCircle(page, rect, static_cast<uint_t>(color), strokeThickness);
+    return g_writer.writeCircle(page, subPage, rect, static_cast<uint_t>(color), strokeThickness);
 }
 
 jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_saveAs(JNIEnv *env, jclass, jstring pathString, jboolean savePagesWithAnnotation)
