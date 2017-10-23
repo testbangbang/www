@@ -472,6 +472,7 @@ public class ShowReaderMenuAction extends BaseAction {
         hideReaderMenu();
         Dialog dialogContrast = new DialogContrast(readerDataHolder);
         readerDataHolder.trackDialog(dialogContrast);
+        dialogContrast.setCanceledOnTouchOutside(false);
         dialogContrast.show();
     }
 
