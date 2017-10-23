@@ -20,6 +20,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_ENTER_FULL_SCREEN = "com.onyx.kreader.action.ENTER_FULL_SCREEN";
     public static final String ACTION_QUIT_FULL_SCREEN = "com.onyx.kreader.action.QUIT_FULL_SCREEN";
     public static final String ACTION_SHOW_TAB_WIDGET = "com.onyx.kreader.action.SHOW_TAB_WIDGET";
+    public static final String ACTION_HIDE_TAB_WIDGET = "com.onyx.kreader.action.HIDE_TAB_WIDGET";
     public static final String ACTION_OPEN_DOCUMENT_FAILED = "com.onyx.kreader.action.OPEN_DOCUMENT_FAILED";
     public static final String ACTION_SIDE_READING_CALLBACK = "com.onyx.kreader.action.SIDE_READING_CALLBACK";
 
@@ -92,6 +93,12 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void sendHideTabWidgetEvent(Context context) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_HIDE_TAB_WIDGET);
+        context.sendBroadcast(intent);
+    }
+
     public static void sendOpenDocumentFailedEvent(Context context, String path) {
         Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
         intent.setAction(ACTION_OPEN_DOCUMENT_FAILED);
@@ -156,6 +163,11 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
             ReaderTabHostActivity.setTabWidgetVisible(true);
             if (callback != null) {
                 callback.onUpdateTabWidgetVisibility(true);
+            }
+        } else if (intent.getAction().equals(ACTION_HIDE_TAB_WIDGET)) {
+            ReaderTabHostActivity.setTabWidgetVisible(false);
+            if (callback != null) {
+                callback.onUpdateTabWidgetVisibility(false);
             }
         } else if (intent.getAction().equals(ACTION_OPEN_DOCUMENT_FAILED)) {
             if (callback != null) {

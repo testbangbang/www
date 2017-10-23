@@ -92,6 +92,8 @@ public class ReaderDataHolder {
 
     private WindowParameters windowParameters = new WindowParameters();
 
+    private boolean buttonShowTabWidgetVisible = false;
+
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
      */
@@ -553,6 +555,14 @@ public class ReaderDataHolder {
 
     public WindowParameters getWindowParameters() {
         return windowParameters;
+    }
+
+    public boolean isButtonShowTabWidgetVisible() {
+        return buttonShowTabWidgetVisible;
+    }
+
+    public void setButtonShowTabWidgetVisible(boolean buttonShowTabWidgetVisible) {
+        this.buttonShowTabWidgetVisible = buttonShowTabWidgetVisible;
     }
 
     public ReaderPainter getReaderPainter() {
