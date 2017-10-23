@@ -4,4 +4,6 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="gray">#44000000</color>
+    <color name="login_bt_bg_normal">#F0F0F0</color>
+    <color name="login_bt_bg_press">#949393</color>
 </resources>

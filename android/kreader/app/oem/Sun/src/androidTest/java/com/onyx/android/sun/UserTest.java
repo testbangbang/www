@@ -37,7 +37,7 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
         UserLoginActData userLoginData = new UserLoginActData();
         UserLoginRequestBean requestBean = new UserLoginRequestBean();
         requestBean.account = "123456";
-        requestBean.md5Password = "321";
+        requestBean.password = "321";
         final UserLoginRequest rq = new UserLoginRequest(requestBean);
 
         userLoginData.userLogin(rq, new BaseCallback() {

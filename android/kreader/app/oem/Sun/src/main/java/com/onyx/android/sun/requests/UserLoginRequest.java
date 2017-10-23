@@ -57,6 +57,6 @@ public class UserLoginRequest extends BaseCloudRequest {
     }
 
     private Call<UserLoginResultBean> getCall(ContentService service) {
-        return service.userLogin(requestBean.account,requestBean.md5Password);
+        return service.userLogin(requestBean.account,requestBean.password);
     }
 }

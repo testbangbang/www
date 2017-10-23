@@ -53,4 +53,15 @@
     <dimen name="item_ranking_padding">30dp</dimen>
     <dimen name="item_ranking_name_margin_left">20dp</dimen>
     <item name="score_radar_chart_axis_tick" format="float" type="dimen">89.5</item>
+    <dimen name="login_activity_logo_margin_top">93dp</dimen>
+    <dimen name="login_activity_padding">22dp</dimen>
+    <dimen name="login_activity_name_margin_top">20dp</dimen>
+    <dimen name="login_activity_name_font_size">24sp</dimen>
+    <dimen name="login_activity_logo_width">140dp</dimen>
+    <dimen name="login_activity_logo_height">140dp</dimen>
+    <dimen name="login_activity_account_margin_top">93dp</dimen>
+    <dimen name="login_activity_password_margin_top">45dp</dimen>
+    <dimen name="login_activity_keep_password_margin_top">20dp</dimen>
+    <dimen name="login_activity_login_button_margin_top">45dp</dimen>
+    <dimen name="login_activity_login_button_pddding">15dp</dimen>
 </resources>

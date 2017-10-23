@@ -17,4 +17,12 @@ public class Constants {
     public static boolean isUseCache = true;
     public static final String QUESTION_TYPE_CHOICE = "choice";
     public static final String QUESTION_TYPE_OBJECTIVE = "objective";
+
+    //SharedPreferencesUtil constant
+    public static final String SP_NAME_USERINFO = "userinfo";
+    public static final String SP_KEY_ISKEEPPASSWORD = "isKeepPassword";
+    public static final String SP_KEY_USER_ACCOUNT = "userAccount";
+    public static final String SP_KEY_USER_PASSWORD = "userPassword";
+    //SharedPreferencesUtil constant
+
 }

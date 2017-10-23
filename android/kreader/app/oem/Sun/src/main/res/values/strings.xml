@@ -44,4 +44,10 @@
     <string name="patient_wait_for_correct">Be patient and wait for teacher to correct</string>
     <string name="timer_in_second_switch_to_homework">After %ds jump to homework list</string>
     <string name="total_score_ranking">Total score ranking</string>
+    <string name="login_act_account_hint">please enter your account name</string>
+    <string name="login_act_password_hint">please enter your password</string>
+    <string name="login_act_keep_password">keep password</string>
+    <string name="login_act_login">Login</string>
+    <string name="login_act_tip_account_error">Incorrect account name format</string>
+    <string name="login_act_tip_password_error">Incorrect password format</string>
 </resources>

@@ -60,6 +60,6 @@ public class CloudApiContext {
 
     public static class UserLogin {
         public static final String ACCOUNT = "account";
-        public static final String MD5PASSWORD = "md5Password";
+        public static final String PASSWORD = "password";
     }
 }
