@@ -18,8 +18,6 @@ import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
  */
 public class SideNoteHandler extends BaseHandler {
 
-    private boolean resumeTabWidgetState = false;
-
     public SideNoteHandler(HandlerManager p) {
         super(p);
     }
@@ -32,19 +30,13 @@ public class SideNoteHandler extends BaseHandler {
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
                 true, readerDataHolder.getSideNoteStartSubPageIndex());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
-        if (!readerDataHolder.isButtonShowTabWidgetVisible()) {
-            readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
-            resumeTabWidgetState = true;
-        }
+        readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, null);
-        if (resumeTabWidgetState) {
-            resumeTabWidgetState = false;
-            readerDataHolder.getEventBus().post(new ShowTabWidgetEvent());
-        }
+        readerDataHolder.getEventBus().post(new ShowTabWidgetEvent());
     }
 
     @Override
