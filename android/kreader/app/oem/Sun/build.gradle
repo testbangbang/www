@@ -38,7 +38,11 @@ android {
         }
     }
 }
-
+apt {
+    arguments {
+        targetModuleName 'Sun'
+    }
+}
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
@@ -56,6 +60,9 @@ dependencies {
     compile "com.dzaitsev.android.widget:radarchartview:$radarchartviewVersion"
     compile "com.squareup.retrofit2:converter-gson:$rootProject.convertergsonVersion"
     compile "com.alibaba:fastjson:$rootProject.fastjsonVersion"
+    apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
+    compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
     compile "com.squareup.retrofit2:retrofit:$rootProject.retrofit2Version"
     compile(project(path: ':libraries:onyxsdk-scribble')) {
         ['org.objenesis', 'com.alibaba', 'org.greenrobot:eventbus'].each {
