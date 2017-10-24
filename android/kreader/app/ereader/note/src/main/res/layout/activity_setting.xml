@@ -37,7 +37,7 @@
                     android:maxEms="10"
                     android:maxLines="1"
                     android:singleLine="true"
-                    android:text="@string/action_settings" />
+                    android:text="@string/about" />
             </RelativeLayout>
         </RelativeLayout>
     </android.support.v7.widget.Toolbar>
