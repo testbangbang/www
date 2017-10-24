@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
@@ -86,6 +87,8 @@ public class ReaderDataHolder {
     private boolean isSideReadingMode = false;
 
     private boolean enteringSideNote = false;
+    private int orientationBeforeSideNote = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+
     private boolean sideNoting = false;
     private int sideNotePage = 0;
 
@@ -693,6 +696,14 @@ public class ReaderDataHolder {
 
     public void setEnteringSideNote(boolean enteringSideNote) {
         this.enteringSideNote = enteringSideNote;
+    }
+
+    public int getOrientationBeforeSideNote() {
+        return orientationBeforeSideNote;
+    }
+
+    public void setOrientationBeforeSideNote(int orientationBeforeSideNote) {
+        this.orientationBeforeSideNote = orientationBeforeSideNote;
     }
 
     public boolean isSideNoting() {
