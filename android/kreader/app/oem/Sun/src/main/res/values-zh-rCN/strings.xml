@@ -114,4 +114,5 @@
     <string name="login_act_login">登录</string>
     <string name="login_act_tip_account_error">账户名格式错误</string>
     <string name="login_act_tip_password_error">密码格式错误</string>
+    <string name="login_activity_loading_tip">请稍后</string>
 </resources>

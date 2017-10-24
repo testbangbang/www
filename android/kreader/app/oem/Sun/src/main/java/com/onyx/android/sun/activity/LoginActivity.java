@@ -5,6 +5,7 @@ import android.databinding.ViewDataBinding;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sun.BR;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
@@ -29,6 +30,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private ActivityUserloginBinding mDataBinding;
     private UserLoginPresenter mUserLoginPresenter;
     private UserLoginRequestBean mRequestBean = new UserLoginRequestBean();
+    private DialogLoading loadingDialog;
 
     @Override
     protected void initData() {
@@ -36,6 +38,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         mRequestBean.isKeepPsd = getValue(Constants.SP_NAME_USERINFO, Constants.SP_KEY_ISKEEPPASSWORD, false);
 
         restoreUserInfo();
+        loadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
     }
 
     private void restoreUserInfo() {
@@ -70,8 +73,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.login_act_tv_startlogin:
-                if (checkLoginInfo())
+                if (checkLoginInfo()){
+                    loadingDialog.show();
                     mUserLoginPresenter.loginAccount(mRequestBean.account, MD5Utils.encode(mRequestBean.password));
+                }
                 break;
         }
     }
@@ -106,14 +111,20 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onLoginSucced(UserInfoBean userInfoBean) {
+        dissmisLoadDialog();
         skipToMainActivity();
         saveUserInfo();
         finish();
     }
 
+    private void dissmisLoadDialog() {
+        if (null != loadingDialog && loadingDialog.isShowing())
+            loadingDialog.dismiss();
+    }
+
     @Override
     public void onLoginFailed(int errorCode, String msg) {
-
+        dissmisLoadDialog();
     }
 }
 
