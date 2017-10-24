@@ -51,7 +51,7 @@ import java.util.List;
  * Created by ming on 2017/7/18.
  */
 
-public class BackupRestoreActivity extends AppCompatActivity{
+public class BackupRestoreActivity extends AppCompatActivity {
 
     private static final String TAG = "BackupRestoreActivity";
     public final static int SHOW_BACKUP_FILE_COUNT = 8;
