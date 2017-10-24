@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sun.common.AppConfigData;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
@@ -47,6 +48,7 @@ public class SunApplication extends Application {
         AppConfigData.loadMainTabData(instance);
         OnyxDownloadManager.init(instance);
         OTAManager.sharedInstance().getCloudStore().setCloudConf(CloudConf.create(Constant.CN_HOST_BASE, Constant.CN_API_BASE, Constant.DEFAULT_CLOUD_STORAGE));
+        PreferenceManager.init(this);
     }
 
     private void initContext() {

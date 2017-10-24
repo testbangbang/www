@@ -8,4 +8,6 @@
     <color name="white">#ffffffff</color>
     <color name="black">#000</color>
     <color name="chart_gray">#33000000</color>
+    <color name="login_bt_bg_normal">#F0F0F0</color>
+    <color name="login_bt_bg_press">#949393</color>
 </resources>

@@ -57,7 +57,7 @@ public interface ContentService {
     @FormUrlEncoded
     @POST("api/user/login")
     Call<UserLoginResultBean> userLogin(@Field(CloudApiContext.UserLogin.ACCOUNT) String account,
-                                        @Field(CloudApiContext.UserLogin.MD5PASSWORD) String md5Password);
+                                        @Field(CloudApiContext.UserLogin.PASSWORD) String password);
 
     @POST("api/practice/{id}")
     Call<SubmitPracticeResultBean> submitPractice(@Path(CloudApiContext.Practices.ID) int id,

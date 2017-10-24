@@ -27,4 +27,12 @@ public class Constants {
     public static final String QUESTION_TYPE_OBJECTIVE = "objective";
     public static final long RESET_PRESS_TIMEOUT = 1000;
     public static final int SYSTEM_SETTING_PRESS_COUNT = 6;
+
+    //SharedPreferences constant
+    public static final String SP_NAME_USERINFO = "userinfo";
+    public static final String SP_KEY_ISKEEPPASSWORD = "isKeepPassword";
+    public static final String SP_KEY_USER_ACCOUNT = "userAccount";
+    public static final String SP_KEY_USER_PASSWORD = "userPassword";
+    //SharedPreferences constant
+
 }
