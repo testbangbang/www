@@ -9,7 +9,7 @@ import android.databinding.BaseObservable;
 public class UserLoginRequestBean extends BaseObservable{
     public String account;
     public String password;
-    public boolean isKeepPsd;
+    public boolean isKeepPassword;
 
     public String getAccount() {
         return account;
@@ -29,11 +29,11 @@ public class UserLoginRequestBean extends BaseObservable{
         notifyChange();
     }
 
-    public boolean getIsKeepPsd() {
-        return isKeepPsd;
+    public boolean getIsKeepPassword() {
+        return isKeepPassword;
     }
 
-    public void setIsKeepPsd(boolean isKeepPsd) {
-        this.isKeepPsd = isKeepPsd;
+    public void setIsKeepPassword(boolean isKeepPsd) {
+        this.isKeepPassword = isKeepPsd;
     }
 }

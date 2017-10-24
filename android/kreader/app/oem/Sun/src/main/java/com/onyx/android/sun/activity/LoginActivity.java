@@ -13,13 +13,11 @@ import com.onyx.android.sun.cloud.bean.UserInfoBean;
 import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
-import com.onyx.android.sun.databinding.ActivityUserloginBinding;
+import com.onyx.android.sun.databinding.ActivityUserLoginBinding;
 import com.onyx.android.sun.interfaces.UserLoginView;
 import com.onyx.android.sun.presenter.UserLoginPresenter;
 import com.onyx.android.sun.utils.MD5Utils;
 import com.onyx.android.sun.utils.SharedPreferencesUtil;
-
-import static com.onyx.android.sun.utils.SharedPreferencesUtil.getValue;
 
 /**
  * Created by jackdeng on 2017/10/23.
@@ -27,36 +25,38 @@ import static com.onyx.android.sun.utils.SharedPreferencesUtil.getValue;
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, UserLoginView {
 
-    private ActivityUserloginBinding mDataBinding;
-    private UserLoginPresenter mUserLoginPresenter;
-    private UserLoginRequestBean mRequestBean = new UserLoginRequestBean();
-    private DialogLoading loadingDialog;
+    private ActivityUserLoginBinding loginDataBinding;
+    private UserLoginPresenter userLoginPresenter;
+    private UserLoginRequestBean userLoginRequestBean = new UserLoginRequestBean();
+    private DialogLoading loginLoadingDialog;
 
     @Override
     protected void initData() {
-        mUserLoginPresenter = new UserLoginPresenter(this);
-        mRequestBean.isKeepPsd = getValue(Constants.SP_NAME_USERINFO, Constants.SP_KEY_ISKEEPPASSWORD, false);
+        userLoginPresenter = new UserLoginPresenter(this);
+        userLoginRequestBean.isKeepPassword = SharedPreferencesUtil.getValue(Constants.SP_NAME_USERINFO, Constants.SP_KEY_ISKEEPPASSWORD, false);
 
         restoreUserInfo();
-        loadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
+        loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
     }
 
     private void restoreUserInfo() {
-        if (mRequestBean.isKeepPsd){
-            String account = getValue(Constants.SP_NAME_USERINFO, Constants.SP_KEY_USER_ACCOUNT, "");
+        if (userLoginRequestBean.isKeepPassword){
+            String account = SharedPreferencesUtil.getValue(Constants.SP_NAME_USERINFO, Constants.SP_KEY_USER_ACCOUNT, "");
             String password = SharedPreferencesUtil.getValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_PASSWORD,"");
-            if (!TextUtils.isEmpty(account))
-                mRequestBean.account = account;
-            if (!TextUtils.isEmpty(password))
-                mRequestBean.password = password;
+            if (!TextUtils.isEmpty(account)){
+                userLoginRequestBean.account = account;
+            }
+            if (!TextUtils.isEmpty(password)){
+                userLoginRequestBean.password = password;
+            }
         }
     }
 
     @Override
     protected void initView(ViewDataBinding binding) {
-        mDataBinding = (ActivityUserloginBinding) binding;
-        mDataBinding.setListener(this);
-        mDataBinding.setVariable(BR.requestInfo, mRequestBean);
+        loginDataBinding = (ActivityUserLoginBinding) binding;
+        loginDataBinding.setListener(this);
+        loginDataBinding.setVariable(BR.requestInfo, userLoginRequestBean);
     }
 
     @Override
@@ -66,26 +66,30 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected int getViewId() {
-        return R.layout.activity_userlogin;
+        return R.layout.activity_user_login;
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.login_act_tv_startlogin:
-                if (checkLoginInfo()){
-                    loadingDialog.show();
-                    mUserLoginPresenter.loginAccount(mRequestBean.account, MD5Utils.encode(mRequestBean.password));
-                }
+                startLogin();
                 break;
         }
     }
 
+    private void startLogin() {
+        if (checkLoginInfo()){
+            loginLoadingDialog.show();
+            userLoginPresenter.loginAccount(userLoginRequestBean.account, MD5Utils.encode(userLoginRequestBean.password));
+        }
+    }
+
     private void saveUserInfo() {
-        SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_ISKEEPPASSWORD,mRequestBean.isKeepPsd);
-        if (mRequestBean.isKeepPsd){
-            SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_ACCOUNT,mRequestBean.account);
-            SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_PASSWORD,mRequestBean.password);
+        SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
+        if (userLoginRequestBean.isKeepPassword){
+            SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_ACCOUNT, userLoginRequestBean.account);
+            SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
         } else {
             SharedPreferencesUtil.cleanValueByKey(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_ACCOUNT);
             SharedPreferencesUtil.cleanValueByKey(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_PASSWORD);
@@ -93,10 +97,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private boolean checkLoginInfo() {
-        if (TextUtils.isEmpty(mRequestBean.account)){
+        if (TextUtils.isEmpty(userLoginRequestBean.account)){
             CommonNotices.show(getString(R.string.login_act_tip_account_error));
             return false;
-        } else if(TextUtils.isEmpty(mRequestBean.password)){
+        } else if(TextUtils.isEmpty(userLoginRequestBean.password)){
             CommonNotices.show(getString(R.string.login_act_tip_password_error));
             return false;
         }
@@ -118,8 +122,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void dissmisLoadDialog() {
-        if (null != loadingDialog && loadingDialog.isShowing())
-            loadingDialog.dismiss();
+        if (null != loginLoadingDialog && loginLoadingDialog.isShowing()){
+            loginLoadingDialog.dismiss();
+        }
     }
 
     @Override

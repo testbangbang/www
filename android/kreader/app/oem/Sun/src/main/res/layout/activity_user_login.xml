@@ -53,7 +53,7 @@
 
         <CheckBox
             android:id="@+id/login_act_cb_keep_password"
-            android:checked="@={requestInfo.isKeepPsd}"
+            android:checked="@={requestInfo.isKeepPassword}"
             android:layout_marginTop="@dimen/login_activity_keep_password_margin_top"
             android:text="@string/login_act_keep_password"
             android:layout_width="wrap_content"
