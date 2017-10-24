@@ -4,13 +4,17 @@ import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sun.cloud.bean.PracticeAnswerBean;
-import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeRequestBean;
+import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
-import com.onyx.android.sun.data.UserLoginActData;
+import com.onyx.android.sun.cloud.bean.UserLogoutRequestBean;
+import com.onyx.android.sun.cloud.bean.UserLogoutResultBean;
+import com.onyx.android.sun.data.UserCenterActivityData;
+import com.onyx.android.sun.data.UserLoginActivityData;
 import com.onyx.android.sun.requests.cloud.SubmitPracticeRequest;
 import com.onyx.android.sun.requests.cloud.UserLoginRequest;
+import com.onyx.android.sun.requests.cloud.UserLogoutRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 import com.onyx.android.sun.requests.requestTool.SunRequestManager;
@@ -34,7 +38,7 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
     public void testUserLogin() throws Exception {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        UserLoginActData userLoginData = new UserLoginActData();
+        UserLoginActivityData userLoginData = new UserLoginActivityData();
         UserLoginRequestBean requestBean = new UserLoginRequestBean();
         requestBean.account = "123456";
         requestBean.password = "321";
@@ -83,6 +87,26 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
             }
         });
 
+        countDownLatch.await();
+    }
+
+    public void testUserLogout() throws Exception {
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        UserCenterActivityData userLogoutData = new UserCenterActivityData();
+        UserLogoutRequestBean requestBean = new UserLogoutRequestBean();
+        requestBean.account = "123456";
+        final UserLogoutRequest rq = new UserLogoutRequest(requestBean);
+
+        userLogoutData.userLogOut(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                UserLogoutResultBean resultBean = rq.getLogoutResultBean();
+                assertEquals(0,resultBean.code);
+                assertNotNull(resultBean);
+                countDownLatch.countDown();
+            }
+        });
         countDownLatch.await();
     }
 

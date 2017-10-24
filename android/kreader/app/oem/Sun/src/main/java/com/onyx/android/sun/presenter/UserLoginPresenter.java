@@ -2,7 +2,7 @@ package com.onyx.android.sun.presenter;
 
 import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
-import com.onyx.android.sun.data.UserLoginActData;
+import com.onyx.android.sun.data.UserLoginActivityData;
 import com.onyx.android.sun.interfaces.UserLoginView;
 import com.onyx.android.sun.requests.cloud.UserLoginRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
@@ -13,11 +13,11 @@ import com.onyx.android.sun.requests.requestTool.BaseRequest;
  */
 
 public class UserLoginPresenter {
-    private UserLoginActData loginData;
+    private UserLoginActivityData loginData;
     private UserLoginView loginView;
 
     public UserLoginPresenter(UserLoginView loginView) {
-        loginData = new UserLoginActData();
+        loginData = new UserLoginActivityData();
         this.loginView = loginView;
     }
 

@@ -7,7 +7,7 @@ import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.data.HomeworkData;
-import com.onyx.android.sun.data.MainActData;
+import com.onyx.android.sun.data.MainActivityData;
 import com.onyx.android.sun.requests.cloud.GetNewMessageRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
@@ -52,14 +52,14 @@ public class HttpGetTest extends ApplicationTestCase<SunApplication> {
     public void testGetMessage() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
 
-        MainActData mainActData = new MainActData();
+        MainActivityData mainActivityData = new MainActivityData();
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
         requestBean.page = "1";
         requestBean.size = "2";
         requestBean.studentId = "2";
         final GetNewMessageRequest rq = new GetNewMessageRequest(requestBean);
 
-        mainActData.getNewMessage(rq, new BaseCallback() {
+        mainActivityData.getNewMessage(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkUnfinishedResultBean resultBean = rq.getHomeworkUnfinishedResultBean();

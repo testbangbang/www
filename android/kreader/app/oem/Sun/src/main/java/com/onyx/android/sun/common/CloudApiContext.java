@@ -58,7 +58,7 @@ public class CloudApiContext {
         public static final String ID = "id";
     }
 
-    public static class UserLogin {
+    public static class UserInfo {
         public static final String ACCOUNT = "account";
         public static final String PASSWORD = "password";
     }
