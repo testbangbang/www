@@ -180,6 +180,10 @@ public class DialogReaderMenu extends Dialog {
         seekBarProgress.setMax(readerMenuState.getPageCount());
         seekBarProgress.setProgress(currentPage);
 
+        if (readerMenuState != null && !readerMenuState.isFixedPagingMode()) {
+            noteButton.setVisibility(View.GONE);
+        }
+
         if (readerMenuState != null && !readerMenuState.isSupportingSideNote()) {
             sideNoteButton.setVisibility(View.GONE);
         }
