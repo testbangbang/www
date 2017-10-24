@@ -5,6 +5,7 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -177,10 +178,18 @@ public class ReaderDataHolder {
             PageInfo subNotePage = new PageInfo(firstPage.getName(),
                     firstPage.getRange().startPosition,
                     firstPage.getRange().endPosition,
-                    displayWidth / 2, displayHeight);
+                    firstPage.getOriginWidth(),
+                    firstPage.getOriginHeight());
+
+            RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
+                    subNotePage.getOriginHeight());
+            RectF viewportRect = new RectF(displayWidth / 2, 0, displayWidth, displayHeight);
+            float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
+
+            subNotePage.setScale(scale);
+            subNotePage.updateDisplayRect(pageRect);
+
             subNotePage.setSubPage(getSubPageIndex());
-            subNotePage.setPosition(displayWidth / 2, 0);
-            subNotePage.updateDisplayRect(subNotePage.getPositionRect());
             pages.add(subNotePage);
         }
 
