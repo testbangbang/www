@@ -170,7 +170,11 @@ public class DeviceUtils {
         return orientation;
     }
 
-
+    public static boolean isDeviceInLandscapeOrientation(Context context) {
+        int orientation = getScreenOrientation(context);
+        return orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE ||
+                orientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE;
+    }
 
     public static int detectTouchDeviceCount() {
         int count = 0;

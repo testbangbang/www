@@ -1,15 +1,18 @@
 package com.onyx.kreader.ui.handler;
 
+import android.content.pm.ActivityInfo;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.HideTabWidgetEvent;
 import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
 
@@ -17,8 +20,6 @@ import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
  * Created by Joy on 2014/3/26.
  */
 public class SideNoteHandler extends BaseHandler {
-
-    private boolean resumeTabWidgetState = false;
 
     public SideNoteHandler(HandlerManager p) {
         super(p);
@@ -32,18 +33,16 @@ public class SideNoteHandler extends BaseHandler {
         final StartNoteRequest request = new StartNoteRequest(readerDataHolder.getVisiblePages(),
                 true, readerDataHolder.getSideNoteStartSubPageIndex());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
-        if (!readerDataHolder.isButtonShowTabWidgetVisible()) {
-            readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
-            resumeTabWidgetState = true;
-        }
+        readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
         StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
         stopNoteActionChain.execute(readerDataHolder, null);
-        if (resumeTabWidgetState) {
-            resumeTabWidgetState = false;
-            readerDataHolder.getEventBus().post(new ShowTabWidgetEvent());
+        readerDataHolder.getEventBus().post(new ShowTabWidgetEvent());
+        if (readerDataHolder.getOrientationBeforeSideNote() > 0) {
+            readerDataHolder.getEventBus().post(new ChangeOrientationEvent(readerDataHolder.getOrientationBeforeSideNote()));
+            readerDataHolder.setOrientationBeforeSideNote(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
     }
 
