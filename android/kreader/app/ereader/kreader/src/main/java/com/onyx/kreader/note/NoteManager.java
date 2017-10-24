@@ -429,6 +429,9 @@ public class NoteManager {
 
     private List<Rect> getLimitRegionOfVisiblePages() {
         List<Rect> list = new ArrayList<>();
+        if (visiblePages == null) {
+            return list;
+        }
         for (PageInfo page : visiblePages) {
             if (isSideNoting() && !isSidePage(page)) {
                 continue;
