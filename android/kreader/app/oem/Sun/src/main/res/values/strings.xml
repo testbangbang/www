@@ -108,4 +108,13 @@
     <string name="download_url">download url: </string>
     <string name="never_sleep">never sleep</string>
     <string name="device_setting_language_settings_title">Sets the system language</string>
+    <string name="login_activity_account_hint">please enter your account name</string>
+    <string name="login_activity_password_hint">please enter your password</string>
+    <string name="login_activity_keep_password">keep password</string>
+    <string name="login_activity_login">Login</string>
+    <string name="login_activity_tip_account_error">Incorrect account name format</string>
+    <string name="login_activity_tip_password_error">Incorrect password format</string>
+    <string name="login_activity_loading_tip">Please wait</string>
+    <string name="login_activity_network_connection_exception">network connection exception</string>
+    <string name="login_activity_request_failed">request failed</string>
 </resources>

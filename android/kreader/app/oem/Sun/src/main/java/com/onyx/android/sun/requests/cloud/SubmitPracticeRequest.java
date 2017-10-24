@@ -1,4 +1,4 @@
-package com.onyx.android.sun.requests;
+package com.onyx.android.sun.requests.cloud;
 
 import android.util.Log;
 

@@ -9,8 +9,8 @@ import com.onyx.android.sun.cloud.bean.SubmitPracticeRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
 import com.onyx.android.sun.data.UserLoginActData;
-import com.onyx.android.sun.requests.SubmitPracticeRequest;
-import com.onyx.android.sun.requests.UserLoginRequest;
+import com.onyx.android.sun.requests.cloud.SubmitPracticeRequest;
+import com.onyx.android.sun.requests.cloud.UserLoginRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 import com.onyx.android.sun.requests.requestTool.SunRequestManager;
@@ -37,7 +37,7 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
         UserLoginActData userLoginData = new UserLoginActData();
         UserLoginRequestBean requestBean = new UserLoginRequestBean();
         requestBean.account = "123456";
-        requestBean.md5Password = "321";
+        requestBean.password = "321";
         final UserLoginRequest rq = new UserLoginRequest(requestBean);
 
         userLoginData.userLogin(rq, new BaseCallback() {

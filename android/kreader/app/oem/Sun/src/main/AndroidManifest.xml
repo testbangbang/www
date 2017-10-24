@@ -38,6 +38,11 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
 
         <activity
+            android:name=".activity.LoginActivity"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        </activity>
+
+        <activity
             android:name=".activity.WifiActivity"
             android:launchMode="singleTask"
             android:theme="@style/WifiDialogStyle" />
