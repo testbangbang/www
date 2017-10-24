@@ -28,6 +28,7 @@ public class DialogReaderMenu extends Dialog {
     private Context context;
     private ReaderMenu.ReaderMenuCallback readerMenuCallback;
     private ReaderLayerMenuLayout menuLayout;
+    private ImageButton noteButton;
     private ImageButton sideNoteButton;
     private ImageButton prevButton;
     private ImageButton nextButton;
@@ -69,6 +70,7 @@ public class DialogReaderMenu extends Dialog {
         });
 
         menuLayout = (ReaderLayerMenuLayout) findViewById(R.id.layout_reader_menu);
+        noteButton = (ImageButton) findViewById(R.id.note_button);
         sideNoteButton = (ImageButton) findViewById(R.id.side_note_button);
         prevButton = (ImageButton) findViewById(R.id.pre_button);
         nextButton = (ImageButton) findViewById(R.id.next_button);
@@ -112,6 +114,13 @@ public class DialogReaderMenu extends Dialog {
             @Override
             public void onClick(View v) {
                 readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.GOTO_PAGE));
+            }
+        });
+
+        noteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerMenuCallback.onMenuItemClicked(ReaderLayerMenuItem.createSimpleMenuItem(ReaderMenuAction.NOTE_WRITING));
             }
         });
 
