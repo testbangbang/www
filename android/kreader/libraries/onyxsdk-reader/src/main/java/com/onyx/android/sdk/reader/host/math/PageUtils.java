@@ -80,6 +80,16 @@ public class PageUtils {
         return deltaScale;
     }
 
+    static public float scaleToFitRect(final RectF child, final RectF parent) {
+        float scale = Math.min(parent.width() / child.width(), parent.height() / child.height());
+        float pageWidth = child.width() * scale;
+        float pageHeight = child.height() * scale;
+        float pageLeft = parent.left + (parent.width() - pageWidth) / 2;
+        float pageTop = parent.top + (parent.height() - pageHeight) / 2;
+        child.set(pageLeft, pageTop, pageLeft + pageWidth, pageTop + pageHeight);
+        return scale;
+    }
+
     static public float scaleByRatio(final RectF ratio, final float childWidth, final float childHeight, final RectF parent) {
         RectF actualEntry = new RectF(childWidth * ratio.left,
                 childHeight * ratio.top,
