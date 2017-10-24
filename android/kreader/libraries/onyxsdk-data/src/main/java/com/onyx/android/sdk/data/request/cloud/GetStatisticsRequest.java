@@ -67,6 +67,9 @@ public class GetStatisticsRequest extends BaseCloudRequest {
             if (response != null && response.isSuccessful()) {
                 statisticsResult = response.body();
                 statisticsResult.setMyEventHourlyAgg(getSelfReadTimeDis());
+                if (statisticsResult.isEmpty()) {
+                    readLocalData();
+                }
             }else {
                 readLocalData();
             }
