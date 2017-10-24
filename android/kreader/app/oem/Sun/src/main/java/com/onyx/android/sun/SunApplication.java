@@ -14,11 +14,11 @@ import com.onyx.android.sun.common.AppConfigData;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
-import com.raizlabs.android.dbflow.config.GeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
+import com.raizlabs.android.dbflow.config.SunGeneratedDatabaseHolder;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
 
 /**
@@ -68,7 +68,7 @@ public class SunApplication extends Application {
 
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {
         List<Class<? extends DatabaseHolder>> list = new ArrayList<>();
-        list.add(GeneratedDatabaseHolder.class);
+        list.add(SunGeneratedDatabaseHolder.class);
         list.add(ShapeGeneratedDatabaseHolder.class);
         return list;
     }
