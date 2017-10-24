@@ -4,7 +4,7 @@ import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
 import com.onyx.android.sun.data.UserLoginActData;
 import com.onyx.android.sun.interfaces.UserLoginView;
-import com.onyx.android.sun.requests.UserLoginRequest;
+import com.onyx.android.sun.requests.cloud.UserLoginRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 
@@ -31,6 +31,7 @@ public class UserLoginPresenter {
             public void done(BaseRequest request, Throwable e) {
                 UserLoginResultBean resultBean = rq.getLoginResultBean();
                 if (resultBean == null) {
+                    loginView.onLoginError(e);
                     return;
                 }
                 if (resultBean.code == 0){

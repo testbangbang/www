@@ -3,6 +3,7 @@ package com.onyx.android.sun.common;
 import android.content.Context;
 import android.content.Intent;
 
+import com.onyx.android.sun.activity.MainActivity;
 import com.onyx.android.sun.activity.WifiActivity;
 import com.onyx.android.sun.scribble.ScribbleActivity;
 
@@ -28,6 +29,11 @@ public class ManagerActivityUtils {
     public static void startWifiActivity(Context context) {
         Intent intent = new Intent(context, WifiActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        context.startActivity(intent);
+    }
+
+    public static void startMainActivity(Context context) {
+        Intent intent = new Intent(context, MainActivity.class);
         context.startActivity(intent);
     }
 }

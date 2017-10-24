@@ -115,4 +115,6 @@
     <string name="login_act_tip_account_error">账户名格式错误</string>
     <string name="login_act_tip_password_error">密码格式错误</string>
     <string name="login_activity_loading_tip">请稍后</string>
+    <string name="login_activity_network_connection_exception">网络连接异常</string>
+    <string name="login_activity_request_failed">请求失败</string>
 </resources>

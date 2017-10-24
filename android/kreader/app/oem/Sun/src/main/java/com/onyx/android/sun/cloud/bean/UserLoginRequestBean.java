@@ -33,7 +33,7 @@ public class UserLoginRequestBean extends BaseObservable{
         return isKeepPassword;
     }
 
-    public void setIsKeepPassword(boolean isKeepPsd) {
-        this.isKeepPassword = isKeepPsd;
+    public void setIsKeepPassword(boolean isKeepPassword) {
+        this.isKeepPassword = isKeepPassword;
     }
 }

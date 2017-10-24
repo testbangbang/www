@@ -9,4 +9,5 @@ import com.onyx.android.sun.cloud.bean.UserInfoBean;
 public interface UserLoginView {
     void onLoginSucced(UserInfoBean userInfoBean);
     void onLoginFailed(int errorCode, String msg);
+    void onLoginError(Throwable throwable);
 }

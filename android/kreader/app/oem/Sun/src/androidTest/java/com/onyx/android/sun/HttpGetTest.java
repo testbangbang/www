@@ -8,7 +8,7 @@ import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.data.HomeworkData;
 import com.onyx.android.sun.data.MainActData;
-import com.onyx.android.sun.requests.GetNewMessageRequest;
+import com.onyx.android.sun.requests.cloud.GetNewMessageRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;

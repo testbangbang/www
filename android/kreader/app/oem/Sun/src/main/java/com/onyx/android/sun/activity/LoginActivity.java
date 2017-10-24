@@ -1,11 +1,12 @@
 package com.onyx.android.sun.activity;
 
-import android.content.Intent;
 import android.databinding.ViewDataBinding;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sun.BR;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
@@ -13,11 +14,12 @@ import com.onyx.android.sun.cloud.bean.UserInfoBean;
 import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
+import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.ActivityUserLoginBinding;
 import com.onyx.android.sun.interfaces.UserLoginView;
 import com.onyx.android.sun.presenter.UserLoginPresenter;
-import com.onyx.android.sun.utils.MD5Utils;
-import com.onyx.android.sun.utils.SharedPreferencesUtil;
+
+import java.net.ConnectException;
 
 /**
  * Created by jackdeng on 2017/10/23.
@@ -33,16 +35,15 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void initData() {
         userLoginPresenter = new UserLoginPresenter(this);
-        userLoginRequestBean.isKeepPassword = SharedPreferencesUtil.getValue(Constants.SP_NAME_USERINFO, Constants.SP_KEY_ISKEEPPASSWORD, false);
-
+        userLoginRequestBean.isKeepPassword = PreferenceManager.getBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, false);
         restoreUserInfo();
         loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
     }
 
     private void restoreUserInfo() {
         if (userLoginRequestBean.isKeepPassword){
-            String account = SharedPreferencesUtil.getValue(Constants.SP_NAME_USERINFO, Constants.SP_KEY_USER_ACCOUNT, "");
-            String password = SharedPreferencesUtil.getValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_PASSWORD,"");
+            String account = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_ACCOUNT, "");
+            String password = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD,"");
             if (!TextUtils.isEmpty(account)){
                 userLoginRequestBean.account = account;
             }
@@ -81,18 +82,19 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     private void startLogin() {
         if (checkLoginInfo()){
             loginLoadingDialog.show();
-            userLoginPresenter.loginAccount(userLoginRequestBean.account, MD5Utils.encode(userLoginRequestBean.password));
+            String md5Password = FileUtils.computeMD5(userLoginRequestBean.password);
+            userLoginPresenter.loginAccount(userLoginRequestBean.account, md5Password);
         }
     }
 
     private void saveUserInfo() {
-        SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
+        PreferenceManager.setBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
         if (userLoginRequestBean.isKeepPassword){
-            SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_ACCOUNT, userLoginRequestBean.account);
-            SharedPreferencesUtil.putValue(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
+            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, userLoginRequestBean.account);
+            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
         } else {
-            SharedPreferencesUtil.cleanValueByKey(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_ACCOUNT);
-            SharedPreferencesUtil.cleanValueByKey(Constants.SP_NAME_USERINFO,Constants.SP_KEY_USER_PASSWORD);
+            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, null);
+            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, null);
         }
     }
 
@@ -109,8 +111,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void skipToMainActivity() {
-        Intent intent = new Intent(SunApplication.getInstance(),MainActivity.class);
-        startActivity(intent);
+        ManagerActivityUtils.startMainActivity(LoginActivity.this);
     }
 
     @Override
@@ -130,6 +131,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     public void onLoginFailed(int errorCode, String msg) {
         dissmisLoadDialog();
+    }
+
+    @Override
+    public void onLoginError(Throwable throwable) {
+        dissmisLoadDialog();
+        if (null != throwable){
+            if (throwable instanceof ConnectException){
+                CommonNotices.show(getString(R.string.login_activity_network_connection_exception));
+            } else {
+                CommonNotices.show(getString(R.string.login_activity_request_failed));
+            }
+        }
     }
 }
 

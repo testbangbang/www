@@ -1,7 +1,7 @@
 package com.onyx.android.sun.data;
 
 import com.onyx.android.sun.SunApplication;
-import com.onyx.android.sun.requests.GetNewMessageRequest;
+import com.onyx.android.sun.requests.cloud.GetNewMessageRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.SunRequestManager;
 
