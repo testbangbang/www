@@ -132,6 +132,22 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
+        if (callback == null) {
+            Intent i = new Intent();
+            i.setClass(context, ReaderTabHostActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
+                i.setAction(ACTION_TAB_BACK_PRESSED);
+            } else if (intent.getAction().equals(ACTION_TAB_BRING_TO_FRONT)) {
+                i.setAction(ACTION_TAB_BRING_TO_FRONT);
+                i.putExtra(TAG_TAB_ACTIVITY, intent.getStringExtra(TAG_TAB_ACTIVITY));
+            }
+
+            ActivityUtil.startActivitySafely(context, i);
+            return;
+        }
+
         if (intent.getAction().equals(ACTION_TAB_BRING_TO_FRONT)) {
             if (callback != null) {
                 callback.onTabBringToFront(intent.getStringExtra(TAG_TAB_ACTIVITY));
@@ -139,12 +155,6 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
             if (callback != null) {
                 callback.onTabBackPressed();
-            } else {
-                Intent i = new Intent();
-                i.setClass(context, ReaderTabHostActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.setAction(ACTION_TAB_BACK_PRESSED);
-                ActivityUtil.startActivitySafely(context, i);
             }
         } else if (intent.getAction().equals(ACTION_CHANGE_SCREEN_ORIENTATION)) {
             if (callback != null) {
