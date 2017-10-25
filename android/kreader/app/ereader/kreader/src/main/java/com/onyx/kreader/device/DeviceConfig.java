@@ -71,7 +71,7 @@ public class DeviceConfig {
     private String channel;
 
     // in seconds
-    private int slideshowMinimumInterval = 1;
+    private int slideshowMinimumInterval = 10;
     private int slideshowMaximumInterval = 60;
     private int defaultSlideshowInterval = 20;
 
