@@ -1,5 +1,6 @@
 package com.onyx.android.sun.scribble;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -12,8 +13,10 @@ import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageNextRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PagePrevRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageRemoveRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.note.NoteDocumentSaveRequest;
+import com.onyx.android.sdk.scribble.asyncrequest.shape.NoteBackgroundChangeRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.shape.RenderInBackgroundRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.NoteViewUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
@@ -78,7 +81,32 @@ public class ScribbleHandler extends BaseHandler {
 
     @Override
     public void handleSubMenuEvent(int subMenuID) {
+        Log.e(TAG, "handleSubMenuEvent: " + subMenuID);
+        if (ScribbleSubMenuID.isThicknessGroup(subMenuID)) {
+            onStrokeWidthChanged(subMenuID);
+        } else if (ScribbleSubMenuID.isBackgroundGroup(subMenuID)) {
+            onBackgroundChanged(subMenuID);
+        } else if (ScribbleSubMenuID.isEraserGroup(subMenuID)) {
+            onEraserChanged(subMenuID);
+        } else if (ScribbleSubMenuID.isPenStyleGroup(subMenuID)) {
+            onShapeChanged(subMenuID);
+        } else if (ScribbleSubMenuID.isPenColorGroup(subMenuID)) {
 
+        }
+    }
+
+    private void onBackgroundChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+        int bgType = ScribbleSubMenuID.bgFromMenuID(subMenuID);
+        noteManager.getShapeDataInfo().setBackground(bgType);
+        NoteBackgroundChangeRequest bgChangeRequest = new NoteBackgroundChangeRequest(bgType, !noteManager.inUserErasing());
+        bgChangeRequest.setRender(true);
+        noteManager.submitRequest(bgChangeRequest, mActionDoneCallback);
+    }
+
+    private void onShapeChanged(@ScribbleSubMenuID.ScribbleSubMenuIDDef int subMenuID) {
+        int shapeType = ScribbleSubMenuID.shapeTypeFromMenuID(subMenuID);
+        noteManager.getShapeDataInfo().setCurrentShapeType(shapeType);
+        noteManager.sync(true, ShapeFactory.createShape(shapeType).supportDFB());
     }
 
     @Override
