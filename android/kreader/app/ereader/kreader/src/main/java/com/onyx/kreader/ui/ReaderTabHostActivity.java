@@ -68,6 +68,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private View divider;
     private String pathToContinueOpenAfterRotation;
 
+    private boolean stopped = false;
+
     private boolean insideTabChanging = false;
     private boolean isManualShowTab = true;
 
@@ -119,6 +121,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     @Override
+    protected void onResume() {
+        stopped = false;
+        super.onResume();
+    }
+
+    @Override
     public void onConfigurationChanged(Configuration newConfig) {
         tabHost.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
 
@@ -135,6 +143,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     protected void onPause() {
         saveReaderTabState();
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        stopped = true;
+        super.onStop();
     }
 
     @Override
@@ -405,12 +419,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onTabBringToFront(String tabActivity) {
                 Debug.d(getClass(), "onTabBringToFront: " + tabActivity);
+                if (stopped) {
+                    bringSelfToFront();
+                }
+
                 for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
                     if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
-                        if (getCurrentTabInHost() != entry.getKey()) {
-                            if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
-                                updateCurrentTabInHost(entry.getKey());
-                            }
+                        if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
+                            updateCurrentTabInHost(entry.getKey());
                         }
                         return;
                     }
