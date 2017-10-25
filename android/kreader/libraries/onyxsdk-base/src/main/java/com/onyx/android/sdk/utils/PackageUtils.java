@@ -5,6 +5,7 @@ import android.app.ActivityManager.RunningTaskInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -72,15 +73,18 @@ public class PackageUtils {
     public static final String APP_PLATFORM_IMX6 = "IMX6";
     public static final String APP_TIMESTAMP = "timestamp";
 
-    public static Intent installIntent(File file) {
+    private static final ComponentName[] ANDROID_DEFAULT_INSTALLER_COMPONENT_NAMES = {
+            new ComponentName("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity"),
+            new ComponentName("com.google.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity")
+    };
+
+    public static Intent installIntent(Context context, File file) {
         ComponentName componentName;
-        if (Build.VERSION.SDK_INT < 23) {
-            componentName = new ComponentName("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
-        } else {
-            componentName = new ComponentName("com.google.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
-        }
+        componentName = getUsableDefaultInstallerComponentName(context);
         Intent i = getInstallIntent(file);
-        i.setComponent(componentName);
+        if (componentName != null) {
+            i.setComponent(componentName);
+        }
         return i;
     }
 
@@ -121,7 +125,7 @@ public class PackageUtils {
         if (file == null || !file.exists() || !file.isFile() || file.length() <= 0) {
             return false;
         }
-        Intent i = installIntent(file);
+        Intent i = installIntent(context, file);
         context.startActivity(i);
         return true;
     }
@@ -987,4 +991,24 @@ public class PackageUtils {
         return pm.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
     }
 
+    public static boolean checkComponentName(Context context, ComponentName componentName) {
+        ActivityInfo activityInfo;
+        try {
+            activityInfo = context.getPackageManager().getActivityInfo(componentName, 0);
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+        return activityInfo != null;
+    }
+
+    public static ComponentName getUsableDefaultInstallerComponentName(Context context) {
+        if (ANDROID_DEFAULT_INSTALLER_COMPONENT_NAMES != null && ANDROID_DEFAULT_INSTALLER_COMPONENT_NAMES.length > 0) {
+            for (ComponentName defaultComponentName : ANDROID_DEFAULT_INSTALLER_COMPONENT_NAMES) {
+                if (checkComponentName(context, defaultComponentName)) {
+                    return defaultComponentName;
+                }
+            }
+        }
+        return null;
+    }
 }
