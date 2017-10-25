@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.databinding.ViewDataBinding;
 import android.support.design.widget.TabLayout;
+import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -11,6 +12,7 @@ import com.android.databinding.library.baseAdapters.BR;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
@@ -19,6 +21,7 @@ import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
+import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.ApkDownloadSucceedEvent;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
@@ -62,7 +65,14 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     @Override
     protected void initData() {
+        restoreUserName();
+    }
 
+    private void restoreUserName() {
+        String name = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME,"");
+        if (!TextUtils.isEmpty(name)){
+            user.setUserName(name);
+        }
     }
 
     @Override
@@ -112,6 +122,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         switch (v.getId()) {
             case R.id.news_image:
                 switchCurrentFragment(ChildViewID.FRAGMENT_DEVICE_SETTING);
+                break;
+            case R.id.ll_main_activity_user_center:
+                ManagerActivityUtils.startUserCenterActivity(MainActivity.this);
                 break;
         }
     }

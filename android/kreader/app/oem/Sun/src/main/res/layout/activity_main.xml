@@ -37,10 +37,42 @@
             android:padding="@dimen/main_activity_title_padding"
             android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/ll_main_activity_user_center"
+                android:layout_centerVertical="true"
+                android:onClick="@{listener.onClick}"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{user.userName}" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_main_activity_icon_user_center"
+                    android:src="@drawable/icon_user_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_main_activity_user_name"
+                    android:paddingTop="@dimen/user_center_title_padding"
+                    android:paddingBottom="@dimen/user_center_title_padding"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{user.userName}" />
+
+                <TextView
+                    android:id="@+id/tv_main_activity_hello"
+                    android:paddingTop="@dimen/user_center_title_padding"
+                    android:paddingBottom="@dimen/user_center_title_padding"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/main_activity_hello" />
+
+            </LinearLayout>
 
             <ImageView
                 android:id="@+id/news_image"

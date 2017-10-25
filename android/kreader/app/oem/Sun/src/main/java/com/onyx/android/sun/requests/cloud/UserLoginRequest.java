@@ -45,9 +45,8 @@ public class UserLoginRequest extends BaseCloudRequest {
                 resultBean.msg = "ok";
                 UserInfoBean userInfoBean = new UserInfoBean();
                 userInfoBean.name = "jack";
-                userInfoBean.age = 20;
-                userInfoBean.nickName = "goodstudy";
-                userInfoBean.gender = 1;
+                userInfoBean.phoneNumber = "13456781256";
+                userInfoBean.account = requestBean.account;
                 resultBean.data = userInfoBean;
             }
         } catch (Exception e) {

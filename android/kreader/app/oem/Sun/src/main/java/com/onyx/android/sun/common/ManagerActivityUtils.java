@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.onyx.android.sun.activity.MainActivity;
+import com.onyx.android.sun.activity.UserCenterActivity;
 import com.onyx.android.sun.activity.WifiActivity;
 import com.onyx.android.sun.scribble.ScribbleActivity;
 
@@ -34,6 +35,11 @@ public class ManagerActivityUtils {
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startUserCenterActivity(Context context) {
+        Intent intent = new Intent(context, UserCenterActivity.class);
         context.startActivity(intent);
     }
 }
