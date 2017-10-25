@@ -17,37 +17,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="@dimen/user_center_title_margin_bottom"
         android:orientation="vertical">
-
-        <LinearLayout
-            android:paddingTop="@dimen/user_center_title_container_padding_top_and_bottom"
-            android:paddingBottom="@dimen/user_center_title_container_padding_top_and_bottom"
-            android:paddingLeft="@dimen/user_center_text_padding_left"
-            android:layout_marginBottom="@dimen/user_center_title_margin_bottom"
-            android:gravity="center_vertical"
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:onClick="@{listener.onClick}"
-                android:id="@+id/iv_user_center_back"
-                android:src="@drawable/icon_back_white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-            <TextView
-                android:onClick="@{listener.onClick}"
-                android:paddingTop="@dimen/user_center_title_padding"
-                android:paddingBottom="@dimen/user_center_title_padding"
-                android:id="@+id/tv_user_center_title"
-                android:text="@string/user_center_title"
-                android:textSize="@dimen/user_center_text_normal_textsize"
-                android:textColor="@android:color/white"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
-        </LinearLayout>
 
         <include layout="@layout/layout_divide_line"/>
 
@@ -61,7 +32,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/user_center_activity_account_key"
+                android:text="@string/user_center_fragment_account_key"
                 style="@style/user_center_text_style"/>
 
             <TextView
@@ -69,7 +40,7 @@
                 style="@style/user_center_colon_style"/>
 
             <TextView
-                android:id="@+id/tv_user_center_activity_account_value"
+                android:id="@+id/tv_user_center_fragment_account_value"
                 android:text="@{userInfo.account}"
                 style="@style/user_center_text_style"/>
 
@@ -88,7 +59,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/user_center_activity_name_key"
+                android:text="@string/user_center_fragment_name_key"
                 style="@style/user_center_text_style"/>
 
             <TextView
@@ -96,7 +67,7 @@
                 style="@style/user_center_colon_style"/>
 
             <TextView
-                android:id="@+id/tv_user_center_activity_name_value"
+                android:id="@+id/tv_user_center_fragment_name_value"
                 android:text="@{userInfo.name}"
                 style="@style/user_center_text_style"/>
 
@@ -105,7 +76,7 @@
         <include layout="@layout/layout_divide_line"/>
 
         <LinearLayout
-            android:id="@+id/ll_user_center_activity_phone_number_container"
+            android:id="@+id/ll_user_center_fragment_phone_number_container"
             android:onClick="@{listener.onClick}"
             android:paddingTop="@dimen/user_center_text_padding_top_and_bottom"
             android:paddingBottom="@dimen/user_center_text_padding_top_and_bottom"
@@ -116,7 +87,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:text="@string/user_center_activity_phone_number_key"
+                android:text="@string/user_center_fragment_phone_number_key"
                 style="@style/user_center_text_style"/>
 
             <TextView
@@ -124,7 +95,7 @@
                 style="@style/user_center_colon_style"/>
 
             <TextView
-                android:id="@+id/tv_user_center_activity_phone_number_value"
+                android:id="@+id/tv_user_center_fragment_phone_number_value"
                 android:text="@{userInfo.phoneNumber}"
                 style="@style/user_center_text_style"
                 android:drawableRight="@drawable/icon_go"
@@ -136,8 +107,8 @@
         <include layout="@layout/layout_divide_line"/>
 
         <TextView
-            android:id="@+id/tv_user_center_activity_change_password"
-            android:text="@string/user_center_activity_change_password"
+            android:id="@+id/tv_user_center_fragment_change_password"
+            android:text="@string/user_center_fragment_change_password"
             android:onClick="@{listener.onClick}"
             android:paddingTop="@dimen/user_center_text_padding_top_and_bottom"
             android:paddingBottom="@dimen/user_center_text_padding_top_and_bottom"
@@ -156,8 +127,8 @@
             android:layout_height="@dimen/line_height"/>
 
         <TextView
-            android:id="@+id/tv_user_center_activity_logout"
-            android:text="@string/user_center_activity_logout"
+            android:id="@+id/tv_user_center_fragment_logout"
+            android:text="@string/user_center_fragment_logout"
             android:onClick="@{listener.onClick}"
             android:gravity="center"
             android:padding="@dimen/user_center_text_padding_top_and_bottom"

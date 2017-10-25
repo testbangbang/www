@@ -21,7 +21,6 @@ import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
-import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.ApkDownloadSucceedEvent;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
@@ -42,11 +41,13 @@ import com.onyx.android.sun.fragment.FillHomeworkFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.fragment.RankingFragment;
+import com.onyx.android.sun.fragment.UserCenterFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
 import com.onyx.android.sun.utils.ApkUtils;
 import com.onyx.android.sun.utils.SystemUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -80,6 +81,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         mainBinding = (ActivityMainBinding) binding;
         mainBinding.setVariable(BR.presenter, new MainPresenter());
         mainBinding.setVariable(BR.user, user);
+        mainBinding.setIsUserCenter(false);
         mainBinding.setListener(this);
 
         List<MainTabBean> mainTabList = AppConfigData.getMainTabList();
@@ -123,10 +125,18 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             case R.id.news_image:
                 switchCurrentFragment(ChildViewID.FRAGMENT_DEVICE_SETTING);
                 break;
+            case R.id.ll_main_activity_go_user_center:
+                skipToUserCenterFragment();
+                break;
             case R.id.ll_main_activity_user_center:
-                ManagerActivityUtils.startUserCenterActivity(MainActivity.this);
+                EventBus.getDefault().post(new ToMainFragmentEvent());
                 break;
         }
+    }
+
+    private void skipToUserCenterFragment() {
+        switchCurrentFragment(ChildViewID.FRAGMENT_USER_CENTER);
+        mainBinding.setIsUserCenter(true);
     }
 
     public void switchCurrentFragment(int pageID) {
@@ -181,6 +191,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_DEVICE_SETTING:
                     baseFragment = new DeviceSettingFragment();
                     break;
+                case ChildViewID.FRAGMENT_USER_CENTER:
+                    baseFragment = new UserCenterFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -231,6 +244,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToMainFragmentEvent(ToMainFragmentEvent event) {
         mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_MAIN).select();
+        mainBinding.setIsUserCenter(false);
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
     }
 

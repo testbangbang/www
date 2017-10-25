@@ -8,8 +8,14 @@
 
         <import type="com.onyx.android.sun.bean.User" />
 
+        <import type="android.view.View" />
+
         <variable
             name="haveNew"
+            type="boolean" />
+
+        <variable
+            name="isUserCenter"
             type="boolean" />
 
         <variable
@@ -38,7 +44,36 @@
             android:orientation="horizontal">
 
             <LinearLayout
+                android:visibility="@{isUserCenter ? View.VISIBLE : View.GONE}"
                 android:id="@+id/ll_main_activity_user_center"
+                android:layout_centerVertical="true"
+                android:onClick="@{listener.onClick}"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_user_center_back"
+                    android:src="@drawable/icon_back_white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:paddingTop="@dimen/main_activity_title_name_padding"
+                    android:paddingBottom="@dimen/main_activity_title_name_padding"
+                    android:id="@+id/tv_user_center_title"
+                    android:text="@string/user_center_title"
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:textColor="@android:color/white"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:visibility="@{isUserCenter ? View.GONE : View.VISIBLE}"
+                android:id="@+id/ll_main_activity_go_user_center"
                 android:layout_centerVertical="true"
                 android:onClick="@{listener.onClick}"
                 android:gravity="center_vertical"
@@ -54,8 +89,8 @@
 
                 <TextView
                     android:id="@+id/tv_main_activity_user_name"
-                    android:paddingTop="@dimen/user_center_title_padding"
-                    android:paddingBottom="@dimen/user_center_title_padding"
+                    android:paddingTop="@dimen/main_activity_title_name_padding"
+                    android:paddingBottom="@dimen/main_activity_title_name_padding"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/user_center_text_normal_textsize"
                     android:layout_width="wrap_content"
@@ -64,8 +99,8 @@
 
                 <TextView
                     android:id="@+id/tv_main_activity_hello"
-                    android:paddingTop="@dimen/user_center_title_padding"
-                    android:paddingBottom="@dimen/user_center_title_padding"
+                    android:paddingTop="@dimen/main_activity_title_name_padding"
+                    android:paddingBottom="@dimen/main_activity_title_name_padding"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/user_center_text_normal_textsize"
                     android:layout_width="wrap_content"
@@ -75,6 +110,7 @@
             </LinearLayout>
 
             <ImageView
+                android:visibility="@{isUserCenter ? View.GONE : View.VISIBLE}"
                 android:id="@+id/news_image"
                 android:layout_width="@dimen/message_image_width"
                 android:layout_height="@dimen/message_image_width"
@@ -83,6 +119,7 @@
                 android:src="@{haveNew?@drawable/ic_prompt:@drawable/ic_prompt}" />
 
             <android.support.design.widget.TabLayout
+                android:visibility="@{isUserCenter ? View.GONE : View.VISIBLE}"
                 android:id="@+id/main_activity_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

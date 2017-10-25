@@ -97,6 +97,5 @@
     <dimen name="user_center_text_colon_margin_left_and_right">4dp</dimen>
     <dimen name="user_center_right_icon_padding_right">10dp</dimen>
     <dimen name="user_center_logout_button_margin_top">30dp</dimen>
-    <dimen name="user_center_title_container_padding_top_and_bottom">23dp</dimen>
-    <dimen name="user_center_title_padding">10dp</dimen>
+    <dimen name="main_activity_title_name_padding">10dp</dimen>
 </resources>

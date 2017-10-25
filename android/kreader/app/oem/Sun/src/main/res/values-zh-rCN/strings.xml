@@ -117,11 +117,11 @@
     <string name="login_activity_loading_tip">请稍后</string>
     <string name="login_activity_network_connection_exception">网络连接异常</string>
     <string name="login_activity_request_failed">请求失败</string>
-    <string name="user_center_activity_logout">退出登录</string>
-    <string name="user_center_activity_account_key">账号</string>
-    <string name="user_center_activity_name_key">姓名</string>
-    <string name="user_center_activity_phone_number_key">手机号</string>
-    <string name="user_center_activity_change_password">修改密码</string>
+    <string name="user_center_fragment_logout">退出登录</string>
+    <string name="user_center_fragment_account_key">账号</string>
+    <string name="user_center_fragment_name_key">姓名</string>
+    <string name="user_center_fragment_phone_number_key">手机号</string>
+    <string name="user_center_fragment_change_password">修改密码</string>
     <string name="user_center_title">个人中心</string>
     <string name="main_activity_hello">同学,你好!</string>
 </resources>
