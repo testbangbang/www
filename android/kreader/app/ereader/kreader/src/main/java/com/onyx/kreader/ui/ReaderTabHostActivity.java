@@ -68,7 +68,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private View divider;
     private String pathToContinueOpenAfterRotation;
 
-    private boolean stopped = false;
+    private boolean isFront = true;
 
     private boolean insideTabChanging = false;
     private boolean isManualShowTab = true;
@@ -84,6 +84,87 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     private int orientationBeforeSideReading;
 
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+
+    private ReaderTabHostBroadcastReceiver.Callback callback = new ReaderTabHostBroadcastReceiver.Callback() {
+        @Override
+        public void onTabBringToFront(String tabActivity) {
+            Debug.d(getClass(), "onTabBringToFront: " + tabActivity);
+            ensureFront();
+
+            for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+                if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
+                    if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
+                        updateCurrentTabInHost(entry.getKey());
+                    }
+                    return;
+                }
+            }
+        }
+
+        @Override
+        public void onTabBackPressed() {
+            onBackPressed();
+        }
+
+        @Override
+        public void onChangeOrientation(final int orientation) {
+            final int current = DeviceUtils.getScreenOrientation(ReaderTabHostActivity.this);
+            Debug.d("onChangeOrientation, current: " + current + ", target: " + orientation);
+            setRequestedOrientation(orientation);
+            SingletonSharedPreference.setScreenOrientation(orientation);
+            if (current != orientation && DeviceUtils.isReverseOrientation(current, orientation)) {
+                onScreenOrientationChanged();
+            }
+        }
+
+        @Override
+        public void onEnterFullScreen() {
+            SingletonSharedPreference.setBooleanValue(getString(R.string.settings_enable_system_status_bar_key), false);
+            syncFullScreenState();
+        }
+
+        @Override
+        public void onQuitFullScreen() {
+            SingletonSharedPreference.setBooleanValue(getString(R.string.settings_enable_system_status_bar_key), true);
+            syncFullScreenState();
+        }
+
+        @Override
+        public void onUpdateTabWidgetVisibility(boolean visible) {
+            updateTabWidgetVisibility(visible);
+        }
+
+        @Override
+        public void onOpenDocumentFailed(String path) {
+            if (isSideReading) {
+                quitSideReadingMode();
+                return;
+            }
+            closeTabIfOpenFileFailed(path);
+        }
+
+        @Override
+        public void onSideReading(ReaderTabHostBroadcastReceiver.SideReadingCallback callback, String leftDocPath, String rightDocPath) {
+            onSideReadingCallback(callback, leftDocPath, rightDocPath);
+        }
+
+        @Override
+        public void onGotoPageLink(String link) {
+            gotoPageLink(link);
+        }
+
+        @Override
+        public void onEnableDebugLog() {
+            setEnableDebugLog(true);
+            ReaderTabActivityManager.enableDebugLog(ReaderTabHostActivity.this, tabManager, true);
+        }
+
+        @Override
+        public void onDisableDebugLog() {
+            setEnableDebugLog(false);
+            ReaderTabActivityManager.enableDebugLog(ReaderTabHostActivity.this, tabManager, false);
+        }
+    };
 
     public static void setTabWidgetVisible(boolean visible) {
         ReaderTabHostActivity.tabWidgetVisible.set(visible);
@@ -122,7 +203,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     @Override
     protected void onResume() {
-        stopped = false;
+        isFront = true;
         super.onResume();
     }
 
@@ -147,7 +228,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     @Override
     protected void onStop() {
-        stopped = true;
+        isFront = false;
         super.onStop();
     }
 
@@ -415,88 +496,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void initReceiver() {
-        ReaderTabHostBroadcastReceiver.setCallback(new ReaderTabHostBroadcastReceiver.Callback() {
-            @Override
-            public void onTabBringToFront(String tabActivity) {
-                Debug.d(getClass(), "onTabBringToFront: " + tabActivity);
-                if (stopped) {
-                    bringSelfToFront();
-                }
-
-                for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-                    if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
-                        if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
-                            updateCurrentTabInHost(entry.getKey());
-                        }
-                        return;
-                    }
-                }
-            }
-
-            @Override
-            public void onTabBackPressed() {
-                onBackPressed();
-            }
-
-            @Override
-            public void onChangeOrientation(final int orientation) {
-                final int current = DeviceUtils.getScreenOrientation(ReaderTabHostActivity.this);
-                Debug.d("onChangeOrientation, current: " + current + ", target: " + orientation);
-                setRequestedOrientation(orientation);
-                SingletonSharedPreference.setScreenOrientation(orientation);
-                if (current != orientation && DeviceUtils.isReverseOrientation(current, orientation)) {
-                    onScreenOrientationChanged();
-                }
-            }
-
-            @Override
-            public void onEnterFullScreen() {
-                SingletonSharedPreference.setBooleanValue(getString(R.string.settings_enable_system_status_bar_key), false);
-                syncFullScreenState();
-            }
-
-            @Override
-            public void onQuitFullScreen() {
-                SingletonSharedPreference.setBooleanValue(getString(R.string.settings_enable_system_status_bar_key), true);
-                syncFullScreenState();
-            }
-
-            @Override
-            public void onUpdateTabWidgetVisibility(boolean visible) {
-                updateTabWidgetVisibility(visible);
-            }
-
-            @Override
-            public void onOpenDocumentFailed(String path) {
-                if (isSideReading) {
-                    quitSideReadingMode();
-                    return;
-                }
-                closeTabIfOpenFileFailed(path);
-            }
-
-            @Override
-            public void onSideReading(ReaderTabHostBroadcastReceiver.SideReadingCallback callback, String leftDocPath, String rightDocPath) {
-                onSideReadingCallback(callback, leftDocPath, rightDocPath);
-            }
-
-            @Override
-            public void onGotoPageLink(String link) {
-                gotoPageLink(link);
-            }
-
-            @Override
-            public void onEnableDebugLog() {
-                setEnableDebugLog(true);
-                ReaderTabActivityManager.enableDebugLog(ReaderTabHostActivity.this, tabManager, true);
-            }
-
-            @Override
-            public void onDisableDebugLog() {
-                setEnableDebugLog(false);
-                ReaderTabActivityManager.enableDebugLog(ReaderTabHostActivity.this, tabManager, false);
-            }
-        });
+        ReaderTabHostBroadcastReceiver.setCallback(callback);
 
         deviceReceiver.initReceiver(this);
         deviceReceiver.setMediaStateListener(new DeviceReceiver.MediaStateListener() {
@@ -804,7 +804,10 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 handleViewActionIntent();
                 return true;
             } else if (action.equals(ReaderTabHostBroadcastReceiver.ACTION_TAB_BACK_PRESSED)) {
-                onBackPressed();
+                callback.onTabBackPressed();
+                return true;
+            } else if (action.equals(ReaderTabHostBroadcastReceiver.ACTION_TAB_BRING_TO_FRONT)) {
+                callback.onTabBringToFront(getIntent().getStringExtra(ReaderTabHostBroadcastReceiver.TAG_TAB_ACTIVITY));
                 return true;
             }
             return true;
@@ -967,6 +970,12 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
         updateCurrentTabInHost(tab);
         updateReaderTabWindowHeight(tab);
+    }
+
+    private void ensureFront() {
+        if (!isFront) {
+            bringSelfToFront();
+        }
     }
 
     private boolean bringSelfToFront() {
