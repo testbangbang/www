@@ -3,6 +3,7 @@ package com.onyx.android.sun.common;
 import android.content.Context;
 import android.content.Intent;
 
+import com.onyx.android.sun.activity.LoginActivity;
 import com.onyx.android.sun.activity.MainActivity;
 import com.onyx.android.sun.activity.WifiActivity;
 import com.onyx.android.sun.scribble.ScribbleActivity;
@@ -37,4 +38,8 @@ public class ManagerActivityUtils {
         context.startActivity(intent);
     }
 
+    public static void startLoginActivity(Context context) {
+        Intent intent = new Intent(context, LoginActivity.class);
+        context.startActivity(intent);
+    }
 }

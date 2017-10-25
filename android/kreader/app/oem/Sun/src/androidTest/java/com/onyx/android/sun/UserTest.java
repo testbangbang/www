@@ -10,7 +10,7 @@ import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
 import com.onyx.android.sun.cloud.bean.UserLogoutRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLogoutResultBean;
-import com.onyx.android.sun.data.UserCenterActivityData;
+import com.onyx.android.sun.data.UserCenterFragmentData;
 import com.onyx.android.sun.data.UserLoginActivityData;
 import com.onyx.android.sun.requests.cloud.SubmitPracticeRequest;
 import com.onyx.android.sun.requests.cloud.UserLoginRequest;
@@ -93,12 +93,12 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
     public void testUserLogout() throws Exception {
 
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        UserCenterActivityData userLogoutData = new UserCenterActivityData();
+        UserCenterFragmentData userCenterData = new UserCenterFragmentData();
         UserLogoutRequestBean requestBean = new UserLogoutRequestBean();
         requestBean.account = "123456";
         final UserLogoutRequest rq = new UserLogoutRequest(requestBean);
 
-        userLogoutData.userLogOut(rq, new BaseCallback() {
+        userCenterData.userLogOut(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 UserLogoutResultBean resultBean = rq.getLogoutResultBean();

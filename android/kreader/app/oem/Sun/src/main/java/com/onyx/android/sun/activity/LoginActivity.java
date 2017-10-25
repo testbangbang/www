@@ -141,9 +141,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         dissmisLoadDialog();
         if (null != throwable){
             if (throwable instanceof ConnectException){
-                CommonNotices.show(getString(R.string.login_activity_network_connection_exception));
+                CommonNotices.show(getString(R.string.common_tip_network_connection_exception));
             } else {
-                CommonNotices.show(getString(R.string.login_activity_request_failed));
+                CommonNotices.show(getString(R.string.common_tip_request_failed));
             }
         }
     }

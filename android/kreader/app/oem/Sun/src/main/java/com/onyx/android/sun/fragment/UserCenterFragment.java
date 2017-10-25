@@ -9,13 +9,17 @@ import com.onyx.android.sun.BR;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.UserInfoBean;
+import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
-import com.onyx.android.sun.databinding.ActivityUserCenterBinding;
+import com.onyx.android.sun.common.ManagerActivityUtils;
+import com.onyx.android.sun.databinding.FragmentUserCenterBinding;
 import com.onyx.android.sun.event.ToMainFragmentEvent;
 import com.onyx.android.sun.interfaces.UserLogoutView;
 import com.onyx.android.sun.presenter.UserCenterPresenter;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.net.ConnectException;
 
 /**
  * Created by jackdeng on 2017/10/25.
@@ -25,7 +29,8 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
 
     private UserInfoBean userInfoBean = new UserInfoBean();
     private UserCenterPresenter userCenterPresenter;
-    private ActivityUserCenterBinding userCenterBinding;
+    private FragmentUserCenterBinding userCenterBinding;
+    private String account;
 
     @Override
     protected void loadData() {
@@ -35,7 +40,7 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
     @Override
     protected void initView(ViewDataBinding binding) {
         userCenterPresenter = new UserCenterPresenter(this);
-        userCenterBinding = (ActivityUserCenterBinding) binding;
+        userCenterBinding = (FragmentUserCenterBinding) binding;
         userCenterBinding.setListener(this);
         userCenterBinding.setVariable(BR.userInfo,userInfoBean);
     }
@@ -51,7 +56,7 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
     }
 
     private void restoreUserInfo() {
-        String account = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_ACCOUNT, "");
+        account = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_ACCOUNT, "");
         String name = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME,"");
         String phoneNumber = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PHONE_NUMBER,"");
         if (!TextUtils.isEmpty(account)){
@@ -67,17 +72,28 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
 
     @Override
     public void onLogoutSucced() {
-
+        if (null != getActivity()){
+            ManagerActivityUtils.startLoginActivity(getActivity());
+            getActivity().finish();
+        }
     }
 
     @Override
     public void onLogoutFailed(int errorCode, String msg) {
-
+        if(!TextUtils.isEmpty(msg)){
+            CommonNotices.show(msg);
+        }
     }
 
     @Override
     public void onLogoutError(Throwable throwable) {
-
+        if (null != throwable){
+            if (throwable instanceof ConnectException){
+                CommonNotices.show(getString(R.string.common_tip_network_connection_exception));
+            } else {
+                CommonNotices.show(getString(R.string.common_tip_request_failed));
+            }
+        }
     }
 
     @Override
@@ -88,10 +104,16 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
 
     @Override
     public void onClick(View v) {
-        /*switch (v.getId()) {
-            case R.id.ll_main_activity_user_center:
-                onKeyBack();
+        switch (v.getId()) {
+            case R.id.ll_user_center_fragment_phone_number_container:
+
                 break;
-        }*/
+            case R.id.tv_user_center_fragment_change_password:
+
+                break;
+            case R.id.tv_user_center_fragment_logout:
+                userCenterPresenter.logoutAccount(account);
+                break;
+        }
     }
 }

@@ -9,7 +9,7 @@ import com.onyx.android.sun.requests.requestTool.SunRequestManager;
  * Created by jackdeng on 2017/10/24.
  */
 
-public class UserCenterActivityData {
+public class UserCenterFragmentData {
     public void userLogOut(UserLogoutRequest rq, BaseCallback callback) {
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
     }
