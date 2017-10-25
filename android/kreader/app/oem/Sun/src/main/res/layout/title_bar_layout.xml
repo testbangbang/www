@@ -29,10 +29,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/icon_back"
-                android:text="@{title}"
-                android:onClick="@{listener.onClick}"
                 android:drawablePadding="@dimen/title_bar_title_drawable_padding"
                 android:gravity="center_vertical"
+                android:onClick="@{listener.onClick}"
+                android:text="@{title}"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <View
@@ -45,9 +45,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/title_bar_record_margin_right"
-                android:text="@string/file_homework_record"
-                android:gravity="center_vertical"
                 android:drawableLeft="@drawable/icon_homework_record"
+                android:gravity="center_vertical"
+                android:text="@string/file_homework_record"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <Button
@@ -59,6 +59,20 @@
                 android:text="@string/file_homework_commit"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/level_one_heading_font" />
+
+            <ImageView
+                android:id="@+id/title_bar_image_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{listener::onClick}"
+                android:src="@drawable/ic_eraser" />
+
+            <ImageView
+                android:id="@+id/title_bar_image_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{listener::onClick}"
+                android:src="@drawable/ic_shape" />
         </LinearLayout>
 
         <View
