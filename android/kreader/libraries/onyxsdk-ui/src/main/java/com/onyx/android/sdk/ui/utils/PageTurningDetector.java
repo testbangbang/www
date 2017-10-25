@@ -22,7 +22,7 @@ public class PageTurningDetector {
             return PageTurningDirection.NONE;
         }
 
-        return deltaY < 0 ? PageTurningDirection.PREV : PageTurningDirection.NEXT;
+        return deltaY > 0 ? PageTurningDirection.PREV : PageTurningDirection.NEXT;
     }
 
     public static int detectBothAxisTuring(Context context, int deltaX, int deltaY) {
