@@ -17,13 +17,17 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.KeyAction;
+import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.TouchAction;
+import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ControlSettingsActivity extends PreferenceActivity {
@@ -92,9 +96,14 @@ public class ControlSettingsActivity extends PreferenceActivity {
     public Map<String, CustomBindKeyBean> getBindingMap() {
         if (bindingMap == null) {
             bindingMap = controlType == ControlType.KEY ? getDeviceConfig().getKeyBinding().getHandlerManager() :
-                    getDeviceConfig().getTouchBinding().getTouchBindingMap();
+                    getDeviceConfig().getTouchBinding().getBindingMap();
         }
         return bindingMap;
+    }
+
+    public Map<String, CustomBindKeyBean> getDefaultBindingMap() {
+        return controlType == ControlType.KEY ? KeyBinding.defaultValue().getHandlerManager() :
+                TouchBinding.defaultValue().getBindingMap();
     }
 
     private DeviceConfig getDeviceConfig() {
@@ -102,6 +111,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
     }
 
     private void initPreference() {
+        List<String> usedKeys = new ArrayList<>();
         for (Map.Entry<String, CustomBindKeyBean> entry : getBindingMap().entrySet()) {
             String keyCode = entry.getKey();
             CustomBindKeyBean bindKeyBean = getBindKeyBean(keyCode);
@@ -112,6 +122,18 @@ public class ControlSettingsActivity extends PreferenceActivity {
             Preference preference = findPreference(keyCode);
             if (preference != null) {
                 preference.setSummary(getActionTitle(action));
+                usedKeys.add(keyCode);
+            }
+        }
+
+        Map<String, CustomBindKeyBean> defaultBindings = getDefaultBindingMap();
+        for (Map.Entry<String, CustomBindKeyBean> entry : defaultBindings.entrySet()) {
+            String keyCode = entry.getKey();
+            if (!usedKeys.contains(keyCode)) {
+                Preference preference = findPreference(keyCode);
+                if (preference != null) {
+                    getPreferenceScreen().removePreference(preference);
+                }
             }
         }
     }

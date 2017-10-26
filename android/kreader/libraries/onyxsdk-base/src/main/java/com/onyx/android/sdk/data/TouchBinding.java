@@ -28,13 +28,21 @@ public class TouchBinding {
     };
 
     public TouchBinding() {
+    }
+
+
+    public void useDefaultValue() {
         for (Pair<String, CustomBindKeyBean> binding : touchBindings) {
             bindingMap.put(binding.first, binding.second);
         }
     }
 
-    public Map<String, CustomBindKeyBean> getTouchBindingMap() {
+    public Map<String, CustomBindKeyBean> getBindingMap() {
         return bindingMap;
+    }
+
+    public void setBindingMap(Map<String, CustomBindKeyBean> bindingMap) {
+        this.bindingMap = bindingMap;
     }
 
     private static TouchBinding touchBinding;
@@ -42,6 +50,7 @@ public class TouchBinding {
     public static TouchBinding defaultValue() {
         if (touchBinding == null) {
             touchBinding = new TouchBinding();
+            touchBinding.useDefaultValue();
         }
         return touchBinding;
     }
