@@ -14,7 +14,7 @@ import java.util.List;
 public class ReaderNoteDataInfo {
 
     private volatile ReaderNotePageNameMap pageMap = new ReaderNotePageNameMap();
-    private HashMap<PageInfo, List<Pair<Integer, ReaderNotePage>>> sideNotePages = new HashMap<>();
+    private boolean hasSideNote = false;
     private boolean canUndoShape;
     private boolean canRedoShape;
     private boolean inUserErasing;
@@ -31,12 +31,12 @@ public class ReaderNoteDataInfo {
         return (pageMap.size() > 0);
     }
 
-    public HashMap<PageInfo, List<Pair<Integer,ReaderNotePage>>> getSideNotePages() {
-        return sideNotePages;
+    public boolean hasSideNote() {
+        return hasSideNote;
     }
 
-    public boolean hasSideNotePages() {
-        return sideNotePages.size() > 0;
+    public void setHasSideNote(boolean hasSideNote) {
+        this.hasSideNote = hasSideNote;
     }
 
     public void setBackground(final int bg) {

@@ -66,8 +66,7 @@ public class ReaderPainter {
                          final ReaderViewInfo viewInfo,
                          ReaderSelectionManager selectionManager,
                          NoteManager noteManager,
-                         List<PageInfo> visiblePages,
-                         boolean renderShapes) {
+                         List<PageInfo> visiblePages) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
@@ -78,9 +77,7 @@ public class ReaderPainter {
         drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
         drawPageLinks(context, canvas, paint, userDataInfo, viewInfo);
-        if (renderShapes) {
-            drawShapeContents(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, noteManager, visiblePages);
-        }
+        drawShapeContents(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, noteManager, visiblePages);
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -360,25 +357,13 @@ public class ReaderPainter {
         if (!SingletonSharedPreference.isShowSideNoteIndicator(context)) {
             return;
         }
-        if (hasSideNote(readerDataHolder, noteManager)) {
+        if (noteManager.getNoteDataInfo().isRequestFinished() && noteManager.getNoteDataInfo().hasSideNote()) {
             Bitmap bitmap = BookmarkIconFactory.getSideNoteIndicatorIcon(context);
             final Point point = BookmarkIconFactory.sideNoteIndicatorPosition(context, canvas.getWidth());
             float left = AppCompatUtils.calculateEvenDigital(point.x);
             float top = AppCompatUtils.calculateEvenDigital(point.y);
             canvas.drawBitmap(bitmap, left, top, null);
         }
-    }
-
-    private boolean hasSideNote(final ReaderDataHolder readerDataHolder, final NoteManager noteManager) {
-        for (Map.Entry<PageInfo, List<Pair<Integer, ReaderNotePage>>> page : noteManager.getNoteDataInfo().getSideNotePages().entrySet()) {
-            for (Pair<Integer, ReaderNotePage> pair : page.getValue()) {
-                if (pair.first >= readerDataHolder.getSideNoteStartSubPageIndex() &&
-                        pair.second.hasShapes()) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {

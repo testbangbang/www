@@ -8,7 +8,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
-import android.util.Pair;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -26,7 +25,6 @@ import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.data.ReaderNotePage;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -39,7 +37,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private String parentLibraryId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
-    private HashMap<PageInfo, List<Pair<Integer, ReaderNotePage>>> sideNotePages = new HashMap<>();
+    private boolean hasSideNote = false;
     private boolean debugPathBenchmark = false;
     private volatile boolean pauseRawInputProcessor = true;
     private volatile boolean resumeRawInputProcessor = false;
@@ -125,8 +123,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return visiblePages;
     }
 
-    public HashMap<PageInfo, List<Pair<Integer,ReaderNotePage>>> getSideNotePages() {
-        return sideNotePages;
+    public boolean hasSideNote() {
+        return hasSideNote;
     }
 
     public void beforeExecute(final NoteManager noteManager) {
@@ -242,16 +240,15 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void loadNotePages(final NoteManager parent) {
         synchronized (parent) {
-            sideNotePages.clear();
             for (PageInfo page : getVisiblePages()) {
                 int pageCount = parent.getNoteDocument().getSubPageCount(page.getRange());
                 for (int i = 0; i < pageCount; i++) {
                     final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getRange(), i);
                     if (notePage != null) {
-                        if (!sideNotePages.containsKey(page)) {
-                            sideNotePages.put(page, new ArrayList<Pair<Integer, ReaderNotePage>>());
+                        if (i > page.getSubPage() && notePage.hasShapes()) {
+                            hasSideNote = true;
+                            return;
                         }
-                        sideNotePages.get(page).add(new Pair<>(i, notePage));
                     }
                 }
             }

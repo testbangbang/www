@@ -532,7 +532,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         if (event != null && !event.isWaitForShapeData()) {
             beforeDrawPage();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), false);
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
             afterDrawPage();
         }
 
@@ -576,7 +576,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
         final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
-        if (noteDataInfo == null || (!noteDataInfo.isContentRendered() && !noteDataInfo.hasSideNotePages())) {
+        if (noteDataInfo == null || (!noteDataInfo.isContentRendered() && !noteDataInfo.hasSideNote())) {
             return;
         }
         if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
@@ -586,7 +586,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             ReaderDeviceManager.applyWithGcUpdate(getSurfaceView());
         }
         beforeDrawPage();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), true);
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         if (event.isUseFullUpdate()) {
             ReaderDeviceManager.disableRegal();
         }
@@ -743,7 +743,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onShapeDrawing(final ShapeDrawingEvent event) {
         getReaderDataHolder().getNoteManager().ensureContentRendered();
-        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), true);
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
     }
 
     @Subscribe
@@ -763,7 +763,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         boolean drawDuringErasing = false;
         if (drawDuringErasing) {
             getReaderDataHolder().getNoteManager().ensureContentRendered();
-            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap(), true);
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         }
     }
 
@@ -1082,7 +1082,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         forwardAction.execute(getReaderDataHolder(), null);
     }
 
-    private void drawPage(final Bitmap pageBitmap, boolean renderShapes) {
+    private void drawPage(final Bitmap pageBitmap) {
         Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
                 surfaceView.getRight(), surfaceView.getBottom()));
         if (canvas == null) {
@@ -1097,8 +1097,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                     getReaderDataHolder().getReaderViewInfo(),
                     getReaderDataHolder().getSelectionManager(),
                     getReaderDataHolder().getNoteManager(),
-                    getReaderDataHolder().getVisiblePages(),
-                    renderShapes);
+                    getReaderDataHolder().getVisiblePages());
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
