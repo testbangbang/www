@@ -175,6 +175,10 @@ public class SingletonSharedPreference {
         return getBooleanByStringID(context, R.string.settings_bookmark_key, true);
     }
 
+    public static boolean isShowSideNoteIndicator(Context context) {
+        return getBooleanByStringID(context, R.string.settings_show_side_note_indicator_key, true);
+    }
+
     public static boolean isShowHyperlink(Context context) {
         return getBooleanByStringID(context, R.string.settings_hyperlink_key, true);
     }

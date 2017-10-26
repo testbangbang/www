@@ -357,7 +357,9 @@ public class ReaderPainter {
                                        final Paint paint,
                                        final ReaderDataHolder readerDataHolder,
                                        final NoteManager noteManager) {
-        Debug.e(getClass(), "drawSideNoteIndicator: " + hasSideNote(readerDataHolder, noteManager));
+        if (!SingletonSharedPreference.isShowSideNoteIndicator(context)) {
+            return;
+        }
         if (hasSideNote(readerDataHolder, noteManager)) {
             Bitmap bitmap = BookmarkIconFactory.getSideNoteIndicatorIcon(context);
             final Point point = BookmarkIconFactory.sideNoteIndicatorPosition(context, canvas.getWidth());

@@ -16,6 +16,13 @@
             android:defaultValue="true"
             android:title="@string/settings_bookmark_tittle"/>
     <CheckBoxPreference
+        android:key="@string/settings_show_side_note_indicator_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:summaryOn="@string/settings_enable"
+        android:summaryOff="@string/settings_disable"
+        android:defaultValue="true"
+        android:title="@string/settings_show_side_note_indicator_title"/>
+    <CheckBoxPreference
             android:key="@string/settings_hyperlink_key"
             android:layout="@layout/settings_custom_preference_item"
             android:summaryOn="@string/settings_enable"
