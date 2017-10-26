@@ -26,7 +26,6 @@ import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -73,11 +72,11 @@ public class ControlSettingsActivity extends PreferenceActivity {
         this.requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
         initData();
-        addPreferencesFromResource(controlType == ControlType.KEY ? R.xml.key_settings : R.xml.touch_settings);
+        addPreferencesFromResource(isKeySetting() ? R.xml.key_settings : R.xml.touch_settings);
         setContentView(R.layout.setting_main);
         RelativeLayout mBackFunctionLayout = (RelativeLayout) findViewById(R.id.back_function_layout);
         TextView settingTittle = (TextView) findViewById(R.id.settingTittle);
-        settingTittle.setText(controlType == ControlType.KEY ? R.string.settings_control_tittle : R.string.settings_touch_tittle);
+        settingTittle.setText(isKeySetting() ? R.string.settings_control_tittle : R.string.settings_touch_tittle);
         mBackFunctionLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,19 +89,23 @@ public class ControlSettingsActivity extends PreferenceActivity {
     private void initData() {
         Intent intent = getIntent();
         controlType = intent.getStringExtra(CONTROL_TYPE).equals(CONTROL_TOUCH) ? ControlType.TOUCH : ControlType.KEY;
-        controlActions = controlType == ControlType.KEY ? keyActions : touchActions;
+        controlActions = isKeySetting() ? keyActions : touchActions;
     }
 
     public Map<String, CustomBindKeyBean> getBindingMap() {
         if (bindingMap == null) {
-            bindingMap = controlType == ControlType.KEY ? getDeviceConfig().getKeyBinding().getHandlerManager() :
+            bindingMap = isKeySetting() ? getDeviceConfig().getKeyBinding().getHandlerManager() :
                     getDeviceConfig().getTouchBinding().getBindingMap();
         }
         return bindingMap;
     }
 
+    private boolean isKeySetting() {
+        return controlType == ControlType.KEY;
+    }
+
     public Map<String, CustomBindKeyBean> getDefaultBindingMap() {
-        return controlType == ControlType.KEY ? KeyBinding.defaultValue().getHandlerManager() :
+        return isKeySetting() ? KeyBinding.defaultValue().getHandlerManager() :
                 TouchBinding.defaultValue().getBindingMap();
     }
 
@@ -111,7 +114,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
     }
 
     private void initPreference() {
-        List<String> usedKeys = new ArrayList<>();
+        List<String> keysForSetting = DeviceConfig.sharedInstance(this).getKeysForSetting();
         for (Map.Entry<String, CustomBindKeyBean> entry : getBindingMap().entrySet()) {
             String keyCode = entry.getKey();
             CustomBindKeyBean bindKeyBean = getBindKeyBean(keyCode);
@@ -122,16 +125,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
             Preference preference = findPreference(keyCode);
             if (preference != null) {
                 preference.setSummary(getActionTitle(action));
-                usedKeys.add(keyCode);
-            }
-        }
-
-        Map<String, CustomBindKeyBean> defaultBindings = getDefaultBindingMap();
-        for (Map.Entry<String, CustomBindKeyBean> entry : defaultBindings.entrySet()) {
-            String keyCode = entry.getKey();
-            if (!usedKeys.contains(keyCode)) {
-                Preference preference = findPreference(keyCode);
-                if (preference != null) {
+                if (isKeySetting() && keysForSetting != null && !keysForSetting.contains(keyCode)) {
                     getPreferenceScreen().removePreference(preference);
                 }
             }

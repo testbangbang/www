@@ -16,6 +16,7 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.lang.reflect.Field;
+import java.util.List;
 
 /**
  * Created by ming on 16/10/18.
@@ -79,6 +80,8 @@ public class DeviceConfig {
     private int slideshowMinimumPages = 1;
     private int slideshowMaximumPages = 20000;
     private int defaultSlideshowPages = 2000;
+
+    private List<String> keysForSetting;
 
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
     private String statisticsUrl = "http://dev.onyx-international.cn/api/1/";
@@ -595,6 +598,14 @@ public class DeviceConfig {
 
     public void setSupportSideNote(boolean supportSideNote) {
         this.supportSideNote = supportSideNote;
+    }
+
+    public List<String> getKeysForSetting() {
+        return keysForSetting;
+    }
+
+    public void setKeysForSetting(List<String> keysForSetting) {
+        this.keysForSetting = keysForSetting;
     }
 
     public static void adjustOptionsWithDeviceConfig(final BaseOptions baseOptions, final Context context) {
