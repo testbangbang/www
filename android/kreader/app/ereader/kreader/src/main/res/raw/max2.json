@@ -7,6 +7,7 @@
   "supportBrushPen": true,
   "regalEnable": true,
   "supportMultipleTabs": true,
+  "supportSideNote": true,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_VOLUME_DOWN":  {"action": "nextScreen", "args": ""},

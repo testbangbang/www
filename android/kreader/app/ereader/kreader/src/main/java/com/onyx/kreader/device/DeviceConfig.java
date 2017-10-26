@@ -54,6 +54,7 @@ public class DeviceConfig {
     private int fixedGamma = 0;
     private boolean supportBrushPen = false;
     private boolean supportMultipleTabs = false;
+    private boolean supportSideNote = false;
 
     private int rotationOffset = 0;
     private int dialogNavigationSettingsSubScreenLandscapeRows = -1;
@@ -586,6 +587,14 @@ public class DeviceConfig {
 
     public void setStatisticsUrl(String statisticsUrl) {
         this.statisticsUrl = statisticsUrl;
+    }
+
+    public boolean isSupportSideNote() {
+        return supportSideNote;
+    }
+
+    public void setSupportSideNote(boolean supportSideNote) {
+        this.supportSideNote = supportSideNote;
     }
 
     public static void adjustOptionsWithDeviceConfig(final BaseOptions baseOptions, final Context context) {
