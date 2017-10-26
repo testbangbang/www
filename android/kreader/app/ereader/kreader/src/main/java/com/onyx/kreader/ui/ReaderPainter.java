@@ -354,7 +354,8 @@ public class ReaderPainter {
                                        final Paint paint,
                                        final ReaderDataHolder readerDataHolder,
                                        final NoteManager noteManager) {
-        if (!SingletonSharedPreference.isShowSideNoteIndicator(context)) {
+        if (!SingletonSharedPreference.isShowSideNoteIndicator(context) ||
+                readerDataHolder.isSideNoting()) {
             return;
         }
         if (noteManager.getNoteDataInfo().isRequestFinished() && noteManager.getNoteDataInfo().hasSideNote()) {
