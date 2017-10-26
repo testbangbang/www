@@ -133,4 +133,5 @@
     <string name="change_password_new_password_title_tips">(最小长度为6个字符)</string>
     <string name="change_password_final_password_title">再次输入新密码 :</string>
     <string name="change_password_passwords_match_error">两次新密码不匹配</string>
+    <string name="change_password_success_tips">修改密码成功</string>
 </resources>

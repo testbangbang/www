@@ -134,4 +134,5 @@
     <string name="change_password_new_password_title_tips">(The minimum length is 6 characters)</string>
     <string name="change_password_final_password_title">Enter the new password again :</string>
     <string name="change_password_passwords_match_error">Two new passwords do not match</string>
+    <string name="change_password_success_tips">Change password success</string>
 </resources>

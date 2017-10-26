@@ -51,7 +51,7 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
 
     @Override
     public void onChangePasswordSucced() {
-        CommonNotices.show("修改成功");
+        CommonNotices.show(getString(R.string.change_password_success_tips));
         EventBus.getDefault().post(new ToUserCenterEvent());
     }
 
