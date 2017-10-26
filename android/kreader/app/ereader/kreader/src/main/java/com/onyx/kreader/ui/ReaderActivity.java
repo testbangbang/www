@@ -576,7 +576,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Subscribe
     public void onShapeRendered(final ShapeRenderFinishEvent event) {
         final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
-        if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
+        if (noteDataInfo == null || (!noteDataInfo.isContentRendered() && !noteDataInfo.hasSideNote())) {
             return;
         }
         if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {

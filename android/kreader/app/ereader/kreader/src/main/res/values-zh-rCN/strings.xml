@@ -332,4 +332,5 @@
   <string name="dialog_tab_host_menu_switch_side">交换文档位置</string>
   <string name="dialog_tab_host_menu_quit_side_reading">关闭双页模式</string>
   <string name="dialog_tab_host_menu_open_doc">打开选中文档</string>
+  <string name="settings_show_side_note_indicator_title">显示旁注标记</string>
 </resources>

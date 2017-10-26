@@ -1,6 +1,12 @@
 package com.onyx.kreader.note.data;
 
+import android.util.Pair;
+
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 9/16/16.
@@ -8,6 +14,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 public class ReaderNoteDataInfo {
 
     private volatile ReaderNotePageNameMap pageMap = new ReaderNotePageNameMap();
+    private boolean hasSideNote = false;
     private boolean canUndoShape;
     private boolean canRedoShape;
     private boolean inUserErasing;
@@ -22,6 +29,14 @@ public class ReaderNoteDataInfo {
 
     public boolean hasShapes() {
         return (pageMap.size() > 0);
+    }
+
+    public boolean hasSideNote() {
+        return hasSideNote;
+    }
+
+    public void setHasSideNote(boolean hasSideNote) {
+        this.hasSideNote = hasSideNote;
     }
 
     public void setBackground(final int bg) {

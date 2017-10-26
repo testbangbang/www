@@ -233,6 +233,10 @@ public class ReaderUserDataInfo {
         return true;
     }
 
+    public boolean loadNoEmptySideNotePageList(final Reader reader) {
+        return false;
+    }
+
     private PageInfo findPageInfo(final List<PageInfo> visiblePages, String pageName) {
         for (PageInfo page : visiblePages) {
             if (page.getName().equals(pageName)) {
