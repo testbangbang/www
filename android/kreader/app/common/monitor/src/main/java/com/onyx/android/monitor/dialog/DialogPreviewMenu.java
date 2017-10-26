@@ -54,7 +54,7 @@ public class DialogPreviewMenu extends Dialog {
         @Override
         public void MenuItemValueChanged(MenuItem menuItem, Object newValue) {
             if (menuItem.getId() == FULL_REFRESH_INTERVAL) {
-                SingletonSharedPreference.setGcIntervalCount(getContext(), (int)newValue);
+                SingletonSharedPreference.setGcIntervalTime(getContext(), (int)newValue);
                 resetSubMenu();
                 dismiss();
             }
@@ -152,8 +152,8 @@ public class DialogPreviewMenu extends Dialog {
         }
         switch (currentParentMenuItem.getId()) {
             case FULL_REFRESH_INTERVAL:
-                return createSubSeekBarMenuView(currentParentMenuItem, R.string.full_refresh_interval_count, SingletonSharedPreference.getGcIntervalCount(getContext()),
-                        SingletonSharedPreference.GC_REFRESH_INTERVAL_COUNT_MIN, SingletonSharedPreference.GC_REFRESH_INTERVAL_COUNT_MAX, callback);
+                return createSubSeekBarMenuView(currentParentMenuItem, R.string.full_refresh_interval_time, SingletonSharedPreference.getGcIntervalTime(getContext()),
+                        SingletonSharedPreference.GC_REFRESH_INTERVAL_TIME_MIN, SingletonSharedPreference.GC_REFRESH_INTERVAL_TIME_MAX, callback);
             default:
                 break;
         }

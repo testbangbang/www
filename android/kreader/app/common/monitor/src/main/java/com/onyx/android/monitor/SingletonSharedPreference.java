@@ -9,18 +9,27 @@ import android.content.SharedPreferences;
 
 public class SingletonSharedPreference {
 
-    private static final int DEFAULT_INTERVAL_COUNT = 50;
-    public static final int GC_REFRESH_INTERVAL_COUNT_MAX = 200;
-    public static final int GC_REFRESH_INTERVAL_COUNT_MIN = DEFAULT_INTERVAL_COUNT;
+    private static final int DEFAULT_INTERVAL_TIME = 5;
+    public static final int GC_REFRESH_INTERVAL_TIME_MAX = 60;
+    public static final int GC_REFRESH_INTERVAL_TIME_MIN = DEFAULT_INTERVAL_TIME;
 
     private final static String GC_INTERVAL_TIME = "gc_interval_count";
+    private final static String SCREEN_ORIENTATION = "screen_orientation";
 
-    public static int getGcIntervalCount(Context context) {
-        return getIntByString(context, GC_INTERVAL_TIME, DEFAULT_INTERVAL_COUNT);
+    public static int getGcIntervalTime(Context context) {
+        return getIntByString(context, GC_INTERVAL_TIME, DEFAULT_INTERVAL_TIME);
     }
 
-    public static void setGcIntervalCount(Context context, int time) {
+    public static void setGcIntervalTime(Context context, int time) {
         setIntValue(context, GC_INTERVAL_TIME, time);
+    }
+
+    public static int getScreenOrientation(Context context) {
+        return getIntByString(context, SCREEN_ORIENTATION, -1);
+    }
+
+    public static void setScreenOrientation(Context context, int orientation) {
+        setIntValue(context, SCREEN_ORIENTATION, orientation);
     }
 
     public static int getIntByString(Context context, String tag, int defaultValue) {
