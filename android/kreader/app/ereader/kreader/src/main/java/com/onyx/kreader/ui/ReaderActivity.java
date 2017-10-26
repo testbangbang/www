@@ -470,6 +470,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
+
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
     }
 
     private void enablePenShortcut() {
@@ -1287,7 +1289,8 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void startSideNote(StartSideNoteEvent event) {
-        if (!isLandscapeViewport()) {
+        if (!DeviceUtils.isDeviceInLandscapeOrientation(this)) {
+            getReaderDataHolder().setOrientationBeforeSideNote(DeviceUtils.getScreenOrientation(this));
             getReaderDataHolder().setEnteringSideNote(true);
             ReaderTabHostBroadcastReceiver.sendChangeOrientationIntent(this,
                     ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
@@ -1308,7 +1311,4 @@ public class ReaderActivity extends OnyxBaseActivity {
         showMenu.execute(readerDataHolder, null);
     }
 
-    private boolean isLandscapeViewport() {
-        return getReaderDataHolder().getDisplayWidth() > getReaderDataHolder().getDisplayHeight();
-    }
 }
