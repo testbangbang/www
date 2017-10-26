@@ -146,6 +146,8 @@ public class NoteManager {
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
+
+        getTouchHelper().getTouchReader().setSupportBigPen(noteConfig.supportBigPen());
     }
 
     public void updateHostView(final Context context, final SurfaceView sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
