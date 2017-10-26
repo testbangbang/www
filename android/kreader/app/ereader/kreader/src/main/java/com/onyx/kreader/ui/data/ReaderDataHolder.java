@@ -18,6 +18,9 @@ import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
+import com.onyx.android.sdk.reader.host.request.StartSideNodeRequest;
+import com.onyx.android.sdk.reader.host.request.StopSideNodeRequest;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -533,8 +536,7 @@ public class ReaderDataHolder {
             sideNotePage = 0;
         }
 
-        // when we redraw current page, it's no need to use regal
-        boolean disableRegal = request instanceof RenderRequest;
+        boolean disableRegal = needDisableRegal(request);
 
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
@@ -543,6 +545,15 @@ public class ReaderDataHolder {
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
             getEventBus().post(new LayoutChangeEvent());
         }
+    }
+
+    private boolean needDisableRegal(final BaseReaderRequest request) {
+        // disable regal to avoid screen flash
+        return request instanceof RenderRequest ||
+                request instanceof ChangeViewConfigRequest ||
+                request instanceof ChangeViewConfigRequest ||
+                request instanceof StartSideNodeRequest ||
+                request instanceof StopSideNodeRequest;
     }
 
     private boolean isSamePage(ReaderViewInfo left, ReaderViewInfo right) {

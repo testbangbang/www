@@ -148,7 +148,7 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
             return;
         }
         if (eventBus == null) {
-            Log.e(getClass().getSimpleName(), "null bus");
+            Debug.d(getClass(), "null bus");
             return;
         }
         if (intent.getAction().equals(ACTION_CLOSE_READER)) {
