@@ -40,7 +40,7 @@ public class UserLogoutRequest extends BaseCloudRequest {
             }else {
                 //The logout api is not complete, and the simulation result callback is temporarily used
                 resultBean = new UserLogoutResultBean();
-                resultBean.code = 0;
+                resultBean.code = CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS;
                 resultBean.msg = "ok";
             }
         } catch (Exception e) {

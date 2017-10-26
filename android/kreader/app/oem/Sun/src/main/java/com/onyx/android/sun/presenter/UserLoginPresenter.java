@@ -2,6 +2,7 @@ package com.onyx.android.sun.presenter;
 
 import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
+import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.data.UserLoginActivityData;
 import com.onyx.android.sun.interfaces.UserLoginView;
 import com.onyx.android.sun.requests.cloud.UserLoginRequest;
@@ -34,7 +35,7 @@ public class UserLoginPresenter {
                     loginView.onLoginError(e);
                     return;
                 }
-                if (resultBean.code == 0){
+                if (resultBean.code == CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS){
                     loginView.onLoginSucced(resultBean.data);
                 } else {
                     loginView.onLoginFailed(resultBean.code,resultBean.msg);

@@ -2,6 +2,7 @@ package com.onyx.android.sun.presenter;
 
 import com.onyx.android.sun.cloud.bean.UserLogoutRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLogoutResultBean;
+import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.data.UserCenterFragmentData;
 import com.onyx.android.sun.interfaces.UserLogoutView;
 import com.onyx.android.sun.requests.cloud.UserLogoutRequest;
@@ -33,7 +34,7 @@ public class UserCenterPresenter {
                     logoutView.onLogoutError(e);
                     return;
                 }
-                if (resultBean.code == 0){
+                if (resultBean.code == CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS){
                     logoutView.onLogoutSucced();
                 } else {
                     logoutView.onLogoutFailed(resultBean.code,resultBean.msg);

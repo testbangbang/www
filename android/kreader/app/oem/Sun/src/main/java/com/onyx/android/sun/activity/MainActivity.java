@@ -8,12 +8,12 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
-import com.android.databinding.library.baseAdapters.BR;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sun.BR;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.bean.MainTabBean;
@@ -47,7 +47,6 @@ import com.onyx.android.sun.presenter.MainPresenter;
 import com.onyx.android.sun.utils.ApkUtils;
 import com.onyx.android.sun.utils.SystemUtils;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -63,16 +62,26 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private FragmentTransaction transaction;
     private BaseFragment currentFragment;
     private Map<Integer, BaseFragment> childViewList = new HashMap<>();
+    private String mainFragmentTitle = "";
+    private String userCenterFragmentTitle = "";
+    private String currentTitle = "";
+    private int userCenterTitleIconID = R.drawable.icon_user_center;
+    private int backTitleIconID = R.drawable.icon_back_white;
+    private int currentTitleIconID = 0;
+    private boolean isShowTabLayoutAndNewMessageView = true;
 
     @Override
     protected void initData() {
         restoreUserName();
+        currentTitleIconID = userCenterTitleIconID;
+        userCenterFragmentTitle = getString(R.string.user_center_title);
     }
 
     private void restoreUserName() {
         String name = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME,"");
         if (!TextUtils.isEmpty(name)){
-            user.setUserName(name);
+            mainFragmentTitle = name + getString(R.string.main_activity_hello);
+            currentTitle = mainFragmentTitle;
         }
     }
 
@@ -81,7 +90,8 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         mainBinding = (ActivityMainBinding) binding;
         mainBinding.setVariable(BR.presenter, new MainPresenter());
         mainBinding.setVariable(BR.user, user);
-        mainBinding.setIsUserCenter(false);
+        mainBinding.setIsShowTabLayoutAndNewMessageView(true);
+        mainBinding.setTitle(mainFragmentTitle);
         mainBinding.setListener(this);
 
         List<MainTabBean> mainTabList = AppConfigData.getMainTabList();
@@ -125,18 +135,40 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             case R.id.news_image:
                 switchCurrentFragment(ChildViewID.FRAGMENT_DEVICE_SETTING);
                 break;
-            case R.id.ll_main_activity_go_user_center:
+            case R.id.ll_main_activity_title_container:
                 skipToUserCenterFragment();
-                break;
-            case R.id.ll_main_activity_user_center:
-                EventBus.getDefault().post(new ToMainFragmentEvent());
                 break;
         }
     }
 
     private void skipToUserCenterFragment() {
-        switchCurrentFragment(ChildViewID.FRAGMENT_USER_CENTER);
-        mainBinding.setIsUserCenter(true);
+        switch (currentPageID){
+            case ChildViewID.FRAGMENT_MAIN:
+                switchCurrentFragment(ChildViewID.FRAGMENT_USER_CENTER);
+                break;
+            case ChildViewID.FRAGMENT_USER_CENTER:
+                switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
+                break;
+        }
+        setTitleAndIcon();
+    }
+
+    private void setTitleAndIcon() {
+        switch (currentPageID){
+            case ChildViewID.FRAGMENT_MAIN:
+                isShowTabLayoutAndNewMessageView = true;
+                currentTitleIconID = userCenterTitleIconID;
+                currentTitle = mainFragmentTitle;
+                break;
+            case ChildViewID.FRAGMENT_USER_CENTER:
+                isShowTabLayoutAndNewMessageView = false;
+                currentTitleIconID = backTitleIconID;
+                currentTitle = userCenterFragmentTitle;
+                break;
+        }
+        mainBinding.setIsShowTabLayoutAndNewMessageView(isShowTabLayoutAndNewMessageView);
+        mainBinding.ivMainActivityTitleIcon.setImageResource(currentTitleIconID);
+        mainBinding.setTitle(currentTitle);
     }
 
     public void switchCurrentFragment(int pageID) {
@@ -244,8 +276,8 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToMainFragmentEvent(ToMainFragmentEvent event) {
         mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_MAIN).select();
-        mainBinding.setIsUserCenter(false);
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
+        setTitleAndIcon();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
