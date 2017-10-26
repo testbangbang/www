@@ -116,7 +116,7 @@ public class HandlerManager {
     }
 
     public CustomBindKeyBean getControlBinding(final ControlType controlType, final String controlCode) {
-        Map<String, CustomBindKeyBean> map = controlType == ControlType.KEY ? getControlBinding().getHandlerManager() : getControlTouchBinding().getTouchBindingMap();
+        Map<String, CustomBindKeyBean> map = controlType == ControlType.KEY ? getControlBinding().getHandlerManager() : getControlTouchBinding().getBindingMap();
         if (map == null) {
             return null;
         }

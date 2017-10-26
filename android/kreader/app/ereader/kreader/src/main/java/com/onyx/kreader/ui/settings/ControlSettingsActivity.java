@@ -26,6 +26,8 @@ import com.onyx.android.sdk.data.CustomBindKeyBean;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class ControlSettingsActivity extends PreferenceActivity {
@@ -94,9 +96,14 @@ public class ControlSettingsActivity extends PreferenceActivity {
     public Map<String, CustomBindKeyBean> getBindingMap() {
         if (bindingMap == null) {
             bindingMap = controlType == ControlType.KEY ? getDeviceConfig().getKeyBinding().getHandlerManager() :
-                    getDeviceConfig().getTouchBinding().getTouchBindingMap();
+                    getDeviceConfig().getTouchBinding().getBindingMap();
         }
         return bindingMap;
+    }
+
+    public Map<String, CustomBindKeyBean> getDefaultBindingMap() {
+        return controlType == ControlType.KEY ? KeyBinding.defaultValue().getHandlerManager() :
+                TouchBinding.defaultValue().getBindingMap();
     }
 
     private DeviceConfig getDeviceConfig() {
@@ -104,6 +111,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
     }
 
     private void initPreference() {
+        List<String> usedKeys = new ArrayList<>();
         for (Map.Entry<String, CustomBindKeyBean> entry : getBindingMap().entrySet()) {
             String keyCode = entry.getKey();
             CustomBindKeyBean bindKeyBean = getBindKeyBean(keyCode);
@@ -114,6 +122,18 @@ public class ControlSettingsActivity extends PreferenceActivity {
             Preference preference = findPreference(keyCode);
             if (preference != null) {
                 preference.setSummary(getActionTitle(action));
+                usedKeys.add(keyCode);
+            }
+        }
+
+        Map<String, CustomBindKeyBean> defaultBindings = getDefaultBindingMap();
+        for (Map.Entry<String, CustomBindKeyBean> entry : defaultBindings.entrySet()) {
+            String keyCode = entry.getKey();
+            if (!usedKeys.contains(keyCode)) {
+                Preference preference = findPreference(keyCode);
+                if (preference != null) {
+                    getPreferenceScreen().removePreference(preference);
+                }
             }
         }
     }
@@ -166,7 +186,10 @@ public class ControlSettingsActivity extends PreferenceActivity {
         }
         final String keyCode = preference.getKey();
         CustomBindKeyBean preferenceBindKeyBean = getBindKeyBean(keyCode);
-        final CustomBindKeyBean bindKeyBean = preferenceBindKeyBean == null ? getBindingMap().get(keyCode) : preferenceBindKeyBean;
+        final CustomBindKeyBean bindKeyBean = (preferenceBindKeyBean == null
+                || StringUtils.isNullOrEmpty(preferenceBindKeyBean.getAction()))
+                ? getBindingMap().get(keyCode)
+                : preferenceBindKeyBean;
         if (bindKeyBean == null) {
             return;
         }

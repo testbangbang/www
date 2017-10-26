@@ -39,7 +39,15 @@ public class KeyBinding {
         return HandlerManager;
     }
 
+    public void setHandlerManager(Map<String, CustomBindKeyBean> handlerManager) {
+        HandlerManager = handlerManager;
+    }
+
     public KeyBinding() {
+
+    }
+
+    private void useDefaultValue() {
         for (Pair<String, CustomBindKeyBean> binding : keyBindings) {
             HandlerManager.put(binding.first, binding.second);
         }
@@ -50,6 +58,8 @@ public class KeyBinding {
     public static KeyBinding defaultValue() {
         if (keyBinding == null) {
             keyBinding = new KeyBinding();
+            keyBinding.useDefaultValue();
+
         }
         return keyBinding;
     }

@@ -92,7 +92,7 @@ public class ControlSettingsActivity extends PreferenceActivity {
     public Map<String, CustomBindKeyBean> getBindingMap() {
         if (bindingMap == null) {
             bindingMap = controlType == ControlType.KEY ? getDeviceConfig().getKeyBinding().getHandlerManager() :
-                    getDeviceConfig().getTouchBinding().getTouchBindingMap();
+                    getDeviceConfig().getTouchBinding().getBindingMap();
         }
         return bindingMap;
     }

@@ -687,7 +687,7 @@ public class ReaderDataHolder {
     }
 
     public boolean supportSideNote() {
-        return !isSideReadingMode();
+        return !isSideReadingMode() && DeviceConfig.sharedInstance(getContext()).isSupportSideNote();
     }
 
     public boolean isEnteringSideNote() {
