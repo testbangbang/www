@@ -11,6 +11,8 @@ public class BookmarkIconFactory {
     private static Bitmap sBookmarkActivated;
     private static Bitmap sBookmarkDeactivated;
 
+    private static Bitmap sSideNoteIndicator;
+
     public static Bitmap getBookmarkIcon(Context context, boolean activated) {
         return activated ? getBookmarkActivated(context) : getBookmarkDeactivated(context);
     }
@@ -18,6 +20,24 @@ public class BookmarkIconFactory {
     public static Point bookmarkPosition(int displayWidth, Bitmap bitmap) {
         Point point = new Point();
         point.set(displayWidth - bitmap.getWidth(), 10);
+        return point;
+    }
+
+    public static Bitmap getSideNoteIndicatorIcon(Context context) {
+        sSideNoteIndicator = BitmapFactory.decodeResource(context.getResources(), R.drawable.ic_sidenote);
+        return sSideNoteIndicator;
+    }
+
+    public static Point sideNoteIndicatorPosition(Context context, int displayWidth) {
+        if (sBookmarkActivated == null) {
+            getBookmarkActivated(context);
+        }
+        if (sSideNoteIndicator == null) {
+            getSideNoteIndicatorIcon(context);
+        }
+        assert sBookmarkActivated != null && sSideNoteIndicator != null;
+        Point point = new Point();
+        point.set(displayWidth - sBookmarkActivated.getWidth() - sSideNoteIndicator.getWidth(), 10);
         return point;
     }
 

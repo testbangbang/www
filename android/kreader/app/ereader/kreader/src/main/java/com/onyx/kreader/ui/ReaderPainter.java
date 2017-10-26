@@ -13,6 +13,7 @@ import android.graphics.PixelXorXfermode;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
+import android.util.Pair;
 
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -20,6 +21,7 @@ import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
@@ -29,6 +31,7 @@ import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
+import com.onyx.kreader.note.data.ReaderNotePage;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -37,6 +40,7 @@ import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
 import com.onyx.android.sdk.utils.RectUtils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by joy on 7/25/16.
@@ -62,7 +66,8 @@ public class ReaderPainter {
                          final ReaderViewInfo viewInfo,
                          ReaderSelectionManager selectionManager,
                          NoteManager noteManager,
-                         List<PageInfo> visiblePages) {
+                         List<PageInfo> visiblePages,
+                         boolean renderShapes) {
         Paint paint = new Paint();
         drawBackground(canvas, paint);
         drawBitmap(canvas, paint, bitmap);
@@ -73,7 +78,9 @@ public class ReaderPainter {
         drawHighlightResult(context, canvas, paint, userDataInfo, viewInfo, selectionManager, annotationHighlightStyle);
         drawAnnotations(context, canvas, paint, userDataInfo, viewInfo, annotationHighlightStyle);
         drawPageLinks(context, canvas, paint, userDataInfo, viewInfo);
-        drawShapeContents(context, canvas, paint, userDataInfo, viewInfo, noteManager, visiblePages);
+        if (renderShapes) {
+            drawShapeContents(context, canvas, paint, readerDataHolder, userDataInfo, viewInfo, noteManager, visiblePages);
+        }
         drawTestTouchPointCircle(context, canvas, paint, userDataInfo);
         drawPageInfo(canvas, paint, viewInfo);
     }
@@ -185,6 +192,7 @@ public class ReaderPainter {
     private void drawShapeContents(Context context,
                                    Canvas canvas,
                                    Paint paint,
+                                   ReaderDataHolder readerDataHolder,
                                    final ReaderUserDataInfo userDataInfo,
                                    final ReaderViewInfo viewInfo,
                                    final NoteManager noteManager,
@@ -192,6 +200,7 @@ public class ReaderPainter {
         drawShapes(context, canvas, paint, userDataInfo, noteManager);
         drawStashShapes(context, canvas, paint, noteManager, viewInfo, visiblePages);
         drawShapeEraser(context, canvas, paint, noteManager);
+        drawSideNoteIndicator(context, canvas, paint, readerDataHolder, noteManager);
     }
 
     private void drawBookmark(Context context, Canvas canvas, ReaderDataHolder readerDataHolder, final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {
@@ -341,6 +350,33 @@ public class ReaderPainter {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeWidth(2.0f);
         canvas.drawCircle(touchPoint.x, touchPoint.y, noteManager.getNoteDataInfo().getEraserRadius(), paint);
+    }
+
+    private void drawSideNoteIndicator(final Context context,
+                                       final Canvas canvas,
+                                       final Paint paint,
+                                       final ReaderDataHolder readerDataHolder,
+                                       final NoteManager noteManager) {
+        Debug.e(getClass(), "drawSideNoteIndicator: " + hasSideNote(readerDataHolder, noteManager));
+        if (hasSideNote(readerDataHolder, noteManager)) {
+            Bitmap bitmap = BookmarkIconFactory.getSideNoteIndicatorIcon(context);
+            final Point point = BookmarkIconFactory.sideNoteIndicatorPosition(context, canvas.getWidth());
+            float left = AppCompatUtils.calculateEvenDigital(point.x);
+            float top = AppCompatUtils.calculateEvenDigital(point.y);
+            canvas.drawBitmap(bitmap, left, top, null);
+        }
+    }
+
+    private boolean hasSideNote(final ReaderDataHolder readerDataHolder, final NoteManager noteManager) {
+        for (Map.Entry<PageInfo, List<Pair<Integer, ReaderNotePage>>> page : noteManager.getNoteDataInfo().getSideNotePages().entrySet()) {
+            for (Pair<Integer, ReaderNotePage> pair : page.getValue()) {
+                if (pair.first >= readerDataHolder.getSideNoteStartSubPageIndex() &&
+                        pair.second.hasShapes()) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean hasBookmark(final ReaderUserDataInfo userDataInfo, final ReaderViewInfo viewInfo) {

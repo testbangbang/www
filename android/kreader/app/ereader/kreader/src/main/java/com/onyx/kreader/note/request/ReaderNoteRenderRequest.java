@@ -25,8 +25,10 @@ public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
         updateEventProcessor(noteManager);
         ensureDocumentOpened(noteManager);
         loadShapeData(noteManager);
+        loadNotePages(noteManager);
         updateEventProcessor(noteManager);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
+        getNoteDataInfo().getSideNotePages().putAll(getSideNotePages());
 //        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }
 
