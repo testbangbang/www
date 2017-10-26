@@ -63,7 +63,7 @@
             android:id="@+id/login_act_tv_startlogin"
             android:onClick="@{listener.onClick}"
             android:layout_marginTop="@dimen/login_activity_login_button_margin_top"
-            android:background="@drawable/selector_login_bt_bg"
+            android:background="@drawable/selector_login_button_background"
             android:padding="@dimen/login_activity_login_button_pddding"
             android:gravity="center"
             android:text="@string/login_activity_login"

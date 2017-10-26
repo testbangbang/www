@@ -27,13 +27,16 @@ import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.sun.event.HaveNewVersionApkEvent;
 import com.onyx.android.sun.event.HaveNewVersionEvent;
 import com.onyx.android.sun.event.StartDownloadingEvent;
+import com.onyx.android.sun.event.ToChangePasswordEvent;
 import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
 import com.onyx.android.sun.event.ToMainFragmentEvent;
 import com.onyx.android.sun.event.ToRankingEvent;
+import com.onyx.android.sun.event.ToUserCenterEvent;
 import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.event.UpdateDownloadSucceedEvent;
 import com.onyx.android.sun.fragment.BaseFragment;
+import com.onyx.android.sun.fragment.ChangePasswordFragment;
 import com.onyx.android.sun.fragment.ChildViewID;
 import com.onyx.android.sun.fragment.CorrectFragment;
 import com.onyx.android.sun.fragment.DeviceSettingFragment;
@@ -64,6 +67,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private Map<Integer, BaseFragment> childViewList = new HashMap<>();
     private String mainFragmentTitle = "";
     private String userCenterFragmentTitle = "";
+    private String changePasswordFragmentTitle = "";
     private String currentTitle = "";
     private int userCenterTitleIconID = R.drawable.icon_user_center;
     private int backTitleIconID = R.drawable.icon_back_white;
@@ -75,6 +79,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         restoreUserName();
         currentTitleIconID = userCenterTitleIconID;
         userCenterFragmentTitle = getString(R.string.user_center_title);
+        changePasswordFragmentTitle = getString(R.string.user_center_fragment_change_password);
     }
 
     private void restoreUserName() {
@@ -136,18 +141,21 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 switchCurrentFragment(ChildViewID.FRAGMENT_DEVICE_SETTING);
                 break;
             case R.id.ll_main_activity_title_container:
-                skipToUserCenterFragment();
+                onClickTitleContainer();
                 break;
         }
     }
 
-    private void skipToUserCenterFragment() {
+    private void onClickTitleContainer() {
         switch (currentPageID){
-            case ChildViewID.FRAGMENT_MAIN:
-                switchCurrentFragment(ChildViewID.FRAGMENT_USER_CENTER);
-                break;
             case ChildViewID.FRAGMENT_USER_CENTER:
                 switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
+                break;
+            case ChildViewID.FRAGMENT_CHANGE_PASSWORD:
+                switchCurrentFragment(ChildViewID.FRAGMENT_USER_CENTER);
+                break;
+            default:
+                switchCurrentFragment(ChildViewID.FRAGMENT_USER_CENTER);
                 break;
         }
         setTitleAndIcon();
@@ -155,15 +163,20 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     private void setTitleAndIcon() {
         switch (currentPageID){
-            case ChildViewID.FRAGMENT_MAIN:
-                isShowTabLayoutAndNewMessageView = true;
-                currentTitleIconID = userCenterTitleIconID;
-                currentTitle = mainFragmentTitle;
+            case ChildViewID.FRAGMENT_CHANGE_PASSWORD:
+                isShowTabLayoutAndNewMessageView = false;
+                currentTitleIconID = backTitleIconID;
+                currentTitle = changePasswordFragmentTitle;
                 break;
             case ChildViewID.FRAGMENT_USER_CENTER:
                 isShowTabLayoutAndNewMessageView = false;
                 currentTitleIconID = backTitleIconID;
                 currentTitle = userCenterFragmentTitle;
+                break;
+            default:
+                isShowTabLayoutAndNewMessageView = true;
+                currentTitleIconID = userCenterTitleIconID;
+                currentTitle = mainFragmentTitle;
                 break;
         }
         mainBinding.setIsShowTabLayoutAndNewMessageView(isShowTabLayoutAndNewMessageView);
@@ -226,6 +239,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_USER_CENTER:
                     baseFragment = new UserCenterFragment();
                     break;
+                case ChildViewID.FRAGMENT_CHANGE_PASSWORD:
+                    baseFragment = new ChangePasswordFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -277,6 +293,18 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onToMainFragmentEvent(ToMainFragmentEvent event) {
         mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_MAIN).select();
         switchCurrentFragment(ChildViewID.FRAGMENT_MAIN);
+        setTitleAndIcon();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToChangePasswordEvent(ToChangePasswordEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_CHANGE_PASSWORD);
+        setTitleAndIcon();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToUserCenterEventEvent(ToUserCenterEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_USER_CENTER);
         setTitleAndIcon();
     }
 

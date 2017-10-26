@@ -13,6 +13,7 @@ import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.FragmentUserCenterBinding;
+import com.onyx.android.sun.event.ToChangePasswordEvent;
 import com.onyx.android.sun.event.ToMainFragmentEvent;
 import com.onyx.android.sun.interfaces.UserLogoutView;
 import com.onyx.android.sun.presenter.UserCenterPresenter;
@@ -89,9 +90,9 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
     public void onLogoutError(Throwable throwable) {
         if (null != throwable){
             if (throwable instanceof ConnectException){
-                CommonNotices.show(getString(R.string.common_tip_network_connection_exception));
+                CommonNotices.show(getString(R.string.common_tips_network_connection_exception));
             } else {
-                CommonNotices.show(getString(R.string.common_tip_request_failed));
+                CommonNotices.show(getString(R.string.common_tips_request_failed));
             }
         }
     }
@@ -109,7 +110,7 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
 
                 break;
             case R.id.tv_user_center_fragment_change_password:
-
+                EventBus.getDefault().post(new ToChangePasswordEvent());
                 break;
             case R.id.tv_user_center_fragment_logout:
                 userCenterPresenter.logoutAccount(account);

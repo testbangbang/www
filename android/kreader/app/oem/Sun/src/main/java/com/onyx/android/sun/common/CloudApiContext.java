@@ -67,4 +67,11 @@ public class CloudApiContext {
         public static final int RESULT_CODE_SUCCESS = 0;
         public static final int RESULT_CODE_FAILED = 1;
     }
+
+    public static class ChangePassword {
+        public static final String ACCOUNT = "account";
+        public static final String OLD_PASSWORD = "oldPassword";
+        public static final String NEW_PASSWORD = "newPassword";
+
+    }
 }

@@ -37,7 +37,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         userLoginPresenter = new UserLoginPresenter(this);
         userLoginRequestBean.isKeepPassword = PreferenceManager.getBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, false);
         restoreUserInfo();
-        loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
+        loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tips),false);
     }
 
     private void restoreUserInfo() {
@@ -103,10 +103,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     private boolean checkLoginInfo() {
         if (TextUtils.isEmpty(userLoginRequestBean.account)){
-            CommonNotices.show(getString(R.string.login_activity_tip_account_error));
+            CommonNotices.show(getString(R.string.account_format_error_tips));
             return false;
         } else if(TextUtils.isEmpty(userLoginRequestBean.password)){
-            CommonNotices.show(getString(R.string.login_activity_tip_password_error));
+            CommonNotices.show(getString(R.string.password_format_error_tips));
             return false;
         }
 
@@ -141,9 +141,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         dissmisLoadDialog();
         if (null != throwable){
             if (throwable instanceof ConnectException){
-                CommonNotices.show(getString(R.string.common_tip_network_connection_exception));
+                CommonNotices.show(getString(R.string.common_tips_network_connection_exception));
             } else {
-                CommonNotices.show(getString(R.string.common_tip_request_failed));
+                CommonNotices.show(getString(R.string.common_tips_request_failed));
             }
         }
     }

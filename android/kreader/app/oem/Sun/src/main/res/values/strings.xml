@@ -112,11 +112,11 @@
     <string name="login_activity_password_hint">please enter your password</string>
     <string name="login_activity_keep_password">keep password</string>
     <string name="login_activity_login">Login</string>
-    <string name="login_activity_tip_account_error">Incorrect account name format</string>
-    <string name="login_activity_tip_password_error">Incorrect password format</string>
-    <string name="login_activity_loading_tip">Please wait</string>
-    <string name="common_tip_network_connection_exception">network connection exception</string>
-    <string name="common_tip_request_failed">request failed</string>
+    <string name="account_format_error_tips">Incorrect account name format</string>
+    <string name="password_format_error_tips">Incorrect password format</string>
+    <string name="login_activity_loading_tips">Please wait</string>
+    <string name="common_tips_network_connection_exception">network connection exception</string>
+    <string name="common_tips_request_failed">request failed</string>
     <string name="user_center_fragment_logout">Logout</string>
     <string name="user_center_fragment_account_key">Account</string>
     <string name="user_center_fragment_name_key">Name</string>
@@ -125,4 +125,13 @@
     <string name="user_center_title">User Center</string>
     <string name="user_center_colon">:</string>
     <string name="main_activity_hello"> ,Hello!</string>
+    <string name="change_password_confirm">Yes</string>
+    <string name="change_password_account_title">Account :</string>
+    <string name="change_password_account_title_tips">(Please verify the account first)</string>
+    <string name="change_password_old_password_title">Enter old password :</string>
+    <string name="change_password_old_password_title_tips">(Please verify the old password first)</string>
+    <string name="change_password_new_password_title">Enter new password :</string>
+    <string name="change_password_new_password_title_tips">(The minimum length is 6 characters)</string>
+    <string name="change_password_final_password_title">Enter the new password again :</string>
+    <string name="change_password_passwords_match_error">Two new passwords do not match</string>
 </resources>

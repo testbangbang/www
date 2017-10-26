@@ -15,4 +15,5 @@ public class ChildViewID {
     public static final int FRAGMENT_RANKING = 6;
     public static final int FRAGMENT_DEVICE_SETTING = 7;
     public static final int FRAGMENT_USER_CENTER = 8;
+    public static final int FRAGMENT_CHANGE_PASSWORD = 9;
 }
