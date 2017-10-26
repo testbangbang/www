@@ -41,13 +41,12 @@ public class UserLoginRequest extends BaseCloudRequest {
             }else {
                 //The login api is not complete, and the simulation result callback is temporarily used
                 resultBean = new UserLoginResultBean();
-                resultBean.code = 0;
+                resultBean.code = CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS;
                 resultBean.msg = "ok";
                 UserInfoBean userInfoBean = new UserInfoBean();
                 userInfoBean.name = "jack";
-                userInfoBean.age = 20;
-                userInfoBean.nickName = "goodstudy";
-                userInfoBean.gender = 1;
+                userInfoBean.phoneNumber = "13456781256";
+                userInfoBean.account = requestBean.account;
                 resultBean.data = userInfoBean;
             }
         } catch (Exception e) {

@@ -87,23 +87,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
     }
 
-    private void saveUserInfo() {
+    private void saveUserInfo(UserInfoBean userInfoBean) {
         PreferenceManager.setBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
         if (userLoginRequestBean.isKeepPassword){
-            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, userLoginRequestBean.account);
             PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
         } else {
-            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, null);
             PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, null);
         }
+
+        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, userInfoBean.account);
+        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME, userInfoBean.name);
+        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PHONE_NUMBER, userInfoBean.phoneNumber);
+
     }
 
     private boolean checkLoginInfo() {
         if (TextUtils.isEmpty(userLoginRequestBean.account)){
-            CommonNotices.show(getString(R.string.login_act_tip_account_error));
+            CommonNotices.show(getString(R.string.login_activity_tip_account_error));
             return false;
         } else if(TextUtils.isEmpty(userLoginRequestBean.password)){
-            CommonNotices.show(getString(R.string.login_act_tip_password_error));
+            CommonNotices.show(getString(R.string.login_activity_tip_password_error));
             return false;
         }
 
@@ -118,7 +121,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void onLoginSucced(UserInfoBean userInfoBean) {
         dissmisLoadDialog();
         skipToMainActivity();
-        saveUserInfo();
+        saveUserInfo(userInfoBean);
         finish();
     }
 
@@ -138,9 +141,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         dissmisLoadDialog();
         if (null != throwable){
             if (throwable instanceof ConnectException){
-                CommonNotices.show(getString(R.string.login_activity_network_connection_exception));
+                CommonNotices.show(getString(R.string.common_tip_network_connection_exception));
             } else {
-                CommonNotices.show(getString(R.string.login_activity_request_failed));
+                CommonNotices.show(getString(R.string.common_tip_request_failed));
             }
         }
     }

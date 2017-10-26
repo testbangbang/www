@@ -49,4 +49,17 @@
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 
+    <style name="user_center_text_style">
+        <item name="android:textSize">@dimen/user_center_text_normal_textsize</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="user_center_colon_style" parent="user_center_text_style">
+        <item name="android:layout_marginLeft">@dimen/user_center_text_colon_margin_left_and_right</item>
+        <item name="android:layout_marginRight">@dimen/user_center_text_colon_margin_left_and_right</item>
+    </style>
+
 </resources>

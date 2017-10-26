@@ -115,6 +115,14 @@
     <string name="login_activity_tip_account_error">Incorrect account name format</string>
     <string name="login_activity_tip_password_error">Incorrect password format</string>
     <string name="login_activity_loading_tip">Please wait</string>
-    <string name="login_activity_network_connection_exception">network connection exception</string>
-    <string name="login_activity_request_failed">request failed</string>
+    <string name="common_tip_network_connection_exception">network connection exception</string>
+    <string name="common_tip_request_failed">request failed</string>
+    <string name="user_center_fragment_logout">Logout</string>
+    <string name="user_center_fragment_account_key">Account</string>
+    <string name="user_center_fragment_name_key">Name</string>
+    <string name="user_center_fragment_phone_number_key">Phone Number</string>
+    <string name="user_center_fragment_change_password">Change Password</string>
+    <string name="user_center_title">User Center</string>
+    <string name="user_center_colon">:</string>
+    <string name="main_activity_hello"> ,Hello!</string>
 </resources>

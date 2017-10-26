@@ -6,6 +6,7 @@ import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.TaskBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
+import com.onyx.android.sun.cloud.bean.UserLogoutResultBean;
 import com.onyx.android.sun.common.CloudApiContext;
 
 import okhttp3.RequestBody;
@@ -56,11 +57,15 @@ public interface ContentService {
 
     @FormUrlEncoded
     @POST("api/user/login")
-    Call<UserLoginResultBean> userLogin(@Field(CloudApiContext.UserLogin.ACCOUNT) String account,
-                                        @Field(CloudApiContext.UserLogin.PASSWORD) String password);
+    Call<UserLoginResultBean> userLogin(@Field(CloudApiContext.UserInfo.ACCOUNT) String account,
+                                        @Field(CloudApiContext.UserInfo.PASSWORD) String password);
 
     @POST("api/practice/{id}")
     Call<SubmitPracticeResultBean> submitPractice(@Path(CloudApiContext.Practices.ID) int id,
                                                   @Query(CloudApiContext.Practices.STUDENTID)int studentId,
                                                   @Body RequestBody practiceBeanBody);
+
+    @FormUrlEncoded
+    @POST("api/user/logout")
+    Call<UserLogoutResultBean> userLogout(@Field(CloudApiContext.UserInfo.ACCOUNT) String account);
 }
