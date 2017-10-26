@@ -224,9 +224,6 @@ public class ShapeEventHandler {
 
     @Subscribe
     public void onErasingTouchEvent(ErasingTouchEvent e) {
-        if (noteManager.isDFBForCurrentShape()) {
-            return;
-        }
         switch (e.getMotionEvent().getAction()) {
             case MotionEvent.ACTION_DOWN:
                 onErasingTouchDown(e.getMotionEvent());
