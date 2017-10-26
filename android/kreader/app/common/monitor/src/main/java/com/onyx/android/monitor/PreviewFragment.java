@@ -430,6 +430,12 @@ public class PreviewFragment extends Fragment
     }
 
     @Override
+    public void onCreate(Bundle savedInstanceState) {
+        setRequestedOrientation();
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_preview_basic,container,false);
@@ -1047,7 +1053,16 @@ public class PreviewFragment extends Fragment
         } else if (currentOrientation == ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE) {
             orientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE;
         }
+        SingletonSharedPreference.setScreenOrientation(getActivity(), orientation);
         getActivity().setRequestedOrientation(orientation);
+    }
+
+    private void setRequestedOrientation() {
+        int orientation = SingletonSharedPreference.getScreenOrientation(getActivity());
+        int currentOrientation = getActivity().getRequestedOrientation();
+        if (orientation != -1 && orientation != currentOrientation) {
+            getActivity().setRequestedOrientation(orientation);
+        }
     }
 
     private DialogPreviewMenu getMenuDialog() {
@@ -1062,7 +1077,7 @@ public class PreviewFragment extends Fragment
     }
 
     private void enterA2() {
-        EpdController.applyApplicationFastMode(TAG, true, true, UpdateMode.GC, SingletonSharedPreference.getGcIntervalCount(getActivity()));
+        EpdController.applyApplicationFastMode(TAG, true, true, UpdateMode.GC, getRepeatLimitCount());
     }
 
     private void exitA2() {
@@ -1072,6 +1087,11 @@ public class PreviewFragment extends Fragment
     private void toggleA2Mode() {
         exitA2();
         enterA2();
+    }
+
+    private int getRepeatLimitCount() {
+        //Approximately one minute 33 times refresh request
+        return SingletonSharedPreference.getGcIntervalTime(getActivity()) * 33 * 60;
     }
 
 }

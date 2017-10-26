@@ -11,5 +11,5 @@
         ]]>
     </string>
     <string name="exit_confirm">Exit Monitor?</string>
-    <string name="full_refresh_interval_count">Full Refresh interval count</string>
+    <string name="full_refresh_interval_time">Full Refresh interval time(m)</string>
 </resources>
