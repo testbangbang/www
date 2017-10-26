@@ -5,6 +5,8 @@ import com.onyx.kreader.ui.requests.ExportNotesRequest;
 import com.onyx.kreader.note.actions.GetAllShapesAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
+import java.util.HashMap;
+
 /**
  * relying on the data of proceeding GetDocumentInfoAction and GetAllShapesAction
  *
@@ -22,7 +24,7 @@ public class ExportNotesAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder, BaseCallback baseCallback) {
-        final ExportNotesRequest request = new ExportNotesRequest(documentInfoAction.getAnnotations(), shapesAction.getShapes());
+        final ExportNotesRequest request = new ExportNotesRequest(documentInfoAction.getAnnotations(), shapesAction.getShapes(), shapesAction.getSubPageMap());
         readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), request, baseCallback);
     }
 }

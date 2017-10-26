@@ -569,7 +569,7 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private void startSideNote(final ReaderDataHolder readerDataHolder) {
         hideReaderMenu();
-        readerActivity.startSideNote();
+        readerActivity.startSideNote(null);
     }
 
     private static void prevSideNoteSubPage(final ReaderDataHolder readerDataHolder) {

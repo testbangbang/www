@@ -40,7 +40,7 @@ public class ExportScribbleAction extends BaseAction {
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
             public void onNext(final String page, final Bitmap bitmap, PageInfo pageInfo) {
-                final ExportScribbleRequest request = new ExportScribbleRequest(bitmap, page);
+                final ExportScribbleRequest request = new ExportScribbleRequest(bitmap, null, false);
                 readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

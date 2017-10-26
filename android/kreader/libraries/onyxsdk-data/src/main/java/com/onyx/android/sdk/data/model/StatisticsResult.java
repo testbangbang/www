@@ -101,4 +101,15 @@ public class StatisticsResult {
     public void setBookTypeAgg(LinkedMap<String, Double> bookTypeAgg) {
         this.bookTypeAgg = bookTypeAgg;
     }
+
+    public boolean isEmpty() {
+        return totalReadTime == 0 &&
+                readingLevel == 0 &&
+                eventHourlyAgg == null &&
+                dailyAvgReadTime == 0 &&
+                longestReadTimeBook == null &&
+                mostCarefulBook == null &&
+                recentReadingBooks == null &&
+                bookTypeAgg == null;
+    }
 }

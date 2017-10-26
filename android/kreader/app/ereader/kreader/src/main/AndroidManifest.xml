@@ -38,6 +38,7 @@
 
         <activity android:name=".ui.ReaderTabHostActivity"
                   android:launchMode="singleInstance"
+                  android:excludeFromRecents="true"
                   android:configChanges="keyboardHidden|orientation|screenSize|locale|layoutDirection">
 
             <intent-filter>

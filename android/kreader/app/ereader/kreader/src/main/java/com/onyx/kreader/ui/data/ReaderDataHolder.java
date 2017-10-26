@@ -4,7 +4,9 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.pm.ActivityInfo;
 import android.graphics.Rect;
+import android.graphics.RectF;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -85,12 +87,16 @@ public class ReaderDataHolder {
     private boolean isSideReadingMode = false;
 
     private boolean enteringSideNote = false;
+    private int orientationBeforeSideNote = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED;
+
     private boolean sideNoting = false;
     private int sideNotePage = 0;
 
     private ReaderPainter readerPainter = new ReaderPainter();
 
     private WindowParameters windowParameters = new WindowParameters();
+
+    private boolean buttonShowTabWidgetVisible = false;
 
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
@@ -175,10 +181,18 @@ public class ReaderDataHolder {
             PageInfo subNotePage = new PageInfo(firstPage.getName(),
                     firstPage.getRange().startPosition,
                     firstPage.getRange().endPosition,
-                    displayWidth / 2, displayHeight);
+                    firstPage.getOriginWidth(),
+                    firstPage.getOriginHeight());
+
+            RectF pageRect = new RectF(0, 0, subNotePage.getOriginWidth(),
+                    subNotePage.getOriginHeight());
+            RectF viewportRect = new RectF(displayWidth / 2, 0, displayWidth, displayHeight);
+            float scale = PageUtils.scaleToFitRect(pageRect, viewportRect);
+
+            subNotePage.setScale(scale);
+            subNotePage.updateDisplayRect(pageRect);
+
             subNotePage.setSubPage(getSubPageIndex());
-            subNotePage.setPosition(displayWidth / 2, 0);
-            subNotePage.updateDisplayRect(subNotePage.getPositionRect());
             pages.add(subNotePage);
         }
 
@@ -555,6 +569,14 @@ public class ReaderDataHolder {
         return windowParameters;
     }
 
+    public boolean isButtonShowTabWidgetVisible() {
+        return buttonShowTabWidgetVisible;
+    }
+
+    public void setButtonShowTabWidgetVisible(boolean buttonShowTabWidgetVisible) {
+        this.buttonShowTabWidgetVisible = buttonShowTabWidgetVisible;
+    }
+
     public ReaderPainter getReaderPainter() {
         return readerPainter;
     }
@@ -676,6 +698,14 @@ public class ReaderDataHolder {
         this.enteringSideNote = enteringSideNote;
     }
 
+    public int getOrientationBeforeSideNote() {
+        return orientationBeforeSideNote;
+    }
+
+    public void setOrientationBeforeSideNote(int orientationBeforeSideNote) {
+        this.orientationBeforeSideNote = orientationBeforeSideNote;
+    }
+
     public boolean isSideNoting() {
         return sideNoting;
     }
@@ -701,6 +731,14 @@ public class ReaderDataHolder {
 
     public void setSideNotePage(int sideNotePage) {
         this.sideNotePage = sideNotePage;
+    }
+
+    public void setSideNotePageBySubPageIndex(int subPageIndex) {
+        this.sideNotePage = subPageIndex - getSideNoteStartSubPageIndex();
+    }
+
+    public boolean isSideNotePage(PageInfo pageInfo) {
+        return pageInfo.getSubPage() >= getSideNoteStartSubPageIndex();
     }
 
     public int getSideNotePageCount() {

@@ -2,6 +2,7 @@ package com.onyx.kreader.ui.actions;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
 import com.onyx.kreader.R;
@@ -19,7 +20,7 @@ public class GetDocumentInfoChain extends BaseAction {
     private ReaderDocumentTableOfContent tableOfContent;
     private List<Bookmark> bookmarks;
     private List<Annotation> annotations;
-    private List<String> scribblePages;
+    private List<PageInfo> scribblePages;
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback baseCallback) {
@@ -54,7 +55,7 @@ public class GetDocumentInfoChain extends BaseAction {
         return annotations;
     }
 
-    public List<String> getScribblePages() {
+    public List<PageInfo> getScribblePages() {
         return scribblePages;
     }
 }

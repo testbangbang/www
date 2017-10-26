@@ -42,6 +42,12 @@ public class RenderThumbnailRequest extends BaseReaderRequest {
         return new RenderThumbnailRequest(p, pagePosition, bmp, true);
     }
 
+    public static RenderThumbnailRequest renderByPage(final String p, final String pagePosition, final ReaderBitmap bmp, boolean abortPendingTasks) {
+        RenderThumbnailRequest request = renderByPage(p, pagePosition, bmp);
+        request.setAbortPendingTasks(abortPendingTasks);
+        return request;
+    }
+
     public static RenderThumbnailRequest renderByPosition(final String p, final String pagePosition, final ReaderBitmap bmp) {
         return new RenderThumbnailRequest(p, pagePosition, bmp, false);
     }

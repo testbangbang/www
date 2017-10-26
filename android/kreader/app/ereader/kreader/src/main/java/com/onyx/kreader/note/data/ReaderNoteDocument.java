@@ -297,20 +297,27 @@ public class ReaderNoteDocument {
         return pageIndex.nameList();
     }
 
-    public final List<String> getNoEmptyPageList(final Context context) {
-        List<String> pageList = new ArrayList<>();
+    public final List<PageInfo> getNoEmptyPageList(final Context context) {
+        List<PageInfo> pageList = new ArrayList<>();
         for (String page : getPageList()) {
-            String pageUniqueId = getSubPageUniqueId(new PageRange(page, page), 0);
-            ReaderNotePage notePage = pageMap.get(pageUniqueId);
-            if (notePage == null) {
-                notePage = loadPage(context, new PageRange(page, page), 0);
-            }
-            if (notePage == null) {
-                continue;
-            }
-            List<Shape> shapeList = notePage.getShapeList();
-            if (shapeList != null && shapeList.size() > 0) {
-                pageList.add(page);
+            final PageRange pageRange = PageRange.create(page, page);
+            int count = getSubPageCount(pageRange);
+            for (int i = 0; i < count; i++) {
+                String pageUniqueId = getSubPageUniqueId(pageRange, i);
+                ReaderNotePage notePage = pageMap.get(pageUniqueId);
+                if (notePage == null) {
+                    notePage = loadPage(context, pageRange, i);
+                }
+                if (notePage == null) {
+                    continue;
+                }
+                List<Shape> shapeList = notePage.getShapeList();
+                if (shapeList == null || shapeList.size() <= 0) {
+                    continue;
+                }
+                PageInfo pageInfo = new PageInfo(page, page, page, -1, -1);
+                pageInfo.setSubPage(i);
+                pageList.add(pageInfo);
             }
         }
         return pageList;

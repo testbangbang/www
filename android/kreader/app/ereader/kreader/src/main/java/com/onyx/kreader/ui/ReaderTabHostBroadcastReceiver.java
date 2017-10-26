@@ -20,6 +20,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_ENTER_FULL_SCREEN = "com.onyx.kreader.action.ENTER_FULL_SCREEN";
     public static final String ACTION_QUIT_FULL_SCREEN = "com.onyx.kreader.action.QUIT_FULL_SCREEN";
     public static final String ACTION_SHOW_TAB_WIDGET = "com.onyx.kreader.action.SHOW_TAB_WIDGET";
+    public static final String ACTION_HIDE_TAB_WIDGET = "com.onyx.kreader.action.HIDE_TAB_WIDGET";
     public static final String ACTION_OPEN_DOCUMENT_FAILED = "com.onyx.kreader.action.OPEN_DOCUMENT_FAILED";
     public static final String ACTION_SIDE_READING_CALLBACK = "com.onyx.kreader.action.SIDE_READING_CALLBACK";
 
@@ -92,6 +93,12 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void sendHideTabWidgetEvent(Context context) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_HIDE_TAB_WIDGET);
+        context.sendBroadcast(intent);
+    }
+
     public static void sendOpenDocumentFailedEvent(Context context, String path) {
         Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
         intent.setAction(ACTION_OPEN_DOCUMENT_FAILED);
@@ -125,6 +132,22 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
+        if (callback == null) {
+            Intent i = new Intent();
+            i.setClass(context, ReaderTabHostActivity.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
+                i.setAction(ACTION_TAB_BACK_PRESSED);
+            } else if (intent.getAction().equals(ACTION_TAB_BRING_TO_FRONT)) {
+                i.setAction(ACTION_TAB_BRING_TO_FRONT);
+                i.putExtra(TAG_TAB_ACTIVITY, intent.getStringExtra(TAG_TAB_ACTIVITY));
+            }
+
+            ActivityUtil.startActivitySafely(context, i);
+            return;
+        }
+
         if (intent.getAction().equals(ACTION_TAB_BRING_TO_FRONT)) {
             if (callback != null) {
                 callback.onTabBringToFront(intent.getStringExtra(TAG_TAB_ACTIVITY));
@@ -132,12 +155,6 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         } else if (intent.getAction().equals(ACTION_TAB_BACK_PRESSED)) {
             if (callback != null) {
                 callback.onTabBackPressed();
-            } else {
-                Intent i = new Intent();
-                i.setClass(context, ReaderTabHostActivity.class);
-                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.setAction(ACTION_TAB_BACK_PRESSED);
-                ActivityUtil.startActivitySafely(context, i);
             }
         } else if (intent.getAction().equals(ACTION_CHANGE_SCREEN_ORIENTATION)) {
             if (callback != null) {
@@ -156,6 +173,11 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
             ReaderTabHostActivity.setTabWidgetVisible(true);
             if (callback != null) {
                 callback.onUpdateTabWidgetVisibility(true);
+            }
+        } else if (intent.getAction().equals(ACTION_HIDE_TAB_WIDGET)) {
+            ReaderTabHostActivity.setTabWidgetVisible(false);
+            if (callback != null) {
+                callback.onUpdateTabWidgetVisibility(false);
             }
         } else if (intent.getAction().equals(ACTION_OPEN_DOCUMENT_FAILED)) {
             if (callback != null) {

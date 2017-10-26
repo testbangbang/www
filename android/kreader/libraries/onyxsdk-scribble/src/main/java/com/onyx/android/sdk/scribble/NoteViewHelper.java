@@ -114,6 +114,7 @@ public class NoteViewHelper {
     private boolean supportBigPen = false;
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
+    private boolean enableTouchEvent = true;
 
     private Rect customLimitRect = null;
 
@@ -678,7 +679,18 @@ public class NoteViewHelper {
         return toolType == MotionEvent.TOOL_TYPE_FINGER;
     }
 
+    public boolean isEnableTouchEvent() {
+        return enableTouchEvent;
+    }
+
+    public void setEnableTouchEvent(boolean enableTouchEvent) {
+        this.enableTouchEvent = enableTouchEvent;
+    }
+
     private boolean processTouchEvent(final MotionEvent motionEvent) {
+        if (!isEnableTouchEvent()) {
+            return true;
+        }
         if (motionEvent.getPointerCount() > 1) {
             return true;
         }

@@ -57,15 +57,15 @@
             layout="@layout/menu_item"/>
 
         <include
-            bind:item="@{item[ReaderMenuAction.SCRIBBLE_CLOSE.ordinal()].setMenuIcon(R.drawable.ic_side_scribble_close)}"
-            layout="@layout/menu_item"/>
-
-        <include
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_MINIMIZE.ordinal()].setMenuIcon(R.drawable.ic_unfold_menu)}"
             layout="@layout/menu_item"/>
 
         <include
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_MAXIMIZE.ordinal()].setMenuIcon(R.drawable.ic_expand_menu)}"
+            layout="@layout/menu_item"/>
+
+        <include
+            bind:item="@{item[ReaderMenuAction.SCRIBBLE_CLOSE.ordinal()].setMenuIcon(R.drawable.ic_side_scribble_close)}"
             layout="@layout/menu_item"/>
 
         <include

@@ -18,11 +18,11 @@ import java.util.List;
 
 public class ExportScribbleAction extends BaseAction {
 
-    private List<String> requestPages;
+    private List<PageInfo> requestPages;
 
     GetScribbleBitmapAction getScribbleBitmapAction;
 
-    public ExportScribbleAction(List<String> requestPages) {
+    public ExportScribbleAction(List<PageInfo> requestPages) {
         this.requestPages = requestPages;
     }
 
@@ -39,8 +39,9 @@ public class ExportScribbleAction extends BaseAction {
         getScribbleBitmapAction = new GetScribbleBitmapAction(requestPages, width, height);
         getScribbleBitmapAction.execute(readerDataHolder, new GetScribbleBitmapAction.Callback() {
             @Override
-            public void onNext(final String page, final Bitmap bitmap, PageInfo pageInfo) {
-                final ExportScribbleRequest request = new ExportScribbleRequest(bitmap, page);
+            public void onNext(final PageInfo page, final Bitmap bitmap, PageInfo pageInfo) {
+                final ExportScribbleRequest request = new ExportScribbleRequest(bitmap, page,
+                        readerDataHolder.isSideNotePage(page));
                 readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {

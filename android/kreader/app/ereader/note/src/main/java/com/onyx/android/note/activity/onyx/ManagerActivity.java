@@ -340,8 +340,8 @@ public class ManagerActivity extends BaseManagerActivity {
             case R.id.rename:
                 renameNoteOrLibrary(chosenItemsList.get(0));
                 break;
-            case R.id.setting:
-                onSettings();
+            case R.id.about:
+                onAbout();
             default:
                 break;
         }
@@ -365,7 +365,7 @@ public class ManagerActivity extends BaseManagerActivity {
         });
     }
 
-    private void onSettings() {
+    private void onAbout() {
         startActivity(new Intent(ManagerActivity.this,SettingActivity.class));
     }
 
