@@ -533,10 +533,13 @@ public class ReaderDataHolder {
             sideNotePage = 0;
         }
 
+        // when we redraw current page, it's no need to use regal
+        boolean disableRegal = request instanceof RenderRequest;
+
         saveReaderViewInfo(request);
         saveReaderUserDataInfo(request);
         setLastRequestSequence(request.getRequestSequence());
-        getEventBus().post(RequestFinishEvent.createEvent(request.getRequestSequence(), applyGCIntervalUpdate, renderShapeData, false));
+        getEventBus().post(RequestFinishEvent.createEvent(request.getRequestSequence(), applyGCIntervalUpdate, renderShapeData, false, disableRegal));
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
             getEventBus().post(new LayoutChangeEvent());
         }

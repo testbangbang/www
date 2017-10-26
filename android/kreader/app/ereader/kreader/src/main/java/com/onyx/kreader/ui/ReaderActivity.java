@@ -542,7 +542,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void prepareUpdateMode(final RequestFinishEvent event) {
-        if (isAnyPopup()) {
+        if (isAnyPopup() || event.isDisableRegal()) {
             ReaderDeviceManager.disableRegal();
             return;
         }
