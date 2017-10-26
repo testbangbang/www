@@ -17,9 +17,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.data.ControlType;
 import com.onyx.android.sdk.data.KeyAction;
-import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.TouchAction;
-import com.onyx.android.sdk.data.TouchBinding;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.data.CustomBindKeyBean;
@@ -166,7 +164,10 @@ public class ControlSettingsActivity extends PreferenceActivity {
         }
         final String keyCode = preference.getKey();
         CustomBindKeyBean preferenceBindKeyBean = getBindKeyBean(keyCode);
-        final CustomBindKeyBean bindKeyBean = preferenceBindKeyBean == null ? getBindingMap().get(keyCode) : preferenceBindKeyBean;
+        final CustomBindKeyBean bindKeyBean = (preferenceBindKeyBean == null
+                || StringUtils.isNullOrEmpty(preferenceBindKeyBean.getAction()))
+                ? getBindingMap().get(keyCode)
+                : preferenceBindKeyBean;
         if (bindKeyBean == null) {
             return;
         }
