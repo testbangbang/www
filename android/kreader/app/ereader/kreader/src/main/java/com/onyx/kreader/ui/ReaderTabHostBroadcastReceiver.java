@@ -21,6 +21,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_QUIT_FULL_SCREEN = "com.onyx.kreader.action.QUIT_FULL_SCREEN";
     public static final String ACTION_SHOW_TAB_WIDGET = "com.onyx.kreader.action.SHOW_TAB_WIDGET";
     public static final String ACTION_HIDE_TAB_WIDGET = "com.onyx.kreader.action.HIDE_TAB_WIDGET";
+    public static final String ACTION_OPEN_DOCUMENT_SUCCESS = "com.onyx.kreader.action.OPEN_DOCUMENT_SUCCESS";
     public static final String ACTION_OPEN_DOCUMENT_FAILED = "com.onyx.kreader.action.OPEN_DOCUMENT_FAILED";
     public static final String ACTION_SIDE_READING_CALLBACK = "com.onyx.kreader.action.SIDE_READING_CALLBACK";
 
@@ -42,7 +43,8 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         public abstract void onEnterFullScreen();
         public abstract void onQuitFullScreen();
         public abstract void onUpdateTabWidgetVisibility(boolean visible);
-        public abstract void onOpenDocumentFailed(String path);
+        public abstract void onOpenDocumentSuccess(String tabActivity, String path);
+        public abstract void onOpenDocumentFailed(String tabActivity, String path);
         public abstract void onSideReading(SideReadingCallback callback, String leftDocPath, String rightDocPath);
         public abstract void onGotoPageLink(String link);
         public abstract void onEnableDebugLog();
@@ -99,9 +101,18 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
-    public static void sendOpenDocumentFailedEvent(Context context, String path) {
+    public static void sendOpenDocumentSuccessEvent(Context context, String tabActivity, String path) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_OPEN_DOCUMENT_SUCCESS);
+        intent.putExtra(TAG_TAB_ACTIVITY, tabActivity);
+        intent.putExtra(TAG_DOCUMENT_PATH, path);
+        context.sendBroadcast(intent);
+    }
+
+    public static void sendOpenDocumentFailedEvent(Context context, String tabActivity, String path) {
         Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
         intent.setAction(ACTION_OPEN_DOCUMENT_FAILED);
+        intent.putExtra(TAG_TAB_ACTIVITY, tabActivity);
         intent.putExtra(TAG_DOCUMENT_PATH, path);
         context.sendBroadcast(intent);
     }
@@ -179,9 +190,15 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
             if (callback != null) {
                 callback.onUpdateTabWidgetVisibility(false);
             }
+        } else if (intent.getAction().equals(ACTION_OPEN_DOCUMENT_SUCCESS)) {
+            if (callback != null) {
+                callback.onOpenDocumentSuccess(intent.getStringExtra(TAG_TAB_ACTIVITY),
+                        intent.getStringExtra(TAG_DOCUMENT_PATH));
+            }
         } else if (intent.getAction().equals(ACTION_OPEN_DOCUMENT_FAILED)) {
             if (callback != null) {
-                callback.onOpenDocumentFailed(intent.getStringExtra(TAG_DOCUMENT_PATH));
+                callback.onOpenDocumentFailed(intent.getStringExtra(TAG_TAB_ACTIVITY),
+                        intent.getStringExtra(TAG_DOCUMENT_PATH));
             }
         } else if (intent.getAction().equals(ACTION_SIDE_READING_CALLBACK)) {
             if (callback != null) {

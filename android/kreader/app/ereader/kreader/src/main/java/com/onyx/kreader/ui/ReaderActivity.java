@@ -940,6 +940,9 @@ public class ReaderActivity extends OnyxBaseActivity {
             ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
         }
 
+        ReaderTabHostBroadcastReceiver.sendOpenDocumentSuccessEvent(this,
+                getClass().getCanonicalName(), getReaderDataHolder().getDocumentPath());
+
         releaseStartupWakeLock();
     }
 
@@ -1146,7 +1149,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         getReaderDataHolder().getEventBus().unregister(this);
         releaseStartupWakeLock();
-        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this, getReaderDataHolder().getDocumentPath());
+        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this,
+                getClass().getCanonicalName(), getReaderDataHolder().getDocumentPath());
 
         finish();
         postFinish();
