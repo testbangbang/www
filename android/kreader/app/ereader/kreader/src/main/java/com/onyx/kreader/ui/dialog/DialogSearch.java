@@ -9,6 +9,7 @@ import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.BackgroundColorSpan;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,13 +27,13 @@ import android.widget.Toast;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.SearchHistory;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
+import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.ui.view.OnyxCustomEditText;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.android.sdk.reader.api.ReaderSelection;
-import com.onyx.android.sdk.reader.host.impl.ReaderTextSplitterImpl;
 import com.onyx.kreader.ui.actions.GetSearchHistoryAction;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
 import com.onyx.kreader.ui.actions.GotoSearchPageAction;
@@ -42,6 +43,8 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
  * Created by ming on 16/7/21.
@@ -481,6 +484,10 @@ public class DialogSearch extends OnyxBaseDialog{
             int pageNumber = Integer.valueOf(readerSelection.getPageName());
             String page = String.format(getContext().getString(R.string.page), pageNumber + 1);
             contentPage.setText(page);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) contentPage.getLayoutParams();
+            params.height = MATCH_PARENT;
+            contentPage.setLayoutParams(params);
+            contentPage.setGravity(Gravity.RIGHT | Gravity.CENTER);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
