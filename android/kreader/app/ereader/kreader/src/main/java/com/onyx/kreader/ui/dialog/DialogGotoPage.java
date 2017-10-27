@@ -12,6 +12,7 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -20,12 +21,14 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
  */
 
 public class DialogGotoPage {
+    private static final String TAG = DialogGotoPage.class.getSimpleName();
 
     public static void show(final ReaderDataHolder readerDataHolder, boolean showProgress, final BaseCallback gotoPageCallback) {
         show(readerDataHolder, showProgress, gotoPageCallback, Integer.MIN_VALUE, Integer.MIN_VALUE);
     }
 
-    public static void show(final ReaderDataHolder readerDataHolder, boolean showProgress, final BaseCallback gotoPageCallback, int posX, int posY) {
+    public static void show(final ReaderDataHolder readerDataHolder,
+                            boolean showProgress, final BaseCallback gotoPageCallback, int posX, int posY) {
         final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
@@ -49,6 +52,13 @@ public class DialogGotoPage {
                     }
                 } else {
                     Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).setOnCloseListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                if (readerDataHolder.isNoteWritingProvider()) {
+                    new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
                 }
             }
         }).setDismissOnBackPressed(true);
@@ -76,7 +86,6 @@ public class DialogGotoPage {
                 }
             });
         }
-        readerDataHolder.trackDialog(dlg);
         WindowManager.LayoutParams params = dlg.getWindow().getAttributes();
         if (posX != Integer.MIN_VALUE) {
             params.x = posX;
