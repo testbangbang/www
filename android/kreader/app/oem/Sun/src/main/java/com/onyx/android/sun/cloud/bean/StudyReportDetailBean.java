@@ -32,8 +32,8 @@ public class StudyReportDetailBean {
         public static class PointsBean {
 
             @SerializedName("class")
-            public int classX;
-            public int own;
+            public float classX;
+            public float own;
         }
     }
 

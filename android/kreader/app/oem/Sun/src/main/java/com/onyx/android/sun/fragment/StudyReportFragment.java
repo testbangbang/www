@@ -2,6 +2,7 @@ package com.onyx.android.sun.fragment;
 
 import android.databinding.ViewDataBinding;
 import android.view.View;
+import android.widget.TextView;
 
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.cloud.bean.ContentBean;
@@ -28,6 +29,29 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     @Override
     protected void loadData() {
+        StudyReportDetailBean.CompetenceBean[] competenceBeans = new StudyReportDetailBean.CompetenceBean[5];
+        float[] scoresClass = new float[competenceBeans.length];
+        float[] scoresOwn = new float[competenceBeans.length];
+
+        for (int i = 0; i < 5 ; i++) {
+            StudyReportDetailBean.CompetenceBean competenceBean= new StudyReportDetailBean.CompetenceBean();
+            competenceBean.name = "第"+ (i+1) + "项";
+            StudyReportDetailBean.CompetenceBean.PointsBean pointBean = new StudyReportDetailBean.CompetenceBean.PointsBean();
+            pointBean.classX = i+6;
+            scoresClass[i] = pointBean.classX;
+            pointBean.own = i+2;
+            scoresOwn[i] = pointBean.own;
+            competenceBean.points = pointBean ;
+            competenceBeans[i] = competenceBean;
+        }
+
+        studyReportBinding.spiderWebScoreView.setScores(10f,scoresOwn);
+
+        for(StudyReportDetailBean.CompetenceBean competenceBean : competenceBeans){
+            TextView nameTextView = new TextView(getActivity());
+            nameTextView.setText(competenceBean.name);
+            studyReportBinding.circularLayout.addView(nameTextView);
+        }
 
     }
 
@@ -83,12 +107,13 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     @Override
     public void setStudyReportDetail(StudyReportDetailBean data) {
-
+//        CommonNotices.show(data.toString());
     }
 
     public void setPracticeId(int id) {
-        if (homeworkPresenter != null){
-            homeworkPresenter.getStudyReportDetail(id);
+        if (homeworkPresenter == null){
+            homeworkPresenter = new HomeworkPresenter(this);
         }
+        homeworkPresenter.getStudyReportDetail(id);
     }
 }

@@ -8,10 +8,6 @@
             name="listener"
             type="android.view.View.OnClickListener"/>
 
-        <variable
-            name="requestInfo"
-            type="com.onyx.android.sun.cloud.bean.ChangePasswordRequestBean"/>
-
     </data>
 
     <ScrollView
@@ -107,7 +103,7 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="200dp">
+                android:layout_height="wrap_content">
 
                 <TextView
                     android:id="@+id/tv_study_report_frame_class_tips"
@@ -125,26 +121,29 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-<!--                <com.dzaitsev.android.widget.RadarChartView
+                <FrameLayout
                     android:layout_centerInParent="true"
-                    android:id="@+id/competence_radar_chart"
+                    android:id="@+id/frameLayout_competence_chart"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@android:color/white"
-                    android:padding="@dimen/score_radar_chart_padding"
-                    app:axisColor="@android:color/darker_gray"
-                    app:axisTick="@dimen/score_radar_chart_axis_tick"
-                    app:axisWidth="1dp"
-                    app:chartColor="@android:color/black"
-                    app:chartStyle="fill"
-                    app:circlesOnly="false"
-                    app:endColor="@android:color/black"
-                    app:startColor="@android:color/white"
-                    app:textSize="@dimen/level_two_heading_font" />-->
+                    android:layout_height="280dp"
+                    android:clipChildren="false">
 
-                    <!--android:layout_below="@id/competence_radar_chart"-->
+                    <com.onyx.android.sun.view.SpiderWebScoreView
+                        android:id="@+id/spiderWebScoreView"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center" />
+
+                    <com.onyx.android.sun.view.CircularLayout
+                        android:id="@+id/circularLayout"
+                        android:layout_width="200dp"
+                        android:layout_height="200dp"
+                        android:layout_gravity="center"
+                        android:clipChildren="false"/>
+                </FrameLayout>
+
                 <LinearLayout
-                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/frameLayout_competence_chart"
                     android:layout_centerHorizontal="true"
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
