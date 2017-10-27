@@ -216,6 +216,8 @@ public class WordSelectionHandler extends BaseHandler{
                 return true;
             case KeyEvent.KEYCODE_PAGE_DOWN:
             case KeyEvent.KEYCODE_PAGE_UP:
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
                 quitWordSelection(readerDataHolder);
                 return super.onKeyDown(readerDataHolder,keyCode,event);
             default:
