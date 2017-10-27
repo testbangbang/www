@@ -85,7 +85,7 @@ public class ReaderTabActivityManager {
                     // TODO
 //                    updateCurrentTabInHost(tab);
 //                    updateReaderTabWindowHeight(tab);
-                    am.moveTaskToFront(tasksList.get(i).id, ActivityManager.MOVE_TASK_WITH_HOME | ActivityManager.MOVE_TASK_NO_USER_ACTION);
+                    am.moveTaskToFront(tasksList.get(i).id, 0);
 
                     if (!tabManager.supportMultipleTabs() || tabManager.getOpenedTabs().size() <= 1) {
                         ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(context,
