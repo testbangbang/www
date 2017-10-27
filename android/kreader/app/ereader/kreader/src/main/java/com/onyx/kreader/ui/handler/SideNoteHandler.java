@@ -14,6 +14,7 @@ import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
+import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.ChangeScaleWithDeltaAction;
 import com.onyx.kreader.ui.actions.toggleSideNoteMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
@@ -178,7 +179,8 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     private void toggleSideNoteMenu(ReaderDataHolder readerDataHolder) {
-        new toggleSideNoteMenuAction(menuManager).execute(readerDataHolder, null);
+        new toggleSideNoteMenuAction(menuManager,
+                ((ReaderActivity) readerDataHolder.getContext()).getExtraView()).execute(readerDataHolder, null);
     }
 
     @Subscribe
