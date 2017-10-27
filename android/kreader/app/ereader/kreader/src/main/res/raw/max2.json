@@ -8,7 +8,7 @@
   "regalEnable": true,
   "supportMultipleTabs": true,
   "supportSideNote": true,
-  "keysForSetting": ["KEYCODE_VOLUME_DOWN", "KEYCODE_VOLUME_UP"],
+  "keysForSetting": ["KEYCODE_PAGE_DOWN", "KEYCODE_PAGE_UP"],
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
