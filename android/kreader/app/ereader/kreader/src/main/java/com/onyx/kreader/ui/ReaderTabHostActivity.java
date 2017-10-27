@@ -89,10 +89,23 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         @Override
         public void onTabBringToFront(String tabActivity) {
             Debug.d(getClass(), "onTabBringToFront: " + tabActivity);
-            ensureFront();
+            boolean forceToFront = false;
+
+            if (!isFront) {
+                bringSelfToFront();
+                forceToFront = true;
+            }
 
             for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
                 if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
+                    ReaderTabManager.ReaderTab target = entry.getKey();
+                    if (getCurrentTabInHost() == target) {
+                        if (forceToFront) {
+                            ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, target, tabWidgetVisible.get());
+                        }
+                        return;
+                    }
+
                     if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
                         updateCurrentTabInHost(entry.getKey());
                     }
@@ -135,12 +148,31 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
 
         @Override
-        public void onOpenDocumentFailed(String path) {
+        public void onOpenDocumentSuccess(String tabActivity, String path) {
+            ReaderTabManager.ReaderTab openedTab = tabManager.findOpenedTabByPath(path);
+            ReaderTabManager.ReaderTab targetTab = tabManager.getTabByActivityName(tabActivity);
+            if (openedTab != null && openedTab != targetTab) {
+                closeReaderTab(openedTab);
+            }
+
+            if (tabManager.isTabOpened(targetTab)) {
+                tabManager.removeOpenedTab(targetTab);
+                updateTabTitle(targetTab, FileUtils.getFileName(path));
+            }
+
+            addOpenedTab(targetTab, path);
+            updateReaderTab(targetTab);
+
+            ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, targetTab, tabWidgetVisible.get());
+        }
+
+        @Override
+        public void onOpenDocumentFailed(String tabActivity, String path) {
             if (isSideReading) {
                 quitSideReadingMode();
                 return;
             }
-            closeTabIfOpenFileFailed(path);
+            closeTabIfOpenFileFailed(tabActivity, path);
         }
 
         @Override
@@ -469,7 +501,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         return true;
     }
 
-    private boolean closeTabIfOpenFileFailed(final String path) {
+    private boolean closeTabIfOpenFileFailed(String tabActivity, final String path) {
         final ReaderTabManager.ReaderTab tab = tabManager.findOpenedTabByPath(path);
         if (tab == null) {
             return false;

@@ -103,6 +103,16 @@ public class ReaderTabManager {
         return tabReceiverList.get(tab);
     }
 
+    public ReaderTab getTabByActivityName(String tabActivity) {
+        for (Map.Entry<ReaderTab, Class<?>> entry : tabActivityList.entrySet()) {
+            if (entry.getValue().getCanonicalName().compareTo(tabActivity) == 0) {
+                return entry.getKey();
+            }
+        }
+        assert false;
+        return ReaderTab.TAB_4;
+    }
+
     public void resetTabState(ReaderTab currentTab) {
         if (supportMultipleTabs()) {
             addNewTabToFreeList(ReaderTab.TAB_1);

@@ -167,6 +167,13 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         afterResume();
@@ -470,8 +477,6 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
-
-        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
     }
 
     private void enablePenShortcut() {
@@ -935,6 +940,9 @@ public class ReaderActivity extends OnyxBaseActivity {
             ShowReaderMenuAction.startNoteDrawing(getReaderDataHolder(), ReaderActivity.this, true);
         }
 
+        ReaderTabHostBroadcastReceiver.sendOpenDocumentSuccessEvent(this,
+                getClass().getCanonicalName(), getReaderDataHolder().getDocumentPath());
+
         releaseStartupWakeLock();
     }
 
@@ -1141,7 +1149,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         ShowReaderMenuAction.resetReaderMenu(getReaderDataHolder());
         getReaderDataHolder().getEventBus().unregister(this);
         releaseStartupWakeLock();
-        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this, getReaderDataHolder().getDocumentPath());
+        ReaderTabHostBroadcastReceiver.sendOpenDocumentFailedEvent(this,
+                getClass().getCanonicalName(), getReaderDataHolder().getDocumentPath());
 
         finish();
         postFinish();
