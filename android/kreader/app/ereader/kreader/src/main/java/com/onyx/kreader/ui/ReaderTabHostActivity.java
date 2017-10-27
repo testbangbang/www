@@ -89,10 +89,23 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         @Override
         public void onTabBringToFront(String tabActivity) {
             Debug.d(getClass(), "onTabBringToFront: " + tabActivity);
-            ensureFront();
+            boolean forceToFront = false;
+
+            if (!isFront) {
+                bringSelfToFront();
+                forceToFront = true;
+            }
 
             for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
                 if (tabActivity.compareTo(tabManager.getTabActivity(entry.getKey()).getCanonicalName()) == 0) {
+                    ReaderTabManager.ReaderTab target = entry.getKey();
+                    if (getCurrentTabInHost() == target) {
+                        if (forceToFront) {
+                            ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, target, tabWidgetVisible.get());
+                        }
+                        return;
+                    }
+
                     if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
                         updateCurrentTabInHost(entry.getKey());
                     }
