@@ -4,6 +4,8 @@ import android.content.Context;
 import android.view.View;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.api.device.epd.UpdateScheme;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 import com.onyx.android.sdk.utils.DeviceUtils;
 
@@ -47,8 +49,21 @@ public class ReaderDeviceManager {
     }
 
     public static void toggleAnimationUpdate(boolean clear) {
-        EpdController.applyApplicationFastMode(APP, !inFastUpdateMode, clear);
-        inFastUpdateMode = !inFastUpdateMode;
+        boolean useFastMode = !inSystemFastMode();
+        if (useFastMode) {
+            EpdController.setSystemUpdateModeAndScheme(UpdateMode.ANIMATION, UpdateScheme.QUEUE_AND_MERGE, Integer.MAX_VALUE);
+        } else {
+            EpdController.clearSystemUpdateModeAndScheme();
+        }
+    }
+
+    public static boolean inSystemFastMode() {
+        return EpdController.inSystemFastMode();
+    }
+
+    public static boolean setSystemDefaultUpdateMode(UpdateMode mode) {
+        EpdController.setSystemDefaultUpdateMode(mode);
+        return false;
     }
 
     public static void startScreenHandWriting(final View view) {
