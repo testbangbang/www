@@ -562,7 +562,7 @@ public class AlReaderWrapper {
             return "";
         }
         int rightIndex = searchResult.context.indexOf((char) AlStyles.CHAR_MARKER_FIND_E);
-        if (rightIndex == -1 || rightIndex >= searchResult.context.length() - 1) {
+        if (rightIndex == -1 || rightIndex >= searchResult.context.length()) {
             return "";
         }
         return searchResult.context.substring(leftIndex + 1, rightIndex);
@@ -587,7 +587,7 @@ public class AlReaderWrapper {
         if (idx == -1) {
             return "";
         }
-        if (idx >= searchResult.context.length() - 1) {
+        if (idx >= searchResult.context.length()) {
             return "";
         }
         return searchResult.context.substring(idx + 1);
