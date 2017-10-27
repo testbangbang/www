@@ -5,24 +5,35 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.data.ReaderMenuAction;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.ui.data.MenuClickEvent;
+import com.onyx.android.sdk.ui.data.MenuManager;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
+import com.onyx.kreader.ui.actions.ChangeScaleWithDeltaAction;
+import com.onyx.kreader.ui.actions.toggleSideNoteMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
+import com.onyx.kreader.ui.dialog.DialogGotoPage;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
 import com.onyx.kreader.ui.events.HideTabWidgetEvent;
 import com.onyx.kreader.ui.events.ShowTabWidgetEvent;
+
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by Joy on 2014/3/26.
  */
 public class SideNoteHandler extends BaseHandler {
+    private static final String TAG = SideNoteHandler.class.getSimpleName();
+    private MenuManager menuManager;
 
     public SideNoteHandler(HandlerManager p) {
         super(p);
+        menuManager = new MenuManager();
     }
 
     private boolean isEnableBigPen() {
@@ -34,6 +45,7 @@ public class SideNoteHandler extends BaseHandler {
                 true, readerDataHolder.getSideNoteStartSubPageIndex());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
         readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
+        readerDataHolder.getEventBus().register(this);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
@@ -44,6 +56,10 @@ public class SideNoteHandler extends BaseHandler {
             readerDataHolder.getEventBus().post(new ChangeOrientationEvent(readerDataHolder.getOrientationBeforeSideNote()));
             readerDataHolder.setOrientationBeforeSideNote(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
+        if (menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing()) {
+            toggleSideNoteMenu(readerDataHolder);
+        }
+        readerDataHolder.getEventBus().unregister(this);
     }
 
     @Override
@@ -73,7 +89,7 @@ public class SideNoteHandler extends BaseHandler {
             case KEYCDOE_SCRIBE_KK:
                 return false;
             default:
-                return super.onKeyDown(readerDataHolder,keyCode,event);
+                return super.onKeyDown(readerDataHolder, keyCode, event);
         }
     }
 
@@ -95,11 +111,14 @@ public class SideNoteHandler extends BaseHandler {
 
     @Override
     public boolean onSingleTapUp(ReaderDataHolder readerDataHolder, MotionEvent e) {
+        int viewPortWidth = getViewportWidth();
         if (inDocRegion(e)) {
-            if (e.getX() < getViewportWidth() / 2) {
+            if (e.getX() < viewPortWidth / 3) {
                 prevScreen(readerDataHolder);
-            } else if (e.getX() > getViewportWidth() / 2 && e.getX() < getViewportWidth()) {
+            } else if (e.getX() > ((viewPortWidth * 2) / 3) && e.getX() < viewPortWidth) {
                 nextScreen(readerDataHolder);
+            } else {
+                toggleSideNoteMenu(readerDataHolder);
             }
         }
         return true;
@@ -114,7 +133,7 @@ public class SideNoteHandler extends BaseHandler {
         return true;
     }
 
-    public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector)  {
+    public boolean onScale(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
         return true;
     }
 
@@ -156,5 +175,33 @@ public class SideNoteHandler extends BaseHandler {
 
     private int getViewportWidth() {
         return getParent().getReaderDataHolder().getDisplayWidth() / 2;
+    }
+
+    private void toggleSideNoteMenu(ReaderDataHolder readerDataHolder) {
+        new toggleSideNoteMenuAction(menuManager).execute(readerDataHolder, null);
+    }
+
+    @Subscribe
+    public void onMenuClickEvent(MenuClickEvent event) {
+        ReaderMenuAction menuAction = ReaderMenuAction.valueOf(event.getMenuId());
+        switch (menuAction) {
+            case ZOOM_IN:
+                final ChangeScaleWithDeltaAction scaleUpAction = new ChangeScaleWithDeltaAction(0.1f);
+                scaleUpAction.execute(getParent().getReaderDataHolder(), null);
+                break;
+            case ZOOM_OUT:
+                final ChangeScaleWithDeltaAction scaleDownAction = new ChangeScaleWithDeltaAction(-0.1f);
+                scaleDownAction.execute(getParent().getReaderDataHolder(), null);
+                break;
+            case ZOOM_BY_CROP_PAGE:
+                final ScaleToPageCropRequest request = new ScaleToPageCropRequest(getParent().getReaderDataHolder().getCurrentPageName());
+                getParent().getReaderDataHolder().submitRenderRequest(request);
+                break;
+            case GOTO_PAGE:
+                DialogGotoPage.show(getParent().getReaderDataHolder(),
+                        true, null,
+                        (-(getParent().getReaderDataHolder().getDisplayWidth() / 4)), Integer.MIN_VALUE);
+                break;
+        }
     }
 }

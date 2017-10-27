@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 /**
  * Created by lxm on 2017/9/20.
@@ -59,5 +60,12 @@ public class DataBindingUtils {
             layoutParams.setMargins(layoutParams.leftMargin, (int) topMargin, layoutParams.rightMargin, layoutParams.bottomMargin);
         }
         view.setLayoutParams(layoutParams);
+    }
+
+    @BindingAdapter({"android:text"})
+    public static void setStringResource(TextView textView, int resource) {
+        if (resource != 0) {
+            textView.setText(textView.getContext().getString(resource));
+        }
     }
 }
