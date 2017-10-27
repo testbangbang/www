@@ -27,6 +27,8 @@
 
 -keepnames class com.onyx.android.sdk.data.PageInfo { *; }
 -keepnames class com.onyx.android.sdk.data.CustomBindKeyBean { *; }
+-keepnames class com.onyx.android.sdk.data.KeyBinding { *; }
+-keepnames class com.onyx.android.sdk.data.TouchBinding { *; }
 -keepnames class com.onyx.android.sdk.utils.StringUtils { *; }
 
 -keepnames class com.onyx.android.sdk.reader.utils.GObject { *; }
