@@ -12,7 +12,6 @@ import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.ui.actions.GotoPageAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
@@ -23,12 +22,16 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class DialogGotoPage {
     private static final String TAG = DialogGotoPage.class.getSimpleName();
 
-    public static void show(final ReaderDataHolder readerDataHolder, boolean showProgress, final BaseCallback gotoPageCallback) {
-        show(readerDataHolder, showProgress, gotoPageCallback, Integer.MIN_VALUE, Integer.MIN_VALUE);
+    public interface OnCloseCallback{
+        public void onClose();
+    }
+
+    public static void show(final ReaderDataHolder readerDataHolder, boolean showProgress, final BaseCallback gotoPageCallback,OnCloseCallback closeCallback) {
+        show(readerDataHolder, showProgress, gotoPageCallback, Integer.MIN_VALUE, Integer.MIN_VALUE, closeCallback);
     }
 
     public static void show(final ReaderDataHolder readerDataHolder,
-                            boolean showProgress, final BaseCallback gotoPageCallback, int posX, int posY) {
+                            boolean showProgress, final BaseCallback gotoPageCallback, int posX, int posY, final OnCloseCallback closeCallback) {
         final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(final DialogInterface dialog, int which) {
@@ -57,8 +60,8 @@ public class DialogGotoPage {
         }).setOnCloseListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                if (readerDataHolder.isNoteWritingProvider()) {
-                    new ResumeDrawingAction(readerDataHolder.getVisiblePages()).execute(readerDataHolder, null);
+                if (closeCallback != null) {
+                    closeCallback.onClose();
                 }
             }
         }).setDismissOnBackPressed(true);

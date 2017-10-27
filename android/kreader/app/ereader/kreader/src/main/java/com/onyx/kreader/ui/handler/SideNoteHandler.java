@@ -214,9 +214,14 @@ public class SideNoteHandler extends BaseHandler {
         }
     }
 
-    private void showDialogGoToPage(){
+    private void showDialogGoToPage() {
         DialogGotoPage.show(getParent().getReaderDataHolder(),
                 true, null,
-                (-(getParent().getReaderDataHolder().getDisplayWidth() / 4)), Integer.MIN_VALUE);
+                (-(getParent().getReaderDataHolder().getDisplayWidth() / 4)), Integer.MIN_VALUE, new DialogGotoPage.OnCloseCallback() {
+                    @Override
+                    public void onClose() {
+                        new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
+                    }
+                });
     }
 }
