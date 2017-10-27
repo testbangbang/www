@@ -155,13 +155,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 closeReaderTab(openedTab);
             }
 
-            if (tabManager.isTabOpened(targetTab)) {
+            if (tabManager.isTabOpened(targetTab) &&
+                    tabManager.getOpenedTabs().get(targetTab).compareTo(path) == 0) {
+                updateCurrentTabInHost(targetTab);
+            } else {
                 tabManager.removeOpenedTab(targetTab);
-                updateTabTitle(targetTab, FileUtils.getFileName(path));
+                addOpenedTab(targetTab, path);
+                updateReaderTab(targetTab);
             }
-
-            addOpenedTab(targetTab, path);
-            updateReaderTab(targetTab);
 
             ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, targetTab, tabWidgetVisible.get());
         }
