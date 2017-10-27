@@ -95,6 +95,7 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodAddStrokePoint = null;
     private static Method sMethodFinishStroke = null;
     private static Method sMethodSetUpdListSize = null;
+    private static Method sMethodInSystemFastMode = null;
 
     private static Method sMethodEnableA2;
     private static Method sMethodDisableA2;
@@ -784,6 +785,7 @@ public class RK32XXDevice extends BaseDevice {
             sMethodSetDisplayScheme = ReflectUtil.getMethodSafely(cls, "setDisplayScheme", int.class);
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
             sMethodSetUpdListSize = ReflectUtil.getMethodSafely(cls, "setUpdListSize", int.class);
+            sMethodInSystemFastMode = ReflectUtil.getMethodSafely(cls, "inSystemFastMode");
 
             sMethodSetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "setVCom", Context.class, int.class, String.class);
             sMethodGetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "getVCom", String.class);
@@ -1131,4 +1133,12 @@ public class RK32XXDevice extends BaseDevice {
         ReflectUtil.invokeMethodSafely(sMethodSetUpdListSize, null, size);
     }
 
+    @Override
+    public boolean inSystemFastMode() {
+        Boolean value = (Boolean)ReflectUtil.invokeMethodSafely(sMethodInSystemFastMode, null);
+        if (value == null) {
+            return false;
+        }
+        return value.booleanValue();
+    }
 }

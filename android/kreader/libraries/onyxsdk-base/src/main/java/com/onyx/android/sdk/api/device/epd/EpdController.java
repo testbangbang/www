@@ -298,4 +298,8 @@ public abstract class EpdController
         Device.currentDevice().setUpdListSize(-1);
     }
 
+    public static boolean inSystemFastMode() {
+        return Device.currentDevice().inSystemFastMode();
+    }
+
 }
