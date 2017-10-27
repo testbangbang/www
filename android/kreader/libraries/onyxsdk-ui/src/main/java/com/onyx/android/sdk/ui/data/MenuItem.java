@@ -22,6 +22,7 @@ public class MenuItem extends BaseObservable {
     public ObservableBoolean checked = new ObservableBoolean();
     public ObservableInt visibility = new ObservableInt(View.GONE);
     public ObservableInt menuIcon = new ObservableInt(android.R.color.transparent);
+    public ObservableInt menuTextID = new ObservableInt();
     public ObservableField<String> text = new ObservableField<>();
     public ObservableBoolean enabled = new ObservableBoolean(true);
     // work when parent layout is FlexboxLayout
@@ -64,6 +65,11 @@ public class MenuItem extends BaseObservable {
         return this;
     }
 
+    public MenuItem setMenuTextID(int menuTextID) {
+        this.menuTextID.set(menuTextID);
+        return this;
+    }
+
     public MenuItem setEnabled(boolean enabled) {
         this.enabled.set(enabled);
         return this;
@@ -88,8 +94,9 @@ public class MenuItem extends BaseObservable {
         return parentMenuId;
     }
 
-    public void setText(String text) {
+    public MenuItem setText(String text) {
         this.text.set(text);
+        return this;
     }
 
     public static MenuItem createVisibleMenu() {
