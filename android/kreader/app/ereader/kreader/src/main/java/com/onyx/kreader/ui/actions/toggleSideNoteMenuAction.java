@@ -18,7 +18,7 @@ import java.util.List;
 public class toggleSideNoteMenuAction extends BaseAction {
     public static final String TAG = toggleSideNoteMenuAction.class.getSimpleName();
 
-    public toggleSideNoteMenuAction( MenuManager menuManager,ViewGroup parent) {
+    public toggleSideNoteMenuAction(MenuManager menuManager, ViewGroup parent) {
         this.parent = parent;
         this.menuManager = menuManager;
     }
