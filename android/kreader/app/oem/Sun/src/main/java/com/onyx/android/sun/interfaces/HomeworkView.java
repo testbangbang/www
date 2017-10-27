@@ -3,6 +3,7 @@ package com.onyx.android.sun.interfaces;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
+import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface HomeworkView {
     void setReportData(List<FinishContent> content);
 
     void setTaskDetail(QuestionDetail data);
+
+    void setStudyReportDetail(StudyReportDetailBean data);
 }

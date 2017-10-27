@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener"/>
+
+        <variable
+            name="requestInfo"
+            type="com.onyx.android.sun.cloud.bean.ChangePasswordRequestBean"/>
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/icon_back_small"
+                android:text="第一单元文言文课后检查报告"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <include layout="@layout/layout_divide_line"/>
+
+            <LinearLayout
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textSize="24sp"
+                    android:text="分数 : "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textSize="24sp"
+                    android:text="75分"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:layout_marginLeft="10dp"
+                    android:text="班级排名 : "
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+                <TextView
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:text="12名"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginLeft="10dp"
+                    android:textSize="24sp"
+                    android:text="继续努力!"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="共30题, "
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="@dimen/user_center_text_normal_textsize"
+                        android:text="主观题20题: 做对15题, 得分30分"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:textSize="@dimen/user_center_text_normal_textsize"
+                        android:text="主观题20题: 做对15题, 得分30分"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="200dp">
+
+                <TextView
+                    android:id="@+id/tv_study_report_frame_class_tips"
+                    android:layout_alignParentRight="true"
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:text="线框-班级"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_below="@id/tv_study_report_frame_class_tips"
+                    android:layout_alignParentRight="true"
+                    android:textSize="@dimen/user_center_text_normal_textsize"
+                    android:text="填充-个人"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+<!--                <com.dzaitsev.android.widget.RadarChartView
+                    android:layout_centerInParent="true"
+                    android:id="@+id/competence_radar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@android:color/white"
+                    android:padding="@dimen/score_radar_chart_padding"
+                    app:axisColor="@android:color/darker_gray"
+                    app:axisTick="@dimen/score_radar_chart_axis_tick"
+                    app:axisWidth="1dp"
+                    app:chartColor="@android:color/black"
+                    app:chartStyle="fill"
+                    app:circlesOnly="false"
+                    app:endColor="@android:color/black"
+                    app:startColor="@android:color/white"
+                    app:textSize="@dimen/level_two_heading_font" />-->
+
+                    <!--android:layout_below="@id/competence_radar_chart"-->
+                <LinearLayout
+                    android:layout_alignParentBottom="true"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:textSize="@dimen/user_center_text_normal_textsize"
+                        android:text="你的能力值提升咯,快去看看~~"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:padding="5dp"
+                        android:id="@+id/tv_study_report_look_competence"
+                        android:text="去看看"
+                        android:background="@drawable/button_back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>

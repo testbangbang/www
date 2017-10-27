@@ -13,8 +13,8 @@ import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.FragmentUserCenterBinding;
+import com.onyx.android.sun.event.OnBackPressEvent;
 import com.onyx.android.sun.event.ToChangePasswordEvent;
-import com.onyx.android.sun.event.ToMainFragmentEvent;
 import com.onyx.android.sun.interfaces.UserLogoutView;
 import com.onyx.android.sun.presenter.UserCenterPresenter;
 
@@ -99,7 +99,7 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
 
     @Override
     public boolean onKeyBack() {
-        EventBus.getDefault().post(new ToMainFragmentEvent());
+        EventBus.getDefault().post(new OnBackPressEvent(ChildViewID.FRAGMENT_USER_CENTER));
         return true;
     }
 

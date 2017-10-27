@@ -12,6 +12,7 @@ import com.onyx.android.sun.adapter.StudyReportAdapter;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
+import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.sun.databinding.HomeworkBinding;
 import com.onyx.android.sun.interfaces.HomeworkView;
 import com.onyx.android.sun.presenter.HomeworkPresenter;
@@ -20,6 +21,7 @@ import com.onyx.android.sun.view.DisableScrollGridManager;
 import com.onyx.android.sun.view.DividerItemDecoration;
 import com.onyx.android.sun.view.TimePickerDialog;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -133,6 +135,16 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     private void studyReport() {
         setSelected(R.id.homework_study_report);
         homeworkBinding.homeworkRecyclerView.setAdapter(studyReportAdapter);
+
+        List<FinishContent> content = new ArrayList<>();
+        for (int i = 0; i < 2; i++) {
+            FinishContent finishContent = new FinishContent();
+            finishContent.submitTime = "2017.10." + (23 + i);
+            finishContent.correctTime = "2017.11." + (24 + i);
+            finishContent.title = "作业"+i;
+            content.add(finishContent);
+        }
+        studyReportAdapter.setData(content);
     }
 
     private void unfinished() {
@@ -195,4 +207,10 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     public void setTaskDetail(QuestionDetail data) {
 
     }
+
+    @Override
+    public void setStudyReportDetail(StudyReportDetailBean data) {
+
+    }
+
 }
