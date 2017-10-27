@@ -5,6 +5,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -110,6 +111,11 @@ public class WordSelectionHandler extends BaseHandler{
 
     public boolean onScroll(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
         return true;
+    }
+
+    @Override
+    public boolean onScaleBegin(ReaderDataHolder readerDataHolder, ScaleGestureDetector detector) {
+        return false;
     }
 
     public boolean onSingleTapConfirmed(ReaderDataHolder readerDataHolder, MotionEvent e) {
