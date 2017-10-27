@@ -167,6 +167,13 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
         afterResume();
@@ -470,8 +477,6 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
-
-        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
     }
 
     private void enablePenShortcut() {
