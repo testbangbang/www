@@ -5,6 +5,8 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
 import com.onyx.android.sdk.ui.data.MenuClickEvent;
@@ -180,7 +182,8 @@ public class SideNoteHandler extends BaseHandler {
 
     private void toggleSideNoteMenu(ReaderDataHolder readerDataHolder) {
         new toggleSideNoteMenuAction(menuManager,
-                ((ReaderActivity) readerDataHolder.getContext()).getExtraView()).execute(readerDataHolder, null);
+                ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
+                execute(readerDataHolder, null);
     }
 
     @Subscribe
@@ -200,10 +203,25 @@ public class SideNoteHandler extends BaseHandler {
                 getParent().getReaderDataHolder().submitRenderRequest(request);
                 break;
             case GOTO_PAGE:
-                DialogGotoPage.show(getParent().getReaderDataHolder(),
-                        true, null,
-                        (-(getParent().getReaderDataHolder().getDisplayWidth() / 4)), Integer.MIN_VALUE);
+                FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+                flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        showDialogGoToPage();
+                    }
+                });
                 break;
         }
+    }
+
+    private void showDialogGoToPage() {
+        DialogGotoPage.show(getParent().getReaderDataHolder(),
+                true, null,
+                (-(getParent().getReaderDataHolder().getDisplayWidth() / 4)), Integer.MIN_VALUE, new DialogGotoPage.OnCloseCallback() {
+                    @Override
+                    public void onClose() {
+                        new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
+                    }
+                });
     }
 }

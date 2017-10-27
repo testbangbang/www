@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:appCompat="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:bind="http://schemas.android.com/tools">
 
     <data>
@@ -21,55 +21,36 @@
 
     </data>
 
-    <LinearLayout
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        app:flexWrap="wrap">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@android:color/black" />
 
-        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            appCompat:alwaysLayoutImageView="true">
+        <include
+            layout="@layout/side_note_menu_item"
+            bind:item="@{item[ReaderMenuAction.ZOOM_IN.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_scale_magnify).setMenuTextID(R.string.reader_layer_menu_zoom_in)}" />
 
-            <include
-                layout="@layout/side_note_menu_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                bind:item="@{item[ReaderMenuAction.ZOOM_IN.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_scale_magnify).setMenuTextID(R.string.reader_layer_menu_zoom_in)}" />
+        <include
+            layout="@layout/side_note_menu_item"
+            bind:item="@{item[ReaderMenuAction.ZOOM_OUT.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_scale_shrink).setMenuTextID(R.string.reader_layer_menu_zoom_out)}" />
 
-            <include
-                layout="@layout/side_note_menu_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                bind:item="@{item[ReaderMenuAction.ZOOM_OUT.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_scale_shrink).setMenuTextID(R.string.reader_layer_menu_zoom_out)}" />
+        <include
+            layout="@layout/side_note_menu_item"
+            bind:item="@{item[ReaderMenuAction.ZOOM_BY_CROP_PAGE.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_scale_cut_four).setMenuTextID(R.string.reader_layer_menu_zoom_by_crop_page)}" />
 
-            <include
-                layout="@layout/side_note_menu_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                bind:item="@{item[ReaderMenuAction.ZOOM_BY_CROP_PAGE.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_scale_cut_four).setMenuTextID(R.string.reader_layer_menu_zoom_by_crop_page)}" />
+        <include
+            layout="@layout/side_note_menu_item"
+            bind:item="@{item[ReaderMenuAction.GOTO_PAGE.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_go_to_page).setMenuTextID(R.string.go_to_page)}" />
 
-            <include
-                layout="@layout/side_note_menu_item"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                bind:item="@{item[ReaderMenuAction.GOTO_PAGE.ordinal()].setMenuIcon(R.drawable.ic_dialog_reader_menu_go_to_page).setMenuTextID(R.string.go_to_page)}" />
-
-        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
-
-    </LinearLayout>
+    </com.google.android.flexbox.FlexboxLayout>
 
 
 </layout>

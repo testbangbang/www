@@ -17,10 +17,12 @@ import java.util.List;
 
 public class toggleSideNoteMenuAction extends BaseAction {
     public static final String TAG = toggleSideNoteMenuAction.class.getSimpleName();
+    private boolean supportScale = false;
 
-    public toggleSideNoteMenuAction(MenuManager menuManager, ViewGroup parent) {
+    public toggleSideNoteMenuAction(MenuManager menuManager, ViewGroup parent, boolean supportScale) {
         this.parent = parent;
         this.menuManager = menuManager;
+        this.supportScale = supportScale;
     }
 
     private ViewGroup parent;
@@ -40,9 +42,11 @@ public class toggleSideNoteMenuAction extends BaseAction {
     private List<Integer> getIDList() {
         if (menuIdList == null || menuIdList.size() == 0) {
             menuIdList = new ArrayList<>();
-            menuIdList.add(ReaderMenuAction.ZOOM_IN.ordinal());
-            menuIdList.add(ReaderMenuAction.ZOOM_OUT.ordinal());
-            menuIdList.add(ReaderMenuAction.ZOOM_BY_CROP_PAGE.ordinal());
+            if (supportScale) {
+                menuIdList.add(ReaderMenuAction.ZOOM_IN.ordinal());
+                menuIdList.add(ReaderMenuAction.ZOOM_OUT.ordinal());
+                menuIdList.add(ReaderMenuAction.ZOOM_BY_CROP_PAGE.ordinal());
+            }
             menuIdList.add(ReaderMenuAction.GOTO_PAGE.ordinal());
         }
         return menuIdList;
@@ -58,6 +62,7 @@ public class toggleSideNoteMenuAction extends BaseAction {
                 BR.item,
                 params,
                 MenuItem.createVisibleMenus(getIDList()));
+        menuManager.getMainMenu().setColumns(4);
     }
 
 }

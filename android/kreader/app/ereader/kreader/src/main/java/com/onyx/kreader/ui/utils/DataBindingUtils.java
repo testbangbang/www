@@ -9,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.android.flexbox.FlexboxLayout;
+
 /**
  * Created by lxm on 2017/9/20.
  */
@@ -66,6 +68,22 @@ public class DataBindingUtils {
     public static void setStringResource(TextView textView, int resource) {
         if (resource != 0) {
             textView.setText(textView.getContext().getString(resource));
+        }
+    }
+
+    @BindingAdapter({"layoutColumns"})
+    public static void setLayoutColumns(View view, int layoutColumns) {
+        if (layoutColumns == 0) {
+            return;
+        }
+        ViewGroup parent = (ViewGroup) view.getParent();
+        if (parent instanceof FlexboxLayout) {
+            FlexboxLayout.LayoutParams lp = (FlexboxLayout.LayoutParams) view.getLayoutParams();
+            float flexBasisPercent = (float) 1 / layoutColumns;
+            //TODO:fix flexbox layout percentage bug.
+            flexBasisPercent = flexBasisPercent - 0.001f;
+            lp.setFlexBasisPercent(flexBasisPercent);
+            view.setLayoutParams(lp);
         }
     }
 }
