@@ -260,7 +260,6 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
         return processKeyDown(keyCode, event);
     }
 
