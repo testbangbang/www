@@ -16,6 +16,9 @@ public class IncreaseFontSizeAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         ReaderTextStyle style = readerDataHolder.getReaderViewInfo().getReaderTextStyle();
+        if (style == null) {
+            return;
+        }
         style.increaseFontSize();
         readerDataHolder.submitRenderRequest(new ChangeStyleRequest(style), callback);
     }
