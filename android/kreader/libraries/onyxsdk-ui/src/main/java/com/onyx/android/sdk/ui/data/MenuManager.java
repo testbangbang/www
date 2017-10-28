@@ -101,4 +101,8 @@ public class MenuManager {
             toolbarMenu = null;
         }
     }
+
+    public boolean isMainMenuShown() {
+        return getMainMenu() != null && getMainMenu().isShowing();
+    }
 }
