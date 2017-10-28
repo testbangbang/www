@@ -6,6 +6,8 @@ import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -26,6 +28,7 @@ import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.ImageReader;
+import android.os.BatteryManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,6 +48,7 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.onyx.android.monitor.databinding.FragmentPreviewBasicBinding;
+import com.onyx.android.monitor.dialog.ChargeRemindDialog;
 import com.onyx.android.monitor.dialog.ConfirmationDialog;
 import com.onyx.android.monitor.dialog.ConnectErrorDialog;
 import com.onyx.android.monitor.dialog.DialogPreviewMenu;
@@ -201,6 +205,7 @@ public class PreviewFragment extends Fragment
             EpdController.setUpdListSize(1);
             createCameraPreviewSession();
             enterA2();
+            checkBatteryChargeState();
         }
 
         @Override
@@ -1094,4 +1099,14 @@ public class PreviewFragment extends Fragment
         return SingletonSharedPreference.getGcIntervalTime(getActivity()) * 33 * 60;
     }
 
+    private void checkBatteryChargeState() {
+        IntentFilter filter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        Intent batteryStatus = getActivity().registerReceiver(null, filter);
+        int chargePlug = batteryStatus.getIntExtra(BatteryManager.EXTRA_PLUGGED, -1);
+        boolean acCharge = chargePlug == BatteryManager.BATTERY_PLUGGED_AC;
+        if (!acCharge) {
+            new ChargeRemindDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
+        }
+    }
 }
+

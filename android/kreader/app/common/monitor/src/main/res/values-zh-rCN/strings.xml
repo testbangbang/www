@@ -4,4 +4,5 @@
     <string name="exit_confirm">退出显示器?</string>
     <string name="full_refresh_interval_time">全刷间隔时间(分钟)</string>
     <string name="connect_error">连接失败,请检查HDMI连接线！</string>
+    <string name="charge_remind_message">显示器比较耗电，建议使用AC充电！</string>
 </resources>
