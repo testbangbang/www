@@ -109,8 +109,7 @@ public class ReaderTabManager {
                 return entry.getKey();
             }
         }
-        assert false;
-        return ReaderTab.TAB_4;
+        return null;
     }
 
     public void resetTabState(ReaderTab currentTab) {

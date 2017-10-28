@@ -38,7 +38,7 @@ public class ReaderTabActivityManager {
             intent.setDataAndType(Uri.fromFile(new File(path)), srcIntent.getType());
             intent.putExtras(srcIntent);
         }
-
+        intent.putExtra(ReaderBroadcastReceiver.TAG_DOCUMENT_REQUEST_FROM, ReaderBroadcastReceiver.TAG_DOCUMENT_REQUEST_TAB_HOST);
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_GRAVITY, windowGravity);
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_WIDTH, windowWidth);
         intent.putExtra(ReaderBroadcastReceiver.TAG_WINDOW_HEIGHT, windowHeight);

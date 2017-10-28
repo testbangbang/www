@@ -169,7 +169,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
         ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
     }
 
@@ -837,7 +836,13 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
 
+        final String requestFrom = getIntent().getStringExtra(ReaderBroadcastReceiver.TAG_DOCUMENT_REQUEST_FROM);
         final String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
+        if (StringUtils.isNullOrEmpty(requestFrom)) {
+            ReaderTabHostBroadcastReceiver.sendOpenDocumentRequestEvent(this, getClass().getCanonicalName(), path);
+            return;
+        }
+
         if (isDocumentOpening() || isFileAlreadyOpened(path)) {
             return;
         }

@@ -45,6 +45,8 @@ public class ReaderBroadcastReceiver extends BroadcastReceiver {
     public static final String TAG_WINDOW_LEFT = "com.onyx.kreader.WINDOW_LEFT";
     public static final String TAG_WINDOW_TOP = "com.onyx.kreader.WINDOW_TOP";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.DOCUMENT_PATH";
+    public static final String TAG_DOCUMENT_REQUEST_FROM = "com.onyx.kreader.REQUEST_FROM";
+    public static final String TAG_DOCUMENT_REQUEST_TAB_HOST = "com.onyx.kreader.tab_host";
     public static final String TAG_TAB_WIDGET_VISIBLE = "com.onyx.kreader.TAB_WIDGET_VISIBLE";
     public static final String TAG_PAGE_LINK = "com.onyx.kreader.PAGE_LINK";
     public static final String TAG_ENABLE_DEBUG = "com.onyx.kreader.ENABLE_DEBUG";

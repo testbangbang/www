@@ -148,6 +148,17 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
 
         @Override
+        public void onOpenDocumentRequest(String tabActivity, String path) {
+            ReaderTabManager.ReaderTab targetTab = tabManager.getTabByActivityName(tabActivity);
+            setIntent(null);
+            if (targetTab == null) {
+                openDocFromIntent(path);
+            } else {
+                openDocWithTab(targetTab, path);
+            }
+        }
+
+        @Override
         public void onOpenDocumentSuccess(String tabActivity, String path) {
             ReaderTabManager.ReaderTab openedTab = tabManager.findOpenedTabByPath(path);
             ReaderTabManager.ReaderTab targetTab = tabManager.getTabByActivityName(tabActivity);
@@ -762,7 +773,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private int getTabWindowWidth(ReaderTabManager.ReaderTab tab) {
         if (!isSideReading) {
-            return WindowManager.LayoutParams.MATCH_PARENT;
+            return getTabContentWidth();
         }
 
         int splitLineWidth = findViewById(R.id.dash_line_splitter).getWidth();
@@ -867,7 +878,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
     private void handleViewActionIntent() {
         acquireStartupWakeLock();
-
         if (isSideReading) {
             quitSideReadingMode();
         }
@@ -878,6 +888,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             return;
         }
         final String path = FileUtils.getRealFilePathFromUri(this, getIntent().getData());
+
         final LoadDocumentOptionsRequest loadDocumentOptionsRequest = new LoadDocumentOptionsRequest(path,
                 null);
         DataManager dataProvider = new DataManager();
@@ -1043,7 +1054,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         final int gravity = getTabWindowGravity(tab);
         final int width = getTabWindowWidth(tab);
         final int height = getTabWindowHeight(tab);
-
         ReaderTabActivityManager.updateTabWindow(this, tabManager, tab,
                 gravity, width, height);
     }
