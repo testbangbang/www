@@ -12,4 +12,5 @@
     </string>
     <string name="exit_confirm">Exit Monitor?</string>
     <string name="full_refresh_interval_time">Full Refresh interval time(m)</string>
+    <string name="charge_remind_message">Monitor more power consumption, it is recommended to use ac charging!</string>
 </resources>

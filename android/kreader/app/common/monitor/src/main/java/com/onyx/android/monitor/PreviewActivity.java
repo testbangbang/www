@@ -59,7 +59,7 @@ public class PreviewActivity extends Activity {
     }
 
     private void acquireWakelock() {
-        wakeLockHolder.acquireWakeLock(this, WakeLockHolder.WAKEUP_FLAGS | WakeLockHolder.ON_AFTER_RELEASE, TAG);
+        wakeLockHolder.acquireWakeLock(this, WakeLockHolder.WAKEUP_FLAGS | WakeLockHolder.ON_AFTER_RELEASE, "OnyxMonitorPreviewActivity");
     }
 
     private void releaseWakelock() {
