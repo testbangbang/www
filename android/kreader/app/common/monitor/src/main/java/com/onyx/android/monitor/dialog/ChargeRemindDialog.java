@@ -3,8 +3,11 @@ package com.onyx.android.monitor.dialog;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
+import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.databinding.repacked.org.antlr.v4.automata.ATNFactory;
 import android.os.Bundle;
+import android.os.Handler;
 
 import com.onyx.android.monitor.R;
 
@@ -32,5 +35,16 @@ public class ChargeRemindDialog extends DialogFragment {
                             }
                         })
                 .create();
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        super.show(manager, tag);
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                dismiss();
+            }
+        }, 5000);
     }
 }
