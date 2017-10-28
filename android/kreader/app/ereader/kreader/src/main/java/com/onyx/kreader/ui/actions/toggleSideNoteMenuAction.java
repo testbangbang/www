@@ -18,6 +18,9 @@ import java.util.List;
 public class toggleSideNoteMenuAction extends BaseAction {
     public static final String TAG = toggleSideNoteMenuAction.class.getSimpleName();
     private boolean supportScale = false;
+    private ViewGroup parent;
+    private static List<Integer> menuIdList = new ArrayList<>();
+    private MenuManager menuManager;
 
     public toggleSideNoteMenuAction(MenuManager menuManager, ViewGroup parent, boolean supportScale) {
         this.parent = parent;
@@ -25,18 +28,14 @@ public class toggleSideNoteMenuAction extends BaseAction {
         this.supportScale = supportScale;
     }
 
-    private ViewGroup parent;
-    private static List<Integer> menuIdList = new ArrayList<>();
-    private MenuManager menuManager;
-
-
     @Override
     public void execute(ReaderDataHolder readerDataHolder, final BaseCallback callback) {
-        if (menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing()) {
+        if (menuManager.isMainMenuShown()) {
             menuManager.removeMainMenu(parent);
         } else {
             initMenu(readerDataHolder);
         }
+        BaseCallback.invoke(callback, null, null);
     }
 
     private List<Integer> getIDList() {

@@ -180,10 +180,34 @@ public class SideNoteHandler extends BaseHandler {
         return getParent().getReaderDataHolder().getDisplayWidth() / 2;
     }
 
-    private void toggleSideNoteMenu(ReaderDataHolder readerDataHolder) {
+    private void toggleSideNoteMenu(final ReaderDataHolder readerDataHolder) {
+        if (menuManager.isMainMenuShown()) {
+            hideSideNoteMenu(readerDataHolder);
+        } else {
+            showSideNoteMenu(readerDataHolder);
+        }
+    }
+
+    private void showSideNoteMenu(final ReaderDataHolder readerDataHolder) {
+        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+        flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new toggleSideNoteMenuAction(menuManager,
+                        ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
+                        execute(readerDataHolder, null);
+            }});
+    }
+
+    private void hideSideNoteMenu(final ReaderDataHolder readerDataHolder) {
         new toggleSideNoteMenuAction(menuManager,
-                ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
-                execute(readerDataHolder, null);
+            ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
+            execute(readerDataHolder, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
+                }
+            });
     }
 
     @Subscribe
