@@ -32,6 +32,8 @@ import static com.onyx.android.sdk.utils.TestUtils.randomStringList;
 
 /**
  * Created by john on 29/10/2017.
+ * adb shell pm grant com.onyx.android.sdk.dataprovider.test android.permission.WRITE_EXTERNAL_STORAGE
+ * adb shell pm grant com.onyx.android.sdk.dataprovider.test android.permission.READ_EXTERNAL_STORAGE
  */
 
 public class RxMetadataTest  extends ApplicationTestCase<Application> {
@@ -116,7 +118,8 @@ public class RxMetadataTest  extends ApplicationTestCase<Application> {
     }
 
     public static String testFolder() {
-        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        return path;
     }
 
     public DataProviderBase getProviderBaseAndClearTable() {
@@ -144,6 +147,16 @@ public class RxMetadataTest  extends ApplicationTestCase<Application> {
         dataProvider.removeMetadata(getContext(), origin);
         final Metadata anotherResult = dataProvider.findMetadataByHashTag(getContext(), origin.getNativeAbsolutePath(), origin.getHashTag());
         assertFalse(anotherResult.hasValidId());
+    }
+
+    public void testMetadataSave2() {
+        init();
+        DataProviderBase dataProvider = getProviderBaseAndClearTable();
+
+        List<String> authors = randomStringList();
+        Metadata origin = randomMetadata(testFolder(), true);
+        origin.setAuthors(StringUtils.join(authors, Metadata.DELIMITER));
+        dataProvider.saveMetadata(getContext(), origin);
     }
 
     private void awaitCountDownLatch(CountDownLatch countDownLatch) {

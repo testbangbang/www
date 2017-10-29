@@ -26,33 +26,32 @@ import io.reactivex.Observable;
  * Created by john on 29/10/2017.
  */
 
-public class RxMetadataRequest extends RxRequest {
+public class RxMetadataRequest extends RxBaseDataRequest {
 
     private HashSet<String> pathList = new HashSet<>();
     private List<Metadata> list = new ArrayList<>();
     private QueryArgs queryArgs;
     private long count;
-    private DataManager dataManager;
 
     private boolean loadThumbnail = false;
     private Map<String, CloseableReference<Bitmap>> thumbnailBitmap = new HashMap<>();
 
     public RxMetadataRequest(final DataManager dataManager, QueryArgs queryArgs) {
-        this.dataManager = dataManager;
+        super(dataManager);
         this.queryArgs = queryArgs;
     }
 
     public RxMetadataRequest(final DataManager dataManager, QueryArgs queryArgs, boolean loadThumbnail) {
-        this.dataManager = dataManager;
+        super(dataManager);
         this.queryArgs = queryArgs;
         this.loadThumbnail = loadThumbnail;
     }
 
     @Override
     public RxMetadataRequest call() throws Exception {
-        count = dataManager.getRemoteContentProvider().count(getContext(), queryArgs);
-        list.addAll(dataManager.getRemoteContentProvider().findMetadataByQueryArgs(getContext(), queryArgs));
-        loadThumbnails(getContext(), dataManager);
+        count = getDataManager().getRemoteContentProvider().count(getContext(), queryArgs);
+        list.addAll(getDataManager().getRemoteContentProvider().findMetadataByQueryArgs(getContext(), queryArgs));
+        loadThumbnails(getContext(), getDataManager());
         loadPathList();
         return this;
     }
