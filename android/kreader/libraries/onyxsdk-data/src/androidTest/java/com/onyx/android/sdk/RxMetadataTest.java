@@ -169,8 +169,8 @@ public class RxMetadataTest  extends ApplicationTestCase<Application> {
 
     public void testRxMetadataRequest() {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-
         DataManager dataManager = new DataManager();
+
         QueryArgs args = QueryBuilder.libraryAllBookQuery(null, SortBy.CreationTime, SortOrder.Desc);
         RxMetadataRequest request = new RxMetadataRequest(dataManager, args, false);
         request.execute(new RxCallback<RxMetadataRequest>() {

@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import io.reactivex.Observable;
 
 /**
  * Created by john on 29/10/2017.
@@ -49,9 +48,9 @@ public class RxMetadataRequest extends RxBaseDataRequest {
 
     @Override
     public RxMetadataRequest call() throws Exception {
-        count = getDataManager().getRemoteContentProvider().count(getContext(), queryArgs);
-        list.addAll(getDataManager().getRemoteContentProvider().findMetadataByQueryArgs(getContext(), queryArgs));
-        loadThumbnails(getContext(), getDataManager());
+        count = getDataManager().getRemoteContentProvider().count(getAppContext(), queryArgs);
+        list.addAll(getDataManager().getRemoteContentProvider().findMetadataByQueryArgs(getAppContext(), queryArgs));
+        loadThumbnails(getAppContext(), getDataManager());
         loadPathList();
         return this;
     }

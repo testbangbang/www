@@ -83,9 +83,13 @@ public abstract class RxRequest<T extends RxRequest> implements Callable<T> {
         RxRequest.appContext = appContext.getApplicationContext();
     }
 
+    public Context getAppContext() {
+        return appContext;
+    }
+
     public void acquireWakeLock() {
         if (enableWakeLock) {
-            getWakeLockHolder().acquireWakeLock(getContext(), getClass().getSimpleName());
+            getWakeLockHolder().acquireWakeLock(getAppContext(), getClass().getSimpleName());
         }
     }
 
@@ -100,10 +104,6 @@ public abstract class RxRequest<T extends RxRequest> implements Callable<T> {
             wakeLockHolder = new WakeLockHolder();
         }
         return wakeLockHolder;
-    }
-
-    public Context getContext() {
-        return appContext;
     }
 
     public void setEnableWakeLock(boolean enableWakeLock) {
