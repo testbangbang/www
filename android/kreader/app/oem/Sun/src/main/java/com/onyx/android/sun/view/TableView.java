@@ -154,7 +154,7 @@ public class TableView extends View {
 
         for (int i = 0; i < rowCount + 1; i++) {
             if(rowTypes != null && rowTypes.size() > 0){
-                if(i > 1 && i <= rowCount){
+                if(i > 1 && i <= rowCount - 1){
 
                     int rowType = 1;
                     try {

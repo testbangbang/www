@@ -134,4 +134,10 @@
     <string name="change_password_final_password_title">再次输入新密码 :</string>
     <string name="change_password_passwords_match_error">两次新密码不匹配</string>
     <string name="change_password_success_tips">修改密码成功</string>
+    <string name="study_report_fragment_head_Knowledge_point">知识点</string>
+    <string name="study_report_fragment_head_practice_number">题号</string>
+    <string name="study_report_fragment_head_total_points">总分</string>
+    <string name="study_report_fragment_head_personal_score">个人得分</string>
+    <string name="study_report_fragment_head_class_average">班均</string>
+    <string name="study_report_fragment_head_progress">知识达成度</string>
 </resources>

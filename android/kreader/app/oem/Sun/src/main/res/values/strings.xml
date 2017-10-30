@@ -135,4 +135,10 @@
     <string name="change_password_final_password_title">Enter the new password again :</string>
     <string name="change_password_passwords_match_error">Two new passwords do not match</string>
     <string name="change_password_success_tips">Change password success</string>
+    <string name="study_report_fragment_head_Knowledge_point">Knowledge Point</string>
+    <string name="study_report_fragment_head_practice_number">Practice Number</string>
+    <string name="study_report_fragment_head_total_points">Total Points</string>
+    <string name="study_report_fragment_head_personal_score">Personal Score</string>
+    <string name="study_report_fragment_head_class_average">Class Average</string>
+    <string name="study_report_fragment_head_progress">Progress</string>
 </resources>

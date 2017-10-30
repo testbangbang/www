@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
@@ -29,37 +30,27 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     private HomeworkPresenter homeworkPresenter;
     private FragmentStudyReportBinding studyReportBinding;
+    String[] heads = new String[]{SunApplication.getInstance().getString(R.string.study_report_fragment_head_Knowledge_point), SunApplication.getInstance().getString(R.string.study_report_fragment_head_practice_number), SunApplication.getInstance().getString(R.string.study_report_fragment_head_total_points),SunApplication.getInstance().getString(R.string.study_report_fragment_head_personal_score),SunApplication.getInstance().getString(R.string.study_report_fragment_head_class_average),SunApplication.getInstance().getString(R.string.study_report_fragment_head_progress)};
 
     @Override
     protected void loadData() {
+
         StudyReportDetailBean.CompetenceBean[] competenceBeans = new StudyReportDetailBean.CompetenceBean[5];
-        float[] scoresClass = new float[competenceBeans.length];
-        float[] scoresOwn = new float[competenceBeans.length];
 
         for (int i = 0; i < 5 ; i++) {
             StudyReportDetailBean.CompetenceBean competenceBean= new StudyReportDetailBean.CompetenceBean();
             competenceBean.name = "第"+ (i+1) + "项";
             StudyReportDetailBean.CompetenceBean.PointsBean pointBean = new StudyReportDetailBean.CompetenceBean.PointsBean();
             pointBean.classX = i+6;
-            scoresClass[i] = pointBean.classX;
             pointBean.own = i+2;
-            scoresOwn[i] = pointBean.own;
             competenceBean.points = pointBean ;
             competenceBeans[i] = competenceBean;
         }
 
-        studyReportBinding.spiderWebScoreView.setScores(10f,scoresOwn,scoresClass);
-
-        for(StudyReportDetailBean.CompetenceBean competenceBean : competenceBeans){
-            TextView nameTextView = new TextView(getActivity());
-            nameTextView.setText(competenceBean.name);
-            studyReportBinding.circularLayout.addView(nameTextView);
-        }
+        setSpiderWebViewScoresData(competenceBeans);
 
         ArrayList<StudyReportDetailBean.DataBean> dataList = new ArrayList<>();
-
         String[] kns= new String[]{"立体几何","函数","集合与常用逻辑用语","常用逻辑用语常用逻辑用语常用逻辑用语","平面向量","概率"};
-        String[] heads = new String[]{"知识点", "题号", "总分","个人得分","班均","知识达成度"};
 
         for (int i = 0; i < 6; i++) {
             StudyReportDetailBean.DataBean bean = new StudyReportDetailBean.DataBean();
@@ -119,20 +110,30 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
             dataList.add(bean);
 
-        }//2.0.1.3.0.0.1.1.1
+        }
 
-/*        studyReportBinding.tableView.clearTableContents()
-                 .setRowTypes(new int[]{2,0,1,3,0,0,1})
-                .setHeader(heads)
-                .addContent("立体几何", "1", "20","16","14.25","3%")
-                .addContent("立体几何", "3", "12","10","8.88","3%")
-                .addContent("函数", "4", "12","10","8.88","30%")
-                .addContent("概率", "8", "10","15","5.08","2%")
-                .addContent("概率", "6", "12","10","8.88","2%")
-                .addContent("概率", "7", "12","10","8.88","2%")
-                .addContent("平面向量", "13", "12","10","8.88","15%")
-                .refreshTable();*/
+        setTableData(dataList, heads);
+    }
 
+    private void setSpiderWebViewScoresData(StudyReportDetailBean.CompetenceBean[] competenceBeans) {
+        float[] scoresClass = new float[competenceBeans.length];
+        float[] scoresOwn = new float[competenceBeans.length];
+
+        for (int i = 0; i < competenceBeans.length; i++) {
+            StudyReportDetailBean.CompetenceBean competenceBean = competenceBeans[i];
+            scoresClass[i] = competenceBean.points.classX;
+            scoresOwn[i] = competenceBean.points.own;
+
+            TextView nameTextView = new TextView(getActivity());
+            nameTextView.setText(competenceBean.name);
+            studyReportBinding.circularLayout.addView(nameTextView);
+        }
+
+        studyReportBinding.spiderWebScoreView.setScores(10f,scoresOwn,scoresClass);
+
+    }
+
+    private void setTableData(ArrayList<StudyReportDetailBean.DataBean> dataList, String[] heads) {
         ArrayList<Integer> rowTypes = new ArrayList();
         TableView tableView = studyReportBinding.tableView.clearTableContents().setHeader(heads);
 
@@ -208,6 +209,8 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
     @Override
     public void setStudyReportDetail(StudyReportDetailBean data) {
 //        CommonNotices.show(data.toString());
+        setSpiderWebViewScoresData(data.competence.toArray(new StudyReportDetailBean.CompetenceBean[data.competence.size()]));
+        setTableData((ArrayList<StudyReportDetailBean.DataBean>) data.data,heads);
     }
 
     public void setPracticeId(int id) {
