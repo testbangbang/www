@@ -334,7 +334,7 @@
   <string name="dialog_tab_host_menu_open_doc">打开选中文档</string>
   <string name="settings_show_side_note_indicator_title">显示旁注标记</string>
 
-  <string name="setting_keycode_page_down_title" >向前翻页键</string>
-  <string name="setting_keycode_page_up_title" >向后翻页键</string>
+  <string name="setting_keycode_page_down_title" >向后翻页键</string>
+  <string name="setting_keycode_page_up_title" >向前翻页键</string>
 
 </resources>
