@@ -58,7 +58,7 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
         ArrayList<StudyReportDetailBean.DataBean> dataList = new ArrayList<>();
 
-        String[] kns= new String[]{"立体几何","函数","集合与常用逻辑用语","常用逻辑用语","平面向量","概率"};
+        String[] kns= new String[]{"立体几何","函数","集合与常用逻辑用语","常用逻辑用语常用逻辑用语常用逻辑用语","平面向量","概率"};
         String[] heads = new String[]{"知识点", "题号", "总分","个人得分","班均","知识达成度"};
 
         for (int i = 0; i < 6; i++) {

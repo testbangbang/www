@@ -178,7 +178,7 @@
                 app:headerColor="#666666"
                 app:headerTextColor="#ffffff"
                 app:headerTextSize="18dp"
-                app:rowHeight="36dp"
+                app:rowHeight="50dp"
                 app:textColor="#666666"
                 app:textSize="14dp"/>
 

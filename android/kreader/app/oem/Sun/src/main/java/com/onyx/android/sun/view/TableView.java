@@ -62,7 +62,7 @@ public class TableView extends View {
         if (attrs != null) {
             TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.TableView);
             unitColumnWidth = typedArray.getDimensionPixelSize(R.styleable.TableView_unitColumnWidth, 0);
-            rowHeight = typedArray.getDimensionPixelSize(R.styleable.TableView_rowHeight, DimenUtils.dip2px(getContext(), 36));
+            rowHeight = typedArray.getDimensionPixelSize(R.styleable.TableView_rowHeight, DimenUtils.dip2px(getContext(), 40));
             dividerWidth = typedArray.getDimensionPixelSize(R.styleable.TableView_dividerWidth, 1);
             dividerColor = typedArray.getColor(R.styleable.TableView_dividerColor, Color.parseColor("#E1E1E1"));
             textSize = typedArray.getDimensionPixelSize(R.styleable.TableView_textSize, DimenUtils.dip2px(getContext(), 10));
@@ -73,7 +73,7 @@ public class TableView extends View {
             typedArray.recycle();
         } else {
             unitColumnWidth = 0;
-            rowHeight = DimenUtils.dip2px(getContext(), 36);
+            rowHeight = DimenUtils.dip2px(getContext(), 40);
             dividerWidth = 1;
             dividerColor = Color.parseColor("#E1E1E1");
             textSize = DimenUtils.dip2px(getContext(), 10);
@@ -187,10 +187,29 @@ public class TableView extends View {
                 if (rowContent.length > j) {
                     int rowWeight = getRowWeight(i,j);
                     if (rowWeight != 0){
-                        canvas.drawText(rowContent[j],
-                                columnLefts[j] + columnWidths[j] / 2,
-                                getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight),
-                                paint);
+                        if (rowContent[j].length() < 9){
+                            canvas.drawText(rowContent[j],
+                                    columnLefts[j] + columnWidths[j] / 2,
+                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight),
+                                    paint);
+                        }else {
+                            String content1 = rowContent[j].substring(0,rowContent[j].length()/2);
+                            String content2 = rowContent[j].substring(rowContent[j].length()/2);
+
+                            Paint.FontMetrics fontMetrics = paint.getFontMetrics();
+                            float fontSize = (fontMetrics.bottom - fontMetrics.top) / 2;
+
+                            canvas.drawText(content1,
+                                    columnLefts[j] + columnWidths[j] / 2,
+                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight) - fontSize,
+                                    paint);
+
+                            canvas.drawText(content2,
+                                    columnLefts[j] + columnWidths[j] / 2,
+                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight) + fontSize,
+                                    paint);
+
+                        }
                     }
                 }
             }
