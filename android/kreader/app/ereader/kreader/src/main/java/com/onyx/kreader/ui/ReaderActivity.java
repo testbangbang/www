@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -174,6 +175,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onResume() {
+        Log.e("TAG", "onResume: ");
         super.onResume();
         afterResume();
     }
@@ -208,7 +210,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             flushNoteAction.setPauseNote(true);
             flushNoteAction.execute(getReaderDataHolder(), null);
         }
-
+        Log.e("TAG", "onPause: ");
         getReaderDataHolder().onActivityPause();
         super.onPause();
     }
@@ -614,7 +616,10 @@ public class ReaderActivity extends OnyxBaseActivity {
             FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getReaderDataHolder().getVisiblePages());
             flushNoteAction.execute(getReaderDataHolder(), null);
         } else {
-            new ResumeDrawingAction(getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
+            if (!getReaderDataHolder().isSideNoteMenuShowing()) {
+                new ResumeDrawingAction(
+                        getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
+            }
         }
         enableShortcut(!event.isUiOpen());
     }

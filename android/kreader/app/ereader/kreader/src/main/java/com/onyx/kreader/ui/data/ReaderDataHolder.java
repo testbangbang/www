@@ -18,22 +18,23 @@ import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.DocumentInfo;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
-import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
-import com.onyx.android.sdk.reader.host.request.StartSideNodeRequest;
-import com.onyx.android.sdk.reader.host.request.StopSideNodeRequest;
-import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.reader.common.BaseReaderRequest;
 import com.onyx.android.sdk.reader.common.ReaderUserDataInfo;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.request.ChangeViewConfigRequest;
 import com.onyx.android.sdk.reader.host.request.CloseRequest;
 import com.onyx.android.sdk.reader.host.request.PreRenderRequest;
 import com.onyx.android.sdk.reader.host.request.RenderRequest;
 import com.onyx.android.sdk.reader.host.request.SaveDocumentOptionsRequest;
+import com.onyx.android.sdk.reader.host.request.StartSideNodeRequest;
+import com.onyx.android.sdk.reader.host.request.StopSideNodeRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
 import com.onyx.android.sdk.reader.host.wrapper.ReaderManager;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.actions.CloseNoteMenuAction;
@@ -43,11 +44,35 @@ import com.onyx.kreader.ui.ReaderBroadcastReceiver;
 import com.onyx.kreader.ui.ReaderPainter;
 import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
+import com.onyx.kreader.ui.events.ActivityPauseEvent;
+import com.onyx.kreader.ui.events.ActivityResumeEvent;
+import com.onyx.kreader.ui.events.AnnotationEvent;
+import com.onyx.kreader.ui.events.ChangeEpdUpdateModeEvent;
+import com.onyx.kreader.ui.events.DictionaryLookupEvent;
+import com.onyx.kreader.ui.events.DocumentCloseEvent;
+import com.onyx.kreader.ui.events.DocumentFinishEvent;
+import com.onyx.kreader.ui.events.DocumentInitRenderedEvent;
+import com.onyx.kreader.ui.events.DocumentOpenEvent;
+import com.onyx.kreader.ui.events.EventReceiver;
+import com.onyx.kreader.ui.events.HomeClickEvent;
+import com.onyx.kreader.ui.events.LayoutChangeEvent;
+import com.onyx.kreader.ui.events.NetworkChangedEvent;
+import com.onyx.kreader.ui.events.PageChangedEvent;
+import com.onyx.kreader.ui.events.PinchZoomEvent;
+import com.onyx.kreader.ui.events.RequestFinishEvent;
+import com.onyx.kreader.ui.events.ResetEpdUpdateModeEvent;
+import com.onyx.kreader.ui.events.ShowReaderSettingsEvent;
+import com.onyx.kreader.ui.events.SlideshowStartEvent;
+import com.onyx.kreader.ui.events.SystemUIChangedEvent;
 import com.onyx.kreader.ui.events.TextSelectionEvent;
-import com.onyx.kreader.ui.events.*;
+import com.onyx.kreader.ui.events.TtsErrorEvent;
+import com.onyx.kreader.ui.events.TtsRequestSentenceEvent;
+import com.onyx.kreader.ui.events.TtsStateChangedEvent;
+import com.onyx.kreader.ui.events.UpdateSlideshowEvent;
 import com.onyx.kreader.ui.handler.HandlerManager;
+import com.onyx.kreader.ui.handler.SideNoteHandler;
 import com.onyx.kreader.ui.highlight.ReaderSelectionManager;
-import com.onyx.android.sdk.reader.utils.PagePositionUtils;
+
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
@@ -235,6 +260,10 @@ public class ReaderDataHolder {
 
     public boolean inReadingProvider() {
         return getHandlerManager().getActiveProviderName().equals(HandlerManager.READING_PROVIDER);
+    }
+
+    public boolean isSideNoteProvider() {
+        return getHandlerManager().getActiveProviderName().equals(HandlerManager.SIDE_NOTE_PROVIDER);
     }
 
     public boolean isNoteDirty() {
@@ -870,6 +899,11 @@ public class ReaderDataHolder {
 
     public void enterSlideshow() {
         getEventBus().post(new SlideshowStartEvent());
+    }
+
+
+    public boolean isSideNoteMenuShowing() {
+        return isSideNoteProvider() && ((SideNoteHandler) getHandlerManager().getActiveProvider()).isSideNoteMenuShowing();
     }
 }
 

@@ -59,7 +59,7 @@ public class SideNoteHandler extends BaseHandler {
             readerDataHolder.getEventBus().post(new ChangeOrientationEvent(readerDataHolder.getOrientationBeforeSideNote()));
             readerDataHolder.setOrientationBeforeSideNote(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
         }
-        if (menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing()) {
+        if (isSideNoteMenuShowing()) {
             toggleSideNoteMenu(readerDataHolder);
         }
         readerDataHolder.getEventBus().unregister(this);
@@ -247,5 +247,9 @@ public class SideNoteHandler extends BaseHandler {
                         new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
                     }
                 });
+    }
+
+    public boolean isSideNoteMenuShowing(){
+       return menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing();
     }
 }
