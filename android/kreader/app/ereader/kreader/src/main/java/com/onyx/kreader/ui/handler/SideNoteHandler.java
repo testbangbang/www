@@ -33,10 +33,17 @@ import org.greenrobot.eventbus.Subscribe;
 public class SideNoteHandler extends BaseHandler {
     private static final String TAG = SideNoteHandler.class.getSimpleName();
     private MenuManager menuManager;
+    private BaseCallback resumeDrawingCallBack;
 
     public SideNoteHandler(HandlerManager p) {
         super(p);
         menuManager = new MenuManager();
+        resumeDrawingCallBack = new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
+            }
+        };
     }
 
     private boolean isEnableBigPen() {
@@ -195,53 +202,59 @@ public class SideNoteHandler extends BaseHandler {
             public void done(BaseRequest request, Throwable e) {
                 new ToggleSideNoteMenuAction(menuManager,
                         ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
-                        execute(readerDataHolder, new BaseCallback() {
-                            @Override
-                            public void done(BaseRequest request, Throwable e) {
-                                new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
-                            }
-                        });
+                        execute(readerDataHolder, resumeDrawingCallBack);
             }
         });
     }
 
     private void hideSideNoteMenu(final ReaderDataHolder readerDataHolder) {
         new ToggleSideNoteMenuAction(menuManager,
-            ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
-            execute(readerDataHolder, new BaseCallback() {
-                @Override
-                public void done(BaseRequest request, Throwable e) {
-                    new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
-                }
-            });
+                ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
+                execute(readerDataHolder, resumeDrawingCallBack);
     }
 
     @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
         ReaderMenuAction menuAction = ReaderMenuAction.valueOf(event.getMenuId());
+        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+        BaseCallback menuActionCallback = null;
         switch (menuAction) {
             case ZOOM_IN:
-                final ChangeScaleWithDeltaAction scaleUpAction = new ChangeScaleWithDeltaAction(0.1f);
-                scaleUpAction.execute(getParent().getReaderDataHolder(), null);
+                menuActionCallback = new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        final ChangeScaleWithDeltaAction scaleUpAction = new ChangeScaleWithDeltaAction(0.1f);
+                        scaleUpAction.execute(getParent().getReaderDataHolder(), resumeDrawingCallBack);
+                    }
+                };
                 break;
             case ZOOM_OUT:
-                final ChangeScaleWithDeltaAction scaleDownAction = new ChangeScaleWithDeltaAction(-0.1f);
-                scaleDownAction.execute(getParent().getReaderDataHolder(), null);
+                menuActionCallback = new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        final ChangeScaleWithDeltaAction scaleDownAction = new ChangeScaleWithDeltaAction(-0.1f);
+                        scaleDownAction.execute(getParent().getReaderDataHolder(), resumeDrawingCallBack);
+                    }
+                };
                 break;
             case ZOOM_BY_CROP_PAGE:
-                final ScaleToPageCropRequest request = new ScaleToPageCropRequest(getParent().getReaderDataHolder().getCurrentPageName());
-                getParent().getReaderDataHolder().submitRenderRequest(request);
+                menuActionCallback = new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        final ScaleToPageCropRequest scaleToPageCropRequest = new ScaleToPageCropRequest(getParent().getReaderDataHolder().getCurrentPageName());
+                        getParent().getReaderDataHolder().submitRenderRequest(scaleToPageCropRequest, resumeDrawingCallBack);
+                    }
+                };
                 break;
             case GOTO_PAGE:
-                FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
-                flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
+                menuActionCallback = new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         showDialogGoToPage();
                     }
-                });
-                break;
+                };
         }
+        flushNoteAction.execute(getParent().getReaderDataHolder(), menuActionCallback);
     }
 
     private void showDialogGoToPage() {
