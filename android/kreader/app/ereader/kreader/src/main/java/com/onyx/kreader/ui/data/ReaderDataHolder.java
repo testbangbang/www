@@ -195,6 +195,8 @@ public class ReaderDataHolder {
             subNotePage.setScale(scale);
             subNotePage.updateDisplayRect(pageRect);
 
+            PageUtils.updateVisibleRect(subNotePage, viewportRect);
+
             subNotePage.setSubPage(getSubPageIndex());
             pages.add(subNotePage);
         }

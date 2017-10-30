@@ -459,6 +459,7 @@ public class PageManager {
             if (RectF.intersects(viewportRect, pageInfo.getPositionRect())) {
                 visible.add(pageInfo);
                 PageUtils.updateDisplayRect(pageInfo, viewportRect);
+                PageUtils.updateVisibleRect(pageInfo, viewportRect);
                 found = true;
             } else if (found) {
                 break;

@@ -299,6 +299,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             quitSideReadingMode();
         }
 
+        // bring self to front before close, so we can hide the intermediate process of closing reader tabs
+        bringSelfToFront();
+
         // move background reader tabs to back first, so we can avoid unintended screen update
         ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
 
