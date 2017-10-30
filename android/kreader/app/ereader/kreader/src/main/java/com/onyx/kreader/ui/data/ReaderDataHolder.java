@@ -220,6 +220,8 @@ public class ReaderDataHolder {
             subNotePage.setScale(scale);
             subNotePage.updateDisplayRect(pageRect);
 
+            PageUtils.updateVisibleRect(subNotePage, viewportRect);
+
             subNotePage.setSubPage(getSubPageIndex());
             pages.add(subNotePage);
         }
@@ -305,6 +307,14 @@ public class ReaderDataHolder {
     public void setDisplaySize(int width, int height) {
         displayWidth = width;
         displayHeight = height;
+    }
+
+    public int getDocumentViewportWidth() {
+        return sideNoting ? displayWidth / 2 : displayWidth;
+    }
+
+    public int getDocumentViewportHeight() {
+        return displayHeight;
     }
 
     public boolean canCurrentPageScaleDown() {

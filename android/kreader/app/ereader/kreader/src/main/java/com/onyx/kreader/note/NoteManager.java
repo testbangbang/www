@@ -438,7 +438,7 @@ public class NoteManager {
             if (isSideNoting() && !isSidePage(page)) {
                 continue;
             }
-            Rect r = RectUtils.toRect(page.getDisplayRect());
+            Rect r = RectUtils.toRect(page.getVisibleRect());
             if (visibleDrawRect != null) {
                 r.intersect(visibleDrawRect);
             }
