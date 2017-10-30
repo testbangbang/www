@@ -11,9 +11,9 @@ import android.widget.TextView;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.ProductBean;
 import com.onyx.android.dr.bean.SearchResultBean;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.BookDetailEvent;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -183,7 +183,7 @@ public class SearchResultListAdapter extends PageRecyclerView.PageAdapter<Search
         if (!file.exists()) {
             return;
         }
-        ActivityManager.openBook(DRApplication.getInstance(), book, path);
+        ActivityManager.openBook(DRApplication.getInstance(), book, path, Constants.OTHER_SOURCE_TAG);
     }
 
     private String getDataSaveFilePath(Metadata book) {

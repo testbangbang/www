@@ -13,9 +13,9 @@
 
         <SurfaceView
             android:id="@+id/surface_view"
-            android:layout_gravity="left"
             android:layout_width="match_parent"
             android:layout_height="0dp"
+            android:layout_gravity="left"
             android:layout_weight="1" />
 
         <RelativeLayout

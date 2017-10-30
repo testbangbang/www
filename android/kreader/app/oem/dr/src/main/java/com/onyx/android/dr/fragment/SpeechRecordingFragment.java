@@ -46,7 +46,7 @@ public class SpeechRecordingFragment extends BaseFragment implements SpeechRecor
     private List<CreateInformalEssayBean> informalEssayList;
     private List<InformalEssayEntity> informalEssayKeywordList;
     private int jumpSource = 0;
-    private String offset = "1";
+    private String offset = "0";
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";

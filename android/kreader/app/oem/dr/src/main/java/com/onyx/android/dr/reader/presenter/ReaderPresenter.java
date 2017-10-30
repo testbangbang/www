@@ -222,7 +222,7 @@ public class ReaderPresenter {
         saveReaderUserDataInfo(request);
         readerView.updatePage(getReader().getViewportBitmap().getBitmap());
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
-            //getEventBus().post(new LayoutChangeEvent());
+//            getEventBus().post(new LayoutChangeEvent());
         }
     }
 

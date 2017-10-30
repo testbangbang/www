@@ -166,7 +166,11 @@ public class WifiActivity extends Activity implements View.OnClickListener {
                     if (accessPoint.getWifiInfo() != null) {
                         showConnectDialog(accessPoint);
                     } else if (accessPoint.getWifiConfiguration() == null) {
-                        showLoginDialog(accessPoint);
+                        if (accessPoint.getSecurity() == 0) {
+                            wifiAdmin.connectWifi(accessPoint);
+                        } else {
+                            showLoginDialog(accessPoint);
+                        }
                     } else {
                         showSaveDialog(accessPoint);
                     }

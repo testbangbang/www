@@ -183,7 +183,7 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
         if (dictData == null || dictData.size() <= 0) {
             return;
         }
-        intContainerVisible(tag);
+        intContainerVisible(dictData);
         languageQueryTypeAdapter.setMenuDatas(dictData);
         languageQueryTypeAdapter.notifyDataSetChanged();
     }
@@ -203,16 +203,16 @@ public class DictQueryActivity extends BaseActivity implements DictResultShowVie
             dictPresenter.loadData(this);
             dictPresenter.loadDictType(Constants.ACCOUNT_TYPE_DICT_LANGUAGE);
         } else {
-            intContainerVisible(tag);
+            intContainerVisible(dictLanguageData);
             languageQueryTypeAdapter.setMenuDatas(dictLanguageData);
             languageQueryTypeAdapter.notifyDataSetChanged();
         }
     }
 
-    public void intContainerVisible(boolean tag) {
+    public void intContainerVisible( List<DictTypeBean> dataList) {
         int type;
         if(tag){
-            type = dictLanguageData.get(0).getType();
+            type = dataList.get(0).getType();
         }else {
             type = dictType;
         }

@@ -122,6 +122,7 @@ public class ReaderUtil {
             intent.putExtra(ReaderConstants.BOOK_NAME, openBookParam.getBookName());
             intent.putExtra(ReaderConstants.BOOK_PASSWORD, openBookParam.getPassword());
             intent.putExtra(ReaderConstants.IS_FLUENT, openBookParam.isFluent());
+            intent.putExtra(ReaderConstants.ANNOTATION, openBookParam.getType());
             Uri uri = Uri.fromFile(new File(openBookParam.getLocalPath()));
             intent.setDataAndType(uri, "application/JEB");
             context.startActivity(intent);

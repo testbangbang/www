@@ -60,7 +60,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
     private GroupMemberPresenter groupMemberManagePresenter;
     private GroupMemberAdapter groupMemberAdapter;
     private List<ListBean> groupList;
-    private String offset = "1";
+    private String offset = "0";
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";

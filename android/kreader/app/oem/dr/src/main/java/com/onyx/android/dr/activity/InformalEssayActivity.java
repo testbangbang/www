@@ -67,7 +67,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private List<CreateInformalEssayBean> informalEssayList;
     private ArrayList<Boolean> listCheck;
     private PageIndicator pageIndicator;
-    private String offset = "1";
+    private String offset = "0";
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";

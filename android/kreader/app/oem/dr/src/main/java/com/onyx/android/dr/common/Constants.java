@@ -171,6 +171,9 @@ public class Constants {
     public static final int PASS_TAG = 1;
     public static final int REFUSE_TAG = 2;
 
+    public static final int ANNOTATION_SOURCE_TAG = 0;
+    public static final int OTHER_SOURCE_TAG = 1;
+
     public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
     public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";
 }

@@ -11,8 +11,10 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
@@ -33,11 +35,13 @@ import com.onyx.android.dr.manager.OperatingDataManager;
 import com.onyx.android.dr.reader.action.ShowQuickPreviewAction;
 import com.onyx.android.dr.reader.base.ReaderView;
 import com.onyx.android.dr.reader.common.ReadPageInfo;
+import com.onyx.android.dr.reader.common.ReaderBookInfoDialogConfig;
 import com.onyx.android.dr.reader.common.ReaderConstants;
-import com.onyx.android.dr.reader.common.ReaderDeviceManager;
 import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.reader.data.BookInfo;
+import com.onyx.android.dr.reader.data.ReaderDataHolder;
 import com.onyx.android.dr.reader.data.SingletonSharedPreference;
+import com.onyx.android.dr.reader.device.ReaderDeviceManager;
 import com.onyx.android.dr.reader.dialog.DialogSearch;
 import com.onyx.android.dr.reader.dialog.ReaderDialogManage;
 import com.onyx.android.dr.reader.event.ActivityPauseEvent;
@@ -47,6 +51,7 @@ import com.onyx.android.dr.reader.event.DisplayStatusBarEvent;
 import com.onyx.android.dr.reader.event.DocumentOpenEvent;
 import com.onyx.android.dr.reader.event.FinishReaderEvent;
 import com.onyx.android.dr.reader.event.GotoPageAndRedrawPageEvent;
+import com.onyx.android.dr.reader.event.LayoutChangeEvent;
 import com.onyx.android.dr.reader.event.ManagePostilDialogEvent;
 import com.onyx.android.dr.reader.event.NewFileCreatedEvent;
 import com.onyx.android.dr.reader.event.PostilManageDialogDismissEvent;
@@ -60,8 +65,12 @@ import com.onyx.android.dr.reader.event.ReaderMainMenuTopShelfEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuTopUserEvent;
 import com.onyx.android.dr.reader.event.ReaderMenuMorePressEvent;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
+import com.onyx.android.dr.reader.event.RequestFinishEvent;
 import com.onyx.android.dr.reader.event.ScreenshotsSucceedEvent;
+import com.onyx.android.dr.reader.event.ShapeRenderFinishEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
+import com.onyx.android.dr.reader.note.data.ReaderNoteDataInfo;
+import com.onyx.android.dr.reader.note.request.ReaderNoteRenderRequest;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
 import com.onyx.android.dr.reader.ui.ReaderPaint;
 import com.onyx.android.dr.reader.ui.gesture.ReaderOnGestureListener;
@@ -69,7 +78,9 @@ import com.onyx.android.dr.reader.utils.CustomFileObserver;
 import com.onyx.android.dr.reader.utils.ScreenUtil;
 import com.onyx.android.dr.reader.view.BookProgressbar;
 import com.onyx.android.dr.reader.view.CustomDialog;
+import com.onyx.android.dr.reader.view.ReaderPainter;
 import com.onyx.android.dr.receiver.NetworkConnectChangedReceiver;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.DocumentInfo;
@@ -88,6 +99,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 
 /**
  * Created by huxiaomao on 17/5/4.
@@ -115,6 +127,9 @@ public class ReaderActivity extends Activity implements ReaderView {
     private CustomFileObserver fileObserver;
     private TextView bookName;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
+    private Handler handler;
+    private ReaderDataHolder dataHolder;
+    private final ReaderPainter readerPainter = new ReaderPainter();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -164,12 +179,26 @@ public class ReaderActivity extends Activity implements ReaderView {
         String bookId = getIntent().getStringExtra(ReaderConstants.BOOK_ID);
         bookInfo.setBookId(bookId);
         isFluent = getIntent().getBooleanExtra(ReaderConstants.IS_FLUENT, false);
+        int tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
+        if (tag == Constants.ANNOTATION_SOURCE_TAG) {
+            if (handler == null) {
+                handler = new Handler();
+            }
+            handler.postDelayed(new Runnable(){
+                public void run() {
+                    progressLoading.setVisibility(View.GONE);
+                    progressLoading.setRun(false);
+                    ReaderDialogManage.onShowBookInfoDialog(readerPresenter, ReaderBookInfoDialogConfig.NOTE_MODE);
+                }
+            }, getResources().getInteger(R.integer.reading_activity_skip_annotation));
+        }
         return true;
     }
 
     public void initThirdLibrary() {
         DRApplication.getInstance().initDictDatas();
         EventBus.getDefault().register(this);
+        dataHolder = new ReaderDataHolder(this);
     }
 
     public void initData() {
@@ -202,6 +231,7 @@ public class ReaderActivity extends Activity implements ReaderView {
         readProgress = (TextView) findViewById(R.id.text_view_progress);
         bookName = (TextView) findViewById(R.id.text_view_book_name);
         progressLoading = (BookProgressbar) findViewById(R.id.progress_bar);
+        progressLoading.setVisibility(View.VISIBLE);
         initSurfaceView();
     }
 
@@ -315,6 +345,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
             case KeyEvent.KEYCODE_MENU:
+            case KeyEvent.KEYCODE_BACK:
                 finish();
                 ActivityManager.startMainActivity(this);
                 break;
@@ -349,6 +380,10 @@ public class ReaderActivity extends Activity implements ReaderView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderMainMenuTopBookStoreEvent(ReaderMainMenuTopBookStoreEvent event) {
         finish();
+    }
+
+    private final ReaderDataHolder getReaderDataHolder() {
+        return dataHolder;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -418,6 +453,132 @@ public class ReaderActivity extends Activity implements ReaderView {
                 readerPresenter.getBookOperate().redrawPage();
             }
         });
+    }
+
+    @Subscribe
+    public void onLayoutChanged(final LayoutChangeEvent event) {
+        updateNoteHostView();
+        getReaderDataHolder().updateRawEventProcessor();
+    }
+
+    @Subscribe
+    public void onRequestFinished(final RequestFinishEvent event) {
+        if (!verifyReader()) {
+            return;
+        }
+        prepareUpdateMode(event);
+
+        if (event != null && !event.isWaitForShapeData()) {
+            beforeDrawPage();
+            drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+            afterDrawPage();
+        }
+
+        if (event != null && event.isRenderShapeData()) {
+            renderShapeDataInBackground();
+        }
+    }
+
+    private boolean verifyReader() {
+        return getReaderDataHolder().isDocumentOpened();
+    }
+
+    private void beforeDrawPage() {
+        enablePost(true);
+    }
+
+    private void prepareUpdateMode(final RequestFinishEvent event) {
+        boolean update = (event != null && event.isApplyGCIntervalUpdate());
+        if (update) {
+            ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
+        } else {
+            ReaderDeviceManager.disableRegal();
+        }
+    }
+
+    private void drawPage(final Bitmap pageBitmap) {
+        Canvas canvas = holder.lockCanvas(new Rect(surfaceView.getLeft(), surfaceView.getTop(),
+                surfaceView.getRight(), surfaceView.getBottom()));
+        if (canvas == null) {
+            return;
+        }
+        try {
+            readerPainter.drawPage(this,
+                    canvas,
+                    pageBitmap,
+                    getReaderDataHolder().getReaderUserDataInfo(),
+                    getReaderDataHolder().getReaderViewInfo(),
+                    getReaderDataHolder().getSelectionManager(),
+                    getReaderDataHolder().getNoteManager());
+        } finally {
+            holder.unlockCanvasAndPost(canvas);
+        }
+    }
+
+    private void afterDrawPage() {
+        ReaderDeviceManager.cleanUpdateMode(surfaceView);
+        updateAllStatusBars();
+    }
+
+    private void updateAllStatusBars() {
+        getReaderDataHolder().notifyUpdateSlideshowStatusBar();
+    }
+
+    private void renderShapeDataInBackground() {
+        if (!getReaderDataHolder().supportScalable()) {
+            return;
+        }
+
+        final ReaderNoteRenderRequest renderRequest = new ReaderNoteRenderRequest(
+                getReaderDataHolder().getReader().getDocumentMd5(),
+                getReaderDataHolder().getReaderViewInfo().getVisiblePages(),
+                getReaderDataHolder().getDisplayRect(),
+                false);
+        int uniqueId = getReaderDataHolder().getLastRequestSequence();
+        getReaderDataHolder().getNoteManager().submitWithUniqueId(this, uniqueId, renderRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null || request.isAbort() ) {
+                    return;
+                }
+                onShapeRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
+            }
+        });
+    }
+
+    @Subscribe
+    public void onShapeRendered(final ShapeRenderFinishEvent event) {
+        final ReaderNoteDataInfo noteDataInfo = getReaderDataHolder().getNoteManager().getNoteDataInfo();
+        if (noteDataInfo == null || !noteDataInfo.isContentRendered()) {
+            return;
+        }
+        if (event.getUniqueId() < getReaderDataHolder().getLastRequestSequence()) {
+            return;
+        }
+        if (event.isUseFullUpdate()) {
+            ReaderDeviceManager.applyWithGcUpdate(getSurfaceView());
+        }
+        beforeDrawPage();
+        drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
+        if (event.isUseFullUpdate()) {
+            ReaderDeviceManager.disableRegal();
+        }
+    }
+
+    public SurfaceView getSurfaceView() {
+        return surfaceView;
+    }
+
+    private void enablePost(boolean enable) {
+        EpdController.enablePost(surfaceView, enable ? 1 : 0);
+    }
+
+    private void updateNoteHostView() {
+        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
+        final Rect visibleDrawRect = new Rect();
+        surfaceView.getLocalVisibleRect(visibleDrawRect);
+        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new ArrayList<RectF>(), rotation);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
     TextView shareToMemberCount;
     @Bind(R.id.share_to_member_recycler)
     PageRecyclerView shareToMemberRecycler;
-    private String offset = "1";
+    private String offset = "0";
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";

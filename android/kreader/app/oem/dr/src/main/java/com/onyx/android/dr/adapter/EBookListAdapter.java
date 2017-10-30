@@ -14,6 +14,7 @@ import com.liulishuo.filedownloader.BaseDownloadTask;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.AddToCartEvent;
 import com.onyx.android.dr.event.BookDetailEvent;
@@ -313,7 +314,7 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
         if (!file.exists()) {
             return;
         }
-        ActivityManager.openBook(DRApplication.getInstance(), book, path);
+        ActivityManager.openBook(DRApplication.getInstance(), book, path, Constants.OTHER_SOURCE_TAG);
     }
 
     private String getDataSaveFilePath(Metadata book) {
