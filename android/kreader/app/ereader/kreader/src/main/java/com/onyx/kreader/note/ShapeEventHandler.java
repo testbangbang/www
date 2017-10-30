@@ -74,7 +74,7 @@ public class ShapeEventHandler {
 
     private PageInfo hitTest(final float x, final float y) {
         for(PageInfo pageInfo : noteManager.getVisiblePages()) {
-            if (pageInfo.getDisplayRect().contains(x, y)) {
+            if (pageInfo.getVisibleRect().contains(x, y)) {
                 return pageInfo;
             }
         }
