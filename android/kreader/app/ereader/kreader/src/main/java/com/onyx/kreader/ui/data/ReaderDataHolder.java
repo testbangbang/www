@@ -280,6 +280,14 @@ public class ReaderDataHolder {
         displayHeight = height;
     }
 
+    public int getDocumentViewportWidth() {
+        return sideNoting ? displayWidth / 2 : displayWidth;
+    }
+
+    public int getDocumentViewportHeight() {
+        return displayHeight;
+    }
+
     public boolean canCurrentPageScaleDown() {
         final float toPageScale = PageUtils.scaleToPage(getFirstPageInfo().getOriginWidth(),
                 getFirstPageInfo().getOriginHeight(),
