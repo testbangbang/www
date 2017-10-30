@@ -13,6 +13,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.event.MoreBooksEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
 import com.onyx.android.dr.interfaces.MainFragmentView;
@@ -136,7 +137,7 @@ public class MainViewFragment extends BaseFragment implements MainFragmentView {
         if (!file.exists()) {
             return;
         }
-        ActivityManager.openBook(DRApplication.getInstance(), book, path);
+        ActivityManager.openBook(DRApplication.getInstance(), book, path, Constants.OTHER_SOURCE_TAG);
     }
 
     private String getDataSaveFilePath(Metadata book) {

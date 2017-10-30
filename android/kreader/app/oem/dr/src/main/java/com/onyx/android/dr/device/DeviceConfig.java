@@ -295,6 +295,8 @@ public class DeviceConfig {
         public static final String MENU_AFTER_READING = "menu_after_reading";
         public static final String MENU_READER_SETTING = "menu_reader_setting";
         public static final String MENU_READER_FONT = "menu_reader_font";
+        public static final String MENU_READER_FIT_PAGE = "menu_reader_fit_page";
+        public static final String MENU_READER_CROP_WIDTH = "menu_reader_crop_width";
         public static final String MENU_READER_CATALOG = "menu_reader_catalog";
         public static final String MENU_WRITE_REMARKS = "menu_write_remarks";
     }

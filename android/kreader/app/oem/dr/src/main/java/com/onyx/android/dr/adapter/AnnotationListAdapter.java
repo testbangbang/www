@@ -10,6 +10,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.AnnotationStatisticsBean;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
@@ -73,7 +74,7 @@ public class AnnotationListAdapter extends PageRecyclerView.PageAdapter<Annotati
                 statisticsBean.setChecked(isChecked);
             }
         });
-        holder.itemAnnotationBookName.setOnClickListener(new View.OnClickListener() {
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 openCloudFile(statisticsBean.getBook());
@@ -90,7 +91,7 @@ public class AnnotationListAdapter extends PageRecyclerView.PageAdapter<Annotati
         if (!file.exists()) {
             return;
         }
-        ActivityManager.openBook(DRApplication.getInstance(), book, path);
+        ActivityManager.openBook(DRApplication.getInstance(), book, path, Constants.ANNOTATION_SOURCE_TAG);
     }
 
     public void setReadAnnotationList(List<AnnotationStatisticsBean> readAnnotationList) {
@@ -113,9 +114,11 @@ public class AnnotationListAdapter extends PageRecyclerView.PageAdapter<Annotati
         TextView itemAnnotationCount;
         @Bind(R.id.item_annotation_checkbox)
         CheckBox itemAnnotationCheckbox;
+        View rootView;
 
         ViewHolder(View view) {
             super(view);
+            this.rootView = view;
             ButterKnife.bind(this, view);
         }
     }

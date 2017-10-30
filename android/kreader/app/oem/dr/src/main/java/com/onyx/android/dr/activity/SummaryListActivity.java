@@ -85,8 +85,8 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
         image.setImageResource(R.drawable.ic_read_summary);
         titleBarRightIconOne.setVisibility(View.VISIBLE);
         titleBarRightIconTwo.setVisibility(View.VISIBLE);
-        titleBarRightIconOne.setImageResource(R.drawable.ic_reader_share);
-        titleBarRightIconTwo.setImageResource(R.drawable.ic_reader_note_export);
+        titleBarRightIconOne.setImageResource(R.drawable.ic_reader_note_export);
+        titleBarRightIconTwo.setImageResource(R.drawable.ic_reader_note_delet);
         initPageIndicator(pageIndicatorLayout);
         summaryListRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override

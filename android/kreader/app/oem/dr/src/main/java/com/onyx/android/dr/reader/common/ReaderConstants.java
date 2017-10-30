@@ -12,6 +12,7 @@ public class ReaderConstants {
     public static final String BOOK_PASSWORD = "Password";
     public static final String BOOK_NAME = "bookName";
     public static final String IS_FLUENT = "isFluent";
+    public static final String ANNOTATION = "annotation";
     public static final String SCREENSHOT_PATH = EnvironmentUtil.getExternalStorageDirectory() + File.separator + "Screenshots/";
     public static final String AFTER_READING_ID = "after_reading_id";
     public static final String BOOK_ID = "bookId";

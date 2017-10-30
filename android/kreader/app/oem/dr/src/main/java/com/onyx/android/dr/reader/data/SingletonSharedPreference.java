@@ -210,6 +210,26 @@ public class SingletonSharedPreference {
         return getPrefs().getInt(QUICK_VIEW_GRID_TYPE, defaultValue);
     }
 
+    public static boolean isShowNote(Context context) {
+        return getBooleanByStringID(context, R.string.settings_note_key, true);
+    }
+
+    public static void setIsShowNote(Context context, boolean value) {
+        setBooleanValue(context, R.string.settings_note_key, value);
+    }
+
+    public static boolean isShowBookmark(Context context) {
+        return getBooleanByStringID(context, R.string.settings_bookmark_key, true);
+    }
+
+    public static boolean isShowAnnotation(Context context) {
+        return getBooleanByStringID(context, R.string.settings_show_annotation_key, true);
+    }
+
+    public static void setIsShowAnnotation(Context context, boolean value) {
+        setBooleanValue(context, R.string.settings_show_annotation_key, value);
+    }
+
     public static AnnotationHighlightStyle getAnnotationHighlightStyle(Context context) {
         String value = getPrefs().getString(context.getString(R.string.settings_annotation_highlight_style_key), null);
         if (value != null) {

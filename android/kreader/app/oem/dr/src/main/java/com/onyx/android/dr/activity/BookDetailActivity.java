@@ -12,6 +12,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.event.DownloadSucceedEvent;
 import com.onyx.android.dr.holder.LibraryDataHolder;
@@ -278,7 +279,7 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
         if (!FileUtils.fileExist(path)) {
             return;
         }
-        ActivityManager.openBook(DRApplication.getInstance(), book, path);
+        ActivityManager.openBook(DRApplication.getInstance(), book, path, Constants.OTHER_SOURCE_TAG);
     }
 
     private boolean enableWifiOpenAndDetect() {

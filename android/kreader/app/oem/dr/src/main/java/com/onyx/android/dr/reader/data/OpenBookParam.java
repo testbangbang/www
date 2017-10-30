@@ -4,13 +4,13 @@ package com.onyx.android.dr.reader.data;
 /**
  * Created by huxiaomao on 17/5/26.
  */
-
 public class OpenBookParam {
     private String password;
     private String localPath;
     private String bookName;
     private String bookId;
     private boolean isFluent;
+    private int type;
 
     public String getBookName() {
         return bookName;
@@ -50,5 +50,13 @@ public class OpenBookParam {
 
     public void setBookId(String bookId) {
         this.bookId = bookId;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 }
