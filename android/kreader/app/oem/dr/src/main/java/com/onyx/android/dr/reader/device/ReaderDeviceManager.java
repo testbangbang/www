@@ -11,6 +11,8 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.utils.DeviceUtils;
 
+import static com.onyx.android.sdk.api.device.epd.EpdController.enableRegal;
+
 /**
  * Created by Joy on 2016/5/6.
  */
@@ -169,28 +171,4 @@ public class ReaderDeviceManager {
     public static void cleanUpdateMode(final View view) {
         epdDevice.cleanUpdate(view);
     }
-
-    public static void holdDisplay(boolean hold) {
-        if (enableHoldDisplay) {
-            epdDevice.holdDisplay(hold, UpdateMode.REGAL, 1);
-        }
-    }
-
-    public static void holdDisplayUpdate(Context context, View view) {
-        if (!view.isShown()) {
-            return;
-        }
-        applyRegalUpdate(context, view);
-        boolean hold = !isApplyFullUpdate();
-        holdDisplay(hold);
-    }
-
-    public static void enableRegal() {
-        epdDevice.enableRegal();
-    }
-
-    public static void disableRegal() {
-        epdDevice.disableRegal();
-    }
-
 }

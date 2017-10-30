@@ -492,7 +492,6 @@ public class ReaderActivity extends Activity implements ReaderView {
         if (update) {
             ReaderDeviceManager.applyWithGCInterval(surfaceView, getReaderDataHolder().getReaderViewInfo().isTextPages());
         } else {
-            ReaderDeviceManager.disableRegal();
         }
     }
 
@@ -561,7 +560,6 @@ public class ReaderActivity extends Activity implements ReaderView {
         beforeDrawPage();
         drawPage(getReaderDataHolder().getReader().getViewportBitmap().getBitmap());
         if (event.isUseFullUpdate()) {
-            ReaderDeviceManager.disableRegal();
         }
     }
 
