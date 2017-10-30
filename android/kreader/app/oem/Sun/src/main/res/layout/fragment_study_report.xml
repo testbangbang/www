@@ -167,6 +167,21 @@
 
             </RelativeLayout>
 
+            <com.onyx.android.sun.view.TableView
+                android:id="@+id/table_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:layout_margin="8dp"
+                app:dividerColor="#9f9e9e"
+                app:dividerWidth="1px"
+                app:headerColor="#666666"
+                app:headerTextColor="#ffffff"
+                app:headerTextSize="18dp"
+                app:rowHeight="36dp"
+                app:textColor="#666666"
+                app:textSize="14dp"/>
+
         </LinearLayout>
 
     </ScrollView>
