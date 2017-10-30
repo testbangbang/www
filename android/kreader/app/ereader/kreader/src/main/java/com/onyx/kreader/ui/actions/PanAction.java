@@ -47,6 +47,10 @@ public class PanAction extends BaseAction {
         ReaderActivity readerActivity = (ReaderActivity) readerDataHolder.getContext();
         final SurfaceHolder holder = readerActivity.getHolder();
         Canvas canvas =  holder.lockCanvas();
+        if (readerDataHolder.isSideNoting()) {
+            canvas.clipRect(new Rect(0, 0, readerDataHolder.getDisplayWidth() / 2, readerDataHolder.getDisplayHeight()));
+        }
+        
         Bitmap bmp = readerDataHolder.getReader().getViewportBitmap().getBitmap();
         Paint paint = new Paint();
         paint.setStyle(Paint.Style.FILL);
