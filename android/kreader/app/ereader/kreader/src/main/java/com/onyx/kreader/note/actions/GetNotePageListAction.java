@@ -3,11 +3,13 @@ package com.onyx.kreader.note.actions;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.host.request.GetPageNumberFromPositionListRequest;
 import com.onyx.kreader.note.NoteManager;
 import com.onyx.kreader.note.request.GetNotePageListRequest;
 import com.onyx.kreader.ui.actions.BaseAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,7 +28,27 @@ public class GetNotePageListAction extends BaseAction{
             @Override
             public void done(BaseRequest request, Throwable e) {
                 scribblePages = noteRequest.getPageList();
-                BaseCallback.invoke(callback, request, e);
+                if (readerDataHolder.supportScalable() || scribblePages == null) {
+                    BaseCallback.invoke(callback, request, e);
+                    return;
+                }
+
+                ArrayList<String> positionList = new ArrayList<>();
+                for (PageInfo page : scribblePages) {
+                    positionList.add(page.getPosition());
+                }
+                final GetPageNumberFromPositionListRequest pageNumberRequest = new GetPageNumberFromPositionListRequest(positionList);
+                readerDataHolder.getReader().submitRequest(readerDataHolder.getContext(), pageNumberRequest, new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        if (e == null && pageNumberRequest.getPositionNumberMap() != null) {
+                            for (PageInfo page : scribblePages) {
+                                page.setName(String.valueOf(pageNumberRequest.getPositionNumberMap().get(page.getPosition())));
+                            }
+                        }
+                        BaseCallback.invoke(callback, request, e);
+                    }
+                });
             }
         });
     }

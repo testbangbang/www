@@ -48,6 +48,15 @@ public class PageInfo {
         positionRect.set(0, 0, nw, nh);
     }
 
+    public PageInfo(final String name, final String startPosition, String endPosition, int subPage, final float nw, final float nh) {
+        this.name = name;
+        pageRange = new PageRange(startPosition, endPosition);
+        this.subPage = subPage;
+        originWidth = nw;
+        originHeight = nh;
+        positionRect.set(0, 0, nw, nh);
+    }
+
     public PageInfo(final PageInfo pageInfo) {
         name = pageInfo.getName();
         pageRange = new PageRange(pageInfo.getRange().startPosition,
