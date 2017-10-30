@@ -18,7 +18,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.ChangeScaleWithDeltaAction;
-import com.onyx.kreader.ui.actions.toggleSideNoteMenuAction;
+import com.onyx.kreader.ui.actions.ToggleSideNoteMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogGotoPage;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
@@ -193,14 +193,20 @@ public class SideNoteHandler extends BaseHandler {
         flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new toggleSideNoteMenuAction(menuManager,
+                new ToggleSideNoteMenuAction(menuManager,
                         ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
-                        execute(readerDataHolder, null);
-            }});
+                        execute(readerDataHolder, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
+                            }
+                        });
+            }
+        });
     }
 
     private void hideSideNoteMenu(final ReaderDataHolder readerDataHolder) {
-        new toggleSideNoteMenuAction(menuManager,
+        new ToggleSideNoteMenuAction(menuManager,
             ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
             execute(readerDataHolder, new BaseCallback() {
                 @Override
