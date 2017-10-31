@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.dialog;
 import android.content.DialogInterface;
 import android.text.InputType;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -66,6 +67,7 @@ public class DialogGotoPage {
             }
         }).setDismissOnBackPressed(true);
         dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+        dlg.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_FULLSCREEN);
         dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
         if (showProgress) {
             dlg.enableProgress(readerDataHolder.getPageCount(), readerDataHolder.getCurrentPage(), new SeekBar.OnSeekBarChangeListener() {
