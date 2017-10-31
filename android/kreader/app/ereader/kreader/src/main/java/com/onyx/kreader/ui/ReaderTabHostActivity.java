@@ -105,11 +105,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                         }
                         return;
                     }
-
-                    if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
-                        updateCurrentTabInHost(entry.getKey());
-                    }
-                    return;
                 }
             }
         }
