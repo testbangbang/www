@@ -188,14 +188,6 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     private void toggleSideNoteMenu(final ReaderDataHolder readerDataHolder) {
-        if (menuManager.isMainMenuShown()) {
-            hideSideNoteMenu(readerDataHolder);
-        } else {
-            showSideNoteMenu(readerDataHolder);
-        }
-    }
-
-    private void showSideNoteMenu(final ReaderDataHolder readerDataHolder) {
         FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
         flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
             @Override
@@ -205,12 +197,6 @@ public class SideNoteHandler extends BaseHandler {
                         execute(readerDataHolder, resumeDrawingCallBack);
             }
         });
-    }
-
-    private void hideSideNoteMenu(final ReaderDataHolder readerDataHolder) {
-        new ToggleSideNoteMenuAction(menuManager,
-                ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
-                execute(readerDataHolder, resumeDrawingCallBack);
     }
 
     @Subscribe
