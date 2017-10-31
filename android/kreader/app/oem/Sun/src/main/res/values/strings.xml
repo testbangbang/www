@@ -141,4 +141,14 @@
     <string name="study_report_fragment_head_personal_score">Personal Score</string>
     <string name="study_report_fragment_head_class_average">Class Average</string>
     <string name="study_report_fragment_head_progress">Progress</string>
+    <string name="study_report_fragment_study_score">Score :%1$d points</string>
+    <string name="study_report_fragment_class_rank">Class Rank : %1$d</string>
+    <string name="study_report_fragment_keep_trying">Keep Trying!</string>
+    <string name="study_report_fragment_total_topic">A total of %1$d questions,</string>
+    <string name="study_report_fragment_objective_topic">There are %1$d objective questions: Answer %2$d questions correctly, %3$d points</string>
+    <string name="study_report_fragment_subjective_topic">There are %1$d subjective questions: A total of %2$d points, %3$d points</string>
+    <string name="study_report_fragment_frame_class_tips">Wireframe-Class</string>
+    <string name="study_report_fragment_fill_person_tips">Fill-Person</string>
+    <string name="study_report_fragment_competence_up_tips">Your ability is going up, go see it ~ ~</string>
+    <string name="study_report_fragment_go_and_see_tips">go and see</string>
 </resources>

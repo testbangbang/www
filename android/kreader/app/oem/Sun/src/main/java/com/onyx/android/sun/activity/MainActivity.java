@@ -328,7 +328,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onToStudyReportDeatilEvent(ToStudyReportDeatilEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_STUDY_REPORT);
         StudyReportFragment studyReportFragment = (StudyReportFragment) getPageView(ChildViewID.FRAGMENT_STUDY_REPORT);
-        studyReportFragment.setPracticeId(event.getId());
+        studyReportFragment.setPracticeId(event.getId(),event.getTitle());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

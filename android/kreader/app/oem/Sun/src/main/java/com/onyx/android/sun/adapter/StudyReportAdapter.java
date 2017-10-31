@@ -69,7 +69,7 @@ public class StudyReportAdapter extends PageRecyclerView.PageAdapter {
         }
         int position = (int) tag;
         ContentBean contentBean = data.get(position);
-        EventBus.getDefault().post(new ToStudyReportDeatilEvent(contentBean.id));
+        EventBus.getDefault().post(new ToStudyReportDeatilEvent(contentBean.id,contentBean.title));
     }
 
     public void setData(List<FinishContent> data) {

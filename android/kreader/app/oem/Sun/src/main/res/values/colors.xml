@@ -10,4 +10,5 @@
     <color name="login_bt_bg_press">#7c7c7c</color>
     <color name="color_white">#fff</color>
     <color name="color_gray_tips">#88000000</color>
+    <color name="color_table_view_divider">#9f9e9e</color>
 </resources>

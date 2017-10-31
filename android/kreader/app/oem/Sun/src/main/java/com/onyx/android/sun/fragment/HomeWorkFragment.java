@@ -141,7 +141,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
             FinishContent finishContent = new FinishContent();
             finishContent.submitTime = "2017.10." + (23 + i);
             finishContent.correctTime = "2017.11." + (24 + i);
-            finishContent.title = "作业"+i;
+            finishContent.title = "第" + (i + 1) + "单元文言文课后检查试题";
             content.add(finishContent);
         }
         studyReportAdapter.setData(content);

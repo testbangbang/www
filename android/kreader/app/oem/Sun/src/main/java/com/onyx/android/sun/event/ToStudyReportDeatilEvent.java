@@ -7,13 +7,18 @@ package com.onyx.android.sun.event;
 public class ToStudyReportDeatilEvent {
 
     private int id;
+    private String title;
 
-    public ToStudyReportDeatilEvent(int id) {
+    public ToStudyReportDeatilEvent(int id,String title) {
         this.id = id;
+        this.title = title;
     }
 
     public int getId() {
         return id;
     }
 
+    public String getTitle() {
+        return title;
+    }
 }

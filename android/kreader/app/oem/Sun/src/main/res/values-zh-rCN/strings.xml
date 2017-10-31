@@ -140,4 +140,14 @@
     <string name="study_report_fragment_head_personal_score">个人得分</string>
     <string name="study_report_fragment_head_class_average">班均</string>
     <string name="study_report_fragment_head_progress">知识达成度</string>
+    <string name="study_report_fragment_study_score">分数 : %1$d分</string>
+    <string name="study_report_fragment_class_rank">班级排名 : %1$d名</string>
+    <string name="study_report_fragment_keep_trying">继续努力!</string>
+    <string name="study_report_fragment_total_topic">共%1$d题,</string>
+    <string name="study_report_fragment_objective_topic">主观题%1$d题: 做对%2$d题, 得分%3$d分</string>
+    <string name="study_report_fragment_subjective_topic">客观题%1$d题: 总分%2$d分, 得分%3$d分</string>
+    <string name="study_report_fragment_frame_class_tips">线框-班级</string>
+    <string name="study_report_fragment_fill_person_tips">填充-个人</string>
+    <string name="study_report_fragment_competence_up_tips">你的能力值提升咯,快去看看~~</string>
+    <string name="study_report_fragment_go_and_see_tips">去看看</string>
 </resources>

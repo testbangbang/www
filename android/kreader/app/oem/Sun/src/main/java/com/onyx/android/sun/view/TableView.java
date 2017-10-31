@@ -193,8 +193,23 @@ public class TableView extends View {
                                     getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight),
                                     paint);
                         }else {
-                            String content1 = rowContent[j].substring(0,rowContent[j].length()/2);
-                            String content2 = rowContent[j].substring(rowContent[j].length()/2);
+                            String content1 = "";
+                            String content2 = "";
+                            if (i == 0){
+                                String[] splitString = rowContent[j].split(" ", 2);
+                                if (splitString != null && splitString.length > 0){
+                                    if (splitString.length == 1){
+                                        content1 = splitString[0];
+                                    }else {
+                                        content1 = splitString[0];
+                                        content2 = splitString[1];
+                                    }
+                                }
+
+                            }else {
+                                content1 = rowContent[j].substring(0,rowContent[j].length()/2);
+                                content2 = rowContent[j].substring(rowContent[j].length()/2);
+                            }
 
                             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
                             float fontSize = (fontMetrics.bottom - fontMetrics.top) / 2;
