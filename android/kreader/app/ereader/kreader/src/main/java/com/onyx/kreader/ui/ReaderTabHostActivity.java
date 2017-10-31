@@ -787,7 +787,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             startupWakeLock = new WakeLockHolder();
         }
 
-        startupWakeLock.acquireWakeLock(this, ReaderActivity.class.getSimpleName());
+        startupWakeLock.acquireWakeLock(this,
+                WakeLockHolder.FULL_FLAGS | WakeLockHolder.ON_AFTER_RELEASE,
+                ReaderActivity.class.getSimpleName());
     }
 
     private void releaseStartupWakeLock() {
