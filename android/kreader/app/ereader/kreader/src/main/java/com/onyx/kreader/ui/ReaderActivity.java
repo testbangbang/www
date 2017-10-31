@@ -167,15 +167,10 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         afterResume();
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
     }
 
     @Override
