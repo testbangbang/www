@@ -15,14 +15,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class toggleSideNoteMenuAction extends BaseAction {
-    public static final String TAG = toggleSideNoteMenuAction.class.getSimpleName();
+public class ToggleSideNoteMenuAction extends BaseAction {
+    public static final String TAG = ToggleSideNoteMenuAction.class.getSimpleName();
     private boolean supportScale = false;
     private ViewGroup parent;
     private static List<Integer> menuIdList = new ArrayList<>();
     private MenuManager menuManager;
 
-    public toggleSideNoteMenuAction(MenuManager menuManager, ViewGroup parent, boolean supportScale) {
+    public ToggleSideNoteMenuAction(MenuManager menuManager, ViewGroup parent, boolean supportScale) {
         this.parent = parent;
         this.menuManager = menuManager;
         this.supportScale = supportScale;

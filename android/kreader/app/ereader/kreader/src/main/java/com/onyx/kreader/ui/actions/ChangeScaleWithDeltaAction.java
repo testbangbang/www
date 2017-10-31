@@ -24,11 +24,12 @@ public class ChangeScaleWithDeltaAction extends BaseAction {
         if (scaleDelta < 0 && !readerDataHolder.canCurrentPageScaleDown()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.min_scroll_toast, Toast.LENGTH_SHORT).show();
-            readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()));
+            readerDataHolder.submitRenderRequest(new ScaleToPageRequest(readerDataHolder.getCurrentPageName()), callback);
             return;
         } else if (scaleDelta > 0 && !readerDataHolder.canCurrentPageScaleUp()) {
             Toast.makeText(readerDataHolder.getContext(),
                     R.string.max_scroll_toast, Toast.LENGTH_SHORT).show();
+            BaseCallback.invoke(callback, null, null);
             return;
         }
 

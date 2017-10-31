@@ -83,9 +83,12 @@ public class GetScribbleBitmapAction {
     private void drawScribblePage(final ReaderDataHolder readerDataHolder, final PageInfo currentPage, final Callback callback) {
         final NoteManager noteManager = readerDataHolder.getNoteManager();
         List<PageInfo> pageInfoList = new ArrayList<>();
-        final RectF origin = readerDataHolder.getReader().getDocument().getPageOriginSize(currentPage.getName());
+        final RectF origin = readerDataHolder.getReader().getDocument().getPageOriginSize(currentPage.getPosition());
 
-        final PageInfo pageInfo = new PageInfo(currentPage.getName(), currentPage.getSubPage(),
+        final PageInfo pageInfo = new PageInfo(currentPage.getName(),
+                currentPage.getRange().startPosition,
+                currentPage.getRange().endPosition,
+                currentPage.getSubPage(),
                 origin.width(), origin.height());
         float scale = PageUtils.scaleToPage(origin.width(), origin.height(), width, height);
         pageInfo.setScale(scale);
