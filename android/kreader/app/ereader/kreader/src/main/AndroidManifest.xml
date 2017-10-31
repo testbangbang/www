@@ -247,20 +247,21 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name="com.onyx.android.cropimage.CropImageActivity" />
+        <activity android:name="com.onyx.android.cropimage.CropImageActivity"  android:excludeFromRecents="true"/>
 
-        <activity android:name=".ui.settings.MainSettingsActivity"/>
-        <activity android:name=".ui.settings.SystemSettingsActivity"/>
-        <activity android:name=".ui.settings.ScreenSettingsActivity"/>
-        <activity android:name=".ui.settings.ConfigSettingsActivity"/>
-        <activity android:name=".ui.settings.ScribbleBarSettingsActivity"/>
-        <activity android:name=".ui.settings.ControlSettingsActivity"/>
-        <activity android:name=".ui.settings.StatusBarSettingsActivity"/>
+        <activity android:name=".ui.settings.MainSettingsActivity" android:excludeFromRecents="true"/>
+        <activity android:name=".ui.settings.SystemSettingsActivity" android:excludeFromRecents="true"/>
+        <activity android:name=".ui.settings.ScreenSettingsActivity" android:excludeFromRecents="true"/>
+        <activity android:name=".ui.settings.ConfigSettingsActivity" android:excludeFromRecents="true"/>
+        <activity android:name=".ui.settings.ScribbleBarSettingsActivity" android:excludeFromRecents="true"/>
+        <activity android:name=".ui.settings.ControlSettingsActivity" android:excludeFromRecents="true"/>
+        <activity android:name=".ui.settings.StatusBarSettingsActivity" android:excludeFromRecents="true"/>
         <activity
             android:exported="true"
             android:label="@string/statistics_shortcut_name"
             android:icon="@drawable/statistics_icon"
-            android:name=".ui.statistics.StatisticsActivity">
+            android:name=".ui.statistics.StatisticsActivity"
+            android:excludeFromRecents="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
