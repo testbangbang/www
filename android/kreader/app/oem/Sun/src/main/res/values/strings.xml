@@ -151,4 +151,5 @@
     <string name="study_report_fragment_fill_person_tips">Fill-Person</string>
     <string name="study_report_fragment_competence_up_tips">Your ability is going up, go see it ~ ~</string>
     <string name="study_report_fragment_go_and_see_tips">go and see</string>
+    <string name="study_progress">%</string>
 </resources>

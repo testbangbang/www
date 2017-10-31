@@ -14,7 +14,6 @@
             name="studyReportTitle"
             type="String"/>
 
-        <!--@{@string/timer_in_second_switch_to_homework(count)}-->
     </data>
 
     <ScrollView

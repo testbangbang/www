@@ -20,7 +20,6 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by jackdeng on 2017/10/26.
@@ -36,101 +35,6 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
     @Override
     protected void loadData() {
 
-        initTestData();
-        studyReportBinding.setListener(this);
-    }
-
-    private void initTestData() {
-        List<StudyReportDetailBean.CompetenceBean> competenceDatas = new ArrayList<>();
-
-        for (int i = 0; i < 5 ; i++) {
-            StudyReportDetailBean.CompetenceBean competenceBean= new StudyReportDetailBean.CompetenceBean();
-            competenceBean.name = "第"+ (i+1) + "项";
-            StudyReportDetailBean.CompetenceBean.PointsBean pointBean = new StudyReportDetailBean.CompetenceBean.PointsBean();
-            pointBean.classX = i+6;
-            pointBean.own = i+2;
-            competenceBean.points = pointBean ;
-            competenceDatas.add(competenceBean);
-        }
-
-        setSpiderWebViewScoresData(competenceDatas);
-
-        ArrayList<StudyReportDetailBean.DataBean> dataList = new ArrayList<>();
-        String[] kns= new String[]{"立体几何","函数","集合与常用逻辑用语","常用逻辑用语常用逻辑用语常用逻辑用语","平面向量","概率"};
-
-        for (int i = 0; i < 6; i++) {
-            StudyReportDetailBean.DataBean bean = new StudyReportDetailBean.DataBean();
-            bean.KN = kns[i];
-            bean.KNId = i + "";
-            bean.process = i * 0.03 ;
-            ArrayList<StudyReportDetailBean.DataBean.MapBean> mapBeanArrayList = new ArrayList<>();
-
-            if (i == 0){
-                StudyReportDetailBean.DataBean.MapBean mapBean1 = new StudyReportDetailBean.DataBean.MapBean();
-                mapBean1.NO = new Random().nextInt(20) + 1 + "";
-                mapBean1.score =  new Random().nextInt(20) + 1 ;
-                mapBean1.avg =  new Random().nextInt(20) + 1 ;
-                mapBean1.points =  30 ;
-
-                StudyReportDetailBean.DataBean.MapBean mapBean2 = new StudyReportDetailBean.DataBean.MapBean();
-                mapBean2.NO = new Random().nextInt(20) + 1 + "";
-                mapBean2.score =  new Random().nextInt(20) + 1 ;
-                mapBean2.avg =  new Random().nextInt(20) + 1 ;
-                mapBean2.points =  30 ;
-
-                mapBeanArrayList.add(mapBean1);
-                mapBeanArrayList.add(mapBean2);
-            }else if (i == 2){
-                StudyReportDetailBean.DataBean.MapBean mapBean1 = new StudyReportDetailBean.DataBean.MapBean();
-                mapBean1.NO = new Random().nextInt(20) + 1 + "";
-                mapBean1.score =  new Random().nextInt(20) + 1 ;
-                mapBean1.avg =  new Random().nextInt(20) + 1 ;
-                mapBean1.points =  30 ;
-
-                StudyReportDetailBean.DataBean.MapBean mapBean2 = new StudyReportDetailBean.DataBean.MapBean();
-                mapBean2.NO = new Random().nextInt(20) + 1 + "";
-                mapBean2.score =  new Random().nextInt(20) + 1 ;
-                mapBean2.avg =  new Random().nextInt(20) + 1 ;
-                mapBean2.points =  30 ;
-
-                StudyReportDetailBean.DataBean.MapBean mapBean3 = new StudyReportDetailBean.DataBean.MapBean();
-                mapBean3.NO = new Random().nextInt(20) + 1 + "";
-                mapBean3.score =  new Random().nextInt(20) + 1 ;
-                mapBean3.avg =  new Random().nextInt(20) + 1 ;
-                mapBean3.points =  30 ;
-
-                mapBeanArrayList.add(mapBean1);
-                mapBeanArrayList.add(mapBean2);
-//                mapBeanArrayList.add(mapBean3);
-            }else {
-
-                StudyReportDetailBean.DataBean.MapBean mapBean1 = new StudyReportDetailBean.DataBean.MapBean();
-                mapBean1.NO = new Random().nextInt(20) + 1 + "";
-                mapBean1.score =  new Random().nextInt(20) + 1 ;
-                mapBean1.avg =  new Random().nextInt(20) + 1 ;
-                mapBean1.points =  30 ;
-                mapBeanArrayList.add(mapBean1);
-            }
-
-            bean.map = mapBeanArrayList;
-
-            dataList.add(bean);
-
-        }
-
-        setTableData(dataList, heads);
-
-        StudyReportDetailBean studyReportData = new StudyReportDetailBean();
-        studyReportData.score = 75;
-        studyReportData.classRank = 12;
-        studyReportData.ON = 20;
-        studyReportData.OC = 15;
-        studyReportData.OS = 30;
-        studyReportData.SN = 10;
-        studyReportData.STP = 40;
-        studyReportData.STS = 45;
-        studyReportBinding.setStudyReportDetail(studyReportData);
-        studyReportBinding.setStudyReportTitle(title.replace("检查试题","检测报告"));
     }
 
     private void setSpiderWebViewScoresData(List<StudyReportDetailBean.CompetenceBean> competenceDatas) {
@@ -166,7 +70,7 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
                     rowTypes.add(map.size());
                 }
                 StudyReportDetailBean.DataBean.MapBean mapBean = map.get(j);
-                tableView.addContent(dataBean.KN,mapBean.NO,mapBean.points + "",mapBean.score + "",mapBean.avg + "",dataBean.process * 100 +"%");
+                tableView.addContent(dataBean.KN,mapBean.NO,String.valueOf(mapBean.points),String.valueOf(mapBean.score),String.valueOf(mapBean.avg),dataBean.process * 100 +getString(R.string.study_progress));
             }
         }
 
@@ -178,6 +82,8 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
     protected void initView(ViewDataBinding binding) {
         studyReportBinding = (FragmentStudyReportBinding) binding;
         homeworkPresenter = new HomeworkPresenter(this);
+        studyReportBinding.setListener(this);
+        studyReportBinding.setStudyReportTitle(title);
     }
 
     @Override
@@ -226,8 +132,11 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     @Override
     public void setStudyReportDetail(StudyReportDetailBean data) {
-        setSpiderWebViewScoresData(data.competence);
-        setTableData(data.data,heads);
+        if (data != null){
+            setSpiderWebViewScoresData(data.competence);
+            setTableData(data.data,heads);
+            studyReportBinding.setStudyReportDetail(data);
+        }
     }
 
     public void setPracticeId(int id,String tilte) {
