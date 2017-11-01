@@ -39,6 +39,7 @@ import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -508,8 +509,7 @@ public class MainActivity extends OnyxAppCompatActivity {
         showProgressDialog(product.getGuid(), new DialogProgressHolder.DialogCancelListener() {
             @Override
             public void onCancel() {
-                OnyxDownloadManager.getInstance().pauseTask(product.getGuid(), true);
-                dismissProgressDialog(product);
+                cancelDownloadingTask(product.getGuid());
             }
         });
         File file = getApkFilePath(product);
@@ -517,6 +517,12 @@ public class MainActivity extends OnyxAppCompatActivity {
             setProgressDialogToastMessage(product.getGuid(), FileUtils.getFileName(file.getAbsolutePath()) +
                     " " + getString(R.string.downloading));
         }
+    }
+
+    private void cancelDownloadingTask(final String taskKey) {
+        OnyxDownloadManager.getInstance().pauseTask(taskKey, true);
+        dismissProgressDialog(taskKey);
+        ToastUtils.showToast(getApplicationContext(), R.string.cancel_the_downloading_task);
     }
 
     @Override
