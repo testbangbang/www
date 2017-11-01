@@ -141,4 +141,14 @@ public class OnyxDownloadManager {
         return FileDownloader.getImpl().getStatus(taskId, path);
     }
 
+    public void pauseTask(Object key, boolean removeFromQueue) {
+        BaseDownloadTask task = getTask(key);
+        if (task == null) {
+            return;
+        }
+        task.pause();
+        if (removeFromQueue) {
+            removeTask(key);
+        }
+    }
 }

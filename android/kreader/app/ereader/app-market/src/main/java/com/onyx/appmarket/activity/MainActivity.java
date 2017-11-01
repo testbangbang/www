@@ -37,6 +37,7 @@ import com.onyx.android.sdk.data.request.cloud.MarketAppRequest;
 import com.onyx.android.sdk.data.request.cloud.MarketAppSearchRequest;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
+import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
 import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
@@ -503,8 +504,14 @@ public class MainActivity extends OnyxAppCompatActivity {
         showDownloadingDialog(product);
     }
 
-    private void showDownloadingDialog(AppProduct product) {
-        showProgressDialog(product.getGuid(), null);
+    private void showDownloadingDialog(final AppProduct product) {
+        showProgressDialog(product.getGuid(), new DialogProgressHolder.DialogCancelListener() {
+            @Override
+            public void onCancel() {
+                OnyxDownloadManager.getInstance().pauseTask(product.getGuid(), true);
+                dismissProgressDialog(product);
+            }
+        });
         File file = getApkFilePath(product);
         if (file != null) {
             setProgressDialogToastMessage(product.getGuid(), FileUtils.getFileName(file.getAbsolutePath()) +
