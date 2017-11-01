@@ -872,6 +872,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentInitRendered()) {
             return;
         }
+        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         updateNoteHostView();
 
         if (getReaderDataHolder().isNoteWritingProvider()) {
@@ -902,7 +903,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void updateNoteHostView() {
-        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
