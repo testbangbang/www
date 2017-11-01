@@ -1065,14 +1065,19 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
         SingletonSharedPreference.setMultipleTabState(tabManager.toJson());
         SingletonSharedPreference.setMultipleTabVisibility(tabWidgetVisible.get());
+        SingletonSharedPreference.setCurrentTab(getCurrentTabInHost().toString());
     }
 
     private void restoreReaderTabState() {
         Debug.d(TAG, "restoreReaderTabState");
         tabManager = ReaderTabManager.createFromJson(SingletonSharedPreference.getMultipleTabState());
         tabWidgetVisible.set(SingletonSharedPreference.getMultipleTabVisibility());
+        String tab = SingletonSharedPreference.getCurrentTab();
         showTabWidgetOnCondition();
         rebuildTabWidget();
+        if (!StringUtils.isNullOrEmpty(tab)) {
+            updateCurrentTabInHost(Enum.valueOf(ReaderTabManager.ReaderTab.class, tab));
+        }
     }
 
     private void updateTabWidgetVisibility(boolean visible) {

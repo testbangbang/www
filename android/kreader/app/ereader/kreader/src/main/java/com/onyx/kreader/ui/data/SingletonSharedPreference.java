@@ -31,6 +31,7 @@ public class SingletonSharedPreference {
     private final static String SCREEN_ORIENTATION = "screen_orientation";
     private final static String MULTIPLE_TAB_STATE = "multiple_tab_state";
     private final static String MULTIPLE_TAB_VISIBILITY = "multiple_tab_visibility";
+    private final static String CURRENT_TAB = "current_tab";
 
     private static Context sContext;
     private static SharedPreferences.Editor sDefaultEditor;
@@ -384,5 +385,13 @@ public class SingletonSharedPreference {
 
     public static boolean getMultipleTabVisibility() {
         return getPrefs().getBoolean(MULTIPLE_TAB_VISIBILITY, true);
+    }
+
+    public static void setCurrentTab(String currentTab) {
+        setStringValue(CURRENT_TAB, currentTab);
+    }
+
+    public static String getCurrentTab() {
+        return getPrefs().getString(CURRENT_TAB, "");
     }
 }
