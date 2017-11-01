@@ -38,11 +38,20 @@ public class TableView extends View {
     private float[] columnLefts;
     private float[] columnWidths;
 
-    private int[]          columnWeights;
+    private int[] columnWeights;
     private List<String[]> tableContents;
-    private ArrayList<Integer>      rowTypes;
-    private float          mMarginLeft;
+    private ArrayList<Integer> rowTypes;
+    private float mMarginLeft;
     private float mMarginRight;
+    private static final float DEFAULT_ROW_HEIGHT = 40;
+    private static final int DEFAULT_UNIT_COLUMN_WIDTH = 0;
+    private static final int DEFAULT_DIVIDER_WIDTH = 1;
+    private static final int DEFAULT_TEXT_SIZE = 10;
+    private static final int DEFAULT_HEADER_TEXT_SIZE = 10;
+    private static final int DEFAULT_DIVIDER_COLOR = Color.parseColor("#E1E1E1");
+    private static final int DEFAULT_TEXT_COLOR = Color.parseColor("#999999");
+    private static final int DEFAULT_HEADER_COLOR = Color.parseColor("#88000000");
+    private static final int DEFAULT_HEADER_TEXT_COLOR = Color.parseColor("#ffffff");
 
     public TableView(Context context) {
         super(context);
@@ -59,31 +68,35 @@ public class TableView extends View {
         paint.setAntiAlias(true);
         paint.setTextAlign(Paint.Align.CENTER);
         tableContents = new ArrayList<>();
-        if (attrs != null) {
-            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.TableView);
-            unitColumnWidth = typedArray.getDimensionPixelSize(R.styleable.TableView_unitColumnWidth, 0);
-            rowHeight = typedArray.getDimensionPixelSize(R.styleable.TableView_rowHeight, DimenUtils.dip2px(getContext(), 40));
-            dividerWidth = typedArray.getDimensionPixelSize(R.styleable.TableView_dividerWidth, 1);
-            dividerColor = typedArray.getColor(R.styleable.TableView_dividerColor, Color.parseColor("#E1E1E1"));
-            textSize = typedArray.getDimensionPixelSize(R.styleable.TableView_textSize, DimenUtils.dip2px(getContext(), 10));
-            textColor = typedArray.getColor(R.styleable.TableView_textColor, Color.parseColor("#999999"));
-            headerColor = typedArray.getColor(R.styleable.TableView_headerColor, Color.parseColor("#00ffffff"));
-            headerTextSize = typedArray.getDimensionPixelSize(R.styleable.TableView_headerTextSize, DimenUtils.dip2px(getContext(), 10));
-            headerTextColor = typedArray.getColor(R.styleable.TableView_headerTextColor, Color.parseColor("#999999"));
-            typedArray.recycle();
-        } else {
-            unitColumnWidth = 0;
-            rowHeight = DimenUtils.dip2px(getContext(), 40);
-            dividerWidth = 1;
-            dividerColor = Color.parseColor("#E1E1E1");
-            textSize = DimenUtils.dip2px(getContext(), 10);
-            textColor = Color.parseColor("#999999");
-            headerColor = Color.parseColor("#00ffffff");
-            headerTextSize = DimenUtils.dip2px(getContext(), 10);
-            headerTextColor = Color.parseColor("#111111");
-        }
+        initDefaultParams(attrs);
         setHeader("Header1", "Header2").addContent("Column1", "Column2");
         initTableSize();
+    }
+
+    private void initDefaultParams(AttributeSet attrs) {
+        if (attrs != null) {
+            TypedArray typedArray = getContext().obtainStyledAttributes(attrs, R.styleable.TableView);
+            unitColumnWidth = typedArray.getDimensionPixelSize(R.styleable.TableView_unitColumnWidth, DEFAULT_UNIT_COLUMN_WIDTH);
+            rowHeight = typedArray.getDimensionPixelSize(R.styleable.TableView_rowHeight, DimenUtils.dip2px(getContext(), DEFAULT_ROW_HEIGHT));
+            dividerWidth = typedArray.getDimensionPixelSize(R.styleable.TableView_dividerWidth, DEFAULT_DIVIDER_WIDTH);
+            dividerColor = typedArray.getColor(R.styleable.TableView_dividerColor, DEFAULT_DIVIDER_COLOR);
+            textSize = typedArray.getDimensionPixelSize(R.styleable.TableView_textSize, DimenUtils.dip2px(getContext(), DEFAULT_TEXT_SIZE));
+            textColor = typedArray.getColor(R.styleable.TableView_textColor, DEFAULT_TEXT_COLOR);
+            headerColor = typedArray.getColor(R.styleable.TableView_headerColor, DEFAULT_HEADER_COLOR);
+            headerTextSize = typedArray.getDimensionPixelSize(R.styleable.TableView_headerTextSize, DimenUtils.dip2px(getContext(), DEFAULT_HEADER_TEXT_SIZE));
+            headerTextColor = typedArray.getColor(R.styleable.TableView_headerTextColor, DEFAULT_HEADER_TEXT_COLOR);
+            typedArray.recycle();
+        } else {
+            unitColumnWidth = DEFAULT_UNIT_COLUMN_WIDTH;
+            rowHeight = DimenUtils.dip2px(getContext(), DEFAULT_ROW_HEIGHT);
+            dividerWidth = DEFAULT_DIVIDER_WIDTH;
+            dividerColor = DEFAULT_DIVIDER_COLOR;
+            textSize = DimenUtils.dip2px(getContext(), DEFAULT_TEXT_SIZE);
+            textColor = DEFAULT_TEXT_COLOR;
+            headerColor = DEFAULT_HEADER_COLOR;
+            headerTextSize = DimenUtils.dip2px(getContext(), DEFAULT_HEADER_TEXT_SIZE);
+            headerTextColor = DEFAULT_HEADER_TEXT_COLOR;
+        }
     }
 
     @Override
@@ -142,28 +155,26 @@ public class TableView extends View {
             }
             canvas.drawRect(columnLefts[i], 0, columnLefts[i] + dividerWidth, getHeight(), paint);
         }
-        if(mMarginLeft == 0){
+        if (mMarginLeft == 0) {
             mMarginLeft = getColumnWidth(0);
         }
-        if(mMarginRight == 0){
-            mMarginRight = getColumnWidth(columnCount -1);
+        if (mMarginRight == 0) {
+            mMarginRight = getColumnWidth(columnCount - 1);
         }
 
         float left = 0;
         float right = getWidth();
 
         for (int i = 0; i < rowCount + 1; i++) {
-            if(rowTypes != null && rowTypes.size() > 0){
-                if(i > 1 && i <= rowCount - 1){
-
+            if (rowTypes != null && rowTypes.size() > 0) {
+                if (i > 1 && i <= rowCount - 1) {
                     int rowType = 1;
                     try {
                         rowType = rowTypes.get(i - 1);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-
-                    if(rowType  == 0 ) {
+                    if (rowType == 0) {
                         left = mMarginLeft;
                         right = right - mMarginRight;
                     }
@@ -185,30 +196,29 @@ public class TableView extends View {
             }
             for (int j = 0; j < columnCount; j++) {
                 if (rowContent.length > j) {
-                    int rowWeight = getRowWeight(i,j);
-                    if (rowWeight != 0){
-                        if (rowContent[j].length() < 9){
+                    int rowWeight = getRowWeight(i, j);
+                    if (rowWeight != 0) {
+                        if (rowContent[j].length() < 9) {
                             canvas.drawText(rowContent[j],
                                     columnLefts[j] + columnWidths[j] / 2,
-                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight),
+                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint, rowWeight),
                                     paint);
-                        }else {
+                        } else {
                             String content1 = "";
                             String content2 = "";
-                            if (i == 0){
+                            if (i == 0) {
                                 String[] splitString = rowContent[j].split(" ", 2);
-                                if (splitString != null && splitString.length > 0){
-                                    if (splitString.length == 1){
+                                if (splitString != null && splitString.length > 0) {
+                                    if (splitString.length == 1) {
                                         content1 = splitString[0];
-                                    }else {
+                                    } else {
                                         content1 = splitString[0];
                                         content2 = splitString[1];
                                     }
                                 }
-
-                            }else {
-                                content1 = rowContent[j].substring(0,rowContent[j].length()/2);
-                                content2 = rowContent[j].substring(rowContent[j].length()/2);
+                            } else {
+                                content1 = rowContent[j].substring(0, rowContent[j].length() / 2);
+                                content2 = rowContent[j].substring(rowContent[j].length() / 2);
                             }
 
                             Paint.FontMetrics fontMetrics = paint.getFontMetrics();
@@ -216,14 +226,13 @@ public class TableView extends View {
 
                             canvas.drawText(content1,
                                     columnLefts[j] + columnWidths[j] / 2,
-                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight) - fontSize,
+                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint, rowWeight) - fontSize,
                                     paint);
 
                             canvas.drawText(content2,
                                     columnLefts[j] + columnWidths[j] / 2,
-                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint,rowWeight) + fontSize,
+                                    getTextBaseLine(i * (rowHeight + dividerWidth), paint, rowWeight) + fontSize,
                                     paint);
-
                         }
                     }
                 }
@@ -274,20 +283,18 @@ public class TableView extends View {
 
     private int getRowWeight(int rowIndex, int columnIndex) {
         int rowWeight = 1;
-        if(columnIndex == 0 || columnIndex == (columnCount - 1)){
-
-            if(rowIndex > 0 && rowIndex <= rowCount -1){
-                if(rowTypes != null && rowTypes.size() > 0){
+        if (columnIndex == 0 || columnIndex == (columnCount - 1)) {
+            if (rowIndex > 0 && rowIndex <= rowCount - 1) {
+                if (rowTypes != null && rowTypes.size() > 0) {
                     int rowType = 1;
                     try {
                         rowType = rowTypes.get(rowIndex - 1);
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     rowWeight = rowType;
                 }
             }
-
         }
         return rowWeight;
     }
@@ -328,10 +335,9 @@ public class TableView extends View {
     public void refreshTable() {
         initTableSize();
         requestLayout();
-//         invalidate();
     }
 
-    public TableView setRowTypes(ArrayList<Integer> rowTypes){
+    public TableView setRowTypes(ArrayList<Integer> rowTypes) {
         this.rowTypes = rowTypes;
         return this;
     }

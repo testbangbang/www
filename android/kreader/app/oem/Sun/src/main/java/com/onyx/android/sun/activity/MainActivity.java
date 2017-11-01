@@ -88,8 +88,8 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     }
 
     private void restoreUserName() {
-        String name = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME,"");
-        if (!TextUtils.isEmpty(name)){
+        String name = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_NAME, "");
+        if (!TextUtils.isEmpty(name)) {
             mainFragmentTitle = name + getString(R.string.main_activity_hello);
             currentTitle = mainFragmentTitle;
         }
@@ -152,7 +152,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     }
 
     private void onClickTitleContainer() {
-        switch (currentPageID){
+        switch (currentPageID) {
             case ChildViewID.FRAGMENT_USER_CENTER:
                 switchToOldFragment();
                 break;
@@ -172,26 +172,26 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     }
 
     private void setTitleAndIcon() {
-        switch (currentPageID){
+        switch (currentPageID) {
             case ChildViewID.FRAGMENT_CHANGE_PASSWORD:
-                isShowTabLayoutAndNewMessageView = false;
-                currentTitleIconID = backTitleIconID;
-                currentTitle = changePasswordFragmentTitle;
+                changeTitleParams(false, backTitleIconID, changePasswordFragmentTitle);
                 break;
             case ChildViewID.FRAGMENT_USER_CENTER:
-                isShowTabLayoutAndNewMessageView = false;
-                currentTitleIconID = backTitleIconID;
-                currentTitle = userCenterFragmentTitle;
+                changeTitleParams(false, backTitleIconID, userCenterFragmentTitle);
                 break;
             default:
-                isShowTabLayoutAndNewMessageView = true;
-                currentTitleIconID = userCenterTitleIconID;
-                currentTitle = mainFragmentTitle;
+                changeTitleParams(true, userCenterTitleIconID, mainFragmentTitle);
                 break;
         }
         mainBinding.setIsShowTabLayoutAndNewMessageView(isShowTabLayoutAndNewMessageView);
         mainBinding.ivMainActivityTitleIcon.setImageResource(currentTitleIconID);
         mainBinding.setTitle(currentTitle);
+    }
+
+    private void changeTitleParams(boolean isShowTabLayoutAndNewMessageView, int currentTitleIconID, String currentTitle) {
+        this.isShowTabLayoutAndNewMessageView = isShowTabLayoutAndNewMessageView;
+        this.currentTitleIconID = currentTitleIconID;
+        this.currentTitle = currentTitle;
     }
 
     public void switchCurrentFragment(int pageID) {
@@ -214,7 +214,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             childViewList.put(pageID, baseFragment);
         }
         currentFragment = baseFragment;
-        if (currentPageID != ChildViewID.FRAGMENT_CHANGE_PASSWORD && currentPageID != ChildViewID.FRAGMENT_USER_CENTER){
+        if (currentPageID != ChildViewID.FRAGMENT_CHANGE_PASSWORD && currentPageID != ChildViewID.FRAGMENT_USER_CENTER) {
             oldPageID = currentPageID;
             oldTabPosition = mainBinding.mainActivityTab.getSelectedTabPosition();
         }
@@ -328,12 +328,12 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onToStudyReportDeatilEvent(ToStudyReportDeatilEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_STUDY_REPORT);
         StudyReportFragment studyReportFragment = (StudyReportFragment) getPageView(ChildViewID.FRAGMENT_STUDY_REPORT);
-        studyReportFragment.setPracticeId(event.getId(),event.getTitle());
+        studyReportFragment.setPracticeId(event.getId(), event.getTitle());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackPressEvent(OnBackPressEvent event) {
-        switch (event.childViewId){
+        switch (event.childViewId) {
             case ChildViewID.FRAGMENT_STUDY_REPORT:
                 onBackToHomeworkFragmentEvent(null);
                 break;

@@ -41,7 +41,7 @@ public class ChangePasswordRequest extends BaseCloudRequest {
                 //The changePassword api is not complete, and the simulation result callback is temporarily used
                 resultBean = new ChangePasswordResultBean();
                 resultBean.code = CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS;
-                resultBean.msg = "ok";
+                resultBean.msg = CloudApiContext.HttpReusltCode.RESULT_MESSAGE_SUCCESS;
             }
         } catch (Exception e) {
             Log.i(TAG, e.toString());

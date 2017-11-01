@@ -47,13 +47,13 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textSize="@dimen/text_large_textsize"
+                    android:textSize="@dimen/level_one_heading_font"
                     android:text="@{@string/study_report_fragment_study_score(studyReportDetail.score)}"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
                 <TextView
-                    android:textSize="@dimen/text_normal_textsize"
+                    android:textSize="@dimen/level_three_heading_font"
                     android:layout_marginLeft="@dimen/study_report_fragment_study_score_describe_space"
                     android:text="@{@string/study_report_fragment_class_rank(studyReportDetail.classRank)}"
                     android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
 
                 <TextView
                     android:layout_marginLeft="@dimen/study_report_fragment_study_score_describe_space"
-                    android:textSize="@dimen/text_large_textsize"
+                    android:textSize="@dimen/level_one_heading_font"
                     android:text="@string/study_report_fragment_keep_trying"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -76,7 +76,7 @@
 
                 <TextView
                     android:text="@{@string/study_report_fragment_total_topic(studyReportDetail.ON + studyReportDetail.SN)}"
-                    android:textSize="@dimen/text_normal_textsize"
+                    android:textSize="@dimen/level_three_heading_font"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"/>
 
@@ -85,13 +85,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:textSize="@dimen/text_normal_textsize"
+                        android:textSize="@dimen/level_three_heading_font"
                         android:text="@{@string/study_report_fragment_objective_topic(studyReportDetail.ON,studyReportDetail.OC,studyReportDetail.OS)}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
 
                     <TextView
-                        android:textSize="@dimen/text_normal_textsize"
+                        android:textSize="@dimen/level_three_heading_font"
                         android:text="@{@string/study_report_fragment_subjective_topic(studyReportDetail.SN,studyReportDetail.STP,studyReportDetail.STS)}"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -106,7 +106,7 @@
                 <TextView
                     android:id="@+id/tv_study_report_frame_class_tips"
                     android:layout_alignParentRight="true"
-                    android:textSize="@dimen/text_normal_textsize"
+                    android:textSize="@dimen/level_three_heading_font"
                     android:text="@string/study_report_fragment_frame_class_tips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -114,7 +114,7 @@
                 <TextView
                     android:layout_below="@id/tv_study_report_frame_class_tips"
                     android:layout_alignParentRight="true"
-                    android:textSize="@dimen/text_normal_textsize"
+                    android:textSize="@dimen/level_three_heading_font"
                     android:text="@string/study_report_fragment_fill_person_tips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -149,7 +149,7 @@
                     android:layout_height="wrap_content">
 
                     <TextView
-                        android:textSize="@dimen/text_normal_textsize"
+                        android:textSize="@dimen/level_three_heading_font"
                         android:text="@string/study_report_fragment_competence_up_tips"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
@@ -161,7 +161,7 @@
                         android:layout_marginLeft="@dimen/study_report_fragment_look_competence_button_margin_left"
                         android:id="@+id/tv_study_report_look_competence"
                         android:text="@string/study_report_fragment_go_and_see_tips"
-                        android:textSize="@dimen/text_normal_textsize"
+                        android:textSize="@dimen/level_three_heading_font"
                         android:gravity="center"
                         android:onClick="@{listener}"
                         android:background="@drawable/button_back"
@@ -169,7 +169,6 @@
                         android:layout_height="wrap_content"/>
 
                 </LinearLayout>
-
 
             </RelativeLayout>
 
@@ -183,7 +182,7 @@
                 app:dividerWidth="@dimen/line_height"
                 app:headerColor="@color/black"
                 app:headerTextColor="@color/color_white"
-                app:headerTextSize="@dimen/text_normal_textsize"
+                app:headerTextSize="@dimen/level_three_heading_font"
                 app:rowHeight="@dimen/study_report_fragment_tableview_row_height"
                 app:textColor="@color/black"
                 app:textSize="@dimen/text_small_textsize"/>

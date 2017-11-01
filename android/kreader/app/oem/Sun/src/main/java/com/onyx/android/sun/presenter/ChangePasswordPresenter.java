@@ -40,7 +40,6 @@ public class ChangePasswordPresenter {
                 } else {
                     changePasswordView.onChangePasswordFailed(resultBean.code,resultBean.msg);
                 }
-
             }
         });
     }

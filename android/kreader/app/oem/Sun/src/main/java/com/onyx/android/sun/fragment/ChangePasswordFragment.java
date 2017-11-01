@@ -115,8 +115,6 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
             CommonNotices.show(getString(R.string.change_password_passwords_match_error));
             return false;
         }
-
-
         return true;
     }
 

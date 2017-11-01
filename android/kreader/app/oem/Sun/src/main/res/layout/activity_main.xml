@@ -67,7 +67,7 @@
                     android:paddingTop="@dimen/main_activity_title_name_padding"
                     android:paddingBottom="@dimen/main_activity_title_name_padding"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/text_normal_textsize"
+                    android:textSize="@dimen/level_three_heading_font"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{title}" />

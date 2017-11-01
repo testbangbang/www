@@ -29,7 +29,7 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     private HomeworkPresenter homeworkPresenter;
     private FragmentStudyReportBinding studyReportBinding;
-    String[] heads = new String[]{SunApplication.getInstance().getString(R.string.study_report_fragment_head_Knowledge_point), SunApplication.getInstance().getString(R.string.study_report_fragment_head_practice_number), SunApplication.getInstance().getString(R.string.study_report_fragment_head_total_points),SunApplication.getInstance().getString(R.string.study_report_fragment_head_personal_score),SunApplication.getInstance().getString(R.string.study_report_fragment_head_class_average),SunApplication.getInstance().getString(R.string.study_report_fragment_head_progress)};
+    String[] heads = SunApplication.getInstance().getResources().getStringArray(R.array.study_report_table_heads);
     private String title = "";
 
     @Override
