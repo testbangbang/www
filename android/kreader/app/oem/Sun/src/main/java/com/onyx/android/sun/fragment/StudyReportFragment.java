@@ -107,6 +107,9 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
         switch (v.getId()) {
             case R.id.tv_study_report_look_competence:
                 break;
+            case R.id.tv_study_report_title:
+                onKeyBack();
+                break;
         }
     }
 
@@ -145,5 +148,6 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
         }
         homeworkPresenter.getStudyReportDetail(id);
         this.title = tilte;
+        studyReportBinding.setStudyReportTitle(title);
     }
 }
