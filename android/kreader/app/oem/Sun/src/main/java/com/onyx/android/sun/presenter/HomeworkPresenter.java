@@ -2,6 +2,7 @@ package com.onyx.android.sun.presenter;
 
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
+import com.onyx.android.sun.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
@@ -9,6 +10,7 @@ import com.onyx.android.sun.cloud.bean.TaskBean;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.data.HomeworkData;
 import com.onyx.android.sun.interfaces.HomeworkView;
+import com.onyx.android.sun.requests.cloud.GetStudyReportDetailRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
 import com.onyx.android.sun.requests.cloud.TaskDetailRequest;
@@ -113,6 +115,23 @@ public class HomeworkPresenter {
 
                 if (taskBean.data != null) {
                     homeworkView.setTaskDetail(taskBean.data);
+                }
+            }
+        });
+    }
+
+    public void getStudyReportDetail(int id) {
+        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(id);
+        homeworkData.getStudyReportDetail(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetStudyReportDetailResultBean resultBean = rq.getStudyReportDetailResultBean();
+                if(resultBean == null) {
+                    return;
+                }
+
+                if (resultBean.data != null) {
+                    homeworkView.setStudyReportDetail(resultBean.data);
                 }
             }
         });

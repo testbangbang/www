@@ -2,8 +2,8 @@ package com.onyx.android.sun.requests.cloud;
 
 import android.util.Log;
 
-import com.onyx.android.sun.cloud.bean.UserLogoutRequestBean;
-import com.onyx.android.sun.cloud.bean.UserLogoutResultBean;
+import com.onyx.android.sun.cloud.bean.ChangePasswordRequestBean;
+import com.onyx.android.sun.cloud.bean.ChangePasswordResultBean;
 import com.onyx.android.sun.cloud.service.ContentService;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.requests.requestTool.BaseCloudRequest;
@@ -13,19 +13,19 @@ import retrofit2.Call;
 import retrofit2.Response;
 
 /**
- * Created by jackdeng on 2017/10/24.
+ * Created by jackdeng on 2017/10/26.
  */
 
-public class UserLogoutRequest extends BaseCloudRequest {
-    private final static String TAG = UserLogoutRequest.class.getSimpleName();
-    private UserLogoutRequestBean requestBean;
-    private UserLogoutResultBean resultBean;
+public class ChangePasswordRequest extends BaseCloudRequest {
+    private final static String TAG = ChangePasswordRequest.class.getSimpleName();
+    private ChangePasswordRequestBean requestBean;
+    private ChangePasswordResultBean resultBean;
 
-    public UserLogoutRequest(UserLogoutRequestBean requestBean) {
+    public ChangePasswordRequest(ChangePasswordRequestBean requestBean) {
         this.requestBean = requestBean;
     }
 
-    public UserLogoutResultBean getLogoutResultBean() {
+    public ChangePasswordResultBean getChangePasswordResultBean() {
         return resultBean;
     }
 
@@ -33,13 +33,13 @@ public class UserLogoutRequest extends BaseCloudRequest {
     public void execute(SunRequestManager helper) throws Exception {
         try {
             ContentService service = CloudApiContext.getService(CloudApiContext.BASE_URL);
-            Call<UserLogoutResultBean> call = getCall(service);
-            Response<UserLogoutResultBean> response = call.execute();
+            Call<ChangePasswordResultBean> call = getCall(service);
+            Response<ChangePasswordResultBean> response = call.execute();
             if (response.isSuccessful()) {
                 resultBean = response.body();
             }else {
-                //The logout api is not complete, and the simulation result callback is temporarily used
-                resultBean = new UserLogoutResultBean();
+                //The changePassword api is not complete, and the simulation result callback is temporarily used
+                resultBean = new ChangePasswordResultBean();
                 resultBean.code = CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS;
                 resultBean.msg = CloudApiContext.HttpReusltCode.RESULT_MESSAGE_SUCCESS;
             }
@@ -49,7 +49,7 @@ public class UserLogoutRequest extends BaseCloudRequest {
         }
     }
 
-    private Call<UserLogoutResultBean> getCall(ContentService service) {
-        return service.userLogout(requestBean.account);
+    private Call<ChangePasswordResultBean> getCall(ContentService service) {
+        return service.changePassword(requestBean.account,requestBean.oldPassword,requestBean.newPpassword);
     }
 }

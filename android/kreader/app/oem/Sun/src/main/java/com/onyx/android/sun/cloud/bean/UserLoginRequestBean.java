@@ -35,5 +35,6 @@ public class UserLoginRequestBean extends BaseObservable{
 
     public void setIsKeepPassword(boolean isKeepPassword) {
         this.isKeepPassword = isKeepPassword;
+        notifyChange();
     }
 }

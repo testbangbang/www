@@ -8,9 +8,13 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
+import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.databinding.ItemStudyReportBinding;
+import com.onyx.android.sun.event.ToStudyReportDeatilEvent;
 import com.onyx.android.sun.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -48,11 +52,24 @@ public class StudyReportAdapter extends PageRecyclerView.PageAdapter {
         ItemStudyReportBinding studyReportBinding = viewHolder.getStudyReportBinding();
         studyReportBinding.setContent(data.get(position));
         studyReportBinding.executePendingBindings();
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
+    }
+
+    @Override
+    public void setOnItemClick(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
+        super.setOnItemClick(onRecyclerViewItemClickListener);
     }
 
     @Override
     public void onClick(View view) {
-
+        Object tag = view.getTag();
+        if (tag == null) {
+            return;
+        }
+        int position = (int) tag;
+        ContentBean contentBean = data.get(position);
+        EventBus.getDefault().post(new ToStudyReportDeatilEvent(contentBean.id,contentBean.title));
     }
 
     public void setData(List<FinishContent> data) {

@@ -3,6 +3,8 @@ package com.onyx.android.sun;
 import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sun.cloud.bean.ChangePasswordRequestBean;
+import com.onyx.android.sun.cloud.bean.ChangePasswordResultBean;
 import com.onyx.android.sun.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeRequestBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
@@ -10,8 +12,10 @@ import com.onyx.android.sun.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
 import com.onyx.android.sun.cloud.bean.UserLogoutRequestBean;
 import com.onyx.android.sun.cloud.bean.UserLogoutResultBean;
+import com.onyx.android.sun.data.ChangePasswordFragmentData;
 import com.onyx.android.sun.data.UserCenterFragmentData;
 import com.onyx.android.sun.data.UserLoginActivityData;
+import com.onyx.android.sun.requests.cloud.ChangePasswordRequest;
 import com.onyx.android.sun.requests.cloud.SubmitPracticeRequest;
 import com.onyx.android.sun.requests.cloud.UserLoginRequest;
 import com.onyx.android.sun.requests.cloud.UserLogoutRequest;
@@ -102,6 +106,28 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 UserLogoutResultBean resultBean = rq.getLogoutResultBean();
+                assertEquals(0,resultBean.code);
+                assertNotNull(resultBean);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testChangePassword() throws Exception {
+
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        ChangePasswordFragmentData changePasswordFragmentData = new ChangePasswordFragmentData();
+        ChangePasswordRequestBean requestBean = new ChangePasswordRequestBean();
+        requestBean.account = "123456";
+        requestBean.newPpassword = "abcd";
+        requestBean.finalPassword = "abcd";
+        final ChangePasswordRequest rq = new ChangePasswordRequest(requestBean);
+
+        changePasswordFragmentData.changePassword(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                ChangePasswordResultBean resultBean = rq.getChangePasswordResultBean();
                 assertEquals(0,resultBean.code);
                 assertNotNull(resultBean);
                 countDownLatch.countDown();

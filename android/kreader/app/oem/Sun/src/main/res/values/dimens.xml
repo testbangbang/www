@@ -82,7 +82,6 @@
     <dimen name="login_activity_logo_margin_top">93dp</dimen>
     <dimen name="login_activity_padding">22dp</dimen>
     <dimen name="login_activity_name_margin_top">20dp</dimen>
-    <dimen name="login_activity_name_font_size">24sp</dimen>
     <dimen name="login_activity_logo_width">140dp</dimen>
     <dimen name="login_activity_logo_height">140dp</dimen>
     <dimen name="login_activity_account_margin_top">93dp</dimen>
@@ -93,9 +92,26 @@
     <dimen name="user_center_title_margin_bottom">20dp</dimen>
     <dimen name="user_center_text_padding_top_and_bottom">13dp</dimen>
     <dimen name="user_center_text_padding_left">18dp</dimen>
-    <dimen name="user_center_text_normal_textsize">18sp</dimen>
+    <dimen name="text_small_textsize">14sp</dimen>
     <dimen name="user_center_text_colon_margin_left_and_right">4dp</dimen>
     <dimen name="user_center_right_icon_padding_right">10dp</dimen>
     <dimen name="user_center_logout_button_margin_top">30dp</dimen>
     <dimen name="main_activity_title_name_padding">10dp</dimen>
+    <dimen name="change_password_confirm_button_margin_top">50dp</dimen>
+    <dimen name="change_password_account_item_margin_top">40dp</dimen>
+    <dimen name="change_password_input_box_margin_top">20dp</dimen>
+    <dimen name="change_password_input_box_height">45dp</dimen>
+    <dimen name="change_password_password_item_margin_top">30dp</dimen>
+    <dimen name="study_report_fragment_pading_left_and_right">15dp</dimen>
+    <dimen name="study_report_fragment_text_pading_top_and_bottom">10dp</dimen>
+    <dimen name="study_report_fragment_score_describe_margin_top">30dp</dimen>
+    <dimen name="study_report_fragment_study_score_describe_space">10dp</dimen>
+    <dimen name="study_report_fragment_study_total_topic_margin_top">10dp</dimen>
+    <dimen name="study_report_fragment_competence_chart_height">280dp</dimen>
+    <dimen name="study_report_fragment_competence_spiderweb_width_and_height">200dp</dimen>
+    <dimen name="study_report_fragment_look_competence_button_padding_top_and_bottom">5dp</dimen>
+    <dimen name="study_report_fragment_look_competence_button_padding_left_and_right">20dp</dimen>
+    <dimen name="study_report_fragment_look_competence_button_margin_left">10dp</dimen>
+    <dimen name="study_report_fragment_tableview_row_height">50dp</dimen>
+    <dimen name="study_report_fragment_table_view_magin_top">20dp</dimen>
 </resources>

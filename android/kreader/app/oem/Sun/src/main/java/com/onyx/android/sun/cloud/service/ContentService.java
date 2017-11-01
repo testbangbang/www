@@ -1,5 +1,7 @@
 package com.onyx.android.sun.cloud.service;
 
+import com.onyx.android.sun.cloud.bean.ChangePasswordResultBean;
+import com.onyx.android.sun.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
@@ -68,4 +70,12 @@ public interface ContentService {
     @FormUrlEncoded
     @POST("api/user/logout")
     Call<UserLogoutResultBean> userLogout(@Field(CloudApiContext.UserInfo.ACCOUNT) String account);
+
+    @FormUrlEncoded
+    @POST("api/user/changePassword")
+    Call<ChangePasswordResultBean> changePassword(@Field(CloudApiContext.ChangePassword.ACCOUNT) String account,
+                                                  @Field(CloudApiContext.ChangePassword.OLD_PASSWORD) String oldPassword,
+                                                  @Field(CloudApiContext.ChangePassword.NEW_PASSWORD) String newPassword);
+    @GET("/api/practice/{id}/report")
+    Call<GetStudyReportDetailResultBean> getStudyReportDetail(@Path(CloudApiContext.Practices.ID) int id);
 }

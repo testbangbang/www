@@ -12,6 +12,7 @@ import com.onyx.android.sun.adapter.StudyReportAdapter;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
+import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.sun.databinding.HomeworkBinding;
 import com.onyx.android.sun.interfaces.HomeworkView;
 import com.onyx.android.sun.presenter.HomeworkPresenter;
@@ -195,4 +196,10 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     public void setTaskDetail(QuestionDetail data) {
 
     }
+
+    @Override
+    public void setStudyReportDetail(StudyReportDetailBean data) {
+
+    }
+
 }
