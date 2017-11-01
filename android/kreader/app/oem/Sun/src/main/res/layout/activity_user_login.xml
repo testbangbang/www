@@ -56,6 +56,7 @@
             android:checked="@={requestInfo.isKeepPassword}"
             android:layout_marginTop="@dimen/login_activity_keep_password_margin_top"
             android:text="@string/login_activity_keep_password"
+            android:textSize="@dimen/level_three_heading_font"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
@@ -67,6 +68,7 @@
             android:padding="@dimen/login_activity_login_button_pddding"
             android:gravity="center"
             android:text="@string/login_activity_login"
+            android:textSize="@dimen/level_three_heading_font"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
