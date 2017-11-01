@@ -402,8 +402,12 @@ public class ReaderActivity extends OnyxBaseActivity {
                 if (!getReaderDataHolder().isDocumentInitRendered()) {
                     return;
                 }
-
-                onSurfaceViewSizeChanged();
+                if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
+                    surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
+                    getReaderDataHolder().redrawPage();
+                } else {
+                    onSurfaceViewSizeChanged();
+                }
             }
 
             @Override
@@ -868,6 +872,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentInitRendered()) {
             return;
         }
+        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         updateNoteHostView();
 
         if (getReaderDataHolder().isNoteWritingProvider()) {
@@ -898,7 +903,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void updateNoteHostView() {
-        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
