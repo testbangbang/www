@@ -103,6 +103,7 @@ public class RxDBRequestTest extends ApplicationTestCase<Application> {
         init();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         final int total = TestUtils.randInt(100, 500);
+        TestUtils.deleteRecursive(testFolder());
         final HashSet<String> files = new HashSet<>();
         for (int i = 0; i < total; i++) {
             File file = generateRandomFile(testFolder(), true);
