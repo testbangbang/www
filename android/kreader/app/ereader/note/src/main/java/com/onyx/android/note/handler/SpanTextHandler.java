@@ -3,6 +3,7 @@ package com.onyx.android.note.handler;
 import android.content.Context;
 import android.os.Handler;
 import android.text.SpannableStringBuilder;
+import android.util.Log;
 
 import com.onyx.android.note.NoteApplication;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -45,6 +46,7 @@ public class SpanTextHandler {
     private Handler handler;
     private Context context;
     private Callback callback;
+    private boolean buildingSpan = false;
 
     public SpanTextHandler(Context context, Callback callback) {
         this.context = context;
@@ -112,6 +114,7 @@ public class SpanTextHandler {
     }
 
     private void spannableRequest(final Map<String, List<Shape>> subPageSpanTextShapeMap, final List<Shape> newAddShapeList) {
+        setBuildingSpan(true);
         final SpannableRequest spannableRequest = new SpannableRequest(subPageSpanTextShapeMap, newAddShapeList);
         getNoteViewHelper().submit(context, spannableRequest, new BaseCallback() {
             @Override
@@ -188,4 +191,11 @@ public class SpanTextHandler {
         shape.addPoints(touchPointList);
     }
 
+    public boolean isBuildingSpan() {
+        return buildingSpan;
+    }
+
+    public void setBuildingSpan(boolean buildingSpan) {
+        this.buildingSpan = buildingSpan;
+    }
 }

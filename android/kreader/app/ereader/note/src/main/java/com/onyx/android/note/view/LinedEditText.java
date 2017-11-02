@@ -110,4 +110,9 @@ public class LinedEditText extends EditText {
     public void setOnKeyPreImeListener(OnKeyPreImeListener onKeyPreImeListener) {
         this.onKeyPreImeListener = onKeyPreImeListener;
     }
+
+    public void clear() {
+        inputConnectionListener = null;
+        onKeyPreImeListener = null;
+    }
 }

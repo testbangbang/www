@@ -530,7 +530,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         resetFullUpdate();
     }
 
+    public boolean isBuildingSpan() {
+        return false;
+    }
     protected void onNextPage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -547,6 +553,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onPrevPage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -563,6 +572,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onAddNewPage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -579,6 +591,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onDeletePage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -586,6 +601,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             }
         });
     }
+
 
     private void deletePage() {
         OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
