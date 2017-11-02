@@ -210,7 +210,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onStop() {
-        onDocumentDeactivated();
+        onDocumentDeactivated(true);
         super.onStop();
     }
 
@@ -474,6 +474,9 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
+        if (getReaderDataHolder().isDocumentInitRendered()) {
+            saveDocumentOptions();
+        }
     }
 
     private void enablePenShortcut() {
@@ -653,7 +656,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         if (!getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
-            onDocumentDeactivated();
+            onDocumentDeactivated(false);
             return;
         }
 
@@ -703,7 +706,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         return pinchZoomingPopupMenu;
     }
 
-    private void onDocumentDeactivated() {
+    private void onDocumentDeactivated(final boolean saveOptions) {
         Debug.e(getClass(), "onDocumentDeactivated");
         enablePost(true);
         if (!verifyReader()) {
@@ -717,12 +720,16 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (!getReaderDataHolder().isNoteWritingProvider()) {
-            saveDocumentOptions();
+            if (saveOptions) {
+                saveDocumentOptions();
+            }
         } else {
             stopNoteWriting(new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
-                    saveDocumentOptions();
+                    if (saveOptions) {
+                        saveDocumentOptions();
+                    }
                 }
             });
         }
