@@ -3,10 +3,12 @@ package com.onyx.kreader.ui.actions;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -24,6 +26,7 @@ import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.ReaderLayerColorMenu;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenu;
@@ -31,6 +34,7 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -926,7 +930,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 addSideNoteSubPage(readerDataHolder);
                 break;
             case SCRIBBLE_SIDE_NOTE_DELETE_PAGE:
-                deleteSideNoteSubPage(readerDataHolder);
+                deleteNotePage(readerDataHolder);
                 break;
             case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
@@ -938,6 +942,26 @@ public class ShowReaderMenuAction extends BaseAction {
                 redo(readerDataHolder);
                 break;
         }
+    }
+
+    private static void deleteNotePage(final ReaderDataHolder readerDataHolder) {
+        OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(),
+                readerDataHolder.getContext().getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteSideNoteSubPage(readerDataHolder);
+            }
+        }, null);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+                new FlushNoteAction(pages, true, true, false, false).execute(readerDataHolder, null);
+            }
+        });
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.x = (readerDataHolder.getDisplayWidth() / 4);
+        dialog.show();
     }
 
     public static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {

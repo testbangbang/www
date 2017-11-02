@@ -602,6 +602,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         });
     }
 
+
     private void deletePage() {
         OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
             @Override
