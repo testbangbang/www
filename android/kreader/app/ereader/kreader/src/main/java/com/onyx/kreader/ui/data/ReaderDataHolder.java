@@ -584,6 +584,12 @@ public class ReaderDataHolder {
         }
     }
 
+    public void redrawPage(BaseCallback callback) {
+        if (getReader() != null) {
+            submitRenderRequest(new RenderRequest(), callback);
+        }
+    }
+
     public void showReaderSettings() {
         getEventBus().post(new ShowReaderSettingsEvent());
     }
