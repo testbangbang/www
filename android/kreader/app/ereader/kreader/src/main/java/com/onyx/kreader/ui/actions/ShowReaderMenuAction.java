@@ -624,6 +624,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 if (sideNotePage >= 0) {
                     readerDataHolder.setSideNotePage(sideNotePage);
                     readerDataHolder.redrawPage();
+                    resumeDrawing(readerDataHolder);
                     return;
                 }
 
@@ -633,6 +634,7 @@ public class ShowReaderMenuAction extends BaseAction {
                     public void done(BaseRequest request, Throwable e) {
                         readerDataHolder.setSideNotePage(0);
                         readerDataHolder.redrawPage();
+                        resumeDrawing(readerDataHolder);
                     }
                 });
             }
