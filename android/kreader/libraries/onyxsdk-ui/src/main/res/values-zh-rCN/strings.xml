@@ -88,4 +88,6 @@
     <string name="cold_light">冷光</string>
     <string name="warm_light">暖光</string>
     <string name="reader_layer_menu_note_side_note">分屏手写</string>
+
+    <string name="loading">正在加载…</string>
 </resources>
