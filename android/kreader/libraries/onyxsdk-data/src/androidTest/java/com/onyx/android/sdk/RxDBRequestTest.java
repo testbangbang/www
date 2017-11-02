@@ -5,20 +5,27 @@ import android.os.Environment;
 import android.test.ApplicationTestCase;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.QueryResult;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxCreateDBRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxExportDataToDBRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxFilesAddToMetadataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxFilesRemoveFromMetadataRequest;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.android.sdk.utils.TestUtils;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.concurrent.CountDownLatch;
+
+import static com.onyx.android.sdk.utils.TestUtils.generateRandomFile;
 
 /**
  * Created by hehai on 17-11-1.
@@ -95,18 +102,22 @@ public class RxDBRequestTest extends ApplicationTestCase<Application> {
     public void testRxFilesAddToMetadataRequest() throws Exception {
         init();
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        File books = new File(Environment.getExternalStorageDirectory(), "Books");
-        final File[] files = books.listFiles();
-        HashSet<String> set = new HashSet<>();
-        for (File file : files) {
-            set.add(file.getAbsolutePath());
+        final int total = TestUtils.randInt(100, 500);
+        final HashSet<String> files = new HashSet<>();
+        for (int i = 0; i < total; i++) {
+            File file = generateRandomFile(testFolder(), true);
+            files.add(file.getAbsolutePath());
         }
-        RxFilesAddToMetadataRequest request = new RxFilesAddToMetadataRequest(new DataManager(), EnvironmentUtil.getRemovableSDCardCid(), set);
+        DataManager dataManager = new DataManager();
+        dataManager.getRemoteContentProvider().clearMetadata();
+        RxFilesAddToMetadataRequest request = new RxFilesAddToMetadataRequest(dataManager, EnvironmentUtil.getRemovableSDCardCid(), files);
         request.execute(new RxCallback<RxFilesAddToMetadataRequest>() {
             @Override
             public void onNext(RxFilesAddToMetadataRequest rxExportDataToDBRequest) {
-                Metadata metadata = rxExportDataToDBRequest.getDataManager().getRemoteContentProvider().findMetadataByPath(getContext(), files[0].getAbsolutePath());
-                assertTrue(metadata != null && StringUtils.isNotBlank(metadata.getNativeAbsolutePath()));
+                QueryResult<Metadata> queryResult = rxExportDataToDBRequest.getDataManager().getRemoteContentProvider().findMetadataResultByQueryArgs(getContext(), QueryBuilder.allBooksQuery(SortBy.Author, SortOrder.Asc));
+                assertNotNull(queryResult);
+                assertNotNull(queryResult.list);
+                assertEquals(queryResult.list.size(), files.size());
                 countDownLatch.countDown();
             }
 
@@ -149,4 +160,11 @@ public class RxDBRequestTest extends ApplicationTestCase<Application> {
         });
         countDownLatch.await();
     }
+
+    public static String testFolder() {
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        return path;
+    }
 }
+
+
