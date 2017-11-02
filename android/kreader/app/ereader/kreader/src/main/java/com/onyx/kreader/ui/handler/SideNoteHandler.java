@@ -108,6 +108,9 @@ public class SideNoteHandler extends BaseHandler {
         if (e.getPointerCount() > 1) {
             return true;
         }
+        if (inDocRegion(e)) {
+            return true;
+        }
 
         return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
     }
