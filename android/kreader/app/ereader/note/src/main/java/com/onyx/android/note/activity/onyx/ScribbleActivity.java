@@ -100,7 +100,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private LinedEditText spanTextView;
     private SpanTextHandler spanTextHandler;
     private boolean isKeyboardInput = false;
-    private boolean buildingSpan = false;
     private boolean isPictureEditMode = false;
     private Uri editPictUri;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
@@ -289,9 +288,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void OnFinishedSpan(SpannableStringBuilder builder, final List<Shape> spanShapeList, final ShapeSpan lastShapeSpan) {
                 if (builder == null) {
+                    setBuildingSpan(false);
                     return;
                 }
-                setBuildingSpan(true);
                 spanTextView.setText(builder);
                 spanTextView.setSelection(builder.length());
                 spanTextView.requestFocus();
@@ -400,9 +399,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     loadLineLayoutShapes();
+                    setBuildingSpan(false);
                 }
             });
-            setBuildingSpan(false);
             return;
         }
 
@@ -666,6 +665,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onDelete(boolean resume) {
+        if (isBuildingSpan()) {
+            return;
+        }
         String groupId = spanTextHandler.getLastGroupId();
         if (StringUtils.isNullOrEmpty(groupId)) {
             syncWithCallback(false, resume, null);
@@ -682,6 +684,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onSpace() {
+        if (isBuildingSpan()) {
+            return;
+        }
         spanTextHandler.buildSpaceShape(SpanTextHandler.SPACE_WIDTH, getSpanTextFontHeight());
     }
 
@@ -1176,11 +1181,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     public boolean isBuildingSpan() {
-        return buildingSpan;
+        return isLineLayoutMode() && spanTextHandler.isBuildingSpan();
     }
 
     public void setBuildingSpan(boolean buildingSpan) {
-        this.buildingSpan = buildingSpan;
+        spanTextHandler.setBuildingSpan(buildingSpan);
     }
 
     @Override
