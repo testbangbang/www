@@ -115,7 +115,6 @@ public class ShapeEventHandler {
             return null;
         }
         shape.onUp(normal, screen);
-        resetCurrentShape();
         return shape;
     }
 
@@ -190,9 +189,11 @@ public class ShapeEventHandler {
     }
 
     public void onDrawingTouchUp(MotionEvent motionEvent) {
-        if (lastPageInfo == null) {
+        if (lastPageInfo == null || currentShape == null) {
             return;
         }
+        TouchPoint touchPoint = new TouchPoint(motionEvent);
+        collectPoint(lastPageInfo, touchPoint, false, true);
         finishCurrentShape();
     }
 
