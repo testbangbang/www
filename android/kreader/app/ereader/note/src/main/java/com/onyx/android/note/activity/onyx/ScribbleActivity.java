@@ -132,6 +132,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     @Override
     protected void onDestroy() {
+        spanTextView.clear();
         super.onDestroy();
     }
 
