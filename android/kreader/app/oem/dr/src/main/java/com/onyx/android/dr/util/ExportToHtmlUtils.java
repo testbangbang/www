@@ -106,7 +106,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
@@ -152,7 +152,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
@@ -206,7 +206,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
@@ -255,7 +255,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
@@ -297,7 +297,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb.toString());
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
@@ -344,7 +344,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb);
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
@@ -394,7 +394,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb);
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();
@@ -438,7 +438,7 @@ public class ExportToHtmlUtils {
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb);
-            EventBus.getDefault().post(new ExportHtmlSuccessEvent());
+            EventBus.getDefault().post(new ExportHtmlSuccessEvent(file.toString()));
         } catch (Exception e) {
             EventBus.getDefault().post(new ExportHtmlFailedEvent());
             e.printStackTrace();

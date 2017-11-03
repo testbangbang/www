@@ -5,9 +5,12 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.ReaderMenuBean;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.reader.event.AfterReadingMenuEvent;
+import com.onyx.android.dr.reader.event.CropToPageMenuEvent;
+import com.onyx.android.dr.reader.event.CropWidthPageMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderAfterReadingMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderAnnotationMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderCategoryMenuEvent;
+import com.onyx.android.dr.reader.event.ReaderFitPageMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderFontMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderGoodSentenceMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderListenMenuEvent;
@@ -26,12 +29,20 @@ import java.util.List;
  */
 
 public class ReaderTabMenuConfig {
-    private static List<ReaderMenuBean> defaultReaderMenus = new ArrayList<>();
+    public List<ReaderMenuBean> defaultReaderMenus = new ArrayList<>();
     private static List<ReaderMenuBean> afterReaderMenus = new ArrayList<>();
 
-    static {
+    public void loadMenuData() {
         ReaderMenuBean readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_FONT, DRApplication.getInstance().getString(R.string.font), R.drawable.ic_reader_menu_font, new ReaderFontMenuEvent());
         defaultReaderMenus.add(readerMenuBean);
+
+        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_FIT_PAGE, DRApplication.getInstance().getString(R.string.fit_page), R.drawable.ic_dialog_reader_menu_scale_fit_page, new ReaderFitPageMenuEvent());
+        defaultReaderMenus.add(readerMenuBean);
+
+        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_TO_PAGE, DRApplication.getInstance().getString(R.string.reader_layer_menu_zoom_by_crop_page), R.drawable.ic_dialog_reader_menu_scale_cut_four, new CropToPageMenuEvent());
+        defaultReaderMenus.add(readerMenuBean);
+
+        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_WIDTH, DRApplication.getInstance().getString(R.string.reader_layer_menu_zoom_by_crop_width), R.drawable.ic_dialog_reader_menu_scale_cut_two, new CropWidthPageMenuEvent());
 
         readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_CATALOG, DRApplication.getInstance().getString(R.string.catalog), R.drawable.ic_reader_menu_list, new ReaderCategoryMenuEvent());
         defaultReaderMenus.add(readerMenuBean);
@@ -62,7 +73,7 @@ public class ReaderTabMenuConfig {
     }
 
 
-    public static List<ReaderMenuBean> getMenuData() {
+    public List<ReaderMenuBean> getMenuData() {
         getJsonConfig(defaultReaderMenus);
         return defaultReaderMenus;
     }

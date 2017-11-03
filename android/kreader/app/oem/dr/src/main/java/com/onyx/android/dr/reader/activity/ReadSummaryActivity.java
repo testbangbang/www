@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.BaseActivity;
@@ -25,6 +26,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -62,6 +64,12 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     TextView newWordsReviewTitleHint;
     @Bind(R.id.good_sentence_title_hint)
     TextView goodSentenceTitleHint;
+    @Bind(R.id.good_sentence)
+    TextView goodSentence;
+    @Bind(R.id.good_sentence_supplements)
+    TextView goodSentenceSupplements;
+    @Bind(R.id.good_sentence_container)
+    LinearLayout goodSentenceContainer;
     @Bind(R.id.good_sentence_recycler)
     PageRecyclerView goodSentenceRecycler;
     private NewWordsReviewListAdapter newWordsReviewListAdapter;
@@ -147,13 +155,14 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         if (goodSentenceList == null || goodSentenceList.size() <= 0) {
             goodSentenceTitleHint.setVisibility(View.VISIBLE);
             goodSentenceRecycler.setVisibility(View.GONE);
+            goodSentenceContainer.setVisibility(View.GONE);
             goodSentenceTitleHint.setText(getString(R.string.good_sentence_title_hint));
         } else {
             goodSentenceTitleHint.setVisibility(View.GONE);
-            goodSentenceRecycler.setVisibility(View.VISIBLE);
-            goodSentenceReviewListAdapter.setList(goodSentenceList);
+            goodSentenceRecycler.setVisibility(View.GONE);
+            goodSentenceContainer.setVisibility(View.VISIBLE);
+            goodSentence.setText(goodSentenceList.get(0).sentence);
         }
-        goodSentenceReviewListAdapter.setList(goodSentenceList);
     }
 
     @Override
@@ -162,9 +171,14 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     }
 
     public void saveReadSummary() {
+        List<ReadSummaryGoodSentenceReviewBean> list = new ArrayList<>();
         String summary = editReadSummary.getText().toString();
+        String supplement = goodSentenceSupplements.getText().toString();
+        ReadSummaryGoodSentenceReviewBean bean = new ReadSummaryGoodSentenceReviewBean();
+        bean.supplements = supplement;
+        list.add(bean);
         String newWordListJson = newWordsReviewListAdapter.getNewWordListJson();
-        String goodSentenceJson = goodSentenceReviewListAdapter.getGoodSentenceJson();
+        String goodSentenceJson = JSON.toJSONString(list);
         readSummaryPresenter.saveReadSummary(bookName, pageNumber, summary, newWordListJson, goodSentenceJson);
     }
 }

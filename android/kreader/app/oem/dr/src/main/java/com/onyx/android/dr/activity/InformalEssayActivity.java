@@ -67,7 +67,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private List<CreateInformalEssayBean> informalEssayList;
     private ArrayList<Boolean> listCheck;
     private PageIndicator pageIndicator;
-    private String offset = "1";
+    private String offset = "0";
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";
@@ -273,7 +273,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.export_success));
+        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -79,24 +79,10 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookRepo
                 }
             }
         });
-        holder.bookReportListItemSummary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                startBookReportDetailActivity(bookReportListBean);
-            }
-        });
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        onItemClickListener.setOnItemClick(position, false);
-                    } else {
-                        holder.checkBox.setChecked(true);
-                        onItemClickListener.setOnItemClick(position, true);
-                    }
-                }
+                startBookReportDetailActivity(bookReportListBean);
             }
         });
     }

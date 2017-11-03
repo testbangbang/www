@@ -85,33 +85,35 @@
         android:id="@+id/new_word_query_activity_bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/new_word_query_activity_bottom_padding_bottom"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
-        android:paddingBottom="@dimen/new_word_query_activity_bottom_padding_bottom"
         android:layout_alignParentStart="true">
 
         <TextView
             android:id="@+id/new_word_query_activity_baidubaike"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/select_dialog_baidubaike_height"
             android:layout_margin="@dimen/select_dialog_close_cancel_margin"
             android:background="@drawable/rectangle_stroke"
             android:gravity="center"
             android:padding="@dimen/select_dialog_close_cancel_padding"
             android:text="@string/baidu_baike"
+            android:drawableLeft="@drawable/ic_dialog_reader_dic_i_search"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
             android:id="@+id/new_word_query_activity_confirm"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/select_dialog_baidubaike_height"
             android:layout_alignParentRight="true"
             android:layout_margin="@dimen/select_dialog_close_cancel_margin"
             android:background="@drawable/rectangle_stroke"
             android:gravity="center"
             android:padding="@dimen/select_dialog_close_cancel_padding"
-            android:text="@string/vocabulary_notebook"
+            android:drawableLeft="@drawable/ic_reader_dic_add_word"
+            android:text="@string/add_new_word"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 

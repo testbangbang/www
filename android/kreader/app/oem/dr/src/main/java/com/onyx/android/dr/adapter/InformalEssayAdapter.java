@@ -71,24 +71,10 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
                 }
             }
         });
-        holder.content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance(), bean.title, bean.content);
-            }
-        });
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        onItemClickListener.setOnItemClick(position, false);
-                    } else {
-                        holder.checkBox.setChecked(true);
-                        onItemClickListener.setOnItemClick(position, true);
-                    }
-                }
+                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance(), bean.title, bean.content);
             }
         });
     }

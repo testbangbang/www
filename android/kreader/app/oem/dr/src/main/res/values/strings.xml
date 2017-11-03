@@ -723,4 +723,7 @@
     <string name="send">send</string>
     <string name="apply_for_group_item_already_pass">already_pass</string>
     <string name="apply_for_group_item_already_refuse">already refuse</string>
+    <string name="fit_page">fit page</string>
+    <string name="visitors_to_login">visitors to login</string>
+    <string name="has_exported_to">has exported to: </string>
 </resources>

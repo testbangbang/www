@@ -319,7 +319,7 @@ public class BookListAdapter extends PageRecyclerView.PageAdapter<BookListAdapte
         if (!file.exists()) {
             return;
         }
-        ActivityManager.openBook(DRApplication.getInstance(), book, path);
+        ActivityManager.openBook(DRApplication.getInstance(), book, path, Constants.OTHER_SOURCE_TAG);
     }
 
     private String getDataSaveFilePath(Metadata book) {

@@ -1,5 +1,8 @@
 package com.onyx.android.dr.reader.presenter;
 
+import android.graphics.RectF;
+
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.reader.action.BookOperate;
 import com.onyx.android.dr.reader.base.ReaderView;
 import com.onyx.android.dr.reader.data.BookInfo;
@@ -9,7 +12,9 @@ import com.onyx.android.dr.reader.event.DictionaryLookupEvent;
 import com.onyx.android.dr.reader.event.DocumentCloseEvent;
 import com.onyx.android.dr.reader.event.DocumentOpenEvent;
 import com.onyx.android.dr.reader.event.EventReceiver;
+import com.onyx.android.dr.reader.event.LayoutChangeEvent;
 import com.onyx.android.dr.reader.event.NetworkChangedEvent;
+import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.event.TextSelectionEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.highlight.ReaderSelectionManager;
@@ -30,6 +35,7 @@ import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.reader.host.request.CloseRequest;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.reader.host.wrapper.Reader;
+import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,6 +50,8 @@ public class ReaderPresenter {
     private DataManager dataProvider;
     private boolean fluent;
     private EventReceiver eventReceiver;
+    private int currentPage = 0;
+    private RectF viewportInDoc;
 
     public void setFluent(boolean fluent) {
         this.fluent = fluent;
@@ -222,7 +230,7 @@ public class ReaderPresenter {
         saveReaderUserDataInfo(request);
         readerView.updatePage(getReader().getViewportBitmap().getBitmap());
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
-            //getEventBus().post(new LayoutChangeEvent());
+            EventBus.getDefault().post(new LayoutChangeEvent());
         }
     }
 
@@ -309,5 +317,33 @@ public class ReaderPresenter {
     public void onNetworkChanged(boolean connected, int networkType) {
         final NetworkChangedEvent event = NetworkChangedEvent.create(getReaderView().getViewContext(), connected, networkType);
         EventBus.getDefault().post(event);
+    }
+
+    public void submitRenderRequest(final BaseReaderRequest request) {
+        getReader().submitRequest(DRApplication.getInstance(), request, new BaseCallback() {
+            @Override
+            public void done(BaseRequest baseRequest, Throwable throwable) {
+                if (throwable == null) {
+                    updateCurrentPage(request);
+                    EventBus.getDefault().post(new RedrawPageEvent());
+                } else {
+                    readerView.showThrowable(throwable);
+                }
+            }
+        });
+    }
+
+    private void updateCurrentPage(BaseReaderRequest request) {
+        currentPage = getPage(request);
+        viewportInDoc = request.getReaderViewInfo().viewportInDoc;
+        readerView.updatePage(currentPage, getReader().getViewportBitmap().getBitmap());
+    }
+
+    public int getPage(final BaseReaderRequest request) {
+        return PagePositionUtils.getPageNumber(getPageName(request));
+    }
+
+    public String getPageName(final BaseReaderRequest request) {
+        return request.getReaderViewInfo().getFirstVisiblePage().getName();
     }
 }

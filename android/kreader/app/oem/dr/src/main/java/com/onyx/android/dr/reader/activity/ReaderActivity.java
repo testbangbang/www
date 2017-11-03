@@ -13,6 +13,7 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
 import android.view.GestureDetector;
@@ -115,6 +116,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     private CustomFileObserver fileObserver;
     private TextView bookName;
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
+    private Handler handler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -164,6 +166,19 @@ public class ReaderActivity extends Activity implements ReaderView {
         String bookId = getIntent().getStringExtra(ReaderConstants.BOOK_ID);
         bookInfo.setBookId(bookId);
         isFluent = getIntent().getBooleanExtra(ReaderConstants.IS_FLUENT, false);
+//        int tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
+//        if (tag == Constants.ANNOTATION_SOURCE_TAG) {
+//            if (handler == null) {
+//                handler = new Handler();
+//            }
+//            handler.postDelayed(new Runnable(){
+//                public void run() {
+//                    progressLoading.setVisibility(View.GONE);
+//                    progressLoading.setRun(false);
+//                    ReaderDialogManage.onShowBookInfoDialog(readerPresenter, ReaderBookInfoDialogConfig.NOTE_MODE);
+//                }
+//            }, getResources().getInteger(R.integer.reading_activity_skip_annotation));
+//        }
         return true;
     }
 
@@ -302,6 +317,10 @@ public class ReaderActivity extends Activity implements ReaderView {
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
+    }
+
+    @Override
+    public void updatePage(int page, Bitmap bitmap) {
     }
 
     public ReaderPresenter getReaderPresenter() {

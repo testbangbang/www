@@ -33,10 +33,13 @@ import com.onyx.android.dr.reader.common.ReaderTabMenuConfig;
 import com.onyx.android.dr.reader.common.ToastManage;
 import com.onyx.android.dr.reader.event.AfterReadingMenuEvent;
 import com.onyx.android.dr.reader.event.ChangeSpeechRateEvent;
+import com.onyx.android.dr.reader.event.CropToPageMenuEvent;
+import com.onyx.android.dr.reader.event.CropWidthPageMenuEvent;
 import com.onyx.android.dr.reader.event.NotifyTtsStateChangedEvent;
 import com.onyx.android.dr.reader.event.ReaderAfterReadingMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderAnnotationMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderCategoryMenuEvent;
+import com.onyx.android.dr.reader.event.ReaderFitPageMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderFontMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderListenMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderMainMenuItemEvent;
@@ -69,6 +72,8 @@ import com.onyx.android.dr.reader.event.TtsSpeakingStateEvent;
 import com.onyx.android.dr.reader.event.TtsStopStateEvent;
 import com.onyx.android.dr.reader.handler.HandlerManger;
 import com.onyx.android.dr.reader.presenter.ReaderPresenter;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -169,8 +174,10 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     }
 
     private void initData() {
+        ReaderTabMenuConfig config = new ReaderTabMenuConfig();
+        config.loadMenuData();
         readerPresenter.getBookOperate().getDocumentInfo();
-        defaultMenuData = ReaderTabMenuConfig.getMenuData();
+        defaultMenuData = config.getMenuData();
     }
 
     private void initThirdLibrary() {
@@ -226,6 +233,10 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     private void initDefaultView() {
         if (!ReadPageInfo.supportTypefaceAdjustment(readerPresenter)) {
             filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_FONT);
+        }else{
+            filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_FIT_PAGE);
+            filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_TO_PAGE);
+            filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_WIDTH);
         }
         setReaderTabMenu(defaultMenuData);
 
@@ -658,6 +669,24 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     public void OnReaderFontMenuEvent(ReaderFontMenuEvent event) {
         readerReadingSettingMenu.setVisibility(readerReadingSettingMenu.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
         dismissZone.setVisibility(View.INVISIBLE);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnReaderFitPageMenuEvent(ReaderFitPageMenuEvent event) {
+        final ScaleToPageRequest request = new ScaleToPageRequest(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName());
+        readerPresenter.submitRenderRequest(request);
+        dismiss();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnCropWidthPageMenuEvent(CropToPageMenuEvent event) {
+        final ScaleToPageCropRequest request = new ScaleToPageCropRequest(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName());
+        readerPresenter.submitRenderRequest(request);
+        dismiss();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnCropWidthPageMenuEvent(CropWidthPageMenuEvent event) {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
