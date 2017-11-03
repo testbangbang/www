@@ -110,12 +110,12 @@ public class RxDBRequestTest extends ApplicationTestCase<Application> {
             files.add(file.getAbsolutePath());
         }
         DataManager dataManager = new DataManager();
-        dataManager.getRemoteContentProvider().clearMetadata();
         RxFilesAddToMetadataRequest request = new RxFilesAddToMetadataRequest(dataManager, EnvironmentUtil.getRemovableSDCardCid(), files);
+        request.getDataProvider().clearMetadata();
         request.execute(new RxCallback<RxFilesAddToMetadataRequest>() {
             @Override
             public void onNext(RxFilesAddToMetadataRequest rxExportDataToDBRequest) {
-                QueryResult<Metadata> queryResult = rxExportDataToDBRequest.getDataManager().getRemoteContentProvider().findMetadataResultByQueryArgs(getContext(), QueryBuilder.allBooksQuery(SortBy.Author, SortOrder.Asc));
+                QueryResult<Metadata> queryResult = rxExportDataToDBRequest.getDataProvider().findMetadataResultByQueryArgs(getContext(), QueryBuilder.allBooksQuery(SortBy.Author, SortOrder.Asc));
                 assertNotNull(queryResult);
                 assertNotNull(queryResult.list);
                 assertEquals(queryResult.list.size(), files.size());
@@ -142,12 +142,12 @@ public class RxDBRequestTest extends ApplicationTestCase<Application> {
             set.add(file.getAbsolutePath());
         }
         RxFilesRemoveFromMetadataRequest request = new RxFilesRemoveFromMetadataRequest(new DataManager(), set);
-        Metadata metadata = request.getDataManager().getRemoteContentProvider().findMetadataByPath(getContext(), files[0].getAbsolutePath());
+        Metadata metadata = request.getDataProvider().findMetadataByPath(getContext(), files[0].getAbsolutePath());
         assertTrue(StringUtils.isNotBlank(metadata.getNativeAbsolutePath()));
         request.execute(new RxCallback<RxFilesRemoveFromMetadataRequest>() {
             @Override
             public void onNext(RxFilesRemoveFromMetadataRequest rxFilesRemoveFromMetadataRequest) {
-                Metadata metadata = rxFilesRemoveFromMetadataRequest.getDataManager().getRemoteContentProvider().findMetadataByPath(getContext(), files[0].getAbsolutePath());
+                Metadata metadata = rxFilesRemoveFromMetadataRequest.getDataProvider().findMetadataByPath(getContext(), files[0].getAbsolutePath());
                 assertFalse(StringUtils.isNotBlank(metadata.getNativeAbsolutePath()));
                 countDownLatch.countDown();
             }

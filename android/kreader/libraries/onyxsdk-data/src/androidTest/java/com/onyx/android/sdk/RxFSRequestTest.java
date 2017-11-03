@@ -1,14 +1,24 @@
 package com.onyx.android.sdk;
 
 import android.app.Application;
+import android.os.Environment;
 import android.test.ApplicationTestCase;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.rxrequest.data.fs.RxFilesDiffFromMetadataRequest;
+import com.onyx.android.sdk.data.rxrequest.data.fs.RxStorageFileListLoadRequest;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.TestUtils;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import static com.onyx.android.sdk.utils.TestUtils.generateRandomFile;
 
 /**
  * Created by hehai on 17-11-1.
@@ -60,5 +70,36 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             }
         });
         countDownLatch.await();
+    }
+
+    public void testStorageDataListLoadRequest() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        TestUtils.deleteRecursive(testFolder());
+        int total = TestUtils.randInt(7000, 7000);
+        for (int i = 0; i < total; i++) {
+            generateRandomFile(testFolder(), true);
+        }
+        RxStorageFileListLoadRequest request = new RxStorageFileListLoadRequest(new DataManager(), new File(testFolder()), new ArrayList<String>());
+        request.setSort(SortBy.Name, SortOrder.Asc);
+        request.execute(new RxCallback<RxStorageFileListLoadRequest>() {
+            @Override
+            public void onNext(RxStorageFileListLoadRequest rxStorageFileListLoadRequest) {
+                assertTrue(rxStorageFileListLoadRequest.getResultFileList().size() > 0);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public static String testFolder() {
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+        return path;
     }
 }

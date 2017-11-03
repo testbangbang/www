@@ -35,9 +35,11 @@ public abstract class RxRequest<T extends RxRequest> implements Callable<T> {
         return Observable.fromCallable(this);
     }
 
-    public void beforeExecute() {}
+    public void beforeExecute() {
+    }
 
-    public void afterExecute() {}
+    public void afterExecute() {
+    }
 
     public void doFinally() throws Exception {
         afterExecute();

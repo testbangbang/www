@@ -28,12 +28,12 @@ public class RxFilesRemoveFromMetadataRequest extends RxBaseDBRequest {
         Iterator<String> iterator = removeFiles.iterator();
         while (iterator.hasNext()) {
             String filePath = iterator.next();
-            Metadata metadata = getDataManager().getRemoteContentProvider().findMetadataByHashTag(getAppContext(), filePath, null);
+            Metadata metadata = getDataProvider().findMetadataByHashTag(getAppContext(), filePath, null);
             if (metadata == null) {
                 continue;
             }
-            getDataManager().getRemoteContentProvider().removeMetadata(getAppContext(), metadata);
-            getDataManager().getRemoteContentProvider().deleteMetadataCollection(getAppContext(), metadata.getIdString());
+            getDataProvider().removeMetadata(getAppContext(), metadata);
+            getDataProvider().deleteMetadataCollection(getAppContext(), metadata.getIdString());
         }
         return this;
     }
