@@ -154,7 +154,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView redoBtn = (ImageView) findViewById(R.id.button_redo);
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
-        ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
+        final ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
         workView = (FrameLayout) findViewById(R.id.work_view);
         rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
         spanTextView = (LinedEditText) findViewById(R.id.span_text_view);
@@ -248,15 +248,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
             }
         });
 
-        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
-            @Override
-            public void onMenuVisibilityChanged(boolean isVisible) {
-                if (!isVisible) {
-                    syncWithCallback(true, true, null);
-                }
-            }
-        });
-
         switchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -282,6 +273,21 @@ public class ScribbleActivity extends BaseScribbleActivity {
             settingBtn.setVisibility(View.GONE);
             saveBtn.setVisibility(View.GONE);
         }
+        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible) {
+                    getWindow().getDecorView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            syncWithCallback(true,
+                                    !getNoteViewHelper().inUserErasing() &&
+                                            ShapeFactory.createShape(shapeDataInfo.getCurrentShapeType()).supportDFB(), null);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void initSpanTextView() {
