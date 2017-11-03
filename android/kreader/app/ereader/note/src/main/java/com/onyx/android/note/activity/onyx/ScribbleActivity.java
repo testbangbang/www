@@ -280,9 +280,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     getWindow().getDecorView().post(new Runnable() {
                         @Override
                         public void run() {
-                            syncWithCallback(true,
-                                    !getNoteViewHelper().inUserErasing() &&
-                                            ShapeFactory.createShape(shapeDataInfo.getCurrentShapeType()).supportDFB(), null);
+                            boolean resume = !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
+                            syncWithCallback(true, resume, null);
                         }
                     });
                 }
