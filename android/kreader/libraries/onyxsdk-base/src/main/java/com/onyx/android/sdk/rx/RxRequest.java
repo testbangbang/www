@@ -60,14 +60,7 @@ public abstract class RxRequest<T extends RxRequest> implements Callable<T> {
     }
 
     public Scheduler subscribeScheduler() {
-        if (switchScheduler() != null) {
-            return switchScheduler();
-        }
         return Schedulers.newThread();
-    }
-
-    protected Scheduler switchScheduler(){
-        return null;
     }
 
     public void benchmarkStart() {

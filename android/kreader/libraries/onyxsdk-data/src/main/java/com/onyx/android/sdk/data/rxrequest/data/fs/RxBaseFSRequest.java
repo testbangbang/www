@@ -18,7 +18,7 @@ public abstract class RxBaseFSRequest extends RxBaseDataRequest {
     }
 
     @Override
-    protected Scheduler switchScheduler() {
+    public Scheduler subscribeScheduler() {
         return Schedulers.io();
     }
 }

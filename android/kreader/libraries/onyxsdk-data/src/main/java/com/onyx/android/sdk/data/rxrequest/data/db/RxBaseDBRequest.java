@@ -11,25 +11,17 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public abstract class RxBaseDBRequest extends RxBaseDataRequest {
-    private static DataProviderBase dataProvider;
 
     public RxBaseDBRequest(DataManager dm) {
         super(dm);
     }
 
     public DataProviderBase getDataProvider() {
-        if (dataProvider != null) {
-            return dataProvider;
-        }
         return getDataManager().getRemoteContentProvider();
     }
 
-    public void setDataProvider(DataProviderBase dataProvider) {
-        this.dataProvider = dataProvider;
-    }
-
     @Override
-    protected Scheduler switchScheduler() {
+    public Scheduler subscribeScheduler() {
         return Schedulers.io();
     }
 }
