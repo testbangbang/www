@@ -1,8 +1,7 @@
 package com.onyx.android.dr.reader.event;
 
 /**
- * Created by zhuzeng on 28/10/2016.
+ * Created by zhouzhiming on 2017/11/3.
  */
-
 public class LayoutChangeEvent {
 }

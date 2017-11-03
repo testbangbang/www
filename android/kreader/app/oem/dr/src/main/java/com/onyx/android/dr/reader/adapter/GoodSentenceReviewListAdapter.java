@@ -47,7 +47,7 @@ public class GoodSentenceReviewListAdapter extends PageRecyclerView.PageAdapter<
 
     @Override
     public int getDataCount() {
-        return list == null ? 0 : list.size();
+        return list == null ? 0 : 1;
     }
 
     @Override

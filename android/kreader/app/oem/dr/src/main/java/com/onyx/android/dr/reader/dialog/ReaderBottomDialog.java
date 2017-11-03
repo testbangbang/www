@@ -31,9 +31,9 @@ import com.onyx.android.dr.reader.common.ReadSettingTtsConfig;
 import com.onyx.android.dr.reader.common.ReaderBookInfoDialogConfig;
 import com.onyx.android.dr.reader.common.ReaderTabMenuConfig;
 import com.onyx.android.dr.reader.common.ToastManage;
-import com.onyx.android.dr.reader.data.ReaderDataHolder;
 import com.onyx.android.dr.reader.event.AfterReadingMenuEvent;
 import com.onyx.android.dr.reader.event.ChangeSpeechRateEvent;
+import com.onyx.android.dr.reader.event.CropToPageMenuEvent;
 import com.onyx.android.dr.reader.event.CropWidthPageMenuEvent;
 import com.onyx.android.dr.reader.event.NotifyTtsStateChangedEvent;
 import com.onyx.android.dr.reader.event.ReaderAfterReadingMenuEvent;
@@ -235,6 +235,7 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
             filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_FONT);
         }else{
             filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_FIT_PAGE);
+            filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_TO_PAGE);
             filterMenu(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_WIDTH);
         }
         setReaderTabMenu(defaultMenuData);
@@ -673,17 +674,18 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnReaderFitPageMenuEvent(ReaderFitPageMenuEvent event) {
         final ScaleToPageRequest request = new ScaleToPageRequest(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName());
-        ReaderDataHolder holder  = new ReaderDataHolder(DRApplication.getInstance());
-        holder.submitRenderRequest(readerPresenter, request);
+        readerPresenter.submitRenderRequest(request);
         dismiss();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnCropWidthPageMenuEvent(CropWidthPageMenuEvent event) {
+    public void OnCropWidthPageMenuEvent(CropToPageMenuEvent event) {
         final ScaleToPageCropRequest request = new ScaleToPageCropRequest(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName());
-        ReaderDataHolder holder  = new ReaderDataHolder(DRApplication.getInstance());
-        holder.submitRenderRequest(readerPresenter, request);
-        dismiss();
+        readerPresenter.submitRenderRequest(request);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnCropWidthPageMenuEvent(CropWidthPageMenuEvent event) {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

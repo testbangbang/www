@@ -8,9 +8,6 @@
         android:id="@+id/good_sentence"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:ellipsize="middle"
-        android:lines="1"
-        android:maxWidth="@dimen/good_sentence_display_width"
         android:textColor="@color/black"
         android:textSize="@dimen/level_two_font_size" />
 
@@ -26,12 +23,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:visibility="visible"
         android:lines="1"/>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="."
+        android:visibility="visible"
         android:textColor="@color/black"
         android:textSize="@dimen/level_two_font_size" />
 

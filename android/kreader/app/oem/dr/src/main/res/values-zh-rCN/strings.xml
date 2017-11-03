@@ -722,4 +722,6 @@
     <string name="apply_for_group_item_already_pass">已通过</string>
     <string name="apply_for_group_item_already_refuse">已拒绝</string>
     <string name="fit_page">适合页面</string>
+    <string name="visitors_to_login">游客登录</string>
+    <string name="has_exported_to">已导出到: </string>
 </resources>

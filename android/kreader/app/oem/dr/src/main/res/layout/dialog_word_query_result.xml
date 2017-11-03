@@ -81,19 +81,20 @@
         <TextView
             android:id="@+id/select_dialog_baidubaike"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/select_dialog_baidubaike_height"
             android:layout_margin="@dimen/select_dialog_close_cancel_margin"
             android:background="@drawable/rectangle_stroke"
             android:gravity="center"
             android:padding="@dimen/select_dialog_close_cancel_padding"
             android:text="@string/baidu_baike"
+            android:drawableLeft="@drawable/ic_dialog_reader_dic_i_search"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView
             android:id="@+id/select_dialog_close_cancel"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/select_dialog_baidubaike_height"
             android:layout_alignParentRight="true"
             android:layout_margin="@dimen/select_dialog_close_cancel_margin"
             android:background="@drawable/rectangle_stroke"
@@ -106,13 +107,14 @@
         <TextView
             android:id="@+id/select_dialog_close_confirm"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/select_dialog_baidubaike_height"
             android:layout_margin="@dimen/select_dialog_close_cancel_margin"
             android:layout_toLeftOf="@+id/select_dialog_close_cancel"
             android:background="@drawable/rectangle_stroke"
             android:gravity="center"
+            android:drawableLeft="@drawable/ic_reader_dic_add_word"
             android:padding="@dimen/select_dialog_close_cancel_padding"
-            android:text="@string/vocabulary_notebook"
+            android:text="@string/add_new_word"
             android:textColor="@android:color/black"
             android:textSize="@dimen/level_two_heading_font" />
 

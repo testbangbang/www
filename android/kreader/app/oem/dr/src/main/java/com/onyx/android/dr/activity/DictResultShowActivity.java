@@ -117,6 +117,7 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     private int dictType;
     private List<String> pathList;
     private int number = 0;
+    private int tag;
 
     @Override
     protected Integer getLayoutId() {
@@ -302,13 +303,17 @@ public class DictResultShowActivity extends BaseActivity implements DictResultSh
     }
 
     public void testWordDictQuery() {
+        tag = 0;
         if (!StringUtils.isNullOrEmpty(editQuery)) {
             queryWordRequest = new QueryWordRequest(editQuery);
             boolean bRet = dictionaryManager.sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
                 @Override
                 public void done(DictBaseRequest request, Exception e) {
                     if (queryWordRequest.queryResult == null || queryWordRequest.queryResult.size() <= 0) {
-                        setViewGone();
+                        tag++;
+                        if (tag <= 1) {
+                            setViewGone();
+                        }
                         return;
                     }
                     setViewVisible();

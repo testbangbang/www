@@ -10,6 +10,7 @@ import android.view.View;
 
 public interface ReaderView {
     void updatePage(final Bitmap bitmap);
+    void updatePage(final int page, final Bitmap bitmap);
     Context getViewContext() ;
     View getView();
     Context getApplicationContext();

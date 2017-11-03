@@ -15,6 +15,8 @@ import com.onyx.android.dr.adapter.MemorandumAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.MemorandumEntity;
+import com.onyx.android.dr.event.ExportHtmlFailedEvent;
+import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.MemorandumView;
 import com.onyx.android.dr.presenter.MemorandumPresenter;
 import com.onyx.android.dr.view.DividerItemDecoration;
@@ -22,6 +24,9 @@ import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -258,5 +263,15 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.export_failed));
     }
 }

@@ -1,8 +1,7 @@
 package com.onyx.android.dr.reader.event;
 
 /**
- * Created by hehai on 17-9-14.
+ * Created by zhouzhiming on 2017/11/2.
  */
-
 public class ReaderFitPageMenuEvent {
 }

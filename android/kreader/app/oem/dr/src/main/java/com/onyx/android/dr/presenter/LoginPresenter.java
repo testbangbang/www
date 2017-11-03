@@ -47,7 +47,6 @@ public class LoginPresenter {
         loginData.login(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-
             }
         });
     }

@@ -103,7 +103,31 @@
             <com.onyx.android.sdk.ui.view.PageRecyclerView
                 android:id="@+id/good_sentence_recycler"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/good_sentence_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/good_sentence_container_margin_top"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/good_sentence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/level_two_font_size" />
+
+                <EditText
+                    android:id="@+id/good_sentence_supplements"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:lines="1" />
+
+            </LinearLayout>
+
         </RelativeLayout>
     </LinearLayout>
 </LinearLayout>

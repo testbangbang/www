@@ -405,5 +405,9 @@
     <dimen name="apply_for_group_container_width_margin">10dp</dimen>
     <dimen name="apply_for_group_activity_container_width">177dp</dimen>
     <dimen name="application_note_dialog_content_height">200dp</dimen>
+    <dimen name="select_dialog_baidubaike_height">70dp</dimen>
+    <dimen name="good_sentence_container_margin_top">20dp</dimen>
+    <dimen name="explain_margin_top">5dp</dimen>
+    <dimen name="explain_height">220dp</dimen>
 </resources>
 

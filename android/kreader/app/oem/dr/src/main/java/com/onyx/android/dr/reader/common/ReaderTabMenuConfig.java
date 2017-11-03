@@ -5,6 +5,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.ReaderMenuBean;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.dr.reader.event.AfterReadingMenuEvent;
+import com.onyx.android.dr.reader.event.CropToPageMenuEvent;
 import com.onyx.android.dr.reader.event.CropWidthPageMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderAfterReadingMenuEvent;
 import com.onyx.android.dr.reader.event.ReaderAnnotationMenuEvent;
@@ -36,6 +37,10 @@ public class ReaderTabMenuConfig {
         defaultReaderMenus.add(readerMenuBean);
 
         readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_FIT_PAGE, DRApplication.getInstance().getString(R.string.fit_page), R.drawable.ic_dialog_reader_menu_scale_fit_page, new ReaderFitPageMenuEvent());
+        defaultReaderMenus.add(readerMenuBean);
+
+        readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_TO_PAGE, DRApplication.getInstance().getString(R.string.reader_layer_menu_zoom_by_crop_page), R.drawable.ic_dialog_reader_menu_scale_cut_four, new CropToPageMenuEvent());
+        defaultReaderMenus.add(readerMenuBean);
 
         readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_READER_CROP_WIDTH, DRApplication.getInstance().getString(R.string.reader_layer_menu_zoom_by_crop_width), R.drawable.ic_dialog_reader_menu_scale_cut_two, new CropWidthPageMenuEvent());
 

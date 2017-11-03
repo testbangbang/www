@@ -123,7 +123,8 @@
             <com.onyx.android.dr.reader.view.HTMLReaderWebView
                 android:id="@+id/explain"
                 android:layout_width="match_parent"
-                android:layout_height="220dp" />
+                android:layout_height="@dimen/explain_height"
+                android:visibility="visible" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/dict_list"
@@ -133,6 +134,24 @@
                 android:layout_marginRight="5dp"
                 android:background="@drawable/no_top_line_bg"
                 android:visibility="invisible" />
+
+            <LinearLayout
+                android:id="@+id/popup_selection_menu_no_data_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/activity_dict_result_no_data_hint"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:padding="@dimen/join_group_activity_all_number_padding"
+                    android:text="@string/headword_search_empty"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_one_heading_font"
+                    android:visibility="visible" />
+            </LinearLayout>
 
         </FrameLayout>
 

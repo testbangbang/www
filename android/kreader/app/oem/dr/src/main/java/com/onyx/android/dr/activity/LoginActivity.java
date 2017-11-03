@@ -61,6 +61,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     Button buttonRegister;
     @Bind(R.id.button_login)
     Button buttonLogin;
+    @Bind(R.id.button_visitors_to_login)
+    Button buttonVisitorsLogin;
     @Bind(R.id.login_title)
     TextView loginTitle;
     @Bind(R.id.identity_username)
@@ -315,7 +317,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             R.id.login_next_button, R.id.login_prev_button,
             R.id.login_wifi_settings, R.id.forget_password,
             R.id.user_login_show_password, R.id.register_show_password,
-            R.id.sign_up_show_password})
+            R.id.button_visitors_to_login,R.id.sign_up_show_password})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.button_register:
@@ -323,6 +325,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
                 break;
             case R.id.button_login:
                 login();
+                break;
+            case R.id.button_visitors_to_login:
+                ActivityManager.startMainActivity(this);
                 break;
             case R.id.login_next_button:
                 nextStep();

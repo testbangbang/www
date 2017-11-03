@@ -45,6 +45,7 @@ public class ShowTextSelectionMenuAction {
         popupSelectionMenu = getTextSelectionPopupMenu(readerPresenter, action);
         if (popupSelectionMenu != null) {
             popupSelectionMenu.show(readerPresenter, isWord);
+            popupSelectionMenu.initDictList(readerPresenter);
         }
     }
 

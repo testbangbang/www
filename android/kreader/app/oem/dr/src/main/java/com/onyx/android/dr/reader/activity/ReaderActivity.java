@@ -334,6 +334,10 @@ public class ReaderActivity extends Activity implements ReaderView {
         }
     }
 
+    @Override
+    public void updatePage(int page, Bitmap bitmap) {
+    }
+
     public ReaderPresenter getReaderPresenter() {
         if (readerPresenter == null) {
             readerPresenter = new ReaderPresenter(this);
@@ -695,6 +699,7 @@ public class ReaderActivity extends Activity implements ReaderView {
 
     private void addGoodSentence() {
         String selectionText = readerPresenter.getBookOperate().getSelectionText();
+        selectionText = selectionText.replaceAll(System.getProperty("line.separator"), "");
         if (StringUtils.isNotBlank(selectionText)) {
             GoodSentenceBean bean = new GoodSentenceBean();
             bean.setDetails(selectionText);

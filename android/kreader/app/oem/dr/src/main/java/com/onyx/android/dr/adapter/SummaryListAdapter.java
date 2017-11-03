@@ -12,6 +12,7 @@ import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.event.ReadingSummaryMenuEvent;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -60,7 +61,11 @@ public class SummaryListAdapter extends PageRecyclerView.PageAdapter<SummaryList
         holder.itemSummaryTime.setText(entity.time);
         holder.itemSummaryBookName.setText(entity.bookName);
         holder.itemSummaryPageNumber.setText(entity.pageNumber);
-        holder.itemSummaryBookAbstract.setText(entity.summary);
+        if(StringUtils.isNullOrEmpty(entity.summary)){
+            holder.itemSummaryBookAbstract.setText(DRApplication.getInstance().getString(R.string.nothing));
+        }else{
+            holder.itemSummaryBookAbstract.setText(entity.summary);
+        }
         holder.itemSummaryCheckbox.setChecked(entity.isChecked);
         holder.itemSummaryCheckbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

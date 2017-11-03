@@ -305,7 +305,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.export_success));
+        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
