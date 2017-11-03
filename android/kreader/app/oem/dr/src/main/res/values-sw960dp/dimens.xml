@@ -407,5 +407,6 @@
     <dimen name="application_note_dialog_content_height">200dp</dimen>
     <dimen name="select_dialog_baidubaike_height">70dp</dimen>
     <dimen name="good_sentence_container_margin_top">20dp</dimen>
+    <dimen name="explain_margin_top">5dp</dimen>
 </resources>
 

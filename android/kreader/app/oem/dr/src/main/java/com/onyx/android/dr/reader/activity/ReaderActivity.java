@@ -179,19 +179,6 @@ public class ReaderActivity extends Activity implements ReaderView {
         String bookId = getIntent().getStringExtra(ReaderConstants.BOOK_ID);
         bookInfo.setBookId(bookId);
         isFluent = getIntent().getBooleanExtra(ReaderConstants.IS_FLUENT, false);
-//        int tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
-//        if (tag == Constants.ANNOTATION_SOURCE_TAG) {
-//            if (handler == null) {
-//                handler = new Handler();
-//            }
-//            handler.postDelayed(new Runnable(){
-//                public void run() {
-//                    progressLoading.setVisibility(View.GONE);
-//                    progressLoading.setRun(false);
-//                    ReaderDialogManage.onShowBookInfoDialog(readerPresenter, ReaderBookInfoDialogConfig.NOTE_MODE);
-//                }
-//            }, getResources().getInteger(R.integer.reading_activity_skip_annotation));
-//        }
         int tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
         if (tag == Constants.ANNOTATION_SOURCE_TAG) {
             if (handler == null) {
@@ -712,6 +699,7 @@ public class ReaderActivity extends Activity implements ReaderView {
 
     private void addGoodSentence() {
         String selectionText = readerPresenter.getBookOperate().getSelectionText();
+        selectionText = selectionText.replaceAll(System.getProperty("line.separator"), "");
         if (StringUtils.isNotBlank(selectionText)) {
             GoodSentenceBean bean = new GoodSentenceBean();
             bean.setDetails(selectionText);

@@ -31,7 +31,6 @@ import com.onyx.android.dr.reader.common.ReadSettingTtsConfig;
 import com.onyx.android.dr.reader.common.ReaderBookInfoDialogConfig;
 import com.onyx.android.dr.reader.common.ReaderTabMenuConfig;
 import com.onyx.android.dr.reader.common.ToastManage;
-import com.onyx.android.dr.reader.data.ReaderDataHolder;
 import com.onyx.android.dr.reader.event.AfterReadingMenuEvent;
 import com.onyx.android.dr.reader.event.ChangeSpeechRateEvent;
 import com.onyx.android.dr.reader.event.CropToPageMenuEvent;
@@ -676,8 +675,6 @@ public class ReaderBottomDialog extends Dialog implements View.OnClickListener {
     public void OnReaderFitPageMenuEvent(ReaderFitPageMenuEvent event) {
         final ScaleToPageRequest request = new ScaleToPageRequest(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName());
         readerPresenter.submitRenderRequest(request);
-        ReaderDataHolder holder  = new ReaderDataHolder(DRApplication.getInstance());
-        holder.submitRenderRequest(readerPresenter, request);
         dismiss();
     }
 

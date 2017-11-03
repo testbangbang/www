@@ -2,10 +2,8 @@ package com.onyx.android.dr.reader.dialog;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.RectF;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -38,7 +36,6 @@ import com.onyx.android.sdk.dict.request.common.DictBaseRequest;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,6 +48,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private static final String TAG = PopupSelectionMenu.class.getSimpleName();
     private static final int MAX_DICTIONARY_LOAD_COUNT = 6;
     private static final int DELAY_DICTIONARY_LOAD_TIME = 2000;
+    private final LinearLayout noDataContainer;
     private QueryWordRequest queryWordRequest;
     private List<String> pathList;
     private View addWordButton;
@@ -59,6 +57,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private View deleteMarkButton;
     public static final String BAIDU_BAIKE = "https://wapbaike.baidu.com/item/";
     public static final String WIKTIONARY_URL = "https://en.wiktionary.org/wiki/";
+    private int number;
 
     public enum SelectionType {
         SingleWordType,
@@ -150,6 +149,7 @@ public class PopupSelectionMenu extends LinearLayout {
         dictNameText = (TextView) findViewById(R.id.dict_name);
         dictListView = (RecyclerView) findViewById(R.id.dict_list);
         dictLayout = (LinearLayout) findViewById(R.id.layout_dict);
+        noDataContainer = (LinearLayout) findViewById(R.id.popup_selection_menu_no_data_container);
         markerView = (ImageView) findViewById(R.id.marker_view);
         pronounce1 = (ImageView) findViewById(R.id.pronounce_1);
         pronounce2 = (ImageView) findViewById(R.id.pronounce_2);
@@ -358,7 +358,7 @@ public class PopupSelectionMenu extends LinearLayout {
         }
 
         String headWord = mDictTitle.getText().toString();
-        ActivityManager.startBaiduBaiKeActivity(getActivity(),headWord);
+        ActivityManager.startBaiduBaiKeActivity(getActivity(), headWord);
     }
 
     private void toggleDictList() {
@@ -389,7 +389,7 @@ public class PopupSelectionMenu extends LinearLayout {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
-    private void initDictList(ReaderPresenter readerPresenter) {
+    public void initDictList(ReaderPresenter readerPresenter) {
         dicts.clear();
         dictListView.setLayoutManager(new LinearLayoutManager(getContext()));
         dictListView.setAdapter(new RecyclerView.Adapter() {
@@ -549,12 +549,18 @@ public class PopupSelectionMenu extends LinearLayout {
 
     private void dictionaryQuery(final ReaderPresenter readerPresenter, final String token) {
         queryWordRequest = new QueryWordRequest(token);
+        number = 0;
         boolean bRet = DRApplication.getInstance().getDictionaryManager().sendRequest(DRApplication.getInstance(), queryWordRequest, pathList, new DictBaseCallback() {
             @Override
             public void done(DictBaseRequest request, Exception e) {
-                if (queryWordRequest.queryResult == null) {
+                if (queryWordRequest.queryResult == null || queryWordRequest.queryResult.size() <= 0) {
+                    number++;
+                    if (number <= 1) {
+                        setViewGone();
+                    }
                     return;
                 }
+                setViewVisible();
                 dictionaryQueries.clear();
                 for (String key : queryWordRequest.queryResult.keySet()) {
                     dicts.add(key);
@@ -566,8 +572,23 @@ public class PopupSelectionMenu extends LinearLayout {
             }
         });
         if (!bRet) {
+            setViewGone();
             CommonNotices.showMessage(readerPresenter.getReaderView().getApplicationContext(), readerPresenter.getReaderView().getApplicationContext().getResources().getString(R.string.headword_search_empty));
         }
+    }
+
+    private void setViewGone() {
+        noDataContainer.setVisibility(View.VISIBLE);
+        mWebView.setVisibility(View.GONE);
+        dictNameText.setVisibility(View.INVISIBLE);
+        markerView.setVisibility(View.INVISIBLE);
+    }
+
+    private void setViewVisible() {
+        noDataContainer.setVisibility(View.GONE);
+        mWebView.setVisibility(View.VISIBLE);
+        dictNameText.setVisibility(View.VISIBLE);
+        markerView.setVisibility(View.VISIBLE);
     }
 
     private int getGoodSentenceType(String language) {
