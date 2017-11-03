@@ -408,5 +408,6 @@
     <dimen name="select_dialog_baidubaike_height">70dp</dimen>
     <dimen name="good_sentence_container_margin_top">20dp</dimen>
     <dimen name="explain_margin_top">5dp</dimen>
+    <dimen name="explain_height">220dp</dimen>
 </resources>
 
