@@ -33,7 +33,7 @@ public class RxFilesAddToMetadataRequest extends RxBaseDBRequest {
             if (!file.exists()) {
                 continue;
             }
-            Metadata metadata = getDataManager().getRemoteContentProvider().findMetadataByPath(getAppContext(), filePath);
+            Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), filePath);
             if (metadata == null || !metadata.hasValidId()) {
                 createMetadataAndSave(getDataManager(), file);
             }
@@ -45,7 +45,7 @@ public class RxFilesAddToMetadataRequest extends RxBaseDBRequest {
         Metadata metadata = Metadata.createFromFile(file, false);
         if (metadata != null) {
             metadata.setStorageId(storageId);
-            dataManager.getRemoteContentProvider().saveMetadata(getAppContext(), metadata);
+            getDataProvider().saveMetadata(getAppContext(), metadata);
         }
     }
 }
