@@ -132,7 +132,8 @@ public class TouchReader {
     }
 
     private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER;
+        return toolType == MotionEvent.TOOL_TYPE_FINGER ||
+                toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
     }
 
     private boolean isSingleTouch() {
