@@ -108,6 +108,8 @@ public class SeekBarWithEditTextView extends LinearLayout {
 
     private InputMethodManager im;
 
+    private boolean ignoreSeekBarTrackingValue = false;
+
     public SeekBarWithEditTextView(Context context) {
         super(context);
         initView();
@@ -121,6 +123,10 @@ public class SeekBarWithEditTextView extends LinearLayout {
     public SeekBarWithEditTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initView();
+    }
+
+    public void setIgnoreSeekBarTrackingValue(boolean ignoreSeekBarTrackingValue) {
+        this.ignoreSeekBarTrackingValue = ignoreSeekBarTrackingValue;
     }
 
     public boolean isCurrentValueValid() {
@@ -180,6 +186,9 @@ public class SeekBarWithEditTextView extends LinearLayout {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (setEditTextValue(progressToValue(progress))) {
+                    if (ignoreSeekBarTrackingValue && fromUser) {
+                        return;
+                    }
                     if (callback != null) {
                         callback.valueChange(progressToValue(progress));
                     }
@@ -197,6 +206,9 @@ public class SeekBarWithEditTextView extends LinearLayout {
                 if (im.isActive()) {
                     im.hideSoftInputFromWindow(editText.getWindowToken(),
                             InputMethodManager.HIDE_NOT_ALWAYS);
+                }
+                if (ignoreSeekBarTrackingValue && callback != null) {
+                    callback.valueChange(progressToValue(seekBar.getProgress()));
                 }
             }
         });
