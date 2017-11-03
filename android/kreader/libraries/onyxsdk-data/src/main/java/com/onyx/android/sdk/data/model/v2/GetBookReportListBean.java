@@ -20,4 +20,13 @@ public class GetBookReportListBean implements Serializable{
     public String title;
     public int __v;
     public List<CommentsBean> comments;
+    private boolean checked;
+
+    public boolean isChecked() {
+        return checked;
+    }
+
+    public void setChecked(boolean checked) {
+        this.checked = checked;
+    }
 }

@@ -231,6 +231,7 @@ public class ReaderPresenter {
         readerView.updatePage(getReader().getViewportBitmap().getBitmap());
         if (getReaderViewInfo() != null && getReaderViewInfo().layoutChanged) {
             EventBus.getDefault().post(new LayoutChangeEvent());
+//            getEventBus().post(new LayoutChangeEvent());
         }
     }
 

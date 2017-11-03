@@ -70,7 +70,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private PageIndicator pageIndicator;
     private ReadingRateDialog timePickerDialog;
     private int type;
-    private String offset = "1";
+    private String offset = "0";
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";

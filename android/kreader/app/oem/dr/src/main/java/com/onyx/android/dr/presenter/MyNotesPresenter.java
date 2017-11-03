@@ -29,7 +29,7 @@ public class MyNotesPresenter {
     private final BookReportData bookReportData;
     private MyNotesView myNotesView;
     private Context context;
-    private String offset = "1";
+    private String offset = "0";
     private String limit = "4";
     private String sortBy = "createdAt";
     private String order = "1";

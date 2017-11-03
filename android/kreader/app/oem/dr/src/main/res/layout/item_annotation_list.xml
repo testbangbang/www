@@ -72,6 +72,8 @@
             android:id="@+id/item_annotation_checkbox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
             android:gravity="center" />
     </RelativeLayout>
 </LinearLayout>

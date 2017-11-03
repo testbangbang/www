@@ -197,6 +197,9 @@
     <string name="listen_books">listen books</string>
     <string name="after_reading">after reading</string>
     <string name="settings_regal_mode_key">regal mode</string>
+    <string name="settings_note_key" translatable="false">show_note</string>
+    <string name="settings_show_annotation_key" translatable="false">setting_show_annotation_key</string>
+    <string name="settings_bookmark_key" translatable="false">show_bookmark</string>
     <string name="dialog_quick_view_enter_page_number">Please enter page number</string>
     <string name="dialog_quick_view_enter_page_number_out_of_range_error">Page number out of range error</string>
     <string name="dialog_quick_view_enter_page_number_empty_error">Page number empty error</string>
