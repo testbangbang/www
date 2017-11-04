@@ -8,7 +8,7 @@ import com.onyx.android.sdk.rx.RxRequest;
  */
 
 public abstract class RxBaseDataRequest extends RxRequest {
-
+    protected final String TAG = this.getClass().getSimpleName();
 
     private DataManager dataManager;
 
