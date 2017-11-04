@@ -79,4 +79,23 @@
         <item>@string/study_report_fragment_head_class_average</item>
         <item>@string/study_report_fragment_head_progress</item>
     </string-array>
+    <string-array name="goal_advanced_course">
+        <item>@string/homework_course_Chinese</item>
+        <item>@string/homework_course_mathematics</item>
+        <item>@string/homework_course_English</item>
+        <item>@string/homework_course_politic</item>
+        <item>@string/homework_course_history</item>
+        <item>@string/homework_course_creature</item>
+        <item>@string/homework_course_geography</item>
+        <item>@string/homework_course_physics</item>
+        <item>@string/homework_course_chemistry</item>
+    </string-array>
+    <string-array name="goal_advanced_term">
+        <item>@string/goal_advanced_fragment_term_senior_one_1st</item>
+        <item>@string/goal_advanced_fragment_term_senior_one_2nd</item>
+        <item>@string/goal_advanced_fragment_term_senior_two_1st</item>
+        <item>@string/goal_advanced_fragment_term_senior_two_2nd</item>
+        <item>@string/goal_advanced_fragment_term_senior_three_1st</item>
+        <item>@string/goal_advanced_fragment_term_senior_three_2nd</item>
+    </string-array>
 </resources>

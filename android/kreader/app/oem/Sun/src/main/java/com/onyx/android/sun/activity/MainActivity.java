@@ -43,6 +43,7 @@ import com.onyx.android.sun.fragment.ChildViewID;
 import com.onyx.android.sun.fragment.CorrectFragment;
 import com.onyx.android.sun.fragment.DeviceSettingFragment;
 import com.onyx.android.sun.fragment.FillHomeworkFragment;
+import com.onyx.android.sun.fragment.GoalAdvancedFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.fragment.RankingFragment;
@@ -233,7 +234,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                     baseFragment = new HomeWorkFragment();
                     break;
                 case ChildViewID.FRAGMENT_GOAL_ADVANCED:
-                    baseFragment = new MainFragment();
+                    baseFragment = new GoalAdvancedFragment();
                     break;
                 case ChildViewID.FRAGMENT_STUDY_MANAGEMENT:
                     baseFragment = new MainFragment();

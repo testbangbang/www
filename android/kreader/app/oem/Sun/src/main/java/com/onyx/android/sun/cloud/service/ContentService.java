@@ -5,6 +5,7 @@ import com.onyx.android.sun.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
+import com.onyx.android.sun.cloud.bean.GetSubjectAbilityResultBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.TaskBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
@@ -78,4 +79,13 @@ public interface ContentService {
                                                   @Field(CloudApiContext.ChangePassword.NEW_PASSWORD) String newPassword);
     @GET("/api/practice/{id}/report")
     Call<GetStudyReportDetailResultBean> getStudyReportDetail(@Path(CloudApiContext.Practices.ID) int id);
+
+    @GET("api/advanced/ability")
+    Call<GetSubjectAbilityResultBean> getSubjectAbility(@Query(CloudApiContext.SubjectAbility.ID) String id,
+                                                        @Query(CloudApiContext.SubjectAbility.COURSE) String course,
+                                                        @Query(CloudApiContext.SubjectAbility.TERM) String term);
+
+    @GET("api/advanced/module/{id}/ability")
+    Call<GetSubjectAbilityResultBean> getSubjectAbilityModule(@Path(CloudApiContext.SubjectAbility.ID) String id,
+                                                        @Query(CloudApiContext.SubjectAbility.TERM) String term);
 }

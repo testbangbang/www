@@ -18,15 +18,25 @@ import com.onyx.android.sun.view.PageRecyclerView;
 public class CourseAdapter extends PageRecyclerView.PageAdapter {
     private int current = 0;
     private String[] data;
+    private int courseColumnCount = SunApplication.getInstance().getResources().getInteger(R.integer.course_adapter_col);
+    private int courseRowCount = SunApplication.getInstance().getResources().getInteger(R.integer.course_adapter_row);
+
+    public CourseAdapter() {
+    }
+
+    public CourseAdapter(int courseColumnCount, int courseRowCount) {
+        this.courseColumnCount = courseColumnCount;
+        this.courseRowCount = courseRowCount;
+    }
 
     @Override
     public int getRowCount() {
-        return SunApplication.getInstance().getResources().getInteger(R.integer.course_adapter_row);
+        return courseRowCount;
     }
 
     @Override
     public int getColumnCount() {
-        return SunApplication.getInstance().getResources().getInteger(R.integer.course_adapter_col);
+        return courseColumnCount;
     }
 
     @Override

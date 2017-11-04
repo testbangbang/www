@@ -11,4 +11,6 @@
     <color name="color_white">#fff</color>
     <color name="color_gray_tips">#88000000</color>
     <color name="color_table_view_divider">#9f9e9e</color>
+    <color name="color_pie_chart_stroke">#CC000000</color>
+    <color name="color_pie_chart_fill">#DD000000</color>
 </resources>

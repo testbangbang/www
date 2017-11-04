@@ -114,4 +114,12 @@
     <dimen name="study_report_fragment_look_competence_button_margin_left">10dp</dimen>
     <dimen name="study_report_fragment_tableview_row_height">50dp</dimen>
     <dimen name="study_report_fragment_table_view_magin_top">20dp</dimen>
+    <dimen name="item_knowledge_progress_chart_width_and_height">150dp</dimen>
+    <dimen name="goal_advanced_common_space">15dp</dimen>
+    <dimen name="goal_advanced_common_padding_left_and_right">10dp</dimen>
+    <dimen name="goal_advanced_common_margin_left_and_right">5dp</dimen>
+    <dimen name="goal_advanced_knowledge_progress_params_view_drawable_padding">20dp</dimen>
+    <dimen name="goal_advanced_knowledge_progress_params_view_space">20dp</dimen>
+    <dimen name="goal_advanced_knowledge_structure_view_height">400dp</dimen>
+    <dimen name="goal_advanced_knowledge_progress_recycler_view_height">400dp</dimen>
 </resources>
