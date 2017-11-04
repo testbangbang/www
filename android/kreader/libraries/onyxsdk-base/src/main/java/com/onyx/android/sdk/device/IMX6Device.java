@@ -115,6 +115,7 @@ public class IMX6Device extends BaseDevice {
      */
     private static Method sMethodInvalidate = null;
     private static Method sMethodInvalidateRect = null;
+    private static Method sMethodInSystemFastMode = null;
 
 
     /**
@@ -709,6 +710,7 @@ public class IMX6Device extends BaseDevice {
             sMethodGetWindowRotation = ReflectUtil.getMethodSafely(cls, "getWindowRotation");
             // signature of "public static void setWindowRotation(int rotation, boolean alwaysSendConfiguration, int animFlags)"
             sMethodSetWindowRotation = ReflectUtil.getMethodSafely(cls, "setWindowRotation", int.class, boolean.class, int.class);
+            sMethodInSystemFastMode = ReflectUtil.getMethodSafely(cls, "inSystemFastMode");
 
             int value_policy_automic = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_ONYX_AUTO_MASK");
             int value_policy_gu_intervally = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_ONYX_GC_MASK");
@@ -1189,4 +1191,14 @@ public class IMX6Device extends BaseDevice {
 
         return has.booleanValue();
     }
+
+    @Override
+    public boolean inSystemFastMode() {
+        Boolean value = (Boolean)ReflectUtil.invokeMethodSafely(sMethodInSystemFastMode, null);
+        if (value == null) {
+            return false;
+        }
+        return value.booleanValue();
+    }
+
 }
