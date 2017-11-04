@@ -123,7 +123,7 @@ public class AesDecryptUtil {
     }
 
     public static String generateRandomString(final int len) {
-        final String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        final String base = "ABCDEF0123456789";
         StringBuffer sb = new StringBuffer();
         for (int i = 0; i < len; i++) {
             int number = TestUtils.randInt(0, base.length() - 1);
@@ -175,7 +175,6 @@ public class AesDecryptUtil {
                 builder.directory(new File(workDirectory));
                 builder.redirectErrorStream(true);
                 Process process = builder.start();
-
                 in = process.getInputStream();
                 byte[] re = new byte[1024];
                 while (in.read(re) != -1) {
