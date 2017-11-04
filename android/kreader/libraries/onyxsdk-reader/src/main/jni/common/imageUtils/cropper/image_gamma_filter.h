@@ -30,7 +30,7 @@ public:
 
 
 private:
-    int gamma;
+    float gamma;
 };
 
 }

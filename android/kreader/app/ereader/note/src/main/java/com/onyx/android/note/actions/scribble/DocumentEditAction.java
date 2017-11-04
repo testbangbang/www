@@ -25,7 +25,7 @@ public class DocumentEditAction<T extends BaseScribbleActivity> extends BaseNote
     public void execute(final T activity, final BaseCallback callback) {
         showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.loading);
         final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, false);
-        activity.submitRequestWithIdentifier(uniqueId, openRequest, new BaseCallback() {
+        activity.submitRequest(openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dismissLoadingDialog();
