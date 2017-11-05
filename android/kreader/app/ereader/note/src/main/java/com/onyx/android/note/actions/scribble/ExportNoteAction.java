@@ -15,7 +15,6 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.request.navigation.ExportNoteRequest;
 import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.ExportUtils;
 
 import java.util.ArrayList;
@@ -121,7 +120,13 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
         progress.getProgressBar().setVisibility(View.GONE);
     }
 
-    private void onExportSuccess(final T activity, DialogProgress progress) {
+    private void onExportSuccess(final T activity, final DialogProgress progress) {
         progress.setTitle(activity.getString(R.string.export_success));
+        progress.enableDismissButton(activity.getString(android.R.string.ok), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progress.dismiss();
+            }
+        });
     }
 }
