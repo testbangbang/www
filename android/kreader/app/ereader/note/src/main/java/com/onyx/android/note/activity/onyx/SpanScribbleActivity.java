@@ -413,7 +413,8 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearAllFreeShapesAction<SpanScribbleActivity> action = new ClearAllFreeShapesAction<>();
+            boolean resume = shouldResume();
+            ClearAllFreeShapesAction<SpanScribbleActivity> action = new ClearAllFreeShapesAction<>(resume);
             action.execute(this, null);
         }
     }

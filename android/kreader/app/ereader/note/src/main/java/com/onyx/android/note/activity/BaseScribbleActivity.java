@@ -41,6 +41,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -689,5 +690,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     public void resetFullUpdate() {
         this.fullUpdate = false;
+    }
+
+    public boolean shouldResume() {
+        boolean resume = !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
+        return resume;
     }
 }

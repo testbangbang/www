@@ -280,7 +280,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     getWindow().getDecorView().post(new Runnable() {
                         @Override
                         public void run() {
-                            boolean resume = !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
+                            boolean resume = shouldResume();
                             syncWithCallback(true, resume, null);
                         }
                     });
@@ -1136,7 +1136,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>();
+            boolean resume = shouldResume();
+            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>(resume);
             action.execute(this, null);
         }
     }
