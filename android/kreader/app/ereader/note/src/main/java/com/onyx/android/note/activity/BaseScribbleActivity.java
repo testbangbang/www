@@ -167,7 +167,8 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void updateDataInfo(final BaseNoteRequest request) {
         shapeDataInfo = request.getShapeDataInfo();
         currentVisualPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
-        totalPageCount = shapeDataInfo.getPageCount();
+        //TODO:avoid change shapedatainfo structure,simple detect here.
+        totalPageCount = shapeDataInfo.getPageCount() == 0 ? 1 : shapeDataInfo.getPageCount();
         if (pageIndicator != null) {
             pageIndicator.setText(currentVisualPageIndex + File.separator + totalPageCount);
         }

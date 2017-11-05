@@ -46,7 +46,9 @@ import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.ExportUtils;
 
 import java.util.List;
 
@@ -56,6 +58,7 @@ import static com.onyx.android.sdk.data.GAdapterUtil.getUniqueId;
 public class ManagerActivity extends BaseManagerActivity {
     static final String TAG = ManagerActivity.class.getCanonicalName();
     private CheckableImageView chooseModeButton;
+    private ImageView jumpToExportFolderButton;
     private ImageView addFolderButton;
     private ImageView moveButton;
     private ImageView deleteButton;
@@ -163,6 +166,7 @@ public class ManagerActivity extends BaseManagerActivity {
         backupButton = (ImageView) findViewById(R.id.backup_restore_btn);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
         ImageView sortByButton = (ImageView) findViewById(R.id.button_sort_by);
+        jumpToExportFolderButton = (ImageView) findViewById(R.id.jump_to_export_btn);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -208,6 +212,12 @@ public class ManagerActivity extends BaseManagerActivity {
                 getSupportActionBar().openOptionsMenu();
             }
         });
+        jumpToExportFolderButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityUtil.startActivitySafely(ManagerActivity.this,buildExportFolderIntent());
+            }
+        });
         backupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -233,6 +243,13 @@ public class ManagerActivity extends BaseManagerActivity {
                 onSortBy();
             }
         });
+    }
+
+    private Intent buildExportFolderIntent() {
+        Intent jumpToExportFolderIntent = new Intent();
+        jumpToExportFolderIntent.setClassName("com.onyx", "com.onyx.content.browser.activity.StorageActivity");
+        jumpToExportFolderIntent.putExtra(GAdapterUtil.FILE_PATH, ExportUtils.NOTE_EXPORT_LOCATION);
+        return jumpToExportFolderIntent;
     }
 
     @Override
