@@ -459,7 +459,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>();
+            boolean resume = shouldResume();
+            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>(resume);
             action.execute(this, null);
         }
     }
