@@ -711,10 +711,12 @@ public class NoteViewHelper {
         if (inShapeSelecting()){
             return forwardShapeSelecting(motionEvent);
         }
-        if (!(useRawInput() && renderByFramework())) {
+
+        if (useRawInput()) {
+            return !renderByFramework() && isFingerTouch(toolType) || forwardDrawing(motionEvent);
+        } else {
             return forwardDrawing(motionEvent);
         }
-        return true;
     }
 
     private boolean forwardDrawing(final MotionEvent motionEvent) {
