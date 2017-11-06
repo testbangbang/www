@@ -484,4 +484,8 @@ public class BaseDevice {
     public void setUpdListSize(int size) {
     }
 
+    public boolean inSystemFastMode() {
+        return false;
+    }
+
 }
