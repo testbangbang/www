@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ParseAnswerBinding">
+
+        <variable
+            name="userAnswer"
+            type="String" />
+
+        <variable
+            name="correctAnswer"
+            type="String" />
+
+        <variable
+            name="recorderTime"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/parse_title_bar"
+            layout="@layout/title_bar_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.onyx.android.sun.view.QuestionView
+            android:id="@+id/parse_question_view"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_height"
+            android:layout_margin="10dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@{userAnswer}"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@{correctAnswer}"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_height"
+            android:layout_margin="10dp"
+            android:background="@android:color/black" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:text="@string/knowledge_point"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_height"
+            android:layout_margin="10dp"
+            android:background="@android:color/black" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp">
+
+            <LinearLayout
+                android:id="@+id/parse_add_sound_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_gray_stroke"
+                android:orientation="vertical"
+                android:padding="10dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:text="语音备注："
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <TextView
+                        android:id="@+id/parse_sound_input"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:drawableLeft="@drawable/ic_sound"
+                        android:gravity="center_vertical"
+                        android:text="按住话筒语音录入..."
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/line_height"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/parse_delete_sound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_backup_selector"
+                        android:text="清除"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <Button
+                        android:id="@+id/parse_add_sound"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/button_backup_selector"
+                        android:text="添加"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/level_three_heading_font" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/parse_read_record"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="100dp"
+                    android:background="@drawable/ic_voice_background"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="@{recorderTime}"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/parse_modify_sound_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:drawableRight="@drawable/ic_sound"
+                    android:gravity="center_vertical"
+                    android:text="语音备注："
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:id="@+id/parse_read_record_modify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:background="@drawable/ic_voice_background"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="20dp"
+                    android:text="@{recorderTime}"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/line_height"
+                    android:layout_weight="1" />
+
+                <Button
+                    android:id="@+id/parse_modify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="20dp"
+                    android:background="@drawable/button_backup_selector"
+                    android:text="修改"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/parse_mistake_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_gray_stroke"
+                android:orientation="vertical"
+                android:padding="10dp"
+                android:visibility="gone">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="错题反思："
+                        android:textSize="@dimen/level_two_heading_font" />
+
+                    <ImageView
+                        android:id="@+id/parse_mistake_input_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_sound" />
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp">
+
+                        <TextView
+                            android:id="@+id/parse_mistake_input_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:text="按住话筒语音录入..."
+                            android:textSize="@dimen/level_three_heading_font" />
+
+                        <LinearLayout
+                            android:id="@+id/parse_mistake_sound_layout"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/parse_mistake_voice"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/ic_voice_background"
+                                android:gravity="center_vertical"
+                                android:paddingLeft="20dp"
+                                android:text="@{recorderTime}"
+                                android:textColor="@android:color/white"
+                                android:textSize="@dimen/level_three_heading_font" />
+
+                            <View
+                                android:layout_width="0dp"
+                                android:layout_height="@dimen/line_height"
+                                android:layout_weight="1" />
+
+                            <Button
+                                android:id="@+id/parse_mistake_modify"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="20dp"
+                                android:background="@drawable/button_backup_selector"
+                                android:text="编辑"
+                                android:textColor="@android:color/white"
+                                android:textSize="@dimen/level_three_heading_font" />
+                        </LinearLayout>
+                    </FrameLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="错因分析："
+                        android:textSize="@dimen/level_two_heading_font" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/text_selector"
+                                android:padding="10dp"
+                                android:text="看错题"
+                                android:textSize="@dimen/level_three_heading_font" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:background="@drawable/text_selector"
+                                android:padding="10dp"
+                                android:text="概念不清晰"
+                                android:textSize="@dimen/level_three_heading_font" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="20dp"
+                                android:background="@drawable/text_selector"
+                                android:padding="10dp"
+                                android:text="粗心大意"
+                                android:textSize="@dimen/level_three_heading_font" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="20dp"
+                            android:background="@drawable/text_selector"
+                            android:drawablePadding="10dp"
+                            android:drawableTop="@drawable/icon_add_page"
+                            android:padding="40dp"
+                            android:text="自定义"
+                            android:textSize="@dimen/level_three_heading_font" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:padding="10dp">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/line_height"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/parse_mistake_delete"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/button_backup_selector"
+                        android:text="清除"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <Button
+                        android:id="@+id/parse_mistake_add"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="20dp"
+                        android:background="@drawable/button_backup_selector"
+                        android:text="添加"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/line_height"
+                        android:layout_weight="1" />
+                </LinearLayout>
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+</layout>

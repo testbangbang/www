@@ -31,7 +31,7 @@ public class StringUtil {
 
     public static String distinguishAnswer(String answer) {
         if (isNullOrEmpty(answer)) {
-            return SunApplication.getInstence().getResources().getString(R.string.no_answer);
+            return SunApplication.getInstance().getResources().getString(R.string.no_answer);
         } else {
             return answer;
         }

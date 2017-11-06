@@ -41,7 +41,7 @@ public class RequestManager {
         return executor;
     }
 
-    public void acquireWakeLock(final Context context, final String tag) {
+    public synchronized void acquireWakeLock(final Context context, final String tag) {
         try {
             if (wakeLock == null) {
                 wakeLock = Device.currentDevice().newWakeLock(context, tag);
@@ -55,7 +55,7 @@ public class RequestManager {
         }
     }
 
-    public void releaseWakeLock() {
+    public synchronized void releaseWakeLock() {
         try {
             if (wakeLock != null) {
                 if (wakeLock.isHeld()) {
@@ -70,7 +70,7 @@ public class RequestManager {
         }
     }
 
-    public void dumpWakelocks() {
+    public synchronized void dumpWakelocks() {
         if (debugWakelock) {
             if (wakeLock != null || wakeLockCounting.get() > 0) {
                 Log.w(TAG, "wake lock not released. check wake lock." + wakeLock.toString() + " counting: " + wakeLockCounting.get());

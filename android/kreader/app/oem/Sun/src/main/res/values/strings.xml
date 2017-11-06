@@ -46,6 +46,8 @@
     <string name="total_score_ranking">Total score ranking</string>
     <string name="no_answer">Unfilled</string>
     <string name="question">Question</string>
+    <string name="user_answer">My answer:%s</string>
+    <string name="correct_answer">Correct answer：%s</string>
     <string name="knowledge_point">Knowledge:%s</string>
     <string name="cognitive_level">Cognitive level:%s</string>
     <string name="correct_rate">Correct rate:%s</string>
@@ -122,4 +124,8 @@
     <string name="login_activity_loading_tip">Please wait</string>
     <string name="login_activity_network_connection_exception">network connection exception</string>
     <string name="login_activity_request_failed">request failed</string>
+    <string name="parse_of_answer">Parse of answer</string>
+    <string name="mistake">Mistake</string>
+    <string name="correct">Correct</string>
+    <string name="item_fill_homework_title">%1$s(%2$d points,%3$d questions,%4$d points per question)</string>
 </resources>

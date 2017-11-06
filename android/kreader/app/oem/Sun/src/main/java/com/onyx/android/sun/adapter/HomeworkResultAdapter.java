@@ -8,8 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.cloud.bean.Question;
+import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.databinding.ItemHomeworkResultBinding;
+import com.onyx.android.sun.event.UnansweredEvent;
+import com.onyx.android.sun.utils.StringUtil;
 import com.onyx.android.sun.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by li on 2017/10/16.
@@ -18,6 +27,7 @@ import com.onyx.android.sun.view.PageRecyclerView;
 public class HomeworkResultAdapter extends PageRecyclerView.PageAdapter {
     private int row;
     private int col;
+    private List<TaskAndAnswerEntity> data;
 
     @Override
     public int getRowCount() {
@@ -31,7 +41,7 @@ public class HomeworkResultAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getDataCount() {
-        return 0;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -42,12 +52,33 @@ public class HomeworkResultAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
+        HomeworkResultViewHolder viewHolder = (HomeworkResultViewHolder) holder;
+        ItemHomeworkResultBinding homeworkResultBinding = viewHolder.getHomeworkResultBinding();
+        TaskAndAnswerEntity entity = data.get(position);
+        homeworkResultBinding.setQuestionId("第" + entity.questionId + "题");
+        homeworkResultBinding.setAnswer(entity.userAnswer);
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
     }
 
     @Override
     public void onClick(View view) {
+        Object tag = view.getTag();
+        if(tag == null) {
+            return;
+        }
 
+        int position = (int) tag;
+        TaskAndAnswerEntity entity = data.get(position);
+        if(StringUtil.isNullOrEmpty(entity.userAnswer)) {
+            EventBus.getDefault().post(new UnansweredEvent());
+        }
+    }
+
+    public void setData(List<TaskAndAnswerEntity> data) {
+        this.data = data;
+        Collections.sort(data);
+        notifyDataSetChanged();
     }
 
     static class HomeworkResultViewHolder extends RecyclerView.ViewHolder {

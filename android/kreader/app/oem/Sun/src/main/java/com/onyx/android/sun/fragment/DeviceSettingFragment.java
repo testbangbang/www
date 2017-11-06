@@ -125,13 +125,11 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     @Override
     public void onResume() {
         super.onResume();
-        MobclickAgent.onPageStart(DeviceSettingFragment.class.getSimpleName());
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        MobclickAgent.onPageEnd(DeviceSettingFragment.class.getSimpleName());
     }
 
     @Override

@@ -33,6 +33,6 @@ public class Constants {
     public static final String SP_KEY_ISKEEPPASSWORD = "isKeepPassword";
     public static final String SP_KEY_USER_ACCOUNT = "userAccount";
     public static final String SP_KEY_USER_PASSWORD = "userPassword";
-    //SharedPreferences constant
+    public static final String SOUND_DIR = "sounds";
 
 }

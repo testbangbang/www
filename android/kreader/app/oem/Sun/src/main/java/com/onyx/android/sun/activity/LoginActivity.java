@@ -18,6 +18,7 @@ import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.databinding.ActivityUserLoginBinding;
 import com.onyx.android.sun.interfaces.UserLoginView;
 import com.onyx.android.sun.presenter.UserLoginPresenter;
+import com.umeng.analytics.MobclickAgent;
 
 import java.net.ConnectException;
 
@@ -38,6 +39,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         userLoginRequestBean.isKeepPassword = PreferenceManager.getBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, false);
         restoreUserInfo();
         loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
+        MobclickAgent.setDebugMode(true);
+        MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
 
     private void restoreUserInfo() {
@@ -58,6 +61,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         loginDataBinding = (ActivityUserLoginBinding) binding;
         loginDataBinding.setListener(this);
         loginDataBinding.setVariable(BR.requestInfo, userLoginRequestBean);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onPageStart(this.getClass().getName());
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        MobclickAgent.onPageEnd(this.getClass().getName());
     }
 
     @Override

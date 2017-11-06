@@ -1,40 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/question_title"
+    <FrameLayout
+        android:id="@+id/correct_state"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="@dimen/level_three_heading_font" />
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <RadioGroup
-            android:id="@+id/choice_item"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:background="@color/gray"
+        android:visibility="gone">
 
         <LinearLayout
-            android:id="@+id/subjective_item"
+            android:id="@+id/question_correct"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:gravity="center"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:padding="@dimen/question_view_correct_padding">
 
             <ImageView
-                android:id="@+id/subjective_image"
-                android:layout_width="100dp"
-                android:layout_height="100dp" />
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_correct" />
 
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/line_height"
-                android:background="@android:color/black" />
+                android:layout_marginTop="@dimen/question_view_correct_icon_margin_top"
+                android:background="@android:color/white" />
+
+            <ImageView
+                android:id="@+id/correct_favourite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/question_view_correct_icon_margin_top"
+                android:src="@drawable/favourite_selector" />
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/question_mistake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:src="@drawable/icon_mistake" />
     </FrameLayout>
-</LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_toLeftOf="@+id/correct_state"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/question_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:id="@+id/choice_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:id="@+id/choice_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"/>
+
+                <RadioGroup
+                    android:id="@+id/choice_radio_group"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/subjective_item"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:id="@+id/subjective_image"
+                    android:layout_width="@dimen/question_view_subjective_answer_width"
+                    android:layout_height="@dimen/question_view_subjective_answer_height" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/line_height"
+                    android:background="@android:color/black" />
+            </LinearLayout>
+        </FrameLayout>
+
+        <LinearLayout
+            android:id="@+id/question_analyze_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/user_answer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/user_answer"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:id="@+id/knowledge_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/knowledge_point"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:id="@+id/cognitive_level"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cognitive_level"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:id="@+id/correct_rate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/correct_rate"
+                android:textSize="@dimen/level_three_heading_font" />
+        </LinearLayout>
+    </LinearLayout>
+</RelativeLayout>

@@ -8,12 +8,10 @@ import java.util.Map;
  */
 
 public class QuestionDetail {
-    public int code;
-    public String type;
-    public String course;
-    public String title;
-    public String deadline;
-    public List<QuestionData> data;
-    public int totalPoints;
+    public List<Integer> ids;
+    public String name;
+    public int volumeScore;
     public long duration;
+    public int volumeType;
+    public List<QuestionData> volumeExerciseDTOS;
 }

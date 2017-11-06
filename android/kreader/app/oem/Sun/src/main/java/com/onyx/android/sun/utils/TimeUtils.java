@@ -12,8 +12,10 @@ import java.util.Date;
 public class TimeUtils {
     private final static String DATA_TIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
     private final static String DATA_FORMAT = "yyyy-MM-dd";
+    private final static String TIME_FORMAT = "HH:mm:ss";
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATA_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(DATA_FORMAT);
+    public static final SimpleDateFormat TIME_FORMAT_DATA = new SimpleDateFormat(TIME_FORMAT);
 
     private TimeUtils() {
         throw new AssertionError();
@@ -25,6 +27,10 @@ public class TimeUtils {
 
     public static String getTime(long timeInMillis) {
         return getTime(timeInMillis, DEFAULT_DATE_FORMAT);
+    }
+
+    public static String getOnlyTime(long timeInMillis) {
+        return getTime(timeInMillis, TIME_FORMAT_DATA);
     }
 
     public static String getDate(long timeInMillis) {

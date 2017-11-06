@@ -1,5 +1,7 @@
 package com.onyx.android.sun.cloud.bean;
 
+import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
+
 import java.util.List;
 
 /**
@@ -8,5 +10,5 @@ import java.util.List;
 
 public class AnswerRecordBean {
     public String title;
-    public List<Question> list;
+    public List<TaskAndAnswerEntity> list;
 }

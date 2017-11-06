@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/rectangle_gray_stroke"
                 android:gravity="center"
-                android:onClick="@{listener.onClick}"
+                android:onClick="@{listener::onClick}"
                 android:padding="@dimen/main_fragment_text_padding"
                 android:text="@string/view_all" />
         </LinearLayout>
@@ -153,7 +153,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
                         android:gravity="center"
-                        android:onClick="@{listener.onClick}"
+                        android:onClick="@{listener::onClick}"
                         android:text="@string/grade_ranking"
                         android:textSize="@dimen/level_two_heading_font" />
 
@@ -163,7 +163,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/main_fragment_score_text_margin_top"
                         android:gravity="center"
-                        android:onClick="@{listener.onClick}"
+                        android:onClick="@{listener::onClick}"
                         android:textSize="@dimen/level_two_heading_font" />
                 </LinearLayout>
 

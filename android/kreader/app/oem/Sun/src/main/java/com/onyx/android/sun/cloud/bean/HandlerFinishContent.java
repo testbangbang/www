@@ -7,4 +7,5 @@ package com.onyx.android.sun.cloud.bean;
 public class HandlerFinishContent {
     public FinishContent content;
     public int type;
+    public String time;
 }

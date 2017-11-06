@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.AnswerRecordBean;
-import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.databinding.ItemHomeworkRecordBinding;
@@ -18,10 +17,8 @@ import com.onyx.android.sun.view.DividerItemDecoration;
 import com.onyx.android.sun.view.PageRecyclerView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by li on 2017/10/13.

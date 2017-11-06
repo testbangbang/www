@@ -96,6 +96,16 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     protected int getRootView() {
         return R.layout.homework_layout;
     }

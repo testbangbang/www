@@ -40,6 +40,16 @@ public class RankingFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public boolean onKeyBack() {
         return false;
     }

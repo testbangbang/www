@@ -27,7 +27,6 @@ import java.util.List;
 
 public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
     private List<HandlerFinishContent> contents = new ArrayList<HandlerFinishContent>();
-    private List<String> submitTimes = new ArrayList<>();
     private static final int TIME_TYPE = 0;
     private static final int CONTENT_TYPE = 1;
 
@@ -73,7 +72,7 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
         if (holder instanceof TimeViewHolder) {
             TimeViewHolder timeViewHolder = (TimeViewHolder) holder;
             ItemTimeBinding timeBinding = timeViewHolder.getTimeBinding();
-            timeBinding.setCorrectTime(submitTimes.get(position));
+            timeBinding.setCorrectTime(contents.get(position).time);
             timeBinding.executePendingBindings();
         } else if (holder instanceof ContentViewHolder) {
             ContentViewHolder contentViewHolder = (ContentViewHolder) holder;
@@ -88,13 +87,13 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public void onClick(View view) {
         Object tag = view.getTag();
-        if(tag == null) {
+        if (tag == null) {
             return;
         }
 
         int position = (int) tag;
         HandlerFinishContent handlerFinishContent = contents.get(position);
-        EventBus.getDefault().post(new ToCorrectEvent(handlerFinishContent.content.correctTime != null));
+        EventBus.getDefault().post(new ToCorrectEvent(handlerFinishContent.content));
     }
 
     public void setData(List<FinishContent> data) {
@@ -103,13 +102,16 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
     }
 
     private void handleData(List<FinishContent> data) {
+        if (data == null || data.size() == 0) {
+            return;
+        }
         FinishContent finishContent = data.get(0);
         HandlerFinishContent handlerContent = new HandlerFinishContent();
         handlerContent.type = TIME_TYPE;
+        handlerContent.time = finishContent.submitTime;
         contents.add(handlerContent);
 
         if (finishContent.submitTime != null) {
-            submitTimes.add(finishContent.submitTime);
             Iterator<FinishContent> iterator = data.iterator();
             while (iterator.hasNext()) {
                 FinishContent content = iterator.next();
@@ -117,10 +119,12 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
                     HandlerFinishContent handlerFinishContent = new HandlerFinishContent();
                     handlerFinishContent.content = content;
                     handlerFinishContent.type = CONTENT_TYPE;
+                    handlerFinishContent.time = content.submitTime;
                     contents.add(handlerFinishContent);
                     iterator.remove();
                 } else {
                     handleData(data);
+                    iterator = data.iterator();
                 }
             }
         }

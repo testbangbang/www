@@ -9,11 +9,15 @@
 
         <variable
             name="record"
-            type="String"/>
+            type="String" />
 
         <variable
             name="listener"
             type="android.view.View.OnClickListener" />
+
+        <variable
+            name="countDown"
+            type="String" />
     </data>
 
     <LinearLayout
@@ -33,11 +37,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/icon_back"
-                android:text="@{title}"
-                android:onClick="@{listener.onClick}"
                 android:drawablePadding="@dimen/title_bar_title_drawable_padding"
                 android:gravity="center_vertical"
+                android:onClick="@{listener::onClick}"
+                android:text="@{title}"
                 android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:id="@+id/title_bar_count_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/title_bar_record_margin_right"
+                android:drawableLeft="@drawable/icon_clock"
+                android:drawablePadding="@dimen/title_bar_title_drawable_padding"
+                android:gravity="center_vertical"
+                android:text="@{@string/count_down(countDown)}"
+                android:textSize="@dimen/level_two_heading_font"
+                android:visibility="gone" />
 
             <View
                 android:layout_width="0dp"
@@ -49,9 +65,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/title_bar_record_margin_right"
-                android:text="@{record}"
-                android:gravity="center_vertical"
                 android:drawableLeft="@drawable/icon_homework_record"
+                android:gravity="center_vertical"
+                android:text="@{record}"
                 android:textSize="@dimen/level_two_heading_font" />
 
             <Button

@@ -42,6 +42,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private int id;
     private FillHomeworkAdapter fillHomeworkAdapter;
     private HomeworkRecordAdapter homeworkRecordAdapter;
+    private QuestionDetail data;
 
     @Override
     protected void loadData() {
@@ -64,6 +65,16 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarRecord.setOnClickListener(this);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarSubmit.setOnClickListener(this);
         homeworkRecordAdapter = new HomeworkRecordAdapter();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -99,9 +110,10 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Override
     public void setTaskDetail(QuestionDetail data) {
-        List<QuestionData> questions = data.data;
-        if (fillHomeworkAdapter != null && questions != null && questions.size() > 0) {
-            fillHomeworkAdapter.setData(questions, title);
+        this.data = data;
+        showTaskTitle();
+        if (fillHomeworkAdapter != null && data.volumeExerciseDTOS != null && data.volumeExerciseDTOS.size() > 0) {
+            fillHomeworkAdapter.setData(data.volumeExerciseDTOS, title);
         }
     }
 
@@ -133,6 +145,12 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         }
     }
 
+    private void showTaskTitle() {
+        fillHomeworkBinding.setTaskName(data.name);
+        fillHomeworkBinding.setShowTaskType(data.volumeType != 1);
+        fillHomeworkBinding.setWholeScore(data.volumeScore);
+    }
+
     private void setTitleBarRecord() {
         if (getResources().getString(R.string.file_homework_record).equals(fillHomeworkBinding.fillHomeworkTitleBar.getRecord())) {
             fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.question));
@@ -153,6 +171,11 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSubjectiveResultEvent(SubjectiveResultEvent event) {
         //TODO: assign value
-        Bitmap bitmap = NoteDataProvider.loadThumbnail(SunApplication.getInstence(), event.getQuestionId());
+        /*for (QuestionData data :questions) {
+            if(data.exercise.id == Integer.parseInt(event.getQuestionId())) {
+                data.exercise.userAnswer = event.getQuestionId();
+            }
+        }
+        fillHomeworkAdapter.notifyDataSetChanged();*/
     }
 }

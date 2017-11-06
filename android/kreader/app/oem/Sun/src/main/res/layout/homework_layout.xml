@@ -36,7 +36,7 @@
                 android:layout_weight="1"
                 android:background="@{@drawable/tab_selector}"
                 android:gravity="center"
-                android:onClick="@{listener.onClick}"
+                android:onClick="@{listener::onClick}"
                 android:padding="@{@dimen/homework_text_view_padding}"
                 android:text="@{@string/homework_unfinished}"
                 android:textSize="@{@dimen/level_two_heading_font}" />
@@ -48,7 +48,7 @@
                 android:layout_weight="1"
                 android:background="@{@drawable/tab_selector}"
                 android:gravity="center"
-                android:onClick="@{listener.onClick}"
+                android:onClick="@{listener::onClick}"
                 android:padding="@{@dimen/homework_text_view_padding}"
                 android:text="@{@string/homework_finished}"
                 android:textSize="@{@dimen/level_two_heading_font}" />
@@ -60,7 +60,7 @@
                 android:layout_weight="1"
                 android:background="@{@drawable/tab_selector}"
                 android:gravity="center"
-                android:onClick="@{listener.onClick}"
+                android:onClick="@{listener::onClick}"
                 android:padding="@{@dimen/homework_text_view_padding}"
                 android:text="@{@string/study_report}"
                 android:textSize="@{@dimen/level_two_heading_font}" />
@@ -118,7 +118,7 @@
                         android:background="@drawable/text_unselected_state"
                         android:drawableRight="@drawable/ic_drop_down"
                         android:gravity="center"
-                        android:onClick="@{listener.onClick}"
+                        android:onClick="@{listener::onClick}"
                         android:textSize="@dimen/level_three_heading_font" />
 
                     <View
@@ -136,7 +136,7 @@
                         android:background="@drawable/text_unselected_state"
                         android:drawableRight="@drawable/ic_drop_down"
                         android:gravity="center"
-                        android:onClick="@{listener.onClick}"
+                        android:onClick="@{listener::onClick}"
                         android:textSize="@dimen/level_three_heading_font" />
                 </LinearLayout>
             </RelativeLayout>

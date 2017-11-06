@@ -3,6 +3,8 @@ package com.onyx.android.sun.event;
 import android.os.Handler;
 import android.os.Message;
 
+import com.onyx.android.sun.utils.TimeUtils;
+
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -12,8 +14,8 @@ import org.greenrobot.eventbus.EventBus;
 public class TimerEvent {
     private static final int COUNT_DOWN_WHAT = 0x1000;
     private static final int EACH_SECOND = 1000;
-    private int result;
-    private int count;
+    private long result;
+    private long count;
 
     private Handler handle = new Handler() {
         @Override
@@ -37,16 +39,20 @@ public class TimerEvent {
         }
     }
 
-    public void timeCountDown(int count) {
+    public void timeCountDown(long count) {
         this.count = count;
         handle.sendEmptyMessageDelayed(COUNT_DOWN_WHAT, EACH_SECOND);
     }
 
-    public void setResult(int result) {
+    public void setResult(long result) {
         this.result = result;
     }
 
-    public int getResult() {
+    public long getResult() {
         return result;
+    }
+
+    public String getResultInTime() {
+        return TimeUtils.getOnlyTime(result);
     }
 }

@@ -11,6 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.lang.reflect.Field;
 
 
@@ -47,6 +53,7 @@ public abstract class BaseFragment extends Fragment {
         int viewID = getRootView();
         ViewDataBinding binding = DataBindingUtil.inflate(inflater, viewID, container, false);
         View view = binding.getRoot();
+        EventBus.getDefault().register(this);
         initView(binding);
         loadData();
         initListener();
@@ -56,12 +63,23 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        MobclickAgent.onPageStart(this.getClass().getName());
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        MobclickAgent.onPageEnd(this.getClass().getName());
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void OnObjectEvent(Object event) {}
 
     protected abstract void loadData();
 

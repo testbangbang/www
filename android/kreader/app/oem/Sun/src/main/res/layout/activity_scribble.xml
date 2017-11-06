@@ -65,7 +65,7 @@
                 android:drawablePadding="@dimen/scribble_button_drawable_padding"
                 android:drawableTop="@drawable/icon_save"
                 android:gravity="center"
-                android:onClick="@{listener.onClick}"
+                android:onClick="@{listener::onClick}"
                 android:padding="@dimen/scribble_button_padding"
                 android:text="@string/save" />
 
@@ -86,7 +86,7 @@
                 android:drawablePadding="@dimen/scribble_button_drawable_padding"
                 android:drawableTop="@drawable/icon_add_page"
                 android:gravity="center"
-                android:onClick="@{listener.onClick}"
+                android:onClick="@{listener::onClick}"
                 android:padding="@dimen/scribble_button_padding"
                 android:text="@string/add_page" />
 
@@ -99,7 +99,7 @@
                 android:drawablePadding="@dimen/scribble_button_drawable_padding"
                 android:drawableTop="@drawable/icon_delete_page"
                 android:gravity="center"
-                android:onClick="@{listener.onClick}"
+                android:onClick="@{listener::onClick}"
                 android:padding="@dimen/scribble_button_padding"
                 android:text="@string/delete_page" />
         </LinearLayout>

@@ -74,6 +74,7 @@ dependencies {
             exclude group: it
         }
     }
+    compile 'com.umeng.analytics:analytics:latest.integration'
 }
 
 

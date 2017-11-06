@@ -1,8 +1,11 @@
 package com.onyx.android.sun.cloud.service;
 
+import com.onyx.android.sun.cloud.bean.GetCorrectedTaskResultBean;
+import com.onyx.android.sun.cloud.bean.GetSubjectBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
+import com.onyx.android.sun.cloud.bean.PracticeParseResultBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.TaskBean;
 import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
@@ -63,4 +66,27 @@ public interface ContentService {
     Call<SubmitPracticeResultBean> submitPractice(@Path(CloudApiContext.Practices.ID) int id,
                                                   @Query(CloudApiContext.Practices.STUDENTID)int studentId,
                                                   @Body RequestBody practiceBeanBody);
+
+    @POST("api/practice/favorite")
+    Call<SubmitPracticeResultBean> favoriteOrDeletePractice(@Query(CloudApiContext.Practices.ID) int id,
+                                                            @Body RequestBody requestBody);
+
+    @GET("api/practice/review/{id}")
+    Call<GetCorrectedTaskResultBean> getCorrectedTask(@Path(CloudApiContext.Practices.ID) int id,
+                                                      @Query(CloudApiContext.Practices.STUDENTID)int studentId);
+
+    @GET("api/practice/log/analysis")
+    Call<PracticeParseResultBean> getPracticeParse(@Query(CloudApiContext.Practices.ID) int id,
+                                                   @Query(CloudApiContext.Practices.PID) int pid,
+                                                   @Query(CloudApiContext.Practices.STUDENTID) int studentId);
+
+    @POST("api/practice/exerciseResult/{id}/introspect")
+    Call<SubmitPracticeResultBean> practiceIntrospection(@Path(CloudApiContext.Practices.ID) int id,
+                                                         @Body RequestBody requestBody);
+
+    @GET("api/subject/getSubject")
+    Call<GetSubjectBean> getSubject(@Query(CloudApiContext.Practices.STUDENTID) int studentId);
+
+    @GET("api/subject/getExerciseType")
+    Call<GetSubjectBean> getExerciseType();
 }

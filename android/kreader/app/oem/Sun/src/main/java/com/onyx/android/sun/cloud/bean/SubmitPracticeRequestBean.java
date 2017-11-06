@@ -1,5 +1,7 @@
 package com.onyx.android.sun.cloud.bean;
 
+import java.util.List;
+
 import okhttp3.RequestBody;
 
 /**

@@ -46,6 +46,8 @@
     <string name="total_score_ranking">总分排行榜</string>
     <string name="no_answer">未答</string>
     <string name="question">题目</string>
+    <string name="user_answer">我的答案：%s</string>
+    <string name="correct_answer">正确答案：%s</string>
     <string name="knowledge_point">知识点：%s</string>
     <string name="cognitive_level">认知水平：%s</string>
     <string name="correct_rate">正确率：%s</string>
@@ -122,4 +124,8 @@
     <string name="login_activity_loading_tip">请稍后</string>
     <string name="login_activity_network_connection_exception">网络连接异常</string>
     <string name="login_activity_request_failed">请求失败</string>
+    <string name="parse_of_answer">答案解析</string>
+    <string name="mistake">错误</string>
+    <string name="correct">正确</string>
+    <string name="item_fill_homework_title">%1$s(%2$d分,共%3$d题,每小题%4$d分)</string>
 </resources>

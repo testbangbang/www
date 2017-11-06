@@ -72,6 +72,16 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.view_all_task:

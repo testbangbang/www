@@ -16,6 +16,8 @@ import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
+import com.onyx.android.sun.cloud.bean.FinishContent;
+import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
@@ -24,6 +26,7 @@ import com.onyx.android.sun.event.ApkDownloadSucceedEvent;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.sun.event.HaveNewVersionApkEvent;
 import com.onyx.android.sun.event.HaveNewVersionEvent;
+import com.onyx.android.sun.event.ParseAnswerEvent;
 import com.onyx.android.sun.event.StartDownloadingEvent;
 import com.onyx.android.sun.event.ToCorrectEvent;
 import com.onyx.android.sun.event.ToHomeworkEvent;
@@ -38,6 +41,7 @@ import com.onyx.android.sun.fragment.DeviceSettingFragment;
 import com.onyx.android.sun.fragment.FillHomeworkFragment;
 import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
+import com.onyx.android.sun.fragment.ParseAnswerFragment;
 import com.onyx.android.sun.fragment.RankingFragment;
 import com.onyx.android.sun.interfaces.MainView;
 import com.onyx.android.sun.presenter.MainPresenter;
@@ -79,6 +83,16 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             tab.setTag(mainTabBean.tag);
             mainBinding.mainActivityTab.addTab(tab);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
     }
 
     @Override
@@ -168,6 +182,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_DEVICE_SETTING:
                     baseFragment = new DeviceSettingFragment();
                     break;
+                case ChildViewID.FRAGMENT_PARSE_ANSWER:
+                    baseFragment = new ParseAnswerFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -207,12 +224,26 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onToCorrectEvent(ToCorrectEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_CORRECT);
         CorrectFragment correctFragment = (CorrectFragment) getPageView(ChildViewID.FRAGMENT_CORRECT);
-        correctFragment.setStartTimer(event.isHasCorrected());
+        FinishContent content = event.getContent();
+        if(content != null) {
+            correctFragment.setStartTimer(content);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToRankingEvent(ToRankingEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_RANKING);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToParseAnswerEvent(ParseAnswerEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_PARSE_ANSWER);
+        ParseAnswerFragment parseAnswerFragment = (ParseAnswerFragment) getPageView(ChildViewID.FRAGMENT_PARSE_ANSWER);
+        Question question = event.getQuestion();
+        String title = event.getTitle();
+        if(question != null && !StringUtils.isNullOrEmpty(title)) {
+            parseAnswerFragment.setQuestionData(question, title);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
