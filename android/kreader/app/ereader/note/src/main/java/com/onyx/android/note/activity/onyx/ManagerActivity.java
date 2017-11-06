@@ -212,6 +212,9 @@ public class ManagerActivity extends BaseManagerActivity {
                 getSupportActionBar().openOptionsMenu();
             }
         });
+        if (NoteAppConfig.sharedInstance(this).useEduConfig()) {
+            jumpToExportFolderButton.setVisibility(View.GONE);
+        }
         jumpToExportFolderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
