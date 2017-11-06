@@ -713,7 +713,11 @@ public class NoteViewHelper {
         }
 
         if (useRawInput()) {
-            return !renderByFramework() && isFingerTouch(toolType) || forwardDrawing(motionEvent);
+            if (!renderByFramework() && isFingerTouch(toolType)) {
+                return true;
+            } else {
+                return forwardDrawing(motionEvent);
+            }
         } else {
             return forwardDrawing(motionEvent);
         }
