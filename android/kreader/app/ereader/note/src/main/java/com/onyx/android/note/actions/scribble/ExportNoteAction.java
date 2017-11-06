@@ -54,7 +54,7 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        count = pageUniqueIds.size();
+        count = exportCurPage ? 1 : pageUniqueIds.size();
         progress = new DialogProgress(activity, 0, count);
         progress.setTitle(activity.getString(R.string.exporting_info));
         String location = activity.getString(R.string.export_location, ExportUtils.NOTE_EXPORT_LOCATION + noteTitle);
@@ -107,9 +107,14 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
                     return;
                 }
 
-                progress.setProgress(index);
-                if (index == count) {
+                if (exportCurPage) {
+                    progress.setProgress(1);
                     onExportSuccess(activity, progress);
+                } else {
+                    progress.setProgress(index);
+                    if (index == count) {
+                        onExportSuccess(activity, progress);
+                    }
                 }
             }
         });
