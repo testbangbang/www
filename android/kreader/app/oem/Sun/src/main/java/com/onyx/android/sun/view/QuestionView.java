@@ -109,7 +109,8 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         ExerciseBean exerciseBean = questionViewBean.getExerciseBean();
         List<Question> exercises = exerciseBean.exercises;
         if (!StringUtil.isNullOrEmpty(exerciseBean.scene)) {
-            questionTitle.setText(Html.fromHtml(exerciseBean.id + "." + exerciseBean.scene));
+            Spanned spanned = Html.fromHtml(exerciseBean.id + "." + exerciseBean.scene);
+            questionTitle.setText(questionViewBean.isShow() ? questionViewBean.getShowType() + "\n\n" + spanned : spanned);
         }
         setVisibleType(R.id.choice_radio_group);
         generateChoice(exercises);
@@ -139,7 +140,8 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
             problem.setTextSize(20);
             Spanned spanned = Html.fromHtml(question.content);
             String problemTitle = question.id + "." + spanned;
-            problem.setText(questionViewBean.isShow() ? questionViewBean.getShowType() + "\n\n" + problemTitle : problemTitle);
+            problem.setText(StringUtil.isNullOrEmpty(questionViewBean.getExerciseBean().scene) &&
+                    questionViewBean.isShow() ? questionViewBean.getShowType() + "\n\n" + problemTitle : problemTitle);
             choiceTitle.addView(problem);
             List<ExerciseSelectionBean> exerciseSelections = question.exerciseSelections;
             if (exerciseSelections == null || exerciseSelections.size() == 0) {

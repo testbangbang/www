@@ -97,4 +97,5 @@
     <dimen name="login_activity_login_button_pddding">15dp</dimen>
     <dimen name="question_view_subjective_answer_width">200dp</dimen>
     <dimen name="question_view_subjective_answer_height">200dp</dimen>
+    <dimen name="auto_page_web_view_margin_left">10dp</dimen>
 </resources>
