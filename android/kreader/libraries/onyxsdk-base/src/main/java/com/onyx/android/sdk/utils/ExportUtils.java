@@ -2,6 +2,8 @@ package com.onyx.android.sdk.utils;
 
 import android.os.Environment;
 
+import com.onyx.android.sdk.device.EnvironmentUtil;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -13,7 +15,7 @@ import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class ExportUtils {
 
-    public static String NOTE_EXPORT_LOCATION = "/mnt/sdcard/note/";
+    public static String NOTE_EXPORT_LOCATION = EnvironmentUtil.getExternalStorageDirectory().getPath() + File.separator + "note";
 
     private static String getExportFolderPath(String documentPath) throws IOException{
         String parent = FileUtils.getParent(documentPath);
