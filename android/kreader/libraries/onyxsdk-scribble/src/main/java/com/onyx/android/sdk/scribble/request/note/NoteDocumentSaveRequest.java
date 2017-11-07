@@ -11,12 +11,18 @@ public class NoteDocumentSaveRequest extends BaseNoteRequest {
 
     private volatile String title;
     private volatile boolean close;
+    private volatile boolean resume = true;
 
     public NoteDocumentSaveRequest(final String t, boolean c) {
+        this(t, c, true);
+    }
+
+    public NoteDocumentSaveRequest(final String t, boolean c , boolean r) {
         title = t;
         close = c;
+        resume = r;
         setPauseInputProcessor(true);
-        setResumeInputProcessor(!close);
+        setResumeInputProcessor(!close && resume);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
