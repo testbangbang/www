@@ -15,7 +15,7 @@ import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class ExportUtils {
 
-    public static String NOTE_EXPORT_LOCATION = EnvironmentUtil.getExternalStorageDirectory().getPath() + File.separator + "note";
+    public static String NOTE_EXPORT_LOCATION = EnvironmentUtil.getExternalStorageDirectory().getPath() + File.separator + "note" + File.separator;
 
     private static String getExportFolderPath(String documentPath) throws IOException{
         String parent = FileUtils.getParent(documentPath);
