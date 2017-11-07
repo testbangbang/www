@@ -220,7 +220,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSave(false);
+                onSave(false, true);
             }
         });
         exportBtn.setOnClickListener(new View.OnClickListener() {
@@ -623,16 +623,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void onSave(final boolean finishAfterSave) {
+    private void onSave(final boolean finishAfterSave,final  boolean resumeDrawing) {
         hideSoftInput();
         getNoteViewHelper().flushTouchPointList();
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (isPictureEditMode){
+                if (isPictureEditMode) {
                     saveEditPic();
-                }else {
-                    saveDocument(finishAfterSave);
+                } else {
+                    saveDocument(finishAfterSave, resumeDrawing);
                 }
             }
         });
@@ -994,7 +994,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             getScribbleSubMenu().dismiss();
         }else {
             getNoteViewHelper().pauseDrawing();
-            onSave(true);
+            onSave(true, false);
         }
     }
 
@@ -1041,11 +1041,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void saveDocument(boolean finishAfterSave) {
+    private void saveDocument(boolean finishAfterSave,boolean resumeDrawing) {
         if (isNewDocument()) {
-            saveNewNoteDocument(finishAfterSave);
+            saveNewNoteDocument(finishAfterSave, resumeDrawing);
         } else {
-            saveExistingNoteDocument(finishAfterSave);
+            saveExistingNoteDocument(finishAfterSave, resumeDrawing);
         }
     }
 
@@ -1054,7 +1054,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 StringUtils.isNullOrEmpty(noteTitle);
     }
 
-    private void saveNewNoteDocument(final boolean finishAfterSave) {
+    private void saveNewNoteDocument(final boolean finishAfterSave , final boolean resumeDrawing) {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
@@ -1071,7 +1071,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
-                            saveDocumentWithTitle(input, finishAfterSave);
+                            saveDocumentWithTitle(input, finishAfterSave, resumeDrawing);
                         } else {
                             showNoteNameIllegal();
                         }
@@ -1101,20 +1101,20 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
+    private void saveDocumentWithTitle(final String title, final boolean finishAfterSave, final boolean resumeDrawing) {
         noteTitle = title;
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave, resumeDrawing);
         saveAction.execute(ScribbleActivity.this, null);
     }
 
-    private void saveExistingNoteDocument(final boolean finishAfterSave) {
+    private void saveExistingNoteDocument(final boolean finishAfterSave, final boolean resumeDrawing) {
         String documentUniqueId = shapeDataInfo.getDocumentUniqueId();
         if (StringUtils.isNullOrEmpty(documentUniqueId)) {
             return;
         }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
+                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave, resumeDrawing);
         saveAction.execute(ScribbleActivity.this, null);
     }
 
@@ -1197,7 +1197,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     @Override
     protected void onScreenShotStart() {
-        onSave(false);
+        onSave(false, false);
         super.onScreenShotStart();
     }
 
