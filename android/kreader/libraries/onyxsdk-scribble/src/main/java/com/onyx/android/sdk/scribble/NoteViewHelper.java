@@ -712,8 +712,17 @@ public class NoteViewHelper {
             return forwardShapeSelecting(motionEvent);
         }
 
+        /*
+           touch event logic:
+           1.detect raw input, if false,always forward drawing.
+           2.if true, filter all finger touch.
+           3.if not finger touch, detect target shape, if non dfb shape, forward drawing.
+         */
         if (useRawInput()) {
-            if (!renderByFramework() && isFingerTouch(toolType)) {
+            if (isFingerTouch(toolType)) {
+                return true;
+            }
+            if (renderByFramework()) {
                 return true;
             } else {
                 return forwardDrawing(motionEvent);
