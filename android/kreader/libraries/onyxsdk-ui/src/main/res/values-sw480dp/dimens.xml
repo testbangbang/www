@@ -24,5 +24,5 @@
     <dimen name="preference_category_text_size">14sp</dimen>
 
     <dimen name="seebar_thumb_height">24dp</dimen>
-    <dimen name="menu_seek_bar_height">14dp</dimen>
+    <dimen name="menu_seek_bar_height">20dp</dimen>
 </resources>
