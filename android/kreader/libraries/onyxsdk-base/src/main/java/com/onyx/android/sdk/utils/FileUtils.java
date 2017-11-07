@@ -342,7 +342,7 @@ public class FileUtils {
             String suffix = (String) encodePath.subSequence(encodePath.lastIndexOf(File.separator), encodePath.length());
             filePath = Device.currentDevice().getBluetoothRootDirectory().getPath() + suffix;
         } else {
-            getRealFilePathFromUriByContentResolver(context, uri, android.provider.MediaStore.Images.ImageColumns.DATA);
+            filePath = getRealFilePathFromUriByContentResolver(context, uri, android.provider.MediaStore.Images.ImageColumns.DATA);
         }
         return filePath;
     }

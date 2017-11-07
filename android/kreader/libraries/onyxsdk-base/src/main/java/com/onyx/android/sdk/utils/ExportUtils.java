@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.utils;
 
+import android.os.Build;
 import android.os.Environment;
 
 import com.onyx.android.sdk.device.EnvironmentUtil;
@@ -50,7 +51,15 @@ public class ExportUtils {
     }
 
     public static String getExportPicPath(String document) throws IOException {
-        String documentPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getAbsolutePath() + File.separator +"Screenshots";
+        String documentPath = getExportPicDirectoryPath();
         return new File(documentPath, document + ".png").getAbsolutePath();
+    }
+
+    private static String getExportPicDirectoryPath(){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            return Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getAbsolutePath() + File.separator + "Screenshots";
+        }else {
+            return EnvironmentUtil.getExternalStorageDirectory().getPath() + File.separator + "Screenshots";
+        }
     }
 }
