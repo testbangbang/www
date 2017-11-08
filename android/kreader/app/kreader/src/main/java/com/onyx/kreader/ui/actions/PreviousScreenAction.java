@@ -6,6 +6,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.host.request.PreviousScreenRequest;
+import com.onyx.kreader.device.ReaderDeviceManager;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.events.PageChangedEvent;
 
@@ -16,6 +17,7 @@ public class PreviousScreenAction extends BaseAction {
 
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         if (!readerDataHolder.getReaderViewInfo().canPrevScreen) {
+            ReaderDeviceManager.disableRegal();
             Toast.makeText(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.min_page_toast), Toast.LENGTH_SHORT).show();
             return;
         }
