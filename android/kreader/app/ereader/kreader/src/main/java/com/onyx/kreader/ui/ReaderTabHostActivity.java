@@ -608,6 +608,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             ReaderTabActivityManager.bringTabToFront(this, tabManager, currentTab, tabWidgetVisible.get());
         }
+
+        ensureFront();
     }
 
     private void addTabToHost(final ReaderTabManager.ReaderTab tab, final String path) {
@@ -1017,8 +1019,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void ensureFront() {
-        bringSelfToFront();
-        bringCurrentTabToFront();
+        // ensure tab host and current reader tab be front by hiding irrelevant tabs,
+        // fix the issue of randomly losing focus of tab host on Rk3288
+        ReaderTabManager.ReaderTab tab = getCurrentTabInHost();
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+            if (tab == entry.getKey()) {
+                continue;
+            }
+            ReaderTabActivityManager.moveReaderTabToBack(this, tabManager, entry.getKey());
+        }
     }
 
     private boolean bringSelfToFront() {
@@ -1036,11 +1045,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
         Debug.d(TAG, "bringSelfToFront: failed!");
         return false;
-    }
-
-    private void bringCurrentTabToFront() {
-        ReaderTabActivityManager.bringTabToFront(this, tabManager,
-                getCurrentTabInHost(), tabWidgetVisible.get());
     }
 
     private void updateReaderTabWindowHeight() {
@@ -1089,8 +1093,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         showTabWidgetOnCondition();
         updateReaderTabWindowHeight();
         ReaderTabActivityManager.updateTabWidgetVisibilityOnOpenedReaderTabs(this, tabManager, visible);
-
-        ensureFront();
 
         saveReaderTabState();
     }
