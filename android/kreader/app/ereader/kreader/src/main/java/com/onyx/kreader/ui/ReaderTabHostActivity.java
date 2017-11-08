@@ -1017,9 +1017,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void ensureFront() {
-        if (!isFront) {
-            bringSelfToFront();
-        }
+        bringSelfToFront();
+        bringCurrentTabToFront();
     }
 
     private boolean bringSelfToFront() {
@@ -1037,6 +1036,11 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
         Debug.d(TAG, "bringSelfToFront: failed!");
         return false;
+    }
+
+    private void bringCurrentTabToFront() {
+        ReaderTabActivityManager.bringTabToFront(this, tabManager,
+                getCurrentTabInHost(), tabWidgetVisible.get());
     }
 
     private void updateReaderTabWindowHeight() {
@@ -1085,6 +1089,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         showTabWidgetOnCondition();
         updateReaderTabWindowHeight();
         ReaderTabActivityManager.updateTabWidgetVisibilityOnOpenedReaderTabs(this, tabManager, visible);
+
+        ensureFront();
 
         saveReaderTabState();
     }
