@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class RxLibraryGotoRequest extends RxBaseDBRequest {
 
-    private boolean loadFromCache = true;
+    private boolean loadFromCache = false;
     private boolean loadParent = true;
     private Library gotoLibrary;
     private List<Library> parentLibraryList = new ArrayList<>();

@@ -24,7 +24,7 @@ public class RxRemoveFromLibraryRequest extends RxBaseDBRequest {
     @Override
     public RxRemoveFromLibraryRequest call() throws Exception {
         for (Metadata metadata : removeList) {
-            getDataManager().getRemoteContentProvider().deleteMetadataCollection(getAppContext(),
+            getDataProvider().deleteMetadataCollection(getAppContext(),
                     library.getIdString(), metadata.getIdString());
         }
         return this;
