@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.manager.CacheManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.LibraryTableOfContentEntry;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryBuildRequest;
@@ -28,7 +29,9 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxModifyLibraryRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -264,20 +267,28 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         final CacheManager cacheManager = dataManager.getCacheManager();
         final int total = TestUtils.randInt(100, 100);
         ArrayList<Metadata> list = new ArrayList<>();
+        ArrayList<Library> listLibrary = new ArrayList<>();
         final String metadataCacheKey = TestUtils.randString();
+        final String libraryCacheKey = TestUtils.randString();
         for (int i = 0; i < total; i++) {
             Metadata metadata = RxMetadataTest.randomMetadata(RxMetadataTest.testFolder(), true);
             list.add(metadata);
+            listLibrary.add(generateLibrary());
         }
         cacheManager.addToMetadataCache(metadataCacheKey, list);
-        final LruCache<String, List<Metadata>> lruCache = cacheManager.getMetadataLruCache();
-        assertNotNull(lruCache);
-        assertEquals(lruCache.get(metadataCacheKey).size(), total);
+        cacheManager.addToLibraryCache(libraryCacheKey, listLibrary);
+        final LruCache<String, List<Metadata>> metadataLruCache = cacheManager.getMetadataLruCache();
+        final LruCache<String, List<Library>> libraryLruCache = cacheManager.getLibraryLruCache();
+        assertNotNull(metadataLruCache);
+        assertNotNull(libraryLruCache);
+        assertEquals(metadataLruCache.get(metadataCacheKey).size(), total);
+        assertEquals(libraryLruCache.get(libraryCacheKey).size(), total);
         RxLibraryDataCacheClearRequest request = new RxLibraryDataCacheClearRequest(dataManager, true, true);
         request.execute(new RxCallback<RxLibraryDataCacheClearRequest>() {
             @Override
             public void onNext(RxLibraryDataCacheClearRequest rxLibraryDataCacheClearRequest) {
                 assertNull(rxLibraryDataCacheClearRequest.getDataManager().getCacheManager().getMetadataLruCache().get(metadataCacheKey));
+                assertNull(rxLibraryDataCacheClearRequest.getDataManager().getCacheManager().getLibraryLruCache().get(libraryCacheKey));
                 countDownLatch.countDown();
             }
 
@@ -297,35 +308,6 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         final String uniqueId = TestUtils.generateUniqueId();
         library.setIdString(uniqueId);
         return library;
-    }
-
-    public void testRxLibraryDeleteRequest() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-
-        DataManager dataManager = getDataManager();
-        final Library library = generateLibrary();
-        dataManager.getRemoteContentProvider().addLibrary(library);
-        Library library1 = dataManager.getRemoteContentProvider().loadLibrary(library.getIdString());
-        assertNotNull(library1);
-
-        RxLibraryDeleteRequest request = new RxLibraryDeleteRequest(dataManager, library);
-        request.execute(new RxCallback<RxLibraryDeleteRequest>() {
-            @Override
-            public void onNext(RxLibraryDeleteRequest rxLibraryDeleteRequest) {
-                Library library2 = rxLibraryDeleteRequest.getDataProvider().loadLibrary(library.getIdString());
-                assertNull(library2);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-                assertNull(throwable);
-                countDownLatch.countDown();
-            }
-        });
-
-        countDownLatch.await();
     }
 
     public void testRxLibraryGotoRequest() throws Exception {
