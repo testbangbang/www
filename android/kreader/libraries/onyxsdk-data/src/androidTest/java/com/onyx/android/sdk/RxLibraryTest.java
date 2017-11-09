@@ -318,12 +318,15 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         final int childCount = TestUtils.randInt(1, 10);
         final String parentTag = TestUtils.randString();
         final String childTag = TestUtils.randString();
-        final Library library = generateChildLibraryRecursive(dataManager.getRemoteContentProvider(), parentLibrary, parentTag, layers);
+        final List<Library> parentList = new ArrayList<>();
+        final List<Library> childList = new ArrayList<>();
+        final Library library = generateChildLibraryRecursive(dataManager.getRemoteContentProvider(), parentLibrary, parentTag, layers, parentList);
         for (int i = 0; i < childCount; i++) {
             Library childLibrary = generateLibrary();
             childLibrary.setDescription(childTag);
             childLibrary.setParentUniqueId(library.getIdString());
             dataManager.getRemoteContentProvider().addLibrary(childLibrary);
+            childList.add(childLibrary);
         }
         RxLibraryGotoRequest request = new RxLibraryGotoRequest(dataManager, library);
         request.setLoadParentLibrary(true);
@@ -332,16 +335,10 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             public void onNext(RxLibraryGotoRequest rxLibraryGotoRequest) {
                 List<Library> subLibraryList = rxLibraryGotoRequest.getSubLibraryList();
                 assertFalse(CollectionUtils.isNullOrEmpty(subLibraryList));
-                assertEquals(subLibraryList.size(), childCount);
-                for (Library library1 : subLibraryList) {
-                    assertEquals(library1.getDescription(), childTag);
-                }
+                assertListEqual(subLibraryList, childList);
                 List<Library> parentLibraryList = rxLibraryGotoRequest.getParentLibraryList();
                 assertFalse(CollectionUtils.isNullOrEmpty(parentLibraryList));
-                assertEquals(parentLibraryList.size(), layers);
-                for (Library library1 : parentLibraryList) {
-                    assertEquals(library1.getDescription(), parentTag);
-                }
+                assertListEqual(parentLibraryList, parentList);
                 countDownLatch.countDown();
             }
 
@@ -356,9 +353,23 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         countDownLatch.await();
     }
 
-    private Library generateChildLibraryRecursive(DataProviderBase dataProvider, Library parentLibrary, String parentTag, int layers) {
+    private void assertListEqual(List<Library> resultList, List<Library> targetList) {
+        assertEquals(resultList.size(), targetList.size());
+        for (Library library : resultList) {
+            boolean equal = false;
+            for (Library library1 : targetList) {
+                if (library1.getIdString().equals(library.getIdString())) {
+                    equal = true;
+                }
+            }
+            assertTrue(equal);
+        }
+    }
+
+    private Library generateChildLibraryRecursive(DataProviderBase dataProvider, Library parentLibrary, String parentTag, int layers, List<Library> parentList) {
         parentLibrary.setDescription(parentTag);
         dataProvider.addLibrary(parentLibrary);
+        parentList.add(parentLibrary);
         Library library = null;
         String parentUniqueId = parentLibrary.getIdString();
         while (layers > 0) {
@@ -366,9 +377,11 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             library.setParentUniqueId(parentUniqueId);
             library.setDescription(parentTag);
             dataProvider.addLibrary(library);
+            parentList.add(library);
             parentUniqueId = library.getIdString();
             layers--;
         }
+        parentList.remove(parentList.size() - 1);
         return library;
     }
 
