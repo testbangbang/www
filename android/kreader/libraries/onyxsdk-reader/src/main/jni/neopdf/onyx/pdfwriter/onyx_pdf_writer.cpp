@@ -284,13 +284,13 @@ bool OnyxPdfWriter::openPDF(const std::string &path)
     return true;
 }
 
-bool OnyxPdfWriter::saveAs(const std::string &path, bool savePagesWithAnnotation)
+bool OnyxPdfWriter::saveAs(const std::string &path, bool saveOnlyPagesWithAnnotation)
 {
     if (!isOpened()) {
         return false;
     }
 
-    if (!savePagesWithAnnotation) {
+    if (!saveOnlyPagesWithAnnotation) {
         impl->insertSubPages();
         impl->doc_->Write(path.c_str());
         return true;
