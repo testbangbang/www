@@ -195,7 +195,6 @@ public:
 
 OnyxPdfWriter::OnyxPdfWriter()
 {
-    impl.reset(new Impl());
 }
 
 OnyxPdfWriter::~OnyxPdfWriter()
@@ -207,6 +206,8 @@ bool OnyxPdfWriter::openPDF(const std::string &path)
     if (isOpened()) {
         close();
     }
+
+    impl.reset(new Impl());
 
     impl->doc_ = new PoDoFo::PdfMemDocument(path.c_str());
     if (!impl->doc_->GetInfo()) {
@@ -244,13 +245,12 @@ void OnyxPdfWriter::close()
         return;
     }
 
-    delete impl->doc_;
-    impl->doc_ = nullptr;
+    impl.reset(nullptr);
 }
 
 bool OnyxPdfWriter::isOpened() const
 {
-    return impl->doc_ && impl->doc_->IsLoaded();
+    return impl.get() && impl->doc_ && impl->doc_->IsLoaded();
 }
 
 bool OnyxPdfWriter::writeLine(const int page, const RectF &rect, const uint32_t color, const float strokeThickness, const PointF &start, const PointF &end)
