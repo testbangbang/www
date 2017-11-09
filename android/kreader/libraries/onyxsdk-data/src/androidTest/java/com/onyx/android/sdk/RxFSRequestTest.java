@@ -26,6 +26,7 @@ import com.onyx.android.sdk.utils.TestUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -72,7 +73,7 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             int type = randInt(1, 2);
             fileSet.add(s);
             if (type == 1) {
-                fileSet.add(s);
+                metaSet.add(s);
             } else {
                 otherSet.add(s);
             }
@@ -102,16 +103,25 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
     public void testStorageDataListLoadRequest() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         TestUtils.deleteRecursive(RxMetadataTest.testFolder());
+        final List<File> list = new ArrayList<>();
         int total = TestUtils.randInt(7000, 7000);
         for (int i = 0; i < total; i++) {
-            generateRandomFile(RxMetadataTest.testFolder(), true);
+            File file = generateRandomFile(RxMetadataTest.testFolder(), true);
+            list.add(file);
         }
         RxStorageFileListLoadRequest request = new RxStorageFileListLoadRequest(new DataManager(), new File(RxMetadataTest.testFolder()), new ArrayList<String>());
         request.setSort(SortBy.Name, SortOrder.Asc);
         request.execute(new RxCallback<RxStorageFileListLoadRequest>() {
             @Override
             public void onNext(RxStorageFileListLoadRequest rxStorageFileListLoadRequest) {
-                assertTrue(rxStorageFileListLoadRequest.getResultFileList().size() > 0);
+                List<File> resultFileList = rxStorageFileListLoadRequest.getResultFileList();
+                assertEquals(rxStorageFileListLoadRequest.getResultFileList().size(), list.size());
+                assertTrue(assertFileListEqual(resultFileList, list));
+                File tmp = resultFileList.get(0);
+                for (File file : resultFileList) {
+                    assertTrue(file.getName().compareTo(tmp.getName()) >= 0);
+                    tmp = file;
+                }
                 countDownLatch.countDown();
             }
 
@@ -123,6 +133,7 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             }
         });
         countDownLatch.await();
+        TestUtils.deleteRecursive(RxMetadataTest.testFolder());
     }
 
     public void testRxFileCollectionRequest() throws Exception {
@@ -171,10 +182,12 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             }
         });
         countDownLatch.await();
+        TestUtils.deleteRecursive(RxMetadataTest.testFolder());
     }
 
     public void testRxFileCopyRequest() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
+        TestUtils.deleteRecursive(RxMetadataTest.testFolder());
         final File targetDir = generateRandomFolder(RxMetadataTest.testFolder());
         final File sourceDir = generateRandomFolder(RxMetadataTest.testFolder());
         List<File> sourceFiles = new ArrayList<>();
@@ -207,26 +220,24 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             File[] files1 = sourceDir.listFiles();
             assertNotNull(files1);
         } else {
-            for (File sourceFile : sourceFiles) {
-                boolean have = false;
-                String sourceMd5 = FileUtils.computeMD5(sourceFile);
-                for (File file : files) {
-                    String targetMd5 = FileUtils.computeMD5(file);
-                    if (sourceMd5.equals(targetMd5)) {
-                        have = true;
-                    }
-                }
-                assertTrue(have);
-            }
+            assertTrue(assertFileListEqual(sourceFiles, Arrays.asList(files)));
         }
+        TestUtils.deleteRecursive(RxMetadataTest.testFolder());
     }
+
 
     public void testRxFileDeleteRequest() throws Exception {
         List<File> sourceList = new ArrayList<>();
         final List<File> deleteList = new ArrayList<>();
+        TestUtils.deleteRecursive(RxMetadataTest.testFolder());
         final File targetDir = generateRandomFolder(RxMetadataTest.testFolder());
         for (int i = 0; i < randInt(10, 100); i++) {
             sourceList.add(generateRandomFile(targetDir.getAbsolutePath(), true));
+            File file = generateRandomFolder(targetDir.getAbsolutePath());
+            if (i % 2 == 0) {
+                generateRandomFile(file.getAbsolutePath(), true);
+            }
+            sourceList.add(file);
         }
 
         while (CollectionUtils.isNullOrEmpty(deleteList)) {
@@ -260,6 +271,7 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             }
         });
         countDownLatch.await();
+        TestUtils.deleteRecursive(RxMetadataTest.testFolder());
     }
 
     public void testFSScanRequest() {
@@ -274,6 +286,7 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             for (int i = 0; i < total; ++i) {
                 final File file = TestUtils.generateRandomFile(docFolder(), true);
                 origin.add(file.getAbsolutePath());
+                snapshot.add(file.getAbsolutePath());
             }
 
             final CountDownLatch countDownLatch = new CountDownLatch(1);
@@ -284,8 +297,7 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             scanRequest.execute(new RxCallback<RxFileSystemScanRequest>() {
                 @Override
                 public void onNext(RxFileSystemScanRequest rxFileSystemScanRequest) {
-                    assertTrue(scanRequest.getResult().size() == total);
-                    snapshot.addAll(scanRequest.getResult());
+                    assertTrue(assertStringListEqual(new ArrayList<String>(scanRequest.getResult()), new ArrayList<String>(snapshot)));
                     countDownLatch.countDown();
                 }
 
@@ -329,8 +341,7 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             scanRequest.execute(new RxCallback<RxFileSystemScanRequest>() {
                 @Override
                 public void onNext(RxFileSystemScanRequest rxFileSystemScanRequest) {
-                    assertTrue(scanRequest.getResult().size() == snapshot.size());
-                    assertTrue(scanRequest.getResult().equals(snapshot));
+                    assertStringListEqual(new ArrayList<String>(scanRequest.getResult()), new ArrayList<String>(snapshot));
                     countDownLatch.countDown();
                 }
 
@@ -352,8 +363,8 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             diffRequest.execute(new RxCallback<RxFileSystemDiffRequest>() {
                 @Override
                 public void onNext(RxFileSystemDiffRequest rxFileSystemDiffRequest) {
-                    assertTrue(diffRequest.getAdded().equals(addedSet));
-                    assertTrue(diffRequest.getRemoved().equals(removeSet));
+                    assertStringListEqual(new ArrayList<String>(diffRequest.getAdded()), new ArrayList<String>(addedSet));
+                    assertStringListEqual(new ArrayList<String>(diffRequest.getRemoved()), new ArrayList<String>(removeSet));
                     countDownLatch.countDown();
                 }
 
@@ -366,6 +377,7 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             });
             awaitCountDownLatch(countDownLatch);
         }
+        clearDocFolder();
     }
 
     public void testRxMediaDeletedFileRemoveRequest() throws Exception {
@@ -407,7 +419,6 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
         request.execute(new RxCallback<RxMediaDeletedFileRemoveRequest>() {
             @Override
             public void onNext(RxMediaDeletedFileRemoveRequest removeRequest) {
-
                 countDownLatch.countDown();
             }
 
@@ -423,6 +434,59 @@ public class RxFSRequestTest extends ApplicationTestCase<Application> {
             Cursor cursor1 = resolver.query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, null, MediaStore.Audio.Media.DATA + "=?", new String[]{s1}, MediaStore.Audio.Media.DEFAULT_SORT_ORDER);
             assertTrue(cursor1 == null || !cursor1.moveToNext());
         }
+        clearDocFolder();
+    }
+
+    private boolean assertFileListEqual(List<File> sourceFiles, List<File> files) {
+        if (CollectionUtils.isNullOrEmpty(sourceFiles) || CollectionUtils.isNullOrEmpty(files)) {
+            return false;
+        }
+        if (sourceFiles.size() != files.size()) {
+            return false;
+        }
+        try {
+            for (File sourceFile : sourceFiles) {
+                boolean have = false;
+                String sourceMd5 = FileUtils.computeMD5(sourceFile);
+                for (File file : files) {
+                    String targetMd5 = FileUtils.computeMD5(file);
+                    if (sourceMd5.equals(targetMd5)) {
+                        have = true;
+                    }
+                }
+                if (!have) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean assertStringListEqual(List<String> sourceList, List<String> list) {
+        if (CollectionUtils.isNullOrEmpty(sourceList) || CollectionUtils.isNullOrEmpty(list)) {
+            return false;
+        }
+        if (sourceList.size() != list.size()) {
+            return false;
+        }
+        try {
+            for (String sourceString : sourceList) {
+                boolean have = false;
+                for (String string : list) {
+                    if (sourceString.equals(string)) {
+                        have = true;
+                    }
+                }
+                if (!have) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private List<File> generateRandomDirList(String parentFile) {
