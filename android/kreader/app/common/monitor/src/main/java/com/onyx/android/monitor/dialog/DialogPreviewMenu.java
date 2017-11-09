@@ -56,7 +56,6 @@ public class DialogPreviewMenu extends Dialog {
             if (menuItem.getId() == FULL_REFRESH_INTERVAL) {
                 SingletonSharedPreference.setGcIntervalTime(getContext(), (int)newValue);
                 resetSubMenu();
-                dismiss();
             }
             EventBus.getDefault().post(new SettingsChangedEvent(menuItem.getId()));
         }
