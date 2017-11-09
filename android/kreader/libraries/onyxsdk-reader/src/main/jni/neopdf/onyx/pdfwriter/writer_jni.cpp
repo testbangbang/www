@@ -178,14 +178,14 @@ jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_writeCircle(JNIEn
     return g_writer.writeCircle(page, rect, static_cast<uint_t>(color), strokeThickness);
 }
 
-jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_saveAs(JNIEnv *env, jclass, jstring pathString, jboolean savePagesWithAnnotation)
+jboolean Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_saveAs(JNIEnv *env, jclass, jstring pathString, jboolean saveOnlyPagesWithAnnotation)
 {
     if (!g_writer.isOpened()) {
         return false;
     }
 
     JNIString string(env, pathString);
-    return g_writer.saveAs(string.getLocalString(), savePagesWithAnnotation);
+    return g_writer.saveAs(string.getLocalString(), saveOnlyPagesWithAnnotation);
 }
 
 void Java_com_onyx_android_sdk_reader_utils_PdfWriterUtils_close(JNIEnv *, jclass)
