@@ -139,6 +139,22 @@ public class TestUtils {
         return file;
     }
 
+    public static File generateRandomFile(final String parent, String extension) {
+        File dir = new File(parent);
+        dir.mkdirs();
+
+        final String ext;
+        ext = "." + extension;
+        File file = new File(parent, UUID.randomUUID().toString() + ext);
+        StringBuilder builder = new StringBuilder();
+        int limit = TestUtils.randInt(100, 1024);
+        for (int i = 0; i < limit; ++i) {
+            builder.append(UUID.randomUUID().toString());
+        }
+        FileUtils.saveContentToFile(builder.toString(), file);
+        return file;
+    }
+
     public static List<String> randomStringList() {
         int value = TestUtils.randInt(1, 5);
         List<String> list = new ArrayList<>();
