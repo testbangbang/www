@@ -8,9 +8,13 @@ import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.event.WifiConnectedEvent;
 import com.onyx.android.dr.util.Utils;
+import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.utils.NetworkUtil;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -51,6 +55,10 @@ public class NetworkConnectChangedReceiver extends BroadcastReceiver {
                 int size = Utils.getConfiguredNetworks(context);
                 if (size == 0) {
                     ActivityManager.startWifiActivity(context);
+                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
+                } else {
+                    Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+                    NetworkUtil.enableWiFi(context, true);
                 }
             }
         }

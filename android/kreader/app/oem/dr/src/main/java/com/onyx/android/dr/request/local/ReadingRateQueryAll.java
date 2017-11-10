@@ -1,6 +1,9 @@
 package com.onyx.android.dr.request.local;
 
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.ReadingRateData;
+import com.onyx.android.dr.data.database.ReadBookEntity;
+import com.onyx.android.dr.data.database.ReadBookEntity_Table;
 import com.onyx.android.dr.data.database.ReaderResponseEntity;
 import com.onyx.android.dr.data.database.ReaderResponseEntity_Table;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
@@ -32,10 +35,6 @@ public class ReadingRateQueryAll extends BaseDataRequest {
     private final ReadingRateData readingRateData;
     private List<ReadingRateBean> readingRateList = new ArrayList<>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
-    private long divisor = 1000*60;
-    private String bookName = "";
-    private String language = "";
-    private String bookId = "";
 
     public ReadingRateQueryAll(ReadingRateData readingRateData) {
         this.readingRateData = readingRateData;
@@ -59,17 +58,25 @@ public class ReadingRateQueryAll extends BaseDataRequest {
         List<OnyxStatisticsModel> list = new Select().from(OnyxStatisticsModel.class).groupBy(OnyxStatisticsModel_Table.md5).queryList();
         for (OnyxStatisticsModel onyxStatisticsModel : list) {
             long readTimes = 0;
+            String bookName = "";
+            String language = "";
+            String bookId = "";
             List<OnyxStatisticsModel> statisticsModels = new Select().from(OnyxStatisticsModel.class).where(OnyxStatisticsModel_Table.type.
                     eq(BaseStatisticsModel.DATA_TYPE_PAGE_CHANGE)).and(OnyxStatisticsModel_Table.md5.eq(onyxStatisticsModel.getMd5())).queryList();
             for (OnyxStatisticsModel statisticsModel : statisticsModels) {
                 readTimes += statisticsModel.getDurationTime();
             }
             Metadata metadata = getBookName(onyxStatisticsModel.getMd5short());
-            CloudMetadata typeByBookName = getTypeByBookName(bookName);
-            long readMinute = readTimes/divisor;
-            if (metadata != null) {
-                bookName = metadata.getTitle();
+            int bookSpeed = getBookSpeed(onyxStatisticsModel.getMd5short());
+            long readMinute = readTimes/ Constants.divisor;
+            if (readMinute == 0) {
+                readMinute = 1;
             }
+            if (metadata != null) {
+                String name = metadata.getName();
+                bookName = name.substring(0, name.indexOf("."));
+            }
+            CloudMetadata typeByBookName = getTypeByBookName(bookName);
             if (typeByBookName != null) {
                 language = typeByBookName.getLanguage();
                 bookId = typeByBookName.getCloudId();
@@ -82,6 +89,8 @@ public class ReadingRateQueryAll extends BaseDataRequest {
             bean.setName(bookName);
             bean.setBook(bookId);
             bean.setRecordDate(time);
+            bean.setSpeed(bookSpeed);
+            bean.setWordsCount((int) (bookSpeed * readMinute));
             bean.setReadTimeLong(String.valueOf(readMinute));
             bean.setSummaryCount(readSummaryPiece);
             bean.setLanguage(language);
@@ -109,6 +118,15 @@ public class ReadingRateQueryAll extends BaseDataRequest {
             }
         }
         return null;
+    }
+
+    private int getBookSpeed(String idString) {
+        ReadBookEntity readBookEntity = new Select().from(ReadBookEntity.class).where(ReadBookEntity_Table.md5short.eq(idString)).querySingle();
+        if (readBookEntity != null) {
+            int averageSpeed = readBookEntity.averageSpeed;
+            return averageSpeed;
+        }
+        return 0;
     }
 
     private int getReadSummaryPiece(String bookName) {

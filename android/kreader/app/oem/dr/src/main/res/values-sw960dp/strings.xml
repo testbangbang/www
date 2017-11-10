@@ -17,4 +17,5 @@
     <string name="wheel_view_paint_color">#83cde6</string>
     <string name="wheel_view_itemview_color_one">#0288ce</string>
     <string name="wheel_view_itemview_color_two">#bbbbbb</string>
+    <string name="update_application_not_install">更新应用没有安装，请升级最新的系统</string>
 </resources>

@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -130,6 +131,8 @@ public class ReaderActivity extends Activity implements ReaderView {
     private Handler handler;
     private ReaderDataHolder dataHolder;
     private final ReaderPainter readerPainter = new ReaderPainter();
+    private int speed = 0;
+    private String path;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -157,10 +160,8 @@ public class ReaderActivity extends Activity implements ReaderView {
         if (uri == null) {
             return false;
         }
-
         BookInfo bookInfo = getReaderPresenter().getBookInfo();
-
-        String path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
+        path = FileUtils.getRealFilePathFromUri(ReaderActivity.this, uri);
         if (!FileUtils.fileExist(path)) {
             return false;
         }
@@ -177,6 +178,7 @@ public class ReaderActivity extends Activity implements ReaderView {
         String password = getIntent().getStringExtra(ReaderConstants.BOOK_PASSWORD);
         bookInfo.setPassword(password);
         String bookId = getIntent().getStringExtra(ReaderConstants.BOOK_ID);
+        Log.i("@@@", bookId);
         bookInfo.setBookId(bookId);
         isFluent = getIntent().getBooleanExtra(ReaderConstants.IS_FLUENT, false);
         int tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
@@ -184,7 +186,7 @@ public class ReaderActivity extends Activity implements ReaderView {
             if (handler == null) {
                 handler = new Handler();
             }
-            handler.postDelayed(new Runnable(){
+            handler.postDelayed(new Runnable() {
                 public void run() {
                     progressLoading.setVisibility(View.GONE);
                     progressLoading.setRun(false);
@@ -541,7 +543,7 @@ public class ReaderActivity extends Activity implements ReaderView {
         getReaderDataHolder().getNoteManager().submitWithUniqueId(this, uniqueId, renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null || request.isAbort() ) {
+                if (e != null || request.isAbort()) {
                     return;
                 }
                 onShapeRendered(ShapeRenderFinishEvent.shapeReadyEventWithUniqueId(renderRequest.getAssociatedUniqueId()));
@@ -579,7 +581,7 @@ public class ReaderActivity extends Activity implements ReaderView {
         getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
-        int rotation =  getWindowManager().getDefaultDisplay().getRotation();
+        int rotation = getWindowManager().getDefaultDisplay().getRotation();
         getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new ArrayList<RectF>(), rotation);
     }
 
@@ -737,7 +739,32 @@ public class ReaderActivity extends Activity implements ReaderView {
     @Override
     protected void onPause() {
         super.onPause();
+        saveReadSpeed();
         EventBus.getDefault().post(new ActivityPauseEvent(this));
+    }
+
+    private void saveReadSpeed() { //TODO:
+        int currentPage = DRApplication.getInstance().getCurrentPage();
+        long currentTime = DRApplication.getInstance().getTime();
+        int lastPage = ReadPageInfo.lastPage;
+        long lastTime = ReadPageInfo.lastTime;
+        long browseTime = (currentTime - lastTime) / Constants.divisor;
+        if (browseTime == 0) {
+            browseTime = 1;
+        }
+        if (currentPage > lastPage) {
+            int browsePage = currentPage - lastPage;
+            speed = (int) (browsePage * Constants.wordNumber / browseTime);
+        }
+        String md5short = "";
+        try {
+            md5short = FileUtils.computeMD5(new File(path));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Log.i("@@@speed", speed + "");
+        OperatingDataManager.getInstance().insertReadBook(speed, md5short);
+        ReadPageInfo.number = 0;
     }
 
     private void initReceiver() {

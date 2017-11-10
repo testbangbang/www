@@ -4,8 +4,6 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
-import com.onyx.android.dr.util.DRPreferenceManager;
-import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.device.Device;
@@ -35,12 +33,8 @@ public class AutoNetWorkConnectionBaseCloudRequest extends BaseCloudRequest {
             ActivityManager.startLoginActivity(DRApplication.getInstance());
         }
         if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
-            if (0 == Utils.getConfiguredNetworks(DRApplication.getInstance())) {
-                ActivityManager.startWifiActivity(DRApplication.getInstance());
-            } else {
-                Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
-                NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
-            }
+            Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
         }
     }

@@ -20,6 +20,7 @@ public class PageChangedEvent {
 
     public static final PageChangedEvent beforePageChange(final ReaderPresenter readerDataHolder) {
         final PageChangedEvent pageChangedEvent = new PageChangedEvent();
+
         pageChangedEvent.setLastPage(readerDataHolder.getReaderViewInfo().getFirstVisiblePageName());
         pageChangedEvent.setContext(readerDataHolder.getReaderView().getViewContext());
         return pageChangedEvent;

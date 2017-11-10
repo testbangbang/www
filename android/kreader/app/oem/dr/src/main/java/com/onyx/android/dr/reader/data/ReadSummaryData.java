@@ -2,6 +2,7 @@ package com.onyx.android.dr.reader.data;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
+import com.onyx.android.dr.reader.requests.RequestReadBookInsert;
 import com.onyx.android.dr.reader.requests.RequestReadSummaryInsert;
 import com.onyx.android.dr.reader.requests.RequestReadSummaryQuery;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -43,6 +44,10 @@ public class ReadSummaryData {
     }
 
     public void saveReadSummary(RequestReadSummaryInsert req, BaseCallback baseCallback) {
+        DRApplication.getDataManager().submit(DRApplication.getInstance(), req, baseCallback);
+    }
+
+    public void saveReadBook(RequestReadBookInsert req, BaseCallback baseCallback) {
         DRApplication.getDataManager().submit(DRApplication.getInstance(), req, baseCallback);
     }
 }

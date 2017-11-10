@@ -442,7 +442,7 @@
     <string name="wifi_band">频率</string>
     <string name="this_article_or_an_overview_of_this_page">本文或本页概要:</string>
     <string name="new_words_review">生词复习:</string>
-    <string name="perfect_this_article_or_this_page_good_sentence">完善本文或本页的好句:</string>
+    <string name="perfect_this_article_or_this_page_good_sentence">请说明将下述句子列为好句的原因:</string>
     <string name="wifi_rescan">重新扫描</string>
     <string name="wifi_connected">连接</string>
     <string name="word_commonly_used">);常用搭配(</string>
@@ -697,7 +697,7 @@
     <string name="reading_quantity">阅读量(字数)</string>
     <string name="language_type">语种</string>
     <string name="language_type_content">语种:</string>
-    <string name="reading_rate_activity_speech">速度</string>
+    <string name="reading_rate_activity_speech">速度(字/分)</string>
     <string name="read_summary_content">阅读纪要(篇)</string>
     <string name="reader_response_content">读后感(篇)</string>
     <string name="reader_response_number">读后感(字数)</string>
@@ -724,4 +724,9 @@
     <string name="fit_page">适合页面</string>
     <string name="visitors_to_login">游客登录</string>
     <string name="has_exported_to">已导出到: </string>
+    <string name="no_groups_hint">还没有加入其它群组，请先加入。</string>
+    <string name="has_update_read_summary">此书该页已经创建阅读纪要，相关内容已经更新</string>
+    <string name="has_add_read_summary">此书该页添加阅读纪要成功</string>
+    <string name="export_success_dialog_hint">文件已导出，请连接个人电脑，在阅读器文件夹下my_notes_html中查看导出文件。</string>
+    <string name="export_success_prompt">导出成功提示</string>
 </resources>

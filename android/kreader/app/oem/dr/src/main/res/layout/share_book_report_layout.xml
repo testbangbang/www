@@ -12,5 +12,17 @@
     <com.onyx.android.dr.view.PageRecyclerView
         android:id="@+id/share_book_report_recycler"
         android:layout_width="match_parent"
+        android:visibility="visible"
         android:layout_height="match_parent"/>
+
+    <TextView
+        android:id="@+id/activity_dict_result_no_data_hint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:padding="@dimen/join_group_activity_all_number_padding"
+        android:text="@string/headword_search_empty"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/level_one_heading_font"
+        android:visibility="visible" />
 </LinearLayout>

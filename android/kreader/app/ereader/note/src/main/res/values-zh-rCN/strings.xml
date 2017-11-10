@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">笔记</string>
+    <string name="app_name">素描</string>
     <string name="switch_bg">更换背景</string>
     <string name="add_new_page">新增页面</string>
     <string name="new_folder">新文件夹</string>

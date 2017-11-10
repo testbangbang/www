@@ -17,6 +17,7 @@ import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.InformalEssayEntity;
+import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.InformalEssayView;
@@ -71,6 +72,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";
+    private ExportSuccessHintDialog hintDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -99,6 +101,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
     protected void initData() {
         informalEssayList = new ArrayList<>();
         listCheck = new ArrayList<>();
+        hintDialog = new ExportSuccessHintDialog(this);
         initPageIndicator(pageIndicatorLayout);
         getIntentData();
         initEvent();
@@ -273,7 +276,7 @@ public class InformalEssayActivity extends BaseActivity implements InformalEssay
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
+        hintDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

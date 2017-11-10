@@ -17,6 +17,7 @@ import com.onyx.android.dr.adapter.NewWordAdapter;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
@@ -76,6 +77,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
     private TimePickerDialog timePickerDialog;
     private int dictType = Constants.ENGLISH_TYPE;
     private PageIndicator pageIndicator;
+    private ExportSuccessHintDialog hintDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -108,6 +110,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
         newWordList = new ArrayList<>();
         listCheck = new ArrayList<>();
         timePickerDialog = new TimePickerDialog(this);
+        hintDialog = new ExportSuccessHintDialog(this);
         initPageIndicator(pageIndicatorLayout);
         initTitleData();
         loadNewWordData();
@@ -341,7 +344,7 @@ public class NewWordNotebookActivity extends BaseActivity implements NewWordView
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
+        hintDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

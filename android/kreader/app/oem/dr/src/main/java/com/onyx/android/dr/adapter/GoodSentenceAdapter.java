@@ -12,6 +12,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -59,7 +60,11 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
         holder.time.setText(TimeUtils.getDate(currentTime));
         holder.content.setText(goodSentenceEntity.details);
         holder.readingMatter.setText(goodSentenceEntity.readingMatter);
-        holder.pageNumber.setText(goodSentenceEntity.pageNumber);
+        if (StringUtils.isNullOrEmpty(goodSentenceEntity.pageNumber)) {
+            holder.pageNumber.setText(DRApplication.getInstance().getString(R.string.nothing));
+        } else {
+            holder.pageNumber.setText(goodSentenceEntity.pageNumber);
+        }
         holder.checkBox.setChecked(listCheck.get(position));
         holder.orderNumber.setText(String.valueOf(position + 1));
         holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

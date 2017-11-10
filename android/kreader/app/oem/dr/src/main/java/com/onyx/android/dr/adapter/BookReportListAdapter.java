@@ -17,6 +17,7 @@ import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.DateTimeUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -27,7 +28,7 @@ import butterknife.ButterKnife;
  */
 
 public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookReportListAdapter.ViewHolder> {
-    private List<GetBookReportListBean> data;
+    private List<GetBookReportListBean> data = new ArrayList<>();
     private int row = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_row);
     private int column = DRApplication.getInstance().getResources().getInteger(R.integer.report_list_col);
     private OnItemClickListener onItemClickListener;
@@ -64,8 +65,8 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookRepo
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         final GetBookReportListBean bookReportListBean = data.get(position);
         String time = DateTimeUtil.formatDate(bookReportListBean.updatedAt, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
-        holder.bookReportListItemBookName.setText(bookReportListBean.title);
         holder.bookReportListItemTime.setText(time);
+        holder.bookReportListItemBookName.setText(bookReportListBean.title);
         holder.bookReportListItemPage.setText(bookReportListBean.pageNumber);
         String content = bookReportListBean.content;
         holder.bookReportListItemWordCount.setText(content == null ? "0" : String.valueOf(content.length()));
@@ -93,6 +94,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookRepo
 
     public interface OnItemClickListener {
         void setOnItemClick(int position, boolean isCheck);
+
         void setOnItemCheckedChanged(int position, boolean isCheck);
     }
 
@@ -105,6 +107,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookRepo
         Bundle bundle = new Bundle();
         bundle.putSerializable(Constants.BOOK_REPORT_DATA, bookReportBean);
         intent.putExtras(bundle);
+        intent.putExtra(Constants.JUMP_SOURCE, Constants.READER_RESPONSE_SOURCE_TAG);
         ActivityManager.startReadingReportActivity(DRApplication.getInstance(), intent);
     }
 

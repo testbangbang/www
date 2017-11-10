@@ -9,7 +9,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -32,7 +31,6 @@ import com.onyx.android.dr.util.ApkUtils;
 import com.onyx.android.dr.util.SystemLanguage;
 import com.onyx.android.dr.util.SystemUtils;
 import com.onyx.android.dr.util.TimeUtils;
-import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.device.Device;
@@ -179,13 +177,9 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     private void onCheckAPKUpdateClick() {
         CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.device_setting_check_system_update));
         if (!NetworkUtil.isWiFiConnected(getActivity())) {
-            if (0 == Utils.getConfiguredNetworks(getActivity())) {
-                ActivityManager.startWifiActivity(getActivity());
-            } else {
-                Device.currentDevice().enableWifiDetect(getActivity());
-                NetworkUtil.enableWiFi(getActivity(), true);
-            }
-            CommonNotices.showMessage(getActivity(), getString(R.string.please_connect_to_the_network_first));
+            Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
             return;
         }
         ApkUtils.updateApk(true);
@@ -553,14 +547,9 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     public void onCheckSystemUpdateClick() {
         CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.device_setting_check_system_update));
         if (!NetworkUtil.isWiFiConnected(getActivity())) {
-            if (0 == Utils.getConfiguredNetworks(getActivity())) {
-                ActivityManager.startWifiActivity(getActivity());
-            } else {
-                Device.currentDevice().enableWifiDetect(getActivity());
-                NetworkUtil.enableWiFi(getActivity(), true);
-            }
-            CommonNotices.showMessage(getActivity(), getString(R.string.please_connect_to_the_network_first));
-            return;
+            Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
         }
         ApkUtils.firmwareCloudCheck(true);
     }

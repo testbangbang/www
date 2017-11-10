@@ -55,7 +55,7 @@
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
                 android:text="@string/reading_quantity"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <View style="@style/vertical_view" />
 
@@ -69,10 +69,11 @@
 
             <TextView
                 style="@style/reading_rate_activity_text_view"
+                android:layout_gravity="center_horizontal"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="1"
                 android:text="@string/reading_rate_activity_speech"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
             <View style="@style/vertical_view" />
 

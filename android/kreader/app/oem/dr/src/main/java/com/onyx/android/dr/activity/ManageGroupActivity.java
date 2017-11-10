@@ -9,6 +9,7 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ManageGroupAdapter;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.ManageGroupView;
@@ -44,6 +45,7 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
     private ManageGroupPresenter presenter;
     private ManageGroupAdapter manageGroupAdapter;
     private List<AllGroupBean> groupList;
+    private ExportSuccessHintDialog hintDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -70,9 +72,8 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
 
     @Override
     protected void initData() {
-        presenter = new ManageGroupPresenter(this);
-        presenter.getAllGroup();
         groupList = new ArrayList<>();
+        hintDialog = new ExportSuccessHintDialog(this);
         initTitleData();
         initEvent();
     }
@@ -80,6 +81,13 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
     private void initTitleData() {
         image.setImageResource(R.drawable.ic_group);
         title.setText(getString(R.string.group_manager_activity_manage_group));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenter = new ManageGroupPresenter(this);
+        presenter.getAllGroup();
     }
 
     @Override
@@ -119,7 +127,7 @@ public class ManageGroupActivity extends BaseActivity implements ManageGroupView
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.export_success));
+        hintDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

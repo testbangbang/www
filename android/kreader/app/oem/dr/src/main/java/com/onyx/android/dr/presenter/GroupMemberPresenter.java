@@ -82,7 +82,7 @@ public class GroupMemberPresenter {
                 //delete basedata data
                 ListBean bean = list.get(i);
                 array = Arrays.copyOf(array, array.length + 1);
-                array[array.length - 1] = bean._id;
+                array[array.length - 1] = bean.child._id;
                 list.remove(i);
                 listCheck.remove(i);
                 adapter.notifyItemRemoved(i);

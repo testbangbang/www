@@ -1,5 +1,6 @@
 include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':libraries:onyxsdk-reader',
+        ':libraries:onyxdownloadservice',
         ':libraries:onyxsdk-ui',
         ':libraries:onyxsdk-base',
         ':libraries:onyxsdk-data',
@@ -21,4 +22,5 @@ include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':app:edu:edu-note',
         ':app:edu:edu-unitconversion',
         ':app:phone:phone-reader',
+        ':app:oem:apkupdate',
         ':app:oem:dr'

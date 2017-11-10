@@ -5,12 +5,14 @@ import android.content.Context;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.request.cloud.AddCommentRequest;
+import com.onyx.android.dr.request.cloud.AddInformalCommentRequest;
 import com.onyx.android.dr.request.cloud.BringOutBookReportRequest;
 import com.onyx.android.dr.request.cloud.CreateBookReportRequest;
 import com.onyx.android.dr.request.cloud.DeleteBookReportRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportListRequest;
 import com.onyx.android.dr.request.cloud.GetBookReportRequest;
 import com.onyx.android.dr.request.cloud.GetSharedImpressionRequest;
+import com.onyx.android.dr.request.cloud.GetSharedInformalRequest;
 import com.onyx.android.dr.request.cloud.ShareBookReportRequest;
 import com.onyx.android.dr.request.local.ReaderResponseInsert;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -56,6 +58,10 @@ public class BookReportData {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
     }
 
+    public void addInformalComment(AddInformalCommentRequest rq, BaseCallback callback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
+    }
+
     public void getLibraryId(GetBookLibraryIdRequest rq, BaseCallback callback) {
         DRApplication.getDataManager().submit(DRApplication.getInstance(), rq, callback);
     }
@@ -65,6 +71,10 @@ public class BookReportData {
     }
 
     public void getSharedImpressions(GetSharedImpressionRequest rq, BaseCallback callback) {
+        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
+    }
+
+    public void getSharedInformal(GetSharedInformalRequest rq, BaseCallback callback) {
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), rq, callback);
     }
 

@@ -12,7 +12,10 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.BaseActivity;
+import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.InsertReadSummarySuccessEvent;
+import com.onyx.android.dr.event.UpdateReadSummaryEvent;
 import com.onyx.android.dr.reader.adapter.GoodSentenceReviewListAdapter;
 import com.onyx.android.dr.reader.adapter.NewWordsReviewListAdapter;
 import com.onyx.android.dr.reader.base.ReadSummaryView;
@@ -25,6 +28,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -180,5 +185,17 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         String newWordListJson = newWordsReviewListAdapter.getNewWordListJson();
         String goodSentenceJson = JSON.toJSONString(list);
         readSummaryPresenter.saveReadSummary(bookName, pageNumber, summary, newWordListJson, goodSentenceJson);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onInsertReadSummarySuccessEvent(InsertReadSummarySuccessEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.has_add_read_summary));
+        finish();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdateReadSummaryEvent(UpdateReadSummaryEvent event) {
+        CommonNotices.showMessage(this, getString(R.string.has_update_read_summary));
+        finish();
     }
 }

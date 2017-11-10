@@ -2,7 +2,6 @@ package com.onyx.android.dr.request.cloud;
 
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
-import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 
 import retrofit2.Response;
@@ -11,11 +10,11 @@ import retrofit2.Response;
  * Created by zhouzhiming on 2017/8/30.
  */
 public class RequestExitGroup extends AutoNetWorkConnectionBaseCloudRequest {
-    private final DeleteGroupMemberBean bean;
+    private final String bean;
     private final String id;
     private DeleteGroupMemberBean result;
 
-    public RequestExitGroup(String id, DeleteGroupMemberBean bean) {
+    public RequestExitGroup(String id, String bean) {
         this.id = id;
         this.bean = bean;
     }

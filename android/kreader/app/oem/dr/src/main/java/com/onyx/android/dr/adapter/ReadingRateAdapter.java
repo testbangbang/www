@@ -52,8 +52,10 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
         CreateReadingRateBean bean = dataList.get(position);
         holder.time.setText(bean.recordDate);
         holder.bookName.setText(bean.name);
-        holder.timeHorizon.setText(String.valueOf(bean.readTimeLong));
+        holder.readingQuantity.setText(String.valueOf(bean.wordsCount));
+        holder.speech.setText(String.valueOf(bean.speed));
         holder.readingSummary.setText(String.valueOf(bean.summaryCount));
+        holder.timeHorizon.setText(String.valueOf(bean.readTimeLong));
         holder.readerResponsePiece.setText(String.valueOf(bean.impressionCount));
         holder.readerResponseNumber.setText(String.valueOf(bean.impressionWordsCount));
         holder.languageType.setText(bean.language);

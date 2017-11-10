@@ -11,10 +11,21 @@ import com.onyx.android.sdk.utils.StringUtils;
  */
 
 public class ReadPageInfo {
+    public static int number = 0;
+    public static int lastPage = 0;
+    public static long lastTime = 0;
+
     public static String getReadProgress(ReaderPresenter readerPresenter){
         int pageCount = readerPresenter.getReader().getNavigator().getTotalPage();
         String pageName = readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName();
         int currentPage = Integer.parseInt(pageName);
+        if (number == 0) {
+            lastPage = currentPage;
+            long currentTimeMillis = TimeUtils.getCurrentTimeMillis();
+            lastTime = currentTimeMillis;
+            number++;
+        }
+        DRApplication.getInstance().setCurrentPage(currentPage);
         String progress = String.format("%d/%d", currentPage + 1, pageCount);
         DRApplication.getInstance().setProgress(progress);
         DRApplication.getInstance().setPath(readerPresenter.getReader().getDocumentPath());
@@ -22,6 +33,13 @@ public class ReadPageInfo {
     }
 
     public static String getReadProgress(ReaderPresenter readerPresenter,int currentPage){
+        if (number == 0) {
+            lastPage = currentPage;
+            long currentTimeMillis = TimeUtils.getCurrentTimeMillis();
+            lastTime = currentTimeMillis;
+            number++;
+        }
+        DRApplication.getInstance().setCurrentPage(currentPage);
         int pageCount = readerPresenter.getReader().getNavigator().getTotalPage();
         String progress = String.format("%d/%d", currentPage + 1, pageCount);
         DRApplication.getInstance().setProgress(progress);

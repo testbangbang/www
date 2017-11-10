@@ -10,12 +10,16 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.BookReportListAdapter;
+import com.onyx.android.dr.adapter.InformalEssayAdapter;
+import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
@@ -25,6 +29,7 @@ import com.onyx.android.dr.reader.view.DisableScrollGridManager;
 import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.GPaginator;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 
@@ -37,6 +42,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
+
+import static com.onyx.android.dr.common.Constants.BOOK_SOURCE;
+import static com.onyx.android.dr.common.Constants.INFORMAL_ESSAY_SOURCE_TAG;
 
 /**
  * Created by li on 2017/9/15.
@@ -75,6 +83,8 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     PageRecyclerView bookReportListRecycle;
     @Bind(R.id.book_report_list_total_size)
     TextView bookReportListTotalSize;
+    @Bind(R.id.book_report_list_activity_page_number)
+    TextView pageNumber;
     @Bind(R.id.book_report_list_page)
     TextView bookReportListPage;
     @Bind(R.id.book_report_list_page_left)
@@ -93,6 +103,14 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     private String bookPage;
     private String bookId;
     private List<Boolean> listCheck;
+    private InformalEssayAdapter informalEssayAdapter;
+    private int type;
+    private String offset = "0";
+    private String limit = "200";
+    private String sortBy = "createdAt";
+    private String order = "-1";
+    private List<CreateInformalEssayBean> informalEssayList;
+    private ExportSuccessHintDialog hintDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -110,15 +128,16 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         bookReportListRecycle.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         bookReportListRecycle.addItemDecoration(dividerItemDecoration);
         bookReportListAdapter = new BookReportListAdapter();
-        bookReportListRecycle.setAdapter(bookReportListAdapter);
-        paginator = bookReportListRecycle.getPaginator();
+        informalEssayAdapter = new InformalEssayAdapter();
     }
 
     @Override
     protected void initData() {
         bookReportPresenter = new BookReportPresenter(this);
         list = new ArrayList<>();
+        informalEssayList = new ArrayList<>();
         listCheck = new ArrayList<>();
+        hintDialog = new ExportSuccessHintDialog(this);
         initIntentAndTitleData();
         initListener();
     }
@@ -146,6 +165,17 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
                 listCheck.set(position, isCheck);
             }
         });
+        informalEssayAdapter.setOnItemListener(new InformalEssayAdapter.OnItemClickListener() {
+            @Override
+            public void setOnItemClick(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
+
+            @Override
+            public void setOnItemCheckedChanged(int position, boolean isCheck) {
+                listCheck.set(position, isCheck);
+            }
+        });
         allCheck.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isCheck) {
@@ -159,6 +189,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
                     }
                 }
                 bookReportListAdapter.notifyDataSetChanged();
+                informalEssayAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -171,22 +202,38 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     @Override
     protected void onResume() {
         super.onResume();
-        bookReportPresenter.getImpressionsList();
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG || type == BOOK_SOURCE) {
+            bookReportPresenter.getImpressionsList();
+        } else if (type == INFORMAL_ESSAY_SOURCE_TAG) {
+            MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
+            String json = JSON.toJSON(bean).toString();
+            bookReportPresenter.getInformalEssay(json);
+        }
     }
 
     private void initIntentAndTitleData() {
-        int type = getIntent().getIntExtra(Constants.JUMP_SOURCE, -1);
-        if (type == Constants.MY_NOTE_SOURCE) {
+        type = getIntent().getIntExtra(Constants.JUMP_SOURCE, -1);
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG) {
             iconOne.setVisibility(View.GONE);
-        } else if (type == Constants.BOOK_SOURCE) {
+            pageNumber.setVisibility(View.VISIBLE);
+            titleBarTitle.setText(getResources().getString(R.string.reader_response));
+            image.setImageResource(R.drawable.ic_reader_menu_idea);
+        } else if (type == BOOK_SOURCE) {
             iconOne.setVisibility(View.VISIBLE);
+            pageNumber.setVisibility(View.VISIBLE);
             iconOne.setImageResource(R.drawable.ic_reader_note_diary_set);
+            titleBarTitle.setText(getResources().getString(R.string.reader_response));
+            image.setImageResource(R.drawable.ic_reader_menu_idea);
             bookName = getIntent().getStringExtra(Constants.BOOK_NAME);
             bookPage = getIntent().getStringExtra(Constants.BOOK_PAGE);
             bookId = getIntent().getStringExtra(Constants.BOOK_ID);
+        } else if (type == INFORMAL_ESSAY_SOURCE_TAG) {
+            iconOne.setVisibility(View.VISIBLE);
+            pageNumber.setVisibility(View.GONE);
+            iconOne.setImageResource(R.drawable.ic_reader_note_diary_set);
+            titleBarTitle.setText(getResources().getString(R.string.informal_essay));
+            image.setImageResource(R.drawable.informal_essay);
         }
-        titleBarTitle.setText(getResources().getString(R.string.reader_response));
-        image.setImageResource(R.drawable.ic_reader_menu_idea);
         iconFour.setVisibility(View.VISIBLE);
         iconThree.setVisibility(View.VISIBLE);
         iconTwo.setVisibility(View.VISIBLE);
@@ -195,23 +242,41 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         iconTwo.setImageResource(R.drawable.ic_reader_note_export);
     }
 
-
     @Override
     public void setBookReportList(List<GetBookReportListBean> list, List<Boolean> listCheck) {
         if (list != null && listCheck != null) {
             this.list = list;
             this.listCheck = listCheck;
+            setData(list);
         }
-        setData(list);
     }
 
     private void setData(List<GetBookReportListBean> list) {
-        if (bookReportListAdapter != null) {
+        if (bookReportListAdapter != null && bookReportListTotalSize != null) {
+            bookReportListRecycle.setAdapter(bookReportListAdapter);
             bookReportListAdapter.setData(list, listCheck);
             String format = DRApplication.getInstance().getResources().getString(R.string.fragment_speech_recording_all_number);
             bookReportListTotalSize.setText(String.format(format, list.size()));
             initPage();
         }
+    }
+
+    @Override
+    public void setInformalEssayData(List<CreateInformalEssayBean> dataList, List<Boolean> checkList) {
+        if (dataList == null || dataList.size() <= 0) {
+            return;
+        }
+        informalEssayList = dataList;
+        listCheck = checkList;
+        bookReportListRecycle.setAdapter(informalEssayAdapter);
+        informalEssayAdapter.setDataList(dataList, checkList);
+        String format = DRApplication.getInstance().getResources().getString(R.string.fragment_speech_recording_all_number);
+        bookReportListTotalSize.setText(String.format(format, dataList.size()));
+        initPage();
+    }
+
+    @Override
+    public void createInformalEssay(boolean tag) {
     }
 
     @OnClick({R.id.menu_back,
@@ -239,11 +304,19 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
                 exportData();
                 break;
             case R.id.title_bar_right_icon_three:
-                bookReportPresenter.shareReadingRate(listCheck, list);
+                shareData();
                 break;
             case R.id.title_bar_right_icon_four:
                 deleteCheckedData();
                 break;
+        }
+    }
+
+    private void shareData() {
+        if (type == Constants.BOOK_SOURCE || type == Constants.READER_RESPONSE_SOURCE_TAG) {
+            bookReportPresenter.shareReadingRate(listCheck, list);
+        }else if (type == INFORMAL_ESSAY_SOURCE_TAG){
+            bookReportPresenter.shareInformalEssay(listCheck, informalEssayList);
         }
     }
 
@@ -252,24 +325,50 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
         intent.putExtra(Constants.BOOK_NAME, bookName);
         intent.putExtra(Constants.BOOK_PAGE, bookPage);
         intent.putExtra(Constants.BOOK_ID, bookId);
+        if (type == BOOK_SOURCE) {
+            intent.putExtra(Constants.JUMP_SOURCE, BOOK_SOURCE);
+        }else if(type == INFORMAL_ESSAY_SOURCE_TAG) {
+            intent.putExtra(Constants.JUMP_SOURCE, INFORMAL_ESSAY_SOURCE_TAG);
+        }
         ActivityManager.startReadingReportActivity(this, intent);
     }
 
     private void deleteCheckedData() {
-        if (list.size() > 0) {
-            bookReportPresenter.remoteAdapterData(listCheck, bookReportListAdapter, list);
-        } else {
-            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        if (type == Constants.BOOK_SOURCE || type == Constants.READER_RESPONSE_SOURCE_TAG) {
+            if (list.size() > 0) {
+                bookReportPresenter.remoteAdapterData(listCheck, bookReportListAdapter, list);
+            } else {
+                CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+            }
+        } else if (type == INFORMAL_ESSAY_SOURCE_TAG) {
+            if (informalEssayList.size() > 0) {
+                bookReportPresenter.remoteInformalAdapterData(listCheck, informalEssayAdapter, informalEssayList);
+            } else {
+                CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+            }
         }
     }
 
     private void exportData() {
-        if (list.size() > 0) {
-            ArrayList<String> htmlTitleData = bookReportPresenter.getHtmlTitleData();
-            bookReportPresenter.exportDataToHtml(listCheck, htmlTitleData, list);
-        } else {
-            CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+        if (type == Constants.BOOK_SOURCE || type == Constants.READER_RESPONSE_SOURCE_TAG) {
+            if (list.size() > 0) {
+                ArrayList<String> htmlTitleData = bookReportPresenter.getHtmlTitleData();
+                bookReportPresenter.exportDataToHtml(listCheck, htmlTitleData, list);
+            } else {
+                CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+            }
+        } else if (type == INFORMAL_ESSAY_SOURCE_TAG) {
+            if (informalEssayList.size() > 0) {
+                ArrayList<String> htmlTitleData = bookReportPresenter.getInformalHtmlTitleData();
+                bookReportPresenter.exportDataToHtml(this, listCheck, htmlTitleData, informalEssayList);
+            } else {
+                CommonNotices.showMessage(this, getString(R.string.no_relevant_data));
+            }
         }
+    }
+
+    private void exportInformalData() {
+
     }
 
     @Override
@@ -286,6 +385,10 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     @Override
+    public void addInformalCommentResult(CreateInformalEssayBean result) {
+    }
+
+    @Override
     public void setLibraryId(String bookId, String libraryId) {
     }
 
@@ -294,7 +397,12 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     private void initPage() {
-        paginator.resize(bookReportListAdapter.getRowCount(), bookReportListAdapter.getColumnCount(), list.size());
+        paginator = bookReportListRecycle.getPaginator();
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG || type == Constants.BOOK_SOURCE) {
+            paginator.resize(bookReportListAdapter.getRowCount(), bookReportListAdapter.getColumnCount(), list.size());
+        } else if (type == INFORMAL_ESSAY_SOURCE_TAG) {
+            paginator.resize(informalEssayAdapter.getRowCount(), informalEssayAdapter.getColumnCount(), list.size());
+        }
         pages = paginator.pages();
         setPage(currentPage);
     }
@@ -305,7 +413,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
+        hintDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

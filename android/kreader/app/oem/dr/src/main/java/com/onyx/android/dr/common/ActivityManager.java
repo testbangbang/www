@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.activity.AddInformalEssayActivity;
 import com.onyx.android.dr.activity.AddMemorandumActivity;
@@ -64,7 +65,6 @@ import com.onyx.android.dr.reader.data.OpenBookParam;
 import com.onyx.android.dr.reader.utils.ReaderUtil;
 import com.onyx.android.dr.reader.view.CustomDialog;
 import com.onyx.android.dr.statistics.StatisticsActivity;
-import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.device.Device;
@@ -394,12 +394,8 @@ public class ActivityManager {
 
     private static boolean enableWifiOpenAndDetect(Context context) {
         if (!NetworkUtil.isWiFiConnected(context)) {
-            if (0 == Utils.getConfiguredNetworks(context)) {
-                ActivityManager.startWifiActivity(context);
-            } else {
-                Device.currentDevice().enableWifiDetect(context);
-                NetworkUtil.enableWiFi(context, true);
-            }
+            Device.currentDevice().enableWifiDetect(context);
+            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
             return true;
         }
         return false;
@@ -497,6 +493,7 @@ public class ActivityManager {
 
     public static void startMainActivity(Context context) {
         Intent intent = new Intent(context, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);
     }
 

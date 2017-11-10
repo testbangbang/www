@@ -2,7 +2,9 @@ package com.onyx.android.dr.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
 
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.umeng.analytics.MobclickAgent;
 
@@ -70,5 +72,16 @@ public abstract class BaseActivity extends OnyxAppCompatActivity {
         super.onPause();
         MobclickAgent.onPageEnd(getClass().getSimpleName());
         MobclickAgent.onPause(this);
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_MENU:
+                ActivityManager.startMainActivity(this);
+                finish();
+                break;
+        }
+        return super.onKeyDown(keyCode, event);
     }
 }

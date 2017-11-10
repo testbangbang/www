@@ -29,6 +29,7 @@
         <View style="@style/vertical_view" />
 
         <TextView
+            android:id="@+id/book_report_list_activity_page_number"
             style="@style/good_sentence_activity_textview"
             android:layout_weight="1"
             android:text="@string/book_report_list_pages" />

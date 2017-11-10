@@ -15,6 +15,7 @@ import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.FileUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -318,8 +319,9 @@ public class ExportToHtmlUtils {
         for (int i = 0; i < dataList.size(); i++) {
             sb.append("<tr>");
             GetBookReportListBean bean = dataList.get(i);
+            String time = DateTimeUtil.formatDate(bean.updatedAt, TimeUtils.DATE_FORMAT_DATE);
             sb.append("<th>");
-            sb.append(bean.updatedAt);
+            sb.append(time);
             sb.append("</th>");
             sb.append("<th>");
             sb.append(bean.title);
@@ -340,7 +342,7 @@ public class ExportToHtmlUtils {
         try {
             createCatalogue();
             String time = TimeUtils.getNewTime(System.currentTimeMillis());
-            File file = new File(Environment.getExternalStorageDirectory() + Constants.MEMORANDUM_HTML + "_" + time + Constants.UNIT);
+            File file = new File(Environment.getExternalStorageDirectory() + Constants.READER_RESPONSE_HTML + "_" + time + Constants.UNIT);
             file.createNewFile();
             printStream = new PrintStream(new FileOutputStream(file));
             printStream.println(sb);

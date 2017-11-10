@@ -1,5 +1,7 @@
 package com.onyx.android.dr.adapter;
 
+import android.content.Intent;
+import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
@@ -50,7 +53,7 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = View.inflate(DRApplication.getInstance(), R.layout.item_infromal_essay, null);
+        View inflate = View.inflate(DRApplication.getInstance(), R.layout.informal_essay_list_item, null);
         return new ViewHolder(inflate);
     }
 
@@ -58,10 +61,10 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         final CreateInformalEssayBean bean = dataList.get(position);
         long currentTime = bean.currentTime;
-        holder.content.setText(bean.content);
-        holder.time.setText(TimeUtils.getDate(currentTime));
-        holder.title.setText(bean.title);
-        holder.wordNumber.setText(bean.wordNumber);
+        holder.bookReportListItemSummary.setText(bean.content);
+        holder.bookReportListItemTime.setText(TimeUtils.getDate(currentTime));
+        holder.bookReportListItemBookName.setText(bean.title);
+        holder.bookReportListItemWordCount.setText(bean.wordNumber);
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override
@@ -74,9 +77,18 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                ActivityManager.startAddInformalEssayActivity(DRApplication.getInstance(), bean.title, bean.content);
+                startBookReportDetailActivity(bean);
             }
         });
+    }
+
+    private void startBookReportDetailActivity(CreateInformalEssayBean bookReportBean) {
+        Intent intent = new Intent();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable(Constants.BOOK_REPORT_DATA, bookReportBean);
+        intent.putExtras(bundle);
+        intent.putExtra(Constants.JUMP_SOURCE, Constants.INFORMAL_ESSAY_SOURCE_TAG);
+        ActivityManager.startReadingReportActivity(DRApplication.getInstance(), intent);
     }
 
     @Override
@@ -93,16 +105,16 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.infromal_essay_item_check)
+        @Bind(R.id.book_report_list_item_time)
+        TextView bookReportListItemTime;
+        @Bind(R.id.book_report_list_item_book_name)
+        TextView bookReportListItemBookName;
+        @Bind(R.id.book_report_list_item_summary)
+        TextView bookReportListItemSummary;
+        @Bind(R.id.book_report_list_item_word_count)
+        TextView bookReportListItemWordCount;
+        @Bind(R.id.book_report_list_item_check)
         CheckBox checkBox;
-        @Bind(R.id.infromal_essay_item_content)
-        TextView content;
-        @Bind(R.id.infromal_essay_item_time)
-        TextView time;
-        @Bind(R.id.infromal_essay_item_title)
-        TextView title;
-        @Bind(R.id.infromal_essay_item_word_number)
-        TextView wordNumber;
         View rootView;
 
         ViewHolder(View view) {

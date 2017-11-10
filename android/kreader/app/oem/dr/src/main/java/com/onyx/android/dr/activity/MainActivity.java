@@ -61,6 +61,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
 
@@ -86,7 +87,21 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected Integer getLayoutId() {
+        if(!DRApplication.getInstance().isLoginSuccess()){
+            ActivityManager.startLoginActivity(this);
+        }
+        stopBootAnimation();
         return R.layout.activity_main;
+    }
+
+    private void stopBootAnimation() {
+        try {
+            Method method = View.class.getDeclaredMethod("requestStopBootAnimation", null);
+            method.setAccessible(true);
+            method.invoke(null, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
