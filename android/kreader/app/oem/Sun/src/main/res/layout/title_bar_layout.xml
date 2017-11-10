@@ -12,10 +12,6 @@
             type="String" />
 
         <variable
-            name="listener"
-            type="android.view.View.OnClickListener" />
-
-        <variable
             name="countDown"
             type="String" />
     </data>
@@ -39,7 +35,6 @@
                 android:drawableLeft="@drawable/icon_back"
                 android:drawablePadding="@dimen/title_bar_title_drawable_padding"
                 android:gravity="center_vertical"
-                android:onClick="@{listener::onClick}"
                 android:text="@{title}"
                 android:textSize="@dimen/level_two_heading_font" />
 

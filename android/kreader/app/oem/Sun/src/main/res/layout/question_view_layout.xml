@@ -55,12 +55,53 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/question_title"
+            android:id="@+id/question_introduce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="@dimen/level_three_heading_font" />
 
-        <FrameLayout
+        <RelativeLayout
+            android:id="@+id/question_title_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="160dp">
+
+            <com.onyx.android.sun.view.AutoPagedWebView
+                android:id="@+id/question_title"
+                android:layout_width="wrap_content"
+                android:layout_height="140dp"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <LinearLayout
+                android:id="@+id/question_page_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageButton
+                    android:id="@+id/question_page_left"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_left" />
+
+                <TextView
+                    android:id="@+id/question_page_size"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <ImageButton
+                    android:id="@+id/question_page_right"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/icon_go" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1">
@@ -70,36 +111,39 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
                 <LinearLayout
                     android:id="@+id/choice_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"/>
+                    android:orientation="vertical" />
 
                 <RadioGroup
                     android:id="@+id/choice_radio_group"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/subjective_item"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_below="@+id/choice_item"
                 android:orientation="vertical"
                 android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/subjective_image"
                     android:layout_width="@dimen/question_view_subjective_answer_width"
-                    android:layout_height="@dimen/question_view_subjective_answer_height" />
+                    android:layout_height="@dimen/question_view_subjective_answer_height"
+                    android:src="@color/gray" />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/line_height"
                     android:background="@android:color/black" />
             </LinearLayout>
-        </FrameLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:id="@+id/question_analyze_layout"

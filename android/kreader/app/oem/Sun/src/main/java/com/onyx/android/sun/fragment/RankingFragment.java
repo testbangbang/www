@@ -31,7 +31,7 @@ public class RankingFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void initListener() {
-        rankingBinding.rankingTitleBar.setListener(this);
+        rankingBinding.rankingTitleBar.titleBarTitle.setOnClickListener(this);
     }
 
     @Override

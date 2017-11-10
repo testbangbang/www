@@ -1,6 +1,7 @@
 package com.onyx.android.sun.presenter;
 
 import com.onyx.android.sun.cloud.bean.Question;
+import com.onyx.android.sun.cloud.bean.QuestionViewBean;
 import com.onyx.android.sun.data.FillHomeworkData;
 import com.onyx.android.sun.requests.local.FillAnswerRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
@@ -17,14 +18,14 @@ public class FillHomeworkPresenter {
         fillHomeworkData = new FillHomeworkData();
     }
 
-    public void insertAnswer(Question question) {
+    public void insertAnswer(int taskId, QuestionViewBean questionViewBean) {
         //TODO:to complete params
-        /*FillAnswerRequest rq = new FillAnswerRequest("1", question.id + "", question.type, question.question, question.userAnswer);
+        FillAnswerRequest rq = new FillAnswerRequest(taskId + "", questionViewBean.getId() + "", questionViewBean.getContent(), questionViewBean.getShowType(), questionViewBean.getUserAnswer());
         fillHomeworkData.insertAnswer(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
 
             }
-        });*/
+        });
     }
 }

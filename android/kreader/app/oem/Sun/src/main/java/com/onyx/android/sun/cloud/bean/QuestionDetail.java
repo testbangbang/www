@@ -14,4 +14,5 @@ public class QuestionDetail {
     public long duration;
     public int volumeType;
     public List<QuestionData> volumeExerciseDTOS;
+    public int taskId;
 }

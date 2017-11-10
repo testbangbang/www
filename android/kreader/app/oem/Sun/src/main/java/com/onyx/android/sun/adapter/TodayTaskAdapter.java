@@ -10,7 +10,10 @@ import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.databinding.TodayTaskItemBinding;
+import com.onyx.android.sun.event.UnfinishedEvent;
 import com.onyx.android.sun.view.PageRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -64,6 +67,9 @@ public class TodayTaskAdapter extends PageRecyclerView.PageAdapter<TodayTaskAdap
         if (tag == null) {
             return;
         }
+        int position = (int) tag;
+        ContentBean contentBean = data.get(position);
+        EventBus.getDefault().post(new UnfinishedEvent(contentBean.id, contentBean.type, contentBean.title));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

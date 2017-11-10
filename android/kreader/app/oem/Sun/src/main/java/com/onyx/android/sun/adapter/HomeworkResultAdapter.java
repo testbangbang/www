@@ -2,12 +2,15 @@ package com.onyx.android.sun.adapter;
 
 import android.databinding.DataBindingUtil;
 import android.databinding.ViewDataBinding;
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.databinding.ItemHomeworkResultBinding;
@@ -55,8 +58,13 @@ public class HomeworkResultAdapter extends PageRecyclerView.PageAdapter {
         HomeworkResultViewHolder viewHolder = (HomeworkResultViewHolder) holder;
         ItemHomeworkResultBinding homeworkResultBinding = viewHolder.getHomeworkResultBinding();
         TaskAndAnswerEntity entity = data.get(position);
-        homeworkResultBinding.setQuestionId("第" + entity.questionId + "题");
+        homeworkResultBinding.setQuestionId(String.format(SunApplication.getInstance().getResources().getString(R.string.question_order), entity.questionId));
         homeworkResultBinding.setAnswer(entity.userAnswer);
+        Bitmap bitmap = NoteDataProvider.loadThumbnail(SunApplication.getInstance(), entity.userAnswer);
+        homeworkResultBinding.subjectiveResultAnswer.setVisibility(bitmap == null ? View.GONE : View.VISIBLE);
+        if(bitmap != null) {
+            homeworkResultBinding.subjectiveResultAnswer.setImageBitmap(bitmap);
+        }
         viewHolder.itemView.setOnClickListener(this);
         viewHolder.itemView.setTag(position);
     }
@@ -64,13 +72,13 @@ public class HomeworkResultAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public void onClick(View view) {
         Object tag = view.getTag();
-        if(tag == null) {
+        if (tag == null) {
             return;
         }
 
         int position = (int) tag;
         TaskAndAnswerEntity entity = data.get(position);
-        if(StringUtil.isNullOrEmpty(entity.userAnswer)) {
+        if (StringUtil.isNullOrEmpty(entity.userAnswer)) {
             EventBus.getDefault().post(new UnansweredEvent());
         }
     }

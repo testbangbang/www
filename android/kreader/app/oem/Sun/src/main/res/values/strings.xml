@@ -128,4 +128,11 @@
     <string name="mistake">Mistake</string>
     <string name="correct">Correct</string>
     <string name="item_fill_homework_title">%1$s(%2$d points,%3$d questions,%4$d points per question)</string>
+    <string name="objective_item">Objective item</string>
+    <string name="subjective_item">Subjective item</string>
+    <string name="question_order">Question %s</string>
+    <string name="submit_all_questions">Please submit all the questions</string>
+    <string name="submit_successful">Submit successfully</string>
+    <string name="submit_failed">Submit failed</string>
+    <string name="un_submit">Not submit</string>
 </resources>

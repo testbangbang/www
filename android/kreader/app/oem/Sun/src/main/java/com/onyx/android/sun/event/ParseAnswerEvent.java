@@ -1,6 +1,7 @@
 package com.onyx.android.sun.event;
 
 import com.onyx.android.sun.cloud.bean.Question;
+import com.onyx.android.sun.cloud.bean.QuestionViewBean;
 
 /**
  * Created by li on 2017/10/26.
@@ -8,15 +9,15 @@ import com.onyx.android.sun.cloud.bean.Question;
 
 public class ParseAnswerEvent {
     private String title;
-    private Question question;
+    private QuestionViewBean questionViewBean;
 
-    public ParseAnswerEvent(Question question, String title) {
-        this.question = question;
+    public ParseAnswerEvent(QuestionViewBean questionViewBean, String title) {
         this.title = title;
+        this.questionViewBean = questionViewBean;
     }
 
-    public Question getQuestion() {
-        return question;
+    public QuestionViewBean getQuestion() {
+        return questionViewBean;
     }
 
     public String getTitle() {

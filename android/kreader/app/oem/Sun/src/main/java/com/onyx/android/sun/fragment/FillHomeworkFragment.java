@@ -1,18 +1,18 @@
 package com.onyx.android.sun.fragment;
 
 import android.databinding.ViewDataBinding;
-import android.graphics.Bitmap;
 import android.view.View;
 
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.adapter.FillHomeworkAdapter;
 import com.onyx.android.sun.adapter.HomeworkRecordAdapter;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
-import com.onyx.android.sun.cloud.bean.QuestionData;
+import com.onyx.android.sun.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
+import com.onyx.android.sun.cloud.bean.QuestionViewBean;
+import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.databinding.FillHomeworkBinding;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
@@ -28,6 +28,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,14 +57,11 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         fillHomeworkBinding.fillHomeworkRecycler.addItemDecoration(dividerItemDecoration);
-        fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setText(
-                String.format(getResources().getString(R.string.homework_unfinished_title_format), StringUtil.transitionHomeworkType(type), title));
+        fillHomeworkBinding.fillHomeworkTitleBar.setTitle(String.format(getResources().getString(R.string.homework_unfinished_title_format),
+                StringUtil.transitionHomeworkType(type), title));
         fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
         fillHomeworkAdapter = new FillHomeworkAdapter();
         fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
-        fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setOnClickListener(this);
-        fillHomeworkBinding.fillHomeworkTitleBar.titleBarRecord.setOnClickListener(this);
-        fillHomeworkBinding.fillHomeworkTitleBar.titleBarSubmit.setOnClickListener(this);
         homeworkRecordAdapter = new HomeworkRecordAdapter();
     }
 
@@ -79,7 +77,9 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Override
     protected void initListener() {
-
+        fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setOnClickListener(this);
+        fillHomeworkBinding.fillHomeworkTitleBar.titleBarRecord.setOnClickListener(this);
+        fillHomeworkBinding.fillHomeworkTitleBar.titleBarSubmit.setOnClickListener(this);
     }
 
     @Override
@@ -113,7 +113,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         this.data = data;
         showTaskTitle();
         if (fillHomeworkAdapter != null && data.volumeExerciseDTOS != null && data.volumeExerciseDTOS.size() > 0) {
-            fillHomeworkAdapter.setData(data.volumeExerciseDTOS, title);
+            fillHomeworkAdapter.setData(data.volumeExerciseDTOS, title, data.taskId);
         }
     }
 
@@ -138,10 +138,32 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
                 EventBus.getDefault().post(new BackToHomeworkFragmentEvent());
                 break;
             case R.id.title_bar_record:
-                setTitleBarRecord();
+                if (data != null) {
+                    setTitleBarRecord();
+                }
                 break;
             case R.id.title_bar_submit:
+                submitAnswer();
                 break;
+        }
+    }
+
+    private void submitAnswer() {
+        if (fillHomeworkAdapter != null) {
+            List<PracticeAnswerBean> list = new ArrayList<>();
+            List<QuestionViewBean> questionList = fillHomeworkAdapter.getQuestionList();
+            for (QuestionViewBean bean : questionList) {
+                if (StringUtil.isNullOrEmpty(bean.getUserAnswer())) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.submit_all_questions));
+                    return;
+                }
+                PracticeAnswerBean answerBean = new PracticeAnswerBean();
+                answerBean.id = bean.getId();
+                answerBean.answer = bean.getUserAnswer();
+                list.add(answerBean);
+            }
+            //TODO:fake student id
+            homeworkPresenter.submitAnswer(list, id, 1);
         }
     }
 
@@ -154,11 +176,12 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private void setTitleBarRecord() {
         if (getResources().getString(R.string.file_homework_record).equals(fillHomeworkBinding.fillHomeworkTitleBar.getRecord())) {
             fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.question));
+            fillHomeworkBinding.fillHomeworkRecycler.setIntercepted(true);
             fillHomeworkBinding.fillHomeworkRecycler.setAdapter(homeworkRecordAdapter);
-            //TODO:fake id
-            homeworkPresenter.getAllQuestion("1", null);
+            homeworkPresenter.getAllQuestion(data.taskId + "", null);
         } else {
             fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
+            fillHomeworkBinding.fillHomeworkRecycler.setIntercepted(false);
             fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
         }
     }
@@ -170,12 +193,19 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSubjectiveResultEvent(SubjectiveResultEvent event) {
-        //TODO: assign value
-        /*for (QuestionData data :questions) {
-            if(data.exercise.id == Integer.parseInt(event.getQuestionId())) {
-                data.exercise.userAnswer = event.getQuestionId();
+        if (fillHomeworkAdapter == null) {
+            return;
+        }
+
+        List<QuestionViewBean> questionList = fillHomeworkAdapter.getQuestionList();
+        if (questionList != null && questionList.size() > 0) {
+            for (QuestionViewBean bean : questionList) {
+                if (bean.getId() == Integer.parseInt(event.getQuestionId())) {
+                    bean.setUserAnswer(event.getQuestionId());
+                    fillHomeworkAdapter.insertAnswer(data.taskId, bean);
+                }
             }
         }
-        fillHomeworkAdapter.notifyDataSetChanged();*/
+        fillHomeworkAdapter.notifyDataSetChanged();
     }
 }

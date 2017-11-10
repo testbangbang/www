@@ -128,4 +128,11 @@
     <string name="mistake">错误</string>
     <string name="correct">正确</string>
     <string name="item_fill_homework_title">%1$s(%2$d分,共%3$d题,每小题%4$d分)</string>
+    <string name="objective_item">客观题</string>
+    <string name="subjective_item">主观题</string>
+    <string name="question_order">第%s题</string>
+    <string name="submit_all_questions">请答完所有试题再提交</string>
+    <string name="submit_successful">提交成功</string>
+    <string name="submit_failed">提交失败</string>
+    <string name="un_submit">未提交</string>
 </resources>

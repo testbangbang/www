@@ -18,6 +18,7 @@ import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.Question;
+import com.onyx.android.sun.cloud.bean.QuestionViewBean;
 import com.onyx.android.sun.common.AppConfigData;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
@@ -239,10 +240,10 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onToParseAnswerEvent(ParseAnswerEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_PARSE_ANSWER);
         ParseAnswerFragment parseAnswerFragment = (ParseAnswerFragment) getPageView(ChildViewID.FRAGMENT_PARSE_ANSWER);
-        Question question = event.getQuestion();
+        QuestionViewBean questionViewBean = event.getQuestion();
         String title = event.getTitle();
-        if(question != null && !StringUtils.isNullOrEmpty(title)) {
-            parseAnswerFragment.setQuestionData(question, title);
+        if(questionViewBean != null && !StringUtils.isNullOrEmpty(title)) {
+            parseAnswerFragment.setQuestionData(questionViewBean, title);
         }
     }
 

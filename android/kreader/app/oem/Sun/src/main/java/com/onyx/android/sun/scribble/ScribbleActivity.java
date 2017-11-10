@@ -68,7 +68,7 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void initListener() {
         scribbleBinding.setListener(this);
-        scribbleBinding.titleBar.setListener(this);
+        scribbleBinding.titleBar.titleBarTitle.setOnClickListener(this);
     }
 
     @Override

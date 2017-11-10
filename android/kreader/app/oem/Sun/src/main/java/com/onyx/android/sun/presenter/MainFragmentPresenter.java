@@ -28,17 +28,9 @@ public class MainFragmentPresenter {
         mainFragmentData = new MainFragmentData();
     }
 
-    public void getPractices() {
+    public void getPractices(int studentId) {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.course = "1";
-        Date date = new Date(System.currentTimeMillis());
-        requestBean.endtime = DateTimeUtil.formatDate(date, new SimpleDateFormat("yy-MM-dd", Locale.getDefault()));
-        requestBean.page = "1";
-        requestBean.size = "10";
-        requestBean.starttime = "2017-02-02";
-        requestBean.status = "tbd";
-        requestBean.studentId = "2";
-        requestBean.type = "all";
+        requestBean.studentId = studentId + "";
         final HomeworkUnfinishedRequest req = new HomeworkUnfinishedRequest(requestBean);
         mainFragmentData.getPractices(req, new BaseCallback() {
             @Override

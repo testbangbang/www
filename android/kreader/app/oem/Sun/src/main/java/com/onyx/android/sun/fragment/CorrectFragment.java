@@ -69,7 +69,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void initListener() {
-        correctDataBinding.correctTitleBar.setListener(this);
+        correctDataBinding.correctTitleBar.titleBarTitle.setOnClickListener(this);
         correctDataBinding.correctTitleBar.titleBarSubmit.setVisibility(View.GONE);
         correctDataBinding.correctTitleBar.titleBarRecord.setVisibility(View.GONE);
     }
@@ -120,7 +120,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
     public void setCorrectList(List<QuestionData> data) {
         if(adapter != null) {
             adapter.setFinished(true);
-            adapter.setData(data, title);
+            //TODO: adapter.setData(data, title);
         }
     }
 }

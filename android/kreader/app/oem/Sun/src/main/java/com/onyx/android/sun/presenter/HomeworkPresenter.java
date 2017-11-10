@@ -1,26 +1,41 @@
 package com.onyx.android.sun.presenter;
 
+import com.alibaba.fastjson.JSON;
+import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.ContentBean;
+import com.onyx.android.sun.cloud.bean.ExerciseBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
+import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
+import com.onyx.android.sun.cloud.bean.PracticeAnswerBean;
+import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.cloud.bean.QuestionData;
+import com.onyx.android.sun.cloud.bean.SubmitPracticeRequestBean;
+import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.TaskBean;
 import com.onyx.android.sun.common.CloudApiContext;
 import com.onyx.android.sun.common.CommonNotices;
+import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.data.FillHomeworkData;
 import com.onyx.android.sun.data.HomeworkData;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.interfaces.HomeworkView;
 import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
+import com.onyx.android.sun.requests.cloud.SubmitPracticeRequest;
 import com.onyx.android.sun.requests.cloud.TaskDetailRequest;
+import com.onyx.android.sun.requests.local.FillAnswerRequest;
 import com.onyx.android.sun.requests.local.GetAllQuestionRequest;
 import com.onyx.android.sun.requests.requestTool.BaseCallback;
 import com.onyx.android.sun.requests.requestTool.BaseRequest;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 
 /**
  * Created by li on 2017/10/11.
@@ -37,37 +52,22 @@ public class HomeworkPresenter {
         fillHomeworkData = new FillHomeworkData();
     }
 
-    public void getHomeworkUnfinishedData() {
+    public void getHomeworkUnfinishedData(String studentId) {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.status = CloudApiContext.Practices.UNFINISHED_STATE;
-        requestBean.studentId = "2";
+        requestBean.studentId = studentId;
         final HomeworkUnfinishedRequest rq = new HomeworkUnfinishedRequest(requestBean);
         homeworkData.getHomeworkUnfinishedData(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                /*HomeworkUnfinishedResultBean resultBean = rq.getResultBean();
+                HomeworkUnfinishedResultBean resultBean = rq.getResultBean();
                 if (resultBean == null) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
                     return;
                 }
                 List<ContentBean> content = resultBean.data.content;
                 if (content != null && content.size() > 0) {
                     homeworkView.setUnfinishedData(content);
-                }*/
-
-                //fake data
-                List<ContentBean> list = new ArrayList<ContentBean>();
-                for (int i = 0; i < 5; i++) {
-                    ContentBean bean = new ContentBean();
-                    bean.title = "unit3单元测试" + i;
-                    bean.type = "task";
-                    bean.deadline = "2017-10-11";
-                    bean.auth = "李老师";
-                    bean.course = "英语";
-                    bean.status = "exp";
-                    bean.id = i;
-                    list.add(bean);
                 }
-                homeworkView.setUnfinishedData(list);
             }
         });
     }
@@ -87,6 +87,7 @@ public class HomeworkPresenter {
             public void done(BaseRequest request, Throwable e) {
                 /*HomeworkFinishedResultBean resultBean = rq.getResultBean();
                 if (resultBean == null || resultBean.data == null) {
+                CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
                     return;
                 }
 
@@ -147,6 +148,7 @@ public class HomeworkPresenter {
             public void done(BaseRequest request, Throwable e) {
                 HomeworkFinishedResultBean resultBean = rq.getResultBean();
                 if (resultBean == null || resultBean.data == null) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
                     return;
                 }
 
@@ -159,22 +161,28 @@ public class HomeworkPresenter {
         });
     }
 
-    public void saveTask(List<QuestionData> data) {
-        //TODO:to complete params   fake data
+    public void saveTask(String taskId, List<QuestionData> data) {
         if (data == null || data.size() == 0) {
             return;
         }
 
-        /*for (QuestionData question : data) {
-            Question exercise = question.exercise;
-            FillAnswerRequest fillAnswerRequest = new FillAnswerRequest("1", exercise.id + "", exercise.type, exercise.question, exercise.userAnswer);
-            fillHomeworkData.insertAnswer(fillAnswerRequest, new BaseCallback() {
-                @Override
-                public void done(BaseRequest request, Throwable e) {
+        for (QuestionData question : data) {
+            List<ExerciseBean> exercises = question.exercises;
+            for (int i = 0; i < exercises.size(); i++) {
+                ExerciseBean exerciseBean = exercises.get(i);
+                List<Question> questionBeans = exerciseBean.exercises;
+                for (int j = 0; j < questionBeans.size(); j++) {
+                    Question questionBean = questionBeans.get(j);
+                    FillAnswerRequest fillAnswerRequest = new FillAnswerRequest(taskId, questionBean.id + "", questionBean.content, question.showType, "");
+                    fillHomeworkData.insertAnswer(fillAnswerRequest, new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
 
+                        }
+                    });
                 }
-            });
-        }*/
+            }
+        }
     }
 
     public void getAllQuestion(final String taskId, final List<QuestionData> data) {
@@ -184,7 +192,7 @@ public class HomeworkPresenter {
             public void done(BaseRequest request, Throwable e) {
                 List<TaskAndAnswerEntity> taskList = getAllQuestionRequest.getTaskList();
                 if (taskList == null || taskList.size() == 0) {
-                    saveTask(data);
+                    saveTask(taskId, data);
                 } else {
                     homeworkView.setAnswerRecord(taskList);
                 }
@@ -192,64 +200,46 @@ public class HomeworkPresenter {
         });
     }
 
-    public void getTaskDetail(int id) {
-        final TaskDetailRequest rq = new TaskDetailRequest(id);
+    public void getTaskDetail(final int taskId) {
+        final TaskDetailRequest rq = new TaskDetailRequest(taskId);
         homeworkData.getTaskDetail(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 TaskBean taskBean = rq.getTaskBean();
                 if (taskBean == null || taskBean.data == null) {
-                    CommonNotices.show("请求数据错误");
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
                     return;
                 }
-
+                taskBean.data.taskId = taskId;
                 homeworkView.setTaskDetail(taskBean.data);
-                //TODO: getAllQuestion(taskBean.data);
+                getAllQuestion(taskId + "", taskBean.data.volumeExerciseDTOS);
             }
         });
+    }
 
-        //fake data
-        /*QuestionDetail questionDetail = new QuestionDetail();
-        List<QuestionData> list = new ArrayList<>();
-        for (int i = 0; i < 8; i++) {
-            QuestionData data = new QuestionData();
-            Question question = new Question();
-            question.id = i;
-            question.question = "shi wan ge wei shen me?";
-            if (i == 7) {
-                question.type = "objective";
-                data.exercise = question;
-                list.add(data);
-                break;
+    public void submitAnswer(List<PracticeAnswerBean> answerList, int taskId, int studentId) {
+        SubmitPracticeRequestBean submitPracticeRequestBean = new SubmitPracticeRequestBean();
+        submitPracticeRequestBean.id = taskId;
+        submitPracticeRequestBean.studentId = studentId;
+        String answers = JSON.toJSONString(answerList);
+        RequestBody requestBody = RequestBody.create(MediaType.parse(Constants.REQUEST_HEAD), answers);
+        submitPracticeRequestBean.practiceListBody = requestBody;
+
+        final SubmitPracticeRequest rq = new SubmitPracticeRequest(submitPracticeRequestBean);
+        fillHomeworkData.submitAnswers(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                SubmitPracticeResultBean result = rq.getResult();
+                if (result == null) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    return;
+                }
+                if (Constants.OK.equals(result.msg)) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.submit_successful));
+                } else {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.submit_failed));
+                }
             }
-            question.type = "choice";
-            List<Map<String, String>> selection = new ArrayList<>();
-
-            Map<String, String> map = new HashMap<>();
-            map.put("key", "A");
-            map.put("value", "aaaa");
-            selection.add(map);
-
-            map = new HashMap<>();
-            map.put("key", "B");
-            map.put("value", "bbbb");
-            selection.add(map);
-
-            map = new HashMap<>();
-            map.put("key", "C");
-            map.put("value", "cccc");
-            selection.add(map);
-
-            map = new HashMap<>();
-            map.put("key", "D");
-            map.put("value", "dddd");
-            selection.add(map);
-            question.selection = selection;
-            data.exercise = question;
-            list.add(data);
-        }
-        questionDetail.data = list;
-        homeworkView.setTaskDetail(questionDetail);
-        getAllQuestion("1", questionDetail.data);*/
+        });
     }
 }

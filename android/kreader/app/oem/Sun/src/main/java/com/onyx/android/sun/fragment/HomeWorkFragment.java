@@ -54,7 +54,8 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
-        homeworkPresenter.getHomeworkUnfinishedData();
+        //TODO:fake student id = 108
+        homeworkPresenter.getHomeworkUnfinishedData("1");
         homeworkPresenter.getHomeworkFinishedData(null, null, null, null);
         homeworkPresenter.getStudyReportData(null);
     }

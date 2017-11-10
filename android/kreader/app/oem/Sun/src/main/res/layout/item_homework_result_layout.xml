@@ -39,14 +39,25 @@
                 android:layout_height="@dimen/line_height"
                 android:background="@android:color/black" />
 
-            <TextView
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_margin="@dimen/item_homework_result_text_padding"
-                android:background="@{StringUtil.isNotFillAnswer(answer) ? @color/litter_gray : @color/white}"
-                android:gravity="center"
-                android:text="@{StringUtil.distinguishAnswer(answer)}"
-                android:textSize="@dimen/level_one_heading_font" />
+                android:layout_margin="@dimen/item_homework_result_text_padding">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@{StringUtil.isNotFillAnswer(answer) ? @color/litter_gray : @color/white}"
+                    android:gravity="center"
+                    android:text="@{StringUtil.distinguishAnswer(answer)}"
+                    android:textSize="@dimen/level_one_heading_font" />
+
+                <ImageView
+                    android:id="@+id/subjective_result_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+            </FrameLayout>
         </LinearLayout>
 
         <View

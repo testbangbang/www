@@ -23,8 +23,9 @@ public class Constants {
     public static final String UPDATE_URL = "update_url";
     public static final String UPDATE_ZIP = "update.zip";
     public static boolean isUseCache = true;
-    public static final String QUESTION_TYPE_CHOICE = "choice";
-    public static final String QUESTION_TYPE_OBJECTIVE = "objective";
+    public static final String QUESTION_TYPE_CHOICE = "选择题";
+    public static final String QUESTION_TYPE_OBJECTIVE = "阅读理解";
+    public static final String QUESTION_TYPE_BLANK = "填空题";
     public static final long RESET_PRESS_TIMEOUT = 1000;
     public static final int SYSTEM_SETTING_PRESS_COUNT = 6;
 
@@ -34,5 +35,6 @@ public class Constants {
     public static final String SP_KEY_USER_ACCOUNT = "userAccount";
     public static final String SP_KEY_USER_PASSWORD = "userPassword";
     public static final String SOUND_DIR = "sounds";
-
+    public static final String REQUEST_HEAD = "application/json";
+    public static final String OK = "ok";
 }

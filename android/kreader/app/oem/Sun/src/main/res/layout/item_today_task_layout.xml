@@ -3,6 +3,10 @@
 
     <data class="TodayTaskItemBinding">
 
+        <import type="com.onyx.android.sun.utils.StringUtil" />
+
+        <import type="com.onyx.android.sun.utils.TimeUtils" />
+
         <variable
             name="data"
             type="com.onyx.android.sun.cloud.bean.ContentBean" />
@@ -11,15 +15,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/item_today_task_padding"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:padding="@dimen/item_today_task_padding">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:text="@{data.type}"
+            android:text="@{data.num}"
             android:textSize="@{@dimen/level_three_heading_font}" />
 
         <LinearLayout
@@ -32,8 +35,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{data.title}"
-                android:textSize="@{@dimen/level_three_heading_font}" />
+                android:text="@{@string/homework_unfinished_title_format(StringUtil.transitionHomeworkType(data.type), data.title)}"
+                android:textSize="@dimen/level_three_heading_font" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -49,8 +52,8 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{data.deadline}"
                     android:layout_marginLeft="@dimen/item_today_task_deadline_margin_left"
+                    android:text="@{@string/homework_item_deadline_format(data.deadline)}"
                     android:textSize="@{@dimen/level_three_heading_font}" />
             </LinearLayout>
         </LinearLayout>
@@ -70,11 +73,14 @@
             android:text="@{data.course}"
             android:textSize="@{@dimen/level_three_heading_font}" />
 
-        <ImageView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:src="@{@drawable/ic_launcher}" />
+            android:drawableRight="@drawable/icon_go"
+            android:gravity="center_vertical"
+            android:text="@string/un_submit"
+            android:textSize="@dimen/level_three_heading_font" />
     </RelativeLayout>
 </layout>

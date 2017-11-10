@@ -7,12 +7,16 @@
     <TextView
         android:id="@+id/subjective_item_question_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/level_three_heading_font"/>
 
-    <TextView
+    <ImageView
         android:id="@+id/subjective_item_answer"
+        android:layout_width="@dimen/question_view_subjective_answer_width"
+        android:layout_height="@dimen/question_view_subjective_answer_height" />
+
+    <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/subject_question_item_height"
-        android:background="@drawable/bottom_line_state"
-        android:gravity="center_vertical" />
+        android:layout_height="@dimen/line_height"
+        android:background="@android:color/black" />
 </LinearLayout>

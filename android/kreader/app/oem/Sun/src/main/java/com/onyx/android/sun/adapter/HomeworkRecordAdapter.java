@@ -31,33 +31,6 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
     public HomeworkRecordAdapter() {
         dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
-        /*for (int i = 0; i < 2; i++) {
-            AnswerRecordBean bean = new AnswerRecordBean();
-            if(i == 0) {
-                List<Question> list = new ArrayList<>();
-                for (int j = 0; j < 10; j++) {
-                    Question question = new Question();
-                    question.id = j;
-                    question.userAnswer = j == 5 ? null : "A";
-                    question.type = "choice";
-                    list.add(question);
-                }
-                bean.list = list;
-                bean.title = ;
-            } else {
-                List<Question> list = new ArrayList<>();
-                for (int j = 0; j < 4; j++) {
-                    Question question = new Question();
-                    question.id = j;
-                    question.userAnswer = j == 2 ? null : "B";
-                    question.type = "objective";
-                    list.add(question);
-                }
-                bean.list = list;
-                bean.title = "主观题";
-            }
-            data.add(bean);
-        }*/
     }
 
     @Override
@@ -90,10 +63,12 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
         HomeworkResultAdapter homeworkResultAdapter = new HomeworkResultAdapter();
         homeworkRecordBinding.homeworkRecordRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         homeworkRecordBinding.homeworkRecordRecycler.addItemDecoration(dividerItemDecoration);
-        if("客观题".equals(answerRecordBean.title)) {
-            homeworkResultAdapter.setRowOrCol(2, 9);
-        }else {
-            homeworkResultAdapter.setRowOrCol(2, 3);
+        if (SunApplication.getInstance().getResources().getString(R.string.objective_item).equals(answerRecordBean.title)) {
+            homeworkResultAdapter.setRowOrCol(SunApplication.getInstance().getResources().getInteger(R.integer.homework_result_objective_row),
+                    SunApplication.getInstance().getResources().getInteger(R.integer.homework_result_objective_col));
+        } else {
+            homeworkResultAdapter.setRowOrCol(SunApplication.getInstance().getResources().getInteger(R.integer.homework_result_subjective_row),
+                    SunApplication.getInstance().getResources().getInteger(R.integer.homework_result_subjective_col));
         }
         homeworkRecordBinding.homeworkRecordRecycler.setAdapter(homeworkResultAdapter);
         homeworkResultAdapter.setData(answerRecordBean.list);
@@ -106,17 +81,22 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
     }
 
     public void setData(List<TaskAndAnswerEntity> taskAndAnswerList) {
-        handleData(Constants.QUESTION_TYPE_CHOICE, "客观题", taskAndAnswerList);
+        if (data != null && data.size() > 0) {
+            data.clear();
+        }
+        handleData(Constants.QUESTION_TYPE_CHOICE, Constants.QUESTION_TYPE_CHOICE, SunApplication.getInstance().getResources().getString(R.string.objective_item), taskAndAnswerList);
         notifyDataSetChanged();
     }
 
-    private void handleData(String type, String title, List<TaskAndAnswerEntity> taskAndAnswerList) {
+    private void handleData(String type, String anotherType, String title, List<TaskAndAnswerEntity> taskAndAnswerList) {
+        boolean isIntoLoop = false;
         AnswerRecordBean bean = new AnswerRecordBean();
         List<TaskAndAnswerEntity> list = new ArrayList<>();
         Iterator<TaskAndAnswerEntity> iterator = taskAndAnswerList.iterator();
         while (iterator.hasNext()) {
             TaskAndAnswerEntity entity = iterator.next();
-            if (type.equals(entity.type)){
+            if (type.equals(entity.type) || anotherType.equals(entity.type)) {
+                isIntoLoop = true;
                 bean.title = title;
                 list.add(entity);
                 iterator.remove();
@@ -124,8 +104,8 @@ public class HomeworkRecordAdapter extends PageRecyclerView.PageAdapter {
         }
         bean.list = list;
         data.add(bean);
-        if(taskAndAnswerList != null && taskAndAnswerList.size() > 0) {
-            handleData(Constants.QUESTION_TYPE_OBJECTIVE, "主观题", taskAndAnswerList);
+        if (taskAndAnswerList != null && taskAndAnswerList.size() > 0 && isIntoLoop) {
+            handleData(Constants.QUESTION_TYPE_OBJECTIVE, Constants.QUESTION_TYPE_BLANK, SunApplication.getInstance().getResources().getString(R.string.subjective_item), taskAndAnswerList);
         }
     }
 

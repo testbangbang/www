@@ -1,13 +1,17 @@
 package com.onyx.android.sun.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sun.R;
+import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.common.CommonNotices;
 
 /**
@@ -15,10 +19,9 @@ import com.onyx.android.sun.common.CommonNotices;
  */
 
 public class SubjectiveQuestionItemView extends LinearLayout implements View.OnClickListener {
-
     private View view;
     private TextView title;
-    private TextView answer;
+    private ImageView answer;
 
     public SubjectiveQuestionItemView(Context context) {
         this(context, null);
@@ -32,7 +35,7 @@ public class SubjectiveQuestionItemView extends LinearLayout implements View.OnC
 
     private void init() {
         title = (TextView) view.findViewById(R.id.subjective_item_question_title);
-        answer = (TextView) view.findViewById(R.id.subjective_item_answer);
+        answer = (ImageView) view.findViewById(R.id.subjective_item_answer);
         answer.setOnClickListener(this);
     }
 
@@ -41,7 +44,8 @@ public class SubjectiveQuestionItemView extends LinearLayout implements View.OnC
     }
 
     public void setAnswer(String content) {
-        answer.setText(content);
+        Bitmap bitmap = NoteDataProvider.loadThumbnail(SunApplication.getInstance(), content);
+        answer.setImageBitmap(bitmap);
     }
 
     @Override

@@ -43,7 +43,7 @@
             android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}"
             android:text="@{@string/full_score(wholeScore)}"/>
 
-        <com.onyx.android.sun.view.PageRecyclerView
+        <com.onyx.android.sun.view.NestedPageRecyclerView
             android:id="@+id/fill_homework_recycler"
             android:layout_width="match_parent"
             android:layout_height="0dp"

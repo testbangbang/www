@@ -1,5 +1,6 @@
 package com.onyx.android.sun.requests.local;
 
+import com.onyx.android.sun.cloud.bean.QuestionViewBean;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity_Table;
 import com.onyx.android.sun.requests.requestTool.BaseLocalRequest;
@@ -11,17 +12,17 @@ import com.raizlabs.android.dbflow.sql.language.Select;
  */
 
 public class FillAnswerRequest extends BaseLocalRequest {
-    private String taskId;
-    private String questionId;
-    private String question;
-    private String type;
     private String answer;
+    private String type;
+    private String content;
+    private String questionId;
+    private String taskId;
 
-    public FillAnswerRequest(String taskId, String questionId, String type, String question, String answer) {
+    public FillAnswerRequest(String taskId, String questionId, String questionContent, String questionType, String answer) {
         this.taskId = taskId;
         this.questionId = questionId;
-        this.question = question;
-        this.type = type;
+        this.content = questionContent;
+        this.type = questionType;
         this.answer = answer;
     }
 
@@ -31,7 +32,7 @@ public class FillAnswerRequest extends BaseLocalRequest {
         if (taskAndAnswerEntity == null) {
             taskAndAnswerEntity = new TaskAndAnswerEntity();
             taskAndAnswerEntity.taskId = taskId;
-            taskAndAnswerEntity.question = question;
+            taskAndAnswerEntity.question = content;
             taskAndAnswerEntity.type = type;
             taskAndAnswerEntity.questionId = questionId;
             taskAndAnswerEntity.userAnswer = answer;

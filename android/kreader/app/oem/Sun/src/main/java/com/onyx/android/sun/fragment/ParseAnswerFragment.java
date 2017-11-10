@@ -8,6 +8,7 @@ import android.view.View;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.Question;
+import com.onyx.android.sun.cloud.bean.QuestionViewBean;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.databinding.ParseAnswerBinding;
@@ -30,7 +31,7 @@ import java.io.IOException;
 
 public class ParseAnswerFragment extends BaseFragment implements View.OnClickListener, ParseAnswerView, View.OnTouchListener {
     private ParseAnswerBinding parseAnswerBinding;
-    private Question questionData;
+    private QuestionViewBean questionData;
     private String title;
     private ParseAnswerPresenter parseAnswerPresenter;
     private MediaManager mediaManager;
@@ -62,7 +63,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     protected void initListener() {
-        parseAnswerBinding.parseTitleBar.setListener(this);
+        parseAnswerBinding.parseTitleBar.titleBarTitle.setOnClickListener(this);
         parseAnswerBinding.parseAddSound.setOnClickListener(this);
         parseAnswerBinding.parseDeleteSound.setOnClickListener(this);
         parseAnswerBinding.parseModify.setOnClickListener(this);
@@ -103,7 +104,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         return false;
     }
 
-    public void setQuestionData(Question questionData, String title) {
+    public void setQuestionData(QuestionViewBean questionData, String title) {
         this.questionData = questionData;
         this.title = title;
         if (parseAnswerBinding != null) {
