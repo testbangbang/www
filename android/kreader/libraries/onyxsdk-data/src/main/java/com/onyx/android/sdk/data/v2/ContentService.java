@@ -25,6 +25,7 @@ import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.GetInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.GetSharedImpressionResult;
+import com.onyx.android.sdk.data.model.v2.GetSharedInformalResult;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.IndexService;
@@ -148,11 +149,11 @@ public interface ContentService {
     @GET("/api/JoinGroups/{id}/change")
     Call<ChangePendingGroupBean> changePendingGroupState(@Path(Constant.ID_TAG) final String id, @Query(Constant.STATUS_TAG) final int param);
 
-    @DELETE("/api/groups/{id}/users")
-    Call<DeleteGroupMemberBean> deleteGroupMember(@Path(Constant.ID_TAG) final String id, @Query(Constant.USERS_TAG) final DeleteGroupMemberBean bean);
+    @POST("/api/groups/{id}/removeusers")
+    Call<DeleteGroupMemberBean> deleteGroupMember(@Path(Constant.ID_TAG) final String id, @Body final DeleteGroupMemberBean bean);
 
     @DELETE("/api/users/{id}/leaveGroups")
-    Call<DeleteGroupMemberBean> deleteGroup(@Path(Constant.ID_TAG) final String id, @Query(Constant.GROUPS_TAG) final DeleteGroupMemberBean bean);
+    Call<DeleteGroupMemberBean> deleteGroup(@Path(Constant.ID_TAG) final String id, @Query(Constant.GROUPS_TAG) final String param);
 
     @POST("/api/impressions")
     Call<CreateBookReportResult> createImpression(@Body final CreateBookReportRequestBean bean);
@@ -170,6 +171,13 @@ public interface ContentService {
                                                         @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
                                                         @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
 
+    @GET("/api/librarys/{id}/informalEssay")
+    Call<GetSharedInformalResult> getSharedInformalEssay(@Path(Constant.ID_TAG) final String id,
+                                                         @Query(Constant.GET_IMPRESSIONS_LIST_OFFSET) String offset,
+                                                         @Query(Constant.GET_IMPRESSIONS_LIST_LIMIT) String limit,
+                                                         @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
+                                                         @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
+
     @GET("/api/impressions/{id}")
     Call<CreateBookReportResult> getImpression(@Path(Constant.ID_TAG) final String id);
 
@@ -181,6 +189,9 @@ public interface ContentService {
 
     @POST("/api/impressions/{id}/addComment")
     Call<CreateBookReportResult> addComment(@Path(Constant.ID_TAG) String id, @Body AddCommentRequestBean bean);
+
+    @POST("/api/InformalEssays/{id}/addComment")
+    Call<CreateInformalEssayBean> addInformalComment(@Path(Constant.ID_TAG) String id, @Body AddCommentRequestBean bean);
 
     @DELETE("/api/impressions/{id}/removeComment")
     Call<CreateBookReportResult> removeComment(@Path(Constant.ID_TAG) String id, @Query(Constant.REMOVE_COMMENT_ID) String commentId);
