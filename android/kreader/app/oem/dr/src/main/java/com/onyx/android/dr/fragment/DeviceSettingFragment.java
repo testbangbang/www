@@ -175,11 +175,11 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     }
 
     private void onCheckAPKUpdateClick() {
-        opeWifi();
+        openWifi();
         ApkUtils.updateApk(true);
     }
 
-    private void opeWifi() {
+    private void openWifi() {
         CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.device_setting_check_system_update));
         if (!NetworkUtil.isWiFiConnected(getActivity())) {
             Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
@@ -548,7 +548,7 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     }
 
     public void onCheckSystemUpdateClick() {
-        opeWifi();
+        openWifi();
         ApkUtils.firmwareCloudCheck(true);
     }
 
