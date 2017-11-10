@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="item_demo_padding">15dp</dimen>
+    <dimen name="task_name_size">16sp</dimen>
+    <dimen name="task_status_size">16sp</dimen>
+    <dimen name="task_status_margin_top">1dp</dimen>
+    <dimen name="task_progress_bar_margin_top">5dp</dimen>
+    <dimen name="task_action_button_margin_left">10dp</dimen>
+    <dimen name="task_action_button_text_size">14sp</dimen>
+</resources>

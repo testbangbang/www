@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/item_demo_padding">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/task_action_btn"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/task_name_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="task: asdfslkdjflsjfo"
+            android:textSize="@dimen/task_name_size" />
+
+        <TextView
+            android:id="@+id/task_status_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:text="status: connected"
+            android:textColor="@android:color/secondary_text_dark"
+            android:textSize="@dimen/task_status_size" />
+
+        <ProgressBar
+            android:id="@+id/task_pb"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/task_progress_bar_margin_top" />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/task_action_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="@dimen/task_action_button_margin_left"
+        android:text="Start"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/task_action_button_text_size" />
+</RelativeLayout>
