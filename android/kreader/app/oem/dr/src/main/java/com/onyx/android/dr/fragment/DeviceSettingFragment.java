@@ -175,14 +175,17 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     }
 
     private void onCheckAPKUpdateClick() {
+        opeWifi();
+        ApkUtils.updateApk(true);
+    }
+
+    private void opeWifi() {
         CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.device_setting_check_system_update));
         if (!NetworkUtil.isWiFiConnected(getActivity())) {
             Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
             NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
-            return;
         }
-        ApkUtils.updateApk(true);
     }
 
     private void showConfirmDialog(final String language, final int position) {
@@ -545,12 +548,7 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     }
 
     public void onCheckSystemUpdateClick() {
-        CommonNotices.showMessage(DRApplication.getInstance(), getString(R.string.device_setting_check_system_update));
-        if (!NetworkUtil.isWiFiConnected(getActivity())) {
-            Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
-            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
-            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
-        }
+        opeWifi();
         ApkUtils.firmwareCloudCheck(true);
     }
 

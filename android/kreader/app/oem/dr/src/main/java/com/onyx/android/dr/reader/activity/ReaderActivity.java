@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MotionEventCompat;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -178,7 +177,6 @@ public class ReaderActivity extends Activity implements ReaderView {
         String password = getIntent().getStringExtra(ReaderConstants.BOOK_PASSWORD);
         bookInfo.setPassword(password);
         String bookId = getIntent().getStringExtra(ReaderConstants.BOOK_ID);
-        Log.i("@@@", bookId);
         bookInfo.setBookId(bookId);
         isFluent = getIntent().getBooleanExtra(ReaderConstants.IS_FLUENT, false);
         int tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
@@ -762,7 +760,6 @@ public class ReaderActivity extends Activity implements ReaderView {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        Log.i("@@@speed", speed + "");
         OperatingDataManager.getInstance().insertReadBook(speed, md5short);
         ReadPageInfo.number = 0;
     }
