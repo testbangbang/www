@@ -253,13 +253,12 @@ public:
 public:
     std::string docPath_;
     PoDoFo::PdfMemDocument *doc_;
-    std::set<int, std::greater<int>> pagesWithAnnotation_;
+    std::set<int, std::less<int>> pagesWithAnnotation_;
     std::map<int, std::vector<std::pair<int, PoDoFo::PdfPage*>>*> subPages_;
 };
 
 OnyxPdfWriter::OnyxPdfWriter()
 {
-    impl.reset(new Impl());
 }
 
 OnyxPdfWriter::~OnyxPdfWriter()
@@ -272,6 +271,8 @@ bool OnyxPdfWriter::openPDF(const std::string &path)
         close();
     }
 
+    impl.reset(new Impl());
+
     impl->doc_ = new PoDoFo::PdfMemDocument(path.c_str());
     if (!impl->doc_->GetInfo()) {
         delete impl->doc_;
@@ -283,24 +284,68 @@ bool OnyxPdfWriter::openPDF(const std::string &path)
     return true;
 }
 
-bool OnyxPdfWriter::saveAs(const std::string &path, bool savePagesWithAnnotation)
+bool OnyxPdfWriter::saveAs(const std::string &path, bool saveOnlyPagesWithAnnotation)
 {
     if (!isOpened()) {
         return false;
     }
 
-    if (!savePagesWithAnnotation) {
-        impl->insertSubPages();
+    impl->insertSubPages();
+
+    if (!saveOnlyPagesWithAnnotation) {
         impl->doc_->Write(path.c_str());
         return true;
     }
 
-    PoDoFo::PdfMemDocument copy;
+    std::set<int, std::less<int>> pageSet;
     for (const auto page : impl->pagesWithAnnotation_) {
-        copy.InsertExistingPageAt(*impl->doc_, page, -1);
-        impl->insertSubPages(page, &copy, 0);
+        pageSet.insert(page);
     }
-    copy.Write(path.c_str());
+    for (const auto &entry : impl->subPages_) {
+        pageSet.insert(entry.first);
+    }
+
+    if (pageSet.size() <= 0) {
+        return true;
+    }
+
+    int subPageCount = 0;
+
+    std::vector<int> pages(pageSet.cbegin(), pageSet.cend());
+    std::vector<std::pair<int, int>> segments; // pages to save, in [a, b] form
+    for (size_t i = 0; i < pages.size(); i++) {
+        int realPage = pages.at(i) + subPageCount;
+        if (!impl->subPages_[pages.at(i)]) {
+            segments.push_back(std::make_pair(realPage, realPage));
+        } else {
+            int count = static_cast<int>(impl->subPages_[pages.at(i)]->size());
+            subPageCount += count;
+
+            if (impl->pagesWithAnnotation_.find(pages.at(i)) == impl->pagesWithAnnotation_.end()) {
+                // skip doc page
+                realPage += 1;
+                count -= 1;
+            }
+            segments.push_back(std::make_pair(realPage, realPage + count));
+        }
+    }
+
+    for (int i = static_cast<int>(segments.size()) - 1; i >= 0; i--) {
+        std::pair<int, int> &pair = segments.at(static_cast<size_t>(i));
+        if (i == static_cast<int>(segments.size()) - 1) {
+            impl->doc_->DeletePages(pair.second + 1, impl->doc_->GetPageCount() - pair.second - 1);
+        } else {
+            std::pair<int, int> &nextPair = segments.at(static_cast<size_t>(i + 1));
+            impl->doc_->DeletePages(pair.second + 1, nextPair.first - pair.second - 1);
+        }
+    }
+
+    std::pair<int, int> &pair = segments.at(0);
+    if (pair.first > 0) {
+        impl->doc_->DeletePages(0, pair.first);
+    }
+
+    impl->doc_->Write(path.c_str());
     return true;
 }
 
@@ -310,13 +355,12 @@ void OnyxPdfWriter::close()
         return;
     }
 
-    delete impl->doc_;
-    impl->doc_ = nullptr;
+    impl.reset(nullptr);
 }
 
 bool OnyxPdfWriter::isOpened() const
 {
-    return impl->doc_ && impl->doc_->IsLoaded();
+    return impl.get() && impl->doc_ && impl->doc_->IsLoaded();
 }
 
 bool OnyxPdfWriter::writeLine(const int page, const int subPage, const RectF &rect, const uint32_t color, const float strokeThickness, const PointF &start, const PointF &end)
