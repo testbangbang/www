@@ -35,7 +35,7 @@ public class InternalConst {
 	public final static int 	FIND_MASK = 0x1f;
 
 
-	public final static int 	STYLES_MAX_STYLE = 16;
+	public final static int 	STYLES_MAX_STYLE = 15;
 	public final static int 	STYLES_STYLE_TITLE = 0;
 	public final static int 	STYLES_STYLE_STITLE = 1;
 	public final static int 	STYLES_STYLE_ANNOTATION = 2;	
@@ -50,8 +50,7 @@ public class InternalConst {
 	public final static int 	STYLES_STYLE_FLETTER0 = 11;
 	public final static int 	STYLES_STYLE_FOOTNOTES = 12;
 	public final static int 	STYLES_STYLE_CODE = 13;
-	public final static int 	STYLES_STYLE_CSTYLE = 14;
-	public final static int 	STYLES_STYLE_FLETTER1 = 15;
+	public final static int 	STYLES_STYLE_FLETTER1 = 14;
 
 	public enum TAL_CALC_MODE {
 		NORMAL,	
@@ -73,40 +72,30 @@ public class InternalConst {
 	}
 	
 	public final static int TAL_PROFILE_COLOR_TEXT = 0;
-	public final static int TAL_PROFILE_COLOR_BG = 1;
-	public final static int TAL_PROFILE_COLOR_TITLE = 2;	
-	public final static int TAL_PROFILE_COLOR_LINK = 3;
-	public final static int TAL_PROFILE_COLOR_BOLD = 4;
-	public final static int TAL_PROFILE_COLOR_ITALIC = 5;
-	public final static int TAL_PROFILE_COLOR_BOLDITALIC = 6;	
-	public final static int TAL_PROFILE_COLOR_CUSTOM1 = 7;
-	public final static int TAL_PROFILE_COLOR_CUSTOM2 = 8;
-	public final static int TAL_PROFILE_COLOR_MARK0 = 9;
-	public final static int TAL_PROFILE_COLOR_SELECT = 10;
-	public final static int TAL_PROFILE_COLOR_CUSTOMC = 11;
-	public final static int TAL_PROFILE_COLOR_MARK1 = 12;
-	public final static int TAL_PROFILE_COLOR_MARK2 = 13;
-	public final static int TAL_PROFILE_COLOR_MARK3 = 14;
-	public final static int TAL_PROFILE_COLOR_MARK4 = 15;
-	public final static int TAL_PROFILE_COLOR_MARK5 = 16;
-	public final static int TAL_PROFILE_COLOR_MARK6 = 17;
-	public final static int TAL_PROFILE_COLOR_CUSTOMD = 18;
-	public final static int TAL_PROFILE_COLOR_SHADOW = 19;
-	public final static int TAL_PROFILE_COLOR_CODE = 20;
-	public final static int TAL_PROFILE_COLOR_CUSTOMA = 21;
-	public final static int TAL_PROFILE_COLOR_CUSTOMB = 22;	
+	public final static int TAL_PROFILE_COLOR_BACK = 1;
+	public final static int TAL_PROFILE_COLOR_LINK = 2;
+	public final static int TAL_PROFILE_COLOR_BOLD = 3;
+	public final static int TAL_PROFILE_COLOR_ITALIC = 4;
+	public final static int TAL_PROFILE_COLOR_BOLDITALIC = 5;
+	public final static int TAL_PROFILE_COLOR_CODE = 6;
+	public final static int TAL_PROFILE_COLOR_TITLE = 7;
+	public final static int TAL_PROFILE_COLOR_MARK0 = 8;
+	public final static int TAL_PROFILE_COLOR_SELECT = 9;
+	public final static int TAL_PROFILE_COLOR_SHADOW = 10;
+	public final static int TAL_PROFILE_COLOR_MARK1 = 11;
+	public final static int TAL_PROFILE_COLOR_MARK2 = 12;
+	public final static int TAL_PROFILE_COLOR_MARK3 = 13;
+	public final static int TAL_PROFILE_COLOR_MARK4 = 14;
+	public final static int TAL_PROFILE_COLOR_MARK5 = 15;
+	public final static int TAL_PROFILE_COLOR_MARK6 = 16;
 
-	public final static int TAL_PROFILE_COLOR_COUNT = 23;
+	public final static int TAL_PROFILE_COLOR_COUNT = 17;
 
-	public final static int TAL_PROFILE_FONT_TEXT		= 0;
-	public final static int TAL_PROFILE_FONT_TITLE		= 1;
-	public final static int TAL_PROFILE_FONT_CODE		= 2;
-	public final static int TAL_PROFILE_FONT_NOTE		= 3;
-	public final static int TAL_PROFILE_FONT_FLET		= 4;
-	public final static int TAL_PROFILE_FONT_CUSTOM1	= 5;
-	public final static int TAL_PROFILE_FONT_CUSTOM2	= 6;
-	public final static int TAL_PROFILE_FONT_RESERV		= 7;
+	public final static int TAL_PROFILE_FONTTYPE_TEXT		= 0;
+	public final static int TAL_PROFILE_FONTTYPE_CODE		= 1;
+	public final static int TAL_PROFILE_FONTTYPE_NOTE		= 2;
+	public final static int TAL_PROFILE_FONTTYPE_FLET		= 3;
 
-	public final static int TAL_PROFILE_FONT_COUNT = 8;
+	public final static int TAL_PROFILE_FONTTYPE_COUNT = 4;
 
 }

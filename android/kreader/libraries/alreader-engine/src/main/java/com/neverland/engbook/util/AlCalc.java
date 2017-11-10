@@ -29,7 +29,7 @@ public class AlCalc {
 	private final char[] 	oneCharArray = new char[1];
 	
 	private final float[] textWidths = new float[EngBookMyType.AL_WORD_LEN];
-	private int multiplexer = 1;
+	private float multiplexer = 1;
 	
 	private boolean isNeedQuickWidth = false;
 	private AlPaintFont fparam;
@@ -39,20 +39,8 @@ public class AlCalc {
 		fparam = fontparam;
 		isNeedQuickWidth = true;//opt.useScreenPages == TAL_SCREEN_PAGES_COUNT.SCREEN;
 		
-		switch (opt.DPI) {
-		case TAL_SCREEN_DPI_320:
-			multiplexer = 2;
-			break;
-		case TAL_SCREEN_DPI_480:
-			multiplexer = 3;
-			break;
-		case TAL_SCREEN_DPI_640:
-			multiplexer = 4;
-			break;
-		default:
-			break;
-		}
-		
+		multiplexer = opt.multiplexer;
+
 		linePaint.setDither(false);
 		linePaint.setAntiAlias(false);
 		linePaint.setStrokeWidth(multiplexer);
@@ -171,11 +159,13 @@ public class AlCalc {
 		rc.right = x1;
 		rc.bottom = y1;
 
-		linePaint.setColor((color & 0xff000000) == 0 ? color | 0xff000000 : color);
+		linePaint.setColor(((color & 0xff000000) == 0) ? (color | 0xff000000) : color);
 		canvas.drawRect(rc, linePaint);		
 	}
 	
 	public void drawText(int x, int y, char text) {
+		if (fparam.unvisible_text)
+			return;
 		if (canvas == null)
 			return;
 		oneCharArray[0] = text;
@@ -183,6 +173,8 @@ public class AlCalc {
 	}
 	
 	public void drawText(int x, int y, char[] text, int start, int count) {
+		if (fparam.unvisible_text)
+			return;
 		if (canvas == null)
 			return;
 		

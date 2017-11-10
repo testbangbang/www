@@ -15,7 +15,11 @@ public class AlOneItem {
 		public int 				height = 0;
 		public int				base_line_up = 0;
 		public int				base_line_down = 0;
-		public long				justify = 0;				
+		public long				justify = 0;
+
+		public long 			prop = 0;
+		public int				num = 0;
+
 		public int				count = 0;
 		public int				realLength = 256;
 		public int					textWidth = 0;
@@ -37,7 +41,7 @@ public class AlOneItem {
 
 
 	public int					blockHeight = 0;
-		public int					blockLeft = 0;
+		//public int					blockLeft = 0;
 		public int					base_line_up4text;
 				
 		public static void free(AlOneItem a) {		
@@ -98,6 +102,9 @@ public class AlOneItem {
 		justify = a.justify;
 		count = a.count;
 
+		num = a.num;
+		prop = a.prop;
+
 		textWidth = a.textWidth;
 		allWidth = a.allWidth;
 
@@ -111,7 +118,7 @@ public class AlOneItem {
 		isTableRow = a.isTableRow;
 
 		blockHeight = a.blockHeight;
-		blockLeft = a.blockLeft;
+		//blockLeft = a.blockLeft;
 		base_line_up4text = a.base_line_up4text;
 
 		table_start = a.table_start;

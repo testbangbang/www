@@ -17,5 +17,5 @@ public class AlPaintFont {
 	public int 	hyph_width_current = 0;
 	public int		correct_italic = 0;
 	public int		color = 0;
-
+	public boolean unvisible_text = false;
 }

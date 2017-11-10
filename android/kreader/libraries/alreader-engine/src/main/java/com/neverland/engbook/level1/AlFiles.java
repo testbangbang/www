@@ -22,6 +22,9 @@ public abstract class AlFiles {
 	public static final String LEVEL1_ZIP_FIRSTNAME_DOCX = "/word/document.xml";
 	public static final String LEVEL1_ZIP_FIRSTNAME_ODT = "/content.xml";
 	public static final int LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG = 0x80000000;
+	public static final int LEVEL1_BOOKOPTIONS_NEED_MULTIFILE_FULL = 0x40000000;
+	public static final int BOOKOPTIONS_FB2_SUBTITLE_2_TOC = 	0x00000001;
+	public static final int BOOKOPTIONS_DISABLE_CSS	= 		0x00800000;
 	public static final String LEVEL1_FB3_FILE_RELS = "/fb3/_rels/body.xml.rels";
 	public static final String LEVEL1_FB3_FILE_FORCOVER = "/_rels/.rels";
 	public static final String LEVEL1_ZIP_FIRSTNAME_FB3 = "/fb3/body.xml";
@@ -41,9 +44,13 @@ public abstract class AlFiles {
 	
 	public static long			time_load1;
 	public static long			time_load2;
-	AlFiles				parent;
-	String				ident;	
-	
+	protected AlFiles			parent = null;
+	String				ident;
+
+	public AlFiles getParent() {
+		return parent;
+	}
+
 	ArrayList<AlFileZipEntry>	fileList = new ArrayList<>(0);
 	
 	public	AlFiles() {
@@ -274,6 +281,14 @@ public abstract class AlFiles {
 		return -1;
 	}
 
+	public String  getCRCForBook() {
+
+		if (parent != null)
+			return parent.getCRCForBook();
+
+		return "1233333:1222";
+	}
+
 	public String getFullRealName() {
 		String s = fileName;
 		if (parent != null) {
@@ -373,22 +388,31 @@ public abstract class AlFiles {
 		if (test.endsWith("fb2")) {
 			return true;
 		} else
+		if (test.endsWith("htm")) {
+			return true;
+		} else
+		if (test.endsWith("html")) {
+			return true;
+		} else
+		if (test.endsWith("xhtml")) {
+			return true;
+		} else
 		if (test.endsWith("txt")) {
 			return true;
 		} else
 		if (test.endsWith("doc")) {
 			return true;
 		} else
-		if (test.endsWith("html")) {
+		if (test.endsWith("docx")) {
 			return true;
 		} else
-		if (test.endsWith("rtf")) {
+		if (test.endsWith("epub")) {
+			return true;
+		} else
+		if (test.endsWith("prc")) {
 			return true;
 		} else
 		if (test.endsWith("pdb")) {
-			return true;
-		} else
-		if (test.endsWith("fb3")) {
 			return true;
 		} else
 		if (test.endsWith("azw")) {
@@ -397,10 +421,19 @@ public abstract class AlFiles {
 		if (test.endsWith("azw3")) {
 			return true;
 		} else
-		if (test.endsWith("pdb")) {
+		if (test.endsWith("mobi")) {
+			return true;
+		} else
+		if (test.endsWith("fb3")) {
+			return true;
+		} else
+		if (test.endsWith("rtf")) {
 			return true;
 		} else
 		if (test.endsWith("acbf")) {
+			return true;
+		} else
+		if (test.endsWith("odt")) {
 			return true;
 		}
 			

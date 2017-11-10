@@ -6,8 +6,8 @@ package com.neverland.engbook.forpublic;
 public class AlFileDecrypt {
     private static final String str = "test text, simulating a file decryption";
 
-    private static final int size = str.length();
-    private int pos = 0;
+    /*private static final*/protected int size = str.length();
+    /*private*/protected int pos = 0;
 
     public final int getSize() {
         return size;
@@ -49,5 +49,9 @@ public class AlFileDecrypt {
         }
 
         return res;
+    }
+
+    public String getOutFileExt() {
+        return ".гтлтщцт";
     }
 }

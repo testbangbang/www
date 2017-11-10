@@ -1,5 +1,6 @@
 package com.neverland.engbook.level2;
 
+import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlStyles;
 
 public class AlOneParagraph {
@@ -7,33 +8,34 @@ public class AlOneParagraph {
 	public int				positionE;
 	public int				start;
 	public int				length;
-	public long				iType;
-	public int				addon;
+
+	public long				paragraph;
+	public long				prop;
 	public long				level;
-	public long 			stack[] = null;
-	public int  			cp[] = null;
+
 	public int				table_start = -1;
 	public int				table_counter = 0;
 
+	public char				ptext[] = null;
+	public boolean  		is_prepared = false;
 
 	@Override
 	public String toString() {
 		StringBuilder s = new StringBuilder();
-		switch ((int)(iType & (AlStyles.PAR_PREVIOUS_EMPTY_0 | AlStyles.PAR_PREVIOUS_EMPTY_1))) {
-		case AlStyles.PAR_PREVIOUS_EMPTY_0 | AlStyles.PAR_PREVIOUS_EMPTY_1: 
+		switch ((int)((prop & (AlParProperty.SL2_EMPTY_BEFORE | AlParProperty.SL2_BREAK_BEFORE)) >> 32L)) {
+		case (int) ((AlParProperty.SL2_EMPTY_BEFORE | AlParProperty.SL2_BREAK_BEFORE) >> 32L):
 										   	s.append("*@\r\n"); break;
-		case AlStyles.PAR_PREVIOUS_EMPTY_0: s.append("*\r\n"); break;
-		case AlStyles.PAR_PREVIOUS_EMPTY_1: s.append("@\r\n"); break;		
+		case (int) (AlParProperty.SL2_EMPTY_BEFORE >> 32L): s.append("*\r\n"); break;
+		case (int) (AlParProperty.SL2_BREAK_BEFORE >> 32L): s.append("@\r\n"); break;
 		}
-		
-		s.append(String.valueOf(positionS)).append('/').append(positionE).append('/').append(start).append('/').
-				append(length).append("/0x").append(Long.toHexString(iType)).append('/').
-				append(Integer.toHexString(addon)).append('/').
-				append(Integer.toString((stack != null ? 1 : 0) + (cp != null ? 2 : 0))).append('/').
-				append(Integer.toString((int) (level >> 31))).append('/').
-				append(Integer.toString((int) (level & 0x7fffffff))).append('/').
-				append(Integer.toString(table_start)).append("-0x").
-				append(Integer.toHexString(table_counter));
+
+		s.append(String.format("%d/%d/%d/%d 0x%016x-0x%016x %d %d %d",
+				positionS, positionE, start, length, paragraph, prop, level, table_start, table_counter));
+		/*s.append(String.valueOf(positionS)).append('/').append(positionE).append('/').append(start).append('/').
+				append(length).append("/0x").append(Long.toHexString(paragraph)).append('/').append(Long.toHexString(prop)).append('/').
+				append(Long.toString(level)).append('/').
+				append(Integer.toString(table_start)).append('/').
+				append(Integer.toHexString(table_counter));*/
 		return s.toString();
 	}
 }

@@ -1,15 +1,32 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 23
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion 14
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        /*ndk {
+            abiFilters 'armeabi', 'armeabi-v7a'*//*, 'arm64-v8a'*//*, 'x86'*//*, 'x86_64'*//*, 'mips'*//*, 'mips64'*//*
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_PLATFORM=android-11'
+            }
+        }*/
     }
+
+    /*externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }*/
+
     buildTypes {
         release {
             minifyEnabled false
@@ -23,9 +40,10 @@ android {
 }
 
 dependencies {
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     compile files('libs/juniversalchardet-1.0.3.jar')
     compile files('libs/svg-android-1.1.jar')
     compile files('libs/junrar-0.7.jar')

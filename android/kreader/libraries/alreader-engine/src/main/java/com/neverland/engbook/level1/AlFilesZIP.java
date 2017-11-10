@@ -1,5 +1,7 @@
 package com.neverland.engbook.level1;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.zip.DataFormatException;
 import java.util.zip.Inflater;
@@ -35,13 +37,16 @@ public class AlFilesZIP extends AlFiles {
 	static public TAL_FILE_TYPE isZIPFile(String fName, AlFiles a, ArrayList<AlFileZipEntry> fList, String ext) {
 		TAL_FILE_TYPE res = TAL_FILE_TYPE.TXT;
 
+
+		Log.e("zp0", Long.toString(System.currentTimeMillis()));
+
 		int			fsize = a.getSize();
 		int			arr_size = 0x1000f;
 		int			ecd = 0, scd = -1, tmp;
 		int			cnt_files = 0;
 		
 		byte[]		fname = new byte [AlFiles.LEVEL1_FILE_NAME_MAX_LENGTH];
-
+		char[]		wname = new char [AlFiles.LEVEL1_FILE_NAME_MAX_LENGTH];
 
 		for (int dw = 0; dw < 16; dw++) {
 			if (a.getByte(dw)     == 0x50 &&
@@ -84,6 +89,29 @@ public class AlFilesZIP extends AlFiles {
 			return res;
 		
 		res = TAL_FILE_TYPE.ZIP;
+
+		StringBuilder newName = new StringBuilder();
+		newName.ensureCapacity(EngBookMyType.AL_MAX_FILENAME_LENGTH);
+		AlIntHolder t = new AlIntHolder(0);
+
+		TAL_FILE_TYPE maybe = TAL_FILE_TYPE.RARUnk;
+
+		if (ext != null) {
+			if (ext.contentEquals(".odt") || ext.contentEquals(".sxw")) {
+				maybe = TAL_FILE_TYPE.ODT;
+			} else
+			if (ext.contentEquals(".docx")) {
+				maybe = TAL_FILE_TYPE.DOCX;
+			} else
+			if (ext.contentEquals(".epub")) {
+				maybe = TAL_FILE_TYPE.EPUB;
+			} else
+			if (ext.contentEquals(".fb3")) {
+				maybe = TAL_FILE_TYPE.FB3;
+			}
+		}
+
+		Log.e("zp1", Long.toString(System.currentTimeMillis()));
 
 		a.read_pos = scd;
 		while (a.read_pos < ecd) {
@@ -154,26 +182,70 @@ public class AlFilesZIP extends AlFiles {
 				of.position = (int) zipLCD.offset;
 				of.time = 0;
 
-				AlIntHolder t = new AlIntHolder(0);
 
-				StringBuilder newName = new StringBuilder();
+
+				//StringBuilder newName = new StringBuilder();
+				newName.setLength(0);
+				t.value = 0;
 
 				int cp = ((zipLCD.flag & (1 << 11)) != 0) ? TAL_CODE_PAGES.CP65001 : TAL_CODE_PAGES.CP1252;
-				while (fname[t.value] != 0 && tmp < EngBookMyType.AL_MAX_FILENAME_LENGTH)
-					newName.append(AlUnicode.byte2Wide(cp, fname, t));
+				/*while (fname[t.value] != 0*//* && t.value < EngBookMyType.AL_MAX_FILENAME_LENGTH*//*)
+					newName.append(AlUnicode.byte2Wide(cp, fname, t));*/
+				tmp = AlUnicode.byteArray2WideArray(cp, fname, wname, tmp);
+				newName.append(wname, 0, tmp);
 
 				of.name = newName.toString();
 
 				/*if (ext != null && (ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && zipLCD.fName.equalsIgnoreCase(FIRSTNAME_ODT))
 					res = ArchiveType.ODT;*/
-				if ((ext == null || ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
+				/*if ((ext == null || ext.equalsIgnoreCase(".odt") || ext.equalsIgnoreCase(".sxw")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
 					res = TAL_FILE_TYPE.ODT;
 				if ((ext == null || ext.equalsIgnoreCase(".docx")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_DOCX))
 					res = TAL_FILE_TYPE.DOCX;
 				if ((ext == null || ext.equalsIgnoreCase(".epub")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
 					res = TAL_FILE_TYPE.EPUB;
 				if ((ext == null || ext.equalsIgnoreCase(".fb3")) && of.name.equalsIgnoreCase(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
-					res = TAL_FILE_TYPE.FB3;
+					res = TAL_FILE_TYPE.FB3;*/
+				/*if (res == TAL_FILE_TYPE.ZIP) {
+
+					if ((ext == null || ext.contentEquals(".odt") || ext.contentEquals(".sxw")) && of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
+						res = TAL_FILE_TYPE.ODT;
+					if ((ext == null || ext.contentEquals(".docx")) && of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_DOCX))
+						res = TAL_FILE_TYPE.DOCX;
+					if ((ext == null || ext.contentEquals(".epub")) && of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
+						res = TAL_FILE_TYPE.EPUB;
+					if ((ext == null || ext.contentEquals(".fb3")) && of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
+						res = TAL_FILE_TYPE.FB3;
+				}*/
+				if (res == TAL_FILE_TYPE.ZIP)
+					switch (maybe) {
+						case RARUnk:
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
+								res = TAL_FILE_TYPE.EPUB;
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_DOCX))
+								res = TAL_FILE_TYPE.DOCX;
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
+								res = TAL_FILE_TYPE.ODT;
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
+								res = TAL_FILE_TYPE.FB3;
+							break;
+						case EPUB:
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_EPUB))
+								res = TAL_FILE_TYPE.EPUB;
+							break;
+						case DOCX:
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_DOCX))
+								res = TAL_FILE_TYPE.DOCX;
+							break;
+						case ODT:
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_ODT))
+								res = TAL_FILE_TYPE.ODT;
+							break;
+						case FB3:
+							if (of.name.contentEquals(AlFiles.LEVEL1_ZIP_FIRSTNAME_FB3))
+								res = TAL_FILE_TYPE.FB3;
+							break;
+					}
 
 				fList.add(of);
 				
@@ -182,6 +254,8 @@ public class AlFilesZIP extends AlFiles {
 				a.read_pos += zipLCD.namelength + zipLCD.extralength + zipLCD.commlength;
 			}
 		}
+
+		Log.e("zp2", Long.toString(System.currentTimeMillis()));
 
 		return cnt_files > 0 ? res : TAL_FILE_TYPE.TXT;
 	}
