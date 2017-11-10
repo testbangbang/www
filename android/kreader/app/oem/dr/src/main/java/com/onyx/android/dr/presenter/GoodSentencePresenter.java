@@ -3,7 +3,6 @@ package com.onyx.android.dr.presenter;
 import android.content.Context;
 
 import com.onyx.android.dr.DRApplication;
-import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.GoodSentenceAdapter;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.GoodSentenceData;
@@ -15,7 +14,6 @@ import com.onyx.android.dr.request.local.GoodSentenceQueryByTime;
 import com.onyx.android.dr.request.local.GoodSentenceQueryByType;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,11 +105,6 @@ public class GoodSentencePresenter {
         goodSentenceData.exportGoodSentence(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (StringUtils.isNullOrEmpty(e + tag)) {
-                    CommonNotices.showMessage(context, context.getString(R.string.export_failed));
-                } else {
-                    CommonNotices.showMessage(context, context.getString(R.string.export_success));
-                }
             }
         });
     }

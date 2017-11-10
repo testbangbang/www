@@ -2,6 +2,7 @@ package com.onyx.android.dr.util;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,13 +18,12 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.event.HideLoadingProgressEvent;
-import com.onyx.android.dr.event.StartDownloadingEvent;
 import com.onyx.android.dr.event.HaveNewVersionApkEvent;
 import com.onyx.android.dr.event.HaveNewVersionEvent;
+import com.onyx.android.dr.event.HideLoadingProgressEvent;
+import com.onyx.android.dr.event.StartDownloadingEvent;
 import com.onyx.android.dr.event.UpdateDownloadSucceedEvent;
 import com.onyx.android.dr.reader.view.CustomDialog;
-import com.onyx.android.dr.request.cloud.RequestDownloadAPK;
 import com.onyx.android.dr.request.cloud.RequestFirmwareLocalCheck;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -33,7 +33,6 @@ import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Device;
 import com.onyx.android.sdk.data.request.cloud.ApplicationUpdateRequest;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
-import com.onyx.android.sdk.data.utils.DownloadUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.PackageUtils;
 
@@ -205,7 +204,7 @@ public class ApkUtils {
         return update;
     }
 
-    public static void showNewApkDialog(final Context context, String message, final String url) {
+    public static void showNewApkDialog(final Context context, final String message, final String url) {
         final CustomDialog.Builder builder = new CustomDialog.Builder(context);
         View inflate = View.inflate(context, R.layout.apk_update_view, null);
         TextView updateMsg = (TextView) inflate.findViewById(R.id.apk_update_message);
@@ -214,8 +213,9 @@ public class ApkUtils {
                 .setPositiveButton(context.getString(R.string.start_updating), new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        downloadAPK(url, progressBar);
+                        downloadAPK(context, url, message);
                         CommonNotices.showMessage(context, context.getString(R.string.start_updating));
+                        dialog.dismiss();
                     }
                 }).setNegativeButton(context.getString(R.string.cancel_updating), new DialogInterface.OnClickListener() {
                     @Override
@@ -236,23 +236,8 @@ public class ApkUtils {
         dialog.show();
     }
 
-    private static void downloadAPK(String url, final TextView progressBar) {
-        DownloadUtils.DownloadCallback downloadCallback = new DownloadUtils.DownloadCallback() {
-            @Override
-            public void stateChanged(int state, long finished, long total, long precentage) {
-                progressBar.setText(precentage + "%");
-                if (precentage == 100 && dialog.isShowing()) {
-                    dialog.dismiss();
-                }
-            }
-        };
-        RequestDownloadAPK req = new RequestDownloadAPK(url, downloadCallback);
-        DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), req, new  BaseCallback(){
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-
-            }
-        });
+    private static void downloadAPK(Context context, String url, String message) {
+        startInstallApkActivity(context, url, message);
     }
 
     private static void downloadUpdate(String url) {
@@ -268,5 +253,21 @@ public class ApkUtils {
             }
         });
         downloadManager.startDownload(download);
+    }
+
+
+    public static void startInstallApkActivity(Context context,String url,String message) {
+        Intent intent = new Intent();
+        String pakName = "com.onyx.android.update";
+        if(!Utils.isAppInstalled(context,pakName)){
+            CommonNotices.showMessage(context,context.getString(R.string.update_application_not_install));
+            return;
+        }
+        String className = "com.onyx.android.update.MainActivity";
+        intent.setClassName(pakName, className);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.DOWNLOAD_URL,url);
+        intent.putExtra(Constants.UPDATE_MESSAGE,message);
+        context.startActivity(intent);
     }
 }

@@ -17,6 +17,7 @@ import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -42,6 +43,7 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     private String top;
     private String left;
     private BookReportPresenter bookReportPresenter;
+    private int type;
 
     @Override
     public void onAttach(Activity activity) {
@@ -67,6 +69,7 @@ public class NotationDialog extends DialogFragment implements BookReportView {
             bookId = args.getString(Constants.MARK_BOOK_ID);
             top = args.getString(Constants.MARK_TOP);
             left = args.getString(Constants.MARK_LEFT);
+            type = args.getInt(Constants.JUMP_SOURCE);
         }
     }
 
@@ -95,7 +98,11 @@ public class NotationDialog extends DialogFragment implements BookReportView {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.no_content));
             return;
         }
-        bookReportPresenter.addComment(bookId, top, left, content);
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG) {
+            bookReportPresenter.addComment(bookId, top, left, content);
+        } else if (type == Constants.INFORMAL_ESSAY_SOURCE_TAG) {
+            bookReportPresenter.addInformalComment(bookId, top, left, content);
+        }
     }
 
     @Override
@@ -120,10 +127,27 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     }
 
     @Override
+    public void addInformalCommentResult(CreateInformalEssayBean result) {
+        if (result != null) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.notation_add_success));
+        } else {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.notation_add_fail));
+        }
+    }
+
+    @Override
     public void setLibraryId(String bookId, String libraryId) {
     }
 
     @Override
     public void saveBookReportData(CreateBookReportResult createBookReportResult) {
+    }
+
+    @Override
+    public void setInformalEssayData(List<CreateInformalEssayBean> dataList, List<Boolean> listCheck) {
+    }
+
+    @Override
+    public void createInformalEssay(boolean tag) {
     }
 }

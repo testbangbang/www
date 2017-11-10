@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/rectangle_stroke"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/export_success_dialog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:padding="@dimen/dialog_title_padding"
+        android:text="@string/export_success_prompt"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/level_one_font_size" />
+
+    <View style="@style/Horizontal_view" />
+
+    <TextView
+        android:id="@+id/export_success_dialog_hint"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_margin="20dp"
+        android:padding="@dimen/dialog_title_padding"
+        android:text="@string/export_success_dialog_hint"
+        android:textColor="@android:color/black"
+        android:textSize="@dimen/level_one_font_size" />
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:padding="@dimen/dialog_title_padding">
+
+        <Button
+            android:id="@+id/export_success_dialog_confirm"
+            style="@style/dialog_button_style"
+            android:text="@string/confirm"
+            android:textSize="@dimen/level_one_font_size" />
+    </LinearLayout>
+
+</LinearLayout>

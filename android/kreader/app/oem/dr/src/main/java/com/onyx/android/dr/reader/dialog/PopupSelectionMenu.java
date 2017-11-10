@@ -58,6 +58,7 @@ public class PopupSelectionMenu extends LinearLayout {
     public static final String BAIDU_BAIKE = "https://wapbaike.baidu.com/item/";
     public static final String WIKTIONARY_URL = "https://en.wiktionary.org/wiki/";
     private int number;
+    private String dictionaryLookup = "";
 
     public enum SelectionType {
         SingleWordType,
@@ -112,6 +113,7 @@ public class PopupSelectionMenu extends LinearLayout {
     private int dictViewWidth;
     private int dictionaryLoadCount;
     private DialogAnnotation.AnnotationAction action;
+    public DictionaryQueryResult dictionaryQueryResult;
 
     /**
      * eliminate compiler warning
@@ -127,7 +129,6 @@ public class PopupSelectionMenu extends LinearLayout {
         super(readerPresenter.getReaderView().getViewContext());
         mActivity = (Activity) readerPresenter.getReaderView().getViewContext();
         this.action = action;
-
         setFocusable(false);
         final LayoutInflater inflater = (LayoutInflater)
                 readerPresenter.getReaderView().getViewContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -338,6 +339,10 @@ public class PopupSelectionMenu extends LinearLayout {
         newWordBean.setPageNumber(String.valueOf(readerPresenter.getReaderViewInfo().getFirstVisiblePage().getName()));
         newWordBean.setNewWordType(getGoodSentenceType(readerPresenter.getBookInfo().getLanguage()));
         newWordBean.setTag(true);
+        newWordBean.setDictionaryLookup(dictionaryLookup);
+        if (dictionaryQueryResult != null ) {
+            newWordBean.setParaphrase(dictionaryQueryResult.explanation);
+        }
         newWordBean.setNewWord(readerPresenter.getBookOperate().getSelectionText());
         OperatingDataManager.getInstance().insertNewWord(newWordBean);
     }
@@ -405,6 +410,8 @@ public class PopupSelectionMenu extends LinearLayout {
                 dictViewHolder.dictName.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        dictionaryLookup = dictionaryQueries.get(position).getDictionary().name;
+                        dictionaryQueryResult = dictionaryQueries.get(position);
                         showExplanation(dictionaryQueries.get(position));
                         hideDictListView();
                     }
@@ -568,6 +575,8 @@ public class PopupSelectionMenu extends LinearLayout {
                 }
                 if (!CollectionUtils.isNullOrEmpty(dictionaryQueries)) {
                     showExplanation(dictionaryQueries.get(0));
+                    dictionaryLookup = dictionaryQueries.get(0).getDictionary().name;
+                    dictionaryQueryResult = dictionaryQueries.get(0);
                 }
             }
         });

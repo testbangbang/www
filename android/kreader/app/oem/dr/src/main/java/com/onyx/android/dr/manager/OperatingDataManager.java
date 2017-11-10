@@ -7,13 +7,19 @@ import com.onyx.android.dr.bean.NewWordBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.BookReportData;
 import com.onyx.android.dr.data.GoodSentenceData;
+import com.onyx.android.dr.data.InformalEssayData;
 import com.onyx.android.dr.data.NewWordData;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
+import com.onyx.android.dr.data.database.InformalEssayEntity;
 import com.onyx.android.dr.data.database.NewWordNoteBookEntity;
+import com.onyx.android.dr.data.database.ReadBookEntity;
 import com.onyx.android.dr.data.database.ReaderResponseEntity;
+import com.onyx.android.dr.reader.data.ReadSummaryData;
+import com.onyx.android.dr.reader.requests.RequestReadBookInsert;
 import com.onyx.android.dr.request.local.GoodSentenceInsert;
 import com.onyx.android.dr.request.local.GoodSentenceQueryByPageNumber;
 import com.onyx.android.dr.request.local.GoodSentenceQueryByReadingMatter;
+import com.onyx.android.dr.request.local.InformalEssayInsert;
 import com.onyx.android.dr.request.local.NewWordInsert;
 import com.onyx.android.dr.request.local.NewWordQueryByPageNumber;
 import com.onyx.android.dr.request.local.NewWordQueryByReadingMatter;
@@ -21,6 +27,7 @@ import com.onyx.android.dr.request.local.ReaderResponseInsert;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 
 import java.util.ArrayList;
@@ -93,6 +100,20 @@ public class OperatingDataManager {
         });
     }
 
+    public void insertReadBook(int speed, String md5short) {
+        ReadSummaryData readSummaryData = new ReadSummaryData();
+        ReadBookEntity readBookEntity = new ReadBookEntity();
+        readBookEntity.currentTime = TimeUtils.getCurrentTimeMillis();
+        readBookEntity.averageSpeed = speed;
+        readBookEntity.md5short = md5short;
+        RequestReadBookInsert req = new RequestReadBookInsert(readBookEntity);
+        readSummaryData.saveReadBook(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+            }
+        });
+    }
+
     public void insertReaderResponse(GetBookReportListBean bean) {
         ReaderResponseEntity entity = new ReaderResponseEntity();
         BookReportData bookReportData = new BookReportData();
@@ -108,6 +129,21 @@ public class OperatingDataManager {
         entity.title = bean.title;
         final ReaderResponseInsert req = new ReaderResponseInsert(entity);
         bookReportData.insertReaderResponse(DRApplication.getInstance(), req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+            }
+        });
+    }
+
+    public void insertInformalEssay(CreateInformalEssayBean bean) {
+        InformalEssayData informalEssayData = new InformalEssayData();
+        InformalEssayEntity entity = new InformalEssayEntity();
+        entity.currentTime = bean.currentTime;
+        entity.title = bean.title;
+        entity.wordNumber = bean.wordNumber;
+        entity.content = bean.content;
+        final InformalEssayInsert req = new InformalEssayInsert(entity);
+        informalEssayData.insertInformalEssay(DRApplication.getInstance(), req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
             }

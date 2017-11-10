@@ -141,7 +141,9 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onInfromalEssayEvent(InfromalEssayEvent event) {
-        ActivityManager.startInformalEssayActivity(this, Constants.MY_NOTE_TO_INFORMAL_ESSAY);
+        Intent intent = new Intent();
+        intent.putExtra(Constants.JUMP_SOURCE, Constants.INFORMAL_ESSAY_SOURCE_TAG);
+        ActivityManager.startReadingReportListActivity(this, intent);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -167,6 +169,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderResponseEvent(ReaderResponseEvent event) {
         Intent intent = new Intent();
+        intent.putExtra(Constants.JUMP_SOURCE, Constants.READER_RESPONSE_SOURCE_TAG);
         ActivityManager.startReadingReportListActivity(this, intent);
     }
 

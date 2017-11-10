@@ -14,6 +14,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.SummaryListAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.SummaryView;
@@ -61,6 +62,7 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
     private SummaryListAdapter listAdapter;
     private SummaryListPresenter presenter;
     private PageIndicator pageIndicator;
+    private ExportSuccessHintDialog hintDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -112,6 +114,12 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
 
     @Override
     protected void initData() {
+        hintDialog = new ExportSuccessHintDialog(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         presenter = new SummaryListPresenter(this);
         presenter.getSummaryList();
     }
@@ -214,7 +222,7 @@ public class SummaryListActivity extends BaseActivity implements SummaryView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
+        hintDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

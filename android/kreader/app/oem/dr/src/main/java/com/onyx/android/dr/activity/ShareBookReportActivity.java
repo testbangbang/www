@@ -62,6 +62,8 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     TextView titleBarRightMenu;
     @Bind(R.id.share_book_report_recycler)
     PageRecyclerView shareBookReportRecycler;
+    @Bind(R.id.activity_dict_result_no_data_hint)
+    TextView noDataHint;
     private ShareBookReportAdapter adapter;
     private ShareBookReportPresenter shareBookReportPresenter;
     private String impressionId;
@@ -81,15 +83,12 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     protected void initView() {
         titleBarTitle.setText(getResources().getString(R.string.share_book_impression_to_group));
         image.setImageResource(R.drawable.ic_group);
-        titleBarRightIconOne.setVisibility(View.VISIBLE);
-        titleBarRightIconOne.setImageResource(R.drawable.ic_reader_share);
         shareBookReportRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);
         shareBookReportRecycler.addItemDecoration(dividerItemDecoration);
         adapter = new ShareBookReportAdapter();
         shareBookReportRecycler.setAdapter(adapter);
-
     }
 
     @Override
@@ -109,7 +108,18 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
 
     @Override
     public void setGroupData(List<GroupBean> groups) {
-        adapter.setData(groups, impressionId, childrenId);
+        if (groups == null || groups.size() <= 0) {
+            titleBarRightIconOne.setVisibility(View.GONE);
+            shareBookReportRecycler.setVisibility(View.GONE);
+            noDataHint.setVisibility(View.VISIBLE);
+            noDataHint.setText(getString(R.string.no_groups_hint));
+        } else {
+            titleBarRightIconOne.setVisibility(View.VISIBLE);
+            shareBookReportRecycler.setVisibility(View.VISIBLE);
+            noDataHint.setVisibility(View.GONE);
+            titleBarRightIconOne.setImageResource(R.drawable.ic_reader_share);
+            adapter.setData(groups, impressionId, childrenId);
+        }
     }
 
     @Override
@@ -136,7 +146,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     }
 
     private void shareToGroup() {
-        if(adapter == null) {
+        if (adapter == null) {
             return;
         }
         List<GroupBean> selectData = adapter.getSelectData();
@@ -147,9 +157,9 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
         for (GroupBean bean : selectData) {
             if (shareType == Constants.INFORMAL_ESSAY) {
                 shareBookReportPresenter.shareInformalEssay(bean.library, childrenId);
-            }else if (shareType == Constants.READING_RATE) {
+            } else if (shareType == Constants.READING_RATE) {
                 shareBookReportPresenter.shareReadingRate(bean.library, childrenId);
-            }else if (shareType == Constants.READER_RESPONSE) {
+            } else if (shareType == Constants.READER_RESPONSE) {
                 shareBookReportPresenter.shareImpression(bean.library, childrenId);
             }
         }

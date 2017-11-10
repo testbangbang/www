@@ -42,7 +42,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.LogoActivity"
+            android:name=".activity.MainActivity"
             android:theme="@style/OnyxAppCompat" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -51,11 +51,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".activity.MainActivity"
-            android:theme="@style/OnyxAppCompat"
-            android:windowSoftInputMode="stateAlwaysHidden" />
 
         <activity
             android:name=".activity.LoginActivity"
@@ -297,6 +292,12 @@
         <receiver android:name=".receiver.RecorderReceiver">
             <intent-filter>
                 <action android:name="com.onyx.android.dr.CLEAR_FILE" />
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name=".receiver.HomeClickRecorderReceiver">
+            <intent-filter>
+                <action android:name="com.android.systemui.HOME_BUTTON_CLICK" />
             </intent-filter>
         </receiver>
 

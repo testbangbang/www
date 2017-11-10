@@ -15,6 +15,7 @@ import com.onyx.android.dr.adapter.MemorandumAdapter;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.database.MemorandumEntity;
+import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
 import com.onyx.android.dr.interfaces.MemorandumView;
@@ -63,6 +64,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     private ArrayList<Boolean> listCheck;
     private List<MemorandumEntity> memorandumList;
     private PageIndicator pageIndicator;
+    private ExportSuccessHintDialog hintDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -91,6 +93,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
     protected void initData() {
         memorandumList = new ArrayList<>();
         listCheck = new ArrayList<>();
+        hintDialog = new ExportSuccessHintDialog(this);
         initPageIndicator(pageIndicatorLayout);
         initTitleData();
         initEvent();
@@ -267,7 +270,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
+        hintDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

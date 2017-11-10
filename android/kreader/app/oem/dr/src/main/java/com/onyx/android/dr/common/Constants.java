@@ -87,13 +87,14 @@ public class Constants {
     public static final String STARTUP_ACTIVITY_FULL_PATH = "com.onyx.android.note.activity.StartupActivity";
 
     public static final String MY_NOTES_FOLDER = "/my_notes_html";
-    public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/new_word";
-    public static final String MEMORANDUM_HTML = MY_NOTES_FOLDER + "/memorandum";
-    public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/informal_essay";
-    public static final String READING_RATE_HTML = MY_NOTES_FOLDER + "/reading_rate";
-    public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/good_sentence";
-    public static final String ANNOTATION_HTML = MY_NOTES_FOLDER + "/annotation";
-    public static final String SUMMARY_HTML = MY_NOTES_FOLDER + "/summary";
+    public static final String NEW_WORD_HTML = MY_NOTES_FOLDER + "/生词本";
+    public static final String MEMORANDUM_HTML = MY_NOTES_FOLDER + "/备忘";
+    public static final String READER_RESPONSE_HTML = MY_NOTES_FOLDER + "/读后感";
+    public static final String INFORMAL_ESSAY_HTML = MY_NOTES_FOLDER + "/随笔";
+    public static final String READING_RATE_HTML = MY_NOTES_FOLDER + "/阅读统计";
+    public static final String GOOD_SENTENCE_HTML = MY_NOTES_FOLDER + "/好句本";
+    public static final String ANNOTATION_HTML = MY_NOTES_FOLDER + "/批注";
+    public static final String SUMMARY_HTML = MY_NOTES_FOLDER + "/阅读纪要";
     public static final String UNIT = ".html";
 
     public static final String ACCOUNT = "account";
@@ -164,15 +165,22 @@ public class Constants {
     public static final int READING_RATE = 1;
     public static final int READER_RESPONSE = 2;
 
-    public static final int BOOK_SOURCE = 0;
-    public static final int MY_NOTE_SOURCE = 1;
-
     public static final int PENDING_TAG = 0;
     public static final int PASS_TAG = 1;
     public static final int REFUSE_TAG = 2;
 
     public static final int ANNOTATION_SOURCE_TAG = 0;
     public static final int OTHER_SOURCE_TAG = 1;
+
+    public static final int BOOK_SOURCE = 0;
+    public static final int INFORMAL_ESSAY_SOURCE_TAG = 1;
+    public static final int READER_RESPONSE_SOURCE_TAG = 2;
+
+    public static long divisor = 1000*60;
+    public static int wordNumber = 1200;
+
+    public static final String DOWNLOAD_URL = "downloadUrl";
+    public static final String UPDATE_MESSAGE = "message";
 
     public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
     public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";

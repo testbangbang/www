@@ -456,7 +456,7 @@
     <string name="wifi_band">Frequency</string>
     <string name="this_article_or_an_overview_of_this_page">This article or an overview of this page:</string>
     <string name="new_words_review">New words review:</string>
-    <string name="perfect_this_article_or_this_page_good_sentence">Perfect this article or this page good sentence:</string>
+    <string name="perfect_this_article_or_this_page_good_sentence">Please specify the reasons for the following sentences:</string>
     <string name="word_commonly_used">);word commonly used(</string>
     <string name="word_interpretation">);word interpretation:</string>
     <string name="group_home_page_activity_create">create group</string>
@@ -725,8 +725,14 @@
     <string name="input_application_note">input application note</string>
     <string name="send">send</string>
     <string name="apply_for_group_item_already_pass">already_pass</string>
-    <string name="apply_for_group_item_already_refuse">already refuse</string>
+    <string name="apply_for_group_item_already_refuse">already refuse</string>s
     <string name="fit_page">fit page</string>
     <string name="visitors_to_login">visitors to login</string>
     <string name="has_exported_to">has exported to: </string>
+    <string name="no_groups_hint">Before joining other groups, please join.</string>
+    <string name="has_update_read_summary">The book has been created and the content has been updated.</string>
+    <string name="has_add_read_summary">The book adds a reading summary to success</string>
+    <string name="export_success_dialog_hint">The file has been exported, please connect the personal computer to see the export file in my_notes_html in the reader folder.</string>
+    <string name="export_success_prompt">export success prompt</string>
+    <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
 </resources>

@@ -42,6 +42,7 @@ public class DRApplication extends MultiDexApplication {
     private boolean isLogin = false;
     private boolean haveIndexService;
     public String progress;
+    public int currentPage;
     public String path;
     public long time;
 
@@ -216,5 +217,13 @@ public class DRApplication extends MultiDexApplication {
 
     public void setTime(long time) {
         this.time = time;
+    }
+
+    public int getCurrentPage() {
+        return currentPage;
+    }
+
+    public void setCurrentPage(int currentPage) {
+        this.currentPage = currentPage;
     }
 }

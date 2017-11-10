@@ -1,9 +1,14 @@
 package com.onyx.android.sdk.data.model;
 
+import com.onyx.android.sdk.data.model.v2.CommentsBean;
+
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Created by zhouzhiming on 2017/9/20.
  */
-public class CreateInformalEssayBean {
+public class CreateInformalEssayBean implements Serializable {
     public int __v;
     public String updatedAt;
     public String createdAt;
@@ -13,6 +18,7 @@ public class CreateInformalEssayBean {
     public String wordNumber;
     public String content;
     public long currentTime;
+    public List<CommentsBean> comments;
     private boolean checked;
 
     public boolean isChecked() {

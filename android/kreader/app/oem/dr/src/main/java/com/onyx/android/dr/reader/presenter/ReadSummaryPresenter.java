@@ -48,8 +48,8 @@ public class ReadSummaryPresenter {
         readSummaryData.saveReadSummary(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e == null) {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.saved_successfully));
+                if (e != null) {
+                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.notation_add_fail));
                 }
             }
         });

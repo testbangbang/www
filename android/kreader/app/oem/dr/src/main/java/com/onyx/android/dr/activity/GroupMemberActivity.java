@@ -85,6 +85,7 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
     private void initRecyclerView() {
         groupMemberAdapter = new GroupMemberAdapter();
         recyclerView.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
+        recyclerView.setAdapter(groupMemberAdapter);
     }
 
     @Override
@@ -118,11 +119,10 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
         groupList.clear();
         listCheck.clear();
         groupList = bean.list;
-        allNumber.setText(getString(R.string.member_number) + bean.list.size() + getString(R.string.people_unit));
+        allNumber.setText(getString(R.string.member_number) + groupList.size() + getString(R.string.people_unit));
         listCheck = groupMemberManagePresenter.getListCheck(groupList);
         groupMemberAdapter.isShow = false;
         groupMemberAdapter.setMenuDataList(groupList, listCheck);
-        recyclerView.setAdapter(groupMemberAdapter);
     }
 
     public void initEvent() {

@@ -72,8 +72,12 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         } else {
             holder.dictionaryLookup.setText(bean.dictionaryLookup);
         }
+        if (StringUtils.isNullOrEmpty(bean.paraphrase)) {
+            holder.paraphrase.setText(R.string.nothing);
+        } else {
+            holder.paraphrase.setText(bean.paraphrase);
+        }
         holder.orderNumber.setText(String.valueOf(position + 1));
-        holder.paraphrase.setText(bean.paraphrase);
         holder.checkBox.setChecked(listCheck.get(position));
         holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
             @Override

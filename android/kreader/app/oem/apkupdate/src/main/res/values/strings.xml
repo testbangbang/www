@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">ApkUpdate</string>
+    <string name="updating_app">Updating app, please wait!!!</string>
+    <string name="reboot_message">Restart after %d seconds</string>
+    <string name="update_fail">Update fail</string>
+    <string name="download_progress">Download progress %d</string>
+    <string name="prepare_updating_app">Preparing for an upgrade, please wait!!!</string>
+    <string name="update_success">Application upgrade is successful...</string>
+    <string name="file_not_exist">File not exist:%s</string>
+    <string name="start_install">start install</string>
+    <string name="install_complete">install complete</string>
+    <string name="install_fail">install fail</string>
+</resources>

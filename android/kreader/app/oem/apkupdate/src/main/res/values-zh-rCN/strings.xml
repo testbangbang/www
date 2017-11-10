@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">应用更新</string>
+    <string name="updating_app">正在升级应用,请等待!!!</string>
+    <string name="reboot_message">%d 秒后重启</string>
+    <string name="update_fail">更新失败</string>
+    <string name="download_progress">下载进度 %d</string>
+    <string name="prepare_updating_app">正在准备升级,请等待!!!</string>
+    <string name="update_success">应用升级成功...</string>
+    <string name="file_not_exist">文件不存在:%s</string>
+</resources>

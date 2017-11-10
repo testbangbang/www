@@ -27,7 +27,6 @@ import com.onyx.android.dr.event.SignUpEvent;
 import com.onyx.android.dr.presenter.LoginPresenter;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.RegularUtil;
-import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.CustomPopupWindow;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
@@ -297,8 +296,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private void collectUserInfo() {
-        if (!NetworkUtil.isWiFiConnected(this)) {
-            connectNetwork();
+        if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
+            Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
             return;
         }
         loginPresenter.getRootGroups();
@@ -577,8 +578,10 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private void login() {
-        if (!NetworkUtil.isWiFiConnected(this)) {
-            connectNetwork();
+        if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
+            Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
+            NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
             return;
         }
         String account = editTextAccount.getText().toString();
@@ -597,18 +600,6 @@ public class LoginActivity extends BaseActivity implements LoginView {
         password = password.trim();
         loginPresenter.login(account, password);
         showCloudProgressDialogWithMessage(account, R.string.logging_in, null);
-    }
-
-    private void connectNetwork() {
-        if (!NetworkUtil.isWiFiConnected(DRApplication.getInstance())) {
-            if (0 == Utils.getConfiguredNetworks(DRApplication.getInstance())) {
-                ActivityManager.startWifiActivity(DRApplication.getInstance());
-            } else {
-                Device.currentDevice().enableWifiDetect(DRApplication.getInstance());
-                NetworkUtil.enableWiFi(DRApplication.getInstance(), true);
-            }
-            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getString(R.string.please_connect_to_the_network_first));
-        }
     }
 
     @Override

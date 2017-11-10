@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">应用更新</string>
+    <string name="updating_app">正在升級應用,請等待!!!</string>
+    <string name="reboot_message">%d 秒後重啓</string>
+    <string name="update_fail">更新失敗</string>
+    <string name="download_progress">下載進度 %d</string>
+    <string name="prepare_updating_app">正在准備升級,請等待!!!</string>
+    <string name="update_success">應用升級成功...</string>
+    <string name="file_not_exist">文件不存在:%s</string>
+</resources>

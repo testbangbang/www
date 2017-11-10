@@ -69,5 +69,5 @@ public class Constant {
     public static final String PHONE_TAG = "phone";
     public static final String PARENT_TAG = "parent";
     public static final String USERS_TAG = "users";
-    public static final String GROUPS_TAG = "groups";
+    public static final String GROUPS_TAG = "group";
 }

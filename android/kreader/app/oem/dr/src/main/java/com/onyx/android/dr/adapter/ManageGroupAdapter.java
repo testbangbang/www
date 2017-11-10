@@ -95,7 +95,7 @@ public class ManageGroupAdapter extends PageRecyclerView.PageAdapter<ManageGroup
         holder.news.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!StringUtils.isNullOrEmpty(bean.applyCount + tag) && bean.role.equals(groupOwner)){
+                if (bean.applyCount > 0 && bean.role.equals(groupOwner)){
                     ActivityManager.startApplyForGroupActivity(DRApplication.getInstance());
                 }
             }
@@ -113,7 +113,7 @@ public class ManageGroupAdapter extends PageRecyclerView.PageAdapter<ManageGroup
                 DeleteGroupMemberBean deleteGroupMemberBean = new DeleteGroupMemberBean();
                 String[] array = new String[]{childId};
                 deleteGroupMemberBean.setGroups(array);
-                presenter.exitGroup(parentId, deleteGroupMemberBean);
+                presenter.exitGroup(parentId, childId);
                 DRPreferenceManager.saveExitGroupPosition(context, position + tag);
             }
         });

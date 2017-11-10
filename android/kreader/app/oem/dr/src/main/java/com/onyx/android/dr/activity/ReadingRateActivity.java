@@ -16,6 +16,7 @@ import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.ReadingRateEntity;
+import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.dialog.ReadingRateDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
@@ -74,6 +75,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private String limit = "200";
     private String sortBy = "createdAt";
     private String order = "-1";
+    private ExportSuccessHintDialog hintDialog;
 
     @Override
     protected Integer getLayoutId() {
@@ -103,6 +105,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
         readingRateList = new ArrayList<>();
         listCheck = new ArrayList<>();
         timePickerDialog = new ReadingRateDialog(this);
+        hintDialog = new ExportSuccessHintDialog(this);
         initPageIndicator(pageIndicatorLayout);
         presenter = new ReadingRatePresenter(getApplicationContext(), this);
         MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
@@ -269,7 +272,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlSuccessEvent(ExportHtmlSuccessEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.has_exported_to) + event.getFilePath());
+        hintDialog.show();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

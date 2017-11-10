@@ -6,7 +6,6 @@ import com.onyx.android.dr.request.cloud.RequestAllGroup;
 import com.onyx.android.dr.request.cloud.RequestExitGroup;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 
 /**
  * Created by zhouzhiming on 2017/8/29.
@@ -30,7 +29,7 @@ public class ManageGroupPresenter {
         });
     }
 
-    public void exitGroup(String id, DeleteGroupMemberBean bean) {
+    public void exitGroup(String id, String bean) {
         final RequestExitGroup req = new RequestExitGroup(id, bean);
         manageGroupData.requestExitGroup(req, new BaseCallback() {
             @Override

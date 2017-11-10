@@ -42,6 +42,8 @@ import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.BookMarksPopupWindow;
 import com.onyx.android.dr.view.NotationDialog;
+import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.InformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
@@ -97,6 +99,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private Button dialogSure;
     private AlertDialog dialog;
     private GetBookReportListBean data;
+    private CreateInformalEssayBean informalEssayBean;
     private String bookName;
     private String bookPage;
     private String bookId;
@@ -111,7 +114,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private CreateBookReportResult createBookReportResult;
     private OnLongClickTouchListener listener;
     private String[] childrenId = new String[100];
-    private String titleName;
+    private int type;
 
     @Override
     protected Integer getLayoutId() {
@@ -125,8 +128,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     protected void initView() {
-        titleBarTitle.setText(getResources().getString(R.string.reader_response));
-        image.setImageResource(R.drawable.ic_reader_menu_idea);
         titleBarRightSelectTime.setVisibility(View.VISIBLE);
         titleBarRightSelectTime.setText(getResources().getString(R.string.Call_the_modified_file));
         titleBarRightIconOne.setVisibility(View.GONE);
@@ -160,29 +161,53 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Override
     protected void initData() {
         screenHeight = Utils.getScreenHeight(this);
+        createBookReportResult = new CreateBookReportResult();
         Intent intent = getIntent();
+        type = intent.getIntExtra(Constants.JUMP_SOURCE, -1);
         Serializable serializableExtra = intent.getSerializableExtra(Constants.BOOK_REPORT_DATA);
-        if (serializableExtra != null) {
-            data = (GetBookReportListBean) serializableExtra;
-            bookReportDetailContents.setText(data.content);
-            bookReportDetailContents.setSelection(data.content.length());
-            titleName = data.name;
-            List<CommentsBean> comments = data.comments;
-            if (comments != null && comments.size() > 0) {
-                bookReportWebContent.setVisibility(View.VISIBLE);
-                bookReportDetailContents.setVisibility(View.GONE);
-                String newContent = insertJsTag();
-                bookReportWebContent.loadDataWithBaseURL(null, newContent, "text/html", "utf-8", null);
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG) {
+            titleBarTitle.setText(getResources().getString(R.string.reader_response));
+            image.setImageResource(R.drawable.ic_reader_menu_idea);
+            if (serializableExtra != null) {
+                data = (GetBookReportListBean) serializableExtra;
+                bookReportDetailContents.setText(data.content);
+                bookReportDetailContents.setSelection(data.content.length());
+                List<CommentsBean> comments = data.comments;
+                if (comments != null && comments.size() > 0) {
+                    bookReportWebContent.setVisibility(View.VISIBLE);
+                    bookReportDetailContents.setVisibility(View.GONE);
+                    String newContent = insertJsTag();
+                    bookReportWebContent.loadDataWithBaseURL(null, newContent, "text/html", "utf-8", null);
+                }
+                bookReportDetailTitle.setText(data.title);
             }
-        }
 
-        bookName = intent.getStringExtra(Constants.BOOK_NAME);
-        bookPage = intent.getStringExtra(Constants.BOOK_PAGE);
-        bookId = intent.getStringExtra(Constants.BOOK_ID);
-        if (!StringUtils.isNullOrEmpty(bookName)) {
-            titleName = bookName;
+        } else if (type == Constants.INFORMAL_ESSAY_SOURCE_TAG) {
+            image.setImageResource(R.drawable.informal_essay);
+            titleBarTitle.setText(getString(R.string.informal_essay));
+            if (serializableExtra != null) {
+                informalEssayBean = (CreateInformalEssayBean) serializableExtra;
+                bookReportDetailContents.setText(informalEssayBean.content);
+                bookReportDetailContents.setSelection(informalEssayBean.content.length());
+                List<CommentsBean> comments = informalEssayBean.comments;
+                if (comments != null && comments.size() > 0) {
+                    bookReportWebContent.setVisibility(View.VISIBLE);
+                    bookReportDetailContents.setVisibility(View.GONE);
+                    String newContent = insertInformalJsTag();
+                    bookReportWebContent.loadDataWithBaseURL(null, newContent, "text/html", "utf-8", null);
+                }
+                bookReportDetailTitle.setText(informalEssayBean.title);
+            } else {
+                bookReportDetailTitle.setText("");
+            }
+        } else if (type == Constants.BOOK_SOURCE) {
+            titleBarTitle.setText(getResources().getString(R.string.reader_response));
+            image.setImageResource(R.drawable.ic_reader_menu_idea);
+            bookName = intent.getStringExtra(Constants.BOOK_NAME);
+            bookPage = intent.getStringExtra(Constants.BOOK_PAGE);
+            bookId = intent.getStringExtra(Constants.BOOK_ID);
+            bookReportDetailTitle.setText(bookName + getString(R.string.reader_response) + TimeUtils.getDataStringPart());
         }
-        bookReportDetailTitle.setText(titleName + getString(R.string.reader_response) + TimeUtils.getDataStringPart());
         Utils.movingCursor(bookReportDetailTitle);
         initListener();
     }
@@ -262,7 +287,11 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         setOnLongClickTouchListener(new OnLongClickTouchListener() {
             @Override
             public void clicked() {
-                showNotationDialog();
+                if (type == Constants.READER_RESPONSE_SOURCE_TAG) {
+                    showNotationDialog();
+                } else if (type == Constants.INFORMAL_ESSAY_SOURCE_TAG) {
+                    showInformalNotationDialog();
+                }
                 listener = null;
             }
         });
@@ -273,18 +302,30 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
             return;
         }
+        if (notationDialog == null) {
+            notationDialog = new NotationDialog();
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString(Constants.MARK_BOOK_ID, data._id);
+        bundle.putString(Constants.MARK_TOP, String.valueOf(currentY));
+        bundle.putInt(Constants.JUMP_SOURCE, Constants.READER_RESPONSE_SOURCE_TAG);
+        bundle.putString(Constants.MARK_LEFT, String.valueOf(bookReportDetailContents.getSelectionStart()));
+        notationDialog.setArguments(bundle);
+        notationDialog.show(this.getFragmentManager(), "tag");
+    }
 
-        if (data.comments == null && data.comments.size() <= 0) {
+    private void showInformalNotationDialog() {
+        if (informalEssayBean == null) {
             CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
             return;
         }
         if (notationDialog == null) {
             notationDialog = new NotationDialog();
         }
-
         Bundle bundle = new Bundle();
-        bundle.putString(Constants.MARK_BOOK_ID, data._id);
+        bundle.putString(Constants.MARK_BOOK_ID, informalEssayBean._id);
         bundle.putString(Constants.MARK_TOP, String.valueOf(currentY));
+        bundle.putInt(Constants.JUMP_SOURCE, Constants.INFORMAL_ESSAY_SOURCE_TAG);
         bundle.putString(Constants.MARK_LEFT, String.valueOf(bookReportDetailContents.getSelectionStart()));
         notationDialog.setArguments(bundle);
         notationDialog.show(this.getFragmentManager(), "tag");
@@ -331,39 +372,72 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     private void showMarks() {
         Utils.hideSoftWindow(this);
-        if (data == null) {
-            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
-            return;
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG || type == Constants.BOOK_SOURCE) {
+            if (data == null) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+                return;
+            }
+            if (data.comments == null && data.comments.size() <= 0) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+                return;
+            }
+            bookMarksPopupWindow.show(titleBarRightEditText, data.comments);
+        } else if (type == Constants.INFORMAL_ESSAY_SOURCE_TAG) {
+            if (informalEssayBean == null) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+                return;
+            }
+            if (informalEssayBean.comments == null && informalEssayBean.comments.size() <= 0) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+                return;
+            }
+            bookMarksPopupWindow.show(titleBarRightEditText, informalEssayBean.comments);
         }
-
-        if (data.comments == null && data.comments.size() <= 0) {
-            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
-            return;
-        }
-
-        bookMarksPopupWindow.show(titleBarRightEditText, data.comments);
     }
 
     private void save() {
-        if (data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
-            return;
-        }
-        if (data != null) {
-            bookReportPresenter.deleteImpression(data._id);
-            return;
-        }
-        String text = bookReportDetailContents.getText().toString();
-        if (StringUtils.isNullOrEmpty(text)) {
-            CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
-            return;
-        }
-        String title = bookReportDetailTitle.getText().toString();
-        if (StringUtils.isNullOrEmpty(title)) {
-            CommonNotices.showMessage(this, getResources().getString(R.string.input_title));
-            return;
-        }
-        if (!StringUtils.isNullOrEmpty(bookName) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
-            bookReportPresenter.createImpression(bookId, bookName, title, text, bookPage);
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG || type == Constants.BOOK_SOURCE) {
+            if (data != null && Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+                return;
+            }
+            if (data != null) {
+                bookReportPresenter.deleteImpression(data._id);
+                return;
+            }
+            String text = bookReportDetailContents.getText().toString();
+            if (StringUtils.isNullOrEmpty(text)) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+                return;
+            }
+            String title = bookReportDetailTitle.getText().toString();
+            if (StringUtils.isNullOrEmpty(title)) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.input_title));
+                return;
+            }
+            if (!StringUtils.isNullOrEmpty(bookName) && !StringUtils.isNullOrEmpty(bookId) && !StringUtils.isNullOrEmpty(bookPage)) {
+                bookReportPresenter.createImpression(bookId, bookName, title, text, bookPage);
+            }
+        } else if (type == Constants.INFORMAL_ESSAY_SOURCE_TAG) {
+            String text = bookReportDetailContents.getText().toString();
+            if (StringUtils.isNullOrEmpty(text)) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.no_content));
+                return;
+            }
+            String title = bookReportDetailTitle.getText().toString();
+            if (StringUtils.isNullOrEmpty(title)) {
+                CommonNotices.showMessage(this, getResources().getString(R.string.input_title));
+                return;
+            }
+            if (informalEssayBean != null) {
+                bookReportPresenter.deleteInformalEssay(informalEssayBean._id);
+                return;
+            }
+            InformalEssayBean bean = new InformalEssayBean();
+            bean.setTitle(title);
+            bean.setContent(text);
+            bean.setWordNumber(Utils.getStringLength(text));
+            bean.setCurrentTime(TimeUtils.getCurrentTimeMillis());
+            bookReportPresenter.createInformalEssay(bean);
         }
     }
 
@@ -372,7 +446,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
             CommonNotices.showMessage(DRApplication.getInstance(), getResources().getString(R.string.no_comment_no_export));
             return;
         }
-
         bookReportPresenter.getImpression(data._id);
     }
 
@@ -436,9 +509,20 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     @Override
     public void setDeleteResult() {
-        String content = bookReportDetailContents.getText().toString();
-        String title = bookReportDetailTitle.getText().toString();
-        bookReportPresenter.createImpression(data.book, data.name, title, content, data.pageNumber);
+        if (type == Constants.READER_RESPONSE_SOURCE_TAG || type == Constants.BOOK_SOURCE) {
+            String content = bookReportDetailContents.getText().toString();
+            String title = bookReportDetailTitle.getText().toString();
+            bookReportPresenter.createImpression(data.book, data.name, title, content, data.pageNumber);
+        } else if (type == Constants.INFORMAL_ESSAY_SOURCE_TAG) {
+            String content = bookReportDetailContents.getText().toString();
+            String title = bookReportDetailTitle.getText().toString();
+            InformalEssayBean bean = new InformalEssayBean();
+            bean.setTitle(title);
+            bean.setContent(content);
+            bean.setWordNumber(Utils.getStringLength(content));
+            bean.setCurrentTime(TimeUtils.getCurrentTimeMillis());
+            bookReportPresenter.createInformalEssay(bean);
+        }
     }
 
     @Override
@@ -453,6 +537,10 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     public void addCommentResult(CreateBookReportResult result) {
 
+    }
+
+    @Override
+    public void addInformalCommentResult(CreateInformalEssayBean result) {
     }
 
     @Override
@@ -472,12 +560,48 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         }
     }
 
+    @Override
+    public void createInformalEssay(boolean tag) {
+        if (tag) {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                    .getResources().getString(R.string.saved_successfully));
+            setCreateBookReportData(createBookReportResult);
+            finish();
+        } else {
+            CommonNotices.showMessage(this, getString(R.string.save_failed));
+        }
+    }
+
+    @Override
+    public void setInformalEssayData(List<CreateInformalEssayBean> dataList, List<Boolean> listCheck) {
+    }
+
     private String insertJsTag() {
         StringBuilder sb = new StringBuilder();
         if (data != null && data.comments != null && data.comments.size() > 0) {
             List<CommentsBean> comments = data.comments;
             Collections.sort(comments, new BookReportComparator());
             String content = data.content;
+            int currentPosition = 0;
+            for (CommentsBean bean : comments) {
+                int left = Integer.parseInt(bean.left) - currentPosition;
+                sb.append(content.substring(0, left));
+                String js = "<img id=\"" + bean._id + "\" src=\"file:///android_asset/ic_postil.png\" onclick=\"addComment('" + bean.content + "')\"/>";
+                sb.append(js);
+                content = content.substring(left);
+                currentPosition = left;
+            }
+            sb.append(content);
+        }
+        return sb.toString();
+    }
+
+    private String insertInformalJsTag() {
+        StringBuilder sb = new StringBuilder();
+        if (informalEssayBean != null && informalEssayBean.comments != null && informalEssayBean.comments.size() > 0) {
+            List<CommentsBean> comments = informalEssayBean.comments;
+            Collections.sort(comments, new BookReportComparator());
+            String content = informalEssayBean.content;
             int currentPosition = 0;
             for (CommentsBean bean : comments) {
                 int left = Integer.parseInt(bean.left) - currentPosition;
