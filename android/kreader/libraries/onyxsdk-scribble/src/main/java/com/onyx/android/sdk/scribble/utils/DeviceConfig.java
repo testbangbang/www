@@ -234,10 +234,17 @@ public class DeviceConfig {
         return objectFromRawResource(context, "onyx");
     }
 
+    private String convertSymbolMinusToUnderscore(final String name) {
+        if (StringUtils.isNotBlank(name)) {
+            return name.replaceAll("-", "_");
+        }
+        return name;
+    }
+
     private GObject objectFromRawResource(Context context, final String name) {
         GObject object = null;
         try {
-            int res = context.getResources().getIdentifier(name.toLowerCase(), "raw", context.getPackageName());
+            int res = context.getResources().getIdentifier(convertSymbolMinusToUnderscore(name).toLowerCase(), "raw", context.getPackageName());
             object = RawResourceUtil.objectFromRawResource(context, res);
         } catch (Exception e) {
             e.printStackTrace();
