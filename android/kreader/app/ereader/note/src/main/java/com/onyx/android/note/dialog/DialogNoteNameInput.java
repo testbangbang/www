@@ -2,6 +2,7 @@ package com.onyx.android.note.dialog;
 
 import android.app.FragmentManager;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -112,6 +113,9 @@ public class DialogNoteNameInput extends OnyxAlertDialog {
                 });
         if (NoteAppConfig.sharedInstance(getActivity()).useMXUIStyle()) {
             params.setCustomLayoutResID(R.layout.mx_custom_alert_dialog);
+        }
+        if (Build.VERSION.SDK_INT>=Build.VERSION_CODES.M) {
+            params.setDialogTheme(R.style.DialogTheme);
         }
         setParams(params);
         super.onCreate(savedInstanceState);
