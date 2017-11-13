@@ -6,6 +6,7 @@ import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.ExerciseBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
+import com.onyx.android.sun.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
@@ -22,6 +23,7 @@ import com.onyx.android.sun.data.FillHomeworkData;
 import com.onyx.android.sun.data.HomeworkData;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.interfaces.HomeworkView;
+import com.onyx.android.sun.requests.cloud.GetStudyReportDetailRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
 import com.onyx.android.sun.requests.cloud.SubmitPracticeRequest;
@@ -238,6 +240,23 @@ public class HomeworkPresenter {
                     CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.submit_successful));
                 } else {
                     CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.submit_failed));
+                }
+            }
+        });
+    }
+
+    public void getStudyReportDetail(int id) {
+        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(id);
+        homeworkData.getStudyReportDetail(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetStudyReportDetailResultBean resultBean = rq.getStudyReportDetailResultBean();
+                if(resultBean == null) {
+                    return;
+                }
+
+                if (resultBean.data != null) {
+                    homeworkView.setStudyReportDetail(resultBean.data);
                 }
             }
         });

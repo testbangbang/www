@@ -58,8 +58,20 @@ public class CloudApiContext {
         public static final String ID = "id";
     }
 
-    public static class UserLogin {
+    public static class UserInfo {
         public static final String ACCOUNT = "account";
         public static final String PASSWORD = "password";
+    }
+
+    public static class HttpReusltCode {
+        public static final int RESULT_CODE_SUCCESS = 0;
+        public static final String RESULT_MESSAGE_SUCCESS = "ok";
+        public static final int RESULT_CODE_FAILED = 1;
+    }
+
+    public static class ChangePassword {
+        public static final String ACCOUNT = "account";
+        public static final String OLD_PASSWORD = "oldPassword";
+        public static final String NEW_PASSWORD = "newPassword";
     }
 }

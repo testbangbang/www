@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
     <style name="BookDialog" parent="android:style/Theme.Dialog">
@@ -46,6 +47,19 @@
         <item name="alertDialogTheme">@style/OnyxAppCompat.AlertDialog</item>
         <item name="buttonStyle">@style/OnyxAppCompat.ButtonStyle</item>
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="user_center_text_style">
+        <item name="android:textSize">@dimen/level_three_heading_font</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="user_center_colon_style" parent="user_center_text_style">
+        <item name="android:layout_marginLeft">@dimen/user_center_text_colon_margin_left_and_right</item>
+        <item name="android:layout_marginRight">@dimen/user_center_text_colon_margin_left_and_right</item>
     </style>
 
 </resources>

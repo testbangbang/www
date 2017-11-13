@@ -39,6 +39,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         userLoginRequestBean.isKeepPassword = PreferenceManager.getBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, false);
         restoreUserInfo();
         loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
+        loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tips),false);
         MobclickAgent.setDebugMode(true);
         MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
@@ -102,23 +103,26 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
     }
 
-    private void saveUserInfo() {
+    private void saveUserInfo(UserInfoBean userInfoBean) {
         PreferenceManager.setBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
         if (userLoginRequestBean.isKeepPassword){
-            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, userLoginRequestBean.account);
             PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
         } else {
-            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, null);
             PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, null);
         }
+
+        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, userInfoBean.account);
+        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME, userInfoBean.name);
+        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PHONE_NUMBER, userInfoBean.phoneNumber);
+
     }
 
     private boolean checkLoginInfo() {
         if (TextUtils.isEmpty(userLoginRequestBean.account)){
-            CommonNotices.show(getString(R.string.login_act_tip_account_error));
+            CommonNotices.show(getString(R.string.account_format_error_tips));
             return false;
         } else if(TextUtils.isEmpty(userLoginRequestBean.password)){
-            CommonNotices.show(getString(R.string.login_act_tip_password_error));
+            CommonNotices.show(getString(R.string.password_format_error_tips));
             return false;
         }
 
@@ -133,7 +137,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     public void onLoginSucced(UserInfoBean userInfoBean) {
         dissmisLoadDialog();
         skipToMainActivity();
-        saveUserInfo();
+        saveUserInfo(userInfoBean);
         finish();
     }
 
@@ -153,9 +157,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         dissmisLoadDialog();
         if (null != throwable){
             if (throwable instanceof ConnectException){
-                CommonNotices.show(getString(R.string.login_activity_network_connection_exception));
+                CommonNotices.show(getString(R.string.common_tips_network_connection_exception));
             } else {
-                CommonNotices.show(getString(R.string.login_activity_request_failed));
+                CommonNotices.show(getString(R.string.common_tips_request_failed));
             }
         }
     }

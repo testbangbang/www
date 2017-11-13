@@ -37,4 +37,6 @@ public class Constants {
     public static final String SOUND_DIR = "sounds";
     public static final String REQUEST_HEAD = "application/json";
     public static final String OK = "ok";
+    public static final String SP_KEY_USER_NAME = "userName";
+    public static final String SP_KEY_USER_PHONE_NUMBER = "userPhoneNumber";
 }

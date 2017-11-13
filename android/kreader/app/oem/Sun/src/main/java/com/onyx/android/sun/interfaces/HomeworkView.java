@@ -4,6 +4,7 @@ import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
+import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface HomeworkView {
     void setTaskDetail(QuestionDetail data);
 
     void setAnswerRecord(List<TaskAndAnswerEntity> taskList);
+
+    void setStudyReportDetail(StudyReportDetailBean data);
 }

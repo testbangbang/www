@@ -8,9 +8,19 @@
 
         <import type="com.onyx.android.sun.bean.User" />
 
+        <import type="android.view.View" />
+
         <variable
             name="haveNew"
             type="boolean" />
+
+        <variable
+            name="isShowTabLayoutAndNewMessageView"
+            type="boolean" />
+
+        <variable
+            name="title"
+            type="String" />
 
         <variable
             name="presenter"
@@ -37,12 +47,35 @@
             android:padding="@dimen/main_activity_title_padding"
             android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/ll_main_activity_title_container"
+                android:layout_centerVertical="true"
+                android:onClick="@{listener.onClick}"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{user.userName}" />
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/iv_main_activity_title_icon"
+                    android:src="@drawable/icon_user_center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:id="@+id/tv_main_activity_title_name"
+                    android:paddingTop="@dimen/main_activity_title_name_padding"
+                    android:paddingBottom="@dimen/main_activity_title_name_padding"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{title}" />
+
+            </LinearLayout>
 
             <ImageView
+                android:visibility="@{isShowTabLayoutAndNewMessageView ? View.VISIBLE : View.GONE}"
                 android:id="@+id/news_image"
                 android:layout_width="@dimen/message_image_width"
                 android:layout_height="@dimen/message_image_width"
@@ -51,6 +84,7 @@
                 android:src="@{haveNew?@drawable/ic_prompt:@drawable/ic_prompt}" />
 
             <android.support.design.widget.TabLayout
+                android:visibility="@{isShowTabLayoutAndNewMessageView ? View.VISIBLE : View.GONE}"
                 android:id="@+id/main_activity_tab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

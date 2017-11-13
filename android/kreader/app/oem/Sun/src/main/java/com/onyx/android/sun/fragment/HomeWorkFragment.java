@@ -13,6 +13,7 @@ import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
+import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.sun.databinding.HomeworkBinding;
 import com.onyx.android.sun.interfaces.HomeworkView;
 import com.onyx.android.sun.presenter.HomeworkPresenter;
@@ -210,6 +211,11 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public void setAnswerRecord(List<TaskAndAnswerEntity> taskList) {
+
+    }
+
+    @Override
+    public void setStudyReportDetail(StudyReportDetailBean data) {
 
     }
 }

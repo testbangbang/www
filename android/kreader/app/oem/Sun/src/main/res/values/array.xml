@@ -71,4 +71,12 @@
         <!-- Status message of Wi-Fi when it is a failure. -->
         <item>Unsuccessful</item>
     </string-array>
+    <string-array name="study_report_table_heads">
+        <item>@string/study_report_fragment_head_Knowledge_point</item>
+        <item>@string/study_report_fragment_head_practice_number</item>
+        <item>@string/study_report_fragment_head_total_points</item>
+        <item>@string/study_report_fragment_head_personal_score</item>
+        <item>@string/study_report_fragment_head_class_average</item>
+        <item>@string/study_report_fragment_head_progress</item>
+    </string-array>
 </resources>

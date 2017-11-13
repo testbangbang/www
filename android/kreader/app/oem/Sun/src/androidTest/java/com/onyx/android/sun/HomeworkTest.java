@@ -6,6 +6,7 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.sun.cloud.bean.GetCorrectedTaskRequestBean;
 import com.onyx.android.sun.cloud.bean.GetCorrectedTaskResultBean;
 import com.onyx.android.sun.cloud.bean.GetSubjectBean;
+import com.onyx.android.sun.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
@@ -24,6 +25,7 @@ import com.onyx.android.sun.requests.cloud.GetCorrectedTaskRequest;
 import com.onyx.android.sun.requests.cloud.GetExerciseTypeRequest;
 import com.onyx.android.sun.requests.cloud.GetPracticeParseRequest;
 import com.onyx.android.sun.requests.cloud.GetSubjectRequest;
+import com.onyx.android.sun.requests.cloud.GetStudyReportDetailRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
 import com.onyx.android.sun.requests.cloud.PracticeIntrospectionRequest;
@@ -210,6 +212,21 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 PracticeParseResultBean resultBean = rq.getResultBean();
+                assertNotNull(resultBean);
+                assertNotNull(resultBean.data);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testGetStudyReportDetail() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(1);
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(),rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetStudyReportDetailResultBean resultBean = rq.getStudyReportDetailResultBean();
                 assertNotNull(resultBean);
                 assertNotNull(resultBean.data);
                 countDownLatch.countDown();
