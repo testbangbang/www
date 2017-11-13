@@ -18,5 +18,5 @@ public class AlBookProperties {
 	// данные по обложке заполняются только в scanMetaData
 	//public int						coverImageDataSize = 0;
 	public byte[]					coverImageData = null;
-
+	public String					fullPath = null;
 }

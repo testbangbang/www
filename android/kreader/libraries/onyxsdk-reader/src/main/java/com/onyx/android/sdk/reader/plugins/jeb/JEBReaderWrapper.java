@@ -189,15 +189,7 @@ public class JEBReaderWrapper {
         engineOptions.externalBitmap = new AlBitmap();
 
         float dpiMultiplex = context.getResources().getDisplayMetrics().density;
-        engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_160;
-        if (dpiMultiplex >= 4.0f) {
-            engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_640;
-        } else if (dpiMultiplex >= 3.0f) {
-            engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_480;
-        } else if (dpiMultiplex >= 2.0f) {
-            engineOptions.DPI = EngBookMyType.TAL_SCREEN_DPI.TAL_SCREEN_DPI_320;
-        }
-        engineOptions.textMultiplexer = dpiMultiplex;
+        engineOptions.multiplexer = dpiMultiplex;
         return engineOptions;
     }
 

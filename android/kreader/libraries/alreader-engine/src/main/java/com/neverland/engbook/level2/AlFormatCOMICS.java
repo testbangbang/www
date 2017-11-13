@@ -1,6 +1,7 @@
 package com.neverland.engbook.level2;
 
 
+import com.neverland.engbook.allstyles.AlCSSHtml;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
@@ -46,15 +47,11 @@ public class AlFormatCOMICS extends AlAXML {
     }
 
     public AlFormatCOMICS() {
-        image_start = -1;
-        image_stop = -1;
-        image_name = null;
+        cssStyles = new AlCSSHtml();
     }
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
-        allState.isOpened = true;
-
         isTextFormat = false;
         xml_mode = true;
         ident = "COMICS";
@@ -73,49 +70,50 @@ public class AlFormatCOMICS extends AlAXML {
         setCP(TAL_CODE_PAGES.CP65001);
 
         allState.state_parser = STATE_XML_TEXT;
-        allState.state_skipped_flag = true;
+        allState.incSkipped();
+        numPage = 0;
+
+
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_EMPTY);
+        //if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
+            cssStyles.disableExternal = true;
 
         parser(0, aFiles.getSize());
-        newParagraph();
 
-        allState.isOpened = false;
     }
 
     private int numPage = 0;
 
     @Override
     public int getPageStart(int pos) {
-        return par.get(pos).start;
+        return par0.get(pos).start;
     }
 
     @Override
     public int getCountPages() {
-        return par.size();
+        return par0.size();
     }
 
-    private int image_start;
-    private int image_stop;
-    private String image_name;
 
     private void addtestImage() {
-        if (allState.isOpened) {
-            if (image_start > 0) {
-                image_stop = tag.start_pos;
-                im.add(AlOneImage.add(image_name, image_start, image_stop, AlOneImage.IMG_BASE64));
+
+            if (allState.image_start > 0) {
+                allState.image_stop = tag.start_pos;
+                im.add(AlOneImage.add(allState.image_name, allState.image_start, allState.image_stop, AlOneImage.IMG_BASE64));
             }
-        }
-        image_start = -1;
+
+        allState.image_start = -1;
     }
 
     private void testImage() {
-        image_start = -1;
-        if (allState.isOpened) {
+        allState.image_start = -1;
+
             StringBuilder s1 = tag.getATTRValue(AlFormatTag.TAG_ID);
             if (s1 != null) {
-                image_name = s1.toString();
-                image_start = allState.start_position;
+                allState.image_name = s1.toString();
+                allState.image_start = allState.start_position;
             }
-        }
+
     }
 
     @Override
@@ -128,24 +126,24 @@ public class AlFormatCOMICS extends AlAXML {
                     param = tag.getATTRValue(AlFormatTag.TAG_HREF);
 
                 if (param != null) {
-                    allState.state_skipped_flag = false;
+                    allState.decSkipped();
 
-                    if (allState.isOpened) {
+
                         newParagraph();
-                        setParagraphStyle(AlStyles.PAR_COVER);
+                        setParagraphStyle(AlStyles.SL_COVER);
 
                         if (param.charAt(0) == '#') {
                             numPage++;
                         } else {
                             im.add(AlOneImage.addLowQuality(param.toString(), numPage++, size, AlOneImage.IMG_MEMO));
                         }
-                    }
+
 
                     addCharFromTag((char)AlStyles.CHAR_IMAGE_S, false);
                     addTextFromTag(param, false);
                     addCharFromTag((char)AlStyles.CHAR_IMAGE_E, false);
 
-                    allState.state_skipped_flag = true;
+                    allState.incSkipped();
                 }
                 return true;
 
