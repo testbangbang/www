@@ -144,6 +144,8 @@ public class AlFormatTXT extends AlFormat {
 
 	@Override
 	protected void doTextChar(char ch, boolean addSpecial) {
+		chineseTextSectionRecognizer.onNewCharacter(ch);
+		
 		if (parText.length > 0) {
 
 			if (ch == 0xad)
@@ -416,7 +418,7 @@ public class AlFormatTXT extends AlFormat {
 	@Override
 	void newParagraph() {
 		if (chineseTextSectionRecognizer.matches()) {
-			addContent(AlOneContent.add(chineseTextSectionRecognizer.getSectionText(), parText.positionS, 0));
+			addContent(AlOneContent.add(chineseTextSectionRecognizer.getSectionText(), parText.sizeStart, 0));
 		}
 
 		chineseTextSectionRecognizer.reset();
