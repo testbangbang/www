@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">edu-note</string>
+    <string name="app_name">KNote</string>
     <string name="create_note">Create Note</string>
     <string name="file_total_count">Total:%1$d/%2$d</string>
     <string name="page_count" translatable="false">%1$d/%2$d</string>
