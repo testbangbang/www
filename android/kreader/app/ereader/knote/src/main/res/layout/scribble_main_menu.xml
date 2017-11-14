@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.onyx.android.sdk.ui.data.MenuId"/>
+        <import type="com.onyx.android.sdk.ui.data.MenuItem"/>
+        <import type="android.util.SparseArray"/>
+        <import type="com.onyx.knote.R"/>
+
+        <variable
+            name="item"
+            type="SparseArray&lt;MenuItem>"/>
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        appCompat:alwaysLayoutImageView="true"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <include
+            bind:item="@{item[MenuId.PEN_STYLE].setMenuIcon(R.drawable.ic_shape)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG].setMenuIcon(R.drawable.ic_template)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.ERASER].setMenuIcon(R.drawable.ic_eraser)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.PEN_WIDTH].setMenuIcon(R.drawable.ic_width)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.DELETE].setMenuIcon(R.drawable.ic_delet_big)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.SPACE].setMenuIcon(R.drawable.ic_space)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.ENTER].setMenuIcon(R.drawable.ic_enter)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.KEYBOARD].setMenuIcon(R.drawable.ic_keyboard)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.COLOR].setMenuIcon(R.drawable.ic_color)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.SHAPE_SELECT].setMenuIcon(R.drawable.ic_menu_more)}"
+            layout="@layout/main_menu_item"/>
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"/>
+
+        <include
+            bind:item="@{item[MenuId.ADD_PAGE].setMenuIcon(R.drawable.ic_add)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.DELETE_PAGE].setMenuIcon(R.drawable.ic_delete)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.PREV_PAGE].setMenuIcon(R.drawable.ic_note_prev_page_black)}"
+            layout="@layout/main_menu_item"/>
+
+
+        <Button
+            android:id="@+id/button_page_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/imagebtn_bg"
+            android:focusable="true"
+            android:layout_gravity="center_vertical"
+            android:visibility="@{item[MenuId.PAGE].visibility}"
+            android:onClick="@{(v) ->item[MenuId.PAGE].menuClicked(v)}"
+            android:text="@{item[MenuId.PAGE].text}" />
+
+        <include
+            bind:item="@{item[MenuId.NEXT_PAGE].setMenuIcon(R.drawable.ic_note_next_page_black)}"
+            layout="@layout/main_menu_item"/>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>
