@@ -63,6 +63,10 @@ public class AlFonts {
 		loadAllFonts(opt.font_catalog, opt.font_catalogs_addon, opt.font_resource);
 		multiplexer = opt.multiplexer;
 	}
+
+	public float getSpaceWidth() {
+		return calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4;
+	}
 	
 	public void	modifyPaint(long				old_style,
 		    long				new_style, 

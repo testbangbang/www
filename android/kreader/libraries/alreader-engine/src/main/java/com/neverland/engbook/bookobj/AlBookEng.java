@@ -3276,7 +3276,8 @@ public class AlBookEng{
 
 			if (v > 0/*((oi->prop & AlParProperty::SL2_REDLINE) != 0)*/ && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
 				if (!profiles.classicFirstLetter || (style & AlStyles.SL_MARKFIRTSTLETTER0) == 0) {
-					oi.isRed = (int)(((double)width) * v / 300.0);
+					//oi.isRed = (int)(((double)width) * v / 300.0);
+                    oi.isRed = (int)fonts.getSpaceWidth() * 8;
 					oi.allWidth -= oi.isRed;
 				}
 			}
