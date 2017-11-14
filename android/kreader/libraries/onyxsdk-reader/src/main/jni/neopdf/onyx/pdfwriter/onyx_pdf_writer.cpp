@@ -227,8 +227,6 @@ bool OnyxPdfWriter::saveAs(const std::string &path, bool saveOnlyPagesWithAnnota
         return false;
     }
 
-    impl->insertSubPages();
-
     if (!saveOnlyPagesWithAnnotation) {
         impl->doc_->Write(path.c_str());
         return true;
