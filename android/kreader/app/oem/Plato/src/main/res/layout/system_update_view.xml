@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/system_update_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/page_refresh_item_padding_top"
+        android:paddingTop="@dimen/page_refresh_item_padding_top"
+        android:text="@string/device_setting_system_update"
+        android:textSize="@dimen/level_one_heading_font"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:textStyle="bold" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:background="@android:color/black" />
+
+    <com.onyx.android.plato.view.PageRecyclerView
+        android:id="@+id/system_update_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/system_update_check_update"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/device_setting_page_margin_left"
+        android:layout_marginLeft="@dimen/device_setting_page_margin_left"
+        android:layout_marginRight="@dimen/device_setting_page_margin_left"
+        android:background="@drawable/button_back"
+        android:gravity="center"
+        android:paddingBottom="@dimen/device_setting_padding_top"
+        android:paddingTop="@dimen/device_setting_padding_top"
+        android:text="@string/device_setting_check_system_update"
+        android:textSize="@dimen/level_one_heading_font"
+        android:visibility="gone"
+        android:textStyle="bold" />
+</LinearLayout>
