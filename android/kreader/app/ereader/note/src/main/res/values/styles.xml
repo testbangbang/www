@@ -3,6 +3,8 @@
     <!-- Base application theme. -->
     <style name="AppTheme" parent="@style/OnyxAppCompat" />
 
+    <style name="DialogTheme" parent="@style/OnyxAppCompat.Light.Dialog" />
+
     <style name="MX.CheckBox" parent="Widget.AppCompat.CompoundButton.CheckBox">
         <item name="android:button">@drawable/mx_checkbox_button</item>
     </style>
