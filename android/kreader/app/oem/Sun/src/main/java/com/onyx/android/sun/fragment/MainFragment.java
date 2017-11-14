@@ -39,9 +39,9 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
     @Override
     protected void loadData() {
         presenter = new MainFragmentPresenter(this);
-        //TODO:fake studentId
+        //TODO:fake studentId 1, 108
         presenter.getPractices(1);
-        presenter.getSubjectScore();
+        presenter.getSubjectScore("108");
         Date date = new Date(System.currentTimeMillis());
         mainBinding.setDate(DateTimeUtil.formatDate(date, new SimpleDateFormat("MM-dd", Locale.getDefault())));
     }

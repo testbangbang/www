@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sun</string>
+    <string name="app_name">Plato</string>
     <string name="main_view">Main view</string>
     <string name="examination_work">Examination work</string>
     <string name="goal_advanced">Goal advanced</string>
@@ -175,4 +175,7 @@
     <string name="study_report_fragment_competence_up_tips">Your ability is going up, go see it ~ ~</string>
     <string name="study_report_fragment_go_and_see_tips">go and see</string>
     <string name="study_progress">%</string>
+    <string name="new_info">New</string>
+    <string name="correct_info">Correct</string>
+    <string name="refresh_failed">Refresh failed</string>
 </resources>

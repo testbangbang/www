@@ -37,6 +37,13 @@ public class TimeUtils {
         return getTime(timeInMillis, DATE_FORMAT_DATE);
     }
 
+    public static String getDate(String time) {
+        if (time == null) {
+            return null;
+        }
+        return getTime(Long.parseLong(time), DATE_FORMAT_DATE);
+    }
+
     public static long getCurrentTimeInLong() {
         return System.currentTimeMillis();
     }

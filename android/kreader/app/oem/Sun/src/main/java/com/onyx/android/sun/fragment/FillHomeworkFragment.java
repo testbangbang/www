@@ -12,6 +12,7 @@ import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
 import com.onyx.android.sun.cloud.bean.QuestionViewBean;
+import com.onyx.android.sun.cloud.bean.SubjectBean;
 import com.onyx.android.sun.common.CommonNotices;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
@@ -125,6 +126,16 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Override
     public void setStudyReportDetail(StudyReportDetailBean data) {
+
+    }
+
+    @Override
+    public void setSubjects(List<SubjectBean> subjects) {
+
+    }
+
+    @Override
+    public void setExerciseType(List<SubjectBean> exerciseTypes) {
 
     }
 

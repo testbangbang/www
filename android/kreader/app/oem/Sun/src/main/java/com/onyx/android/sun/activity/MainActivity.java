@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.databinding.ViewDataBinding;
 import android.support.design.widget.TabLayout;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -18,6 +19,7 @@ import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
 import com.onyx.android.sun.bean.MainTabBean;
 import com.onyx.android.sun.bean.User;
+import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.cloud.bean.QuestionViewBean;
@@ -27,6 +29,7 @@ import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.databinding.ActivityMainBinding;
 import com.onyx.android.sun.event.ApkDownloadSucceedEvent;
 import com.onyx.android.sun.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.sun.event.DeleteRemindEvent;
 import com.onyx.android.sun.event.HaveNewVersionApkEvent;
 import com.onyx.android.sun.event.HaveNewVersionEvent;
 import com.onyx.android.sun.event.ParseAnswerEvent;
@@ -51,6 +54,7 @@ import com.onyx.android.sun.fragment.HomeWorkFragment;
 import com.onyx.android.sun.fragment.MainFragment;
 import com.onyx.android.sun.fragment.ParseAnswerFragment;
 import com.onyx.android.sun.fragment.RankingFragment;
+import com.onyx.android.sun.fragment.RemindFragment;
 import com.onyx.android.sun.fragment.StudyReportFragment;
 import com.onyx.android.sun.fragment.UserCenterFragment;
 import com.onyx.android.sun.interfaces.MainView;
@@ -83,6 +87,8 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private boolean isShowTabLayoutAndNewMessageView = true;
     private int oldTabPosition = 0;
     private int oldPageID = ChildViewID.FRAGMENT_MAIN;
+    private MainPresenter mainPresenter;
+    private List<ContentBean> remindContent;
 
     @Override
     protected void initData() {
@@ -90,6 +96,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         currentTitleIconID = userCenterTitleIconID;
         userCenterFragmentTitle = getString(R.string.user_center_title);
         changePasswordFragmentTitle = getString(R.string.user_center_fragment_change_password);
+        mainPresenter = new MainPresenter(this);
+        //TODO:fake student id 1
+        mainPresenter.getNewMessage("2");
     }
 
     private void restoreUserName() {
@@ -103,7 +112,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Override
     protected void initView(ViewDataBinding binding) {
         mainBinding = (ActivityMainBinding) binding;
-        mainBinding.setVariable(BR.presenter, new MainPresenter());
+        mainBinding.setVariable(BR.presenter, mainPresenter);
         mainBinding.setVariable(BR.user, user);
         mainBinding.setIsShowTabLayoutAndNewMessageView(true);
         mainBinding.setTitle(mainFragmentTitle);
@@ -158,7 +167,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.news_image:
-                switchCurrentFragment(ChildViewID.FRAGMENT_DEVICE_SETTING);
+                switchCurrentFragment(ChildViewID.FRAGMENT_REMIND);
+                RemindFragment remindFragment = (RemindFragment) getPageView(ChildViewID.FRAGMENT_REMIND);
+                remindFragment.setRemindContent(remindContent);
                 break;
             case R.id.ll_main_activity_title_container:
                 onClickTitleContainer();
@@ -277,6 +288,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_STUDY_REPORT:
                     baseFragment = new StudyReportFragment();
                     break;
+                case ChildViewID.FRAGMENT_REMIND:
+                    baseFragment = new RemindFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -298,6 +312,12 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToHomeworkEvent(ToHomeworkEvent event) {
         mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_EXAMINATION_WORK).select();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeleteRemindEvent(DeleteRemindEvent event) {
+        //TODO:fake student id 1
+        mainPresenter.deleteRemindMessage(event.getRemindId() + "", "2");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -427,5 +447,19 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStartDownloadingEvent(StartDownloadingEvent event) {
         showProgressDialog(event, R.string.downloading, null);
+    }
+
+    @Override
+    public void setRemindContent(List<ContentBean> content) {
+        this.remindContent = content;
+        mainBinding.setHaveNew(true);
+    }
+
+    @Override
+    public void setRemindView() {
+        mainBinding.setHaveNew(false);
+        if (remindContent != null) {
+            remindContent.clear();
+        }
     }
 }

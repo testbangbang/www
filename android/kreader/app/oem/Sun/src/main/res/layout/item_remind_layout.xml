@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ItemRemindBinding">
+
+        <import type="com.onyx.android.sun.utils.StringUtil" />
+
+        <import type="com.onyx.android.sun.utils.TimeUtils" />
+
+        <variable
+            name="data"
+            type="com.onyx.android.sun.cloud.bean.ContentBean" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/item_remind_type_padding"
+            android:text="@{StringUtil.backWithType(data.type)}"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{data.title}"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_remind_time_margin_top"
+                android:text="@{StringUtil.isCorrect(data.correctTime) ? @string/homework_item_correct_format(TimeUtils.getDate(data.correctTime)) : @string/homework_item_deadline_format(TimeUtils.getDate(data.deadline))}"
+                android:textSize="@dimen/level_three_heading_font" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -39,4 +39,7 @@ public class Constants {
     public static final String OK = "ok";
     public static final String SP_KEY_USER_NAME = "userName";
     public static final String SP_KEY_USER_PHONE_NUMBER = "userPhoneNumber";
+    public static final String DEFAULT_PAGE_SIZE = "10";
+    public static final String DEFAULT_PAGE = "1";
+    public static final String CORRECT_TYPE = "correct";
 }

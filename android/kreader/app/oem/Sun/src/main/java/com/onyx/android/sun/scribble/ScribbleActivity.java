@@ -77,6 +77,8 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
         scribbleBinding.shapePageRecycler.setAdapter(shapePageAdapter);
         scribbleBinding.titleBar.titleBarRecord.setVisibility(View.GONE);
         scribbleBinding.titleBar.titleBarSubmit.setVisibility(View.GONE);
+        scribbleBinding.titleBar.titleBarImageOne.setVisibility(View.VISIBLE);
+        scribbleBinding.titleBar.titleBarImageTwo.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -262,6 +264,7 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
                 deletePage();
                 break;
             case R.id.title_bar_title:
+                EventBus.getDefault().post(new SubjectiveResultEvent(questionID));
                 finish();
                 break;
             case R.id.title_bar_image_one:

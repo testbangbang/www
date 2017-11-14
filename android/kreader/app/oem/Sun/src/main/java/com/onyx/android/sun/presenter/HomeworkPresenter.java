@@ -7,12 +7,14 @@ import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.ExerciseBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.GetStudyReportDetailResultBean;
+import com.onyx.android.sun.cloud.bean.GetSubjectBean;
 import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.sun.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.sun.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.cloud.bean.QuestionData;
+import com.onyx.android.sun.cloud.bean.SubjectBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeRequestBean;
 import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.sun.cloud.bean.TaskBean;
@@ -23,7 +25,9 @@ import com.onyx.android.sun.data.FillHomeworkData;
 import com.onyx.android.sun.data.HomeworkData;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.interfaces.HomeworkView;
+import com.onyx.android.sun.requests.cloud.GetExerciseTypeRequest;
 import com.onyx.android.sun.requests.cloud.GetStudyReportDetailRequest;
+import com.onyx.android.sun.requests.cloud.GetSubjectRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.sun.requests.cloud.HomeworkUnfinishedRequest;
 import com.onyx.android.sun.requests.cloud.SubmitPracticeRequest;
@@ -74,20 +78,20 @@ public class HomeworkPresenter {
         });
     }
 
-    public void getHomeworkFinishedData(String course, String startTime, String endTime, String type) {
+    public void getHomeworkFinishedData(String studentId, String course, String startTime, String endTime, String type) {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
         requestBean.status = CloudApiContext.Practices.FINISHED_STATE;
         requestBean.course = course;
         requestBean.endtime = endTime;
         requestBean.starttime = startTime;
-        requestBean.studentId = "2";
+        requestBean.studentId = studentId;
         requestBean.type = type;
 
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
         homeworkData.getHomeworkFinishedData(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                /*HomeworkFinishedResultBean resultBean = rq.getResultBean();
+                HomeworkFinishedResultBean resultBean = rq.getResultBean();
                 if (resultBean == null || resultBean.data == null) {
                 CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
                     return;
@@ -97,43 +101,45 @@ public class HomeworkPresenter {
                 List<FinishContent> content = data.content;
                 if (content != null && content.size() > 0) {
                     homeworkView.setFinishedData(content);
-                }*/
-                List<FinishContent> list = new ArrayList<FinishContent>();
-                for (int i = 0; i < 10; i++) {
-                    FinishContent content = new FinishContent();
-                    if (i > 7) {
-                        content.correctTime = "2017-10-25";
-                        content.submitTime = "2017-10-25";
-                        content.id = i;
-                        content.course = "yuwen";
-                        content.auth = "yuwen";
-                        content.deadline = "2017-10-25";
-                        content.title = "yuwenyuwenyuwen";
-                        content.type = "task";
-                        content.status = "corrected";
-                    } else if (i > 3) {
-                        content.correctTime = "2017-10-24";
-                        content.submitTime = "2017-10-24";
-                        content.id = i;
-                        content.course = "shuxue";
-                        content.auth = "shuxue";
-                        content.deadline = "2017-10-24";
-                        content.title = "shuxueshuxueshuxue";
-                        content.type = "task";
-                        content.status = "corrected";
-                    } else {
-                        content.correctTime = null;
-                        content.submitTime = "2017-10-23";
-                        content.id = i;
-                        content.course = "yingyu";
-                        content.auth = "yingyu";
-                        content.deadline = "2017-10-24";
-                        content.title = "yingyuyingyuyingyu";
-                        content.type = "task";
-                    }
-                    list.add(content);
                 }
-                homeworkView.setFinishedData(list);
+            }
+        });
+    }
+
+    public void getSubjects(final String studentId) {
+        final GetSubjectRequest rq = new GetSubjectRequest(Integer.parseInt(studentId));
+        homeworkData.getSubjects(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetSubjectBean subjects = rq.getSubjects();
+                if (subjects == null) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    return;
+                }
+                List<SubjectBean> subjectBeanList = subjects.data;
+                if (subjectBeanList != null && subjectBeanList.size() > 0) {
+                    homeworkView.setSubjects(subjectBeanList);
+                    getExerciseType(studentId, subjectBeanList.get(0).id);
+                }
+            }
+        });
+    }
+
+    public void getExerciseType(final String studentId, final int subjectId) {
+        final GetExerciseTypeRequest rq = new GetExerciseTypeRequest();
+        homeworkData.getExerciseType(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetSubjectBean exerciseTypes = rq.getExerciseTypes();
+                if (exerciseTypes == null) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    return;
+                }
+                List<SubjectBean> types = exerciseTypes.data;
+                if (types != null && types.size() > 0) {
+                    homeworkView.setExerciseType(exerciseTypes.data);
+                    getHomeworkFinishedData(studentId, subjectId + "", null, null, types.get(0).name);
+                }
             }
         });
     }
@@ -251,7 +257,7 @@ public class HomeworkPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetStudyReportDetailResultBean resultBean = rq.getStudyReportDetailResultBean();
-                if(resultBean == null) {
+                if (resultBean == null) {
                     return;
                 }
 

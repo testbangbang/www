@@ -52,6 +52,7 @@ public class CloudApiContext {
         public static final String STUDENTID = "studentId";
         public static final String PAGE = "page";
         public static final String SIZE = "size";
+        public static final String ID = "id";
     }
 
     public static class SubjectAbility {

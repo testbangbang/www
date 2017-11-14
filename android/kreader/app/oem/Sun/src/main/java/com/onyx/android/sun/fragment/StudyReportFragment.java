@@ -10,6 +10,7 @@ import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
 import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
+import com.onyx.android.sun.cloud.bean.SubjectBean;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.databinding.FragmentStudyReportBinding;
 import com.onyx.android.sun.event.OnBackPressEvent;
@@ -146,6 +147,16 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
             setTableData(data.data,heads);
             studyReportBinding.setStudyReportDetail(data);
         }
+    }
+
+    @Override
+    public void setSubjects(List<SubjectBean> subjects) {
+
+    }
+
+    @Override
+    public void setExerciseType(List<SubjectBean> exerciseTypes) {
+
     }
 
     public void setPracticeId(int id,String tilte) {

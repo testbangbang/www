@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
@@ -25,12 +24,8 @@ import android.widget.TextView;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
-import com.onyx.android.sun.cloud.bean.ExerciseBean;
 import com.onyx.android.sun.cloud.bean.ExerciseSelectionBean;
-import com.onyx.android.sun.cloud.bean.Question;
 import com.onyx.android.sun.cloud.bean.QuestionViewBean;
-import com.onyx.android.sun.common.CommonNotices;
-import com.onyx.android.sun.common.Constants;
 import com.onyx.android.sun.common.ManagerActivityUtils;
 import com.onyx.android.sun.event.ParseAnswerEvent;
 import com.onyx.android.sun.interfaces.OnCheckAnswerListener;
@@ -39,7 +34,6 @@ import com.onyx.android.sun.utils.StringUtil;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by li on 2017/10/12.
@@ -149,6 +143,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         this.questionViewBean = questionViewBean;
         this.title = title;
         questionTitleLayout.setVisibility(GONE);
+        subjectiveImage.setImageResource(R.drawable.ic_answer_area);
         questionIntroduce.setVisibility(questionViewBean.isShow() ? VISIBLE : GONE);
         format = SunApplication.getInstance().getResources().getString(R.string.item_fill_homework_title);
         questionBeanTitle = String.format(format, questionViewBean.getShowType(), questionViewBean.getAllScore()

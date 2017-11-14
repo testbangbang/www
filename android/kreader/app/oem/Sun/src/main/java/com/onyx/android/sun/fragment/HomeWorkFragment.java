@@ -1,6 +1,7 @@
 package com.onyx.android.sun.fragment;
 
 import android.databinding.ViewDataBinding;
+import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.sun.R;
@@ -12,6 +13,7 @@ import com.onyx.android.sun.adapter.StudyReportAdapter;
 import com.onyx.android.sun.cloud.bean.ContentBean;
 import com.onyx.android.sun.cloud.bean.FinishContent;
 import com.onyx.android.sun.cloud.bean.QuestionDetail;
+import com.onyx.android.sun.cloud.bean.SubjectBean;
 import com.onyx.android.sun.data.database.TaskAndAnswerEntity;
 import com.onyx.android.sun.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.sun.databinding.HomeworkBinding;
@@ -20,6 +22,7 @@ import com.onyx.android.sun.presenter.HomeworkPresenter;
 import com.onyx.android.sun.utils.HomeworkFinishComparator;
 import com.onyx.android.sun.view.DisableScrollGridManager;
 import com.onyx.android.sun.view.DividerItemDecoration;
+import com.onyx.android.sun.view.PageRecyclerView;
 import com.onyx.android.sun.view.TimePickerDialog;
 
 import java.util.Collections;
@@ -51,13 +54,21 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     private HomeworkFinishedAdapter homeworkFinishedAdapter;
     private StudyReportAdapter studyReportAdapter;
     private DividerItemDecoration dividerItemDecoration;
+    private CourseAdapter courseAdapter;
+    private CourseAdapter courseStateAdapter;
+    private List<SubjectBean> subjects;
+    private List<SubjectBean> exerciseTypes;
+    private int subjectId;
+    private String subjectType;
+    private String startTime;
+    private String endTime;
 
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
         //TODO:fake student id = 108
+        homeworkPresenter.getSubjects("107");
         homeworkPresenter.getHomeworkUnfinishedData("1");
-        homeworkPresenter.getHomeworkFinishedData(null, null, null, null);
         homeworkPresenter.getStudyReportData(null);
     }
 
@@ -74,14 +85,12 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
         homeworkBinding.homeworkCourseRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         dividerItemDecoration.setSpace(10);
         homeworkBinding.homeworkCourseRecyclerView.addItemDecoration(dividerItemDecoration);
-        CourseAdapter courseAdapter = new CourseAdapter();
-        courseAdapter.setData(course);
+        courseAdapter = new CourseAdapter();
         homeworkBinding.homeworkCourseRecyclerView.setAdapter(courseAdapter);
 
         homeworkBinding.homeworkStateRecyclerView.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         homeworkBinding.homeworkStateRecyclerView.addItemDecoration(dividerItemDecoration);
-        CourseAdapter courseStateAdapter = new CourseAdapter();
-        courseStateAdapter.setData(courseState);
+        courseStateAdapter = new CourseAdapter();
         homeworkBinding.homeworkStateRecyclerView.setAdapter(courseStateAdapter);
 
         homeworkFinishedAdapter = new HomeworkFinishedAdapter();
@@ -94,7 +103,28 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     protected void initListener() {
+        courseAdapter.setOnItemClick(new PageRecyclerView.PageAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, Object position) {
+                SubjectBean subjectBean = subjects.get((int) position);
+                subjectId = subjectBean.id;
+                loadHomeworkFinish();
+            }
+        });
 
+        courseStateAdapter.setOnItemClick(new PageRecyclerView.PageAdapter.OnRecyclerViewItemClickListener() {
+            @Override
+            public void onItemClick(View view, Object position) {
+                SubjectBean subjectBean = exerciseTypes.get((int) position);
+                subjectType = subjectBean.name;
+                loadHomeworkFinish();
+            }
+        });
+    }
+
+    private void loadHomeworkFinish() {
+        //TODO:fake student id
+        homeworkPresenter.getHomeworkFinishedData("107",subjectId+"", startTime, endTime, subjectType);
     }
 
     @Override
@@ -174,9 +204,13 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
         switch (timePickerDialog.getId()) {
             case R.id.homework_start_time:
                 homeworkBinding.homeworkStartTime.setText(dateTime);
+                this.startTime = dateTime;
+                loadHomeworkFinish();
                 break;
             case R.id.homework_end_time:
                 homeworkBinding.homeworkEndTime.setText(dateTime);
+                this.endTime = dateTime;
+                loadHomeworkFinish();
                 break;
         }
     }
@@ -217,5 +251,19 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void setStudyReportDetail(StudyReportDetailBean data) {
 
+    }
+
+    @Override
+    public void setSubjects(List<SubjectBean> subjects) {
+        this.subjects = subjects;
+        subjectId = subjects.get(0).id;
+        courseAdapter.setData(subjects);
+    }
+
+    @Override
+    public void setExerciseType(List<SubjectBean> exerciseTypes) {
+        this.exerciseTypes = exerciseTypes;
+        subjectType = exerciseTypes.get(0).name;
+        courseStateAdapter.setData(exerciseTypes);
     }
 }

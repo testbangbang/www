@@ -57,6 +57,10 @@ public interface ContentService {
                                          @Query(CloudApiContext.Message.PAGE) String page,
                                          @Query(CloudApiContext.Message.SIZE) String size);
 
+    @GET("api/message/del")
+    Call<SubmitPracticeResultBean> deleteMessage(@Query(CloudApiContext.Message.ID) String id,
+                                                 @Query(CloudApiContext.Message.STUDENTID) String studentId);
+
     @GET("api/advanced/ability/own")
     Call<PersonalAbilityResultBean> getSubjectAbility(@Query(CloudApiContext.SubjectAbility.ID) String id);
 

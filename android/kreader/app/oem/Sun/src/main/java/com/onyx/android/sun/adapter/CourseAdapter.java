@@ -8,8 +8,11 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sun.R;
 import com.onyx.android.sun.SunApplication;
+import com.onyx.android.sun.cloud.bean.SubjectBean;
 import com.onyx.android.sun.databinding.HomeworkCourseBinding;
 import com.onyx.android.sun.view.PageRecyclerView;
+
+import java.util.List;
 
 /**
  * Created by li on 2017/10/9.
@@ -17,7 +20,7 @@ import com.onyx.android.sun.view.PageRecyclerView;
 
 public class CourseAdapter extends PageRecyclerView.PageAdapter {
     private int current = 0;
-    private String[] data;
+    private List<SubjectBean> data;
 
     @Override
     public int getRowCount() {
@@ -31,7 +34,7 @@ public class CourseAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public int getDataCount() {
-        return data == null ? 0 : data.length;
+        return data == null ? 0 : data.size();
     }
 
     @Override
@@ -45,7 +48,7 @@ public class CourseAdapter extends PageRecyclerView.PageAdapter {
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         CourseViewHolder courseViewHolder = (CourseViewHolder) holder;
         HomeworkCourseBinding binding = courseViewHolder.getBinding();
-        binding.setCourse(data[position]);
+        binding.setCourse(data.get(position));
         courseViewHolder.itemView.setOnClickListener(this);
         courseViewHolder.itemView.setTag(position);
         binding.itemHomeworkCourse.setSelected(position == current);
@@ -59,10 +62,13 @@ public class CourseAdapter extends PageRecyclerView.PageAdapter {
             return;
         }
         current = (int) tag;
+        if (onRecyclerViewItemClickListener != null) {
+            onRecyclerViewItemClickListener.onItemClick(view, current);
+        }
         notifyDataSetChanged();
     }
 
-    public void setData(String[] data) {
+    public void setData(List<SubjectBean> data) {
         this.data = data;
         notifyDataSetChanged();
     }

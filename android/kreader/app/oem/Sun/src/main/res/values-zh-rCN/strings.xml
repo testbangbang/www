@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Sun</string>
+    <string name="app_name">Plato</string>
     <string name="main_view">主页</string>
     <string name="examination_work">作业考试</string>
     <string name="goal_advanced">目标进阶</string>
@@ -177,4 +177,7 @@
     <string name="study_report_fragment_fill_person_tips">填充-个人</string>
     <string name="study_report_fragment_competence_up_tips">你的能力值提升咯,快去看看~~</string>
     <string name="study_report_fragment_go_and_see_tips">去看看</string>
+    <string name="new_info">新</string>
+    <string name="correct_info">批</string>
+    <string name="refresh_failed">刷新失败</string>
 </resources>

@@ -42,8 +42,8 @@ public class MainFragmentPresenter {
         });
     }
 
-    public void getSubjectScore() {
-        final SubjectAbilityRequest req = new SubjectAbilityRequest("1");
+    public void getSubjectScore(String studentId) {
+        final SubjectAbilityRequest req = new SubjectAbilityRequest(studentId);
         mainFragmentData.getSubjectScore(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

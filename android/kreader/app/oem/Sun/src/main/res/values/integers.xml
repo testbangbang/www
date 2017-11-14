@@ -23,4 +23,6 @@
     <integer name="scribble_tool_menu_offset_y">10</integer>
     <integer name="scribble_tool_menu_row">1</integer>
     <integer name="scribble_tool_menu_col">4</integer>
+    <integer name="remind_adapter_col">1</integer>
+    <integer name="remind_adapter_row">6</integer>
 </resources>

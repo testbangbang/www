@@ -63,12 +63,12 @@
         <RelativeLayout
             android:id="@+id/question_title_layout"
             android:layout_width="wrap_content"
-            android:layout_height="160dp">
+            android:layout_height="@dimen/question_title_whole_height">
 
             <com.onyx.android.sun.view.AutoPagedWebView
                 android:id="@+id/question_title"
                 android:layout_width="wrap_content"
-                android:layout_height="140dp"
+                android:layout_height="@dimen/question_title_web_height"
                 android:textSize="@dimen/level_three_heading_font" />
 
             <LinearLayout
@@ -136,7 +136,8 @@
                     android:id="@+id/subjective_image"
                     android:layout_width="@dimen/question_view_subjective_answer_width"
                     android:layout_height="@dimen/question_view_subjective_answer_height"
-                    android:src="@color/gray" />
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_answer_area" />
 
                 <View
                     android:layout_width="match_parent"
