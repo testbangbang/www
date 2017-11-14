@@ -218,8 +218,7 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startAddMemorandumActivity(Context context) {
-        Intent intent = new Intent();
+    public static void startAddMemorandumActivity(Context context, Intent intent) {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, AddMemorandumActivity.class);
         context.startActivity(intent);

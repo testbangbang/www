@@ -498,5 +498,8 @@
     <dimen name="good_sentence_container_margin_top">20dp</dimen>
     <dimen name="explain_margin_top">5dp</dimen>
     <dimen name="explain_height">220dp</dimen>
+    <dimen name="add_memorandum_activity_time_margin_left">20dp</dimen>
+    <dimen name="add_memorandum_activity_container_margin">20dp</dimen>
+    <dimen name="memorandum_item_day_of_week_margin_left">2dp</dimen>
     <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
 </resources>

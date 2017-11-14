@@ -1,18 +1,18 @@
 package com.onyx.android.dr.adapter;
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.MemorandumEntity;
-import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.List;
 
@@ -24,17 +24,15 @@ import butterknife.ButterKnife;
  */
 public class MemorandumAdapter extends PageRecyclerView.PageAdapter<MemorandumAdapter.ViewHolder> {
     private List<MemorandumEntity> dataList;
-    private List<Boolean> listCheck;
     private OnItemClickListener onItemClickListener;
 
-    public void setDataList(List<MemorandumEntity> dataList, List<Boolean> listCheck) {
+    public void setDataList(List<MemorandumEntity> dataList) {
         this.dataList = dataList;
-        this.listCheck = listCheck;
     }
 
     @Override
     public int getRowCount() {
-        return DRApplication.getInstance().getResources().getInteger(R.integer.good_sentence_notebook_row);
+        return DRApplication.getInstance().getResources().getInteger(R.integer.memorandum_row);
     }
 
     @Override
@@ -55,34 +53,29 @@ public class MemorandumAdapter extends PageRecyclerView.PageAdapter<MemorandumAd
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        MemorandumEntity bean = dataList.get(position);
-        long currentTime = bean.currentTime;
-        holder.matter.setText(bean.matter);
-        holder.time.setText(TimeUtils.getDate(currentTime));
-        holder.timeQuantum.setText(bean.timeQuantum);
-        holder.checkBox.setChecked(listCheck.get(position));
-        holder.checkBox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if (onItemClickListener != null) {
-                    onItemClickListener.setOnItemCheckedChanged(position, b);
-                }
-            }
-        });
+        final  MemorandumEntity bean = dataList.get(position);
+        if (StringUtils.isNullOrEmpty(bean.matter)) {
+            holder.matter.setText(R.string.nothing);
+        } else {
+            holder.matter.setText(bean.matter);
+        }
+        holder.time.setText(bean.getDate());
+        holder.dayOfWeek.setText(bean.getDayOfWeek());
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        onItemClickListener.setOnItemClick(position, false);
-                    } else {
-                        holder.checkBox.setChecked(true);
-                        onItemClickListener.setOnItemClick(position, true);
-                    }
-                }
+                startAddMemorandum(bean);
             }
         });
+    }
+
+    private void startAddMemorandum(MemorandumEntity bean) {
+        Intent intent = new Intent();
+        intent.putExtra(Constants.MEMORANDUM_DAY_OF_WEEK, bean.getDayOfWeek());
+        intent.putExtra(Constants.MEMORANDUM_TIME, bean.getDate());
+        intent.putExtra(Constants.MEMORANDUM_MATTER, bean.matter);
+        intent.putExtra(Constants.MEMORANDUM_CURRENT_TIME, bean.currentTime);
+        ActivityManager.startAddMemorandumActivity(DRApplication.getInstance(), intent);
     }
 
     @Override
@@ -91,6 +84,7 @@ public class MemorandumAdapter extends PageRecyclerView.PageAdapter<MemorandumAd
 
     public interface OnItemClickListener {
         void setOnItemClick(int position, boolean isCheck);
+
         void setOnItemCheckedChanged(int position, boolean isCheck);
     }
 
@@ -99,14 +93,12 @@ public class MemorandumAdapter extends PageRecyclerView.PageAdapter<MemorandumAd
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.memorandum_item_check)
-        CheckBox checkBox;
         @Bind(R.id.memorandum_item_matter)
         TextView matter;
         @Bind(R.id.memorandum_item_time_time)
         TextView time;
-        @Bind(R.id.memorandum_item_time_quantum)
-        TextView timeQuantum;
+        @Bind(R.id.memorandum_item_day_of_week)
+        TextView dayOfWeek;
         View rootView;
 
         ViewHolder(View view) {
