@@ -2,6 +2,7 @@ package com.onyx.kreader.note.bridge;
 
 import android.graphics.Matrix;
 import android.graphics.Rect;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -26,6 +27,7 @@ public class NoteEventProcessorManager {
     private boolean useRawInput = false;
     private boolean singleTouch = false;
     private boolean supportBigPen = false;
+    private static final int DEVICE_ID_PEN = 1;
 
     public NoteEventProcessorManager(final NoteManager p) {
         noteManager = p;
@@ -155,7 +157,7 @@ public class NoteEventProcessorManager {
             return onTouchSelecting(motionEvent);
         } else if (getNoteManager().isEraser() || isEraserPressed(motionEvent)) {
             return onTouchEventErasing(motionEvent);
-        } else if (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent()) {
+        } else if (isPen(motionEvent) && (!getNoteManager().isDFBForCurrentShape() || useNormalTouchEvent())) {
             return onTouchEventDrawing(motionEvent);
         }
         return false;
@@ -167,6 +169,17 @@ public class NoteEventProcessorManager {
         }
         int toolType = motionEvent.getToolType(0);
         if (toolType == MotionEvent.TOOL_TYPE_ERASER) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isPen(final MotionEvent motionEvent) {
+        if (!supportBigPen) {
+            return false;
+        }
+        int deviceId = motionEvent.getDeviceId();
+        if (deviceId == DEVICE_ID_PEN) {
             return true;
         }
         return false;
