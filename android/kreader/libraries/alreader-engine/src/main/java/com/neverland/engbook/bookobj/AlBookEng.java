@@ -5735,7 +5735,9 @@ public class AlBookEng{
 				case PREVPAGE:
 					break;
 				default:
-					return TAL_RESULT.ERROR;
+					// commented by joy@onyx, to work around the issue of opening large doc file
+					//return TAL_RESULT.ERROR;
+					break;
 			}
 		}
 
