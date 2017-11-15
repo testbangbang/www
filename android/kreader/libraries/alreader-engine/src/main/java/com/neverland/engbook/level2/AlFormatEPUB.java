@@ -213,7 +213,7 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
             coverName = coverITEM_hrefImage;
         }
 
-        if (noUseCover || coverName == null || coverName.contentEquals(imageFIRST)) {
+        if (noUseCover || coverName == null || imageFIRST == null || coverName.contentEquals(imageFIRST)) {
             if (imageFIRST != null && par0.size() > 1)
                 par0.get(1).paragraph |= AlStyles.SL_COVER;
             removeCover();
