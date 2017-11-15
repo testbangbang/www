@@ -42,4 +42,6 @@ public class Constants {
     public static final String DEFAULT_PAGE_SIZE = "10";
     public static final String DEFAULT_PAGE = "1";
     public static final String CORRECT_TYPE = "correct";
+    public static final String TASK = "task";
+    public static final String EXAM = "exam";
 }

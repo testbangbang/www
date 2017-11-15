@@ -4,7 +4,7 @@
 
     </data>
 
-    <com.onyx.android.sun.view.QuestionView
+    <com.onyx.android.plato.view.QuestionView
         android:id="@+id/item_homework_question"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

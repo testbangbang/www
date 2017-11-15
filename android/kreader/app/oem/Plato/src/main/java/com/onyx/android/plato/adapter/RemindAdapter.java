@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ContentBean;
+import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.databinding.ItemRemindBinding;
 import com.onyx.android.plato.event.DeleteRemindEvent;
 import com.onyx.android.plato.event.UnfinishedEvent;
@@ -65,7 +66,7 @@ public class RemindAdapter extends PageRecyclerView.PageAdapter {
 
         int position = (int) tag;
         ContentBean bean = data.get(position);
-        EventBus.getDefault().post(new UnfinishedEvent(bean.practiceStudentId, bean.type, bean.title));
+        EventBus.getDefault().post(new UnfinishedEvent(bean.practiceStudentId, bean.practiceType == 1 ? Constants.TASK : Constants.EXAM, bean.title));
         EventBus.getDefault().post(new DeleteRemindEvent(bean.id));
     }
 

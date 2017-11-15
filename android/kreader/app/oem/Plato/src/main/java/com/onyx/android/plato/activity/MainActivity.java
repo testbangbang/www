@@ -96,7 +96,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         changePasswordFragmentTitle = getString(R.string.user_center_fragment_change_password);
         mainPresenter = new MainPresenter(this);
         //TODO:fake student id 1
-        mainPresenter.getNewMessage("2");
+        mainPresenter.getNewMessage("135");
     }
 
     private void restoreUserName() {
@@ -315,7 +315,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteRemindEvent(DeleteRemindEvent event) {
         //TODO:fake student id 1
-        mainPresenter.deleteRemindMessage(event.getRemindId() + "", "2");
+        mainPresenter.deleteRemindMessage(event.getRemindId() + "", "135");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
