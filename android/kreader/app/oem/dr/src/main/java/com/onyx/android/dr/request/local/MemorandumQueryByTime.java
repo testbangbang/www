@@ -6,13 +6,14 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by zhouzhiming on 2017/7/6.
  */
 public class MemorandumQueryByTime extends BaseDataRequest {
-    private List<MemorandumEntity> memorandumList;
+    private List<MemorandumEntity> memorandumList = new ArrayList<>();
     private long startDateMillisecond;
     private long endDateMillisecond;
 
@@ -36,10 +37,10 @@ public class MemorandumQueryByTime extends BaseDataRequest {
     }
 
     public void queryMemorandumList() {
-        List<MemorandumEntity> memorandumList = new Select().from(MemorandumEntity.class).orderBy(MemorandumEntity_Table.currentTime, false).queryList();
-        if (memorandumList != null && memorandumList.size() > 0) {
-            for (int i = 0; i < memorandumList.size(); i++) {
-                MemorandumEntity bean = memorandumList.get(i);
+        List<MemorandumEntity> list = new Select().from(MemorandumEntity.class).orderBy(MemorandumEntity_Table.currentTime, false).queryList();
+        if (list != null && list.size() > 0) {
+            for (int i = 0; i < list.size(); i++) {
+                MemorandumEntity bean = list.get(i);
                 if (bean.currentTime >= startDateMillisecond &&
                         bean.currentTime <= endDateMillisecond) {
                     if (!memorandumList.contains(bean)){

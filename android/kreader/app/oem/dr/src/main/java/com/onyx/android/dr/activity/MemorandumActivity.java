@@ -15,15 +15,13 @@ import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.interfaces.MemorandumView;
 import com.onyx.android.dr.presenter.MemorandumPresenter;
 import com.onyx.android.dr.util.TimeUtils;
+import com.onyx.android.dr.util.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import butterknife.OnClick;
-
-import static com.onyx.android.dr.util.Utils.getWeek;
-
 
 /**
  * Created by zhouzhiming on 17-7-11.
@@ -155,7 +153,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView, 
         if (memorandumList != null && memorandumList.size() >= number) {
             setDate();
             resetMatterData();
-            dateOfWeek.setText(memorandumList.get(0).getDate() + " 至 " +  memorandumList.get(6).getDate());
+            dateOfWeek.setText(memorandumList.get(0).getDate() + " 至 " + memorandumList.get(6).getDate());
             long startDateMillisecond = TimeUtils.getStartDateMillisecond(memorandumList.get(0).getDate());
             long endDateMillisecond = TimeUtils.getEndDateMillisecond(memorandumList.get(6).getDate());
             memorandumPresenter.getMemorandumDataByTime(startDateMillisecond, endDateMillisecond);
@@ -169,7 +167,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView, 
         }
         for (int i = 0; i < dataList.size(); i++) {
             String currentTime = dataList.get(i).date;
-            String week = getWeek(currentTime);
+            int week = Utils.getWeek(currentTime);
             switch (week) {
                 case Constants.SUNDAY:
                     sundayMatterContent = dataList.get(i).getMatter();
@@ -218,6 +216,13 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView, 
         thursdayMatter.setText(getString(R.string.nothing));
         fridayMatter.setText(getString(R.string.nothing));
         saturdayMatter.setText(getString(R.string.nothing));
+        sundayMatterContent = "";
+        mondayMatterContent = "";
+        tuesdayMatterContent = "";
+        saturdayMatterContent = "";
+        fridayMatterContent = "";
+        thursdayMatterContent = "";
+        wednesdayMatterContent = "";
     }
 
     @OnClick({R.id.menu_back,

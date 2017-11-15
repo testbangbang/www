@@ -184,13 +184,15 @@ public class Constants {
     public static final String DOWNLOAD_URL = "downloadUrl";
     public static final String UPDATE_MESSAGE = "message";
 
-    public static final String SUNDAY = "星期日";
-    public static final String MONDAY = "星期一";
-    public static final String TUESDAY = "星期二";
-    public static final String WEDNESDAY = "星期三";
-    public static final String THURSDAY = "星期四";
-    public static final String FRIDAY = "星期五";
-    public static final String SATURDAY = "星期六";
+    public static final int SUNDAY = 0;
+    public static final int MONDAY = 1;
+    public static final int TUESDAY = 2;
+    public static final int WEDNESDAY = 3;
+    public static final int THURSDAY = 4;
+    public static final int FRIDAY = 5;
+    public static final int SATURDAY = 6;
+
+    public static long DATE_TIME = 7 * 24 * 60 * 60 * 1000;
 
     public static final String  MEMORANDUM_DAY_OF_WEEK = "memorandum_day_of_week";
     public static final String MEMORANDUM_TIME = "memorandum_time";

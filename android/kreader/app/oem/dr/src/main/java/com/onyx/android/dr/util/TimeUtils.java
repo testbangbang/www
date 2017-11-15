@@ -2,6 +2,7 @@ package com.onyx.android.dr.util;
 
 import android.support.annotation.NonNull;
 
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.database.MemorandumEntity;
 
 import java.text.DateFormat;
@@ -378,7 +379,7 @@ public class TimeUtils {
         Calendar cal = Calendar.getInstance();
         cal.setTime(parse);
         long timeInMillis = cal.getTimeInMillis();
-        timeInMillis = timeInMillis - (7 * 24 * 60 * 60 * 1000);
+        timeInMillis = timeInMillis - Constants.DATE_TIME;
         String newDate = getDate(timeInMillis);
         return newDate;
     }
@@ -393,7 +394,7 @@ public class TimeUtils {
         Calendar cal = Calendar.getInstance();
         cal.setTime(parse);
         long timeInMillis = cal.getTimeInMillis();
-        timeInMillis = timeInMillis + (7 * 24 * 60 * 60 * 1000);
+        timeInMillis = timeInMillis + Constants.DATE_TIME;
         String newDate = getDate(timeInMillis);
         return newDate;
     }

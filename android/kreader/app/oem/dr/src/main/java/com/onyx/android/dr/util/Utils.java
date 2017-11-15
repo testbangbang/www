@@ -30,7 +30,6 @@ import com.onyx.android.dr.bean.LanguageTypeBean;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.DictTypeConfig;
-import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -85,7 +84,6 @@ public class Utils {
     public static final String DICT_RESOURCE_CACHE_DIR = File.separator + ".cache";
     public static final String[] SPECIAL_CHAR = new String[]{"-", " "};
     public static final String UNDERLINE_CHAR = "_";
-    public static String[] weeks = {"星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"};
 
     /**
      * load dictionary return status
@@ -1040,48 +1038,7 @@ public class Utils {
         }
     }
 
-    public static List<MemorandumEntity> getMemorandumData(List<MemorandumEntity> timeData, List<MemorandumEntity> matterData) {
-        List<MemorandumEntity> allData = new ArrayList<>();
-        for (int i = 0; i < matterData.size(); i++) {
-            MemorandumEntity entity = new MemorandumEntity();
-            String currentTime = matterData.get(i).date;
-            String week = getWeek(currentTime);
-            switch (week) {
-                case Constants.SUNDAY:
-                    entity.setDayOfWeek(timeData.get(0).getDayOfWeek());
-                    entity.setDate(timeData.get(0).getDate());
-                case Constants.MONDAY:
-                    entity.setDayOfWeek(timeData.get(1).getDayOfWeek());
-                    entity.setDate(timeData.get(1).getDate());
-                    break;
-                case Constants.TUESDAY:
-                    entity.setDayOfWeek(timeData.get(2).getDayOfWeek());
-                    entity.setDate(timeData.get(2).getDate());
-                    break;
-                case Constants.WEDNESDAY:
-                    entity.setDayOfWeek(timeData.get(3).getDayOfWeek());
-                    entity.setDate(timeData.get(3).getDate());
-                    break;
-                case Constants.THURSDAY:
-                    entity.setDayOfWeek(timeData.get(4).getDayOfWeek());
-                    entity.setDate(timeData.get(4).getDate());
-                    break;
-                case Constants.FRIDAY:
-                    entity.setDayOfWeek(timeData.get(5).getDayOfWeek());
-                    entity.setDate(timeData.get(5).getDate());
-                    break;
-                case Constants.SATURDAY:
-                    entity.setDayOfWeek(timeData.get(6).getDayOfWeek());
-                    entity.setDate(timeData.get(6).getDate());
-                    break;
-            }
-            entity.setMatter(matterData.get(i).matter);
-            allData.add(entity);
-        }
-        return allData;
-    }
-
-    public static String getWeek(String currentTime) {
+    public static int getWeek(String currentTime) {
         Date date = TimeUtils.parseDate(currentTime);
         Calendar cal = Calendar.getInstance();
         cal.setTime(date);
@@ -1089,6 +1046,6 @@ public class Utils {
         if (week_index < 0) {
             week_index = 0;
         }
-        return weeks[week_index];
+        return week_index;
     }
 }
