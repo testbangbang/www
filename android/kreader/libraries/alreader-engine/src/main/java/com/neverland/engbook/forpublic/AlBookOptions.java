@@ -4,6 +4,10 @@ package com.neverland.engbook.forpublic;
  * параметры открытия книги
  */
 public class AlBookOptions {
+	/*!
+	не использовать поле со сторны клиентского приложения
+	*/
+	private boolean				blocked = false;
 	/**
 	 * кодовая страница, используя которую необходимо открыть книгу.
 	 */
@@ -21,6 +25,7 @@ public class AlBookOptions {
 	 * позиция чтения, куда будет осуществлен переход после открытия книги
 	 */
 	public int					readPosition = 0;
+	public long					readPositionAddon = 0;
 	/**
  	* пока - резерв
  	*/
@@ -39,4 +44,16 @@ public class AlBookOptions {
 	public boolean				noUseCover = false;
 
 	public String 				password;
+
+	public synchronized void setBlocked() {
+		blocked = true;
+	}
+
+	public synchronized void clearBlocked() {
+		blocked = false;
+	}
+
+	public synchronized boolean isBlocked() {
+		return blocked;
+	}
 }

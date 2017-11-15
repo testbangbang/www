@@ -18,12 +18,14 @@ public class AlFilesEPUB extends AlFilesZIPRecord {
     private boolean isEncrypted = false;
     private String drmManifest;
     private String drmAdditionalData;
+    //private String savedFileName;
 
     @Override
     public int initState(String file, AlFiles myParent, ArrayList<AlFileZipEntry> fList) {
 	    /*addon_support = true;*/
         super.initState(LEVEL1_ZIP_FIRSTNAME_EPUB, myParent, fList);
 
+        //savedFileName = fileName;
         fileName = null;
 
         ident = "epub";
@@ -127,4 +129,8 @@ public class AlFilesEPUB extends AlFilesZIPRecord {
         return file.getName();
     }
 
+    /*@Override
+    public int getExternalFileNum(String fname) {
+        return parent.getExternalFileNum(fname);
+    }*/
 }

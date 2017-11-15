@@ -111,6 +111,9 @@
 # for onxysdk-data model
 -keepclasseswithmembernames public class com.onyx.android.sdk.data.model.** { *;}
 
+# for alreader-engine
+-keep class com.neverland.engbook.level1.RealCHM { public *; }
+
 # for leanCloud
 -keep class com.avos.** { *; }
 -dontwarn com.avos.**

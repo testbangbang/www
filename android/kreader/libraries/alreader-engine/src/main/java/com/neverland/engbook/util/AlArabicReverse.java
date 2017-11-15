@@ -82,7 +82,7 @@ public class AlArabicReverse {
         System.arraycopy(arabicItem.width, place_new_start, item.width, place_new_start, token_length);
 
         for (int i = 0; i < token_length; i++) {
-            item.style[place_new_start + i] &= ~AlStyles.SL_MARKFIRTSTLETTER;
+            item.style[place_new_start + i] &= ~AlStyles.SL_MARKFIRTSTLETTER0;
         }
     }
 

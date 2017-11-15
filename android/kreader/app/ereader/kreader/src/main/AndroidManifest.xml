@@ -111,6 +111,7 @@
                 <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
                 <data android:mimeType="application/doc+zip" />
                 <data android:mimeType="application/doc.zip" />
+                <data android:mimeType="application/vnd.ms-htmlhelp" />
             </intent-filter>
 
             <intent-filter>
@@ -125,6 +126,8 @@
                 <data android:pathPattern=".*\\.cbr" />
                 <data android:pathPattern=".*\\.[cC][bB][zZ]" />
                 <data android:pathPattern=".*\\.[cC][bB][rR]" />
+                <data android:pathPattern=".*\\.chm" />
+                <data android:pathPattern=".*\\.[cC][hH][mM]" />
                 <data android:pathPattern=".*\\.[dD][jJ][vV][uU]" />
                 <data android:pathPattern=".*\\.[eE][pP][uU][bB]"/>
                 <data android:pathPattern=".*\\.doc"/>

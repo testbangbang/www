@@ -10,11 +10,11 @@ public class AlPreferenceOptions {
 	public boolean		delete0xA0;
 	public int			need_dialog;
 	public boolean		sectionNewScreen;
-	public boolean		styleSumm;	
+	//public boolean		styleSumm;
 	public int			u301mode;	
 	public boolean		chinezeFormatting;	
 	public boolean		picture_need_tune;
-	public int			picture_need_tuneK;	
+	//public int			picture_need_tuneK;
 	public boolean		justify;
 	public boolean		notesOnPage;
 	public boolean 		isASRoll;
@@ -30,7 +30,7 @@ public class AlPreferenceOptions {
 	public boolean		vjustifyUsed;
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeRequest;
 	public TAL_SCREEN_PAGES_COUNT			calcPagesModeUsed;
-	public float		textMultiplexer = 0.0f;
+	public float		multiplexer = 1.0f;
 	public int			value2CalcMargins = 0;
 	public boolean 		onlyPopupFootnote = false;
 	public TAL_TABLEMODE tableMode;
