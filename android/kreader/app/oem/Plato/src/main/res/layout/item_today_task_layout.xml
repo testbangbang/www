@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="TodayTaskItemBinding">
+
+        <import type="com.onyx.android.plato.utils.StringUtil" />
+
+        <import type="com.onyx.android.plato.utils.TimeUtils" />
+
+        <variable
+            name="data"
+            type="com.onyx.android.plato.cloud.bean.ContentBean" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:padding="@dimen/item_today_task_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@{data.num}"
+            android:textSize="@{@dimen/level_three_heading_font}" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/item_today_task_title_margin_left"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/homework_unfinished_title_format(StringUtil.transitionHomeworkType(data.type), data.title)}"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{data.auth}"
+                    android:textSize="@{@dimen/level_three_heading_font}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/item_today_task_deadline_margin_left"
+                    android:text="@{@string/homework_item_deadline_format(data.deadline)}"
+                    android:textSize="@{@dimen/level_three_heading_font}" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="@dimen/item_today_task_course_width"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/item_today_task_course_margin_right"
+            android:background="@{@drawable/text_unselected_state}"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:gravity="center"
+            android:padding="@{@dimen/item_homework_subject_padding}"
+            android:text="@{data.course}"
+            android:textSize="@{@dimen/level_three_heading_font}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:drawableRight="@drawable/icon_go"
+            android:gravity="center_vertical"
+            android:text="@string/un_submit"
+            android:textSize="@dimen/level_three_heading_font" />
+    </RelativeLayout>
+</layout>

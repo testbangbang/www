@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="FillHomeworkBinding">
+        <import type="android.view.View"/>
+        <variable
+            name="taskName"
+            type="String"/>
+        
+        <variable
+            name="wholeScore"
+            type="int"/>
+
+        <variable
+            name="showTaskType"
+            type="boolean"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/fill_homework_title_bar"
+            layout="@layout/title_bar_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:textSize="@dimen/level_one_heading_font"
+            android:layout_marginTop="10dp"
+            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}"
+            android:text="@{taskName}"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/level_three_heading_font"
+            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}"
+            android:text="@{@string/full_score(wholeScore)}"/>
+
+        <com.onyx.android.plato.view.NestedPageRecyclerView
+            android:id="@+id/fill_homework_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:padding="@dimen/fill_homework_recycler_view_padding" />
+    </LinearLayout>
+</layout>

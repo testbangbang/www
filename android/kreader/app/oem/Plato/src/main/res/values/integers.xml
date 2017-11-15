@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="course_adapter_col">9</integer>
+    <integer name="course_adapter_row">1</integer>
+    <integer name="homework_adapter_col">1</integer>
+    <integer name="homework_adapter_row">8</integer>
+    <integer name="today_task_adapter_row">3</integer>
+    <integer name="today_task_adapter_col">1</integer>
+    <integer name="homework_finish_row">9</integer>
+    <integer name="homework_finish_col">1</integer>
+    <integer name="homework_study_report_row">9</integer>
+    <integer name="homework_study_report_col">1</integer>
+    <integer name="shape_page_adapter_row">1</integer>
+    <integer name="shape_page_adapter_col">4</integer>
+    <integer name="fill_homework_row">2</integer>
+    <integer name="fill_homework_col">1</integer>
+    <integer name="homework_record_row">2</integer>
+    <integer name="homework_record_col">1</integer>
+    <integer name="homework_result_objective_col">9</integer>
+    <integer name="homework_result_objective_row">2</integer>
+    <integer name="homework_result_subjective_col">3</integer>
+    <integer name="homework_result_subjective_row">2</integer>
+    <integer name="scribble_tool_menu_offset_y">10</integer>
+    <integer name="scribble_tool_menu_row">1</integer>
+    <integer name="scribble_tool_menu_col">4</integer>
+    <integer name="remind_adapter_col">1</integer>
+    <integer name="remind_adapter_row">6</integer>
+</resources>

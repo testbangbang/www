@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener" />
+        <variable
+            name="requestInfo"
+            type="com.onyx.android.plato.cloud.bean.UserLoginRequestBean"/>
+
+    </data>
+
+    <LinearLayout
+        android:padding="@dimen/login_activity_padding"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:layout_marginTop="@dimen/login_activity_logo_margin_top"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/ic_launcher_round"
+            android:layout_width="@dimen/login_activity_logo_width"
+            android:layout_height="@dimen/login_activity_logo_height"/>
+
+        <TextView
+            android:layout_marginTop="@dimen/login_activity_name_margin_top"
+            android:textSize="@dimen/level_one_heading_font"
+            android:text="@string/app_name"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/login_act_et_account"
+            android:text="@={requestInfo.account}"
+            android:layout_marginTop="@dimen/login_activity_account_margin_top"
+            android:hint="@string/login_activity_account_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/login_act_et_password"
+            android:text="@={requestInfo.password}"
+            android:inputType="textPassword"
+            android:layout_marginTop="@dimen/login_activity_password_margin_top"
+            android:hint="@string/login_activity_password_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <CheckBox
+            android:id="@+id/login_act_cb_keep_password"
+            android:checked="@={requestInfo.isKeepPassword}"
+            android:layout_marginTop="@dimen/login_activity_keep_password_margin_top"
+            android:text="@string/login_activity_keep_password"
+            android:textSize="@dimen/level_three_heading_font"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <TextView
+            android:id="@+id/login_act_tv_startlogin"
+            android:onClick="@{listener::onClick}"
+            android:layout_marginTop="@dimen/login_activity_login_button_margin_top"
+            android:background="@drawable/selector_login_button_background"
+            android:padding="@dimen/login_activity_login_button_pddding"
+            android:gravity="center"
+            android:text="@string/login_activity_login"
+            android:textSize="@dimen/level_three_heading_font"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</layout>

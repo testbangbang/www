@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="title"
+            type="String" />
+
+        <variable
+            name="record"
+            type="String" />
+
+        <variable
+            name="countDown"
+            type="String" />
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/title_bar_height"
+            android:layout_margin="@dimen/title_bar_margin"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/title_bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/icon_back"
+                android:drawablePadding="@dimen/title_bar_title_drawable_padding"
+                android:gravity="center_vertical"
+                android:text="@{title}"
+                android:maxEms="20"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:id="@+id/title_bar_count_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/title_bar_record_margin_right"
+                android:drawableLeft="@drawable/icon_clock"
+                android:drawablePadding="@dimen/title_bar_title_drawable_padding"
+                android:gravity="center_vertical"
+                android:text="@{@string/count_down(countDown)}"
+                android:textSize="@dimen/level_two_heading_font"
+                android:visibility="gone" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/title_bar_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/title_bar_record_margin_right"
+                android:drawableLeft="@drawable/icon_homework_record"
+                android:gravity="center_vertical"
+                android:text="@{record}"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <Button
+                android:id="@+id/title_bar_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/title_button_selector"
+                android:gravity="center"
+                android:text="@string/file_homework_commit"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <ImageView
+                android:id="@+id/title_bar_image_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{listener::onClick}"
+                android:src="@drawable/ic_eraser"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/title_bar_image_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{listener::onClick}"
+                android:src="@drawable/ic_shape"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_height"
+            android:background="@android:color/black" />
+    </LinearLayout>
+</layout>
