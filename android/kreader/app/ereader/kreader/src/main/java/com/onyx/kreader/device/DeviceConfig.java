@@ -160,10 +160,17 @@ public class DeviceConfig {
         return contentFromRawResource(context, "onyx");
     }
 
+    private String convertSymbolMinusToUnderscore(final String name) {
+        if (StringUtils.isNotBlank(name)) {
+            return name.replaceAll("-", "_");
+        }
+        return name;
+    }
+
     private String contentFromRawResource(Context context, String name) {
         String content = "";
         try {
-            int res = context.getResources().getIdentifier(name.toLowerCase(), "raw", context.getPackageName());
+            int res = context.getResources().getIdentifier(convertSymbolMinusToUnderscore(name).toLowerCase(), "raw", context.getPackageName());
             content = RawResourceUtil.contentOfRawResource(context, res);
         } catch (Exception e) {
             Debug.w(getClass(), e);
