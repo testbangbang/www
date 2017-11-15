@@ -2974,7 +2974,7 @@ public class AlBookEng{
     public synchronized AlBookProperties getBookProperties(boolean needCalcPage4Content) {
 
 
-        if (openState.getState() != AlBookState.OPEN)
+        if (!isBookOpened())
             return null;
 
         resultEmptyMetadata(bookProperties);
@@ -5375,7 +5375,7 @@ public class AlBookEng{
 	public synchronized int	getPageCount(AlCurrentPosition position) {
 		position.noNeedSave = true;
 
-		if (openState.getState() == AlBookState.OPEN) {
+		if (isBookOpened()) {
 			position.noNeedSave = format.getNoNeedSave();
 			position.haveProblem = format.haveProblem;
 
@@ -7228,6 +7228,10 @@ public class AlBookEng{
 				break;
 		}
 		return result;
+	}
+
+	private boolean isBookOpened() {
+		return openState.getState() == AlBookState.OPEN || openState.getState() >= AlBookState.PROCESS0;
 	}
 
 }
