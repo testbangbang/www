@@ -17,4 +17,9 @@
         android:key="@string/setting_touch_right_bottom_key"
         android:layout="@layout/settings_custom_preference_item"
         android:title="@string/setting_touch_right_bottom_tittle" />
+
+    <Preference
+        android:key="@string/settings_touch_binding_reset_default_key"
+        android:layout="@layout/settings_custom_preference_item"
+        android:title="@string/settings_touch_binding_reset_default" />
 </PreferenceScreen>
