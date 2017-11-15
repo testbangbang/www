@@ -249,7 +249,7 @@ class AlThreadData {
 
 					synchronized (this.book_object) {
 						this.clearWork0();
-						startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, false);
+						startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, true);
 					}
 
 				} else {
