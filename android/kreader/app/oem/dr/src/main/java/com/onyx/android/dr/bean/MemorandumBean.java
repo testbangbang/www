@@ -5,16 +5,10 @@ package com.onyx.android.dr.bean;
  */
 
 public class MemorandumBean {
-    private String timeQuantum;
+    private long time;
     private String matter;
-
-    public String getTimeQuantum() {
-        return timeQuantum;
-    }
-
-    public void setTimeQuantum(String timeQuantum) {
-        this.timeQuantum = timeQuantum;
-    }
+    private String date;
+    private String dayOfWeek;
 
     public String getMatter() {
         return matter;
@@ -22,5 +16,29 @@ public class MemorandumBean {
 
     public void setMatter(String matter) {
         this.matter = matter;
+    }
+
+    public long getTime() {
+        return time;
+    }
+
+    public void setTime(long time) {
+        this.time = time;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public String getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(String dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
     }
 }

@@ -6,13 +6,17 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
-import com.onyx.android.dr.bean.MemorandumBean;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.event.HourEvent;
 import com.onyx.android.dr.interfaces.AddMemorandumView;
 import com.onyx.android.dr.presenter.AddMemorandumPresenter;
 import com.onyx.android.dr.util.DictPreference;
+import com.onyx.android.dr.util.TimeUtils;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.DefaultEditText;
 import com.onyx.android.sdk.utils.StringUtils;
 
@@ -29,7 +33,9 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 2017/7/21.
  */
 public class AddMemorandumActivity extends BaseActivity implements AddMemorandumView, TimePickerDialog.TimePickerDialogInterface {
-    @Bind(R.id.add_memorandum_activity_start_time)
+    @Bind(R.id.add_memorandum_activity_day_of_week)
+    TextView dayOfWeek;
+    @Bind(R.id.add_memorandum_activity_time)
     TextView time;
     @Bind(R.id.add_memorandum_activity_content)
     DefaultEditText contentEditText;
@@ -41,9 +47,13 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     ImageView image;
     @Bind(R.id.title_bar_right_icon_four)
     ImageView iconFour;
+    @Bind(R.id.title_bar_right_icon_three)
+    ImageView iconThree;
     private AddMemorandumPresenter addMemorandumPresenter;
     private TimePickerDialog timePickerDialog;
     private String dateAndTimeHorizon;
+    private String date;
+    private long currentTime = 0;
 
     @Override
     protected Integer getLayoutId() {
@@ -69,11 +79,21 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     private void loadMemorandumData() {
         addMemorandumPresenter = new AddMemorandumPresenter(getApplicationContext(), this);
         timePickerDialog = new TimePickerDialog(this);
+        String day = getIntent().getStringExtra(Constants.MEMORANDUM_DAY_OF_WEEK);
+        date = getIntent().getStringExtra(Constants.MEMORANDUM_TIME);
+        currentTime = getIntent().getLongExtra(Constants.MEMORANDUM_CURRENT_TIME, 0);
+        String matter = getIntent().getStringExtra(Constants.MEMORANDUM_MATTER);
+        dayOfWeek.setText(day);
+        time.setText(date);
+        contentEditText.setText(matter);
+        Utils.movingCursor(contentEditText);
     }
-    private void setTitleData() {
 
+    private void setTitleData() {
+        iconThree.setVisibility(View.VISIBLE);
+        iconThree.setImageResource(R.drawable.ic_reader_note_diary_save);
         iconFour.setVisibility(View.VISIBLE);
-        iconFour.setImageResource(R.drawable.ic_reader_note_diary_save);
+        iconFour.setImageResource(R.drawable.ic_reader_note_delet);
         image.setImageResource(R.drawable.memorandum);
         title.setText(getString(R.string.memorandum));
     }
@@ -89,19 +109,19 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     private void initEvent() {
     }
 
-    @OnClick({R.id.add_memorandum_activity_start_time,
-            R.id.menu_back,
-            R.id.title_bar_right_icon_four})
+    @OnClick({R.id.menu_back,
+            R.id.title_bar_right_icon_four,
+            R.id.title_bar_right_icon_three})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
                 finish();
                 break;
-            case R.id.title_bar_right_icon_four:
+            case R.id.title_bar_right_icon_three:
                 insertData();
                 break;
-            case R.id.add_memorandum_activity_start_time:
-                timePickerDialog.showDateAndTimePickerDialog();
+            case R.id.title_bar_right_icon_four:
+                deleteData();
                 break;
         }
     }
@@ -113,29 +133,33 @@ public class AddMemorandumActivity extends BaseActivity implements AddMemorandum
     }
 
     private void insertData() {
-        if (StringUtils.isNullOrEmpty(dateAndTimeHorizon)) {
-            CommonNotices.showMessage(this, getString(R.string.select_time));
-            return;
-        }
         String content = contentEditText.getText().toString();
         if (StringUtils.isNullOrEmpty(content)) {
             CommonNotices.showMessage(this, getString(R.string.input_memorandum));
             return;
         }
-        MemorandumBean bean = new MemorandumBean();
-        bean.setTimeQuantum(dateAndTimeHorizon);
+        MemorandumEntity bean = new MemorandumEntity();
+        bean.currentTime = TimeUtils.getCurrentTimeMillis();
         bean.setMatter(content);
+        bean.setDate(date);
         addMemorandumPresenter.insertMemorandum(bean);
         finish();
+        ActivityManager.startMemorandumActivity(this);
+    }
+
+    private void deleteData() {
+        String content = contentEditText.getText().toString();
+        if (StringUtils.isNullOrEmpty(content) || currentTime == 0) {
+            CommonNotices.showMessage(this, getString(R.string.no_memorandum_content));
+            return;
+        }
+        addMemorandumPresenter.deleteMemorandum(currentTime);
+        finish();
+        ActivityManager.startMemorandumActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHourEvent(HourEvent event) {
-        if (StringUtils.isNullOrEmpty(dateAndTimeHorizon)) {
-            time.setText(getString(R.string.select_time));
-        } else {
-            time.setText(dateAndTimeHorizon);
-        }
     }
 
     @Override

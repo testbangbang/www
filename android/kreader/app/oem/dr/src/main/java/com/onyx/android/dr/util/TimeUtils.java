@@ -2,11 +2,17 @@ package com.onyx.android.dr.util;
 
 import android.support.annotation.NonNull;
 
+import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.data.database.MemorandumEntity;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 /**
  * Created by huxiaomao on 2017/1/12.
@@ -16,6 +22,7 @@ public class TimeUtils {
     public static final String NEW_DATA_TIME_FORMAT = "yyyy-MM-dd HH-mm-ss";
     public static final String HOUR_AND_MINUTE = "yyyy-MM-dd HH:mm";
     public static final String DATA_FORMAT = "yyyy-MM-dd";
+    public static final String WHAT_DAY_FORMAT = "E";
     public static final String SECOND_DATA_FORMAT = "yyyyMMdd";
     public static final String START_TIME = " 00:00:00";
     public static final String END_TIME = " 23:59:59";
@@ -26,6 +33,7 @@ public class TimeUtils {
     public static final SimpleDateFormat DEFAULT_DATE_FORMAT = new SimpleDateFormat(DATA_TIME_FORMAT);
     public static final SimpleDateFormat NEW_DATE_FORMAT = new SimpleDateFormat(NEW_DATA_TIME_FORMAT);
     public static final SimpleDateFormat DATE_FORMAT_DATE = new SimpleDateFormat(DATA_FORMAT);
+    public static final SimpleDateFormat WHAT_DAY_DATE = new SimpleDateFormat(WHAT_DAY_FORMAT);
     public static final SimpleDateFormat SECOND_DATE_FORMAT_DATE = new SimpleDateFormat(SECOND_DATA_FORMAT);
 
     private TimeUtils() {
@@ -160,13 +168,13 @@ public class TimeUtils {
 
     public static String getDateAndTimeString(int year, int month, int day, String time) {
         String date;
-        date = year + "." + month + "." + day + " " +  time;
+        date = year + "." + month + "." + day + " " + time;
         return date;
     }
 
     public static String getSecondDateAndTimeString(int year, int month, int day, String time) {
         String date;
-        date = year + "-" + month + "-" + day + " " +  time;
+        date = year + "-" + month + "-" + day + " " + time;
         return date;
     }
 
@@ -199,8 +207,25 @@ public class TimeUtils {
         return formateDate;
     }
 
-    public static Date parseDate(String date) throws ParseException {
-        return DATE_FORMAT_DATE.parse(date);
+    public static Date parseDate(String date) {
+        Date parse = null;
+        try {
+            parse = DATE_FORMAT_DATE.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return parse;
+    }
+
+    public static Date parseDateByLong(long time) {
+        String stringDate = getDate(time);
+        Date date = null;
+        try {
+            date = DATE_FORMAT_DATE.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 
     public static String formatDate(Date date) throws ParseException {
@@ -313,5 +338,64 @@ public class TimeUtils {
         long timeMillis = System.currentTimeMillis();
         String time = getTime(timeMillis, SECOND_DATE_FORMAT_DATE);
         return time.substring(2);
+    }
+
+    public static List<MemorandumEntity> printWeekAndDay(String content) {
+        // set the date
+        List<MemorandumEntity> list = new ArrayList<>();
+        Date date = null;
+        try {
+            date = DATE_FORMAT_DATE.parse(content);
+        } catch (ParseException e) {
+            System.out.println(e);
+        }
+        GregorianCalendar calendar = new GregorianCalendar();
+        calendar.setGregorianChange(date);
+        calendar.setTime(date);
+        int diff = GregorianCalendar.SUNDAY - calendar.get(GregorianCalendar.DAY_OF_WEEK);
+        // start from sunday
+        calendar.add(GregorianCalendar.DAY_OF_MONTH, diff);
+        // print week and date in this week
+        for (int i = GregorianCalendar.SUNDAY; i <= GregorianCalendar.SATURDAY; i++) {
+            Date newDate = calendar.getTime();
+            MemorandumEntity bean = new MemorandumEntity();
+            String time = DATE_FORMAT_DATE.format(newDate);
+            String dayOfWeek = WHAT_DAY_DATE.format(newDate);
+            bean.setDate(time);
+            bean.setDayOfWeek(dayOfWeek);
+            list.add(bean);
+            calendar.add(GregorianCalendar.DAY_OF_MONTH, 1);
+        }
+        return list;
+    }
+
+    public static String getLastDateString(String content) {
+        Date parse = null;
+        try {
+            parse = DATE_FORMAT_DATE.parse(content);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(parse);
+        long timeInMillis = cal.getTimeInMillis();
+        timeInMillis = timeInMillis - Constants.DATE_TIME;
+        String newDate = getDate(timeInMillis);
+        return newDate;
+    }
+
+    public static String getNextDateString(String content) {
+        Date parse = null;
+        try {
+            parse = DATE_FORMAT_DATE.parse(content);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(parse);
+        long timeInMillis = cal.getTimeInMillis();
+        timeInMillis = timeInMillis + Constants.DATE_TIME;
+        String newDate = getDate(timeInMillis);
+        return newDate;
     }
 }

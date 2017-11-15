@@ -69,6 +69,7 @@ public class Constants {
     public static final int DIALOG_VIEW_FIRST_TYPE = 0;
     public static final int DIALOG_VIEW_SECOND_TYPE = 1;
     public static final int DIALOG_VIEW_THIRD_TYPE = 2;
+    public static final int DIALOG_VIEW_FOURTH_TYPE = 3;
 
     public static final int READING_RATE_DIALOG_EXPORT = 0;
     public static final int READING_RATE_DIALOG_SHARE = 1;
@@ -139,6 +140,7 @@ public class Constants {
     public static final String UPDATE_URL = "update_url";
     public static final String UPDATE_ZIP = "update.zip";
     public static final String BOOK_REPORT_DATA = "book_report_data";
+    public static final String MEMORANDUM_DATA = "memorandum_data";
     public static final String BOOK_NAME = "book_name";
     public static final String BOOK_PAGE = "book_page";
     public static final String BOOK_ID = "book_id";
@@ -181,6 +183,21 @@ public class Constants {
 
     public static final String DOWNLOAD_URL = "downloadUrl";
     public static final String UPDATE_MESSAGE = "message";
+
+    public static final int SUNDAY = 0;
+    public static final int MONDAY = 1;
+    public static final int TUESDAY = 2;
+    public static final int WEDNESDAY = 3;
+    public static final int THURSDAY = 4;
+    public static final int FRIDAY = 5;
+    public static final int SATURDAY = 6;
+
+    public static long DATE_TIME = 7 * 24 * 60 * 60 * 1000;
+
+    public static final String  MEMORANDUM_DAY_OF_WEEK = "memorandum_day_of_week";
+    public static final String MEMORANDUM_TIME = "memorandum_time";
+    public static final String MEMORANDUM_MATTER = "memorandum_matter";
+    public static final String MEMORANDUM_CURRENT_TIME = "memorandum_current_time";
 
     public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
     public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";

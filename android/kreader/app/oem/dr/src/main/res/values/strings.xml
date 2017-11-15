@@ -735,4 +735,16 @@
     <string name="export_success_dialog_hint">The file has been exported, please connect the personal computer to see the export file in my_notes_html in the reader folder.</string>
     <string name="export_success_prompt">export success prompt</string>
     <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
+    <string name="memorandum_activity_week">week</string>
+    <string name="no_memorandum_content">no_memorandum_content</string>
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+    <string name="this_week_the_date">This week the date:</string>
+    <string name="last_week">last week</string>
+    <string name="next_week">next week</string>
 </resources>

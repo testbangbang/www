@@ -12,6 +12,7 @@ import com.onyx.android.dr.interfaces.MemorandumView;
 import com.onyx.android.dr.request.local.MemorandumDelete;
 import com.onyx.android.dr.request.local.MemorandumExport;
 import com.onyx.android.dr.request.local.MemorandumQueryAll;
+import com.onyx.android.dr.request.local.MemorandumQueryByTime;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 
@@ -44,9 +45,17 @@ public class MemorandumPresenter {
         memorandumData.getAllMemorandum(context, req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                allDatas = req.getAllDatas();
-                ArrayList<Boolean> checkList = req.getCheckList();
-                memorandumView.setMemorandumData(req.getAllDatas(), checkList);
+            }
+        });
+    }
+
+    public void getMemorandumDataByTime(long startDate, long endDate) {
+        final MemorandumQueryByTime req = new MemorandumQueryByTime(startDate, endDate);
+        memorandumData.getMemorandumByTime(context, req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                allDatas = req.getAllData();
+                memorandumView.setMemorandumData(req.getAllData());
             }
         });
     }

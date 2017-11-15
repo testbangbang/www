@@ -44,6 +44,8 @@ public class TimePickerDialog {
     private DatePicker startDatePickerAll;
     private TimePicker endTimePickerAll;
     private DatePicker endDatePickerAll;
+    private DatePicker onlyDatePicker;
+    private String onlyDateString;
 
     public TimePickerDialog(Context context) {
         super();
@@ -60,6 +62,15 @@ public class TimePickerDialog {
                 .findViewById(R.id.end_date_picker);
         resizePikcer(startDatePicker);
         resizePikcer(endDatePicker);
+        return inflate;
+    }
+
+    private View initOnlyDatePicker() {
+        View inflate = LayoutInflater.from(context).inflate(
+                R.layout.dialog_only_date_picker, null);
+        onlyDatePicker = (DatePicker) inflate
+                .findViewById(R.id.only_date_picker);
+        resizePikcer(onlyDatePicker);
         return inflate;
     }
 
@@ -109,6 +120,8 @@ public class TimePickerDialog {
                             getDatePickerValue();
                         } else if (tag == Constants.DIALOG_VIEW_THIRD_TYPE) {
                             getDateAndPickerValue();
+                        } else if (tag == Constants.DIALOG_VIEW_FOURTH_TYPE) {
+                            getOnlyDatePickerValue();
                         }
                         timePickerDialogInterface.positiveListener();
                     }
@@ -146,6 +159,15 @@ public class TimePickerDialog {
         View view = initDateAndTimePicker();
         alertDialog = new AlertDialog.Builder(context);
         alertDialog.setTitle(R.string.select_time);
+        initDialog(view);
+        alertDialog.show();
+    }
+
+    public void showOnlyDateDialog() {
+        tag = Constants.DIALOG_VIEW_FOURTH_TYPE;
+        View view = initOnlyDatePicker();
+        alertDialog = new AlertDialog.Builder(context);
+        alertDialog.setTitle(R.string.select_date);
         initDialog(view);
         alertDialog.show();
     }
@@ -241,6 +263,13 @@ public class TimePickerDialog {
         }
     }
 
+    private void getOnlyDatePickerValue() {
+        int startYear = onlyDatePicker.getYear();
+        int startMonth = onlyDatePicker.getMonth() + 1;
+        int startDay = onlyDatePicker.getDayOfMonth();
+        onlyDateString = TimeUtils.getDateString(startYear, startMonth, startDay);
+    }
+
     public interface TimePickerDialogInterface {
         void positiveListener();
     }
@@ -259,6 +288,10 @@ public class TimePickerDialog {
 
     public long getEndDateMillisecond() {
         return endDateMillisecond;
+    }
+
+    public String getOnlyDateString() {
+        return onlyDateString;
     }
 }
 

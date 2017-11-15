@@ -8,8 +8,24 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:layout_marginLeft="@dimen/memorandum_item_day_of_week_margin_left"
+        android:visibility="visible">
+
+        <TextView
+            android:id="@+id/memorandum_item_day_of_week"
+            style="@style/reading_rate_item_text_view_style"
+            android:text="@string/book_report_list_time" />
+
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
         android:layout_weight="2"
-        android:visibility="gone"
         android:orientation="horizontal">
 
         <TextView
@@ -23,22 +39,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:layout_marginLeft="@dimen/new_word_item_order_number_margin_left"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/memorandum_item_time_quantum"
-            style="@style/reading_rate_item_text_view_style"
-            android:text="@string/book_report_list_time" />
-
-        <View style="@style/view_vertical_direction" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="2"
+        android:layout_weight="5"
         android:orientation="horizontal">
 
         <TextView
@@ -49,19 +50,4 @@
         <View style="@style/view_vertical_direction" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="@dimen/new_word_activity_all_check_width"
-        android:layout_marginRight="@dimen/new_word_item_order_number_margin_left"
-        android:layout_height="match_parent">
-
-        <CheckBox
-            android:id="@+id/memorandum_item_check"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginLeft="20dp"
-            android:scaleX="1.2"
-            android:scaleY="1.2"
-            android:src="@color/white" />
-    </LinearLayout>
 </LinearLayout>

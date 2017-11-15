@@ -30,7 +30,7 @@ public class MemorandumInsert extends BaseDataRequest {
             memorandumInfo.insert();
         } else {
             memorandumEntity.currentTime = memorandumInfo.currentTime;
-            memorandumEntity.timeQuantum = memorandumInfo.timeQuantum;
+            memorandumEntity.matter = memorandumInfo.matter;
             memorandumEntity.update();
         }
     }
@@ -40,7 +40,7 @@ public class MemorandumInsert extends BaseDataRequest {
         if (dataList != null && dataList.size() > 0) {
             for (int i = 0; i < dataList.size(); i++) {
                 memorandumEntity = dataList.get(i);
-                if (memorandumInfo.matter.equals(memorandumEntity.matter)) {
+                if (memorandumInfo.getDate().equals(memorandumEntity.date)) {
                     weatherInsert = false;
                     return true;
                 }

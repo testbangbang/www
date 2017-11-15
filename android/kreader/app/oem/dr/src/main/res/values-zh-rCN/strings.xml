@@ -280,7 +280,7 @@
     <string name="sketch_activity_check_all">全选</string>
     <string name="memorandum_activity_time">日期</string>
     <string name="memorandum_activity_time_quantum">时段</string>
-    <string name="memorandum_activity_matter">事项</string>
+    <string name="memorandum_activity_matter">一周事项</string>
     <string name="memorandum_already_add">备忘录已经添加</string>
     <string name="add_memorandum_success">添加备忘录成功</string>
     <string name="input_memorandum">输入事项</string>
@@ -729,4 +729,16 @@
     <string name="has_add_read_summary">此书该页添加阅读纪要成功</string>
     <string name="export_success_dialog_hint">文件已导出，请连接个人电脑，在阅读器文件夹下my_notes_html中查看导出文件。</string>
     <string name="export_success_prompt">导出成功提示</string>
+    <string name="memorandum_activity_week">周</string>
+    <string name="no_memorandum_content">没有备忘内容</string>
+    <string name="sunday">星期日</string>
+    <string name="monday">星期一</string>
+    <string name="tuesday">星期二</string>
+    <string name="wednesday">星期三</string>
+    <string name="thursday">星期四</string>
+    <string name="friday">星期五</string>
+    <string name="saturday">星期六</string>
+    <string name="this_week_the_date">本周日期: </string>
+    <string name="last_week">上一周</string>
+    <string name="next_week">下一周</string>
 </resources>

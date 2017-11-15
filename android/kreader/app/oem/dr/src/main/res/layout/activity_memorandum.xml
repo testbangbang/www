@@ -13,6 +13,34 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:padding="@dimen/join_group_activity_all_number_padding"
+            android:text="@string/this_week_the_date"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_sunday_date_of_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/join_group_activity_all_number_padding"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/join_group_activity_all_number_padding"
+            android:text="@string/memorandum_activity_time"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <LinearLayout
@@ -23,68 +51,342 @@
 
             <TextView
                 style="@style/good_sentence_activity_textview"
-                android:layout_marginLeft="1dp"
-                android:layout_weight="2"
-                android:visibility="gone"
-                android:text="@string/memorandum_activity_time" />
+                android:layout_weight="1"
+                android:text="@string/memorandum_activity_week"
+                android:visibility="visible" />
 
-            <View style="@style/vertical_view"
-                android:visibility="gone" />
+            <View
+                style="@style/vertical_view"
+                android:visibility="visible" />
 
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
                 android:layout_weight="2"
-                android:text="@string/memorandum_activity_time_quantum" />
+                android:text="@string/memorandum_activity_time" />
 
             <View style="@style/vertical_view" />
 
             <TextView
                 style="@style/good_sentence_activity_textview"
                 android:layout_marginLeft="1dp"
-                android:layout_weight="2"
+                android:layout_weight="5"
                 android:text="@string/memorandum_activity_matter" />
 
             <View style="@style/vertical_view" />
 
-            <LinearLayout
-                android:layout_width="@dimen/new_word_activity_all_check_width"
-                android:layout_height="wrap_content">
-
-                <CheckBox
-                    android:id="@+id/memorandum_activity_all_check"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:scaleX="1.2"
-                    android:scaleY="1.2"
-                    android:src="@color/white" />
-
-                <TextView
-                    style="@style/good_sentence_activity_textview"
-                    android:layout_weight="1"
-                    android:text="@string/good_sentence_activity_check_all" />
-            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <com.onyx.android.dr.view.PageRecyclerView
-        android:id="@+id/memorandum_activity_recyclerview"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:paddingBottom="@dimen/reading_rate_activity_recycler_view_padding_bottom"/>
+    <View style="@style/Horizontal_view" />
 
     <LinearLayout
-        android:id="@+id/memorandum_activity_bottom"
+        android:id="@+id/memorandum_activity_sunday_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:orientation="horizontal">
 
-        <include
-            layout="@layout/page_indicator_layout"
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:text="@string/sunday"
             android:visibility="visible" />
 
+        <View
+            style="@style/vertical_view"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_sunday_time"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_sunday_matter"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="5"
+            android:text="@string/nothing" />
+
+        <View style="@style/vertical_view" />
+
     </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:id="@+id/memorandum_activity_monday_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:text="@string/monday"
+            android:visibility="visible" />
+
+        <View
+            style="@style/vertical_view"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_monday_time"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_monday_matter"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="5"
+            android:text="@string/nothing" />
+
+        <View style="@style/vertical_view" />
+
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:id="@+id/memorandum_activity_tuesday_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:text="@string/tuesday"
+            android:visibility="visible" />
+
+        <View
+            style="@style/vertical_view"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_tuesday_time"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_tuesday_matter"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="5"
+            android:text="@string/nothing" />
+
+        <View style="@style/vertical_view" />
+
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:id="@+id/memorandum_activity_wednesday_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView2"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:text="@string/wednesday"
+            android:visibility="visible" />
+
+        <View
+            style="@style/vertical_view"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_wednesday_time"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_wednesday_matter"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="5"
+            android:text="@string/nothing" />
+
+        <View style="@style/vertical_view" />
+
+    </LinearLayout>
+
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:id="@+id/memorandum_activity_thursday_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:text="@string/thursday"
+            android:visibility="visible" />
+
+        <View
+            style="@style/vertical_view"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_thursday_time"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_thursday_matter"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="5"
+            android:text="@string/nothing" />
+
+        <View style="@style/vertical_view" />
+
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:id="@+id/memorandum_activity_friday_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView3"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:text="@string/friday"
+            android:visibility="visible" />
+
+        <View
+            style="@style/vertical_view"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_friday_time"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_friday_matter"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="5"
+            android:text="@string/nothing" />
+
+        <View style="@style/vertical_view" />
+
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:id="@+id/memorandum_activity_saturday_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="1"
+            android:text="@string/saturday"
+            android:visibility="visible" />
+
+        <View
+            style="@style/vertical_view"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_saturday_time"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="2"
+            android:text="@string/memorandum_activity_time" />
+
+        <View style="@style/vertical_view" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_saturday_matter"
+            style="@style/good_sentence_activity_textview"
+            android:layout_marginLeft="1dp"
+            android:layout_weight="5"
+            android:text="@string/nothing" />
+
+        <View style="@style/vertical_view" />
+    </LinearLayout>
+
+    <View style="@style/Horizontal_view" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/memorandum_activity_last_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/join_group_activity_all_number_padding"
+            android:text="@string/last_week"
+            android:textColor="@android:color/black"
+            android:layout_marginRight="200dp"
+            android:layout_marginTop="50dp"
+            android:layout_marginBottom="50dp"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <TextView
+            android:id="@+id/memorandum_activity_next_week"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/join_group_activity_all_number_padding"
+            android:background="@drawable/rectangle_stroke"
+            android:padding="@dimen/join_group_activity_all_number_padding"
+            android:text="@string/next_week"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+    </LinearLayout>
+
 </LinearLayout>

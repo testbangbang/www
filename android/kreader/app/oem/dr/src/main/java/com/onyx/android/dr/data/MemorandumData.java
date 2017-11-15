@@ -9,6 +9,7 @@ import com.onyx.android.dr.request.local.MemorandumDelete;
 import com.onyx.android.dr.request.local.MemorandumExport;
 import com.onyx.android.dr.request.local.MemorandumInsert;
 import com.onyx.android.dr.request.local.MemorandumQueryAll;
+import com.onyx.android.dr.request.local.MemorandumQueryByTime;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
@@ -27,6 +28,10 @@ public class MemorandumData {
     }
 
     public void getAllMemorandum(Context context, MemorandumQueryAll req, BaseCallback baseCallback) {
+        submitRequest(context, req, baseCallback);
+    }
+
+    public void getMemorandumByTime(Context context, MemorandumQueryByTime req, BaseCallback baseCallback) {
         submitRequest(context, req, baseCallback);
     }
 

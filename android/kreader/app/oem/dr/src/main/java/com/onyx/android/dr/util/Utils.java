@@ -66,7 +66,6 @@ import static com.onyx.android.sdk.dict.utils.Utils.loadLocalDict;
  * Created by zhuzeng on 6/3/15.
  */
 public class Utils {
-
     public static final String UTF8_TAG = "UTF-8";
     public static final String UTF16BE_TAG = "UTF-16BE";
     public static final String UTF16LE_TAG = "UTF-16LE";
@@ -83,7 +82,6 @@ public class Utils {
     public static final String TTS_VOLUME_INCREASE_PNG = "tts_volume_increase.png";
     public static final String SAVE_KEYWORD_PNG = "save_keyword.png";
     public static final String DICT_RESOURCE_CACHE_DIR = File.separator + ".cache";
-
     public static final String[] SPECIAL_CHAR = new String[]{"-", " "};
     public static final String UNDERLINE_CHAR = "_";
 
@@ -1038,5 +1036,16 @@ public class Utils {
         } else {
             return true;
         }
+    }
+
+    public static int getWeek(String currentTime) {
+        Date date = TimeUtils.parseDate(currentTime);
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        int week_index = cal.get(Calendar.DAY_OF_WEEK) - 1;
+        if (week_index < 0) {
+            week_index = 0;
+        }
+        return week_index;
     }
 }
