@@ -7,4 +7,5 @@ package com.onyx.android.plato.cloud.bean;
 public class SubjectBean {
     public int id;
     public String name;
+    public String type;
 }

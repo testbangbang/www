@@ -77,7 +77,7 @@
 
         <LinearLayout
             android:id="@+id/ll_user_center_fragment_phone_number_container"
-            android:onClick="@{listener.onClick}"
+            android:onClick="@{listener::onClick}"
             android:paddingTop="@dimen/user_center_text_padding_top_and_bottom"
             android:paddingBottom="@dimen/user_center_text_padding_top_and_bottom"
             android:paddingLeft="@dimen/user_center_text_padding_left"
@@ -109,7 +109,7 @@
         <TextView
             android:id="@+id/tv_user_center_fragment_change_password"
             android:text="@string/user_center_fragment_change_password"
-            android:onClick="@{listener.onClick}"
+            android:onClick="@{listener::onClick}"
             android:paddingTop="@dimen/user_center_text_padding_top_and_bottom"
             android:paddingBottom="@dimen/user_center_text_padding_top_and_bottom"
             android:paddingLeft="@dimen/user_center_text_padding_left"
@@ -129,7 +129,7 @@
         <TextView
             android:id="@+id/tv_user_center_fragment_logout"
             android:text="@string/user_center_fragment_logout"
-            android:onClick="@{listener.onClick}"
+            android:onClick="@{listener::onClick}"
             android:gravity="center"
             android:padding="@dimen/user_center_text_padding_top_and_bottom"
             android:layout_width="match_parent"

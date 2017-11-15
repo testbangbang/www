@@ -66,7 +66,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
         //TODO:fake student id = 108
-        homeworkPresenter.getSubjects("107");
+        homeworkPresenter.getSubjects("106");
         homeworkPresenter.getHomeworkUnfinishedData("1");
         homeworkPresenter.getStudyReportData(null);
     }
@@ -115,7 +115,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
             @Override
             public void onItemClick(View view, Object position) {
                 SubjectBean subjectBean = exerciseTypes.get((int) position);
-                subjectType = subjectBean.name;
+                subjectType = subjectBean.type;
                 loadHomeworkFinish();
             }
         });
@@ -262,7 +262,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     @Override
     public void setExerciseType(List<SubjectBean> exerciseTypes) {
         this.exerciseTypes = exerciseTypes;
-        subjectType = exerciseTypes.get(0).name;
+        subjectType = exerciseTypes.get(0).type;
         courseStateAdapter.setData(exerciseTypes);
     }
 }
