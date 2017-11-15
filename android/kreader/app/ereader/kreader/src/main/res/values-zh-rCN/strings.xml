@@ -312,6 +312,7 @@
   <string name="setting_touch_left_bottom_tittle">左下</string>
   <string name="setting_touch_right_top_tittle">右上</string>
   <string name="setting_touch_right_bottom_tittle">右下</string>
+  <string name="settings_touch_binding_reset_default">恢复触控默认设置</string>
 
   <string name="settings_touch_binding_increase_brightness_tittle">增加亮度</string>
   <string name="settings_touch_binding_decrease_brightness_tittle">降低亮度</string>

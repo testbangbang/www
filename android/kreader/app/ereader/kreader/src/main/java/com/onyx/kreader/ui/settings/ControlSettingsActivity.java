@@ -153,25 +153,31 @@ public class ControlSettingsActivity extends PreferenceActivity {
     @Override
     public boolean onPreferenceTreeClick(final PreferenceScreen preferenceScreen, final Preference preference) {
         if (preference.getKey().equals(getResources().getString(R.string.settings_key_binding_reset_default_key))) {
-            new AlertDialog.Builder(ControlSettingsActivity.this)
-                    .setMessage(getResources().getString(R.string.settings_key_binding_reset_default) + "?")
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            cleanUpAllCustomBinding(preferenceScreen);
-                            dialog.dismiss();
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    }).create().show();
-            return true;
+            showResetDialog(preferenceScreen, R.string.settings_key_binding_reset_default);
+        }
+        if (preference.getKey().equals(getResources().getString(R.string.settings_touch_binding_reset_default_key))) {
+            showResetDialog(preferenceScreen, R.string.settings_touch_binding_reset_default);
         }
         chooseKeyFunction(preference);
         return super.onPreferenceTreeClick(preferenceScreen, preference);
+    }
+
+    private void showResetDialog(final PreferenceScreen preferenceScreen, int messageResId) {
+        new AlertDialog.Builder(ControlSettingsActivity.this)
+                .setMessage(getResources().getString(messageResId) + "?")
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        cleanUpAllCustomBinding(preferenceScreen);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
     }
 
     private void chooseKeyFunction(final Preference preference) {
