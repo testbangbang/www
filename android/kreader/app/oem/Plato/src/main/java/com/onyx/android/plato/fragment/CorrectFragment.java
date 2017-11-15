@@ -6,7 +6,9 @@ import android.view.View;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.FillHomeworkAdapter;
+import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
 import com.onyx.android.plato.cloud.bean.FinishContent;
+import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.databinding.CorrectDataBinding;
 import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
@@ -37,7 +39,8 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
     @Override
     protected void loadData() {
         presenter = new CorrectPresenter(this);
-        presenter.getCorrectData();
+        //TODO:fake practice id,student id
+        presenter.getCorrectData(25, 108);
     }
 
     @Override
@@ -99,7 +102,8 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         }
 
         if(presenter != null) {
-            presenter.getCorrectData();
+            //TODO:fake practice id,student id
+            presenter.getCorrectData(25, 108);
         }
     }
 
@@ -115,10 +119,16 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
     }
 
     @Override
-    public void setCorrectList(List<QuestionData> data) {
+    public void setCorrectData(GetCorrectedTaskBean data) {
         if(adapter != null) {
+            return;
+        }
+        List<QuestionData> questionDataList = data.volumeExerciseIdsDTO.volumeExerciseDTOS;
+        List<ExerciseMessageBean> questionMessages = data.exerciseMessageDtos;
+        if (questionDataList != null && questionDataList.size() > 0 && questionMessages != null && questionMessages.size() > 0) {
             adapter.setFinished(true);
-            //TODO: adapter.setData(data, title);
+            //TODO:fake practice id 25
+            adapter.setData(questionDataList, questionMessages, title, 25);
         }
     }
 }

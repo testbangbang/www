@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ExerciseBean;
+import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
 import com.onyx.android.plato.cloud.bean.Question;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
@@ -87,7 +88,7 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
         this.isFinished = isFinished;
     }
 
-    public void setData(List<QuestionData> data, String title, int taskId) {
+    public void setData(List<QuestionData> data, List<ExerciseMessageBean> questionMessages, String title, int taskId) {
         this.title = title;
         this.taskId = taskId;
         if (questionList != null) {
@@ -119,6 +120,12 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
                         }
                     }
                 }
+            }
+        }
+
+        if (questionMessages != null && questionMessages.size() > 0) {
+            for (ExerciseMessageBean message : questionMessages) {
+
             }
         }
         notifyDataSetChanged();
