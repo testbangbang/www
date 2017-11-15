@@ -115,7 +115,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         this.data = data;
         showTaskTitle();
         if (fillHomeworkAdapter != null && data.volumeExerciseDTOS != null && data.volumeExerciseDTOS.size() > 0) {
-            fillHomeworkAdapter.setData(data.volumeExerciseDTOS, title, data.taskId);
+            fillHomeworkAdapter.setData(data.volumeExerciseDTOS, null, title, data.taskId);
         }
     }
 

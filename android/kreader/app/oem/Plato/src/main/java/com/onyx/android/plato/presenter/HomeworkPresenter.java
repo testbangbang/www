@@ -137,7 +137,7 @@ public class HomeworkPresenter {
                 List<SubjectBean> types = exerciseTypes.data;
                 if (types != null && types.size() > 0) {
                     homeworkView.setExerciseType(exerciseTypes.data);
-                    getHomeworkFinishedData(studentId, subjectId + "", null, null, types.get(0).name);
+                    getHomeworkFinishedData(studentId, subjectId + "", null, null, types.get(0).type);
                 }
             }
         });
