@@ -19,6 +19,7 @@ import com.onyx.android.sdk.data.rxrequest.data.cloud.RxBookListWithProductReque
 import com.onyx.android.sdk.data.rxrequest.data.cloud.RxBookRecommendedListRequest;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.RxDeleteBookCommentRequest;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.RxDisagreeBookCommentRequest;
+import com.onyx.android.sdk.data.rxrequest.data.cloud.RxDownloadServiceRequest;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.RxGetBookBytesRequest;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.RxGetBookCommentListRequest;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.RxGetBookCommentRequest;
@@ -564,5 +565,30 @@ public class RxCloudRequestTest extends ApplicationTestCase<Application> {
                 assertNull(throwable);
             }
         });
+    }
+
+    public void testDownloadService() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final String testUrl = "http://7xjww9.com1.z0.glb.clouddn.com/Hopetoun_falls.jpg";
+        final long fileSize = 2800000;//2.81M
+        RxDownloadServiceRequest request = new RxDownloadServiceRequest(testUrl);
+        request.execute(new RxCallback<RxDownloadServiceRequest>() {
+            @Override
+            public void onNext(RxDownloadServiceRequest request) {
+                ResponseBody result = request.getResult();
+                assertNotNull(result);
+                assertTrue(result.contentLength() > fileSize);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+
+        countDownLatch.await();
     }
 }
