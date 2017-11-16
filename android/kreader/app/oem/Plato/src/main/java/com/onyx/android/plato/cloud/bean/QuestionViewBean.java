@@ -21,6 +21,79 @@ public class QuestionViewBean {
     private String userAnswer;
     private boolean isShowReaderComprehension;
 
+    private int state;
+    private String answer;
+    private int score;
+    private int value;
+    private List<KnowledgeBean> knowledgeDtoList;
+    private double accuracy;
+    private boolean exerciseFavored;
+    private boolean correct;
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
+
+    public String getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(String answer) {
+        this.answer = answer;
+    }
+
+    public int getScore() {
+        return score;
+    }
+
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public void setValue(int value) {
+        this.value = value;
+    }
+
+    public List<KnowledgeBean> getKnowledgeDtoList() {
+        return knowledgeDtoList;
+    }
+
+    public void setKnowledgeDtoList(List<KnowledgeBean> knowledgeDtoList) {
+        this.knowledgeDtoList = knowledgeDtoList;
+    }
+
+    public double getAccuracy() {
+        return accuracy;
+    }
+
+    public void setAccuracy(double accuracy) {
+        this.accuracy = accuracy;
+    }
+
+    public boolean isExerciseFavored() {
+        return exerciseFavored;
+    }
+
+    public void setExerciseFavored(boolean exerciseFavored) {
+        this.exerciseFavored = exerciseFavored;
+    }
+
+    public boolean isCorrect() {
+        return correct;
+    }
+
+    public void setCorrect(boolean correct) {
+        this.correct = correct;
+    }
+
     public boolean isShowReaderComprehension() {
         return isShowReaderComprehension;
     }
