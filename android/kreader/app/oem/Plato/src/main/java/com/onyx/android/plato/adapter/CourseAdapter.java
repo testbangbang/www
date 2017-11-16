@@ -21,7 +21,6 @@ import java.util.List;
 public class CourseAdapter extends PageRecyclerView.PageAdapter {
     private int current = 0;
     private List<SubjectBean> data;
-    private String[] data;
     private int courseColumnCount = SunApplication.getInstance().getResources().getInteger(R.integer.course_adapter_col);
     private int courseRowCount = SunApplication.getInstance().getResources().getInteger(R.integer.course_adapter_row);
 

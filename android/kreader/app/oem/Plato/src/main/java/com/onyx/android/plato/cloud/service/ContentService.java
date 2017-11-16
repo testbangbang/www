@@ -1,9 +1,10 @@
 package com.onyx.android.plato.cloud.service;
 
-import com.onyx.android.plato.cloud.bean.GetCorrectedTaskResultBean;
-import com.onyx.android.plato.cloud.bean.GetSubjectBean;
 import com.onyx.android.plato.cloud.bean.ChangePasswordResultBean;
+import com.onyx.android.plato.cloud.bean.GetCorrectedTaskResultBean;
 import com.onyx.android.plato.cloud.bean.GetStudyReportDetailResultBean;
+import com.onyx.android.plato.cloud.bean.GetSubjectAbilityResultBean;
+import com.onyx.android.plato.cloud.bean.GetSubjectBean;
 import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.plato.cloud.bean.PersonalAbilityResultBean;
@@ -13,17 +14,6 @@ import com.onyx.android.plato.cloud.bean.TaskBean;
 import com.onyx.android.plato.cloud.bean.UserLoginResultBean;
 import com.onyx.android.plato.cloud.bean.UserLogoutResultBean;
 import com.onyx.android.plato.common.CloudApiContext;
-import com.onyx.android.sun.cloud.bean.ChangePasswordResultBean;
-import com.onyx.android.sun.cloud.bean.GetStudyReportDetailResultBean;
-import com.onyx.android.sun.cloud.bean.HomeworkFinishedResultBean;
-import com.onyx.android.sun.cloud.bean.HomeworkUnfinishedResultBean;
-import com.onyx.android.sun.cloud.bean.PersonalAbilityResultBean;
-import com.onyx.android.sun.cloud.bean.GetSubjectAbilityResultBean;
-import com.onyx.android.sun.cloud.bean.SubmitPracticeResultBean;
-import com.onyx.android.sun.cloud.bean.TaskBean;
-import com.onyx.android.sun.cloud.bean.UserLoginResultBean;
-import com.onyx.android.sun.cloud.bean.UserLogoutResultBean;
-import com.onyx.android.sun.common.CloudApiContext;
 
 import okhttp3.RequestBody;
 import retrofit2.Call;

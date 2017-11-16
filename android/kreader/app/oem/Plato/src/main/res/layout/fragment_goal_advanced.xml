@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.onyx.android.plato.cloud.bean.GetSubjectAbilityResultBean.AbilityBean"/>
+
+        <import type="android.view.View"/>
+
+        <import type="android.text.TextUtils"/>
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener"/>
+
+        <variable
+            name="abilityBean"
+            type="AbilityBean"/>
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:paddingTop="@dimen/goal_advanced_common_space"
+            android:paddingBottom="@dimen/goal_advanced_common_space"
+            android:paddingLeft="@dimen/goal_advanced_common_padding_left_and_right"
+            android:paddingRight="@dimen/goal_advanced_common_padding_left_and_right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <com.onyx.android.plato.view.PageRecyclerView
+                android:layout_marginLeft="@dimen/goal_advanced_common_margin_left_and_right"
+                android:layout_marginRight="@dimen/goal_advanced_common_margin_left_and_right"
+                android:id="@+id/goal_advanced_course_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:padding="@dimen/goal_advanced_common_space"
+                android:layout_marginTop="@dimen/goal_advanced_common_space"
+                android:background="@drawable/rectangle_stroke"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:text="@string/goal_advanced_subject_score_rank_title"
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:layout_marginLeft="@dimen/goal_advanced_common_margin_left_and_right"
+                        android:text="@string/goal_advanced_subject_score_rank_tips"
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:textColor="@color/gray"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <com.onyx.android.plato.view.PageRecyclerView
+                    android:layout_marginTop="@dimen/goal_advanced_common_space"
+                    android:id="@+id/goal_advanced_term_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <LinearLayout
+                    android:layout_marginTop="@dimen/goal_advanced_common_space"
+                    android:padding="@dimen/goal_advanced_common_padding_left_and_right"
+                    android:visibility="@{TextUtils.isEmpty(abilityBean.course) ? View.GONE : View.VISIBLE}"
+                    android:gravity="center_vertical"
+                    android:background="@drawable/rectangle_gray_stroke"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:textSize="@dimen/level_two_heading_font"
+                        android:layout_weight="1"
+                        android:text="@{@string/goal_advanced_subject_ability_value(abilityBean.course,abilityBean.ability)}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:gravity="center_vertical"
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:drawablePadding="@dimen/goal_advanced_common_margin_left_and_right"
+                        android:drawableRight="@drawable/icon_go"
+                        android:text="@{@string/goal_advanced_subject_rank(abilityBean.classRank,abilityBean.gradeRank)}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_marginTop="@dimen/goal_advanced_common_space"
+                    android:text="@string/goal_advanced_knowledge_point_constitute_tips"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:textColor="@color/color_gray_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <com.onyx.android.plato.view.RosePieChart
+                    android:id="@+id/goal_advanced_pie_chart"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/goal_advanced_knowledge_structure_view_height"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:padding="@dimen/goal_advanced_common_space"
+                android:layout_marginTop="@dimen/goal_advanced_common_space"
+                android:background="@drawable/rectangle_stroke"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/goal_advanced_kn_progress_title"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:text="@string/goal_advanced_knowledge_progress_title"
+                            android:textSize="@dimen/level_three_heading_font"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_marginLeft="@dimen/goal_advanced_common_margin_left_and_right"
+                            android:text="@string/goal_advanced_knowledge_progress_tips"
+                            android:textColor="@color/gray"
+                            android:textSize="@dimen/level_three_heading_font"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_marginTop="@dimen/goal_advanced_common_space"
+                        android:layout_below="@id/goal_advanced_kn_progress_title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:padding="@dimen/goal_advanced_common_margin_left_and_right"
+                            android:drawablePadding="@dimen/goal_advanced_knowledge_progress_params_view_drawable_padding"
+                            android:background="@drawable/rectangle_stroke"
+                            android:drawableRight="@drawable/icon_pull"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:layout_marginLeft="@dimen/goal_advanced_knowledge_progress_params_view_space"
+                            android:layout_marginRight="@dimen/goal_advanced_knowledge_progress_params_view_space"
+                            android:padding="@dimen/goal_advanced_common_margin_left_and_right"
+                            android:drawablePadding="@dimen/goal_advanced_knowledge_progress_params_view_drawable_padding"
+                            android:background="@drawable/rectangle_stroke"
+                            android:drawableRight="@drawable/icon_pull"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                        <TextView
+                            android:padding="@dimen/goal_advanced_common_margin_left_and_right"
+                            android:drawablePadding="@dimen/goal_advanced_knowledge_progress_params_view_drawable_padding"
+                            android:background="@drawable/rectangle_stroke"
+                            android:drawableRight="@drawable/icon_pull"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_centerVertical="true"
+                        android:layout_alignParentRight="true"
+                        android:paddingTop="@dimen/goal_advanced_common_margin_left_and_right"
+                        android:paddingBottom="@dimen/goal_advanced_common_margin_left_and_right"
+                        android:paddingLeft="@dimen/goal_advanced_common_padding_left_and_right"
+                        android:paddingRight="@dimen/goal_advanced_common_padding_left_and_right"
+                        android:background="@drawable/button_back"
+                        android:text="@string/goal_advanced_raid_record"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </RelativeLayout>
+
+                <com.onyx.android.plato.view.PageRecyclerView
+                    android:layout_marginTop="@dimen/goal_advanced_common_space"
+                    android:id="@+id/goal_advanced_kn_progress_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/goal_advanced_knowledge_progress_recycler_view_height"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>
