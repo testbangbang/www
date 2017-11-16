@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+    <data class="ItemFillHomeworkBinding">
+
+    </data>
+
+    <com.onyx.android.plato.view.QuestionView
+        android:id="@+id/item_homework_question"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</layout>

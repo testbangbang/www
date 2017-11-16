@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="android.view.View.OnClickListener"/>
+        <variable
+            name="studyReportDetail"
+            type="com.onyx.android.plato.cloud.bean.StudyReportDetailBean"/>
+        <variable
+            name="studyReportTitle"
+            type="String"/>
+
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:paddingLeft="@dimen/study_report_fragment_pading_left_and_right"
+            android:paddingRight="@dimen/study_report_fragment_pading_left_and_right"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_study_report_title"
+                android:onClick="@{listener}"
+                android:paddingTop="@dimen/study_report_fragment_text_pading_top_and_bottom"
+                android:paddingBottom="@dimen/study_report_fragment_text_pading_top_and_bottom"
+                android:gravity="center_vertical"
+                android:drawableLeft="@drawable/icon_back_small"
+                android:text="@{studyReportTitle}"
+                android:textSize="@dimen/level_three_heading_font"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <include layout="@layout/layout_divide_line"/>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/study_report_fragment_score_describe_margin_top"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:textSize="@dimen/level_one_heading_font"
+                    android:text="@{@string/study_report_fragment_study_score(studyReportDetail.score)}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:layout_marginLeft="@dimen/study_report_fragment_study_score_describe_space"
+                    android:text="@{@string/study_report_fragment_class_rank(studyReportDetail.classRank)}"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_marginLeft="@dimen/study_report_fragment_study_score_describe_space"
+                    android:textSize="@dimen/level_two_heading_font"
+                    android:text="@string/study_report_fragment_keep_trying"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/study_report_fragment_study_total_topic_margin_top"
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:text="@{@string/study_report_fragment_total_topic(studyReportDetail.ON + studyReportDetail.SN)}"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:text="@{@string/study_report_fragment_objective_topic(studyReportDetail.ON,studyReportDetail.OC,studyReportDetail.OS)}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                    <TextView
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:text="@{@string/study_report_fragment_subjective_topic(studyReportDetail.SN,studyReportDetail.STP,studyReportDetail.STS)}"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tv_study_report_frame_class_tips"
+                    android:layout_alignParentRight="true"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:text="@string/study_report_fragment_frame_class_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_below="@id/tv_study_report_frame_class_tips"
+                    android:layout_alignParentRight="true"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:text="@string/study_report_fragment_fill_person_tips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <FrameLayout
+                    android:layout_centerInParent="true"
+                    android:id="@+id/frameLayout_competence_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/study_report_fragment_competence_chart_height"
+                    android:clipChildren="false">
+
+                    <com.onyx.android.plato.view.SpiderWebScoreView
+                        android:id="@+id/spiderWebScoreView"
+                        android:layout_width="@dimen/study_report_fragment_competence_spiderweb_width_and_height"
+                        android:layout_height="@dimen/study_report_fragment_competence_spiderweb_width_and_height"
+                        android:layout_gravity="center" />
+
+                    <com.onyx.android.plato.view.CircularLayout
+                        android:id="@+id/circularLayout"
+                        android:layout_width="@dimen/study_report_fragment_competence_spiderweb_width_and_height"
+                        android:layout_height="@dimen/study_report_fragment_competence_spiderweb_width_and_height"
+                        android:layout_gravity="center"
+                        android:clipChildren="false"/>
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_below="@id/frameLayout_competence_chart"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:text="@string/study_report_fragment_competence_up_tips"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                    <TextView
+                        android:paddingTop="@dimen/study_report_fragment_look_competence_button_padding_top_and_bottom"
+                        android:paddingBottom="@dimen/study_report_fragment_look_competence_button_padding_top_and_bottom"
+                        android:paddingLeft="@dimen/study_report_fragment_look_competence_button_padding_left_and_right"
+                        android:paddingRight="@dimen/study_report_fragment_look_competence_button_padding_left_and_right"
+                        android:layout_marginLeft="@dimen/study_report_fragment_look_competence_button_margin_left"
+                        android:id="@+id/tv_study_report_look_competence"
+                        android:text="@string/study_report_fragment_go_and_see_tips"
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:gravity="center"
+                        android:onClick="@{listener}"
+                        android:background="@drawable/button_back"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <com.onyx.android.plato.view.TableView
+                android:id="@+id/table_view"
+                android:layout_marginTop="@dimen/study_report_fragment_table_view_magin_top"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                app:dividerColor="@color/color_table_view_divider"
+                app:dividerWidth="@dimen/line_height"
+                app:headerColor="@color/black"
+                app:headerTextColor="@color/color_white"
+                app:headerTextSize="@dimen/level_three_heading_font"
+                app:rowHeight="@dimen/study_report_fragment_tableview_row_height"
+                app:textColor="@color/black"
+                app:textSize="@dimen/text_small_textsize"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</layout>

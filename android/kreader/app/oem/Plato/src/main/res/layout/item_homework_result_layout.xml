@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ItemHomeworkResultBinding">
+
+        <import type="com.onyx.android.plato.utils.StringUtil" />
+
+        <variable
+            name="questionId"
+            type="String" />
+
+        <variable
+            name="answer"
+            type="String" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:padding="@dimen/item_homework_result_text_padding"
+                android:text="@{questionId}"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_height"
+                android:background="@android:color/black" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/item_homework_result_text_padding">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@{StringUtil.isNullOrEmpty(answer) ? @color/litter_gray : @color/white}"
+                    android:gravity="center"
+                    android:text="@{StringUtil.distinguishAnswer(answer)}"
+                    android:textSize="@dimen/level_one_heading_font" />
+
+                <ImageView
+                    android:id="@+id/subjective_result_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="gone" />
+            </FrameLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="@dimen/line_height"
+            android:layout_height="match_parent"
+            android:background="@android:color/black" />
+    </LinearLayout>
+</layout>
