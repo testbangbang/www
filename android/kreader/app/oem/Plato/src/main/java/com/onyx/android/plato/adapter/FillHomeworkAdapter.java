@@ -13,6 +13,7 @@ import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
 import com.onyx.android.plato.cloud.bean.Question;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
+import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
 import com.onyx.android.plato.databinding.ItemFillHomeworkBinding;
 import com.onyx.android.plato.event.ParseAnswerEvent;
 import com.onyx.android.plato.interfaces.OnCheckAnswerListener;
@@ -32,8 +33,7 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
     private String title;
     private FillHomeworkPresenter fillHomeworkPresenter = new FillHomeworkPresenter();
     private boolean isFinished;
-    private List<QuestionViewBean> questionList = new ArrayList<>();
-    private int currentParentId;
+    private List<QuestionViewBean> questionList;
     private int taskId;
 
     @Override
@@ -62,6 +62,7 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
         QuestionViewBean questionViewBean = questionList.get(position);
         FillHomeworkViewHolder viewHolder = (FillHomeworkViewHolder) holder;
         ItemFillHomeworkBinding fillHomeworkBinding = viewHolder.getFillHomeworkBinding();
+        fillHomeworkBinding.itemHomeworkQuestion.setAnalyze(isFinished);
         fillHomeworkBinding.itemHomeworkQuestion.setQuestionData(questionViewBean, title);
         fillHomeworkBinding.itemHomeworkQuestion.setFinished(isFinished);
         fillHomeworkBinding.itemHomeworkQuestion.setOnCheckAnswerListener(this);
@@ -88,46 +89,10 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
         this.isFinished = isFinished;
     }
 
-    public void setData(List<QuestionData> data, List<ExerciseMessageBean> questionMessages, String title, int taskId) {
+    public void setData(List<QuestionViewBean> questionList, String title, int taskId) {
         this.title = title;
         this.taskId = taskId;
-        if (questionList != null) {
-            questionList.clear();
-        }
-        for (QuestionData questionData : data) {
-            List<ExerciseBean> exercises = questionData.exercises;
-            if (exercises != null && exercises.size() > 0) {
-                for (int i = 0; i < exercises.size(); i++) {
-                    ExerciseBean exercise = exercises.get(i);
-                    List<Question> questions = exercise.exercises;
-                    if (questions != null && questions.size() > 0) {
-                        for (int j = 0; j < questions.size(); j++) {
-                            Question question = questions.get(j);
-                            QuestionViewBean exerciseBean = new QuestionViewBean();
-                            exerciseBean.setShow(i == 0 && j == 0);
-                            exerciseBean.setAllScore(questionData.allScore);
-                            exerciseBean.setExeNumber(questionData.exeNumber);
-                            exerciseBean.setShowType(questionData.showType);
-                            exerciseBean.setParentId(exercise.id);
-                            exerciseBean.setShowReaderComprehension(currentParentId != exercise.id);
-                            currentParentId = exercise.id;
-                            exerciseBean.setScene(exercise.scene);
-                            exerciseBean.setId(question.id);
-                            exerciseBean.setContent(question.content);
-                            exerciseBean.setExerciseSelections(question.exerciseSelections);
-                            exerciseBean.setUserAnswer(question.userAnswer);
-                            this.questionList.add(exerciseBean);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (questionMessages != null && questionMessages.size() > 0) {
-            for (ExerciseMessageBean message : questionMessages) {
-
-            }
-        }
+        this.questionList = questionList;
         notifyDataSetChanged();
     }
 
@@ -156,17 +121,4 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
             return fillHomeworkBinding;
         }
     }
-
-    /*static class FillHomeworkTitleViewHolder extends RecyclerView.ViewHolder {
-        private ItemFillHomeworkTitleBinding fillHomeworkTitleBinding;
-
-        public FillHomeworkTitleViewHolder(View itemView) {
-            super(itemView);
-            fillHomeworkTitleBinding = (ItemFillHomeworkTitleBinding) DataBindingUtil.bind(itemView);
-        }
-
-        public ItemFillHomeworkTitleBinding getFillHomeworkTitleBinding() {
-            return fillHomeworkTitleBinding;
-        }
-    }*/
 }

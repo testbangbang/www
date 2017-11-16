@@ -10,6 +10,8 @@ import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
 import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.QuestionData;
+import com.onyx.android.plato.cloud.bean.QuestionViewBean;
+import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
 import com.onyx.android.plato.databinding.CorrectDataBinding;
 import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.plato.event.TimerEvent;
@@ -120,15 +122,26 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void setCorrectData(GetCorrectedTaskBean data) {
-        if(adapter != null) {
-            return;
-        }
         List<QuestionData> questionDataList = data.volumeExerciseIdsDTO.volumeExerciseDTOS;
         List<ExerciseMessageBean> questionMessages = data.exerciseMessageDtos;
-        if (questionDataList != null && questionDataList.size() > 0 && questionMessages != null && questionMessages.size() > 0) {
-            adapter.setFinished(true);
-            //TODO:fake practice id 25
-            adapter.setData(questionDataList, questionMessages, title, 25);
+        if (questionDataList != null && questionDataList.size() > 0 &&
+                questionMessages != null && questionMessages.size() > 0) {
+            resolveAdapterData(questionDataList, questionMessages);
         }
+    }
+
+    @Override
+    public void setQuestionBeanList(List<QuestionViewBean> questionList) {
+        if(adapter == null) {
+            return;
+        }
+        //TODO:fake practice id 25
+        correctDataBinding.correctRecycler.scrollToPosition(0);
+        adapter.setFinished(true);
+        adapter.setData(questionList, title, 25);
+    }
+
+    private void resolveAdapterData(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages) {
+        presenter.resolveAdapterData(questionDataList, questionMessages);
     }
 }
