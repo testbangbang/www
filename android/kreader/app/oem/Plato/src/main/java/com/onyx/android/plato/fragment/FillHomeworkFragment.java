@@ -9,6 +9,7 @@ import com.onyx.android.plato.adapter.FillHomeworkAdapter;
 import com.onyx.android.plato.adapter.HomeworkRecordAdapter;
 import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.FinishContent;
+import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
@@ -20,7 +21,9 @@ import com.onyx.android.plato.databinding.FillHomeworkBinding;
 import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.plato.event.SubjectiveResultEvent;
 import com.onyx.android.plato.event.UnansweredEvent;
+import com.onyx.android.plato.interfaces.CorrectView;
 import com.onyx.android.plato.interfaces.HomeworkView;
+import com.onyx.android.plato.presenter.CorrectPresenter;
 import com.onyx.android.plato.presenter.HomeworkPresenter;
 import com.onyx.android.plato.utils.StringUtil;
 import com.onyx.android.plato.view.DisableScrollGridManager;
@@ -37,7 +40,7 @@ import java.util.List;
  * Created by li on 2017/10/12.
  */
 
-public class FillHomeworkFragment extends BaseFragment implements HomeworkView, View.OnClickListener {
+public class FillHomeworkFragment extends BaseFragment implements HomeworkView, View.OnClickListener, CorrectView {
     private HomeworkPresenter homeworkPresenter;
     private FillHomeworkBinding fillHomeworkBinding;
     private String type;
@@ -46,10 +49,12 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private FillHomeworkAdapter fillHomeworkAdapter;
     private HomeworkRecordAdapter homeworkRecordAdapter;
     private QuestionDetail data;
+    private CorrectPresenter correctPresenter;
 
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
+        correctPresenter = new CorrectPresenter(this);
         homeworkPresenter.getTaskDetail(id);
     }
 
@@ -114,8 +119,8 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     public void setTaskDetail(QuestionDetail data) {
         this.data = data;
         showTaskTitle();
-        if (fillHomeworkAdapter != null && data.volumeExerciseDTOS != null && data.volumeExerciseDTOS.size() > 0) {
-            fillHomeworkAdapter.setData(data.volumeExerciseDTOS, null, title, data.taskId);
+        if (data.volumeExerciseDTOS != null && data.volumeExerciseDTOS.size() > 0) {
+            correctPresenter.resolveAdapterData(data.volumeExerciseDTOS, null);
         }
     }
 
@@ -224,5 +229,18 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
             }
         }
         fillHomeworkAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setCorrectData(GetCorrectedTaskBean data) {
+
+    }
+
+    @Override
+    public void setQuestionBeanList(List<QuestionViewBean> questionList) {
+        fillHomeworkBinding.fillHomeworkRecycler.scrollToPosition(0);
+        if (fillHomeworkAdapter != null) {
+            fillHomeworkAdapter.setData(questionList, title, data.taskId);
+        }
     }
 }

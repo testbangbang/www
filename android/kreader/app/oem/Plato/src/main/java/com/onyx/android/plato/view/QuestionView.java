@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.CheckBox;
@@ -21,6 +22,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.onyx.android.plato.cloud.bean.KnowledgeBean;
 import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
@@ -55,7 +57,6 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     private LinearLayout questionCorrect;
     private ImageView correctFavourite;
     private ImageView correctMistake;
-    private boolean showAnalyze;
     private boolean isFinished;
     private QuestionViewBean questionViewBean;
     private LinearLayout choiceTitle;
@@ -69,6 +70,8 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     private ImageButton questionPageRight;
     private TextView questionPageSize;
     private RelativeLayout questionTitleLayout;
+    private boolean isAnalyze;
+    private TextView userAnswer;
 
     public QuestionView(Context context) {
         this(context, null);
@@ -117,6 +120,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         questionIntroduce = (TextView) view.findViewById(R.id.question_introduce);
 
         analyzeLayout = (LinearLayout) view.findViewById(R.id.question_analyze_layout);
+        userAnswer = (TextView) view.findViewById(R.id.user_answer);
         knowledgePoint = (TextView) view.findViewById(R.id.knowledge_point);
         cognitiveLevel = (TextView) view.findViewById(R.id.cognitive_level);
         correctRate = (TextView) view.findViewById(R.id.correct_rate);
@@ -131,12 +135,6 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         questionPageRight = (ImageButton) view.findViewById(R.id.question_page_right);
         questionPageSize = (TextView) view.findViewById(R.id.question_page_size);
         questionTitleLayout = (RelativeLayout) view.findViewById(R.id.question_title_layout);
-    }
-
-    public void setVisibleAnalyze(boolean showAnalyze) {
-        this.showAnalyze = showAnalyze;
-        analyzeLayout.setVisibility(showAnalyze ? VISIBLE : GONE);
-        correctState.setVisibility(showAnalyze ? VISIBLE : GONE);
     }
 
     public void setQuestionData(QuestionViewBean questionViewBean, String title) {
@@ -157,6 +155,34 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         handler.sendEmptyMessageDelayed(WEBVIEW_FRESH_WHAT, 100);
         setVisibleType(R.id.choice_radio_group);
         generateChoice(questionViewBean);
+        analyze();
+    }
+
+    private void analyze() {
+        if (!isAnalyze) {
+            return;
+        }
+        StringBuilder point = new StringBuilder();
+        StringBuilder level = new StringBuilder();
+        List<KnowledgeBean> knowledgeDtoList = questionViewBean.getKnowledgeDtoList();
+        if (knowledgeDtoList != null && knowledgeDtoList.size() > 0) {
+            for (int i = 0; i < knowledgeDtoList.size(); i++) {
+                KnowledgeBean knowledgeBean = knowledgeDtoList.get(i);
+                point.append(knowledgeBean.name);
+                level.append(knowledgeBean.levelName);
+                if (i != knowledgeDtoList.size() - 1) {
+                    point.append(",");
+                    level.append(",");
+                }
+            }
+        }
+        correctMistake.setVisibility(questionViewBean.isCorrect() ? GONE : VISIBLE);
+        questionCorrect.setVisibility(questionViewBean.isCorrect() ? VISIBLE : GONE);
+        userAnswer.setText(String.format(SunApplication.getInstance().getString(R.string.user_answer), questionViewBean.getAnswer()));
+        knowledgePoint.setText(String.format(SunApplication.getInstance().getString(R.string.knowledge_point), point.toString()));
+        cognitiveLevel.setText(String.format(SunApplication.getInstance().getString(R.string.cognitive_level), level.toString()));
+        correctRate.setText(String.format(SunApplication.getInstance().getString(R.string.correct_rate), questionViewBean.getAccuracy() + ""));
+        correctFavourite.setSelected(questionViewBean.isExerciseFavored());
     }
 
     public void setFinished(boolean isFinished) {
@@ -237,9 +263,15 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         return button;
     }
 
+    public void setAnalyze(boolean isAnalyze) {
+        this.isAnalyze = isAnalyze;
+    }
+
     private void setVisibleType(int id) {
         choiceGroup.setVisibility(R.id.choice_radio_group == id ? VISIBLE : GONE);
         subjectiveGroup.setVisibility(R.id.subjective_item == id ? VISIBLE : GONE);
+        analyzeLayout.setVisibility(isAnalyze ? VISIBLE : GONE);
+        correctState.setVisibility(isAnalyze && R.id.choice_radio_group == id ? VISIBLE : GONE);
     }
 
     @Override
