@@ -13,6 +13,9 @@
     <string name="homework_course_politic">政治</string>
     <string name="homework_course_history">历史</string>
     <string name="homework_course_creature">生物</string>
+    <string name="homework_course_geography">地理</string>
+    <string name="homework_course_physics">物理</string>
+    <string name="homework_course_chemistry">化学</string>
     <string name="homework_course_all">全部</string>
     <string name="homework_course_exercise">作业</string>
     <string name="homework_course_test_paper">试卷</string>
@@ -180,4 +183,20 @@
     <string name="new_info">新</string>
     <string name="correct_info">批</string>
     <string name="refresh_failed">刷新失败</string>
+    <string name="goal_advanced_fragment_term_senior_one_1st">高一上</string>
+    <string name="goal_advanced_fragment_term_senior_one_2nd">高一下</string>
+    <string name="goal_advanced_fragment_term_senior_two_1st">高二上</string>
+    <string name="goal_advanced_fragment_term_senior_two_2nd">高二下</string>
+    <string name="goal_advanced_fragment_term_senior_three_1st">高三上</string>
+    <string name="goal_advanced_fragment_term_senior_three_2nd">高三下</string>
+    <string name="goal_advanced_subject_score_rank_title">学科能力值</string>
+    <string name="goal_advanced_subject_score_rank_tips">快来看看一学期单科成绩的分值排名吧</string>
+    <string name="goal_advanced_knowledge_progress_title">知识达成度</string>
+    <string name="goal_advanced_knowledge_progress_tips">点击图表闯关可提升值哦</string>
+    <string name="goal_advanced_raid_record">闯关记录</string>
+    <string name="goal_advanced_knowledge_point_constitute_tips">点击单个单元,查看该单元下知识点结构</string>
+    <string name="goal_advanced_subject_ability_value">%1$s能力值:%2$d</string>
+    <string name="goal_advanced_subject_rank">班级:%1$d名,学校:%2$d名</string>
+    <string name="rose_pie_chart_bracket_front"> (</string>
+    <string name="rose_pie_chart_bracket_behind">分)</string>
 </resources>

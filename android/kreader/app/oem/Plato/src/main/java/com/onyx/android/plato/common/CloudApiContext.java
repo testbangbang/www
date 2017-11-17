@@ -57,6 +57,8 @@ public class CloudApiContext {
 
     public static class SubjectAbility {
         public static final String ID = "id";
+        public static final String COURSE = "course";
+        public static final String TERM = "term";
     }
 
     public static class UserInfo {
