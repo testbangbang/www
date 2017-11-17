@@ -48,6 +48,9 @@ public class AlFilesZIP extends AlFiles {
 
 		Log.e("zp0", Long.toString(System.currentTimeMillis()));
 
+
+		Log.e("zp0", Long.toString(System.currentTimeMillis()));
+
 		int			fsize = a.getSize();
 		int			arr_size = 0x1000f;
 		int			ecd = 0, scd = -1, tmp;
