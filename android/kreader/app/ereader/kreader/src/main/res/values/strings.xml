@@ -416,11 +416,13 @@
     <string name="setting_touch_left_bottom_key" translatable="false">TOUCH_LEFT_BOTTOM</string>
     <string name="setting_touch_right_top_key" translatable="false">TOUCH_RIGHT_TOP</string>
     <string name="setting_touch_right_bottom_key" translatable="false">TOUCH_RIGHT_BOTTOM</string>
+    <string name="settings_touch_binding_reset_default_key" translatable="false">settings_touch_binding_reset_default_key</string>
 
     <string name="setting_touch_left_top_tittle">Left Top</string>
     <string name="setting_touch_left_bottom_tittle">Left Bottom</string>
     <string name="setting_touch_right_top_tittle">Right Top</string>
     <string name="setting_touch_right_bottom_tittle">Right Bottom</string>
+    <string name="settings_touch_binding_reset_default">Reset Default Touch Binding</string>
 
     <string name="settings_touch_binding_increase_brightness_tittle">Increase Brightness</string>
     <string name="settings_touch_binding_decrease_brightness_tittle">Decrease Brightness</string>

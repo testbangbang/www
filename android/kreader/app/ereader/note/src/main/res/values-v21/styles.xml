@@ -1,0 +1,7 @@
+<resources>
+
+    <style name="DialogTheme" parent="@style/OnyxAppCompat.Light.Dialog">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+</resources>
