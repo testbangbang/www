@@ -3267,9 +3267,12 @@ public class AlBookEng{
 			oi.isStart = true;
 
 			if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
-				v = 4 * 3;
+				v = 8 * 3;
 			} else {
 				v = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
+				if (preferences.chinezeFormatting) {
+					v *= 2;
+				}
 			}
 
 			if (v > 0 && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
@@ -3380,7 +3383,7 @@ public class AlBookEng{
 			//oi.isLeft = (int)(((double)width) * v / 300.0);
 			oi.isLeft = (int)(fontParam.space_width * v / 3);
 			if (oi.isLeft > oi.allWidth * 0.8)
-				oi.isLeft = oi.allWidth * 8;
+				oi.isLeft = (int)(oi.allWidth * 0.8);
 
 			oi.allWidth -= oi.isLeft;
 		}
@@ -3390,7 +3393,7 @@ public class AlBookEng{
 			//oi.isRight = (int)(((double)width) * v / 300.0);
 			oi.isRight = (int)(fontParam.space_width * v / 3);
 			if (oi.isRight > oi.allWidth * 0.8)
-				oi.isRight = oi.allWidth * 8;
+				oi.isRight = (int)(oi.allWidth * 0.8);
 
 			oi.allWidth -= oi.isRight;
 		}
