@@ -23,6 +23,6 @@ include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':app:edu:eschool',
         ':app:edu:edu',
         ':app:edu:edu-reader',
-        ':app:edu:edu-note',
+        ':app:ereader:knote',
         ':app:edu:edu-unitconversion',
         ':app:phone:phone-reader'
