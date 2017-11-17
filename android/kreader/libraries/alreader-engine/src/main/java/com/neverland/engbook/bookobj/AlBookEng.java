@@ -3219,12 +3219,16 @@ public class AlBookEng{
 		if ((style & AlStyles.SL_PAR) != 0) {	
 			oi.isStart = true;
 
-			v = (oi.prop & (AlParProperty.SL2_INDENT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_INDENT_SHIFT;
+			if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
+				v = 4 * 3;
+			} else {
+				v = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
+			}
 
-
-			if (v > 0/*((oi->prop & AlParProperty::SL2_REDLINE) != 0)*/ && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
+			if (v > 0 && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
 				if (!profiles.classicFirstLetter || (style & AlStyles.SL_MARKFIRTSTLETTER0) == 0) {
-					oi.isRed = (int)(((double)width) * v / 300.0);
+					//oi.isRed = (int)(((double)width) * v / 300.0);
+					oi.isRed = (int)(fontParam.space_width * v / 3);
 					oi.allWidth -= oi.isRed;
 				}
 			}
@@ -3326,7 +3330,8 @@ public class AlBookEng{
 
 		v = (oi.prop & (AlParProperty.SL2_MARGL_MASK/* - AlParProperty::SL2_MARGL_MASK_EM*/)) >> AlParProperty.SL2_MARGL_SHIFT;
 		if (v != 0) {
-			oi.isLeft = (int)(((double)width) * v / 300.0);
+			//oi.isLeft = (int)(((double)width) * v / 300.0);
+			oi.isLeft = (int)(fontParam.space_width * v / 3);
 			if (oi.isLeft > oi.allWidth * 0.8)
 				oi.isLeft = oi.allWidth * 8;
 
@@ -3335,7 +3340,8 @@ public class AlBookEng{
 
 		v = (oi.prop & (AlParProperty.SL2_MARGR_MASK/* - AlParProperty::SL2_MARGR_MASK_EM*/)) >> AlParProperty.SL2_MARGR_SHIFT;
 		if (v != 0) {
-			oi.isRight = (int)(((double)width) * v / 300.0);
+			//oi.isRight = (int)(((double)width) * v / 300.0);
+			oi.isRight = (int)(fontParam.space_width * v / 3);
 			if (oi.isRight > oi.allWidth * 0.8)
 				oi.isRight = oi.allWidth * 8;
 
@@ -5532,63 +5538,7 @@ public class AlBookEng{
 		return res;
 	}
 
-	private void updatePageItems(AlOnePage page, int x0, int y0, int x1, int y1) {
-		boolean first_notes = true;
-		AlOneItem oi;
-		int x;
-		int col_count = page.countItems;
-
-		if (preferences.isASRoll || (profiles.specialModeRoll && !profiles.twoColumnUsed)) {
-			oi = page.items.get(col_count);
-			if (oi.count > 0 && oi.pos[0] >= page.end_position &&
-					(profiles.classicFirstLetter || oi.isEnd || ((oi.style[0] & AlStyles.SL_MARKFIRTSTLETTER0) == 0)))
-				col_count++;
-		}
-
-		int z, i, j, y = y0 + page.topMarg, start, end;
-		for (z = 0; z < 2; z++) {
-			for (j = 0; j < col_count; j++) {
-				oi = page.items.get(j);
-				if (z == 0) {
-					if (oi.isNote)
-						continue;
-				} else {
-					if (!oi.isNote)
-						continue;
-					if (first_notes) {
-						y += page.pageHeight - page.textHeight - page.topMarg + page.notesShift;
-						first_notes = false;
-					}
-				}
-
-
-				y += oi.height + oi.base_line_up;
-				oi.yDrawPosition = y;
-
-				y += oi.base_line_down;
-				y += oi.interline;
-			}
-		}
-	}
-
-	private void recalcAndPrepareColumn() {
-		if (openState.getState() != AlBookState.OPEN) {
-			return;
-		}
-		calcScreenParameters();
-		recalcColumn(screenWidth - screen_parameters.marginR - screen_parameters.marginL,
-				screenHeight - screen_parameters.marginB - screen_parameters.marginT,
-				mpage[0][0], bookPosition);
-		prepareColumn(mpage[0][0]);
-		updatePageItems(mpage[0][0],
-				screen_parameters.marginL,
-				screen_parameters.marginT,
-				(screenWidth >> 1) - screen_parameters.marginR,
-				screenHeight - screen_parameters.marginB);
-	}
-
 	private int returnOkWithRedraw() {
-		recalcAndPrepareColumn();
 		threadData.sendNotifyForUIThread(TAL_NOTIFY_ID.NEEDREDRAW, TAL_NOTIFY_RESULT.OK);
 		return TAL_RESULT.OK;
 	}

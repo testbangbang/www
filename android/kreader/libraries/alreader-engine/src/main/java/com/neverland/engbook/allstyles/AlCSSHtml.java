@@ -4,12 +4,9 @@ import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level2.AlFormat;
 import com.neverland.engbook.unicode.AlUnicode;
-import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.InternalFunc;
 
 import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.ResourceBundle;
 
 public class AlCSSHtml extends AlCSSStyles {
 
@@ -24,6 +21,7 @@ public class AlCSSHtml extends AlCSSStyles {
             ".epigraph, .epigraf {font-size:0.83rem; text-align:right; text-indent:0; margin-left:55%;}" +
             ".poem, .stanza, .v {font-size:1rem; text-align:left; text-indent:0; --alreader-align-poem:1;}" +
             "p {margin-top:1%;}" +
+            "table, tr {text-align:justify;}" +
             "body {text-indent:4em;}";
 
     public static String  DEFAULT_CSS_MOBI = DEFAULT_CSS_HTML;
@@ -42,6 +40,7 @@ public class AlCSSHtml extends AlCSSStyles {
             "stanza {margin-bottom:2%; white-space:pre; text-indent:0;}" +
             "poem {font-size:1rem; text-align:left; text-indent:0; --alreader-align-poem:1; white-space:pre;}" +
             "p {margin-top:1%;}" +
+            "table, tr {text-align:justify;}" +
             "body {text-indent:4em;}";
 
     public static String DEFAULT_CSS_FB2 =
@@ -57,6 +56,7 @@ public class AlCSSHtml extends AlCSSStyles {
             "stanza {margin-bottom:2%; white-space:pre; text-indent:0;}" +
             "v {font-size:1rem; margin-top:0; white-space:pre; text-indent:0;}" +
             "p {margin-top:1%;}" +
+            "table, tr {text-align:justify;}" +
             "body {text-indent:4%;}" +
             "sequence {font-size:0.83rem; margin-top:2%; letter-spacing:1; margin-bottom:2%; margin-left:35%; margin-right:2%; text-indent:0; text-align:right;}" +
             "image {font-size:0.83rem; text-align:center; letter-spacing:1; margin-bottom:1%; text-indent:0;}";

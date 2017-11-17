@@ -1,16 +1,16 @@
 package com.neverland.engbook.util;
 
-import java.io.File;
-import java.io.FilenameFilter;
-import java.util.ArrayList;
-import java.util.HashMap;
+import android.content.res.AssetManager;
+import android.graphics.Paint.FontMetricsInt;
+import android.graphics.Typeface;
 
 import com.neverland.engbook.forpublic.AlEngineOptions;
 import com.neverland.engbook.forpublic.AlResourceFont;
 
-import android.content.res.AssetManager;
-import android.graphics.Paint.FontMetricsInt;
-import android.graphics.Typeface;
+import java.io.File;
+import java.io.FilenameFilter;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class AlFonts {
@@ -28,6 +28,8 @@ public class AlFonts {
 	private final static char SPACE_SPECIAL_CHAR = ' ';
 	private final static String HYPH_SPECIAL_STRCHAR = "-";
 	private final static char HYPH_SPECIAL_CHAR = '-';
+	private final static String EM_SPECIAL_STRCHAR = "M";
+	private final static char EM_SPECIAL_CHAR = 'M';
 
 	private final static float FONT_STEP_MULTIPLE = 0.7f;
 	/*public final static float FONT_STEP_MULTIPLE_P1 = FONT_STEP_MULTIPLE;
@@ -144,8 +146,18 @@ public class AlFonts {
 				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
 					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
 				fparam.space_width_current = calc.mainWidth[SPACE_SPECIAL_CHAR];
+
+				if (calc.mainWidth[HYPH_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
+					calc.mainWidth[HYPH_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
+				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
+
+				if (calc.mainWidth[EM_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
+					calc.mainWidth[EM_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
+				fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR];
 			} else {
 				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
+				fparam.hyph_width_current = (int) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
+				fparam.em_width_current = text_size;//(int) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
 			}
 			
 			fparam.space_width_standart = fparam.space_width_current;
@@ -155,15 +167,7 @@ public class AlFonts {
 				if (fparam.space_width_current < 2)
 					fparam.space_width_current = 2;
 			}
-			
-			if (fparam.style == 0) {
-				if (calc.mainWidth[HYPH_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
-					calc.mainWidth[HYPH_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
-				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
-			} else {
-				fparam.hyph_width_current = (int) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
-			}
-			
+
 			
 			if (new_style == AlStyles.SL_SIZE_NORMAL) {
 				/*if (PrefManager.font_height_asc) {
@@ -176,6 +180,7 @@ public class AlFonts {
 				
 				fparam.space_width = fparam.space_width_current;
 				fparam.hyph_width = fparam.hyph_width_current;
+				fparam.em_width = fparam.em_width_current;
 				fparam.def_reserv = 0;
 			}
 			
