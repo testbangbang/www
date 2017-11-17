@@ -30,3 +30,5 @@
 -keep class com.neverland.engbook.unicode.AlUnicode { public protected *; }
 -keep class com.neverland.engbook.util.TTFInfo { public protected *; }
 -keep class com.neverland.engbook.util.TTFScan { public protected *; }
+
+-keep class com.neverland.engbook.level1.RealCHM { public *; }

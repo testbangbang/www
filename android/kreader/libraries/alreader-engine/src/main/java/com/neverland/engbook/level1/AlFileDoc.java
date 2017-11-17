@@ -274,12 +274,12 @@ public class AlFileDoc extends AlFileOle {
         public int xnote;
         public int xdata;
 
-        public static final int STYLE_ITALIC  = AlStyles.STYLE_ITALIC;
-        public static final int STYLE_BOLD	= AlStyles.STYLE_BOLD;
-        public static final int STYLE_SUP	 = AlStyles.STYLE_SUP;
-        public static final int STYLE_SUB	 = AlStyles.STYLE_SUB;
-        public static final int STYLE_UNDER   = AlStyles.STYLE_UNDER;
-        public static final int STYLE_STRIKE  = AlStyles.STYLE_STRIKE;
+        public static final int STYLE_ITALIC  = (int) AlStyles.STYLE_ITALIC;
+        public static final int STYLE_BOLD	= (int) AlStyles.STYLE_BOLD;
+        public static final int STYLE_SUP	 = (int) AlStyles.STYLE_SUP;
+        public static final int STYLE_SUB	 = (int) AlStyles.STYLE_SUB;
+        public static final int STYLE_UNDER   = (int) AlStyles.STYLE_UNDER;
+        public static final int STYLE_STRIKE  = (int) AlStyles.STYLE_STRIKE;
         public static final int STYLE_HIDDEN  = 0x1000;
         public static final int STYLE_NEWPAR  = 0x2000;
         public static final int STYLE_OBJ	 = 0x4000;
@@ -2339,6 +2339,8 @@ public class AlFileDoc extends AlFileOle {
         of.time = 0;
         of.name = ai.name;
         fileList.add(of);
+
+        mapFile.put(of.name, fileList.size() - 1);
     }
 
     private boolean fillExternalFile(int index, byte[] dst, int len) {

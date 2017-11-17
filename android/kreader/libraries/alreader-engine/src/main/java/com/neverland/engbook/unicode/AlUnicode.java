@@ -2,12 +2,57 @@ package com.neverland.engbook.unicode;
 
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
+import com.neverland.engbook.util.AlStyles;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
 
 
 public class AlUnicode {
+
+	public final static int  getCodePageFromCodeLang(int langId) {
+		switch (langId) {
+			case 1025: return 1256; //  ARA	Arabic - Saudi Arabia	ar-SA
+			case 1027: return 1252; //	CAT	Catalan	ca-ES
+			case 1028: return  950; //	CHT	Chinese - Taiwan	zh-TW
+			case 2052: return  936; //	CHS	Chinese - China	zh-CN
+			case 1029: return 1250; //	CSY	Czech - Czech Republic	cs-CZ
+			case 1030: return 1252; //	DAN	Danish -Denmark	da-DK
+			case 1031: return 1252; //	DEU	German - Germany	de-DE
+			case 1032: return 1253; //	ELL	Greek - Greece	el-GR
+			case 1033: return 1252; //	ENU	English - United States	en-US
+			case 3082: return 1252; //	ESN	Spanish - Modern Sort - Spain	es-ES
+			case 1061: return 1257; //	ETI	Estonian 	et-EE
+			case 1035: return 1252; //	FIN	Finnish - Finland	fi-FI
+			case 1036: return 1252; //	FRA	French - France	fr-FR
+			case 1037: return 1255; //	HEB	Hebrew - Israel	he-IL
+			case 1038: return 1250; //	HUN	Hungarian - Hungary	hu-HU
+			case 1040: return 1252; //	ITA	Italian - Italy	it-IT
+			case 1041: return  932; //	JPN	Japanese - Japan	jp-JP
+			case 1042: return  949; //	KOR	Korean - Korea	ko-KO
+			case 1063: return 1257; //	LTH	Lithuanian 	lt-LT
+			case 1062: return 1257; //	LVI	Latvian 	lv-LV
+			case 1043: return 1252; //	NLD	Dutch - Netherlands	nl-NL
+			case 1044: return 1252; //	NOR	Norwegian (Bokmål)- Norway 	nb-NO
+			case 1045: return 1250; //	PLK	Polish - Poland	pl-PL
+			case 1046: return 1252; //	PTB	Portuguese - Brazil	pt-BR
+			case 2070: return 1252; //	PTG	Portuguese - Portugal	pt-PT
+			case 1048: return 1250; //	ROM	Romanian - Romania	ro-RO
+			case 1049: return 1251; //	RUS	Russian - Russia	ru-RU
+			case 1050: return 1250; //	HRV	Croatian - Croatia	hr-HR
+			case 1051: return 1250; //	SKY	Slovak - Slovakia	sk-SK
+			case 1053: return 1252; //	SVE	Swedish - Sweden	sv-SE
+			case 1054: return  874; //	THA	Thai - Thailand	th-TH
+			case 1055: return 1254; //	TRK	Turkish - Turkey	tr-TR
+			case 1060: return 1250; //	SLV	Slovenian - Slovenia	sl-SI
+			case 1066: return 1258; //	VIT	Vietnamese - Viet Nam	vi-VN
+			case 1069: return 1252; //
+			case 1026: return 1251; // 	BGR Bulgarian 	bg-BG
+			case 1058: return 1251; // 	UKR Ukrainian 	uk-UA
+			case 2074: return 1250; //  SRL Serbian (Latin) 	sr-Latn-CS
+		}
+		return 1251;
+	}
 
 	public static int getTestCodePage(String encoding, String ident) {
 		if (encoding.contentEquals("WINDOWS-1251")) return TAL_CODE_PAGES.CP1251; else
@@ -196,7 +241,28 @@ public class AlUnicode {
 		
 		return false;
 	}
-	
+
+	public static  boolean isCSSSpecial(char c) {
+		switch (c) {
+			case '>':
+			case '+':
+			case '#':
+			case '[':
+			case ']':
+			case '=':
+			case ':':
+			case ',':
+			case '|':
+			case '@':
+			case '*':
+			case '~':
+			case '.':
+				return true;
+			default:
+				return false;
+		}
+	}
+
 	public static boolean isPunctuation(char ch) {
 		switch (Character.getType((int)ch)) {
 		case Character.START_PUNCTUATION:
@@ -255,7 +321,16 @@ public class AlUnicode {
 			}
 		return false;	
 	}
-	
+
+	public static boolean isSpaceSeparator(char ch) {
+		if (Character.getType((int)ch) == Character.SPACE_SEPARATOR)
+			return true;
+		if (ch >= 0x200b && ch <= 0x200d)
+			return true;
+		return false;
+	}
+
+
 	public static boolean isSpace(char ch) {
 		return (ch <= 0x0020) &&
                (((((1L << 0x0009) |
@@ -774,12 +849,14 @@ public class AlUnicode {
 			ch = (char)src[pos++];
 			if (ch >= 0x80)
 				ch = data_1252[ch - 0x80];
+
 			s.append(ch);
 		}
 
 		return s.toString();
 	}
-	
+
+
 	public static char byte2Wide(final int cp, final byte[] src, AlIntHolder src_pos) {
 		char ch = (char)src[src_pos.value++], ch1;
 					
@@ -987,6 +1064,10 @@ public class AlUnicode {
 				ch = data_1251[ch - 0x80];
 			break;
 		}
+
+		if ((ch & AlStyles.STYLE_MASK_4CODECONVERT) == AlStyles.STYLE_BASE_4CODECONVERT)
+			ch = 0x00;
+
 		return ch;
 	}
 	

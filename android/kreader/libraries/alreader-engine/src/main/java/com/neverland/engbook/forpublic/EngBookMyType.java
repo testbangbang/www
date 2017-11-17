@@ -129,8 +129,7 @@ public class EngBookMyType {
 		*/
 		SIZE,
 		/**
-		Используется реальный просчет страниц. Самый тормозной и неэффективный метод работы. Просчет страниц занимает много времени. Ограничения - если
-		просчет количества страниц занимает более 4 секунд - для этой книги автоматически включается режим TAL_SCREEN_PAGES_COUNT_BY_AUTO.
+		for internal only
 		*/
 		SCREEN,
 		/**
@@ -168,7 +167,7 @@ public class EngBookMyType {
 
 	public enum TAL_THREAD_TASK {
 		OPENBOOK(10),
-		//CLOSEBOOK(11),
+		OPENBOOK_FULLAFTERPARTIAL(11),
 		CREATEDEBUG(12),
 		FIND(13),
 		NEWCALCPAGES(14);
@@ -188,7 +187,7 @@ public class EngBookMyType {
 		STARTTHREAD(2),
 		STOPTHREAD(3),
 		OPENBOOK(10),
-		CLOSEBOOK(11),
+		OPENBOOK_FULLAFTERPARTIAL(11),
 		CREATEDEBUG(12),
 		FIND(13),
 		NEWCALCPAGES(14);
@@ -236,6 +235,7 @@ public class EngBookMyType {
 		RAR,
 		RARUnk,
 		JEB,
+		CHM,
 	}
 	
 }

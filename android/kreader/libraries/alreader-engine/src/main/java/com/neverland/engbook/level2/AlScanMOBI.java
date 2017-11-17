@@ -10,8 +10,6 @@ public class AlScanMOBI extends AlScan {
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
-        allState.isOpened = false;
-
         aFiles = myParent;
         preference = pref;
         styles = stl;
