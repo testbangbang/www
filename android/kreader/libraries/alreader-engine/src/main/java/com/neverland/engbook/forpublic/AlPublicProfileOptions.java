@@ -33,9 +33,6 @@ public class AlPublicProfileOptions {
 	 * имя шрифта для участков кода, если null - используется шрифт текста
 	 */
 	public String				font_monospace = null;
-	/**
-	 * имя шрифта для заголовков, если null - используется шрифт текста
-	 */
 	public String				font_title = null;
 	/**
 	 * картинка для фона
@@ -68,11 +65,21 @@ public class AlPublicProfileOptions {
 	/**
 	 * цвет заголовков
 	 */
+	public boolean				overrideColorTitle = false;
 	public int					colorTitle = 0xffffff;
 	/**
 	 * цвет фона (особенно следует учитывать в случае если картинка фона имеет полупрозрачность)
 	 */
 	public int					colorBack = 0x000000;
+
+	public boolean				overrideColorBold = false;
+	public int					colorBold = 0xffffff;
+	public boolean				overrideColorItalic = false;
+	public int					colorItalic = 0xffffff;
+	public boolean				overrideColorBoldItalic = false;
+	public int					colorBoldItalic = 0xffffff;
+	public boolean				overrideColorCode = false;
+	public int					colorCode = 0xffffff;
 
 	/**
 	 * межстрочное расстояние. В случае отправки некорректного значения - функция setNewProfile заполнит поле правильным вариантом

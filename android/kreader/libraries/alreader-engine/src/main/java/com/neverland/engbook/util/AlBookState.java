@@ -7,7 +7,7 @@ public class AlBookState {
 	public static final int LOAD 			= 1;
 	public static final int CALC			= 2;
 	public static final int OPEN			= 3;	
-	public static final int PROCESS			= 4;			
+	public static final int PROCESS0			= 4;
 	
 	private volatile int state 				= NOLOAD;
 	

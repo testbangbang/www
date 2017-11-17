@@ -10,6 +10,7 @@ public class AlOneZIPRecord {
     public static final int	SPECIAL_ENDNOTE = 6;
     public static final int	SPECIAL_FOOTNOTE = 7;
     public static final int	SPECIAL_STYLE = 8;
+    public static final int	SPECIAL_CHM_HHC = 9;
     public static final int	SPECIAL_UNKNOWN = 32;
 /*
     public static final String SPECIAL_NONE_STR = Integer.toString(SPECIAL_NONE);

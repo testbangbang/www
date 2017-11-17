@@ -1,14 +1,48 @@
 package com.neverland.engbook.util;
 
 public class AlOneStyleStack {
-	public long real_style = 0;
-	public int  tag = 0;
+	public int					cp;
+	public int					tag;
+	public int					inCounter;
 
-	public static AlOneStyleStack addStyleStack(long style, int tag) {
-		AlOneStyleStack a = new AlOneStyleStack();
-		a.real_style = style;
-		a.tag = tag;
-		return a;
+	public long					paragraph;
+	public long					prop;
+	public float				fontSize0;
+
+	public char					listPrefix;
+
+	public AlOneXMLAttrClass	cls = new AlOneXMLAttrClass();
+
+	public AlOneStyleStack() {
+		tag = 0x00;
+		cp = 0;
+		inCounter = 0;
+		paragraph = prop = 0x00L;
+		fontSize0 = 100;
+		cls.clear();
 	}
 
+	public void format() {
+
+	}
+
+	public void copyTo(AlOneStyleStack dst) {
+		dst.cp = cp;
+		dst.tag = tag;
+		dst.inCounter = inCounter;
+		dst.paragraph = paragraph;
+		dst.prop = prop;
+		dst.fontSize0 = fontSize0;
+		dst.listPrefix = listPrefix;
+	}
+
+	public void copyFrom(AlOneStyleStack src) {
+		cp = src.cp;
+		tag = src.tag;
+		inCounter = src.inCounter;
+		paragraph = src.paragraph;
+		prop = src.prop;
+		fontSize0 = src.fontSize0;
+		listPrefix = src.listPrefix;
+	}
 }
