@@ -2,11 +2,16 @@ package com.onyx.android.plato.fragment;
 
 import android.databinding.ViewDataBinding;
 import android.os.Environment;
+import android.text.Html;
+import android.text.Spanned;
 import android.view.MotionEvent;
 import android.view.View;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
+import com.onyx.android.plato.cloud.bean.AnswerBean;
+import com.onyx.android.plato.cloud.bean.ParseBean;
+import com.onyx.android.plato.cloud.bean.PracticeParseBean;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
@@ -23,6 +28,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by li on 2017/10/26.
@@ -38,17 +44,19 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     private long endTime;
     private long duration;
     private TimerEvent timerEvent;
+    private PracticeParseBean data;
 
     @Override
     protected void loadData() {
         parseAnswerPresenter = new ParseAnswerPresenter(this);
-        parseAnswerPresenter.getExplanation();
+        //TODO:fake id
+        parseAnswerPresenter.getExplanation(1, 1523, 105);
     }
 
     @Override
     protected void initView(ViewDataBinding binding) {
         parseAnswerBinding = (ParseAnswerBinding) binding;
-        //TODO:parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
+        parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
         parseAnswerBinding.parseQuestionView.setFinished(true);
         parseAnswerBinding.parseTitleBar.setTitle(SunApplication.getInstance().getString(R.string.parse_of_answer));
         parseAnswerBinding.parseTitleBar.titleBarRecord.setVisibility(View.GONE);
@@ -105,14 +113,18 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
 
     public void setQuestionData(QuestionViewBean questionData, String title) {
         this.questionData = questionData;
+        questionData.setShow(false);
+        questionData.setScene(Constants.APK_NAME);
+        questionData.setShowReaderComprehension(false);
         this.title = title;
         if (parseAnswerBinding != null) {
-            //TODO:parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
+            parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
             parseAnswerBinding.parseQuestionView.setFinished(true);
         }
 
         if (parseAnswerPresenter != null) {
-            parseAnswerPresenter.getExplanation();
+            //TODO:fake id
+            parseAnswerPresenter.getExplanation(1, 1523, 105);
         }
     }
 
@@ -159,7 +171,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
 
     private boolean setRecordTime(int id) {
         if (duration <= 1) {
-            CommonNotices.show("请录入语音");
+            CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.please_input_voice));
             return false;
         }
         setVisible(id);
@@ -182,14 +194,20 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     }
 
     @Override
-    public void setExplanation() {
-        if (parseAnswerBinding == null) {
+    public void setExplanation(PracticeParseBean data) {
+        this.data = data;
+        List<AnswerBean> myAnswer = data.myAnswer;
+        ParseBean parseBean = data.exerciseDto;
+        if (myAnswer == null && myAnswer.size() == 0) {
             return;
         }
-        String userAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.user_answer), "a");
-        String correctAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.correct_answer), "a");
-        parseAnswerBinding.setUserAnswer(userAnswer + "(" + ")");
-        parseAnswerBinding.setCorrectAnswer(correctAnswer + "(" + ")");
+        AnswerBean answerBean = myAnswer.get(0);
+        String userAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.user_answer), answerBean.answer);
+        String correctAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.correct_answer), Html.fromHtml(parseBean.answer));
+        parseAnswerBinding.setUserAnswer(userAnswer + "(" + (answerBean.isCorrect ?
+                SunApplication.getInstance().getResources().getString(R.string.correct) :
+                SunApplication.getInstance().getResources().getString(R.string.mistake)) + ")");
+        parseAnswerBinding.setCorrectAnswer(correctAnswer + "(" + answerBean.accuracy + "%" + ")");
     }
 
     @Override
@@ -203,7 +221,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
                 endTime = System.currentTimeMillis();
                 duration = ((endTime - startTime) / 1000);
                 if (duration <= 1) {
-                    CommonNotices.show("按住时间太短");
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.press_short));
                     File outputFile = getOutputFile();
                     outputFile.delete();
                     break;

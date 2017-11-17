@@ -199,4 +199,18 @@
     <string name="goal_advanced_subject_rank">班级:%1$d名,学校:%2$d名</string>
     <string name="rose_pie_chart_bracket_front"> (</string>
     <string name="rose_pie_chart_bracket_behind">分)</string>
+    <string name="please_input_voice">请录入语音</string>
+    <string name="press_short">按住时间太短</string>
+    <string name="voice_remark">语音备注：</string>
+    <string name="hold_input_voice">按住话筒语音录入...</string>
+    <string name="remove">清除</string>
+    <string name="add">添加</string>
+    <string name="modify">修改</string>
+    <string name="wrong_reflection">错题反思：</string>
+    <string name="edit">编辑</string>
+    <string name="error_analysis">错因分析：</string>
+    <string name="see_wrong">看错题</string>
+    <string name="unclear_concept">概念不清晰</string>
+    <string name="careless">粗心大意</string>
+    <string name="custom">自定义</string>
 </resources>

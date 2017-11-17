@@ -16,14 +16,16 @@ import java.util.List;
  */
 
 public class ResolveAdapterDataRequest extends BaseLocalRequest {
+    private int taskId;
     private List<QuestionData> questionDataList;
     private List<ExerciseMessageBean> questionMessages;
     private int currentParentId;
     private List<QuestionViewBean> questionList = new ArrayList<>();
 
-    public ResolveAdapterDataRequest(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages) {
+    public ResolveAdapterDataRequest(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages, int taskId) {
         this.questionDataList = questionDataList;
         this.questionMessages = questionMessages;
+        this.taskId = taskId;
     }
 
     public List<QuestionViewBean> getQuestionList() {
@@ -45,6 +47,7 @@ public class ResolveAdapterDataRequest extends BaseLocalRequest {
                         for (int j = 0; j < questions.size(); j++) {
                             Question question = questions.get(j);
                             QuestionViewBean exerciseBean = new QuestionViewBean();
+                            exerciseBean.setTaskId(taskId);
                             exerciseBean.setShow(i == 0 && j == 0);
                             exerciseBean.setAllScore(questionData.allScore);
                             exerciseBean.setExeNumber(questionData.exeNumber);

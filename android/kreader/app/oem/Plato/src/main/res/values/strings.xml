@@ -197,4 +197,18 @@
     <string name="goal_advanced_subject_rank">Class Rank:%1$dth, Grade Rank:%2$dth</string>
     <string name="rose_pie_chart_bracket_front"> (</string>
     <string name="rose_pie_chart_bracket_behind"> point)</string>
+    <string name="please_input_voice">Please input voice</string>
+    <string name="press_short">Hold it too short</string>
+    <string name="voice_remark">Voice remarks:</string>
+    <string name="hold_input_voice">Hold down the microphone and enter...</string>
+    <string name="remove">Remove</string>
+    <string name="add">Add</string>
+    <string name="modify">Modify</string>
+    <string name="wrong_reflection">Wrong reflection:</string>
+    <string name="edit">Edit</string>
+    <string name="error_analysis">Error analysis:</string>
+    <string name="see_wrong">See wrong</string>
+    <string name="unclear_concept">Unclear concept</string>
+    <string name="careless">Careless</string>
+    <string name="custom">Custom</string>
 </resources>

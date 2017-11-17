@@ -8,4 +8,6 @@ import com.onyx.android.plato.cloud.bean.QuestionViewBean;
 
 public interface OnCheckAnswerListener {
     void checkAnswerListener(QuestionViewBean question);
+
+    void deleteOrFavoriteQuestion(int taskId, int questionId);
 }

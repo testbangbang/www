@@ -105,6 +105,12 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
         insertAnswer(taskId, questionViewBean);
     }
 
+    @Override
+    public void deleteOrFavoriteQuestion(int taskId, int questionId) {
+        //TODO:fake student id
+        fillHomeworkPresenter.deleteOrFavorite(taskId, questionId, 108);
+    }
+
     public void insertAnswer(int taskId, QuestionViewBean questionViewBean) {
         fillHomeworkPresenter.insertAnswer(taskId, questionViewBean);
     }
