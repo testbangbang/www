@@ -653,9 +653,6 @@ public class AlBookEng{
 		if (hyphLang != null)
 			hyphen.setLang(hyphLang);
 
-		if (hyphLang != null)
-			hyphen.setLang(hyphLang);
-
 		shtamp.value++;
 		return returnOkWithRedraw();
 	}
@@ -2983,8 +2980,6 @@ public class AlBookEng{
         bookProperties.authors = format.bookAuthors;
 		bookProperties.isTextFormat = format.isTextFormat;
 		bookProperties.fullPath = format.fullPath;
-
-
 		bookProperties.content = format.ttl;
         if (needCalcPage4Content && format.ttl.size() > 0) {
             for (AlOneContent x : format.ttl) {
@@ -3271,13 +3266,19 @@ public class AlBookEng{
 		if ((style & AlStyles.SL_PAR) != 0) {	
 			oi.isStart = true;
 
-			v = (oi.prop & (AlParProperty.SL2_INDENT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_INDENT_SHIFT;
+			if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
+				v = 8 * 3;
+			} else {
+				v = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
+				if (preferences.chinezeFormatting) {
+					v *= 2;
+				}
+			}
 
-
-			if (v > 0/*((oi->prop & AlParProperty::SL2_REDLINE) != 0)*/ && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
+			if (v > 0 && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
 				if (!profiles.classicFirstLetter || (style & AlStyles.SL_MARKFIRTSTLETTER0) == 0) {
 					//oi.isRed = (int)(((double)width) * v / 300.0);
-                    oi.isRed = (int)fonts.getSpaceWidth() * 8;
+					oi.isRed = (int)(fontParam.space_width * v / 3);
 					oi.allWidth -= oi.isRed;
 				}
 			}
@@ -3379,18 +3380,20 @@ public class AlBookEng{
 
 		v = (oi.prop & (AlParProperty.SL2_MARGL_MASK/* - AlParProperty::SL2_MARGL_MASK_EM*/)) >> AlParProperty.SL2_MARGL_SHIFT;
 		if (v != 0) {
-			oi.isLeft = (int)(((double)width) * v / 300.0);
+			//oi.isLeft = (int)(((double)width) * v / 300.0);
+			oi.isLeft = (int)(fontParam.space_width * v / 3);
 			if (oi.isLeft > oi.allWidth * 0.8)
-				oi.isLeft = oi.allWidth * 8;
+				oi.isLeft = (int)(oi.allWidth * 0.8);
 
 			oi.allWidth -= oi.isLeft;
 		}
 
 		v = (oi.prop & (AlParProperty.SL2_MARGR_MASK/* - AlParProperty::SL2_MARGR_MASK_EM*/)) >> AlParProperty.SL2_MARGR_SHIFT;
 		if (v != 0) {
-			oi.isRight = (int)(((double)width) * v / 300.0);
+			//oi.isRight = (int)(((double)width) * v / 300.0);
+			oi.isRight = (int)(fontParam.space_width * v / 3);
 			if (oi.isRight > oi.allWidth * 0.8)
-				oi.isRight = oi.allWidth * 8;
+				oi.isRight = (int)(oi.allWidth * 0.8);
 
 			oi.allWidth -= oi.isRight;
 		}
