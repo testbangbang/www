@@ -79,7 +79,7 @@ public class RxFileSystemScanAction extends BaseAction<LibraryDataHolder> {
             condition = Metadata_Table.storageId.eq(storageId);
         }
         queryArgs.conditionGroup.and(condition);
-        final RxMetadataRequest metadataRequest = new RxMetadataRequest(dataHolder.getDataManager(),queryArgs);
+        final RxMetadataRequest metadataRequest = new RxMetadataRequest(dataHolder.getDataManager(), queryArgs);
         metadataRequest.execute(new RxCallback<RxMetadataRequest>() {
             @Override
             public void onNext(RxMetadataRequest request) {
@@ -92,6 +92,7 @@ public class RxFileSystemScanAction extends BaseAction<LibraryDataHolder> {
                                      final String storageId, HashSet<String> fileList, HashSet<String> snapshotList) {
         final RxFilesDiffFromMetadataRequest filesFromMetadataRequest = new RxFilesDiffFromMetadataRequest(dataHolder.getDataManager(),
                 fileList, snapshotList);
+        RxFilesDiffFromMetadataRequest.setAppContext(dataHolder.getContext());
         filesFromMetadataRequest.execute(new RxCallback<RxFilesDiffFromMetadataRequest>() {
             @Override
             public void onNext(RxFilesDiffFromMetadataRequest rxFilesDiffFromMetadataRequest) {
@@ -102,7 +103,7 @@ public class RxFileSystemScanAction extends BaseAction<LibraryDataHolder> {
     }
 
     private void addFilesToMetaData(final LibraryDataHolder dataHolder, final RxCallback baseCallback, String storageId, Set<String> addedSet) {
-        RxFilesAddToMetadataRequest addRequest = new RxFilesAddToMetadataRequest(dataHolder.getDataManager(),storageId, addedSet);
+        RxFilesAddToMetadataRequest addRequest = new RxFilesAddToMetadataRequest(dataHolder.getDataManager(), storageId, addedSet);
         addRequest.execute(new RxCallback<RxFilesAddToMetadataRequest>() {
             @Override
             public void onNext(RxFilesAddToMetadataRequest rxFilesAddToMetadataRequest) {

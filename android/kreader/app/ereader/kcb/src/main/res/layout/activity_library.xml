@@ -4,7 +4,7 @@
 
     <data>
 
-        <import type="com.onyx.kcb.model.DataModel" />
+        <import type="com.onyx.kcb.model.LibraryViewDataModel" />
 
         <import type="com.onyx.kcb.model.ModelType" />
 
@@ -14,7 +14,7 @@
 
         <variable
             name="dataModel"
-            type="DataModel" />
+            type="LibraryViewDataModel" />
 
         <variable
             name="indicatorModel"

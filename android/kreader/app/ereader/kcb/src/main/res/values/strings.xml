@@ -4,4 +4,28 @@
     <string name="library">Library</string>
     <string name="file_path_null">file path null</string>
     <string name="file_not_exist">file not exist</string>
+
+    <string name="menu_property">property</string>
+    <string name="menu_sort">Sort</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_multi_choice_mode">Multi-Choice mode</string>
+    <string name="menu_library_toc_index">Library toc index</string>
+    <string name="menu_library_build">Build a library</string>
+    <string name="menu_library_add">Add to the library</string>
+    <string name="menu_library_remove">Remove from the library</string>
+    <string name="menu_library_delete">Delete the library</string>
+    <string name="menu_view_switch">View Switch</string>
+    <string name="menu_group_select">Group Select</string>
+    <string name="menu_select_multiple">Multiple Selection Mode</string>
+    <string name="menu_file_property">Properties</string>
+    <string name="menu_file_goto_folder">GoTo Folder</string>
+    <string name="menu_file_rename">Rename</string>
+    <string name="menu_file_remove">Remove</string>
+    <string name="library_name">library name</string>
+    <string name="description">description</string>
+    <string name="library_build_fail">library build fail</string>
+    <string name="tip">Tip</string>
+    <string name="library_delete_tip">Deleting a library does not remove the actual book</string>
+    <string name="library_delete_fail">Library delete fail</string>
+
 </resources>

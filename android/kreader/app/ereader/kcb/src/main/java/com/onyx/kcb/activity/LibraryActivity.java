@@ -3,6 +3,10 @@ package com.onyx.kcb.activity;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.ActionBar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.data.QueryArgs;
@@ -19,14 +23,16 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kcb.KCPApplication;
 import com.onyx.kcb.R;
+import com.onyx.kcb.action.LibraryBuildAction;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.action.RxMetadataLoadAction;
 import com.onyx.kcb.adapter.ModelAdapter;
 import com.onyx.kcb.databinding.ActivityLibraryBinding;
+import com.onyx.kcb.event.ItemClickEvent;
+import com.onyx.kcb.event.ItemLongClickEvent;
 import com.onyx.kcb.event.MetadataItemClickEvent;
 import com.onyx.kcb.holder.LibraryDataHolder;
-import com.onyx.kcb.model.DataModel;
-import com.onyx.kcb.model.ModelType;
+import com.onyx.kcb.model.LibraryViewDataModel;
 import com.onyx.kcb.model.PageIndicatorModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -41,12 +47,14 @@ import java.io.File;
 public class LibraryActivity extends OnyxAppCompatActivity {
     static private boolean hasMetadataScanned = false;
     private ActivityLibraryBinding dataBinding;
-    private DataModel dataModel;
+    private LibraryViewDataModel dataModel;
     private LibraryDataHolder dataHolder;
     private QueryPagination pagination;
     private PageIndicatorModel pageIndicatorModel;
     private int row = KCPApplication.getInstance().getResources().getInteger(R.integer.library_row);
     private int col = KCPApplication.getInstance().getResources().getInteger(R.integer.library_col);
+    private boolean longClickMode = false;
+    private ModelAdapter modelAdapter;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -108,7 +116,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     private void updatePageIndicator() {
         int totalCount = getTotalCount();
-        pagination.resize(3, 3, totalCount);
+        pagination.resize(row, col, totalCount);
         pageIndicatorModel.updateCurrentPage(totalCount);
         pageIndicatorModel.updateTotal(totalCount);
     }
@@ -123,12 +131,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             return;
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataModel, dataHolder.getLibraryViewInfo().pageQueryArgs(preLoadPage), false);
-        loadAction.execute(dataHolder, new RxCallback() {
-            @Override
-            public void onNext(Object o) {
-                updateContentView();
-            }
-        });
+        loadAction.execute(dataHolder, null);
     }
 
     private void processFileSystemScan() {
@@ -138,13 +141,14 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         action.execute(dataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
+                dialogLoading.dismiss();
                 setHasMetadataScanned(true);
                 loadData();
             }
 
             @Override
-            public void onComplete() {
-                super.onComplete();
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
                 dialogLoading.dismiss();
             }
         });
@@ -152,12 +156,31 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     private void initView() {
         dataHolder = getDataHolder();
-        dataModel = new DataModel();
-        dataModel.type.set(ModelType.Library);
+        dataModel = new LibraryViewDataModel();
+        dataModel.title.set(getString(R.string.library));
         dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_library);
         dataBinding.setDataModel(dataModel);
+        initActionBar();
         initPageRecyclerView();
         initPageIndicator();
+    }
+
+    private void initActionBar() {
+        initSupportActionBarWithCustomBackFunction();
+        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            //AppCompat would not called onOptionMenuClosed();
+            // Use this listener to obtain menu visibility.
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible) {
+                    quitLongClickMode();
+                }
+            }
+        });
+    }
+
+    private void quitLongClickMode() {
+        longClickMode = false;
     }
 
     private void initPageIndicator() {
@@ -190,7 +213,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     private void initPageRecyclerView() {
         SinglePageRecyclerView contentPageView = getContentView();
         contentPageView.setLayoutManager(new DisableScrollGridManager(getApplicationContext()));
-        ModelAdapter modelAdapter = new ModelAdapter();
+        modelAdapter = new ModelAdapter();
         modelAdapter.setRowAndCol(row, col);
         contentPageView.setAdapter(modelAdapter);
         contentPageView.setOnChangePageListener(new SinglePageRecyclerView.OnChangePageListener() {
@@ -263,9 +286,97 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         return dataBinding.contentPageView;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.library_option_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_sort_by:
+                processSortBy();
+                return true;
+            case R.id.menu_filter_by:
+                processFilterByBy();
+                return true;
+            case R.id.menu_multi_select:
+                getIntoMultiSelectMode();
+                return true;
+            case R.id.menu_build_library:
+                processBuildLibrary();
+                return true;
+            case R.id.menu_add_to_library:
+                processAddToLibrary();
+                return true;
+            case R.id.menu_remove_from_library:
+                processRemoveFromLibrary();
+                break;
+            case R.id.menu_delete_library:
+                processDeleteLibrary();
+                break;
+            case R.id.menu_library_toc_index:
+                processGotoLibrary();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void processGotoLibrary() {
+
+    }
+
+    private void processDeleteLibrary() {
+
+    }
+
+    private void processRemoveFromLibrary() {
+
+    }
+
+    private void processAddToLibrary() {
+
+    }
+
+    private void processBuildLibrary() {
+        LibraryBuildAction libraryBuildAction = new LibraryBuildAction(this, dataHolder.getLibraryViewInfo().getLibraryIdString());
+        libraryBuildAction.execute(dataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                loadData();
+            }
+        });
+    }
+
+    private void getIntoMultiSelectMode() {
+
+    }
+
+    private void processFilterByBy() {
+
+    }
+
+    private void processSortBy() {
+
+    }
+
     @Subscribe
     public void onMetadataItemClickEvent(MetadataItemClickEvent event) {
         processBookItemOpen(event.getMetadata());
+    }
+
+    @Subscribe
+    public void onItemLongClickEvent(ItemLongClickEvent event) {
+        actionBar.openOptionsMenu();
+    }
+
+    @Subscribe
+    public void onItemClickEvent(ItemClickEvent event){
+
     }
 
     private void processBookItemOpen(Metadata metadata) {
