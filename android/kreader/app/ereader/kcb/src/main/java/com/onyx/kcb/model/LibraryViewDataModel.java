@@ -35,6 +35,7 @@ public class LibraryViewDataModel extends Observable {
         }
         for (Library library : libraryList) {
             DataModel model = new DataModel();
+            model.library.set(library);
             model.type.set(ModelType.Library);
             model.id.set(library.getIdString());
             model.title.set(library.getName());
@@ -50,6 +51,7 @@ public class LibraryViewDataModel extends Observable {
         }
         for (Metadata metadata : metadataList) {
             DataModel model = new DataModel();
+            model.metadata.set(metadata);
             model.type.set(ModelType.Metadata);
             model.id.set(metadata.getIdString());
             model.title.set(metadata.getName());

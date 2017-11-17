@@ -19,11 +19,13 @@ import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kcb.KCPApplication;
 import com.onyx.kcb.R;
 import com.onyx.kcb.action.LibraryBuildAction;
+import com.onyx.kcb.action.LibraryDeleteAction;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.action.RxMetadataLoadAction;
 import com.onyx.kcb.adapter.ModelAdapter;
@@ -32,7 +34,9 @@ import com.onyx.kcb.event.ItemClickEvent;
 import com.onyx.kcb.event.ItemLongClickEvent;
 import com.onyx.kcb.event.MetadataItemClickEvent;
 import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.model.DataModel;
 import com.onyx.kcb.model.LibraryViewDataModel;
+import com.onyx.kcb.model.ModelType;
 import com.onyx.kcb.model.PageIndicatorModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -55,6 +59,8 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     private int col = KCPApplication.getInstance().getResources().getInteger(R.integer.library_col);
     private boolean longClickMode = false;
     private ModelAdapter modelAdapter;
+    private DataModel currentChosenModel;
+    private boolean multiSelectionMode;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -294,6 +300,16 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (isLongClickMode()) {
+            prepareLongClickOptionsMenu(menu, currentChosenModel);
+        } else {
+            prepareNormalOptionsMenu(menu);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_sort_by:
@@ -331,7 +347,12 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processDeleteLibrary() {
-
+        new LibraryDeleteAction(this, currentChosenModel.library.get()).execute(dataHolder, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                loadData();
+            }
+        });
     }
 
     private void processRemoveFromLibrary() {
@@ -371,12 +392,68 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     @Subscribe
     public void onItemLongClickEvent(ItemLongClickEvent event) {
+        currentChosenModel = event.getDataModel();
+        longClickMode = true;
+        dataModel.addItemSelected(currentChosenModel, true);
         actionBar.openOptionsMenu();
     }
 
     @Subscribe
-    public void onItemClickEvent(ItemClickEvent event){
+    public void onItemClickEvent(ItemClickEvent event) {
 
+    }
+
+    private void prepareLongClickOptionsMenu(Menu menu, DataModel dataModel) {
+        boolean isLibraryItem = isLibraryItem(dataModel);
+        for (int i = 0; i < menu.size(); i++) {
+            switch (menu.getItem(i).getItemId()) {
+                case R.id.menu_properties:
+                    menu.getItem(i).setVisible(true);
+                    break;
+                case R.id.menu_remove_from_library:
+                    if (isLibraryItem) {
+                        menu.getItem(i).setVisible(false);
+                    } else {
+                        menu.getItem(i).setVisible(!CollectionUtils.isNullOrEmpty(
+                                dataHolder.getLibraryViewInfo().getLibraryPathList()));
+                    }
+                    break;
+                case R.id.menu_delete_library:
+                    menu.getItem(i).setVisible(isLibraryItem);
+                    break;
+                default:
+                    menu.getItem(i).setVisible(!isLibraryItem);
+                    break;
+            }
+        }
+    }
+
+    private void prepareNormalOptionsMenu(Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            switch (menu.getItem(i).getItemId()) {
+                case R.id.menu_remove_from_library:
+                    if (CollectionUtils.isNullOrEmpty(dataHolder.getLibraryViewInfo().getLibraryPathList())) {
+                        menu.getItem(i).setVisible(false);
+                    } else {
+                        menu.getItem(i).setVisible(isMultiSelectionMode());
+                    }
+                    break;
+                case R.id.menu_add_to_library:
+                    menu.getItem(i).setVisible(isMultiSelectionMode());
+                    break;
+                case R.id.menu_delete_library:
+                case R.id.menu_properties:
+                    menu.getItem(i).setVisible(false);
+                    break;
+                default:
+                    menu.getItem(i).setVisible(true);
+                    break;
+            }
+        }
+    }
+
+    private boolean isLibraryItem(DataModel dataModel) {
+        return dataModel.type.get() == ModelType.Library;
     }
 
     private void processBookItemOpen(Metadata metadata) {
@@ -393,5 +470,13 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         ActivityUtil.startActivitySafely(this,
                 ViewDocumentUtils.viewActionIntentWithMimeType(file),
                 ViewDocumentUtils.getReaderComponentName(this));
+    }
+
+    public boolean isLongClickMode() {
+        return longClickMode;
+    }
+
+    public boolean isMultiSelectionMode() {
+        return multiSelectionMode;
     }
 }
