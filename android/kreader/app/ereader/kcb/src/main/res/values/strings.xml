@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">KCB</string>
+    <string name="page_count" translatable="false">%1$d/%2$d</string>
+    <string name="library">Library</string>
+    <string name="file_path_null">file path null</string>
+    <string name="file_not_exist">file not exist</string>
+</resources>

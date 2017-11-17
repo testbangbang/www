@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ModelItemBinding">
+
+        <variable
+            name="model"
+            type="com.onyx.kcb.model.DataModel" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/imagebtn_bg"
+        android:onClick="@{()->model.itemClicked()}"
+        android:onLongClick="@{()->model.itemLongClick()}"
+        android:padding="2dp">
+
+        <RelativeLayout
+            android:id="@+id/cover_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:background="@drawable/background_shadow">
+
+            <ImageView
+                android:id="@+id/image_cover"
+                thumbnail="@{model.cover}"
+                android:layout_width="@dimen/model_item_cover_width"
+                android:layout_height="@dimen/model_item_cover_height"
+                android:scaleType="fitXY" />
+
+            <ImageView
+                android:id="@+id/image_get_widget"
+                android:layout_width="@dimen/item_get_widget_width"
+                android:layout_height="@dimen/item_get_widget_height"
+                android:layout_alignLeft="@id/image_cover"
+                android:layout_alignTop="@id/image_cover"
+                android:layout_alignWithParentIfMissing="true"
+                android:layout_marginTop="@dimen/item_get_widget_margin_top"
+                android:src="@drawable/book_item_get_widget"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/textView_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/image_cover"
+                android:layout_alignParentTop="true"
+                android:layout_alignRight="@+id/image_cover"
+                android:layout_centerInParent="true"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="@{model.title}"
+                android:textSize="19sp" />
+
+        </RelativeLayout>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+</layout>

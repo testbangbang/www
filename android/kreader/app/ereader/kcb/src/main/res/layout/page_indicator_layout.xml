@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.onyx.kcb.model.PageIndicatorModel" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:id="@+id/page_indicator_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_margin="@dimen/page_indicator_layout_margin"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/total_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@{model.total}"
+            android:textSize="26sp" />
+
+        <LinearLayout
+            android:id="@+id/page_panel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/prev"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->model.prev()}"
+                android:src="@drawable/page_arrow_left_background" />
+
+            <TextView
+                android:id="@+id/page_indicator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:gravity="center_vertical"
+                android:text="@{@string/page_count(model.currentPage,model.totalPage)}"
+                android:textSize="26sp" />
+
+            <ImageView
+                android:id="@+id/next"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->model.next()}"
+                android:src="@drawable/page_arrow_right_background" />
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/refresh"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/page_indicator_layout_refresh_margin_right"
+            android:layout_toLeftOf="@+id/page_panel"
+            android:onClick="@{()->model.onRefresh()}"
+            android:src="@drawable/refresh_background" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+</layout>
