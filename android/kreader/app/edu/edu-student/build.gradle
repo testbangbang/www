@@ -1,0 +1,118 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'com.android.application'
+
+apply from: file(rootProject.projectDir.absolutePath + '/signing.gradle')
+apply from: file(rootProject.projectDir.absolutePath + '/versioning.gradle')
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.onyx.edu.student"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode gitVersionCode(projectDir)
+        versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
+        multiDexEnabled true
+
+        sourceSets.main {
+            aidl.srcDirs = ['src/main/java']
+            jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
+            jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+        }
+
+        sourceSets.main {
+            aidl.srcDirs = ['src/main/java']
+            jniLibs.srcDir 'src/main/libs' //set libs as .so's location instead of jniLibs
+            jni.srcDirs = [] //disable automatic ndk-build call with auto-generated Android.mk
+        }
+
+        // call regular ndk-build(.cmd) script from app directory
+        task ndkBuild(type: Exec) {
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, '-j10'
+            } else {
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, '-j10'
+            }
+        }
+
+        tasks.withType(JavaCompile) {
+            compileTask -> compileTask.dependsOn ndkBuild
+        }
+
+        task ndkClean(type: Exec) {
+            if (Os.isFamily(Os.FAMILY_WINDOWS)) {
+                commandLine 'ndk-build.cmd', '-C', file('src/main').absolutePath, 'clean'
+            } else {
+                commandLine '/opt/adt-bundle-linux/ndk/ndk-build', '-C', file('src/main').absolutePath, 'clean'
+            }
+        }
+
+        clean.dependsOn 'ndkClean'
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), '../../../proguard-rules.pro', 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
+        }
+        debug {
+            debuggable true
+            jniDebuggable true
+            manifestPlaceholders = [channel_value: releaseChannel(),
+                                    type_value: releaseType(),
+                                    timestamp_value: System.currentTimeMillis() + "L"]
+        }
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile(project(':libraries:onyxsdk-ui')) {
+        exclude group: 'com.alibaba', module: 'fastjson'
+    }
+    compile(project(':libraries:onyxsdk-data')) {
+        //exclude group: 'com.alibaba', module: 'fastjson'
+    }
+    //compile(project(':libraries:onyxsdk-im'))
+    compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
+    compile "de.hdodenhof:circleimageview:$rootProject.circleimageviewVersion"
+    compile "com.jakewharton:butterknife:$rootProject.butterknifeVersion"
+    compile "com.squareup.picasso:picasso:$rootProject.picassoVersion"
+    testCompile "junit:junit:$rootProject.junitVersion"
+
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+
+    compile "com.github.bumptech.glide:glide:$rootProject.glideVersion"
+    compile "com.android.support:support-v4:$rootProject.supportLibraryVersion"
+    compile "com.android.support:design:$rootProject.supportLibraryVersion"
+    compile 'com.umeng.analytics:analytics:latest.integration'
+    compile 'de.halfbit:tinymachine:1.1.+'
+    compile "com.android.support:multidex:$multidexVersion"
+    compile "com.google.zxing:core:$rootProject.zxingVersion"
+    compile "us.feras.mdv:markdownview:1.1.0"
+
+    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
+    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
+}

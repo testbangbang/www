@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="item"
+            type="com.onyx.edu.student.model.MainZoneViewModel" />
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/home_item_background"
+        android:padding="@dimen/home_item_personal_space_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/home_item_personal_zone"
+            android:textSize="@dimen/home_item_personal_space_label_text_size"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView_user_avatar"
+            thumbnail="@{item.avatarImage}"
+            android:layout_width="@dimen/home_item_personal_space_avatar_size"
+            android:layout_height="@dimen/home_item_personal_space_avatar_size"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/home_item_personal_space_avatar_margin"
+            android:scaleType="fitCenter" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/imageView_user_avatar"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/textView_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@{item.name}"
+                android:textSize="@dimen/home_item_personal_space_username_text_size"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textView_user_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text="@{item.group}"
+                android:textSize="@dimen/home_item_personal_space_username_text_size"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{item.currentDate}"
+                    android:textSize="@dimen/home_item_personal_space_date_text_size" />
+
+                <TextView
+                    android:id="@+id/textView_week"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/home_item_personal_space_week_text_margin_left"
+                    android:text="@{item.currentWeek}"
+                    android:textSize="@dimen/home_item_personal_space_date_text_size" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            thumbnail="@{item.qrCodeImage}"
+            android:layout_width="@dimen/home_item_personal_space_date_qr_code_size"
+            android:layout_height="@dimen/home_item_personal_space_date_qr_code_size"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/home_item_personal_space_date_qr_code_margin"
+            android:background="@android:color/holo_red_dark" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+</layout>
