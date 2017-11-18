@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.model.v2;
 
+import com.onyx.android.sdk.data.model.UserBean;
+
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -15,7 +17,7 @@ public class GetBookReportListBean implements Serializable{
     public String name;
     public String content;
     public String book;
-    public String user;
+    public UserBean user;
     public String pageNumber;
     public String title;
     public int __v;

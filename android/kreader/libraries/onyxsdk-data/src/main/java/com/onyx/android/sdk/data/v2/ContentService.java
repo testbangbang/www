@@ -178,6 +178,9 @@ public interface ContentService {
                                                          @Query(Constant.GET_IMPRESSIONS_LIST_SORT_BY) String sortBy,
                                                          @Query(Constant.GET_IMPRESSIONS_LIST_ORDER) String order);
 
+    @GET("/api/ReadRecords/getByUser")
+    Call<GetReadingRateBean> getSharedReadRecords(@Query(Constant.ID_TAG) final String id);
+
     @GET("/api/impressions/{id}")
     Call<CreateBookReportResult> getImpression(@Path(Constant.ID_TAG) final String id);
 
@@ -220,6 +223,6 @@ public interface ContentService {
     @POST("/api/ReadRecords")
     Call<CreateReadingRateBean> uploadReadingRate(@Body ReadingRateBean param);
 
-    @GET("/api/ReadRecords")
-    Call<GetReadingRateBean> getReadingRate(@Query(Constant.WHERE_TAG) final String param);
+    @GET("/api/librarys/{id}/readRecords")
+    Call<GetReadingRateBean> getReadingRate(@Path(Constant.ID_TAG) final String id, @Query(Constant.WHERE_TAG) final String param);
 }

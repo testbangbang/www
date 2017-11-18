@@ -17,6 +17,6 @@ public class CreateReadingRateBean {
     public int summaryCount;
     public int impressionCount;
     public int impressionWordsCount;
-    public String user;
+    public UserBean user;
     public String _id;
 }
