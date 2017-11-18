@@ -213,4 +213,8 @@
     <string name="unclear_concept">概念不清晰</string>
     <string name="careless">粗心大意</string>
     <string name="custom">自定义</string>
+    <string name="create_knowledge">[知识点 %1$d]：%2$s</string>
+    <string name="answer_parse">[答案解析]：</string>
+    <string name="lose_data">数据丢失</string>
+    <string name="score_detail">%1$d分(满分%2$d分)</string>
 </resources>

@@ -44,4 +44,6 @@ public class Constants {
     public static final String CORRECT_TYPE = "correct";
     public static final String TASK = "task";
     public static final String EXAM = "exam";
+    public static final String P_MARK = "</p>";
+    public static final String VOICE_FORMAT = ".amr";
 }

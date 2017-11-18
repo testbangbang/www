@@ -4,12 +4,15 @@ import android.databinding.ViewDataBinding;
 import android.os.Environment;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.AnswerBean;
+import com.onyx.android.plato.cloud.bean.KnowledgeBean;
 import com.onyx.android.plato.cloud.bean.ParseBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseBean;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
@@ -51,6 +54,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         parseAnswerPresenter = new ParseAnswerPresenter(this);
         //TODO:fake id
         parseAnswerPresenter.getExplanation(1, 1523, 105);
+        parseAnswerPresenter.getRecord(questionData.getTaskId(), questionData.getId());
     }
 
     @Override
@@ -65,7 +69,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         timerEvent = new TimerEvent();
         parseAnswerBinding.parseDeleteSound.setEnabled(false);
         parseAnswerBinding.parseMistakeDelete.setEnabled(false);
-        setVisible(R.id.parse_mistake_layout);
+        setVisible(questionData.isCorrect() ? R.id.parse_add_sound_layout : R.id.parse_mistake_layout);
     }
 
     @Override
@@ -89,7 +93,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             dir.mkdirs();
         }
 
-        File file = new File(dir, "haha.amr");
+        File file = new File(dir, questionData.getTaskId() + questionData.getId() + Constants.VOICE_FORMAT);
         if (!file.exists()) {
             try {
                 file.createNewFile();
@@ -99,6 +103,19 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         }
 
         return file;
+    }
+
+    private boolean isOutFileExist() {
+        File dir = new File(Environment.getExternalStorageDirectory(), Constants.SOUND_DIR);
+        if (!dir.exists()) {
+            return false;
+        }
+
+        File file = new File(dir, questionData.getTaskId() + questionData.getId() + Constants.VOICE_FORMAT);
+        if (!file.exists()) {
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -124,7 +141,9 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
 
         if (parseAnswerPresenter != null) {
             //TODO:fake id
+            setVisible(questionData.isCorrect() ? R.id.parse_add_sound_layout : R.id.parse_mistake_layout);
             parseAnswerPresenter.getExplanation(1, 1523, 105);
+            parseAnswerPresenter.getRecord(questionData.getTaskId(), questionData.getId());
         }
     }
 
@@ -176,6 +195,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         }
         setVisible(id);
         parseAnswerBinding.setRecorderTime(duration + "s");
+        parseAnswerPresenter.saveRecord(questionData.getTaskId(), questionData.getId(), getOutputFile().getAbsolutePath(), duration);
         return true;
     }
 
@@ -202,12 +222,67 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             return;
         }
         AnswerBean answerBean = myAnswer.get(0);
+        String correct = insertPMark(parseBean.answer, "(" + answerBean.accuracy + "%" + ")");
         String userAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.user_answer), answerBean.answer);
-        String correctAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.correct_answer), Html.fromHtml(parseBean.answer));
-        parseAnswerBinding.setUserAnswer(userAnswer + "(" + (answerBean.isCorrect ?
-                SunApplication.getInstance().getResources().getString(R.string.correct) :
-                SunApplication.getInstance().getResources().getString(R.string.mistake)) + ")");
-        parseAnswerBinding.setCorrectAnswer(correctAnswer + "(" + answerBean.accuracy + "%" + ")");
+        String correctAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.correct_answer), Html.fromHtml(correct));
+        parseAnswerBinding.setCorrectAnswer(correctAnswer);
+
+        if (questionData.getExerciseSelections() != null && questionData.getExerciseSelections().size() > 0) {
+            parseAnswerBinding.setUserAnswer(userAnswer + "(" + (answerBean.isCorrect ?
+                    SunApplication.getInstance().getResources().getString(R.string.correct) :
+                    SunApplication.getInstance().getResources().getString(R.string.mistake)) + ")");
+            parseAnswerBinding.parseAnswerImage.setVisibility(View.GONE);
+        }else {
+            parseAnswerBinding.parseAnswerImage.setVisibility(View.VISIBLE);
+            String scoreDetail = String.format(SunApplication.getInstance().getResources().getString(R.string.score_detail), answerBean.score, answerBean.value);
+            String subjectAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.user_answer), scoreDetail);
+            parseAnswerBinding.setUserAnswer(subjectAnswer);
+            //TODO:load image answer
+        }
+
+        if (parseAnswerBinding.parseKnowledge.getChildCount() > 0) {
+            parseAnswerBinding.parseKnowledge.removeAllViews();
+        }
+        List<KnowledgeBean> knowledgeDtoList = answerBean.knowledgeDtoList;
+        if (knowledgeDtoList != null && knowledgeDtoList.size() > 0) {
+            for (int i = 0; i < knowledgeDtoList.size(); i++) {
+                KnowledgeBean knowledgeBean = knowledgeDtoList.get(i);
+                TextView knowledge = createKnowledge(i + 1, knowledgeBean.name);
+                parseAnswerBinding.parseKnowledge.addView(knowledge);
+            }
+        }
+
+        parseAnswerBinding.setAnswerParse(Html.fromHtml(parseBean.analysis).toString());
+    }
+
+    @Override
+    public void setRecordDuration(long recordDuration) {
+        if (recordDuration == 0) {
+            return;
+        }
+
+        duration = recordDuration;
+        if (questionData.isCorrect()) {
+            setVisible(R.id.parse_modify_sound_layout);
+            parseAnswerBinding.setRecorderTime(recordDuration + "s");
+        }
+    }
+
+    private String insertPMark(String htmlText, String insertText) {
+        if (htmlText.contains(Constants.P_MARK)) {
+            int index = htmlText.lastIndexOf(Constants.P_MARK);
+            String result = htmlText.substring(0, index) + insertText + Constants.P_MARK;
+            return result;
+        }
+
+        return htmlText + insertText;
+    }
+
+    private TextView createKnowledge(int i, String name) {
+        TextView textView = new TextView(getActivity());
+        textView.setText(String.format(SunApplication.getInstance().getResources().getString(R.string.create_knowledge), i, name));
+        textView.setTextSize(SunApplication.getInstance().getResources().getDimension(R.dimen.level_three_heading_font));
+        return textView;
     }
 
     @Override

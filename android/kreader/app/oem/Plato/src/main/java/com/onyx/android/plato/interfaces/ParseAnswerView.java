@@ -8,4 +8,6 @@ import com.onyx.android.plato.cloud.bean.PracticeParseBean;
 
 public interface ParseAnswerView {
     void setExplanation(PracticeParseBean data);
+
+    void setRecordDuration(long recordDuration);
 }

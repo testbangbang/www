@@ -14,6 +14,10 @@
         <variable
             name="recorderTime"
             type="String" />
+
+        <variable
+            name="answerParse"
+            type="String" />
     </data>
 
     <LinearLayout
@@ -47,6 +51,15 @@
             android:text="@{userAnswer}"
             android:textSize="@dimen/level_three_heading_font" />
 
+        <ImageView
+            android:id="@+id/parse_answer_image"
+            android:layout_width="@dimen/question_view_subjective_answer_width"
+            android:layout_height="@dimen/question_view_subjective_answer_height"
+            android:layout_marginLeft="@dimen/question_parse_margin_left"
+            android:scaleType="centerCrop"
+            android:src="@drawable/ic_answer_area"
+            android:visibility="gone" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -60,12 +73,32 @@
             android:layout_margin="@dimen/question_parse_margin_left"
             android:background="@android:color/black" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/parse_knowledge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/question_parse_margin_left"
-            android:text="@string/knowledge_point"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:orientation="vertical" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/question_parse_margin_left"
+            android:layout_marginTop="@dimen/question_parse_margin_top"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/answer_parse"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{answerParse}"
+                android:textSize="@dimen/level_three_heading_font" />
+        </LinearLayout>
 
         <View
             android:layout_width="match_parent"
@@ -141,9 +174,8 @@
                     android:layout_marginLeft="@dimen/record_result_margin_left"
                     android:background="@drawable/ic_voice_background"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/record_result_padding_left"
+                    android:paddingLeft="@dimen/parse_sound_padding_left"
                     android:text="@{recorderTime}"
-                    android:textColor="@android:color/white"
                     android:textSize="@dimen/level_three_heading_font"
                     android:visibility="gone" />
             </LinearLayout>
@@ -172,9 +204,8 @@
                     android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
                     android:background="@drawable/ic_voice_background"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/question_parse_add_sound_button_margin"
+                    android:paddingLeft="@dimen/parse_sound_padding_left"
                     android:text="@{recorderTime}"
-                    android:textColor="@android:color/white"
                     android:textSize="@dimen/level_three_heading_font" />
 
                 <View
@@ -246,9 +277,8 @@
                                 android:layout_height="wrap_content"
                                 android:background="@drawable/ic_voice_background"
                                 android:gravity="center_vertical"
-                                android:paddingLeft="@dimen/record_result_padding_left"
+                                android:paddingLeft="@dimen/parse_sound_padding_left"
                                 android:text="@{recorderTime}"
-                                android:textColor="@android:color/white"
                                 android:textSize="@dimen/level_three_heading_font" />
 
                             <View

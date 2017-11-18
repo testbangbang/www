@@ -126,7 +126,8 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         List<ExerciseMessageBean> questionMessages = data.exerciseMessageDtos;
         if (questionDataList != null && questionDataList.size() > 0 &&
                 questionMessages != null && questionMessages.size() > 0) {
-            resolveAdapterData(questionDataList, questionMessages, content.id);
+            //TODO:fake task id (should:content.id)
+            resolveAdapterData(questionDataList, questionMessages, 1);
         }
     }
 
