@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="parent_library_ref_height">50dp</dimen>
+    <dimen name="parent_library_ref_margin">8dp</dimen>
+    <dimen name="model_item_cover_width">204dp</dimen>
+    <dimen name="model_item_cover_height">280dp</dimen>
+    <dimen name="page_indicator_layout_margin">10dp</dimen>
+    <dimen name="page_indicator_layout_refresh_margin_right">25dp</dimen>
+</resources>

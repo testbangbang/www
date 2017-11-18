@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="com.onyx.kcb.model.LibraryViewDataModel" />
+
+        <import type="com.onyx.kcb.model.ModelType" />
+
+        <import type="android.widget.ImageView" />
+
+        <import type="android.graphics.drawable.Drawable" />
+
+        <variable
+            name="dataModel"
+            type="LibraryViewDataModel" />
+
+        <variable
+            name="indicatorModel"
+            type="com.onyx.kcb.model.PageIndicatorModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar style="@style/OnyxToolBarStyle">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <RelativeLayout
+                    android:id="@+id/back_function_layout"
+                    style="@style/global_activities_back_function_layout">
+
+                    <ImageView
+                        android:id="@+id/imageView_back"
+                        style="@style/global_activities_back_btn_image" />
+
+                    <TextView
+                        android:id="@+id/textView_main_title"
+                        style="@style/global_activities_back_btn_category_tittle"
+                        android:layout_toRightOf="@+id/imageView_back"
+                        android:text="@{dataModel.title??@string/library}" />
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+
+        <LinearLayout
+            android:id="@+id/parent_library_ref"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/parent_library_ref_height"
+            android:layout_marginLeft="@dimen/parent_library_ref_margin"
+            android:layout_marginRight="@dimen/parent_library_ref_margin"
+            android:layout_marginTop="@dimen/parent_library_ref_margin"
+            android:orientation="horizontal" />
+
+        <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
+            android:id="@+id/content_pageView"
+            items="@{dataModel.items}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+
+        <include
+            layout="@layout/page_indicator_layout"
+            bind:model="@{indicatorModel}" />
+
+    </LinearLayout>
+</layout>
