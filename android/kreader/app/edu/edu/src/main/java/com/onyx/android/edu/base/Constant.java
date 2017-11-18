@@ -1,1 +1,0 @@
-package com.onyx.android.edu.base;/** * Created by ming on 2016/11/2. */public class Constant {    public static String BOOK_NODE = "book_node";    public static String KNOW_LEDGE_POINT = "KnowledgePoint";    public static String QUESTION = "question";    public static String CHOOSE_QUESTION_VARIABLE = "choose_question_variable";}

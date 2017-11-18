@@ -1,1 +1,0 @@
-package com.onyx.libedu.model;import com.onyx.android.sdk.data.model.BaseData;/** * Created by ming on 2016/11/1. */public class Textbook extends BaseData{    private String bookName;    public String getBookName() {        return bookName;    }    public void setBookName(String bookName) {        this.bookName = bookName;    }}
