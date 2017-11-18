@@ -61,6 +61,7 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         final CreateInformalEssayBean bean = dataList.get(position);
         long currentTime = bean.currentTime;
+        holder.userName.setText(bean.user.name);
         holder.bookReportListItemSummary.setText(bean.content);
         holder.bookReportListItemTime.setText(TimeUtils.getDate(currentTime));
         holder.bookReportListItemBookName.setText(bean.title);
@@ -107,6 +108,8 @@ public class InformalEssayAdapter extends PageRecyclerView.PageAdapter<InformalE
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.book_report_list_item_time)
         TextView bookReportListItemTime;
+        @Bind(R.id.book_report_list_item_user_name)
+        TextView userName;
         @Bind(R.id.book_report_list_item_book_name)
         TextView bookReportListItemBookName;
         @Bind(R.id.book_report_list_item_summary)

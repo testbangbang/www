@@ -33,4 +33,6 @@ public class DeviceSettingViewBaseEvent {
     public static class DeviceSettingTimeSettingEvent extends DeviceSettingBaseEvent {}
 
     public static class DeviceSettingTTSSettingEvent extends DeviceSettingBaseEvent {}
+
+    public static class DeviceSettingInputMethodSettingEvent extends DeviceSettingBaseEvent {}
 }

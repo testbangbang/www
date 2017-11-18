@@ -47,7 +47,6 @@ import butterknife.OnClick;
  */
 
 public class BookDetailActivity extends BaseActivity implements BookDetailView {
-
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.image)
@@ -106,7 +105,8 @@ public class BookDetailActivity extends BaseActivity implements BookDetailView {
 
     @Override
     protected void initView() {
-        titleBarTitle.setText(getString(R.string.bookstore));
+        titleBarTitle.setText(getString(R.string.ebook_store));
+        image.setImageResource(R.drawable.ic_reader_top_bookstore);
         shoppingCart.setVisibility(View.VISIBLE);
         shoppingCart.setText(String.format(getString(R.string.shopping_cart_count_format), DRApplication.getInstance().getCartCount()));
     }

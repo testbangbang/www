@@ -10,6 +10,8 @@ import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
+import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.data.model.ChildBean;
 import com.onyx.android.sdk.data.model.v2.ListBean;
@@ -60,12 +62,12 @@ public class GroupMemberAdapter extends PageRecyclerView.PageAdapter<GroupMember
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
         ListBean bean = dataList.get(position);
-        ChildBean child = bean.child;
+        final ChildBean child = bean.child;
         String userAccount = DRPreferenceManager.getUserAccount(DRApplication.getInstance(), "");
         if (isShow) {
             if (child.name.equals(userAccount)) {
                 holder.checkContainer.setVisibility(View.INVISIBLE);
-            }else{
+            } else {
                 holder.checkContainer.setVisibility(View.VISIBLE);
             }
         } else {
@@ -86,12 +88,21 @@ public class GroupMemberAdapter extends PageRecyclerView.PageAdapter<GroupMember
             @Override
             public void onClick(View view) {
                 if (onItemClickListener != null) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        onItemClickListener.setOnItemClick(position, false);
+                    if (isShow) {
+                        if (holder.checkBox.isChecked()) {
+                            holder.checkBox.setChecked(false);
+                            onItemClickListener.setOnItemClick(position, false);
+                        } else {
+                            holder.checkBox.setChecked(true);
+                            onItemClickListener.setOnItemClick(position, true);
+                        }
                     } else {
-                        holder.checkBox.setChecked(true);
-                        onItemClickListener.setOnItemClick(position, true);
+                        String role = dataList.get(dataList.size() - 1).child.role;
+                        if (role.equals(Constants.USER) || role.equals(Constants.TEACHER)) {
+                            if (child.role.equals(Constants.C_STUDENT) || child.role.equals(Constants.STUDENT)) {
+                                ActivityManager.startReadingRateActivity(DRApplication.getInstance(), child.library);
+                            }
+                        }
                     }
                 }
             }

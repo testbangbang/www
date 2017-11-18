@@ -42,6 +42,14 @@ public class DRPreferenceManager extends PreferenceManager {
         return getStringValue(context, Constants.LIBRARY_PARENT_ID, defaultValue);
     }
 
+    public static void saveUserLibraryId(Context context, String libraryParentId) {
+        setStringValue(context, Constants.USER_LIBRARY_ID, libraryParentId);
+    }
+
+    public static String loadUserLibraryId(Context context, String defaultValue) {
+        return getStringValue(context, Constants.USER_LIBRARY_ID, defaultValue);
+    }
+
     public static void saveParentId(Context context, String libraryParentId) {
         setStringValue(context, Constants.PARENT_ID, libraryParentId);
     }

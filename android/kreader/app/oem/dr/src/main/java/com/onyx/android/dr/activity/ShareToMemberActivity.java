@@ -14,6 +14,8 @@ import com.onyx.android.dr.adapter.ShareToMemberAdapter;
 import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.ShareFailedEvent;
+import com.onyx.android.dr.event.ShareSuccessEvent;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.presenter.ShareBookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
@@ -23,6 +25,9 @@ import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.ListBean;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -76,6 +81,7 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
     private String impressionId;
     private String[] childrenId;
     private int shareType;
+    private int number = 0;
 
     @Override
     protected Integer getLayoutId() {
@@ -161,11 +167,28 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
         for (ListBean bean : selectedData) {
             if (shareType == Constants.INFORMAL_ESSAY) {
                 presenter.shareInformalEssay(bean.child.library, childrenId);
-            }else if (shareType == Constants.READING_RATE) {
+            } else if (shareType == Constants.READING_RATE) {
                 presenter.shareReadingRate(bean.child.library, childrenId);
-            }else if (shareType == Constants.READER_RESPONSE) {
+            } else if (shareType == Constants.READER_RESPONSE) {
                 presenter.shareImpression(bean.child.library, childrenId);
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShareSuccessEvent(ShareSuccessEvent event) {
+        CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                .getResources().getString(R.string.share_book_impression_success));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShareFailedEvent(ShareFailedEvent event) {
+        if (number < Constants.REQUEST_NUMBER) {
+            number++;
+            shareToMember();
+        } else {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                    .getResources().getString(R.string.share_book_impression_fail));
         }
     }
 }

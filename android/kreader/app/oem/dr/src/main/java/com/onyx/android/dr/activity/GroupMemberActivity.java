@@ -1,6 +1,9 @@
 package com.onyx.android.dr.activity;
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -14,7 +17,7 @@ import com.onyx.android.dr.adapter.GroupMemberAdapter;
 import com.onyx.android.dr.bean.MemberParameterBean;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
-import com.onyx.android.dr.dialog.AlertInfoDialog;
+import com.onyx.android.dr.dialog.SelectAlertDialog;
 import com.onyx.android.dr.event.ManageEvent;
 import com.onyx.android.dr.interfaces.GroupMemberView;
 import com.onyx.android.dr.presenter.GroupMemberPresenter;
@@ -65,7 +68,6 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
     private String sortBy = "createdAt";
     private String order = "-1";
     private ArrayList<Boolean> listCheck;
-    private AlertInfoDialog alertDialog;
     private String id;
 
     @Override
@@ -112,12 +114,12 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
 
     @Override
     public void setGroupMemberResult(GroupMemberBean bean) {
+        groupList.clear();
+        listCheck.clear();
         if (bean.list == null || bean.list.size() <= 0) {
             allNumber.setText(getString(R.string.member_number) + getString(R.string.zero_people));
             return;
         }
-        groupList.clear();
-        listCheck.clear();
         groupList = bean.list;
         allNumber.setText(getString(R.string.member_number) + groupList.size() + getString(R.string.people_unit));
         listCheck = groupMemberManagePresenter.getListCheck(groupList);
@@ -151,10 +153,10 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
             case R.id.menu_back:
                 finish();
                 break;
-            case com.onyx.android.dr.R.id.group_member_manage_activity_delete:
+            case R.id.group_member_manage_activity_delete:
                 manageMember();
                 break;
-            case com.onyx.android.dr.R.id.group_member_activity_search:
+            case R.id.group_member_activity_search:
                 searchMember();
                 break;
         }
@@ -170,30 +172,47 @@ public class GroupMemberActivity extends BaseActivity implements GroupMemberView
         if (text.equals(getString(R.string.manage))) {
             EventBus.getDefault().post(new ManageEvent());
         } else if (text.equals(getString(R.string.delete))) {
-            showDialog();
+            loadDialog();
         }
     }
 
-    private void showDialog() {
-        alertDialog = new AlertInfoDialog(this, getString(R.string.delete_group_member_hint), true,
-                getResources().getString(R.string.dialog_button_confirm), getResources().getString(R.string.dialog_button_cancel));
-        Utils.setDialogAttributes(alertDialog);
-        alertDialog.setOKOnClickListener(new AlertInfoDialog.OnOKClickListener() {
+    private void loadDialog() {
+        LinearLayout view = (LinearLayout) LayoutInflater.from(this).inflate(
+                R.layout.dialog_delete_group_member, null);
+        final SelectAlertDialog selectTimeDialog = new SelectAlertDialog(this);
+        // find id
+        TextView title = (TextView) view.findViewById(R.id.dialog_title);
+        Button confirm = (Button) view.findViewById(R.id.dialog_button_confirm);
+        Button cancel = (Button) view.findViewById(R.id.dialog_button_cancel);
+        //set data
+        title.setText(DRApplication.getInstance().getString(R.string.delete_group_member_hint));
+        WindowManager.LayoutParams attributes = selectTimeDialog.getWindow().getAttributes();
+        Float heightProportion = Float.valueOf(getString(R.string.dialog_delete_group_member_height));
+        Float widthProportion = Float.valueOf(getString(R.string.application_note_dialog_width));
+        attributes.height = (int) (Utils.getScreenHeight(DRApplication.getInstance()) * heightProportion);
+        attributes.width = (int) (Utils.getScreenWidth(DRApplication.getInstance()) * widthProportion);
+        selectTimeDialog.getWindow().setAttributes(attributes);
+        selectTimeDialog.setView(view);
+        confirm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onOKClick(int value) {
+            public void onClick(View view) {
                 groupMemberManagePresenter.remoteAdapterData(id, listCheck, groupMemberAdapter, groupList);
                 List<ListBean> data = groupMemberManagePresenter.getData(listCheck, groupList);
                 allNumber.setText(getString(R.string.member_number) + (groupList.size() - data.size())+ getString(R.string.people_unit));
             }
         });
-        alertDialog.setCancelOnClickListener(new AlertInfoDialog.OnCancelClickListener() {
+        cancel.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCancelClick() {
-                if (alertDialog.isShowing()) {
-                    alertDialog.dismiss();
+            public void onClick(View view) {
+                if (selectTimeDialog.isShowing()) {
+                    selectTimeDialog.dismiss();
                 }
+                groupMemberAdapter.isShow = false;
+                groupMemberAdapter.notifyDataSetChanged();
+                deleteMember.setText(getString(R.string.delete));
             }
         });
+        selectTimeDialog.show();
     }
 
     @Override

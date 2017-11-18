@@ -14,6 +14,7 @@ public class SignUpInfo {
     public String email;
     public String password;
     public String groupId;
+    public String role;
     public InfoBean info;
 
     public static class InfoBean {

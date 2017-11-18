@@ -67,6 +67,7 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookRepo
         String time = DateTimeUtil.formatDate(bookReportListBean.updatedAt, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
         holder.bookReportListItemTime.setText(time);
         holder.bookReportListItemBookName.setText(bookReportListBean.title);
+        holder.userName.setText(bookReportListBean.user.name);
         holder.bookReportListItemPage.setText(bookReportListBean.pageNumber);
         String content = bookReportListBean.content;
         holder.bookReportListItemWordCount.setText(content == null ? "0" : String.valueOf(content.length()));
@@ -114,6 +115,8 @@ public class BookReportListAdapter extends PageRecyclerView.PageAdapter<BookRepo
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.book_report_list_item_time)
         TextView bookReportListItemTime;
+        @Bind(R.id.book_report_list_item_user_name)
+        TextView userName;
         @Bind(R.id.book_report_list_item_book_name)
         TextView bookReportListItemBookName;
         @Bind(R.id.book_report_list_item_page)

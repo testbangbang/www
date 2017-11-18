@@ -504,12 +504,16 @@ public class LoginActivity extends BaseActivity implements LoginView {
         String identity = userIdentity.getSelectedItem().toString();
         signUpInfo.groupId = getGroupID(identity);
         if (getString(R.string.Schoolchildren).equals(identity)) {
+            signUpInfo.role = Constants.STUDENT;
             schoolchildrenInfo(signUpInfo);
         } else if (getString(R.string.teacher).equals(identity)) {
+            signUpInfo.role = Constants.TEACHER;
             teacherInfo(signUpInfo);
         } else if (getString(R.string.College_Students).equals(identity)) {
+            signUpInfo.role = Constants.C_STUDENT;
             collegeStudentInfo(signUpInfo);
         } else {
+            signUpInfo.role = Constants.USER;
             otherInfo(signUpInfo);
         }
     }

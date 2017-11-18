@@ -18,12 +18,14 @@ public class Constants {
     public static final String CONFIG_SCHOOL_LEVEL = "config_school_level";
 
     public static final String LIBRARY_PARENT_ID = "library_parent_Id";
+    public static final String USER_LIBRARY_ID = "user_library_Id";
     public static final String PARENT_ID = "parent_Id";
     public static final String IMPORT_CONTENT_IN_FIRST_BOOT_TAG = "metadata_import_in_first_boot";
 
     public static final String ACCOUNT_TYPE_HIGH_SCHOOL = "中小学生";
     public static final String ACCOUNT_TYPE_UNIVERSITY = "大学生";
     public static final String ACCOUNT_TYPE_TEACHER = "老师";
+    public static final String ACCOUNT_TYPE_OTHER = "社会人";
 
     public static final String GRADED_BOOKS = "分级读物";
     public static final String REAL_TIME_BOOKS_LIBRARY_NAME = "时文篇章";
@@ -51,6 +53,7 @@ public class Constants {
     public static final String GROUP_ID = "groupId";
     public static final String INFORMAL_ESSAY_CONTENT = "informalEssayContent";
     public static final String INFORMAL_ESSAY_TITLE = "informalEssayTitle";
+    public static final String LIBRARY_ID = "library_id";
 
     public static final int ACCOUNT_TYPE_MY_TRACKS = 0;
     public static final int ACCOUNT_TYPE_MY_THINK = 1;
@@ -193,11 +196,17 @@ public class Constants {
     public static final int SATURDAY = 6;
 
     public static long DATE_TIME = 7 * 24 * 60 * 60 * 1000;
+    public static final int REQUEST_NUMBER = 1;
 
     public static final String  MEMORANDUM_DAY_OF_WEEK = "memorandum_day_of_week";
     public static final String MEMORANDUM_TIME = "memorandum_time";
     public static final String MEMORANDUM_MATTER = "memorandum_matter";
     public static final String MEMORANDUM_CURRENT_TIME = "memorandum_current_time";
+
+    public static final String  USER = "user";
+    public static final String STUDENT = "student";
+    public static final String C_STUDENT = "c_student";
+    public static final String TEACHER = "teacher";
 
     public static final String KREADER_PACKAGE_NAME = "com.onyx.kreader";
     public static final String STATISTICS_ACTIVITY_FULL_PATH = "com.onyx.kreader.ui.statistics.StatisticsActivity";

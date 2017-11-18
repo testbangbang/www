@@ -31,6 +31,7 @@ import com.onyx.android.sdk.data.model.CreateReadingRateBean;
 import com.onyx.android.sdk.data.model.ReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -76,6 +77,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
     private String sortBy = "createdAt";
     private String order = "-1";
     private ExportSuccessHintDialog hintDialog;
+    private String libraryId = "";
 
     @Override
     protected Integer getLayoutId() {
@@ -110,7 +112,13 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
         presenter = new ReadingRatePresenter(getApplicationContext(), this);
         MemberParameterBean bean = new MemberParameterBean(offset, limit, sortBy, order);
         String json = JSON.toJSON(bean).toString();
-        presenter.getReadingRate(json);
+        libraryId = getIntent().getStringExtra(Constants.LIBRARY_ID);
+        String id = DRPreferenceManager.loadUserLibraryId(DRApplication.getInstance(), "");
+        if (StringUtils.isNullOrEmpty(libraryId)) {
+            presenter.getReadingRate(id, json);
+        } else {
+            presenter.getReadingRateById(libraryId);
+        }
         getIntentData();
         initEvent();
     }
@@ -133,6 +141,7 @@ public class ReadingRateActivity extends BaseActivity implements ReadingRateView
 
     @Override
     public void getReadingRateData(List<CreateReadingRateBean> dataList) {
+        readingRateList.clear();
         if (dataList == null || dataList.size() <= 0) {
             return;
         }

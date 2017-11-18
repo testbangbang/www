@@ -3,9 +3,11 @@ package com.onyx.android.dr.reader.activity;
 import android.content.Intent;
 import android.support.v7.widget.DividerItemDecoration;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.alibaba.fastjson.JSON;
@@ -23,8 +25,10 @@ import com.onyx.android.dr.reader.data.ReadSummaryGoodSentenceReviewBean;
 import com.onyx.android.dr.reader.data.ReadSummaryNewWordReviewBean;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.presenter.ReadSummaryPresenter;
+import com.onyx.android.dr.view.PageIndicator;
+import com.onyx.android.dr.view.PageRecyclerView;
+import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,14 +41,11 @@ import java.util.List;
 import butterknife.Bind;
 import butterknife.OnClick;
 
-import static com.onyx.android.dr.R.id.new_words_review_recycler;
-
 /**
  * Created by hehai on 17-8-18.
  */
 
 public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView {
-
     @Bind(R.id.image_view_back)
     ImageView imageViewBack;
     @Bind(R.id.image)
@@ -61,7 +62,7 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     EditText editReadSummary;
     @Bind(R.id.new_words_review_title)
     TextView newWordsReviewTitle;
-    @Bind(new_words_review_recycler)
+    @Bind(R.id.new_words_review_recycler)
     PageRecyclerView newWordsReviewRecycler;
     @Bind(R.id.good_sentence_title)
     TextView goodSentenceTitle;
@@ -77,11 +78,16 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     LinearLayout goodSentenceContainer;
     @Bind(R.id.good_sentence_recycler)
     PageRecyclerView goodSentenceRecycler;
+    @Bind(R.id.page_indicator_layout)
+    RelativeLayout pageIndicatorLayout;
+    @Bind(R.id.read_summary_activity_bottom)
+    LinearLayout pageIndicatorContainer;
     private NewWordsReviewListAdapter newWordsReviewListAdapter;
     private GoodSentenceReviewListAdapter goodSentenceReviewListAdapter;
     private ReadSummaryPresenter readSummaryPresenter;
     private String bookName;
     private String pageNumber;
+    private PageIndicator pageIndicator;
 
     @Override
     protected Integer getLayoutId() {
@@ -101,7 +107,6 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         newWordsReviewRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(DRApplication.getInstance(), DividerItemDecoration.VERTICAL);
-        newWordsReviewRecycler.addItemDecoration(dividerItemDecoration);
         newWordsReviewRecycler.setAdapter(newWordsReviewListAdapter);
         goodSentenceReviewListAdapter = new GoodSentenceReviewListAdapter();
         goodSentenceRecycler.setLayoutManager(new DisableScrollGridManager(DRApplication.getInstance()));
@@ -120,8 +125,75 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
 
     @Override
     protected void initData() {
+        initPageIndicator(pageIndicatorLayout);
         readSummaryPresenter = new ReadSummaryPresenter(this);
         readSummaryPresenter.getReadSummary(bookName, pageNumber);
+        initEvent();
+    }
+
+    private void initEvent() {
+        newWordsReviewRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                getPagination().prevPage();
+                updatePageIndicator();
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                getPagination().nextPage();
+                updatePageIndicator();
+            }
+        });
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        if (parentView == null) {
+            return;
+        }
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), newWordsReviewRecycler.getPaginator());
+        pageIndicator.showRefresh(false);
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                newWordsReviewRecycler.prevPage();
+            }
+
+            @Override
+            public void next() {
+                newWordsReviewRecycler.nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+            }
+        });
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(newWordsReviewListAdapter.getRowCount(), newWordsReviewListAdapter.getColumnCount(), 0);
+        pagination.setCurrentPage(0);
+        newWordsReviewRecycler.setCurrentPage(0);
+    }
+
+    private QueryPagination getPagination() {
+        return DRApplication.getLibraryDataHolder().getCloudViewInfo().getQueryPagination();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = newWordsReviewListAdapter.getDataCount();
+        getPagination().resize(newWordsReviewListAdapter.getRowCount(), newWordsReviewListAdapter.getColumnCount(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
     }
 
     @OnClick({R.id.menu_back, R.id.title_bar_right_menu})
@@ -147,11 +219,14 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         if (newWordList == null || newWordList.size() <= 0) {
             newWordsReviewTitleHint.setVisibility(View.VISIBLE);
             newWordsReviewRecycler.setVisibility(View.GONE);
+            pageIndicatorContainer.setVisibility(View.GONE);
             newWordsReviewTitleHint.setText(getString(R.string.new_words_review_title_hint));
         } else {
             newWordsReviewTitleHint.setVisibility(View.GONE);
             newWordsReviewRecycler.setVisibility(View.VISIBLE);
             newWordsReviewListAdapter.setList(newWordList);
+            newWordsReviewListAdapter.notifyDataSetChanged();
+            updatePageIndicator();
         }
     }
 
@@ -182,8 +257,9 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
         ReadSummaryGoodSentenceReviewBean bean = new ReadSummaryGoodSentenceReviewBean();
         bean.supplements = supplement;
         list.add(bean);
-        String newWordListJson = newWordsReviewListAdapter.getNewWordListJson();
+        List<ReadSummaryNewWordReviewBean> selectedList = newWordsReviewListAdapter.getSelectedList();
         String goodSentenceJson = JSON.toJSONString(list);
+        String newWordListJson = JSON.toJSONString(selectedList);
         readSummaryPresenter.saveReadSummary(bookName, pageNumber, summary, newWordListJson, goodSentenceJson);
     }
 

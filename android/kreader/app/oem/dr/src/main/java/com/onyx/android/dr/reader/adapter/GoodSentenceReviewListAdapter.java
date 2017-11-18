@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.reader.data.ReadSummaryGoodSentenceReviewBean;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.dr.view.PageRecyclerView;
 
 import java.util.List;
 

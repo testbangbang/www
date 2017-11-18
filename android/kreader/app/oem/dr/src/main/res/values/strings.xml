@@ -315,6 +315,7 @@
     <string name="dict_download_hint_dialog_height" format="float" type="dimen">0.25</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
     <string name="application_note_dialog_width" format="float" type="dimen">0.6</string>
+    <string name="dialog_delete_group_member_height" format="float" type="dimen">0.15</string>
     <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
     <string name="new_word_query_activity_dialog_width" format="float" type="dimen">0.9</string>
     <string name="new_word_query_activity_dialog_height" format="float" type="dimen">0.5</string>
@@ -455,7 +456,7 @@
     <string name="device_setting_wifi_network">WiFi</string>
     <string name="wifi_band">Frequency</string>
     <string name="this_article_or_an_overview_of_this_page">This article or an overview of this page:</string>
-    <string name="new_words_review">New words review:</string>
+    <string name="new_words_review">Please review the new words in this article, and select some of the new words that you think are most important:</string>
     <string name="perfect_this_article_or_this_page_good_sentence">Please specify the reasons for the following sentences:</string>
     <string name="word_commonly_used">);word commonly used(</string>
     <string name="word_interpretation">);word interpretation:</string>
@@ -710,8 +711,8 @@
     <string name="select_time_range">select time range</string>
     <string name="select_group">select group</string>
     <string name="reading_rate_html">reading rate html</string>
-    <string name="new_words_review_title_hint">No new words to review, please add.</string>
-    <string name="good_sentence_title_hint">Without this article or this page, please add</string>
+    <string name="new_words_review_title_hint">Today you will find new words in the reading of this article, so sorry!</string>
+    <string name="good_sentence_title_hint">Today you have excerpted in the reading of this article. Look forward to the next time!</string>
     <string name="proposer">proposer</string>
     <string name="application_note">application note</string>
     <string name="apply_for_group_item_refuse">refuse</string>
@@ -747,4 +748,6 @@
     <string name="this_week_the_date">This week the date:</string>
     <string name="last_week">last week</string>
     <string name="next_week">next week</string>
+    <string name="user">user</string>
+    <string name="menu_input_method_setting">input method setting</string>
 </resources>

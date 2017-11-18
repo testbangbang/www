@@ -104,6 +104,7 @@ public class AuthTokenAction extends BaseAction<LibraryDataHolder> {
 
     private void sendAccountAvailableEvent(Context context, final NeoAccountBase account) {
         DRPreferenceManager.saveLibraryParentId(context, account.library);
+        DRPreferenceManager.saveUserLibraryId(context, account.library);
         DRApplication.getInstance().setLogin(true);
         final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(account);
         DRApplication.getCloudStore().submitRequest(DRApplication.getInstance(), generateAccountInfoRequest, new BaseCallback() {

@@ -36,19 +36,19 @@ public class GetBookReportListRequest extends AutoNetWorkConnectionBaseCloudRequ
         try {
             Response<GetBookReportList> response = executeCall(ServiceFactory.getContentService(parent.
                     getCloudConf().getApiBase()).getImpressionsList(requestBean.offset,
-                    requestBean.limit,requestBean.sortBy,requestBean.order));
+                    requestBean.limit, requestBean.sortBy, requestBean.order));
 
-            if(response != null) {
+            if (response != null) {
                 bookReportList = response.body();
             }
             listCheck.clear();
             if (bookReportList.list != null && bookReportList.list.size() > 0) {
-                for (int i = 0; i <bookReportList.list.size(); i++) {
+                for (int i = 0; i < bookReportList.list.size(); i++) {
                     listCheck.add(false);
                     OperatingDataManager.getInstance().insertReaderResponse(bookReportList.list.get(i));
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -367,6 +367,7 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
         updateDeviceSettingPage(R.id.setting_language_settings);
     }
 
+
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceInformationEvent(DeviceSettingViewBaseEvent.DeviceSettingDeviceInformationEvent event) {
         updateDeviceSettingPage(R.id.setting_device_information);
@@ -410,6 +411,11 @@ public class DeviceSettingFragment extends BaseFragment implements DeviceSetting
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceSettingTTSSettingEvent(DeviceSettingViewBaseEvent.DeviceSettingTTSSettingEvent event) {
         ActivityManager.startTTSSettingsActivity(DRApplication.getInstance());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDeviceSettingInputMethodSettingEvent(DeviceSettingViewBaseEvent.DeviceSettingInputMethodSettingEvent event) {
+        ActivityManager.startInputMethodSettingsActivity(getActivity());
     }
 
 

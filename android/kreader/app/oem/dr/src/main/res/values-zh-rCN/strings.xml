@@ -306,6 +306,7 @@
     <string name="application_note_dialog_height" format="float" type="dimen">0.38</string>
     <string name="query_record_activity_dialog_width" format="float" type="dimen">1.0</string>
     <string name="application_note_dialog_width" format="float" type="dimen">0.6</string>
+    <string name="dialog_delete_group_member_height" format="float" type="dimen">0.15</string>
     <string name="speech_recording_activity_dialog_height" format="float" type="dimen">0.25</string>
     <string name="dict_download_hint_dialog_height" format="float" type="dimen">0.25</string>
     <string name="speech_recording_activity_dialog_width" format="float" type="dimen">0.6</string>
@@ -441,7 +442,7 @@
     <string name="device_setting_wifi_network">WiFi 网络</string>
     <string name="wifi_band">频率</string>
     <string name="this_article_or_an_overview_of_this_page">本文或本页概要:</string>
-    <string name="new_words_review">生词复习:</string>
+    <string name="new_words_review">请复习今天阅读本文时的生词，并选出你认为最重要的若干生词:</string>
     <string name="perfect_this_article_or_this_page_good_sentence">请说明将下述句子列为好句的原因:</string>
     <string name="wifi_rescan">重新扫描</string>
     <string name="wifi_connected">连接</string>
@@ -705,8 +706,8 @@
     <string name="select_time_range">选择时间范围</string>
     <string name="select_group">选择群组</string>
     <string name="reading_rate_html">阅读统计报表</string>
-    <string name="new_words_review_title_hint">没有要复习的生词，请先添加!</string>
-    <string name="good_sentence_title_hint">没有本文或本页的好句，请先添加!</string>
+    <string name="new_words_review_title_hint">今天你在本文的阅读过程中为发现生词，so sorry！</string>
+    <string name="good_sentence_title_hint">今天你在本文的阅读过程中为摘录过好句，期待下次吧！</string>
     <string name="proposer">申请人</string>
     <string name="application_note">申请备注</string>
     <string name="apply_for_group_item_refuse">拒绝</string>
@@ -741,4 +742,6 @@
     <string name="this_week_the_date">本周日期: </string>
     <string name="last_week">上一周</string>
     <string name="next_week">下一周</string>
+    <string name="user">用户</string>
+    <string name="menu_input_method_setting">输入法设置</string>
 </resources>
