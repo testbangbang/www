@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:appCompat="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/layout_item"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/imagebtn_bg"
+        android:gravity="center"
+        appCompat:alwaysLayoutImageView="true">
+
+        <ImageView
+            android:id="@+id/imageView_icon"
+            android:layout_width="@dimen/application_item_image_size"
+            android:layout_height="@dimen/application_item_image_size"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:scaleType="fitCenter"
+            android:src="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textView_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/imageView_icon"
+            android:layout_centerHorizontal="true"
+            android:ellipsize="middle"
+            android:gravity="center_horizontal"
+            android:lines="2"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/application_item_text_size"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageView_update_tips"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/imageView_icon"
+            android:layout_toRightOf="@id/imageView_icon"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+</layout>

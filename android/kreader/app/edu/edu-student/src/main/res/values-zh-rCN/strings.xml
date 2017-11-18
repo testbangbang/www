@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">电子书包2.0</string>
+
+    <string name="home_item_material">教材教辅</string>
+    <string name="home_item_record">课堂记录</string>
+    <string name="home_item_homework">作业学习</string>
+    <string name="home_item_syllabus">课表</string>
+    <string name="home_item_message">消息</string>
+    <string name="home_item_self_exam">自测习题</string>
+    <string name="home_item_class_zone">班级圈</string>
+    <string name="home_item_application">应用</string>
+    <string name="home_item_personal_zone">个人空间</string>
+
+    <string name="no_support_yet">暂还未支持</string>
+    <string name="test_user_name">张小萌</string>
+    <string name="test_user_group">广州一中三年级2班</string>
+
+    <string name="total_format">总计：%d</string>
+    <string name="download_link_invalid">下载链接为空或者有误</string>
+    <string name="downloading">下载中&#8230;</string>
+    <string name="download_fail">下载失败了</string>
+    <string name="download_success">下载完成了</string>
+    <string name="file_path_invalid">文件路径无效</string>
+
+    <string name="token_exception_contact_admin">登录异常，请检查网络重试或者联系管理员</string>
+    <string name="hardware_error">硬件错误, 请检查网络重试或者联系管理员</string>
+    <string name="account_un_login">未登录</string>
+
+    <string name="data_loading">数据加载中&#8230;</string>
+    <string name="data_loading_exception">数据加载异常</string>
+    <string name="data_has_no_more">没有更多数据了</string>
+
+    <string name="go_to_page">页面跳转</string>
+    <string name="current_page">当前页面</string>
+
+    <string name="open_wifi">wifi没有连接，正在打开wifi&#8230;</string>
+    <string name="refreshing">正在获取新内容&#8230;</string>
+    <string name="refresh_fail">获取新内容失败了</string>
+    <string name="refresh_content_empty">获取的新内容为空</string>
+
+    <string name="online_library_id_error">在线书库id异常</string>
+    <string name="online_library_load_error">获取书库异常</string>
+    <string name="online_group_load_error">获取分组异常</string>
+
+    <string name="text_recommend_person">推荐人:</string>
+
+    <string name="application_list">应用列表</string>
+    <string name="menu_app_npi_clear">清除测试应用</string>
+    <string name="settings">设置</string>
+
+</resources>
