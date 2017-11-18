@@ -1,9 +1,11 @@
 package com.neverland.engbook.level2;
 
+import com.neverland.engbook.allstyles.AlCSSHtml;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlOneZIPRecord;
+import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
@@ -23,8 +25,6 @@ public class AlFormatODT extends AlAXML {
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
-        allState.isOpened = true;
-
         xml_mode = true;
         ident = "ODT";
 
@@ -42,12 +42,13 @@ public class AlFormatODT extends AlAXML {
         setCP(TAL_CODE_PAGES.CP65001);
 
         allState.state_parser = STATE_XML_SKIP;
-        allState.state_skipped_flag = true;
+        allState.clearSkipped();
+
+        cssStyles.init(this, TAL_CODE_PAGES.CP65001, AlCSSHtml.CSSHTML_SET_ODT);
+        //if ((bookOptions.formatOptions & AlFiles.BOOKOPTIONS_DISABLE_CSS) != 0)
+            cssStyles.disableExternal = true;
 
         parser(0, -1);
-        newParagraph();
-
-        allState.isOpened = false;
     }
 
     @Override
@@ -91,30 +92,23 @@ public class AlFormatODT extends AlAXML {
     public boolean externPrepareTAG() {
         StringBuilder param;
 
-        if (allState.isOpened/* && tag.tag != AlFormatTag.TAG_BINARY*/) {
-            param = tag.getATTRValue(AlFormatTag.TAG_ID);
-            if (param != null)
-                addtestLink(param.toString());
-        }
+
+        param = tag.getATTRValue(AlFormatTag.TAG_ID);
+        if (param != null)
+            addtestLink(param.toString());
+
 
         switch (tag.tag) {
 
             case AlFormatTag.TAG_HEAD:
                 if (active_type == AlOneZIPRecord.SPECIAL_NONE) {
                     if (tag.closed) {
-                        if (allState.skip_count > 0)
-                            allState.skip_count--;
-                        if (allState.skip_count == 0) {
-                            allState.state_skipped_flag = false;
-                        } else {
+                        allState.decSkipped();
+                        if (allState.skipped_flag > 0)
                             allState.state_parser = STATE_XML_SKIP;
-                        }
                     } else
                     if (!tag.ended) {
-                        if (allState.isOpened) {
-                            newParagraph();
-                            //setParagraphStyle(AlStyles.PAR_DESCRIPTION1);
-                        }
+                        newParagraph();
                     } else {
 
                     }
@@ -127,16 +121,11 @@ public class AlFormatODT extends AlAXML {
             case AlFormatTag.TAG_SEQUENCE: //???
                 if (active_type == AlOneZIPRecord.SPECIAL_NONE) {
                     if (tag.closed) {
-                        if (allState.skip_count > 0)
-                            allState.skip_count--;
-                        if (allState.skip_count == 0) {
-                            allState.state_skipped_flag = false;
-                        } else {
+                        allState.decSkipped();
+                        if (allState.skipped_flag > 0)
                             allState.state_parser = STATE_XML_SKIP;
-                        }
                     } else if (!tag.ended) {
-                        allState.skip_count++;
-                        allState.state_skipped_flag = true;
+                        allState.incSkipped();
                         allState.state_parser = STATE_XML_SKIP;
                     } else {
 
@@ -146,7 +135,7 @@ public class AlFormatODT extends AlAXML {
 
             case AlFormatTag.TAG_A:
                 if (tag.closed) {
-                    if ((paragraph & AlStyles.STYLE_LINK) != 0)
+                    if ((styleStack.buffer[styleStack.position].paragraph & AlStyles.STYLE_LINK) != 0)
                         clearTextStyle(AlStyles.STYLE_LINK);
                 } else if (!tag.ended) {
                     if (addNotes())
@@ -158,15 +147,13 @@ public class AlFormatODT extends AlAXML {
             case AlFormatTag.TAG_BODY:
                 if (active_type == AlOneZIPRecord.SPECIAL_NONE) {
                     if (tag.closed) {
-                        allState.state_skipped_flag = true;
-                        clearParagraphStyle(AlStyles.PAR_NOTE);
+                        allState.incSkipped();
+                        clearStateStyle(AlStateLevel2.PAR_NOTE);
                         newParagraph();
-                        setParagraphStyle(AlStyles.PAR_BREAKPAGE);
+                        setPropStyle(AlParProperty.SL2_BREAK_BEFORE);
                     } else if (!tag.ended) {
-                        allState.state_skipped_flag = false;
-                        allState.skip_count = 0;
-                        if (allState.isOpened)
-                            newParagraph();
+                        allState.decSkipped();
+                        newParagraph();
                     } else {
 
                     }
@@ -297,12 +284,12 @@ public class AlFormatODT extends AlAXML {
                         }
                     }
                 } else */{
-                    if (allState.isOpened) {
+
                         param = tag.getATTRValue(AlFormatTag.TAG_NAME);
                         if (param != null) {
                             addtestLink(param.toString());
                         }
-                    }
+
                 }
                 return true;
             /*case AlFormatTag.TAG_TITLE:
@@ -359,7 +346,7 @@ public class AlFormatODT extends AlAXML {
                 return true;
             case AlFormatTag.TAG_EXTFILE:
                 if (tag.closed) {
-                    if (allState.isOpened)
+                    //if (allState.isOpened)
                         newParagraph();
 
                     active_file = UNKNOWN_FILE_SOURCE_NUM;

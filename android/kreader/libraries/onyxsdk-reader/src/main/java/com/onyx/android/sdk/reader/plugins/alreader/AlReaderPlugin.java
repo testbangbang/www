@@ -89,6 +89,7 @@ public class AlReaderPlugin implements ReaderPlugin,
         if (extensionFilters.size() <= 0) {
             extensionFilters.add("azw");
             extensionFilters.add("azw3");
+            extensionFilters.add("chm");
             extensionFilters.add("doc");
             extensionFilters.add("docm");
             extensionFilters.add("docx");

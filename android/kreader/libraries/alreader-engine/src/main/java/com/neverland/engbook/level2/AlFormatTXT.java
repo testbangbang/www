@@ -11,6 +11,7 @@ import com.neverland.engbook.unicode.CP936;
 import com.neverland.engbook.unicode.CP949;
 import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlPreferenceOptions;
+import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
 import com.neverland.engbook.util.ChineseTextSectionRecognizer;
 
@@ -29,8 +30,6 @@ public class AlFormatTXT extends AlFormat {
 
 	public void initState(AlBookOptions bookOptions, AlFiles myParent, 
 			AlPreferenceOptions pref, AlStylesOptions stl) {
-		allState.isOpened = true;
-
 		ident = "TEXT";
 
 		aFiles = myParent;
@@ -56,9 +55,6 @@ public class AlFormatTXT extends AlFormat {
 
 		allState.state_parser = STATE_TXT_NORMAL;
 		parser(0, aFiles.getSize());
-		newParagraph();
-		
-		allState.isOpened = false;	
 	}
 
 	void detectTXTMode() {
@@ -147,51 +143,37 @@ public class AlFormatTXT extends AlFormat {
 	}
 
 	@Override
-	void formatAddonInt() {
-		pariType = paragraph;
-	}
-
-	@Override
-	void doSpecialGetParagraph(long iType, int addon, long level,  long[] stk, int[] cpl) {
-		paragraph = iType;
-		allState.state_parser = 0;
-	}
-
-	@Override
 	protected void doTextChar(char ch, boolean addSpecial) {
 		chineseTextSectionRecognizer.onNewCharacter(ch);
+		
+		if (parText.length > 0) {
 
-		if (allState.isOpened) {
-			if (allState.text_present) {
+			if (ch == 0xad)
+				softHyphenCount++;
 
-				if (ch == 0xad)
-					softHyphenCount++;
+			parText.add(ch);
 
-				size++;
-				parPositionE = allState.start_position;		
-				allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20);
-				if (size - parStart > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
-					if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag && allState.state_parser == 0)
-						newParagraph();
-				}
-			} else 
-			if (ch != 0x20) {
-				parPositionS = allState.start_position;
-				formatAddonInt();
-				parStart = size;
-				allState.text_present = true;
-				allState.letter_present = (allState.letter_present) || (ch != 0xa0);
-				size++;
-				parPositionE = allState.start_position;
-			}		
-		} else {
-			if (allState.text_present) {					
-				stored_par.data[stored_par.cpos++] = ch;
-			} else 
-			if (ch != 0x20) {
-				stored_par.data[stored_par.cpos++] = ch;
-				allState.text_present = true;
-			}			
+			size++;
+			parText.positionE = allState.start_position;
+			parText.haveLetter = parText.haveLetter || (ch != 0xa0 && ch != 0x20);
+
+			if (parText.length > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
+				if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag && allState.state_parser == 0)
+				newParagraph();
+			}
+		} else
+		if (ch != 0x20) {
+			parText.positionS = parText.positionE = allState.start_position;
+
+			parText.paragraph = styleStack.getActualParagraph();
+			parText.prop = styleStack.getActualProp();
+			parText.tableStart = currentTable.start;
+			parText.tableCounter = currentTable.counter;
+			parText.sizeStart = size;
+
+			parText.haveLetter = (ch != 0xa0 && ch != 0x20);
+			size++;
+			parText.add(ch);
 		}
 	}
 
@@ -201,7 +183,7 @@ public class AlFormatTXT extends AlFormat {
 		int 	buf_cnt;
 		char 	ch, ch1;
 
-		allState.text_present = false;
+
 		int j;
 		//AlIntHolder jVal = new AlIntHolder(0);
 		
@@ -332,6 +314,8 @@ public class AlFormatTXT extends AlFormat {
 						break;
 					}
 				//}
+				if ((ch & AlStyles.STYLE_MASK_4CODECONVERT) == AlStyles.STYLE_BASE_4CODECONVERT)
+					ch = 0x00;
 				
 		// end must be code				
 				/////////////////// Begin Real Parser
@@ -353,7 +337,7 @@ public class AlFormatTXT extends AlFormat {
 					case STATE_TXT_WAIT:
 						if (ch < 0x20) {
 							if (ch == 0x0a) {
-								if (allState.text_present) {
+								if (parText.length > 0) {
 									newParagraph();
 								} else {
 									newEmptyTextParagraph();
@@ -388,7 +372,7 @@ public class AlFormatTXT extends AlFormat {
 						break;
 					case STATE_TXT_WAIT:
 						if (ch == 0x20 || ch == 0xa0 || ch == 0x09) {
-							if (allState.text_present) {
+							if (parText.length > 0) {
 								newParagraph();
 							} else {
 								newEmptyTextParagraph();
@@ -408,7 +392,7 @@ public class AlFormatTXT extends AlFormat {
 				default:				
 					if (ch < 0x20) {
 						if (ch == 0x0a) {
-							if (allState.text_present) {
+							if (parText.length > 0) {
 								newParagraph();
 							} else {
 								newEmptyTextParagraph();
@@ -427,15 +411,14 @@ public class AlFormatTXT extends AlFormat {
 			}
 			i += j;
 		}
-		if (allState.isOpened)
-			newParagraph();
+		newParagraph();
 		// end must be cod
 	}
 
 	@Override
 	void newParagraph() {
 		if (chineseTextSectionRecognizer.matches()) {
-			addContent(AlOneContent.add(chineseTextSectionRecognizer.getSectionText(), parStart, 0));
+			addContent(AlOneContent.add(chineseTextSectionRecognizer.getSectionText(), parText.sizeStart, 0));
 		}
 
 		chineseTextSectionRecognizer.reset();

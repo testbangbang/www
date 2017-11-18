@@ -22,7 +22,24 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName artifact.version
+
+        /*ndk {
+            abiFilters 'armeabi', 'armeabi-v7a'*//*, 'arm64-v8a'*//*, 'x86'*//*, 'x86_64'*//*, 'mips'*//*, 'mips64'*//*
+        }
+
+        externalNativeBuild {
+            cmake {
+                arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_PLATFORM=android-11'
+            }
+        }*/
     }
+
+    /*externalNativeBuild {
+        cmake {
+            path 'src/main/cpp/CMakeLists.txt'
+        }
+    }*/
+
     buildTypes {
         bintrayRelease {
             minifyEnabled true
@@ -44,9 +61,10 @@ android {
 }
 
 dependencies {
+
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:appcompat-v7:22.1.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
     compile files('libs/juniversalchardet-1.0.3.jar')
     compile files('libs/svg-android-1.1.jar')
     compile files('libs/junrar-0.7.jar')

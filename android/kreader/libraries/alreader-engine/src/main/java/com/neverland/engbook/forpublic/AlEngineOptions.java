@@ -23,11 +23,8 @@ public class AlEngineOptions {
 	/**
 	 * коэффициент масштабирования для текста
 	 */
-	public float								textMultiplexer = 1.0f; // for Win32 - only 160
-	/**
-	 * дпи сновного экрана. см. описание TAL_SCREEN_DPI
-	 */
-	public TAL_SCREEN_DPI						DPI = TAL_SCREEN_DPI.TAL_SCREEN_DPI_160; // for Win32 - only 160
+	public float								multiplexer = 1.0f; //
+
 	/**
 	 * каталог, откуда библиотека считывает шрифты
 	 */
@@ -75,4 +72,13 @@ public class AlEngineOptions {
 
 	public EngSelectionCorrecter				selectCorrecter = null;
 	public AlBitmap 							externalBitmap = null;
+
+	public int									notesItemsOnPageCount = 0;
+
+	public String								defaultFB2 = null;
+	public String								defaultFB3 = null;
+	public String								defaultHTML = null;
+	public String								defaultMOBI = null;
+	public String								defaultEPUB = null;
+
 }

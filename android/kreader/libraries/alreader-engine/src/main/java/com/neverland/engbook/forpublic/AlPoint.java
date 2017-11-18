@@ -4,6 +4,7 @@ public class AlPoint {
     public int					x;
     public int					y;
     public int					height;
+    public int					position;
 
     public void set(int vx, int vy) {
         x = vx;

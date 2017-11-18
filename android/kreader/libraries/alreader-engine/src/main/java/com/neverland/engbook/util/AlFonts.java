@@ -1,35 +1,59 @@
 package com.neverland.engbook.util;
 
+import android.content.res.AssetManager;
+import android.graphics.Paint.FontMetricsInt;
+import android.graphics.Typeface;
+
+import com.neverland.engbook.forpublic.AlEngineOptions;
+import com.neverland.engbook.forpublic.AlResourceFont;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import com.neverland.engbook.forpublic.AlEngineOptions;
-import com.neverland.engbook.forpublic.AlResourceFont;
-
-import android.content.res.AssetManager;
-import android.graphics.Paint.FontMetricsInt;
-import android.graphics.Typeface;
-
 
 public class AlFonts {
 	private final ArrayList<AlOneFont> allfonts = new ArrayList<>();
+
+	public ArrayList<AlOneFont> getFontList() {
+		return allfonts;
+	}
 
 	private final HashMap<String, Integer> allfontsMaps = new HashMap<>();
 	
 	private final HashMap<Long, AlTypefaces> collTPF = new HashMap<>();
 	private final FontMetricsInt font_metrics = new FontMetricsInt();
-	// work around the issue of different width of space character with different fonts
-	// use Chinese character to compute the space width we want, which is half of chinese character width
-	private final static String SPACE_SPECIAL_STRCHAR = "中";
+	private final static String SPACE_SPECIAL_STRCHAR = " ";
 	private final static char SPACE_SPECIAL_CHAR = ' ';
 	private final static String HYPH_SPECIAL_STRCHAR = "-";
 	private final static char HYPH_SPECIAL_CHAR = '-';
+	private final static String EM_SPECIAL_STRCHAR = "M";
+	private final static char EM_SPECIAL_CHAR = 'M';
 
-    private AssetManager assetManager;
+	private final static float FONT_STEP_MULTIPLE = 0.7f;
+	/*public final static float FONT_STEP_MULTIPLE_P1 = FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_P2 = FONT_STEP_MULTIPLE_P1 * FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_P3 = FONT_STEP_MULTIPLE_P2 * FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_P4 = FONT_STEP_MULTIPLE_P3 * FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_P5 = FONT_STEP_MULTIPLE_P4 * FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_P6 = FONT_STEP_MULTIPLE_P5 * FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_P7 = FONT_STEP_MULTIPLE_P6 * FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_P8 = FONT_STEP_MULTIPLE_P7 * FONT_STEP_MULTIPLE;
 
-	private int multiplexer = 1;
+	public final static float FONT_STEP_MULTIPLE_M1 = 1 / FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_M2 = FONT_STEP_MULTIPLE_M1 / FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_M3 = FONT_STEP_MULTIPLE_M2 / FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_M4 = FONT_STEP_MULTIPLE_M3 / FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_M5 = FONT_STEP_MULTIPLE_M4 / FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_M6 = FONT_STEP_MULTIPLE_M5 / FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_M7 = FONT_STEP_MULTIPLE_M6 / FONT_STEP_MULTIPLE;
+	public final static float FONT_STEP_MULTIPLE_M8 = FONT_STEP_MULTIPLE_M7 / FONT_STEP_MULTIPLE;*/
+
+
+	private AssetManager assetManager;
+
+	private float multiplexer = 1;
 	private AlCalc calc = null;
 	private AlPaintFont fparam;
 	public void init(AlEngineOptions opt, AlCalc c, AlPaintFont	fontparam) {
@@ -37,29 +61,18 @@ public class AlFonts {
 		fparam = fontparam;
         assetManager = opt.appInstance.getResources().getAssets();
 		loadAllFonts(opt.font_catalog, opt.font_catalogs_addon, opt.font_resource);
-		switch (opt.DPI) {
-		case TAL_SCREEN_DPI_320:
-			multiplexer = 2;
-			break;
-		case TAL_SCREEN_DPI_480:
-			multiplexer = 3;
-			break;
-		case TAL_SCREEN_DPI_640:
-			multiplexer = 4;
-			break;
-		default:			
-			break;
-		}
+		multiplexer = opt.multiplexer;
 	}
-	
+
 	public void	modifyPaint(long				old_style,
 		    long				new_style, 
 			AlProfileOptions	profile,
 			boolean needDraw) {
 		
 		boolean modify = false;
+
 		int fnt_num = (int) ((new_style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT);
-		int text_size = profile.font_sizes[fnt_num];
+		int text_size = (int) (profile.font_sizes[fnt_num] * profile.multiplexer);
 		boolean needCorrectItalic = false;
 		
 		fparam.style = new_style & (AlStyles.LMASK_REAL_FONT | AlStyles.LMASK_PAINT_FONT);
@@ -97,35 +110,27 @@ public class AlFonts {
 		tns = new_style & AlStyles.LMASK_PAINT_FONT;
 		tos = old_style & AlStyles.LMASK_PAINT_FONT;
 		if (tns != tos || modify) {
-					
 
-			switch ((int)(new_style & AlStyles.SL_SIZE_MASK)) {
-			case (int) AlStyles.SL_SIZE_M7: text_size -= 7 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_M6: text_size -= 6 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_M5: text_size -= 5 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_M4: text_size -= 4 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_M3: text_size -= 3 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_M2: text_size -= 2 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_M1: text_size -= multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P1: text_size += multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P2: text_size += 2 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P3: text_size += 3 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P4: text_size += 4 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P5: text_size += 5 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P6: text_size += 6 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P7: text_size += 7 * multiplexer; break;
-			case (int) AlStyles.SL_SIZE_P8: text_size += 8 * multiplexer; break;
+
+			long kSize = new_style & AlStyles.SL_SIZE_MASK;
+			if (kSize < AlStyles.SL_SIZE_NORMAL) {
+				kSize >>= AlStyles.SL_SIZE_SHIFT;
+				text_size *= (100 - ((100 - kSize) * FONT_STEP_MULTIPLE)) / 100.0;
+			} else
+			if (kSize > AlStyles.SL_SIZE_NORMAL) {
+				kSize >>= AlStyles.SL_SIZE_SHIFT;
+				text_size *= (100 + ((kSize - 100) * FONT_STEP_MULTIPLE)) / 100.0;
 			}
-			
+
 			if ((new_style & (AlStyles.STYLE_SUB | AlStyles.STYLE_SUP)) != 0)
 				text_size = text_size * 7 / 10;
 			
 			if (text_size < 3)
 				text_size = 3;
-			if (text_size > 200)
-				text_size = 200;
+			if (text_size > 300)
+				text_size = 300;
 
-			if (profile.classicFirstLetter && (new_style & AlStyles.SL_MARKFIRTSTLETTER) != 0)
+			if (profile.classicFirstLetter && (new_style & AlStyles.SL_MARKFIRTSTLETTER0) != 0)
 				text_size *= 2;
 
 			modify = true;
@@ -139,11 +144,20 @@ public class AlFonts {
 			
 			if (fparam.style == 0) {
 				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
-					// 4 is chosen by practice
-					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4);
+					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR));
 				fparam.space_width_current = calc.mainWidth[SPACE_SPECIAL_CHAR];
+
+				if (calc.mainWidth[HYPH_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
+					calc.mainWidth[HYPH_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
+				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
+
+				if (calc.mainWidth[EM_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
+					calc.mainWidth[EM_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
+				fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR];
 			} else {
-				fparam.space_width_current = (int) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR) / 4);
+				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
+				fparam.hyph_width_current = (int) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
+				fparam.em_width_current = text_size;//(int) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
 			}
 			
 			fparam.space_width_standart = fparam.space_width_current;
@@ -153,17 +167,9 @@ public class AlFonts {
 				if (fparam.space_width_current < 2)
 					fparam.space_width_current = 2;
 			}
+
 			
-			if (fparam.style == 0) {
-				if (calc.mainWidth[HYPH_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
-					calc.mainWidth[HYPH_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
-				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
-			} else {
-				fparam.hyph_width_current = (int) calc.fontPaint.measureText(HYPH_SPECIAL_STRCHAR);
-			}
-			
-			
-			if (new_style == 0) {
+			if (new_style == AlStyles.SL_SIZE_NORMAL) {
 				/*if (PrefManager.font_height_asc) {
 					param.height = (int)(font_metrics.descent - font_metrics.ascent + font_metrics.leading + 0.5f);
 					param.def_line_down = (int) font_metrics.descent;
@@ -174,6 +180,7 @@ public class AlFonts {
 				
 				fparam.space_width = fparam.space_width_current;
 				fparam.hyph_width = fparam.hyph_width_current;
+				fparam.em_width = fparam.em_width_current;
 				fparam.def_reserv = 0;
 			}
 			
@@ -191,7 +198,7 @@ public class AlFonts {
 			if (needCorrectItalic)
 				 fparam.correct_italic = fparam.height / 7;
 			
-			if (fparam.height < text_size && (tns & AlStyles.SL_MARKFIRTSTLETTER) == 0) {
+			/*if (fparam.height < text_size && (tns & AlStyles.SL_MARKFIRTSTLETTER) == 0) {
 				float m = (float)text_size / fparam.height;
 				
 				if (new_style == 0) {
@@ -202,10 +209,11 @@ public class AlFonts {
 				fparam.base_line_up *= m;
 				fparam.base_line_down *=m;				
 				fparam.base_ascent *= m;
-			}
+			}*/
 
 		}
 
+		fparam.unvisible_text = (new_style & AlStyles.SL_COLOR_MASK) == AlStyles.SL_COLOR_NOVISIBLE;
 		fparam.color = profile.colors[(int)((new_style & AlStyles.SL_COLOR_MASK) >> AlStyles.SL_COLOR_SHIFT)] | 0xff000000;
 		calc.fontPaint.setColor(fparam.color);
 		calc.fontPaint.setStrikeThruText((new_style & AlStyles.STYLE_STRIKE) != 0);
@@ -254,17 +262,17 @@ public class AlFonts {
 		switch (i) {
 		case 0:
 			typeface = new AlTypefaces();
-			typeface.tpf = Typeface.create(allfonts.get(0).aName, (int) st0);
+			typeface.tpf = Typeface.create(Typeface.SANS_SERIF, (int) st0);
 			break;
 		case 1:
 			typeface = new AlTypefaces();
-			typeface.tpf = Typeface.create(allfonts.get(1).aName, (int) (st0 & 0x01));
+			typeface.tpf = Typeface.create(Typeface.SERIF, (int) (st0 & 0x01));
 			if ((st0 & 0x02) != 0)
 				typeface.emul_italic = true;
 			break;
 		case 2:
 			typeface = new AlTypefaces();
-			typeface.tpf = Typeface.create(allfonts.get(2).aName, 0);
+			typeface.tpf = Typeface.create(Typeface.MONOSPACE, 0);
 			if ((st0 & 0x02) != 0)
 				typeface.emul_italic = true;
 			if ((st0 & 0x01) != 0)
