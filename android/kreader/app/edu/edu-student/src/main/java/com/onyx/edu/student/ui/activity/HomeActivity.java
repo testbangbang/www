@@ -54,7 +54,8 @@ public class HomeActivity extends OnyxAppCompatActivity {
         normalItemList.add(getMainNormalItem(R.string.home_item_homework, R.drawable.home_homework, null));
         normalItemList.add(getMainNormalItem(R.string.home_item_message, R.drawable.home_message, null));
         normalItemList.add(getMainNormalItem(R.string.home_item_record, R.drawable.home_class_record, null));
-        normalItemList.add(getMainNormalItem(R.string.home_item_application, R.drawable.home_application, null));
+        normalItemList.add(getMainNormalItem(R.string.home_item_application, R.drawable.home_application,
+                new Intent(this, ApplicationsActivity.class)));
     }
 
     private MainNormalItem getMainNormalItem(String title, int resId, Intent intent) {

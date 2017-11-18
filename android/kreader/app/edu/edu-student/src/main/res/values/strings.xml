@@ -45,4 +45,8 @@
     <string name="online_group_load_error">Online grouping got the exception</string>
 
     <string name="text_recommend_person">Recommend Person:</string>
+
+    <string name="application_list">Application List</string>
+    <string name="menu_app_npi_clear">Clean up Test Application</string>
+    <string name="settings">Settings</string>
 </resources>

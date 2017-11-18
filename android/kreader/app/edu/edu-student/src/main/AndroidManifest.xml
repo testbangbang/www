@@ -48,6 +48,8 @@
 
         <activity android:name=".ui.activity.MaterialSeriesActivity" />
 
+        <activity android:name=".ui.activity.ApplicationsActivity" />
+
     </application>
 
 </manifest>
