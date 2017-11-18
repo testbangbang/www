@@ -4,4 +4,27 @@
     <string name="library">书库</string>
     <string name="file_path_null">文件路径为空</string>
     <string name="file_not_exist">文件不存在</string>
+
+    <string name="menu_property">属性</string>
+    <string name="menu_sort">排序</string>
+    <string name="menu_filter">过滤</string>
+    <string name="menu_multi_choice_mode">多选模式</string>
+    <string name="menu_library_toc_index">书库目录索引</string>
+    <string name="menu_library_build">创建书库</string>
+    <string name="menu_library_add">加入书库</string>
+    <string name="menu_library_remove">移出书库</string>
+    <string name="menu_library_delete">删除书库</string>
+    <string name="menu_view_switch">视图切换</string>
+    <string name="menu_group_select">组别选择</string>
+    <string name="menu_select_multiple">多选模式</string>
+    <string name="menu_file_property">属性</string>
+    <string name="menu_file_goto_folder">跳转到文件夹</string>
+    <string name="menu_file_rename">重命名</string>
+    <string name="menu_file_remove">删除</string>
+    <string name="library_name">书库名</string>
+    <string name="description">描述</string>
+    <string name="library_build_fail">书库创建失败</string>
+    <string name="tip">提示</string>
+    <string name="library_delete_tip">删除书库不会删除掉实际的书本</string>
+    <string name="library_delete_fail">删除书库失败</string>
 </resources>
