@@ -1,0 +1,954 @@
+package com.onyx.edu.student.ui.fragment;
+
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.bumptech.glide.request.target.ViewTarget;
+import com.facebook.common.references.CloseableReference;
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.liulishuo.filedownloader.model.FileDownloadStatus;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.LibraryDataModel;
+import com.onyx.android.sdk.data.LibraryViewInfo;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
+import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.QueryPagination;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.data.ViewType;
+import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
+import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
+import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
+import com.onyx.android.sdk.data.utils.CloudUtils;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
+import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.RawResourceUtil;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.edu.student.R;
+import com.onyx.edu.student.StudentApp;
+import com.onyx.edu.student.action.CloudContentLoadAction;
+import com.onyx.edu.student.action.CloudContentRefreshAction;
+import com.onyx.edu.student.action.DownloadAction;
+import com.onyx.edu.student.action.PageGotoAction;
+import com.onyx.edu.student.events.AccountTokenErrorEvent;
+import com.onyx.edu.student.events.BookLibraryEvent;
+import com.onyx.edu.student.events.DownloadingEvent;
+import com.onyx.edu.student.events.HardwareErrorEvent;
+import com.onyx.edu.student.events.SortByEvent;
+import com.onyx.edu.student.events.TabSwitchEvent;
+import com.onyx.edu.student.events.ViewTypeEvent;
+import com.onyx.edu.student.holder.LibraryDataHolder;
+import com.onyx.edu.student.manager.ConfigPreferenceManager;
+import com.onyx.edu.student.ui.view.PageIndicator;
+import com.onyx.edu.student.device.DeviceConfig;
+import com.onyx.edu.student.utils.ResourceFileUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
+/**
+ * Created by suicheng on 2017/4/28.
+ */
+public class ContentFragment extends Fragment {
+    PageIndicator pageIndicator;
+
+    LibraryDataHolder dataHolder;
+    private LibraryDataModel pageDataModel = new LibraryDataModel();
+    private DialogProgressHolder progressHolder = new DialogProgressHolder();
+
+    private boolean newPage = false;
+    private int noThumbnailPosition = 0;
+
+    private int thumbnailItemRow = 2;
+    private int thumbnailItemCol = 3;
+
+    private int detailItemRow = 5;
+    private int detailItemCol = 1;
+
+    private boolean isVisibleToUser = false;
+    private boolean isColorDevice = true;
+    private int[] imageReqWidthHeight;
+
+    private SinglePageRecyclerView contentPageView;
+    private Args arguments = new Args();
+
+    public static class Args {
+        public SortBy sortBy = SortBy.CreationTime;
+        public SortOrder sortOrder = SortOrder.Desc;
+        public String fragmentName;
+        public Library library;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        initConfig();
+    }
+
+    private void initConfig() {
+        isColorDevice = DeviceConfig.sharedInstance(getContext()).isDeviceSupportColor();
+        imageReqWidthHeight = new int[]{getResources().getDimensionPixelSize(R.dimen.book_item_cover_image_width),
+                getResources().getDimensionPixelSize(R.dimen.book_item_cover_image_height)};
+        arguments = JSONObjectParseUtils.parseObject(getArguments().getString(Constant.ARGS_TAG), Args.class);
+    }
+
+    private Library getLibrary() {
+        if (arguments == null) {
+            return null;
+        }
+        return arguments.library;
+    }
+
+    private String getLibraryId() {
+        Library library = getLibrary();
+        return library == null ? null : library.getIdString();
+    }
+
+    private String getFragmentName() {
+        return arguments.fragmentName;
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_content, container, false);
+        ButterKnife.bind(this, view);
+        initView((ViewGroup) view);
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (event.getAction() == KeyEvent.ACTION_UP) {
+                    if (keyCode == KeyEvent.KEYCODE_BACK) {
+                        return processBackKey();
+                    }
+                }
+                return false;
+            }
+        });
+        loadData();
+    }
+
+    private boolean processBackKey() {
+        return false;
+    }
+
+    private void loadData() {
+        String uniqueId = null;
+        if (arguments != null) {
+            uniqueId = getLibraryId();
+            String name = getFragmentName();
+            Log.e("##contentFragment", "name:" + String.valueOf(name));
+        }
+        if (StringUtils.isNullOrEmpty(uniqueId)) {
+            return;
+        }
+        loadData(uniqueId);
+    }
+
+    private void loadData(String libraryId) {
+        LibraryViewInfo viewInfo = getLibraryViewInfo();
+        viewInfo.getQueryPagination().setCurrentPage(0);
+        QueryArgs args = viewInfo.libraryQuery(libraryId);
+        args.useCloudMemDbPolicy();
+        if (NetworkUtil.isWiFiConnected(getContext())) {
+            refreshDataFormCloud();
+        } else {
+            loadData(args);
+        }
+    }
+
+    private void loadData(final QueryArgs args) {
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(args, true);
+        contentLoadAction.execute(getContext(), getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                updateContentView(contentLoadAction.getDataModel());
+                preloadNext();
+            }
+        });
+    }
+
+    private void nextPage() {
+        if (!getPagination().nextPage()) {
+            postNextTab();
+            return;
+        }
+
+        final CloudContentLoadAction loadAction = new CloudContentLoadAction(getLibraryViewInfo().nextPage(), true);
+        loadAction.execute(getContext(), getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                updateContentView(loadAction.getDataModel());
+                preloadNext();
+            }
+        });
+    }
+
+    private QueryPagination getPagination() {
+        return getLibraryViewInfo().getQueryPagination();
+    }
+
+    private void initPagination() {
+        QueryPagination pagination = getPagination();
+        pagination.resize(getRow(), getCol(), 0);
+        pagination.setCurrentPage(0);
+    }
+
+    private void preloadNext() {
+        int preLoadPage = getPagination().getCurrentPage() + 1;
+        if (preLoadPage >= getPagination().pages()) {
+            return;
+        }
+        QueryArgs queryArgs = getLibraryViewInfo().pageQueryArgs(preLoadPage);
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(queryArgs, false);
+        contentLoadAction.execute(getContext(), getDataHolder(), null);
+    }
+
+    protected void initView(ViewGroup parentView) {
+        initContentPageView(parentView);
+        initPageIndicator(parentView);
+    }
+
+    private void initContentPageView(View parentView) {
+        contentPageView = (SinglePageRecyclerView) parentView.findViewById(R.id.content_pageView);
+        contentPageView.setNestedScrollingEnabled(true);
+        contentPageView.setLayoutManager(new DisableScrollGridManager(getContext()));
+        contentPageView.setOnChangePageListener(new SinglePageRecyclerView.OnChangePageListener() {
+            @Override
+            public void prev() {
+                prevPage();
+            }
+
+            @Override
+            public void next() {
+                nextPage();
+            }
+        });
+        contentPageView.setAdapter(new PageRecyclerView.PageAdapter<ThumbnailItemHolder>() {
+            @Override
+            public int getRowCount() {
+                return getRow();
+            }
+
+            @Override
+            public int getColumnCount() {
+                return getCol();
+            }
+
+            @Override
+            public int getDataCount() {
+                return getLibraryListSize() + getBookListSize();
+            }
+
+            @Override
+            public int getItemViewType(int position) {
+                return getCurrentViewType().ordinal();
+            }
+
+            @Override
+            public ThumbnailItemHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
+                if (viewType == ViewType.Thumbnail.ordinal()) {
+                    return new ThumbnailItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.content_thumbnail_item, parent, false));
+                } else {
+                    return new DetailItemHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.content_details_item, parent, false));
+                }
+            }
+
+            @Override
+            public void onPageBindViewHolder(ThumbnailItemHolder viewHolder, int position) {
+                viewHolder.itemView.setTag(position);
+
+                if (position < getLibraryListSize()) {
+                    Library library = getLibraryList().get(position);
+                    viewHolder.coverImage.setImageResource(R.drawable.library_sub_cover);
+                    viewHolder.getWidgetImage.setVisibility(View.GONE);
+                    viewHolder.messageWidgetImage.setVisibility(View.GONE);
+                    viewHolder.titleView.setText(String.valueOf(library.getName()));
+                } else {
+                    int viewType = getItemViewType(position);
+                    if (viewType == ViewType.Thumbnail.ordinal()) {
+                        updateThumbnailView(viewHolder, position);
+                    } else {
+                        updateListItemView((DetailItemHolder) viewHolder, position);
+                    }
+                }
+            }
+        });
+    }
+
+    private int getImageResource(Metadata book) {
+        String viewType = getCurrentViewType().name().toLowerCase();
+        if (!isColorDevice) {
+            viewType = ViewType.Thumbnail.name().toLowerCase();
+        }
+        String type = book.getType();
+        Map<String, String> map = DeviceConfig.sharedInstance(getContext()).getCustomizedProductCovers();
+        if (StringUtils.isNullOrEmpty(type) || !map.containsKey(type)) {
+            return getDefaultCover(viewType);
+        }
+        return RawResourceUtil.getDrawableIdByName(getContext(), map.get(type) + "_" + viewType);
+    }
+
+    private int getDefaultCover(String viewType) {
+        Map<String, String> map = DeviceConfig.sharedInstance(getContext()).getCustomizedProductCovers();
+        String coverResName = map.get("default");
+        if (StringUtils.isNotBlank(viewType)) {
+            coverResName += "_" + viewType;
+        }
+        return RawResourceUtil.getDrawableIdByName(getContext(), coverResName);
+    }
+
+    private void updateListItemView(DetailItemHolder viewHolder, int position) {
+        Metadata eBook = getEBookList().get(position);
+        updateThumbnailView(viewHolder, position);
+        viewHolder.authorsView.setText(eBook.getAuthors());
+    }
+
+    private void updateThumbnailView(ThumbnailItemHolder viewHolder, int position) {
+        Metadata eBook = getEBookList().get(position);
+        updateCommonView(viewHolder.titleView, viewHolder.getWidgetImage, viewHolder.messageWidgetImage, eBook);
+        loadThumbnailCover(viewHolder.coverImage, eBook, position);
+    }
+
+    private void updateCommonView(TextView titleView, ImageView getWidgetImage, ImageView messageWidgetImage,
+                                  Metadata eBook) {
+        updateDownloadPanel(getWidgetImage, eBook);
+        messageWidgetImage.setVisibility(getPageDataModel().notificationMap.containsKey(eBook.getAssociationId()) ? View.VISIBLE : View.GONE);
+        titleView.setText(String.valueOf(eBook.getName()));
+    }
+
+    private void loadThumbnailCover(ImageView imageView, Metadata eBook, int position) {
+        Bitmap bitmap = getBitmap(eBook);
+        if (bitmap == null) {
+            imageView.setImageResource(getImageResource(eBook));
+            if (newPage) {
+                newPage = false;
+                noThumbnailPosition = position;
+            }
+            loadThumbnailRequest(position, eBook);
+        } else {
+            imageView.setImageBitmap(bitmap);
+        }
+    }
+
+    public int getLibraryListSize() {
+        return CollectionUtils.getSize(getPageDataModel().visibleLibraryList);
+    }
+
+    public int getBookListSize() {
+        return CollectionUtils.getSize(getEBookList());
+    }
+
+    private Bitmap getBitmap(Metadata eBook) {
+        LibraryDataModel libraryDataModel = getPageDataModel();
+        if (libraryDataModel == null || libraryDataModel.thumbnailMap == null) {
+            return null;
+        }
+        Bitmap bitmap = null;
+        CloseableReference<Bitmap> refBitmap = libraryDataModel.thumbnailMap.get(getThumbnailMapKey(eBook));
+        if (refBitmap != null && refBitmap.isValid()) {
+            bitmap = refBitmap.get();
+        }
+
+        return bitmap;
+    }
+
+    private OnyxThumbnail.ThumbnailKind getThumbnailKind() {
+        if (!isColorDevice) {
+            return OnyxThumbnail.ThumbnailKind.Original;
+        }
+        return isThumbnailViewType() ? OnyxThumbnail.ThumbnailKind.Large : OnyxThumbnail.ThumbnailKind.Middle;
+    }
+
+    private String getCoverKey() {
+        OnyxThumbnail.ThumbnailKind kind = getThumbnailKind();
+        return kind.toString().toLowerCase();
+    }
+
+    private String getCoverUrl(final Metadata metadata) {
+        Library library = getLibrary();
+        if (library != null && !CollectionUtils.isNullOrEmpty(library.getBookCovers())) {
+            return getRealUrl(library.getBookCoverUrl(getCoverKey()));
+        }
+        return getRealUrl(metadata.getCoverUrl(getCoverKey()));
+    }
+
+    private String getThumbnailMapKey(Metadata metadata) {
+        String id = metadata.getAssociationId();
+        Library library = getLibrary();
+        if (library != null && !CollectionUtils.isNullOrEmpty(library.getBookCovers())) {
+            String forceCoverUrl = library.getBookCoverUrl(getCoverKey());
+            if (StringUtils.isNotBlank(forceCoverUrl)) {
+                id = library.getIdString();
+            }
+        }
+        return CacheManager.generateCloudThumbnailKey(id, getCoverUrl(metadata), getCoverKey());
+    }
+
+    private int[] getReqImageWidthHeight() {
+        if (isColorDevice) {
+            return new int[]{ViewTarget.SIZE_ORIGINAL, ViewTarget.SIZE_ORIGINAL};
+        }
+        return imageReqWidthHeight;
+    }
+
+    private void loadThumbnailRequest(final int position, final Metadata metadata) {
+        final CloudThumbnailLoadRequest loadRequest = new CloudThumbnailLoadRequest(
+                getCoverUrl(metadata), metadata.getAssociationId(), getThumbnailKind());
+        loadRequest.setReqWidthHeight(getReqImageWidthHeight());
+        if (isVisibleToUser && noThumbnailPosition == position) {
+            loadRequest.setAbortPendingTasks(true);
+        }
+        getCloudStore().submitRequestToSingle(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (!isContentValid(request, e)) {
+                    return;
+                }
+                CloseableReference<Bitmap> closeableRef = loadRequest.getRefBitmap();
+                if (closeableRef != null && closeableRef.isValid()) {
+                    getPageDataModel().thumbnailMap.put(getThumbnailMapKey(metadata), closeableRef);
+                    updateContentView();
+                }
+            }
+        });
+    }
+
+    private boolean isContentValid(BaseRequest request, Throwable e) {
+        if (e != null || request.isAbort() || isContentViewInvalid()) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean isContentViewInvalid() {
+        return contentPageView == null || pageIndicator == null;
+    }
+
+    private String getRealUrl(String url) {
+        if (StringUtils.isNotBlank(url) && !url.startsWith(Constant.HTTP_TAG)) {
+            url = getCloudStore().getCloudConf().getHostBase() + url;
+        }
+        return url;
+    }
+
+    private void updateDownloadPanel(ImageView getWidgetImageView, Metadata eBook) {
+        if (isFileExists(eBook)) {
+            getWidgetImageView.setVisibility(View.VISIBLE);
+            getWidgetImageView.setImageResource(R.drawable.book_item_get_widget);
+            return;
+        }
+
+        boolean showProgress = true;
+        BaseDownloadTask task = getDownLoaderManager().getTask(eBook.getGuid());
+        if (task == null) {
+            showProgress = false;
+        } else {
+            switch (task.getStatus()) {
+                case FileDownloadStatus.started:
+                case FileDownloadStatus.pending:
+                case FileDownloadStatus.progress:
+                    showProgress = true;
+                    break;
+                case FileDownloadStatus.completed:
+                case FileDownloadStatus.error:
+                    showProgress = false;
+                    getDownLoaderManager().removeTask(eBook.getGuid());
+                    break;
+            }
+        }
+        getWidgetImageView.setVisibility(showProgress ? View.VISIBLE : View.GONE);
+        if (showProgress) {
+            getWidgetImageView.setImageResource(R.drawable.book_item_download_widget);
+        }
+    }
+
+    private void initPageIndicator(ViewGroup parentView) {
+        initPagination();
+        pageIndicator = new PageIndicator(parentView.findViewById(R.id.page_indicator_layout), getPagination());
+        pageIndicator.setTotalFormat(getString(R.string.total_format));
+        pageIndicator.setPageChangedListener(new PageIndicator.PageChangedListener() {
+            @Override
+            public void prev() {
+                prevPage();
+            }
+
+            @Override
+            public void next() {
+                nextPage();
+            }
+
+            @Override
+            public void gotoPage(int page) {
+                showGotoPageAction(page);
+            }
+        });
+        pageIndicator.setDataRefreshListener(new PageIndicator.DataRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshDataFormCloud();
+            }
+        });
+    }
+
+    private void postNextTab() {
+        EventBus.getDefault().post(TabSwitchEvent.createNextTabSwitch());
+    }
+
+    private void postPrevTab() {
+        EventBus.getDefault().post(TabSwitchEvent.createPrevTabSwitch());
+    }
+
+    private void prevPage() {
+        if (!getPagination().prevPage()) {
+            postPrevTab();
+            return;
+        }
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(getLibraryViewInfo().prevPage(), true);
+        contentLoadAction.execute(getContext(), getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    return;
+                }
+                updateContentView(contentLoadAction.getDataModel());
+                preLoadPrev();
+            }
+        });
+    }
+
+    private void preLoadPrev() {
+        int preLoadPage = getPagination().getCurrentPage() - 1;
+        if (preLoadPage < 0) {
+            return;
+        }
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(
+                getLibraryViewInfo().pageQueryArgs(preLoadPage), false);
+        contentLoadAction.execute(getContext(), getDataHolder(), null);
+    }
+
+    private void showGotoPageAction(int currentPage) {
+        final PageGotoAction gotoPageAction = new PageGotoAction(getActivity(), currentPage,
+                getPagination().pages());
+        gotoPageAction.execute(getContext(), getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                int newPage = gotoPageAction.getSelectPage();
+                gotoPageImpl(newPage);
+            }
+        });
+    }
+
+    private void gotoPageImpl(int page) {
+        final int originPage = getPagination().getCurrentPage();
+        final CloudContentLoadAction contentLoadAction = new CloudContentLoadAction(
+                getLibraryViewInfo().gotoPage(page), true);
+        contentLoadAction.execute(getContext(), getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (e != null) {
+                    getPagination().setCurrentPage(originPage);
+                    return;
+                }
+                updateContentView(contentLoadAction.getDataModel());
+                preLoadPrev();
+                preloadNext();
+            }
+        });
+    }
+
+    private LibraryDataModel getPageDataModel() {
+        return pageDataModel;
+    }
+
+    private int getRow() {
+        return getCurrentViewType() == ViewType.Thumbnail ? thumbnailItemRow : detailItemRow;
+    }
+
+    private int getCol() {
+        return getCurrentViewType() == ViewType.Thumbnail ? thumbnailItemCol : detailItemCol;
+    }
+
+    private void updateContentView(LibraryDataModel libraryDataModel) {
+        pageDataModel = getLibraryViewInfo().getPageLibraryDataModel(libraryDataModel);
+        updateContentView();
+    }
+
+    private void updateContentView() {
+        if (isContentViewInvalid()) {
+            return;
+        }
+        newPage = true;
+        contentPageView.getAdapter().notifyDataSetChanged();
+        updatePageIndicator();
+    }
+
+    private void updateOnlyContentView() {
+        if (isContentViewInvalid()) {
+            return;
+        }
+        contentPageView.getAdapter().notifyDataSetChanged();
+    }
+
+    private void updatePageIndicator() {
+        int totalCount = getTotalCount();
+        getPagination().resize(getRow(), getCol(), totalCount);
+        pageIndicator.resetGPaginator(getPagination());
+        pageIndicator.updateTotal(totalCount);
+        pageIndicator.updateCurrentPage(totalCount);
+    }
+
+    private void fullUpdateView() {
+        if (getActivity() == null || getActivity().getWindow() == null) {
+            return;
+        }
+        EpdController.postInvalidate(getActivity().getWindow().getDecorView().getRootView(), UpdateMode.GC);
+    }
+
+    private int getTotalCount() {
+        LibraryDataModel dataModel = getLibraryViewInfo().getLibraryDataModel();
+        return dataModel.bookCount + dataModel.libraryCount;
+    }
+
+    private List<Metadata> getEBookList() {
+        LibraryDataModel libraryDataModel = getPageDataModel();
+        if (libraryDataModel == null || CollectionUtils.isNullOrEmpty(libraryDataModel.visibleBookList)) {
+            return new ArrayList<>();
+        }
+        return libraryDataModel.visibleBookList;
+    }
+
+    private List<Library> getLibraryList() {
+        LibraryDataModel libraryDataModel = getPageDataModel();
+        if (libraryDataModel == null || CollectionUtils.isNullOrEmpty(libraryDataModel.visibleLibraryList)) {
+            return new ArrayList<>();
+        }
+        return libraryDataModel.visibleLibraryList;
+    }
+
+    private String getDataSaveFilePath(Metadata book) {
+        return ResourceFileUtils.getDataSaveFilePath(getContext(), book);
+    }
+
+    private void openCloudFile(final Metadata book) {
+        ResourceFileUtils.openFileIfExist(getContext(), book);
+    }
+
+    private boolean isFileExists(Metadata book) {
+        if (ResourceFileUtils.checkBookMetadataPathValid(book)) {
+            return true;
+        }
+        boolean exist = ResourceFileUtils.isFileExists(getContext(), book);
+        return exist && checkFileUpdated(book);
+    }
+
+    private boolean checkFileUpdated(Metadata book) {
+        String tag = book.getHashTag();
+        if (StringUtils.isNullOrEmpty(tag)) {
+            return true;
+        }
+        File dir = CloudUtils.dataCacheDirectory(getContext(), book.getGuid());
+        return FileUtils.fileExist(new File(dir, tag).getAbsolutePath());
+    }
+
+    private void createFileUpdatedTag(Metadata book) {
+        if (StringUtils.isNullOrEmpty(book.getHashTag())) {
+            return;
+        }
+        File dir = CloudUtils.dataCacheDirectory(getContext(), book.getGuid());
+        FileUtils.ensureFileExists(new File(dir, book.getHashTag()).getAbsolutePath());
+    }
+
+    private void startDownload(final Metadata eBook) {
+        String filePath = getDataSaveFilePath(eBook);
+        if (StringUtils.isNotBlank(filePath)) {
+            org.apache.commons.io.FileUtils.deleteQuietly(new File(filePath));
+            createFileUpdatedTag(eBook);
+        }
+        DownloadAction downloadAction = new DownloadAction(getRealUrl(eBook.getLocation()), filePath, eBook.getGuid());
+        downloadAction.execute(getContext(), getDataHolder(), null);
+    }
+
+    private DialogLoading showProgressDialog(final Object object, int resId, DialogProgressHolder.DialogCancelListener listener) {
+        if (isVisibleToUser) {
+            return showProgressDialog(object, getString(resId), listener);
+        }
+        return null;
+    }
+
+    private DialogLoading showProgressDialog(final Object object, String msg, DialogProgressHolder.DialogCancelListener listener) {
+        return progressHolder.showProgressDialog(getActivity(), object, msg, listener);
+    }
+
+    private void dismissProgressDialog(final Object object) {
+        if (progressHolder != null) {
+            progressHolder.dismissProgressDialog(object);
+        }
+    }
+
+    private int getBookItemPosition(int originPosition) {
+        return originPosition - getLibraryListSize();
+    }
+
+    private void processProductItemClick(final int position) {
+        Metadata book = getEBookList().get(position);
+        if (isFileExists(book)) {
+            openCloudFile(book);
+            return;
+        }
+        if (enableWifiOpenAndDetect()) {
+            return;
+        }
+        startDownload(book);
+    }
+
+    private boolean enableWifiOpenAndDetect() {
+        return NetworkUtil.enableWifiOpenAndDetect(getContext().getApplicationContext());
+    }
+
+    class ThumbnailItemHolder extends RecyclerView.ViewHolder {
+        @Bind(R.id.image_cover)
+        ImageView coverImage;
+        @Bind(R.id.image_get_widget)
+        ImageView getWidgetImage;
+        @Bind(R.id.image_message_widget)
+        ImageView messageWidgetImage;
+        @Bind(R.id.textView_title)
+        TextView titleView;
+
+        public ThumbnailItemHolder(final View itemView) {
+            super(itemView);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    processProductItemClick((Integer) v.getTag());
+                }
+            });
+            ButterKnife.bind(this, itemView);
+        }
+    }
+
+    class DetailItemHolder extends ThumbnailItemHolder {
+        @Bind(R.id.textView_authors)
+        TextView authorsView;
+
+        public DetailItemHolder(View itemView) {
+            super(itemView);
+        }
+    }
+
+    private CloudManager getCloudStore() {
+        return StudentApp.getCloudStore();
+    }
+
+    private OnyxDownloadManager getDownLoaderManager() {
+        return OnyxDownloadManager.getInstance();
+    }
+
+    private LibraryDataHolder getDataHolder() {
+        if (dataHolder == null) {
+            dataHolder = new LibraryDataHolder();
+            dataHolder.setCloudManager(getCloudStore());
+            dataHolder.getCloudViewInfo().updateSortBy(ConfigPreferenceManager.getCloudSortBy(getContext()),
+                    ConfigPreferenceManager.getCloudSortOrder(getContext()));
+            dataHolder.getCloudViewInfo().setCurrentViewType(ConfigPreferenceManager.getViewType(getContext()));
+        }
+        return dataHolder;
+    }
+
+    private LibraryViewInfo getLibraryViewInfo() {
+        return getDataHolder().getCloudViewInfo();
+    }
+
+    private ViewType getCurrentViewType() {
+        return getLibraryViewInfo().getCurrentViewType();
+    }
+
+    private boolean isThumbnailViewType() {
+        return getCurrentViewType() == ViewType.Thumbnail;
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLibraryEvent(BookLibraryEvent event) {
+        if (event.library != null) {
+            if (event.library.getName().equals(arguments.fragmentName)) {
+                arguments.library = event.library;
+                loadData();
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onKeyEvent(KeyEvent keyEvent) {
+        if (contentPageView != null && isVisibleToUser) {
+            contentPageView.dispatchKeyEvent(keyEvent);
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAccountTokenErrorEvent(AccountTokenErrorEvent event) {
+        if (pageIndicator != null) {
+            pageIndicator.setTotalText(getString(R.string.token_exception_contact_admin));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHardwareErrorEvent(HardwareErrorEvent event) {
+        if (pageIndicator != null) {
+            pageIndicator.setTotalText(getString(R.string.hardware_error));
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewTypeEvent(ViewTypeEvent event) {
+        processViewTypeSwitch(event.viewType);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSortEvent(SortByEvent event) {
+        processSortSwitch(event.sortBy, event.sortOrder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        updateOnlyContentView();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+        progressHolder.dismissAllProgressDialog();
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        this.isVisibleToUser = isVisibleToUser;
+        if (isVisibleToUser) {
+            updateContentView();
+        }
+    }
+
+    private void refreshDataFormCloud() {
+        if (enableWifiOpenAndDetect()) {
+            ToastUtils.showToast(getContext(), R.string.open_wifi);
+            return;
+        }
+        final CloudContentRefreshAction refreshAction = new CloudContentRefreshAction();
+        refreshAction.execute(getContext(), getDataHolder(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                dismissProgressDialog(refreshAction);
+                if (e != null) {
+                    return;
+                }
+                getPagination().setCurrentPage(0);
+                updateContentView(refreshAction.getLibraryDataModel());
+                preloadNext();
+            }
+        });
+        showProgressDialog(refreshAction, R.string.refreshing, null);
+    }
+
+    private void processViewTypeSwitch(ViewType viewType) {
+        getLibraryViewInfo().setCurrentViewType(viewType);
+        String libraryId = getLibraryId();
+        if (StringUtils.isNullOrEmpty(libraryId)) {
+            return;
+        }
+        contentPageView.setAdapter(contentPageView.getAdapter());
+        int offset = getLibraryViewInfo().getOffset();
+        int page = offset / (getCol() * getRow());
+        LibraryViewInfo viewInfo = resetLibraryViewInfoParams();
+        viewInfo.getQueryPagination().setCurrentPage(page);
+        QueryArgs args = viewInfo.libraryQuery(libraryId);
+        args.offset = page * (getCol() * getRow());
+        loadData(args);
+    }
+
+    private LibraryViewInfo resetLibraryViewInfoParams() {
+        LibraryViewInfo viewInfo = getLibraryViewInfo();
+        viewInfo.clearThumbnailMap(getPageDataModel());
+        viewInfo.setQueryLimit(getRow() * getCol());
+        viewInfo.resizePagination(getRow(), getCol(), getTotalCount());
+        viewInfo.updateSortBy(viewInfo.getCurrentSortBy(), viewInfo.getCurrentSortOrder(), 0);
+        return viewInfo;
+    }
+
+    void processSortSwitch(SortBy sortBy, SortOrder sortOrder) {
+        LibraryViewInfo viewInfo = getLibraryViewInfo();
+        viewInfo.updateSortBy(sortBy, sortOrder, 0);
+        String libraryId = getLibraryId();
+        if (StringUtils.isNullOrEmpty(libraryId)) {
+            return;
+        }
+        if (NetworkUtil.isWiFiConnected(getContext())) {
+            refreshDataFormCloud();
+        } else {
+            QueryArgs args = getLibraryViewInfo().libraryQuery(libraryId);
+            args.fetchPolicy = FetchPolicy.DB_ONLY;
+            loadData(args);
+        }
+    }
+}

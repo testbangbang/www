@@ -48,7 +48,8 @@ public class HomeActivity extends OnyxAppCompatActivity {
     }
 
     private void preBinding() {
-        normalItemList.add(getMainNormalItem(R.string.home_item_material, R.drawable.home_teaching_material, null));
+        normalItemList.add(getMainNormalItem(R.string.home_item_material, R.drawable.home_teaching_material,
+                new Intent(this, MaterialSeriesActivity.class)));
         normalItemList.add(getMainNormalItem(R.string.home_item_self_exam, R.drawable.home_self_exam, null));
         normalItemList.add(getMainNormalItem(R.string.home_item_homework, R.drawable.home_homework, null));
         normalItemList.add(getMainNormalItem(R.string.home_item_message, R.drawable.home_message, null));

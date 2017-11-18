@@ -20,6 +20,7 @@ import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.edu.student.device.DeviceConfig;
 import com.onyx.edu.student.events.DataRefreshEvent;
 import com.onyx.edu.student.holder.LibraryDataHolder;
+import com.onyx.edu.student.manager.ConfigPreferenceManager;
 import com.squareup.leakcanary.LeakCanary;
 
 import org.greenrobot.eventbus.EventBus;
@@ -44,6 +45,7 @@ public class StudentApp extends MultiDexApplication {
 
     private void initConfig() {
         initDeviceConfig();
+        ConfigPreferenceManager.init(this);
         initCloudStore();
         initEventListener();
         initSystemInBackground();
