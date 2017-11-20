@@ -398,4 +398,21 @@ public class TimeUtils {
         String newDate = getDate(timeInMillis);
         return newDate;
     }
+
+    public static boolean whetherUploadData(String content) {
+        Date parse = null;
+        try {
+            parse = DATE_FORMAT_DATE.parse(content);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(parse);
+        long timeInMillis = cal.getTimeInMillis();
+        long timeMillis = System.currentTimeMillis();
+        if (timeInMillis - timeMillis > Constants.TWENTY_FOUR_HOUR_TIME) {
+            return true;
+        }
+        return false;
+    }
 }

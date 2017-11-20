@@ -147,4 +147,12 @@ public class DRPreferenceManager extends PreferenceManager {
     public static void saveShareType(Context context, int bookshelfType) {
         setIntValue(context, Constants.SHARE_TYPE, bookshelfType);
     }
+
+    public static String getUploadDateTime(Context context, String defaultValue) {
+        return getStringValue(context, Constants.SAVE_UPLOAD_DATE_TIME, defaultValue);
+    }
+
+    public static void saveUploadDateTime(Context context, String bookshelfType) {
+        setStringValue(context, Constants.SAVE_UPLOAD_DATE_TIME, bookshelfType);
+    }
 }

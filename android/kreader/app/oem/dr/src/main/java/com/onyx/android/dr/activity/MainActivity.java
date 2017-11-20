@@ -51,6 +51,7 @@ import com.onyx.android.dr.presenter.MainPresenter;
 import com.onyx.android.dr.util.ApkUtils;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.SystemUtils;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
@@ -87,7 +88,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Override
     protected Integer getLayoutId() {
-        if(!DRApplication.getInstance().isLoginSuccess()){
+        if (!DRApplication.getInstance().isLoginSuccess()) {
             ActivityManager.startLoginActivity(this);
         }
         stopBootAnimation();
@@ -140,7 +141,6 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     protected void initData() {
         mainPresenter.loadTabMenu(DRPreferenceManager.getUserType(DRApplication.getInstance(), ""));
-        mainPresenter.getAllReadingRateData();
         autoLogin();
     }
 
@@ -355,6 +355,26 @@ public class MainActivity extends BaseActivity implements MainView {
     @Override
     protected void onResume() {
         super.onResume();
+        uploadStudentData();
+    }
+
+    private void uploadStudentData() {
+        String userType = DRPreferenceManager.getUserType(this, "");
+        if (userType.equals(Constants.ACCOUNT_TYPE_HIGH_SCHOOL) || userType.equals(Constants.ACCOUNT_TYPE_OTHER)) {
+            return;
+        }
+        String uploadDateTime = DRPreferenceManager.getUploadDateTime(this, "");
+        if (StringUtils.isNullOrEmpty(uploadDateTime)) {
+            mainPresenter.getAllReadingRateData();
+            String time = TimeUtils.getTime(System.currentTimeMillis());
+            DRPreferenceManager.saveUploadDateTime(this, time);
+        } else {
+            if (TimeUtils.whetherUploadData(uploadDateTime)) {
+                mainPresenter.getAllReadingRateData();
+                String time = TimeUtils.getTime(System.currentTimeMillis());
+                DRPreferenceManager.saveUploadDateTime(this, time);
+            }
+        }
     }
 
     @Override
