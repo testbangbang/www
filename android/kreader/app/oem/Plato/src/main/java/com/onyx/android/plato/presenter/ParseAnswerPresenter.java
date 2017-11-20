@@ -6,6 +6,7 @@ import com.onyx.android.plato.cloud.bean.PracticeParseRequestBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseResultBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.data.ParseAnswerData;
+import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.ParseAnswerView;
 import com.onyx.android.plato.requests.cloud.GetPracticeParseRequest;
 import com.onyx.android.plato.requests.local.GetRecordRequest;
@@ -16,6 +17,8 @@ import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
 import com.onyx.android.plato.utils.MediaManager;
 import com.onyx.android.plato.utils.StringUtil;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by li on 2017/10/26.
@@ -41,7 +44,7 @@ public class ParseAnswerPresenter {
             public void done(BaseRequest request, Throwable e) {
                 PracticeParseResultBean resultBean = rq.getResultBean();
                 if (resultBean == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
 

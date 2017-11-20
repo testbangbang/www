@@ -10,11 +10,14 @@ import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.data.CorrectData;
+import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.CorrectView;
 import com.onyx.android.plato.requests.cloud.GetCorrectedTaskRequest;
 import com.onyx.android.plato.requests.local.ResolveAdapterDataRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -41,7 +44,7 @@ public class CorrectPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetCorrectedTaskResultBean taskBean = rq.getTaskBean();
                 if (taskBean == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
 

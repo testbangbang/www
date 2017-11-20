@@ -12,9 +12,10 @@ import com.onyx.android.plato.adapter.StudyReportAdapter;
 import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
+import com.onyx.android.plato.cloud.bean.ReportListBean;
+import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
-import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.plato.databinding.HomeworkBinding;
 import com.onyx.android.plato.interfaces.HomeworkView;
 import com.onyx.android.plato.presenter.HomeworkPresenter;
@@ -68,7 +69,6 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
         //TODO:fake student id = 108
         homeworkPresenter.getSubjects("106");
         homeworkPresenter.getHomeworkUnfinishedData("1");
-        homeworkPresenter.getStudyReportData(null);
     }
 
     @Override
@@ -231,7 +231,7 @@ public class HomeWorkFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void setReportData(List<FinishContent> content) {
+    public void setReportData(List<ReportListBean> content) {
         if (studyReportAdapter != null) {
             studyReportAdapter.setData(content);
         }

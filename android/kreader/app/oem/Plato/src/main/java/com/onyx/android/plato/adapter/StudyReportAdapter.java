@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ContentBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
+import com.onyx.android.plato.cloud.bean.ReportListBean;
 import com.onyx.android.plato.databinding.ItemStudyReportBinding;
 import com.onyx.android.plato.event.ToStudyReportDeatilEvent;
 import com.onyx.android.plato.view.PageRecyclerView;
@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class StudyReportAdapter extends PageRecyclerView.PageAdapter {
-    private List<FinishContent> data;
+    private List<ReportListBean> data;
 
     @Override
     public int getRowCount() {
@@ -68,11 +68,11 @@ public class StudyReportAdapter extends PageRecyclerView.PageAdapter {
             return;
         }
         int position = (int) tag;
-        ContentBean contentBean = data.get(position);
-        EventBus.getDefault().post(new ToStudyReportDeatilEvent(contentBean.id,contentBean.title));
+        ReportListBean reportListBean = data.get(position);
+        EventBus.getDefault().post(new ToStudyReportDeatilEvent(reportListBean.id, reportListBean.name));
     }
 
-    public void setData(List<FinishContent> data) {
+    public void setData(List<ReportListBean> data) {
         this.data = data;
         notifyDataSetChanged();
     }

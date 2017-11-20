@@ -3,9 +3,10 @@ package com.onyx.android.plato.interfaces;
 import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
+import com.onyx.android.plato.cloud.bean.ReportListBean;
+import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
-import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ public interface HomeworkView {
 
     void setFinishedData(List<FinishContent> content);
 
-    void setReportData(List<FinishContent> content);
+    void setReportData(List<ReportListBean> content);
 
     void setTaskDetail(QuestionDetail data);
 

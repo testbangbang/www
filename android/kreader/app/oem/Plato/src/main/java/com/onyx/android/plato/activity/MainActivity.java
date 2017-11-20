@@ -23,10 +23,12 @@ import com.onyx.android.plato.databinding.ActivityMainBinding;
 import com.onyx.android.plato.event.ApkDownloadSucceedEvent;
 import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.plato.event.DeleteRemindEvent;
+import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.event.HaveNewVersionApkEvent;
 import com.onyx.android.plato.event.HaveNewVersionEvent;
 import com.onyx.android.plato.event.OnBackPressEvent;
 import com.onyx.android.plato.event.ParseAnswerEvent;
+import com.onyx.android.plato.event.RefreshFragmentEvent;
 import com.onyx.android.plato.event.StartDownloadingEvent;
 import com.onyx.android.plato.event.ToChangePasswordEvent;
 import com.onyx.android.plato.event.ToCorrectEvent;
@@ -42,6 +44,7 @@ import com.onyx.android.plato.fragment.ChangePasswordFragment;
 import com.onyx.android.plato.fragment.ChildViewID;
 import com.onyx.android.plato.fragment.CorrectFragment;
 import com.onyx.android.plato.fragment.DeviceSettingFragment;
+import com.onyx.android.plato.fragment.EmptyFragment;
 import com.onyx.android.plato.fragment.FillHomeworkFragment;
 import com.onyx.android.plato.fragment.GoalAdvancedFragment;
 import com.onyx.android.plato.fragment.HomeWorkFragment;
@@ -73,6 +76,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private User user = new User();
     private FragmentManager fragmentManager;
     private int currentPageID = ChildViewID.BASE_VIEW;
+    private int lastPageId = ChildViewID.BASE_VIEW;
     private FragmentTransaction transaction;
     private BaseFragment currentFragment;
     private Map<Integer, BaseFragment> childViewList = new HashMap<>();
@@ -243,6 +247,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             oldPageID = currentPageID;
             oldTabPosition = mainBinding.mainActivityTab.getSelectedTabPosition();
         }
+        lastPageId = currentPageID;
         currentPageID = pageID;
         transaction.commitAllowingStateLoss();
     }
@@ -290,6 +295,9 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_REMIND:
                     baseFragment = new RemindFragment();
                     break;
+                case ChildViewID.FRAGMENT_EMPTY:
+                    baseFragment = new EmptyFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -324,6 +332,18 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         switchCurrentFragment(ChildViewID.FRAGMENT_FILL_HOMEWORK);
         FillHomeworkFragment fillHomeworkFragment = (FillHomeworkFragment) getPageView(ChildViewID.FRAGMENT_FILL_HOMEWORK);
         fillHomeworkFragment.setTaskId(event.getId(), event.getType(), event.getTitle());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRefreshFragmentEvent(RefreshFragmentEvent event) {
+        switchCurrentFragment(lastPageId);
+        BaseFragment baseFragment = getPageView(currentPageID);
+        baseFragment.refresh();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onEmptyEvent(EmptyEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_EMPTY);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

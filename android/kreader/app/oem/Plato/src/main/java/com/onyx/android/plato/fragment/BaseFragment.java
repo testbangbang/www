@@ -77,7 +77,8 @@ public abstract class BaseFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void OnObjectEvent(Object event) {}
+    public void OnObjectEvent(Object event) {
+    }
 
     protected abstract void loadData();
 
@@ -88,6 +89,10 @@ public abstract class BaseFragment extends Fragment {
     protected abstract int getRootView();
 
     public abstract boolean onKeyBack();
+
+    public void refresh() {
+        loadData();
+    }
 
     public boolean onKeyPageUp() {
         return false;
