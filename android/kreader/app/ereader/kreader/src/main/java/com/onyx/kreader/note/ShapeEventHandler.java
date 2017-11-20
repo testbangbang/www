@@ -261,6 +261,7 @@ public class ShapeEventHandler {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
                 if (noteManager.isEraser()) {
                     onErasingTouchUp(e.getMotionEvent());
                 } else {
