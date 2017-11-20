@@ -3,7 +3,6 @@ package com.onyx.android.sdk.data.v2;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
-import com.onyx.android.sdk.data.model.CreateReadingRateBean;
 import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 import com.onyx.android.sdk.data.model.GroupNameExistBean;
 import com.onyx.android.sdk.data.model.InformalEssayBean;
@@ -38,6 +37,7 @@ import com.onyx.android.sdk.data.model.v2.SearchGroupBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportResult;
 import com.onyx.android.sdk.data.model.v2.SignUpBean;
+import com.onyx.android.sdk.data.model.v2.UploadReadingRateBean;
 import com.onyx.android.sdk.data.model.v2.VerifyCode;
 
 import java.util.List;
@@ -221,7 +221,7 @@ public interface ContentService {
     Call<GetInformalEssayBean> getInformalEssay(@Query(Constant.WHERE_TAG) final String param);
 
     @POST("/api/ReadRecords")
-    Call<CreateReadingRateBean> uploadReadingRate(@Body ReadingRateBean param);
+    Call<UploadReadingRateBean> uploadReadingRate(@Body ReadingRateBean param);
 
     @GET("/api/librarys/{id}/readRecords")
     Call<GetReadingRateBean> getReadingRate(@Path(Constant.ID_TAG) final String id, @Query(Constant.WHERE_TAG) final String param);

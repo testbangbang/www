@@ -158,7 +158,6 @@ public class ShareToMemberActivity extends BaseActivity implements ShareBookRepo
         if (adapter == null) {
             return;
         }
-
         List<ListBean> selectedData = adapter.getSelectedData();
         if (selectedData == null || selectedData.size() == 0) {
             CommonNotices.showMessage(DRApplication.getInstance(), getResources().getString(R.string.share_to_member_no_share));

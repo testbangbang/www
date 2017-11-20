@@ -9,6 +9,7 @@ import com.onyx.android.dr.data.database.ReaderResponseEntity_Table;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity;
 import com.onyx.android.dr.reader.data.ReadSummaryEntity_Table;
 import com.onyx.android.dr.request.cloud.CreateReadingRateRequest;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -84,7 +85,7 @@ public class ReadingRateQueryAll extends BaseDataRequest {
             int readSummaryPiece = getReadSummaryPiece(bookName);
             Integer readerResponsePiece = getReaderResponsePiece(bookName);
             Integer readerResponseWordNumber = getReaderResponseWordNumber(bookName);
-            String time = DateTimeUtil.formatDate(onyxStatisticsModel.getEventTime(), DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            String time = DateTimeUtil.formatDate(onyxStatisticsModel.getEventTime(), TimeUtils.DATE_FORMAT_DATE);
             ReadingRateBean bean = new ReadingRateBean();
             bean.setName(bookName);
             bean.setBook(bookId);
