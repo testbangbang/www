@@ -136,4 +136,15 @@
     <dimen name="goal_advanced_knowledge_progress_params_view_space">20dp</dimen>
     <dimen name="goal_advanced_knowledge_structure_view_height">400dp</dimen>
     <dimen name="goal_advanced_knowledge_progress_recycler_view_height">400dp</dimen>
+    <dimen name="question_knowledge_level_margin">10dp</dimen>
+    <dimen name="question_choice_height">60dp</dimen>
+    <dimen name="question_parse_height">280dp</dimen>
+    <dimen name="question_parse_margin_left">10dp</dimen>
+    <dimen name="question_parse_margin_top">20dp</dimen>
+    <dimen name="question_parse_add_sound_layout_padding">10dp</dimen>
+    <dimen name="question_parse_add_sound_button_margin">20dp</dimen>
+    <dimen name="parse_sound_padding_left">25dp</dimen>
+    <dimen name="record_result_margin_left">100dp</dimen>
+    <dimen name="record_result_padding_left">20dp</dimen>
+    <dimen name="custom_parse_padding">40dp</dimen>
 </resources>

@@ -25,6 +25,10 @@ public class TaskAndAnswerEntity extends BaseModel implements Comparable<TaskAnd
     public String question;
     @Column
     public String userAnswer;
+    @Column
+    public String recordPath;
+    @Column
+    public long recordDuration;
 
     @Override
     public int compareTo(@NonNull TaskAndAnswerEntity entity) {

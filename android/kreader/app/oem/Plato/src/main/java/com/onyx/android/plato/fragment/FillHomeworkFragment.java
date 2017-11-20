@@ -120,7 +120,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         this.data = data;
         showTaskTitle();
         if (data.volumeExerciseDTOS != null && data.volumeExerciseDTOS.size() > 0) {
-            correctPresenter.resolveAdapterData(data.volumeExerciseDTOS, null);
+            correctPresenter.resolveAdapterData(data.volumeExerciseDTOS, null, id);
         }
     }
 

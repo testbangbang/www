@@ -29,6 +29,15 @@ public class QuestionViewBean {
     private double accuracy;
     private boolean exerciseFavored;
     private boolean correct;
+    private int taskId;
+
+    public int getTaskId() {
+        return taskId;
+    }
+
+    public void setTaskId(int taskId) {
+        this.taskId = taskId;
+    }
 
     public int getState() {
         return state;

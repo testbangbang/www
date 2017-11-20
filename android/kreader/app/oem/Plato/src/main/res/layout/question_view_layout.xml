@@ -97,7 +97,7 @@
                     android:id="@+id/question_page_right"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/icon_go" />
+                    android:src="@drawable/icon_right" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -151,36 +151,50 @@
             android:layout_height="wrap_content"
             android:background="@drawable/rectangle_stroke"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:visibility="gone">
 
-            <TextView
-                android:id="@+id/user_answer"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/user_answer"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/knowledge_point"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/knowledge_point"
-                android:textSize="@dimen/level_three_heading_font" />
+                <TextView
+                    android:id="@+id/user_answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/user_answer"
+                    android:textSize="@dimen/level_three_heading_font" />
 
-            <TextView
-                android:id="@+id/cognitive_level"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/cognitive_level"
-                android:textSize="@dimen/level_three_heading_font" />
+                <TextView
+                    android:id="@+id/knowledge_point"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/question_knowledge_level_margin"
+                    android:text="@string/knowledge_point"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/correct_rate"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/correct_rate"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/cognitive_level"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/cognitive_level"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:id="@+id/correct_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/question_knowledge_level_margin"
+                    android:text="@string/correct_rate"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>

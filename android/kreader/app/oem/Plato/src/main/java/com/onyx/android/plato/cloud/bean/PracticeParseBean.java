@@ -7,6 +7,6 @@ import java.util.List;
  */
 
 public class PracticeParseBean {
-    public ParseBean exercise;
+    public ParseBean exerciseDto;
     public List<AnswerBean> myAnswer;
 }

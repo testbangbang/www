@@ -126,7 +126,8 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         List<ExerciseMessageBean> questionMessages = data.exerciseMessageDtos;
         if (questionDataList != null && questionDataList.size() > 0 &&
                 questionMessages != null && questionMessages.size() > 0) {
-            resolveAdapterData(questionDataList, questionMessages);
+            //TODO:fake task id (should:content.id)
+            resolveAdapterData(questionDataList, questionMessages, 1);
         }
     }
 
@@ -141,7 +142,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         adapter.setData(questionList, title, 25);
     }
 
-    private void resolveAdapterData(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages) {
-        presenter.resolveAdapterData(questionDataList, questionMessages);
+    private void resolveAdapterData(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages, int id) {
+        presenter.resolveAdapterData(questionDataList, questionMessages, id);
     }
 }

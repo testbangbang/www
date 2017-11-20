@@ -1,6 +1,7 @@
 package com.onyx.android.plato.data;
 
 import com.onyx.android.plato.SunApplication;
+import com.onyx.android.plato.requests.cloud.FavoriteOrDeletePracticeRequest;
 import com.onyx.android.plato.requests.cloud.SubmitPracticeRequest;
 import com.onyx.android.plato.requests.local.FillAnswerRequest;
 import com.onyx.android.plato.requests.local.GetAllQuestionRequest;
@@ -22,6 +23,10 @@ public class FillHomeworkData {
     }
 
     public void submitAnswers(SubmitPracticeRequest rq, BaseCallback callback) {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
+    }
+
+    public void deleteOrFavorite(FavoriteOrDeletePracticeRequest rq, BaseCallback callback) {
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
     }
 }

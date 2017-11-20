@@ -1,6 +1,7 @@
 package com.onyx.android.plato.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
@@ -64,6 +65,8 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     private String questionBeanTitle;
     private Handler handler;
     private static final int WEBVIEW_FRESH_WHAT = 0x1000;
+    private static final int DELAY_TIME = 50;
+    private static final int DEFAULT_HEIGHT = 50;
     private TextView questionIntroduce;
     private LinearLayout questionPageLayout;
     private ImageButton questionPageLeft;
@@ -72,6 +75,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     private RelativeLayout questionTitleLayout;
     private boolean isAnalyze;
     private TextView userAnswer;
+    private float choiceHeight;
 
     public QuestionView(Context context) {
         this(context, null);
@@ -80,8 +84,15 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     public QuestionView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
+        initAttr(attrs);
         init();
         initListener();
+    }
+
+    private void initAttr(AttributeSet attrs) {
+        TypedArray typedArray = context.obtainStyledAttributes(attrs, R.styleable.QuestionView);
+        choiceHeight = typedArray.getDimensionPixelSize(R.styleable.QuestionView_choiceHeight, DEFAULT_HEIGHT);
+        typedArray.recycle();
     }
 
     private void initListener() {
@@ -151,8 +162,8 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
             questionTitleLayout.setVisibility(VISIBLE);
             questionTitle.loadDataWithBaseURL(null, questionViewBean.getParentId() + "." +
                     questionViewBean.getScene(), "text/html", "utf-8", null);
+            handler.sendEmptyMessageDelayed(WEBVIEW_FRESH_WHAT, DELAY_TIME);
         }
-        handler.sendEmptyMessageDelayed(WEBVIEW_FRESH_WHAT, 100);
         setVisibleType(R.id.choice_radio_group);
         generateChoice(questionViewBean);
         analyze();
@@ -207,7 +218,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         if (StringUtil.isNullOrEmpty(questionViewBean.getScene())) {
             questionTitleLayout.setVisibility(VISIBLE);
             questionTitle.loadDataWithBaseURL(null, questionViewBean.getId() + questionViewBean.getContent(), "text/html", "utf-8", null);
-            handler.sendEmptyMessageDelayed(WEBVIEW_FRESH_WHAT, 100);
+            handler.sendEmptyMessageDelayed(WEBVIEW_FRESH_WHAT, DELAY_TIME);
         } else {
             TextView problem = new TextView(context);
             problem.setTextSize(20);
@@ -258,7 +269,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         if (selectionBean.name.equals(questionViewBean.getUserAnswer())) {
             button.setChecked(true);
         }
-        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, 60);
+        LayoutParams params = new LayoutParams(LayoutParams.WRAP_CONTENT, (int) choiceHeight);
         button.setLayoutParams(params);
         return button;
     }
@@ -278,14 +289,10 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.correct_favourite:
-                correctFavourite.setSelected(true);
+                deleteOrFavorite();
                 break;
             case R.id.subjective_image:
-                if (!isFinished) {
-                    ManagerActivityUtils.startScribbleActivity(SunApplication.getInstance(), questionViewBean.getId() + "", title, Html.fromHtml(questionViewBean.getContent()) + "");
-                } else {
-                    EventBus.getDefault().post(new ParseAnswerEvent(questionViewBean, title));
-                }
+                jump();
                 break;
             case R.id.question_page_left:
                 questionTitle.prevPage();
@@ -294,6 +301,21 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
                 questionTitle.nextPage();
                 break;
         }
+    }
+
+    private void jump() {
+        if (!isFinished) {
+            ManagerActivityUtils.startScribbleActivity(SunApplication.getInstance(), questionViewBean.getId() + "", title, Html.fromHtml(questionViewBean.getContent()) + "");
+        } else {
+            EventBus.getDefault().post(new ParseAnswerEvent(questionViewBean, title));
+        }
+    }
+
+    private void deleteOrFavorite() {
+        if (listener != null) {
+            listener.deleteOrFavoriteQuestion(questionViewBean.getTaskId(), questionViewBean.getId());
+        }
+        correctFavourite.setSelected(!correctFavourite.isSelected());
     }
 
     public void setOnCheckAnswerListener(OnCheckAnswerListener listener) {

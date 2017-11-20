@@ -53,8 +53,8 @@ public class CorrectPresenter {
         });
     }
 
-    public void resolveAdapterData(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages) {
-        final ResolveAdapterDataRequest rq = new ResolveAdapterDataRequest(questionDataList, questionMessages);
+    public void resolveAdapterData(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages, int taskId) {
+        final ResolveAdapterDataRequest rq = new ResolveAdapterDataRequest(questionDataList, questionMessages, taskId);
         correctData.resolveData(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
