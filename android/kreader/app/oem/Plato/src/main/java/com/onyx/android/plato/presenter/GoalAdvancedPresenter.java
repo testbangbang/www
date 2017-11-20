@@ -3,10 +3,13 @@ package com.onyx.android.plato.presenter;
 import com.onyx.android.plato.cloud.bean.GetSubjectAbilityRequestBean;
 import com.onyx.android.plato.cloud.bean.GetSubjectAbilityResultBean;
 import com.onyx.android.plato.data.GoalAdvancedFragmentData;
+import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.GoalAdvancedView;
 import com.onyx.android.plato.requests.cloud.GetSubjectAbilityRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by jackdeng on 2017/11/2.
@@ -31,7 +34,8 @@ public class GoalAdvancedPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSubjectAbilityResultBean resultBean = rq.getResultBean();
-                if (resultBean == null || resultBean.data == null) {
+                if (resultBean == null) {
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 GetSubjectAbilityResultBean.AbilityBean data = resultBean.data;

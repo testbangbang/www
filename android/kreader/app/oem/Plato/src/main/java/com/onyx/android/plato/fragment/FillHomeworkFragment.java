@@ -13,6 +13,7 @@ import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
+import com.onyx.android.plato.cloud.bean.ReportListBean;
 import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
@@ -111,7 +112,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     }
 
     @Override
-    public void setReportData(List<FinishContent> content) {
+    public void setReportData(List<ReportListBean> content) {
 
     }
 

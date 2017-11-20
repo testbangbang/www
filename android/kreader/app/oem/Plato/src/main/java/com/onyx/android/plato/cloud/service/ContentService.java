@@ -2,6 +2,7 @@ package com.onyx.android.plato.cloud.service;
 
 import com.onyx.android.plato.cloud.bean.ChangePasswordResultBean;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskResultBean;
+import com.onyx.android.plato.cloud.bean.GetReportListBean;
 import com.onyx.android.plato.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.plato.cloud.bean.GetSubjectAbilityResultBean;
 import com.onyx.android.plato.cloud.bean.GetSubjectBean;
@@ -118,4 +119,8 @@ public interface ContentService {
     @GET("api/advanced/module/{id}/ability")
     Call<GetSubjectAbilityResultBean> getSubjectAbilityModule(@Path(CloudApiContext.SubjectAbility.ID) String id,
                                                         @Query(CloudApiContext.SubjectAbility.TERM) String term);
+
+    @GET("api/practice/getReportList/{courseId}")
+    Call<GetReportListBean> getReportList(@Path(CloudApiContext.Practices.COURSE_ID) int courseId,
+                                          @Query(CloudApiContext.Practices.STUDENTID) int studentId);
 }

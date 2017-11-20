@@ -2,6 +2,7 @@ package com.onyx.android.plato.data;
 
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.requests.cloud.GetExerciseTypeRequest;
+import com.onyx.android.plato.requests.cloud.GetReportListRequest;
 import com.onyx.android.plato.requests.cloud.GetStudyReportDetailRequest;
 import com.onyx.android.plato.requests.cloud.GetSubjectRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkFinishedRequest;
@@ -28,6 +29,10 @@ public class HomeworkData {
     }
 
     public void getStudyReportDetail(GetStudyReportDetailRequest rq, BaseCallback callback) {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
+    }
+
+    public void getReportList(GetReportListRequest rq, BaseCallback callback) {
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
     }
 

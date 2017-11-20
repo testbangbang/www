@@ -46,6 +46,7 @@ public class CloudApiContext {
         public static final String UNFINISHED_STATE = "tbd";
         public static final String FINISHED_STATE = "completed";
         public static final String REPORT_STATE = "report";
+        public static final String COURSE_ID = "courseId";
     }
 
     public static class Message{

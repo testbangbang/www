@@ -9,11 +9,14 @@ import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.data.MainActivityData;
+import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.MainView;
 import com.onyx.android.plato.requests.cloud.DeleteNewMessageRequest;
 import com.onyx.android.plato.requests.cloud.GetNewMessageRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -41,7 +44,7 @@ public class MainPresenter {
             public void done(BaseRequest request, Throwable e) {
                 HomeworkUnfinishedResultBean resultBean = rq.getHomeworkUnfinishedResultBean();
                 if (resultBean == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
 
@@ -62,7 +65,7 @@ public class MainPresenter {
             public void done(BaseRequest request, Throwable e) {
                 SubmitPracticeResultBean resultBean = rq.getResultBean();
                 if (resultBean == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 if (Constants.OK.equals(resultBean.msg)) {
