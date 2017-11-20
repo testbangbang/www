@@ -24,6 +24,8 @@ public class NetworkUtil {
     private static final String TAG = NetworkUtil.class.getSimpleName();
     private static final String MAC_ADDRESS_KEY = "mac_address";
 
+    public static final String[] INVALID_MAC_ADDRESS = {"00:00:00:00:00:00", "20:00:00:00:00:00"};
+
     public static boolean isWiFiConnected(Context context) {
         ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo info = manager.getActiveNetworkInfo();
@@ -51,12 +53,22 @@ public class NetworkUtil {
         return Device.currentDevice().readSystemConfig(context, MAC_ADDRESS_KEY);
     }
 
+    private static boolean isMacAddressInInvalidList(String val) {
+        for (String address : INVALID_MAC_ADDRESS) {
+            if (address.equals(val)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static boolean isStringValidMacAddress(String val) {
         if (StringUtils.isNullOrEmpty(val)) {
             return false;
         }
         String macAddressRegex = "([A-Fa-f0-9]{2}:){5}[A-Fa-f0-9]{2}";
-        return val.matches(macAddressRegex);
+        boolean valid = val.matches(macAddressRegex);
+        return valid && !isMacAddressInInvalidList(val);
     }
 
     public static boolean isWifiEnabled(final Context context) {
@@ -148,4 +160,12 @@ public class NetworkUtil {
         return result;
     }
 
+    public static boolean enableWifiOpenAndDetect(Context context) {
+        if (!NetworkUtil.isWiFiConnected(context)) {
+            Device.currentDevice().enableWifiDetect(context);
+            NetworkUtil.enableWiFi(context, true);
+            return true;
+        }
+        return false;
+    }
 }

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.onyx.edu.student.ui.view.CustomRadioGroup
+            android:id="@+id/category_group"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/common_radio_group_content_radio_margin_top_bottom"
+            android:layout_marginLeft="@dimen/common_radio_group_content_radio_margin_left_right"
+            android:layout_marginRight="@dimen/common_radio_group_content_radio_margin_left_right"
+            android:layout_marginTop="@dimen/common_radio_group_content_radio_margin_top_bottom"
+            android:background="@drawable/custom_radio_group_background_circle"
+            android:minHeight="@dimen/common_radio_group_content_radio_min_height" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="3dp"
+            android:background="@android:color/holo_green_light" />
+
+        <com.onyx.edu.student.ui.view.NoSwipePager
+            android:id="@+id/contentViewPager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>

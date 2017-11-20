@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_note"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include layout="@layout/toolbar" />
+
+    <View
+        android:id="@+id/top_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/toolbar"
+        android:background="@android:color/black" />
+
+    <SurfaceView
+        android:id="@+id/surfaceview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_divider"
+        android:layout_below="@id/top_divider" />
+
+    <View
+        android:id="@+id/bottom_divider"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_above="@+id/layout_footer"
+        android:background="@android:color/black" />
+
+    <RelativeLayout
+        android:id="@+id/layout_footer"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:layout_alignParentBottom="true">
+
+        <LinearLayout
+            android:id="@+id/function_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/button_width"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/image_button_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minWidth="@android:dimen/notification_large_icon_width"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/icon_width"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:focusable="false"
+                    android:src="@drawable/ic_width" />
+
+                <TextView
+                    android:id="@+id/text_width"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:text="@string/width" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_shape"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/image_button_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minWidth="@android:dimen/notification_large_icon_width"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/icon_shape"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:focusable="false"
+                    android:src="@drawable/ic_shape" />
+
+                <TextView
+                    android:id="@+id/text_shape"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:text="@string/shape" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/button_eraser"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="10dp"
+                android:background="@drawable/image_button_bg"
+                android:clickable="true"
+                android:focusable="true"
+                android:gravity="center"
+                android:minWidth="@android:dimen/notification_large_icon_width"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/icon_eraser"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:focusable="false"
+                    android:src="@drawable/ic_eraser" />
+
+                <TextView
+                    android:id="@+id/text_eraser"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:text="@string/eraser" />
+            </LinearLayout>
+        </LinearLayout>
+    </RelativeLayout>
+</RelativeLayout>

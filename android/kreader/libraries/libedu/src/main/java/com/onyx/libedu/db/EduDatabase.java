@@ -1,1 +1,0 @@
-package com.onyx.libedu.db;import com.onyx.android.sdk.data.db.ContentDatabase;import com.raizlabs.android.dbflow.annotation.Database;/** * Created by ming on 2016/10/31. *///@Database(name = EduDatabase.NAME, version = EduDatabase.VERSION)public class EduDatabase {    public static final String NAME = "EduDatabase";    public static final int VERSION = 1;}

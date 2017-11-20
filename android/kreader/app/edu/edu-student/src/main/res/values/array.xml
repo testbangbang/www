@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="material_group">
+        <item>Textbook</item>
+        <item>Counseling</item>
+        <item>Reading</item>
+    </string-array>
+</resources>

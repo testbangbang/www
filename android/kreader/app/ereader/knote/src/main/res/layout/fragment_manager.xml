@@ -1,0 +1,64 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="view"
+            type="com.onyx.knote.manager.ManagerFragment" />
+
+        <variable
+            name="viewModel"
+            type="com.onyx.knote.manager.ManagerViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.onyx.knote.manager.ManagerFragment">
+
+        <RelativeLayout
+            android:id="@+id/manager_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
+
+            <TextView
+                android:id="@+id/file_total_counter_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="@{@string/file_total_count(viewModel.folderCount,viewModel.noteCount)}"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
+
+            <TextView
+                android:id="@+id/page_counter_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:text="@{@string/page_count(viewModel.currentPage,viewModel.totalPage)}"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
+        </RelativeLayout>
+
+        <View
+            android:id="@+id/divider_line"
+            style="@style/single_line_X_axis_View"
+            android:layout_height="2dp"
+            android:layout_above="@id/manager_info" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/note_page_recycler_view"
+            items="@{viewModel.items}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/divider_line" />
+
+
+    </RelativeLayout>
+</layout>
