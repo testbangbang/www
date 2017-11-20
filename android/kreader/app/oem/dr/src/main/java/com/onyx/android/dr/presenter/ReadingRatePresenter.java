@@ -5,6 +5,7 @@ import android.content.Context;
 import com.onyx.android.dr.data.ReadingRateData;
 import com.onyx.android.dr.data.database.ReadingRateEntity;
 import com.onyx.android.dr.interfaces.ReadingRateView;
+import com.onyx.android.dr.request.cloud.GetSharedReadingRateRequest;
 import com.onyx.android.dr.request.cloud.RequestGetReadingRate;
 import com.onyx.android.dr.request.local.ReadingRateExport;
 import com.onyx.android.dr.request.local.ReadingRateQueryAll;
@@ -40,12 +41,22 @@ public class ReadingRatePresenter {
         });
     }
 
-    public void getReadingRate(String param) {
-        final RequestGetReadingRate req = new RequestGetReadingRate(readingRateData, param);
+    public void getReadingRate(String id, String param) {
+        final RequestGetReadingRate req = new RequestGetReadingRate(readingRateData, id, param);
         readingRateData.getReadingRate(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 readingRateView.getReadingRateData(req.getGroup());
+            }
+        });
+    }
+
+    public void getReadingRateById(String id) {
+        final GetSharedReadingRateRequest req = new GetSharedReadingRateRequest(id);
+        readingRateData.getReadingRateById(req, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readingRateView.getReadingRateData(req.getResult());
             }
         });
     }

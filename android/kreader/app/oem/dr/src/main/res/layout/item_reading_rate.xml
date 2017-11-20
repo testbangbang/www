@@ -22,6 +22,20 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/reading_rate_item_user_name"
+            style="@style/reading_rate_item_text_view_style"
+            android:text="@string/book_report_list_time" />
+
+        <View style="@style/view_vertical_direction" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
         android:layout_weight="2"
         android:orientation="horizontal">
 

@@ -35,6 +35,14 @@
             <TextView
                 style="@style/reading_rate_activity_text_view"
                 android:layout_marginLeft="1dp"
+                android:layout_weight="1"
+                android:text="@string/user" />
+
+            <View style="@style/vertical_view" />
+
+            <TextView
+                style="@style/reading_rate_activity_text_view"
+                android:layout_marginLeft="1dp"
                 android:layout_weight="2"
                 android:text="@string/book_report_list_book_name" />
 

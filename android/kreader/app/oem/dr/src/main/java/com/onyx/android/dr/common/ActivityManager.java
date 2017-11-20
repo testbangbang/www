@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.provider.Settings;
 
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
@@ -192,9 +193,10 @@ public class ActivityManager {
         context.startActivity(intent);
     }
 
-    public static void startReadingRateActivity(Context context) {
+    public static void startReadingRateActivity(Context context, String id) {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.putExtra(Constants.LIBRARY_ID, id);
         intent.setClass(context, ReadingRateActivity.class);
         context.startActivity(intent);
     }
@@ -533,6 +535,12 @@ public class ActivityManager {
         Intent intent = new Intent("com.android.settings.TextToSpeechSettings");
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClassName("com.android.settings", "com.android.settings.TextToSpeechSettings");
+        context.startActivity(intent);
+    }
+
+    public static void startInputMethodSettingsActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setAction(Settings.ACTION_INPUT_METHOD_SETTINGS);
         context.startActivity(intent);
     }
 

@@ -1,8 +1,5 @@
 package com.onyx.android.dr.presenter;
 
-import com.onyx.android.dr.DRApplication;
-import com.onyx.android.dr.R;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.data.GroupMemberData;
 import com.onyx.android.dr.data.LoginData;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
@@ -16,7 +13,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
 import com.onyx.android.sdk.data.model.v2.ShareBookReportRequestBean;
-import com.onyx.android.sdk.data.model.v2.ShareBookReportResult;
 
 import java.util.List;
 
@@ -69,14 +65,6 @@ public class ShareBookReportPresenter {
         groupMemberData.shareImpression(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                List<ShareBookReportResult> result = rq.getResult();
-                if(result != null && result.size() > 0) {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_success));
-                }else {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_fail));
-                }
             }
         });
     }
@@ -88,14 +76,6 @@ public class ShareBookReportPresenter {
         groupMemberData.shareInformalEssay(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                List<ShareBookReportResult> result = rq.getResult();
-                if(result != null && result.size() > 0) {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_success));
-                }else {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_fail));
-                }
             }
         });
     }
@@ -107,14 +87,6 @@ public class ShareBookReportPresenter {
         groupMemberData.shareReadingRate(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                List<ShareBookReportResult> result = rq.getResult();
-                if(result != null && result.size() > 0) {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_success));
-                }else {
-                    CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
-                            .getResources().getString(R.string.share_book_impression_fail));
-                }
             }
         });
     }

@@ -42,11 +42,8 @@ public class RequestReadSummaryQuery extends BaseDataRequest {
             readSummaryEntity.bookName = readingMatter;
             readSummaryEntity.pageNumber = pageNumber;
         }
-        if (readSummaryEntity.newWordList == null) {
+        if (readSummaryEntity != null) {
             readSummaryEntity.newWordList = queryNewWordList();
-        }
-
-        if (readSummaryEntity.goodSentenceList == null) {
             readSummaryEntity.goodSentenceList = queryGoodSentenceList();
         }
     }

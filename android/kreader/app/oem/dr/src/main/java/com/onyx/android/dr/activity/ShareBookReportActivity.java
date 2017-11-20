@@ -12,6 +12,8 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.ShareBookReportAdapter;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.ShareFailedEvent;
+import com.onyx.android.dr.event.ShareSuccessEvent;
 import com.onyx.android.dr.interfaces.ShareBookReportView;
 import com.onyx.android.dr.presenter.ShareBookReportPresenter;
 import com.onyx.android.dr.reader.view.DisableScrollGridManager;
@@ -20,6 +22,9 @@ import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.model.v2.GroupBean;
 import com.onyx.android.sdk.data.model.v2.GroupMemberBean;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
 
@@ -69,6 +74,7 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
     private String impressionId;
     private String[] childrenId;
     private int shareType;
+    private int number = 0;
 
     @Override
     protected Integer getLayoutId() {
@@ -124,7 +130,6 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
 
     @Override
     public void setGroupMemberResult(GroupMemberBean groupMembers) {
-
     }
 
     @OnClick({R.id.image_view_back, R.id.image, R.id.title_bar_title, R.id.title_bar_right_icon_one})
@@ -162,6 +167,23 @@ public class ShareBookReportActivity extends BaseActivity implements ShareBookRe
             } else if (shareType == Constants.READER_RESPONSE) {
                 shareBookReportPresenter.shareImpression(bean.library, childrenId);
             }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShareSuccessEvent(ShareSuccessEvent event) {
+        CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                .getResources().getString(R.string.share_book_impression_success));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onShareFailedEvent(ShareFailedEvent event) {
+        if (number < Constants.REQUEST_NUMBER) {
+            number++;
+            shareToGroup();
+        } else {
+            CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance()
+                    .getResources().getString(R.string.share_book_impression_fail));
         }
     }
 }

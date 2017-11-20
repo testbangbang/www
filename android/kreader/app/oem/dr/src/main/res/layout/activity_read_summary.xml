@@ -50,7 +50,9 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/new_words_review_title_hint_margin_left"
+            android:layout_weight="1">
 
             <TextView
                 android:id="@+id/new_words_review_title_hint"
@@ -61,7 +63,7 @@
                 android:textSize="@dimen/level_two_font_size"
                 android:visibility="gone" />
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
+            <com.onyx.android.dr.view.PageRecyclerView
                 android:id="@+id/new_words_review_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -69,6 +71,20 @@
                 android:layout_alignParentStart="true"
                 android:layout_below="@+id/new_words_review_title_hint" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/read_summary_activity_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical">
+
+            <View style="@style/Horizontal_view" />
+
+            <include
+                layout="@layout/page_indicator_layout"
+                android:visibility="visible" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -100,7 +116,7 @@
                 android:textSize="@dimen/level_two_font_size"
                 android:visibility="visible" />
 
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
+            <com.onyx.android.dr.view.PageRecyclerView
                 android:id="@+id/good_sentence_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,6 +126,7 @@
                 android:id="@+id/good_sentence_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/new_words_review_title_hint_margin_left"
                 android:layout_marginTop="@dimen/good_sentence_container_margin_top"
                 android:orientation="vertical">
 

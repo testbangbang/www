@@ -76,7 +76,7 @@ public class BookReportPresenter {
         requestBean.limit = limit;
         requestBean.order = order;
         requestBean.sortBy = sortBy;
-        final String libraryId = DRPreferenceManager.loadLibraryParentId(DRApplication.getInstance(), "");
+        final String libraryId = DRPreferenceManager.loadUserLibraryId(DRApplication.getInstance(), "");
         final GetBookReportListRequest rq = new GetBookReportListRequest(requestBean);
         bookReportData.getImpressionsList(rq, new BaseCallback() {
             @Override
@@ -94,13 +94,13 @@ public class BookReportPresenter {
                     data.addAll(bookReportList.list);
                     listCheck.addAll(checkList);
                 }
-                getSharedImpressions(libraryId);
+                bookReportView.setBookReportList(data, listCheck);
             }
         });
     }
 
     public void getInformalEssay(String param) {
-        final String libraryId = DRPreferenceManager.loadLibraryParentId(DRApplication.getInstance(), "");
+        final String libraryId = DRPreferenceManager.loadUserLibraryId(DRApplication.getInstance(), "");
         final RequestGetInformalEssay req = new RequestGetInformalEssay(infromalEssayData, param);
         infromalEssayData.getInformalEssay(req, new BaseCallback() {
             @Override
@@ -118,7 +118,7 @@ public class BookReportPresenter {
                     informalEssayData.addAll(group);
                     informalEssayListCheck.addAll(checkList);
                 }
-                getSharedInformal(libraryId);
+                bookReportView.setInformalEssayData(informalEssayData, informalEssayListCheck);
             }
         });
     }
@@ -135,6 +135,13 @@ public class BookReportPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetSharedImpressionResult result = rq.getResult();
                 ArrayList<Boolean> checkList = rq.getCheckList();
+                if (data == null) {
+                    data = new ArrayList<>();
+                    listCheck = new ArrayList<>();
+                } else {
+                    data.clear();
+                    listCheck.clear();
+                }
                 if(result != null && result.list != null && result.list.size() > 0) {
                     data.addAll(result.list);
                     listCheck.addAll(checkList);
@@ -156,12 +163,18 @@ public class BookReportPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetSharedInformalResult result = rq.getResult();
                 ArrayList<Boolean> checkList = rq.getCheckList();
+                if (informalEssayData == null) {
+                    informalEssayData = new ArrayList<>();
+                    informalEssayListCheck = new ArrayList<>();
+                } else {
+                    informalEssayData.clear();
+                    informalEssayListCheck.clear();
+                }
                 if(result != null && result.list != null && result.list.size() > 0) {
                     informalEssayData.addAll(result.list);
                     informalEssayListCheck.addAll(checkList);
                 }
                 bookReportView.setInformalEssayData(informalEssayData, informalEssayListCheck);
-                bookReportView.setBookReportList(data, listCheck);
             }
         });
     }

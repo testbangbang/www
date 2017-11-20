@@ -222,7 +222,7 @@
     <dimen name="search_history_text_margin">10dp</dimen>
     <dimen name="height_search_hint_list">180dp</dimen>
     <dimen name="search_result_content_margin_top">80dp</dimen>
-    <dimen name="device_setting_padding_top">15dp</dimen>
+    <dimen name="device_setting_padding_top">10dp</dimen>
     <dimen name="device_setting_device_information">5dp</dimen>
     <dimen name="device_setting_page_margin_left">25dp</dimen>
     <dimen name="device_information_view_padding_bottom">2dp</dimen>
@@ -501,5 +501,6 @@
     <dimen name="add_memorandum_activity_time_margin_left">20dp</dimen>
     <dimen name="add_memorandum_activity_container_margin">20dp</dimen>
     <dimen name="memorandum_item_day_of_week_margin_left">2dp</dimen>
+    <dimen name="new_words_review_title_hint_margin_left">20dp</dimen>
     <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
 </resources>

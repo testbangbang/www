@@ -125,7 +125,7 @@ public class OperatingDataManager {
         entity.cloudId = bean._id;
         entity.content = bean.content;
         entity.pageNumber = bean.pageNumber;
-        entity.user = bean.user;
+        entity.user = bean.user.name;
         entity.title = bean.title;
         final ReaderResponseInsert req = new ReaderResponseInsert(entity);
         bookReportData.insertReaderResponse(DRApplication.getInstance(), req, new BaseCallback() {

@@ -52,6 +52,7 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
         CreateReadingRateBean bean = dataList.get(position);
         holder.time.setText(bean.recordDate);
         holder.bookName.setText(bean.name);
+        holder.userName.setText(bean.user.name);
         holder.readingQuantity.setText(String.valueOf(bean.wordsCount));
         holder.speech.setText(String.valueOf(bean.speed));
         holder.readingSummary.setText(String.valueOf(bean.summaryCount));
@@ -83,6 +84,8 @@ public class ReadingRateAdapter extends PageRecyclerView.PageAdapter<ReadingRate
     static class ViewHolder extends RecyclerView.ViewHolder {
         @Bind(R.id.reading_rate_item_time)
         TextView time;
+        @Bind(R.id.reading_rate_item_user_name)
+        TextView userName;
         @Bind(R.id.reading_rate_item_book_name)
         TextView bookName;
         @Bind(R.id.reading_rate_item_time_horizon)

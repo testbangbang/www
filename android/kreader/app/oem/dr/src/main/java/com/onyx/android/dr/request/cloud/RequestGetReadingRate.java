@@ -21,12 +21,14 @@ import retrofit2.Response;
  */
 public class RequestGetReadingRate extends AutoNetWorkConnectionBaseCloudRequest {
     private final String param;
+    private final String id;
     private final ReadingRateData readingRateData;
     private List<CreateReadingRateBean> dataList = new ArrayList<>();
     private ArrayList<Boolean> listCheck = new ArrayList<>();
 
-    public RequestGetReadingRate(ReadingRateData readingRateData, String param) {
+    public RequestGetReadingRate(ReadingRateData readingRateData, String param, String id) {
         this.param = param;
+        this.id = id;
         this.readingRateData = readingRateData;
     }
 
@@ -46,7 +48,7 @@ public class RequestGetReadingRate extends AutoNetWorkConnectionBaseCloudRequest
     private void getMyGroup(CloudManager parent) {
         try {
             Response<GetReadingRateBean> response = executeCall(ServiceFactory.getContentService(
-                    parent.getCloudConf().getApiBase()).getReadingRate(param));
+                    parent.getCloudConf().getApiBase()).getReadingRate(id, param));
             if (response != null) {
                 GetReadingRateBean body = response.body();
                 dataList = body.list;

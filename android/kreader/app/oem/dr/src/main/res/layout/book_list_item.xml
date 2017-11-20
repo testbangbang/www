@@ -32,9 +32,9 @@
         android:id="@+id/library_item_cover_panel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/book_list_item_text_layout"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/image_selector_bg">
+        android:background="@drawable/image_selector_bg"
+        android:layout_above="@+id/book_list_item_text_layout"
+        android:layout_centerHorizontal="true">
 
         <ImageView
             android:id="@+id/library_item_image_cover"

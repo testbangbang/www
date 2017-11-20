@@ -12,10 +12,10 @@ public class CreateInformalEssayBean implements Serializable {
     public int __v;
     public String updatedAt;
     public String createdAt;
-    public String user;
     public String _id;
     public String title;
     public String wordNumber;
+    public UserBean user;
     public String content;
     public long currentTime;
     public List<CommentsBean> comments;
