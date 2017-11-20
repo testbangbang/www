@@ -737,7 +737,8 @@ public class NoteViewHelper {
             onDrawingTouchDown(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onDrawingTouchMove(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onDrawingTouchUp(motionEvent);
         }
         return true;
@@ -748,7 +749,8 @@ public class NoteViewHelper {
             onBeginShapeSelecting();
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onShapeSelecting(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onFinishShapeSelecting();
         }
         return true;
@@ -759,7 +761,8 @@ public class NoteViewHelper {
             onBeginErasing();
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onErasing(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onFinishErasing();
         }
         return true;
