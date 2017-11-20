@@ -1,8 +1,8 @@
 package com.onyx.android.dr.request.cloud;
 
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.CreateReadingRateBean;
 import com.onyx.android.sdk.data.model.ReadingRateBean;
+import com.onyx.android.sdk.data.model.v2.UploadReadingRateBean;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 
 import retrofit2.Response;
@@ -12,13 +12,13 @@ import retrofit2.Response;
  */
 public class CreateReadingRateRequest extends AutoNetWorkConnectionBaseCloudRequest {
     private final ReadingRateBean param;
-    private CreateReadingRateBean bean = new CreateReadingRateBean();
+    private UploadReadingRateBean bean = new UploadReadingRateBean();
 
     public CreateReadingRateRequest(ReadingRateBean param) {
         this.param = param;
     }
 
-    public CreateReadingRateBean getGroup() {
+    public UploadReadingRateBean getGroup() {
         return bean;
     }
 
@@ -29,7 +29,7 @@ public class CreateReadingRateRequest extends AutoNetWorkConnectionBaseCloudRequ
 
     private void getMyGroup(CloudManager parent) {
         try {
-            Response<CreateReadingRateBean> response = executeCall(ServiceFactory.getContentService(
+            Response<UploadReadingRateBean> response = executeCall(ServiceFactory.getContentService(
                     parent.getCloudConf().getApiBase()).uploadReadingRate(param));
             if (response != null) {
                 bean = response.body();

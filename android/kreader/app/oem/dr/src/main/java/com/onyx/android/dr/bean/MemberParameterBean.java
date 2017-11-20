@@ -5,10 +5,10 @@ package com.onyx.android.dr.bean;
  */
 
 public class MemberParameterBean {
-    private String offset;
-    private String limit;
-    private String sortBy;
-    private String order;
+    public String offset;
+    public String limit;
+    public String sortBy;
+    public String order;
 
     public MemberParameterBean(String offset, String limit, String sortBy, String order) {
         this.offset = offset;

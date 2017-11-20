@@ -42,7 +42,7 @@ public class ReadingRatePresenter {
     }
 
     public void getReadingRate(String id, String param) {
-        final RequestGetReadingRate req = new RequestGetReadingRate(readingRateData, id, param);
+        final RequestGetReadingRate req = new RequestGetReadingRate(readingRateData, param, id);
         readingRateData.getReadingRate(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

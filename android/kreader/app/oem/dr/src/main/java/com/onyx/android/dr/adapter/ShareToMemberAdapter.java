@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -55,6 +54,7 @@ public class ShareToMemberAdapter extends PageRecyclerView.PageAdapter {
         final ShareToMemberViewHolder viewHolder = (ShareToMemberViewHolder) holder;
         final ListBean listBean = data.get(position);
         viewHolder.shareToMemberItemName.setText(listBean.child.name);
+        viewHolder.shareToMemberItemChecked.setChecked(listBean.isChecked());
         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +76,6 @@ public class ShareToMemberAdapter extends PageRecyclerView.PageAdapter {
         } else {
             list.clear();
         }
-
         for (ListBean bean : data) {
             if (bean.isChecked) {
                 list.add(bean);

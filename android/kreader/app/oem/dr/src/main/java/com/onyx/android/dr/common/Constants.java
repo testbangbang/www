@@ -125,6 +125,7 @@ public class Constants {
     public static final String AUTO_LOGIN_FLAG = "auto_login_flag";
     public static final String BOOKSHELF_TYPE = "bookshelf_type";
     public static final String SEARCH_KEYWORD = "search_keyword";
+    public static final String SAVE_UPLOAD_DATE_TIME = "save_upload_date_time";
     public static final String LANGUAGE_BOOKSHELF = "language_bookshelf";
     public static final String GRADED_BOOKSHELF = "graded_bookshelf";
     public static final String ORDER_ID = "order_id";
@@ -196,6 +197,7 @@ public class Constants {
     public static final int SATURDAY = 6;
 
     public static long DATE_TIME = 7 * 24 * 60 * 60 * 1000;
+    public static long TWENTY_FOUR_HOUR_TIME = 24 * 60 * 60 * 1000;
     public static final int REQUEST_NUMBER = 1;
 
     public static final String  MEMORANDUM_DAY_OF_WEEK = "memorandum_day_of_week";
