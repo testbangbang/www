@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.onyx.android.sdk.scribble.api.event.RawErasePointListReceivedEvent;
 import com.onyx.android.sdk.scribble.api.event.RawErasePointMoveReceivedEvent;
 import com.onyx.android.sdk.scribble.api.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.api.event.RawTouchPointMoveReceivedEvent;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -52,6 +54,7 @@ public class NoteActivity extends AppCompatActivity {
     private int shapeType = ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
     private float strokeWidth = 3f;
     private List<Shape> stashList = new ArrayList<>();
+    private Shape currentShape;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +122,9 @@ public class NoteActivity extends AppCompatActivity {
 
                 @Override
                 public void onCancel() {
-                    touchHelper.resumeRawDrawing();
+                    if (ShapeFactory.isDFBShape(shapeType)){
+                        touchHelper.resumeRawDrawing();
+                    }
                 }
             }, R.id.bottom_divider, true);
         }
@@ -176,6 +181,12 @@ public class NoteActivity extends AppCompatActivity {
 
             }
         });
+        surfaceView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                return touchHelper.onTouchEvent(event);
+            }
+        });
     }
 
     private void cleanSurfaceView() {
@@ -211,7 +222,16 @@ public class NoteActivity extends AppCompatActivity {
     public void onShapeChangeEvent(ShapeChangeEvent e) {
         Log.d(TAG, "onChangePenWidthEvent");
         shapeType = e.getShapeType();
-        touchHelper.setRenderByFramework(ShapeFactory.isDFBShape(shapeType));
+        if (ShapeFactory.isDFBShape(shapeType)) {
+            touchHelper.setRenderByFramework(true);
+            touchHelper.resumeRawDrawing();
+            Log.e(TAG, "onShapeChangeEvent: resumeRawDrawing");
+        } else {
+            touchHelper.setRenderByFramework(false);
+            EpdController.leaveScribbleMode(surfaceView);
+            touchHelper.pauseRawDrawing();
+            Log.e(TAG, "onShapeChangeEvent: pauseRawDrawing");
+        }
     }
 
     @Subscribe
@@ -272,6 +292,68 @@ public class NoteActivity extends AppCompatActivity {
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
     }
 
+    private boolean forwardDrawing(final MotionEvent motionEvent) {
+        Log.e(TAG, "forwardDrawing: ");
+        if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+            onDrawingTouchDown(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
+            onDrawingTouchMove(motionEvent);
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+            onDrawingTouchUp(motionEvent);
+        }
+        return true;
+    }
+
+    private void onDrawingTouchDown(final MotionEvent motionEvent) {
+        currentShape = createNewShape(shapeType);
+        final TouchPoint normalized = new TouchPoint(motionEvent);
+        stashList.add(currentShape);
+        if (!touchHelper.checkTouchPoint(normalized)) {
+            return;
+        }
+        currentShape.onDown(normalized, normalized);
+        if (!currentShape.supportDFB()) {
+            renderToSurfaceView(stashList, surfaceView);
+        }
+    }
+
+    private void onDrawingTouchMove(final MotionEvent motionEvent) {
+        if (currentShape == null) {
+            return;
+        }
+        int n = motionEvent.getHistorySize();
+        for (int i = 0; i < n; ++i) {
+            final TouchPoint normalized = TouchPoint.fromHistorical(motionEvent, i);
+            if (!touchHelper.checkTouchPoint(normalized)) {
+                return;
+            }
+            currentShape.onMove(normalized, normalized);
+        }
+
+        final TouchPoint normalized = new TouchPoint(motionEvent);
+        if (!touchHelper.checkTouchPoint(normalized)) {
+            return;
+        }
+        currentShape.onMove(normalized, normalized);
+        if (!currentShape.supportDFB()) {
+            renderToSurfaceView(stashList, surfaceView);
+        }
+    }
+
+    protected void onDrawingTouchUp(final MotionEvent motionEvent) {
+        if (currentShape == null) {
+            return;
+        }
+        final TouchPoint normalized = new TouchPoint(motionEvent);
+        if (!touchHelper.checkTouchPoint(normalized)) {
+            return;
+        }
+        currentShape.onUp(normalized, normalized);
+        if (!currentShape.supportDFB()) {
+            renderToSurfaceView(stashList, surfaceView);
+        }
+    }
+
     // below are callback events sent from TouchHelper
 
     @Subscribe
@@ -282,6 +364,9 @@ public class NoteActivity extends AppCompatActivity {
     @Subscribe
     public void onDrawingTouchEvent(DrawingTouchEvent e) {
         Log.d(TAG, "onDrawingTouchEvent");
+        if (!ShapeFactory.isDFBShape(shapeType)) {
+            forwardDrawing(e.getMotionEvent());
+        }
     }
 
     @Subscribe
@@ -292,7 +377,9 @@ public class NoteActivity extends AppCompatActivity {
     @Subscribe
     public void onEndRawDataEvent(EndRawDataEvent e) {
         Log.e(TAG, "onEndRawDataEvent");
-        renderToSurfaceView(stashList, surfaceView);
+        if (ShapeFactory.isDFBShape(shapeType)) {
+            renderToSurfaceView(stashList, surfaceView);
+        }
     }
 
     @Subscribe
@@ -303,9 +390,11 @@ public class NoteActivity extends AppCompatActivity {
     @Subscribe
     public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent e) {
         Log.d(TAG, "onRawTouchPointListReceivedEvent");
-        Shape shape  = createNewShape(shapeType);
-        shape.addPoints(e.getTouchPointList());
-        stashList.add(shape);
+        if (ShapeFactory.isDFBShape(shapeType)) {
+            currentShape = createNewShape(shapeType);
+            currentShape.addPoints(e.getTouchPointList());
+            stashList.add(currentShape);
+        }
     }
 
     @Subscribe
