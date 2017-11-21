@@ -2,10 +2,9 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-
         <variable
             name="model"
-            type="com.onyx.kcb.model.DialogAddEditModel" />
+            type="com.onyx.kcb.model.DialogAddEditModel"/>
     </data>
 
     <TableLayout

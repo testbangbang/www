@@ -2,12 +2,19 @@ package com.onyx.kcb.utils;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.facebook.drawee.backends.pipeline.DrawableFactory;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.kcb.R;
 import com.onyx.kcb.adapter.PageAdapter;
 
 import java.util.List;
@@ -38,6 +45,20 @@ public class OnyxDataBindingUtil {
         PageAdapter adapter = (PageAdapter) recyclerView.getAdapter();
         if (adapter != null) {
             adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    @BindingAdapter("levels")
+    public static void setItems(LinearLayout parentLibraryRefLayout, List<DataModel> levels) {
+        parentLibraryRefLayout.removeAllViews();
+        for (DataModel item : levels) {
+            TextView textView = new TextView(parentLibraryRefLayout.getContext());
+            textView.setGravity(Gravity.CENTER);
+            textView.setText(item.title.get());
+            textView.setBackgroundResource(R.drawable.square_bg);
+            textView.setPadding(5, 9, 9, 5);
+            parentLibraryRefLayout.addView(textView);
         }
     }
 

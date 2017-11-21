@@ -1,8 +1,5 @@
 package com.onyx.kcb.action;
 
-import android.databinding.ObservableList;
-
-import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
@@ -17,7 +14,6 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kcb.holder.LibraryDataHolder;
-import com.onyx.kcb.model.DataModel;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 
 import java.util.ArrayList;
@@ -32,12 +28,10 @@ import java.util.Set;
 public class RxFileSystemScanAction extends BaseAction<LibraryDataHolder> {
     static public final String MMC_STORAGE_ID = "flash";
 
-    private final ObservableList<DataModel> resultDataItemList;
     private String storageId;
     private boolean isFlash;
 
-    public RxFileSystemScanAction(ObservableList<DataModel> resultDataItemList, String storageId, boolean isFlash) {
-        this.resultDataItemList = resultDataItemList;
+    public RxFileSystemScanAction(String storageId, boolean isFlash) {
         this.storageId = storageId;
         this.isFlash = isFlash;
     }
