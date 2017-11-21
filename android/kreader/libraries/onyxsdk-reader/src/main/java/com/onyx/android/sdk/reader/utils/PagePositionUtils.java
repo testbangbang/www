@@ -35,7 +35,7 @@ public class PagePositionUtils {
     }
 
     public static boolean isValidPosition(final String position) {
-        return StringUtils.isNotBlank(position);
+        return StringUtils.isNotBlank(position) && getPosition(position) >= 0;
     }
 
 }

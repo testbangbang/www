@@ -543,6 +543,8 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                             DialogTableOfContent.this.dismiss();
                         }
                     });
+                } else {
+                    Toast.makeText(getContext(), getContext().getString(R.string.can_not_go_to_content), Toast.LENGTH_SHORT).show();
                 }
             }
 
