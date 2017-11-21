@@ -38,13 +38,11 @@ public class NoteSubMenu extends RelativeLayout {
 
     private final MenuCallback mMenuCallback;
     private int mPositionID;
-    int currentCategory;
-    private LinearLayout shapeButton1, shapeButton2, shapeButton3;
-    private LinearLayout eraserButton1, eraserButton2;
+    private int currentCategory;
     private EventBus eventBus;
 
 
-    public NoteSubMenu(Context context, RelativeLayout parentLayout, MenuCallback callback, int positionID, boolean isShowStatusBar) {
+    public NoteSubMenu(Context context, RelativeLayout parentLayout, MenuCallback callback, int positionID) {
         super(context);
         eventBus = EventBus.getDefault();
         final LayoutInflater inflater = LayoutInflater.from(context);
@@ -59,7 +57,7 @@ public class NoteSubMenu extends RelativeLayout {
         });
         mPositionID = positionID;
         mMenuCallback = callback;
-        parentLayout.addView(this, setMenuPosition(isShowStatusBar));
+        parentLayout.addView(this, setMenuPosition());
         this.setVisibility(View.GONE);
     }
 
@@ -85,7 +83,7 @@ public class NoteSubMenu extends RelativeLayout {
         setVisibility(View.VISIBLE);
     }
 
-    private void buildPenWidthFunction(){
+    private void buildPenWidthFunction() {
         LinearLayout widthButton1 = (LinearLayout) findViewById(R.id.button_width_1);
         LinearLayout widthButton2 = (LinearLayout) findViewById(R.id.button_width_2);
         LinearLayout widthButton3 = (LinearLayout) findViewById(R.id.button_width_3);
@@ -128,10 +126,10 @@ public class NoteSubMenu extends RelativeLayout {
         });
     }
 
-    private void buildShapeFunction(){
-        LinearLayout brushPen = (LinearLayout)findViewById(R.id.button_shape_brush);
-        LinearLayout linePen = (LinearLayout)findViewById(R.id.button_shape_line);
-        LinearLayout trianglePen = (LinearLayout)findViewById(R.id.button_shape_triangle);
+    private void buildShapeFunction() {
+        LinearLayout brushPen = (LinearLayout) findViewById(R.id.button_shape_brush);
+        LinearLayout linePen = (LinearLayout) findViewById(R.id.button_shape_line);
+        LinearLayout trianglePen = (LinearLayout) findViewById(R.id.button_shape_triangle);
         brushPen.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -155,9 +153,9 @@ public class NoteSubMenu extends RelativeLayout {
         });
     }
 
-    private void buildEraserFunction(){
-        LinearLayout eraserPartialButton = (LinearLayout)findViewById(R.id.button_eraser_partial);
-        LinearLayout eraserAllButton = (LinearLayout)findViewById(R.id.button_eraser_all);
+    private void buildEraserFunction() {
+        LinearLayout eraserPartialButton = (LinearLayout) findViewById(R.id.button_eraser_partial);
+        LinearLayout eraserAllButton = (LinearLayout) findViewById(R.id.button_eraser_all);
         eraserPartialButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -174,8 +172,8 @@ public class NoteSubMenu extends RelativeLayout {
         });
     }
 
-    private void bindButtonByCategory(int category){
-        switch (category){
+    private void bindButtonByCategory(int category) {
+        switch (category) {
             case 0:
                 buildPenWidthFunction();
                 break;
@@ -206,15 +204,10 @@ public class NoteSubMenu extends RelativeLayout {
         return getVisibility() == VISIBLE;
     }
 
-    private RelativeLayout.LayoutParams setMenuPosition(boolean isShowStatusBar) {
+    private RelativeLayout.LayoutParams setMenuPosition() {
         RelativeLayout.LayoutParams p = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        if (isShowStatusBar) {
-            p.addRule(RelativeLayout.ABOVE, mPositionID);
-        } else {
-            p.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        }
-        p.addRule(RelativeLayout.BELOW, R.id.toolbar);
+        p.addRule(RelativeLayout.BELOW, mPositionID);
         p.addRule(RelativeLayout.CENTER_HORIZONTAL);
         return p;
     }
