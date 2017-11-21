@@ -49,7 +49,7 @@ public class NoteActivity extends AppCompatActivity {
     private EventBus eventBus;
     private Toolbar toolbar;
     private View topDivider, bottomDivider;
-    private RelativeLayout layoutFooter;
+    private RelativeLayout layoutMainMenu;
     private NoteSubMenu subMenu;
     private int shapeType = ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
     private float strokeWidth = 3f;
@@ -75,7 +75,7 @@ public class NoteActivity extends AppCompatActivity {
         topDivider = findViewById(R.id.top_divider);
         bottomDivider = findViewById(R.id.bottom_divider);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        layoutFooter = (RelativeLayout) findViewById(R.id.layout_footer);
+        layoutMainMenu = (RelativeLayout) findViewById(R.id.layout_main_menu);
         LinearLayout widthButton = (LinearLayout) findViewById(R.id.button_width);
         LinearLayout shapeButton = (LinearLayout) findViewById(R.id.button_shape);
         LinearLayout eraserButton = (LinearLayout) findViewById(R.id.button_eraser);
@@ -126,7 +126,7 @@ public class NoteActivity extends AppCompatActivity {
                         touchHelper.resumeRawDrawing();
                     }
                 }
-            }, R.id.bottom_divider, true);
+            }, R.id.bottom_divider);
         }
         return subMenu;
     }
@@ -165,7 +165,7 @@ public class NoteActivity extends AppCompatActivity {
                 exclude.add(touchHelper.getRelativeRect(surfaceView, toolbar));
                 exclude.add(touchHelper.getRelativeRect(surfaceView, topDivider));
                 exclude.add(touchHelper.getRelativeRect(surfaceView, bottomDivider));
-                exclude.add(touchHelper.getRelativeRect(surfaceView, layoutFooter));
+                exclude.add(touchHelper.getRelativeRect(surfaceView, layoutMainMenu));
                 Rect limit = new Rect();
                 surfaceView.getLocalVisibleRect(limit);
                 cleanSurfaceView();
