@@ -6,7 +6,7 @@
 
         <import type="com.onyx.kcb.model.LibraryViewDataModel" />
 
-        <import type="com.onyx.kcb.model.ModelType" />
+        <import type="com.onyx.android.sdk.data.model.ModelType" />
 
         <import type="android.widget.ImageView" />
 
@@ -59,6 +59,7 @@
 
         <LinearLayout
             android:id="@+id/parent_library_ref"
+            levels="@{dataModel.libraryPathList}"
             android:layout_width="match_parent"
             android:layout_height="@dimen/parent_library_ref_height"
             android:layout_marginLeft="@dimen/parent_library_ref_margin"
@@ -68,7 +69,7 @@
 
         <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
             android:id="@+id/content_pageView"
-            items="@{dataModel.items}"
+            items="@{dataModel.visibleItems}"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1" />

@@ -27,4 +27,18 @@
     <string name="tip">提示</string>
     <string name="library_delete_tip">删除书库不会删除掉实际的书本</string>
     <string name="library_delete_fail">删除书库失败</string>
+
+    <string name="chose_one_book_at_least">请至少选择一本</string>
+    <string name="no_library_choice">当前没有书库</string>
+    <string name="library_choose">选择书库</string>
+    <string name="library_add_to_fail">加入书库失败</string>
+    <string name="adding">添加中...</string>
+    <string name="loading">加载中...</string>
+    <string name="library_remove_from_fail">从书库中移出书本失败</string>
+    <string name="total_format">总计：%d</string>
+
+    <string name="go_to_page">页面跳转</string>
+    <string name="current_page">当前页面</string>
+    <string name="library_toc_loading">书库目录加载中...</string>
+    <string name="library_toc_load_fail">书库目录加载异常</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.onyx.kcb.model;
+package com.onyx.android.sdk.data.model;
 
 /**
  * Created by hehai on 17-11-13.

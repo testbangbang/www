@@ -28,4 +28,17 @@
     <string name="library_delete_tip">Deleting a library does not remove the actual book</string>
     <string name="library_delete_fail">Library delete fail</string>
 
+    <string name="chose_one_book_at_least">Please choose at least one</string>
+    <string name="no_library_choice">There is no library currently</string>
+    <string name="library_choose">Select the library</string>
+    <string name="library_add_to_fail">Add to the library failed</string>
+    <string name="adding">Adding...</string>
+    <string name="loading">Loading...</string>
+    <string name="library_remove_from_fail">Remove the book from the library failed</string>
+    <string name="total_format">Total：%d</string>
+
+    <string name="go_to_page">Go To Page</string>
+    <string name="current_page">Current Page</string>
+    <string name="library_toc_loading">Library toc loading...</string>
+    <string name="library_toc_load_fail">Library toc loading failed</string>
 </resources>

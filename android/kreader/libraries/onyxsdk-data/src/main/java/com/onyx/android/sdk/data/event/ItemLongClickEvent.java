@@ -1,6 +1,7 @@
-package com.onyx.kcb.event;
+package com.onyx.android.sdk.data.event;
 
-import com.onyx.kcb.model.DataModel;
+
+import com.onyx.android.sdk.data.model.DataModel;
 
 /**
  * Created by hehai on 17-11-16.
