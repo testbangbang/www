@@ -13,4 +13,6 @@ public interface CorrectView {
     void setCorrectData(GetCorrectedTaskBean data);
 
     void setQuestionBeanList(List<QuestionViewBean> questionList);
+
+    void clearAdapter();
 }

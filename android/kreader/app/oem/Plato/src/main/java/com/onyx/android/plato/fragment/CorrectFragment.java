@@ -42,7 +42,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
     protected void loadData() {
         presenter = new CorrectPresenter(this);
         //TODO:fake practice id,student id
-        presenter.getCorrectData(25, 108);
+        presenter.getCorrectData(content.id, SunApplication.getStudentId());
     }
 
     @Override
@@ -104,8 +104,8 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         }
 
         if(presenter != null) {
-            //TODO:fake practice id,student id
-            presenter.getCorrectData(25, 108);
+            //TODO:fake practice id 25,student id 108
+            presenter.getCorrectData(content.id, SunApplication.getStudentId());
         }
     }
 
@@ -127,7 +127,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         if (questionDataList != null && questionDataList.size() > 0 &&
                 questionMessages != null && questionMessages.size() > 0) {
             //TODO:fake task id (should:content.id)
-            resolveAdapterData(questionDataList, questionMessages, 1);
+            resolveAdapterData(questionDataList, questionMessages, content.id);
         }
     }
 
@@ -139,7 +139,14 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         //TODO:fake practice id 25
         correctDataBinding.correctRecycler.scrollToPosition(0);
         adapter.setFinished(true);
-        adapter.setData(questionList, title, 25);
+        adapter.setData(questionList, title, content.id);
+    }
+
+    @Override
+    public void clearAdapter() {
+        if (adapter != null) {
+            adapter.clearData();
+        }
     }
 
     private void resolveAdapterData(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages, int id) {

@@ -26,6 +26,9 @@ import com.onyx.android.plato.event.DeleteRemindEvent;
 import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.event.HaveNewVersionApkEvent;
 import com.onyx.android.plato.event.HaveNewVersionEvent;
+import com.onyx.android.plato.event.HomeworkFinishedEvent;
+import com.onyx.android.plato.event.HomeworkReportEvent;
+import com.onyx.android.plato.event.HomeworkUnfinishedEvent;
 import com.onyx.android.plato.event.OnBackPressEvent;
 import com.onyx.android.plato.event.ParseAnswerEvent;
 import com.onyx.android.plato.event.RefreshFragmentEvent;
@@ -46,13 +49,15 @@ import com.onyx.android.plato.fragment.CorrectFragment;
 import com.onyx.android.plato.fragment.DeviceSettingFragment;
 import com.onyx.android.plato.fragment.EmptyFragment;
 import com.onyx.android.plato.fragment.FillHomeworkFragment;
+import com.onyx.android.plato.fragment.FinishedFragment;
 import com.onyx.android.plato.fragment.GoalAdvancedFragment;
-import com.onyx.android.plato.fragment.HomeWorkFragment;
 import com.onyx.android.plato.fragment.MainFragment;
 import com.onyx.android.plato.fragment.ParseAnswerFragment;
 import com.onyx.android.plato.fragment.RankingFragment;
 import com.onyx.android.plato.fragment.RemindFragment;
+import com.onyx.android.plato.fragment.ReportFragment;
 import com.onyx.android.plato.fragment.StudyReportFragment;
+import com.onyx.android.plato.fragment.UnfinishedFragment;
 import com.onyx.android.plato.fragment.UserCenterFragment;
 import com.onyx.android.plato.interfaces.MainView;
 import com.onyx.android.plato.presenter.MainPresenter;
@@ -100,8 +105,8 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         userCenterFragmentTitle = getString(R.string.user_center_title);
         changePasswordFragmentTitle = getString(R.string.user_center_fragment_change_password);
         mainPresenter = new MainPresenter(this);
-        //TODO:fake student id 1
-        mainPresenter.getNewMessage("135");
+        //TODO:fake student id 135
+        mainPresenter.getNewMessage(SunApplication.getStudentId() + "");
     }
 
     private void restoreUserName() {
@@ -259,9 +264,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_MAIN:
                     baseFragment = new MainFragment();
                     break;
-                case ChildViewID.FRAGMENT_EXAMINATION_WORK:
-                    baseFragment = new HomeWorkFragment();
-                    break;
                 case ChildViewID.FRAGMENT_GOAL_ADVANCED:
                     baseFragment = new GoalAdvancedFragment();
                     break;
@@ -298,6 +300,15 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_EMPTY:
                     baseFragment = new EmptyFragment();
                     break;
+                case ChildViewID.FRAGMENT_UNFINISHED:
+                    baseFragment = new UnfinishedFragment();
+                    break;
+                case ChildViewID.FRAGMENT_FINISHED:
+                    baseFragment = new FinishedFragment();
+                    break;
+                case ChildViewID.FRAGMENT_REPORT:
+                    baseFragment = new ReportFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -318,13 +329,28 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToHomeworkEvent(ToHomeworkEvent event) {
-        mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_EXAMINATION_WORK).select();
+        mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_UNFINISHED).select();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeworkUnfinishedEvent(HomeworkUnfinishedEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_UNFINISHED);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeworkFinishedEvent(HomeworkFinishedEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_FINISHED);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeworkReportEvent(HomeworkReportEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_REPORT);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteRemindEvent(DeleteRemindEvent event) {
-        //TODO:fake student id 1
-        mainPresenter.deleteRemindMessage(event.getRemindId() + "", "135");
+        //TODO:fake student id 135
+        mainPresenter.deleteRemindMessage(event.getRemindId() + "", SunApplication.getStudentId() + "");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -348,7 +374,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToHomeworkFragmentEvent(BackToHomeworkFragmentEvent event) {
-        switchCurrentFragment(ChildViewID.FRAGMENT_EXAMINATION_WORK);
+        switchCurrentFragment(ChildViewID.FRAGMENT_UNFINISHED);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -356,7 +382,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         switchCurrentFragment(ChildViewID.FRAGMENT_CORRECT);
         CorrectFragment correctFragment = (CorrectFragment) getPageView(ChildViewID.FRAGMENT_CORRECT);
         FinishContent content = event.getContent();
-        if(content != null) {
+        if (content != null) {
             correctFragment.setStartTimer(content);
         }
     }
@@ -372,7 +398,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         ParseAnswerFragment parseAnswerFragment = (ParseAnswerFragment) getPageView(ChildViewID.FRAGMENT_PARSE_ANSWER);
         QuestionViewBean questionViewBean = event.getQuestion();
         String title = event.getTitle();
-        if(questionViewBean != null && !StringUtils.isNullOrEmpty(title)) {
+        if (questionViewBean != null && !StringUtils.isNullOrEmpty(title)) {
             parseAnswerFragment.setQuestionData(questionViewBean, title);
         }
     }

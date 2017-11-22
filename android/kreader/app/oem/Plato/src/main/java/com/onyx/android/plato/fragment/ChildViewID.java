@@ -7,7 +7,7 @@ package com.onyx.android.plato.fragment;
 public class ChildViewID {
     public static final int BASE_VIEW = -1;
     public static final int FRAGMENT_MAIN = 0;
-    public static final int FRAGMENT_EXAMINATION_WORK = 1;
+    public static final int FRAGMENT_UNFINISHED = 1;
     public static final int FRAGMENT_GOAL_ADVANCED = 2;
     public static final int FRAGMENT_STUDY_MANAGEMENT = 3;
     public static final int FRAGMENT_FILL_HOMEWORK = 4;
@@ -20,4 +20,6 @@ public class ChildViewID {
     public static final int FRAGMENT_STUDY_REPORT = 11;
     public static final int FRAGMENT_REMIND = 12;
     public static final int FRAGMENT_EMPTY = 13;
+    public static final int FRAGMENT_FINISHED = 14;
+    public static final int FRAGMENT_REPORT = 15;
 }

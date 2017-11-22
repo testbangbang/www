@@ -107,12 +107,18 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public void deleteOrFavoriteQuestion(int taskId, int questionId) {
-        //TODO:fake student id
-        fillHomeworkPresenter.deleteOrFavorite(taskId, questionId, 108);
+        //TODO:fake student id 108
+        fillHomeworkPresenter.deleteOrFavorite(taskId, questionId, SunApplication.getStudentId());
     }
 
     public void insertAnswer(int taskId, QuestionViewBean questionViewBean) {
         fillHomeworkPresenter.insertAnswer(taskId, questionViewBean);
+    }
+
+    public void clearData() {
+        if (questionList != null && questionList.size() > 0) {
+            questionList.clear();
+        }
     }
 
     static class FillHomeworkViewHolder extends RecyclerView.ViewHolder {

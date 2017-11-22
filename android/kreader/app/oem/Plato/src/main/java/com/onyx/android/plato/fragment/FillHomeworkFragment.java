@@ -186,7 +186,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
                 list.add(answerBean);
             }
             //TODO:fake student id
-            homeworkPresenter.submitAnswer(list, id, 1);
+            homeworkPresenter.submitAnswer(list, id, SunApplication.getStudentId());
         }
     }
 
@@ -242,6 +242,13 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkRecycler.scrollToPosition(0);
         if (fillHomeworkAdapter != null) {
             fillHomeworkAdapter.setData(questionList, title, data.taskId);
+        }
+    }
+
+    @Override
+    public void clearAdapter() {
+        if (fillHomeworkAdapter != null) {
+            fillHomeworkAdapter.clearData();
         }
     }
 }

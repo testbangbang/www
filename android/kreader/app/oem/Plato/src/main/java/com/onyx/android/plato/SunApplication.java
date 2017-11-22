@@ -14,8 +14,8 @@ import com.onyx.android.plato.common.AppConfigData;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.PlatoGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
-import com.raizlabs.android.dbflow.config.SunGeneratedDatabaseHolder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +27,7 @@ import java.util.List;
 public class SunApplication extends Application {
     private static SunApplication instance;
     private NoteManager noteManager;
+    private static int studentId = 1;
 
     public NoteManager getNoteManager() {
         if (noteManager == null) {
@@ -37,6 +38,10 @@ public class SunApplication extends Application {
 
     public static SunApplication getInstance() {
         return instance;
+    }
+
+    public static int getStudentId() {
+        return studentId;
     }
 
     @Override
@@ -67,7 +72,7 @@ public class SunApplication extends Application {
 
     private List<Class<? extends DatabaseHolder>> databaseHolderList() {
         List<Class<? extends DatabaseHolder>> list = new ArrayList<>();
-        list.add(SunGeneratedDatabaseHolder.class);
+        list.add(PlatoGeneratedDatabaseHolder.class);
         list.add(ShapeGeneratedDatabaseHolder.class);
         return list;
     }

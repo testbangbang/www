@@ -109,7 +109,8 @@ public interface ContentService {
                                                   @Field(CloudApiContext.ChangePassword.OLD_PASSWORD) String oldPassword,
                                                   @Field(CloudApiContext.ChangePassword.NEW_PASSWORD) String newPassword);
     @GET("/api/practice/{id}/report")
-    Call<GetStudyReportDetailResultBean> getStudyReportDetail(@Path(CloudApiContext.Practices.ID) int id);
+    Call<GetStudyReportDetailResultBean> getStudyReportDetail(@Path(CloudApiContext.Practices.ID) int id,
+                                                              @Query(CloudApiContext.Practices.STUDENTID) int studentId);
 
     @GET("api/advanced/ability")
     Call<GetSubjectAbilityResultBean> getSubjectAbility(@Query(CloudApiContext.SubjectAbility.ID) String id,

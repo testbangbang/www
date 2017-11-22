@@ -222,7 +222,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
 
     public void testGetStudyReportDetail() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(1);
+        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(1, 1);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(),rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

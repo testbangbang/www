@@ -52,8 +52,8 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     @Override
     protected void loadData() {
         parseAnswerPresenter = new ParseAnswerPresenter(this);
-        //TODO:fake id
-        parseAnswerPresenter.getExplanation(1, 1523, 105);
+        //TODO:fake id 1 1523 105
+        parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
         parseAnswerPresenter.getRecord(questionData.getTaskId(), questionData.getId());
     }
 
@@ -140,9 +140,9 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         }
 
         if (parseAnswerPresenter != null) {
-            //TODO:fake id
+            //TODO:fake id 1 1523 105
             setVisible(questionData.isCorrect() ? R.id.parse_add_sound_layout : R.id.parse_mistake_layout);
-            parseAnswerPresenter.getExplanation(1, 1523, 105);
+            parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
             parseAnswerPresenter.getRecord(questionData.getTaskId(), questionData.getId());
         }
     }

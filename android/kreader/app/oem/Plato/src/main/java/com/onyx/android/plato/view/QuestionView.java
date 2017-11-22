@@ -65,7 +65,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
     private String questionBeanTitle;
     private Handler handler;
     private static final int WEBVIEW_FRESH_WHAT = 0x1000;
-    private static final int DELAY_TIME = 50;
+    private static final int DELAY_TIME = 10;
     private static final int DEFAULT_HEIGHT = 50;
     private TextView questionIntroduce;
     private LinearLayout questionPageLayout;

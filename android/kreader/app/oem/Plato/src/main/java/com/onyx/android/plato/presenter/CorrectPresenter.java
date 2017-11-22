@@ -64,6 +64,8 @@ public class CorrectPresenter {
                 List<QuestionViewBean> questionList = rq.getQuestionList();
                 if (questionList != null && questionList.size() > 0) {
                     correctView.setQuestionBeanList(questionList);
+                } else {
+                    correctView.clearAdapter();
                 }
             }
         });

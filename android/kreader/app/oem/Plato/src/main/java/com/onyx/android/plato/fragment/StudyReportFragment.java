@@ -160,12 +160,13 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     }
 
-    public void setPracticeId(int id,String tilte) {
+    public void setPracticeId(int id,String title) {
         if (homeworkPresenter == null){
             homeworkPresenter = new HomeworkPresenter(this);
         }
-        homeworkPresenter.getStudyReportDetail(id);
-        this.title = tilte;
+        //TODO:fake student id
+        homeworkPresenter.getStudyReportDetail(id, 1);
+        this.title = title;
         studyReportBinding.setStudyReportTitle(title);
     }
 }

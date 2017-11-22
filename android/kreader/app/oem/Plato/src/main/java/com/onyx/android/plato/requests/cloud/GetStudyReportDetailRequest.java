@@ -17,11 +17,13 @@ import retrofit2.Response;
 
 public class GetStudyReportDetailRequest extends BaseCloudRequest {
     private final static String TAG = GetStudyReportDetailRequest.class.getSimpleName();
+    private int studentId;
     private int id;
     private GetStudyReportDetailResultBean studyReportDetailResultBean;
 
-    public GetStudyReportDetailRequest(int id) {
+    public GetStudyReportDetailRequest(int id, int studentId) {
         this.id = id;
+        this.studentId = studentId;
     }
 
     public GetStudyReportDetailResultBean getStudyReportDetailResultBean() {
@@ -44,6 +46,6 @@ public class GetStudyReportDetailRequest extends BaseCloudRequest {
     }
 
     private Call<GetStudyReportDetailResultBean> getCall(ContentService service) {
-        return service.getStudyReportDetail(id);
+        return service.getStudyReportDetail(id, studentId);
     }
 }
