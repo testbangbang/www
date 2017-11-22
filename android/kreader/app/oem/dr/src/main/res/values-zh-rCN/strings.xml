@@ -48,10 +48,10 @@
     <string name="teach_subject">您教授的科目:</string>
     <string name="interested_direction">您感兴趣的方向(多选):</string>
     <string name="grade">年级</string>
-    <string name="grade_class">*年　级:</string>
-    <string name="school">*学　校:</string>
-    <string name="designation">*组　名:</string>
-    <string name="textbook_publishing_house">*教　材:</string>
+    <string name="grade_class">*年级:</string>
+    <string name="school">*学校:</string>
+    <string name="designation">*自定义群组名:</string>
+    <string name="textbook_publishing_house">*教材:</string>
     <string name="english_subject">英　　语:</string>
     <string name="clazz">班级</string>
     <string name="chinese">中文</string>
@@ -483,8 +483,8 @@
     <string name="exit_group_success">退出群组成功</string>
     <string name="delete_group_member_success">删除群组成员成功</string>
     <string name="register_password">*密　码:</string>
-    <string name="college_grade">年　级:</string>
-    <string name="college_clazz">班　级:</string>
+    <string name="college_grade">年级:</string>
+    <string name="college_clazz">班级:</string>
     <string name="prev_step">上一步</string>
     <string name="more_books">更多书籍</string>
     <string name="forget_password">忘记密码</string>
@@ -598,7 +598,7 @@
     <string name="forget_password_user_name">正在找回的账号： %s</string>
     <string name="new_password_must_be_filled">新密码不能为空</string>
     <string name="password_input_is_inconsistent">密码输入不一致</string>
-    <string name="create_group_activity_group_name_hint">该群名已存在，请重新输入</string>
+    <string name="create_group_activity_group_name_hint">该群组名已存在，请重新输入</string>
     <string name="group_manager_group_name">所在组</string>
     <string name="group_manager_identity">身份</string>
     <string name="number_of_people">人数</string>
@@ -744,4 +744,6 @@
     <string name="next_week">下一周</string>
     <string name="user">用户</string>
     <string name="menu_input_method_setting">输入法设置</string>
+    <string name="schoolchildren_start_time">*入学年度:</string>
+    <string name="school_year">入学年度:</string>
 </resources>

@@ -70,6 +70,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     EditText identity_email;
     @Bind(R.id.schoolchildren_school_name)
     EditText schoolchildrenSchoolName;
+    @Bind(R.id.schoolchildren_school_year)
+    EditText schoolchildrenSchoolYear;
     @Bind(R.id.schoolchildren_grade)
     Spinner schoolchildrenGrade;
     @Bind(R.id.english_publisher)
@@ -84,6 +86,8 @@ public class LoginActivity extends BaseActivity implements LoginView {
     PageRecyclerView teacherInterestedSubject;
     @Bind(R.id.college_student_grade)
     EditText collegeStudentGrade;
+    @Bind(R.id.college_student_school_year)
+    EditText collegeStudentSchoolYear;
     @Bind(R.id.college_student_discipline)
     EditText collegeStudentDiscipline;
     @Bind(R.id.college_student_interested_subject)
@@ -523,8 +527,9 @@ public class LoginActivity extends BaseActivity implements LoginView {
     }
 
     private void collegeStudentInfo(SignUpInfo signUpInfo) {
-        signUpInfo.info.subject = collegeStudentDiscipline.getText().toString();
+        signUpInfo.info.startTime = collegeStudentSchoolYear.getText().toString();
         signUpInfo.info.grade = collegeStudentGrade.getText().toString();
+        signUpInfo.info.classX = collegeStudentDiscipline.getText().toString();
         signUpInfo.info.interest = collegeInterestAdapter.getSelectedInterest();
     }
 
@@ -541,6 +546,7 @@ public class LoginActivity extends BaseActivity implements LoginView {
             return;
         }
         signUpInfo.info.school = schoolchildrenSchoolName.getText().toString();
+        signUpInfo.info.startTime = schoolchildrenSchoolYear.getText().toString();
         signUpInfo.info.grade = schoolchildrenGrade.getSelectedItem().toString();
         signUpInfo.info.classX = schoolchildrenClass.getText().toString();
         signUpInfo.info.subject = collegeStudentDiscipline.getText().toString();

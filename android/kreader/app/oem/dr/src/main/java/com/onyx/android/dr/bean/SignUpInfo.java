@@ -23,6 +23,7 @@ public class SignUpInfo {
         public String organization;
         public AddressBean address;
         public String school;
+        public String startTime;
         public String grade;
         @JSONField(name = "class")
         public String classX;

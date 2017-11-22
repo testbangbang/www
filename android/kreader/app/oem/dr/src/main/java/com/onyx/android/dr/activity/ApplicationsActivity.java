@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.bean.CustomAppInfo;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.device.DeviceConfig;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -41,6 +42,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.onyx.android.dr.R.id.menu_back;
+
 /**
  * Created by suicheng on 2017/2/16.
  */
@@ -52,7 +55,7 @@ public class ApplicationsActivity extends BaseActivity {
     ImageView imageViewBack;
     @Bind(R.id.image)
     ImageView image;
-    @Bind(R.id.menu_back)
+    @Bind(menu_back)
     LinearLayout menuBack;
     @Bind(R.id.title_bar_title)
     TextView titleBarTitle;
@@ -284,9 +287,10 @@ public class ApplicationsActivity extends BaseActivity {
         ButterKnife.bind(this);
     }
 
-    @OnClick(R.id.menu_back)
+    @OnClick(menu_back)
     public void onClick() {
         finish();
+        ActivityManager.startMainActivity(this);
     }
 
     class AppItemViewHolder extends RecyclerView.ViewHolder {

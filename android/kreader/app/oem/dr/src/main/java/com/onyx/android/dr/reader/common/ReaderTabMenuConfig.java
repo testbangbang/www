@@ -57,7 +57,6 @@ public class ReaderTabMenuConfig {
         defaultReaderMenus.add(readerMenuBean);
 
         readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_WRITE_REMARKS, DRApplication.getInstance().getString(R.string.write_remarks), R.drawable.ic_reader_menu_idea, new ScribbleMenuEvent());
-        defaultReaderMenus.add(readerMenuBean);
 
         readerMenuBean = new ReaderMenuBean(DeviceConfig.ReaderMenuInfo.MENU_POSTIL, DRApplication.getInstance().getString(R.string.postil), R.drawable.ic_postil, new ReaderPostilMenuEvent());
 
