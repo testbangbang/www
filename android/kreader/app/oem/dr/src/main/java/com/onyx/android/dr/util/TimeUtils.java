@@ -148,7 +148,33 @@ public class TimeUtils {
         return 0;
     }
 
+    public static long getTodayStarDateMills() {
+        String startDate = getDate(System.currentTimeMillis());
+        DateFormat dateFormat = new SimpleDateFormat(DATA_TIME_FORMAT);
+        try {
+            Date date = dateFormat.parse(startDate + START_TIME);
+            long time = date.getTime();
+            return time;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return 0;
+    }
+
     public static long getEndDateMillisecond(String endDate) {
+        DateFormat dateFormat = new SimpleDateFormat(DATA_TIME_FORMAT);
+        try {
+            Date date = dateFormat.parse(endDate + END_TIME);
+            long time = date.getTime();
+            return time;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+        return 0;
+    }
+
+    public static long getTodayEndDateMills() {
+        String endDate = getDate(System.currentTimeMillis());
         DateFormat dateFormat = new SimpleDateFormat(DATA_TIME_FORMAT);
         try {
             Date date = dateFormat.parse(endDate + END_TIME);

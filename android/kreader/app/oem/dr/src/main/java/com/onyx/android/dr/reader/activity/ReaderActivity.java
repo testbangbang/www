@@ -132,6 +132,7 @@ public class ReaderActivity extends Activity implements ReaderView {
     private final ReaderPainter readerPainter = new ReaderPainter();
     private int speed = 0;
     private String path;
+    private int tag;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -179,19 +180,7 @@ public class ReaderActivity extends Activity implements ReaderView {
         String bookId = getIntent().getStringExtra(ReaderConstants.BOOK_ID);
         bookInfo.setBookId(bookId);
         isFluent = getIntent().getBooleanExtra(ReaderConstants.IS_FLUENT, false);
-        int tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
-        if (tag == Constants.ANNOTATION_SOURCE_TAG) {
-            if (handler == null) {
-                handler = new Handler();
-            }
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    progressLoading.setVisibility(View.GONE);
-                    progressLoading.setRun(false);
-                    ReaderDialogManage.onShowBookInfoDialog(readerPresenter, ReaderBookInfoDialogConfig.NOTE_MODE);
-                }
-            }, getResources().getInteger(R.integer.reading_activity_skip_annotation));
-        }
+        tag = getIntent().getIntExtra(ReaderConstants.ANNOTATION, -1);
         return true;
     }
 
@@ -329,6 +318,7 @@ public class ReaderActivity extends Activity implements ReaderView {
             progressLoading.setVisibility(View.GONE);
             progressLoading.setRun(false);
             updatePageProgress();
+            openAnnotation();
         } finally {
             holder.unlockCanvasAndPost(canvas);
         }
@@ -480,6 +470,21 @@ public class ReaderActivity extends Activity implements ReaderView {
 
         if (event != null && event.isRenderShapeData()) {
             renderShapeDataInBackground();
+        }
+    }
+
+    private void openAnnotation() {
+        if (tag == Constants.ANNOTATION_SOURCE_TAG) {
+            if (handler == null) {
+                handler = new Handler();
+            }
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    progressLoading.setVisibility(View.GONE);
+                    progressLoading.setRun(false);
+                    ReaderDialogManage.onShowBookInfoDialog(readerPresenter, ReaderBookInfoDialogConfig.NOTE_MODE);
+                }
+            }, getResources().getInteger(R.integer.reading_activity_skip_annotation));
         }
     }
 

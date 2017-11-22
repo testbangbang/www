@@ -37,7 +37,6 @@ public class ReadSummaryPresenter {
     }
 
     public void saveReadSummary(String bookName, String pageNumber, String summary, String newWordListJson, String goodSentenceJson) {
-
         ReadSummaryEntity readSummaryEntity = new ReadSummaryEntity();
         readSummaryEntity.bookName = bookName;
         readSummaryEntity.pageNumber = pageNumber;

@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.onyx.android.dr.R;
+import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.data.MenuBean;
 import com.onyx.android.dr.event.ArticleRepeatAfterEvent;
 import com.onyx.android.dr.event.SearchKeywordEvent;
@@ -161,6 +162,7 @@ public class HearAndSpeakActivity extends BaseActivity implements HearAndSpeakVi
         switch (view.getId()) {
             case R.id.menu_back:
                 finish();
+                ActivityManager.startMainActivity(this);
                 break;
             case R.id.hear_and_speak_activity_article_repeat_after:
                 showRelatedFragment(ChildViewID.ARTICLE_REPEAT_AFTER);

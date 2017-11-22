@@ -21,6 +21,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/edit_text_margin_top"
+        android:gravity="center_vertical">
+
+        <TextView
+            style="@style/UserInfoTextViewStyle"
+            android:text="@string/schoolchildren_start_time" />
+
+        <EditText
+            android:id="@+id/schoolchildren_school_year"
+            style="@style/UserInfoEditTextStyle" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:layout_marginTop="@dimen/edit_text_margin_top">
 

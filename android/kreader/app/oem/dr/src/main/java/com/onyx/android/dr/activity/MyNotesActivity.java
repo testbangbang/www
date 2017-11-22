@@ -127,6 +127,7 @@ public class MyNotesActivity extends BaseActivity implements MyNotesView {
         switch (view.getId()) {
             case R.id.menu_back:
                 finish();
+                ActivityManager.startMainActivity(this);
                 break;
         }
     }

@@ -31,7 +31,7 @@
     <dimen name="library_item_cover_width">201dp</dimen>
     <dimen name="library_item_cover_height">280dp</dimen>
     <dimen name="login_layout_width">450dp</dimen>
-    <dimen name="login_layout_margin_top">300dp</dimen>
+    <dimen name="login_layout_margin_top">150dp</dimen>
     <dimen name="edit_text_margin_top">10dp</dimen>
     <dimen name="edit_text_padding">10dp</dimen>
     <dimen name="login_text_margin_left">20dp</dimen>
@@ -177,7 +177,7 @@
     <dimen name="bookshelf_tab_indicator_height">10dp</dimen>
     <dimen name="bookshelf_type_toggle_margin">15dp</dimen>
     <dimen name="thick_line_height">2dp</dimen>
-    <dimen name="grade_margin_top">20dp</dimen>
+    <dimen name="grade_margin_top">60dp</dimen>
     <dimen name="custom_group_margin_top">40dp</dimen>
     <dimen name="create_group_activity_margin_top">50dp</dimen>
     <dimen name="recommend_group_name_margin_top">80dp</dimen>

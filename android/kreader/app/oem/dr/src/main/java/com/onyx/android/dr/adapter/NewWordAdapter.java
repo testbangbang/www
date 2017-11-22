@@ -90,20 +90,6 @@ public class NewWordAdapter extends PageRecyclerView.PageAdapter<NewWordAdapter.
         holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (onItemClickListener != null) {
-                    if (holder.checkBox.isChecked()) {
-                        holder.checkBox.setChecked(false);
-                        onItemClickListener.setOnItemClick(position, false);
-                    } else {
-                        holder.checkBox.setChecked(true);
-                        onItemClickListener.setOnItemClick(position, true);
-                    }
-                }
-            }
-        });
-        holder.paraphrase.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
                 ActivityManager.startNewWordQueryActivity(DRApplication.getInstance(), bean.newWord);
             }
         });

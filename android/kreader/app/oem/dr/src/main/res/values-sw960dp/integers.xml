@@ -72,6 +72,6 @@
     <integer name="share_to_member_row">8</integer>
     <integer name="share_to_member_col">3</integer>
     <integer name="manager_group_adapter_row">12</integer>
-    <integer name="reading_activity_skip_annotation">4000</integer>
+    <integer name="reading_activity_skip_annotation">500</integer>
     <integer name="memorandum_row">7</integer>
 </resources>
