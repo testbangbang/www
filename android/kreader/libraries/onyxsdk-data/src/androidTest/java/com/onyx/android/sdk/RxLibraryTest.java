@@ -12,30 +12,32 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.manager.CacheManager;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.LibraryTableOfContentEntry;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryBuildRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryClearRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryDataCacheClearRequest;
-import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryDeleteRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryGotoRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryMoveToRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryTableOfContentLoadRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxModifyLibraryRequest;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.TestUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -310,6 +312,15 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         return library;
     }
 
+    public static DataModel generateDataModel(Library library) {
+        final DataModel dataModel = new DataModel(EventBus.getDefault());
+        dataModel.type.set(ModelType.Library);
+        dataModel.idString.set(library.getIdString());
+        dataModel.desc.set(library.getDescription());
+        dataModel.parentId.set(library.getParentUniqueId());
+        return dataModel;
+    }
+
     public void testRxLibraryGotoRequest() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         DataManager dataManager = getDataManager();
@@ -320,11 +331,11 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         final String childTag = TestUtils.randString();
         final List<Library> parentList = new ArrayList<>();
         final List<Library> childList = new ArrayList<>();
-        final Library library = generateChildLibraryRecursive(dataManager.getRemoteContentProvider(), parentLibrary, parentTag, layers, parentList);
+        final DataModel library = generateChildLibraryRecursive(dataManager.getRemoteContentProvider(), parentLibrary, parentTag, layers, parentList);
         for (int i = 0; i < childCount; i++) {
             Library childLibrary = generateLibrary();
             childLibrary.setDescription(childTag);
-            childLibrary.setParentUniqueId(library.getIdString());
+            childLibrary.setParentUniqueId(library.idString.get());
             dataManager.getRemoteContentProvider().addLibrary(childLibrary);
             childList.add(childLibrary);
         }
@@ -334,11 +345,16 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             @Override
             public void onNext(RxLibraryGotoRequest rxLibraryGotoRequest) {
                 List<Library> subLibraryList = rxLibraryGotoRequest.getSubLibraryList();
-                assertFalse(CollectionUtils.isNullOrEmpty(subLibraryList));
-                assertListEqual(subLibraryList, childList);
-                List<Library> parentLibraryList = rxLibraryGotoRequest.getParentLibraryList();
+                List<DataModel> subDataModel = new ArrayList<>();
+                List<DataModel> childDataModel = new ArrayList<>();
+                List<DataModel> parentDataModel = new ArrayList<>();
+                DataModelUtil.libraryToDataModel(EventBus.getDefault(), subDataModel, subLibraryList);
+                DataModelUtil.libraryToDataModel(EventBus.getDefault(), childDataModel, childList);
+                DataModelUtil.libraryToDataModel(EventBus.getDefault(), parentDataModel, parentList);
+                assertListEqual(subDataModel, childDataModel);
+                List<DataModel> parentLibraryList = rxLibraryGotoRequest.getParentLibraryList();
                 assertFalse(CollectionUtils.isNullOrEmpty(parentLibraryList));
-                assertListEqual(parentLibraryList, parentList);
+                assertListEqual(parentLibraryList, parentDataModel);
                 countDownLatch.countDown();
             }
 
@@ -351,22 +367,31 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         });
 
         countDownLatch.await();
+        clearData(dataManager);
     }
 
-    private void assertListEqual(List<Library> resultList, List<Library> targetList) {
+    public static void assertListEqual(List<DataModel> resultList, List<DataModel> targetList) {
+        assertFalse(CollectionUtils.isNullOrEmpty(resultList));
+        assertFalse(CollectionUtils.isNullOrEmpty(targetList));
         assertEquals(resultList.size(), targetList.size());
-        for (Library library : resultList) {
-            boolean equal = false;
-            for (Library library1 : targetList) {
-                if (library1.getIdString().equals(library.getIdString())) {
-                    equal = true;
+        Iterator<DataModel> iterator = resultList.iterator();
+        while (iterator.hasNext()) {
+            DataModel next = iterator.next();
+            Iterator<DataModel> iterator1 = targetList.iterator();
+            while (iterator1.hasNext()) {
+                DataModel next1 = iterator1.next();
+                if (next1.idString.get().equals(next.idString.get())) {
+                    iterator1.remove();
                 }
             }
-            assertTrue(equal);
+            iterator.remove();
         }
+
+        assertTrue(CollectionUtils.isNullOrEmpty(resultList));
+        assertTrue(CollectionUtils.isNullOrEmpty(targetList));
     }
 
-    private Library generateChildLibraryRecursive(DataProviderBase dataProvider, Library parentLibrary, String parentTag, int layers, List<Library> parentList) {
+    private DataModel generateChildLibraryRecursive(DataProviderBase dataProvider, Library parentLibrary, String parentTag, int layers, List<Library> parentList) {
         parentLibrary.setDescription(parentTag);
         dataProvider.addLibrary(parentLibrary);
         parentList.add(parentLibrary);
@@ -382,15 +407,20 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             layers--;
         }
         parentList.remove(parentList.size() - 1);
-        return library;
+        DataModel dataModel = new DataModel(EventBus.getDefault());
+        dataModel.type.set(ModelType.Library);
+        dataModel.idString.set(library.getIdString());
+        dataModel.desc.set(library.getDescription());
+        dataModel.parentId.set(library.getParentUniqueId());
+        return dataModel;
     }
 
     public void testRxLibraryMoveToRequest() throws Exception {
         DataManager dataManager = getDataManager();
-        List<Library> list = new ArrayList<>();
+        List<DataModel> list = new ArrayList<>();
         for (int i = 0; i < TestUtils.randInt(5, 10); i++) {
             Library library = generateLibrary();
-            list.add(library);
+            list.add(generateDataModel(library));
             dataManager.getRemoteContentProvider().addLibrary(library);
         }
         int total = TestUtils.randInt(10, 50);
@@ -404,7 +434,9 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             final CountDownLatch countDownLatch = new CountDownLatch(2);
             int to = getRandomInt(list.size() - 1, from);
             final List<Metadata> metadataList = generateMetadata(dataManager, getContext(), total, tag, title, author, series);
-            final RxLibraryMoveToRequest request = new RxLibraryMoveToRequest(dataManager, list.get(from), list.get(to), metadataList);
+            List<DataModel> dataModels = new ArrayList<>();
+            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null, null);
+            final RxLibraryMoveToRequest request = new RxLibraryMoveToRequest(dataManager, list.get(from), list.get(to), dataModels);
 
             request.execute(new RxCallback<RxLibraryMoveToRequest>() {
                 @Override
@@ -422,7 +454,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             from = to;
 
             QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.Author, SortOrder.Asc);
-            queryArgs.libraryUniqueId = list.get(to).getIdString();
+            queryArgs.libraryUniqueId = list.get(to).idString.get();
             final RxMetadataRequest rxMetadataRequest = new RxMetadataRequest(dataManager, queryArgs);
             rxMetadataRequest.execute(new RxCallback<RxMetadataRequest>() {
                 @Override
@@ -448,6 +480,8 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             });
             countDownLatch.await();
         }
+
+        clearData(dataManager);
     }
 
     public void testRxLibraryTableOfContentLoadRequest() throws Exception {
@@ -510,16 +544,21 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             }
         });
         countDownLatch.await();
+        clearData(dataManager);
     }
 
     private DataManager getDataManager() {
         init();
         DataManager dataManager = new DataManager();
+        clearData(dataManager);
+        return dataManager;
+    }
+
+    private void clearData(DataManager dataManager) {
         dataManager.getRemoteContentProvider().clearLibrary();
         dataManager.getRemoteContentProvider().clearThumbnails();
         dataManager.getRemoteContentProvider().clearMetadata();
         dataManager.getRemoteContentProvider().clearMetadataCollection();
-        return dataManager;
     }
 
     private void assertNested(List<LibraryTableOfContentEntry> children, Map<String, Library[]> map) {

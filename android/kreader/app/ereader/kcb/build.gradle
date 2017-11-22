@@ -14,8 +14,6 @@ android {
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
         multiDexEnabled true
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {

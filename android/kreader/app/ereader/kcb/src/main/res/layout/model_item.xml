@@ -3,9 +3,11 @@
 
     <data class="ModelItemBinding">
 
+        <import type="android.view.View" />
+
         <variable
             name="model"
-            type="com.onyx.kcb.model.DataModel" />
+            type="com.onyx.android.sdk.data.model.DataModel" />
     </data>
 
     <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
@@ -25,10 +27,11 @@
 
             <ImageView
                 android:id="@+id/image_cover"
-                thumbnail="@{model.cover}"
+                thumbnail="@{model.coverBitMap}"
                 android:layout_width="@dimen/model_item_cover_width"
                 android:layout_height="@dimen/model_item_cover_height"
-                android:scaleType="fitXY" />
+                android:scaleType="fitXY"
+                android:src="@{model.coverDefault}" />
 
             <ImageView
                 android:id="@+id/image_get_widget"
@@ -57,6 +60,21 @@
                 android:textSize="19sp" />
 
         </RelativeLayout>
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/multi_select_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="0dp"
+            android:background="@drawable/background_radio_button"
+            android:checked="@={model.checked}"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:minHeight="@dimen/button_minHeight"
+            android:visibility="@{model.enableSelection?View.VISIBLE:View.GONE}" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 </layout>

@@ -2,7 +2,10 @@ package com.onyx.android.sdk.data.rxrequest.data.db;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.ModelType;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,16 +17,16 @@ public class RxLibraryGotoRequest extends RxBaseDBRequest {
 
     private boolean loadFromCache = false;
     private boolean loadParent = true;
-    private Library gotoLibrary;
-    private List<Library> parentLibraryList = new ArrayList<>();
+    private DataModel gotoDataModel;
+    private List<DataModel> parentLibraryList = new ArrayList<>();
     private List<Library> subLibraryList = new ArrayList<>();
 
-    public RxLibraryGotoRequest(DataManager dataManager, Library gotoLibrary) {
+    public RxLibraryGotoRequest(DataManager dataManager, DataModel gotoDataModel) {
         super(dataManager);
-        this.gotoLibrary = gotoLibrary;
+        this.gotoDataModel = gotoDataModel;
     }
 
-    public List<Library> getParentLibraryList() {
+    public List<DataModel> getParentLibraryList() {
         return parentLibraryList;
     }
 
@@ -34,9 +37,13 @@ public class RxLibraryGotoRequest extends RxBaseDBRequest {
     @Override
     public RxLibraryGotoRequest call() throws Exception {
         subLibraryList = DataManagerHelper.loadLibraryListWithCache(getAppContext(), getDataManager(),
-                gotoLibrary.getIdString(), loadFromCache);
+                gotoDataModel.idString.get(), loadFromCache);
         if (loadParent) {
-            parentLibraryList.addAll(DataManagerHelper.loadParentLibraryList(getAppContext(), getDataManager(), gotoLibrary));
+            Library gotoLibrary = new Library();
+            gotoLibrary.setIdString(gotoDataModel.idString.get());
+            gotoLibrary.setParentUniqueId(gotoDataModel.parentId.get());
+            List<Library> libraries = DataManagerHelper.loadParentLibraryList(getAppContext(), getDataManager(), gotoLibrary);
+            DataModelUtil.libraryToDataModel(gotoDataModel.getEventBus(), parentLibraryList, libraries);
         }
         return this;
     }

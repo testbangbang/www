@@ -7,10 +7,14 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.db.BaseDBRequest;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,10 +29,13 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     private boolean loadFromCache = true;
     private boolean loadMetadata = true;
     private QueryArgs queryArgs;
-
     private Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
+
     private List<Metadata> bookList = new ArrayList<>();
     private List<Library> libraryList = new ArrayList<>();
+    private List<DataModel> models = new ArrayList<>();
+    private List<DataModel> selectedList;
+    private EventBus eventBus;
     private long totalCount;
 
     public RxLibraryLoadRequest(DataManager dataManager, QueryArgs queryArgs) {
@@ -36,10 +43,12 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         this.queryArgs = queryArgs;
     }
 
-    public RxLibraryLoadRequest(DataManager dataManager, QueryArgs queryArgs, boolean loadMetadata) {
+    public RxLibraryLoadRequest(DataManager dataManager, QueryArgs queryArgs, List<DataModel> selectedList, EventBus eventBus, boolean loadMetadata) {
         super(dataManager);
+        this.eventBus = eventBus;
         this.queryArgs = queryArgs;
         this.loadMetadata = loadMetadata;
+        this.selectedList = selectedList;
     }
 
     public void setLoadFromCache(boolean loadFromCache) {
@@ -62,6 +71,9 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
                 loadBitmaps(getAppContext(), getDataManager());
             }
         }
+
+        DataModelUtil.libraryToDataModel(eventBus, models, libraryList);
+        DataModelUtil.metadataToDataModel(eventBus, models, bookList, selectedList, thumbnailMap);
         return this;
     }
 
@@ -83,5 +95,9 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
     public long getTotalCount() {
         return totalCount;
+    }
+
+    public List<DataModel> getModels() {
+        return models;
     }
 }

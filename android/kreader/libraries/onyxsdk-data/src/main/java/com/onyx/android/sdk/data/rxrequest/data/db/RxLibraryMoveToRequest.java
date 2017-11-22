@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.data.rxrequest.data.db;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -15,11 +16,11 @@ import java.util.List;
  */
 public class RxLibraryMoveToRequest extends RxBaseDBRequest {
 
-    private Library fromLibrary;
-    private Library toLibrary;
-    private List<Metadata> addList = new ArrayList<>();
+    private DataModel fromLibrary;
+    private DataModel toLibrary;
+    private List<DataModel> addList = new ArrayList<>();
 
-    public RxLibraryMoveToRequest(DataManager dataManager,Library fromLibrary, Library toLibrary, List<Metadata> addList) {
+    public RxLibraryMoveToRequest(DataManager dataManager,DataModel fromLibrary, DataModel toLibrary, List<DataModel> addList) {
         super(dataManager);
         this.fromLibrary = fromLibrary;
         this.toLibrary = toLibrary;
@@ -31,22 +32,22 @@ public class RxLibraryMoveToRequest extends RxBaseDBRequest {
         String fromIdString = null;
         String toIdString = null;
         if (fromLibrary != null) {
-            fromIdString = fromLibrary.getIdString();
+            fromIdString = fromLibrary.idString.get();
         }
         if (toLibrary != null) {
-            toIdString = toLibrary.getIdString();
+            toIdString = toLibrary.idString.get();
         }
         DataProviderBase providerBase = getDataProvider();
-        for (Metadata metadata : addList) {
+        for (DataModel metadata : addList) {
             MetadataCollection collection = providerBase.loadMetadataCollection(getAppContext(),
-                    fromIdString, metadata.getIdString());
+                    fromIdString, metadata.idString.get());
             if (StringUtils.isNullOrEmpty(toIdString)) {
                 if (collection != null) {
-                    providerBase.deleteMetadataCollection(getAppContext(), fromIdString, metadata.getIdString());
+                    providerBase.deleteMetadataCollection(getAppContext(), fromIdString, metadata.idString.get());
                 }
             } else {
                 if (collection == null) {
-                    collection = MetadataCollection.create(metadata.getIdString(), toIdString);
+                    collection = MetadataCollection.create(metadata.idString.get(), toIdString);
                 }
                 collection.setLibraryUniqueId(toIdString);
                 if (collection.hasValidId()) {
