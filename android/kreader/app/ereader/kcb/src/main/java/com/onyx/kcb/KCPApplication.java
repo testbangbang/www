@@ -5,6 +5,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.kcb.manager.ConfigPreferenceManager;
 
 
 /**
@@ -34,5 +35,6 @@ public class KCPApplication extends MultiDexApplication {
     private void initConfig() {
         instance = this;
         DataManager.init(this, null);
+        ConfigPreferenceManager.init(KCPApplication.this);
     }
 }

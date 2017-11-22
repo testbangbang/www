@@ -32,6 +32,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.StorageActivity"
+            android:theme="@style/StorageTheme">
+        </activity>
+
         <activity android:name=".activity.MainActivity" />
     </application>
 

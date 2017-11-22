@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content_input"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText
+        android:id="@+id/editText_Input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/alert_dialog_content_input_margin"
+        android:background="@drawable/edittext_background"
+        android:paddingBottom="@dimen/alert_dialog_content_input_padding_bottom_and_top"
+        android:paddingLeft="@dimen/alert_dialog_content_input_padding_left_and_left"
+        android:paddingRight="@dimen/alert_dialog_content_input_padding_left_and_left"
+        android:paddingTop="@dimen/alert_dialog_content_input_padding_bottom_and_top"
+        android:singleLine="true"
+        android:textSize="@dimen/dialog_content_text_size" />
+
+</LinearLayout>
