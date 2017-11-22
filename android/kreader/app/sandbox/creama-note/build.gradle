@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion rootProject.ext.compileSdkVersion
-    buildToolsVersion rootProject.ext.buildToolsVersion
+    compileSdkVersion 25
+    buildToolsVersion '25.0.2'
 
     defaultConfig {
         applicationId "com.onyx.creama.note"
-        minSdkVersion rootProject.ext.minSdkVersion
-        targetSdkVersion rootProject.ext.targetSdkVersion
+        minSdkVersion 15
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0"
 
@@ -39,9 +39,9 @@ android {
 }
 
 dependencies {
-    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
+    compile 'org.greenrobot:eventbus:3.0.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile "junit:junit:$rootProject.junitVersion"
+    testCompile 'junit:junit:4.12'
     androidTestCompile('com.android.support.test:runner:0.5') {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
@@ -49,13 +49,13 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     }
     annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.0.1'
-    debugCompile "com.squareup.leakcanary:leakcanary-android:$rootProject.leakcanaryVersion"
-    releaseCompile "com.squareup.leakcanary:leakcanary-android-no-op:$rootProject.leakcanaryVersion"
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5.1'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.1'
 
     //dependencies for others
-    compile ('com.onyx.android.sdk:onyxsdk-base:1.3.7') { changing = true }
-    compile project(':libraries:onyxsdk-scribble')
-    compile ('com.onyx.android.sdk:onyxsdk-data:1.0.1') { changing = true }
-    compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
+    compile('com.onyx.android.sdk:onyxsdk-base:1.3.7') { changing = true }
+    compile('com.onyx.android.sdk:onyxsdk-scribble:1.0.7') { changing = true }
+    compile('com.onyx.android.sdk:onyxsdk-data:1.0.1') { changing = true }
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
 
 }
