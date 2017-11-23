@@ -12,6 +12,7 @@ import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.kreader.R;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.kreader.device.DeviceConfig;
 
 import java.util.HashMap;
 
@@ -38,7 +39,8 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         // TODO not sure how to use OnyxSysCenter
-        interval = LegacySdkDataUtils.getScreenUpdateGCInterval(getActivity(), DEFAULT_INTERVAL_COUNT);
+        interval = LegacySdkDataUtils.getScreenUpdateGCInterval(getActivity(),
+                DeviceConfig.sharedInstance(getActivity()).getDefaultRefreshInterval());
         buildScreenRefreshAdapter();
         setParams(new Params().setTittleString(getString(R.string.screen_refresh))
                 .setCustomContentLayoutResID(R.layout.dialog_screen_refresh)
