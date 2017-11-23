@@ -30,4 +30,6 @@ public interface HomeworkView {
     void setSubjects(List<SubjectBean> subjects);
 
     void setExerciseType(List<SubjectBean> exerciseTypes);
+
+    void setNullFinishedData();
 }

@@ -130,6 +130,13 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
         }
     }
 
+    public void clear() {
+        if (contents != null && contents.size() > 0) {
+            contents.clear();
+            notifyDataSetChanged();
+        }
+    }
+
     static class TimeViewHolder extends RecyclerView.ViewHolder {
         private ItemTimeBinding timeBinding;
 

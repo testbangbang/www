@@ -106,6 +106,8 @@ public class HomeworkPresenter {
                 List<FinishContent> content = data.content;
                 if (content != null && content.size() > 0) {
                     homeworkView.setFinishedData(content);
+                } else {
+                    homeworkView.setNullFinishedData();
                 }
             }
         });

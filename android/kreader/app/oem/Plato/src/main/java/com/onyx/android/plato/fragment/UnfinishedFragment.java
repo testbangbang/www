@@ -17,6 +17,7 @@ import com.onyx.android.plato.databinding.UnfinishedBinding;
 import com.onyx.android.plato.event.HomeworkFinishedEvent;
 import com.onyx.android.plato.event.HomeworkReportEvent;
 import com.onyx.android.plato.event.HomeworkUnfinishedEvent;
+import com.onyx.android.plato.event.ToMainFragmentEvent;
 import com.onyx.android.plato.interfaces.HomeworkView;
 import com.onyx.android.plato.presenter.HomeworkPresenter;
 import com.onyx.android.plato.view.DisableScrollGridManager;
@@ -68,7 +69,8 @@ public class UnfinishedFragment extends BaseFragment implements HomeworkView, Vi
 
     @Override
     public boolean onKeyBack() {
-        return false;
+        EventBus.getDefault().post(new ToMainFragmentEvent());
+        return true;
     }
 
     @Override
@@ -111,6 +113,11 @@ public class UnfinishedFragment extends BaseFragment implements HomeworkView, Vi
 
     @Override
     public void setExerciseType(List<SubjectBean> exerciseTypes) {
+
+    }
+
+    @Override
+    public void setNullFinishedData() {
 
     }
 

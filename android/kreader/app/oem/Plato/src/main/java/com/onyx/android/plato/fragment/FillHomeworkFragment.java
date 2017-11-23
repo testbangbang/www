@@ -1,6 +1,7 @@
 package com.onyx.android.plato.fragment;
 
 import android.databinding.ViewDataBinding;
+import android.util.Log;
 import android.view.View;
 
 import com.onyx.android.plato.R;
@@ -29,6 +30,8 @@ import com.onyx.android.plato.presenter.HomeworkPresenter;
 import com.onyx.android.plato.utils.StringUtil;
 import com.onyx.android.plato.view.DisableScrollGridManager;
 import com.onyx.android.plato.view.DividerItemDecoration;
+import com.onyx.android.plato.view.GPaginator;
+import com.onyx.android.plato.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -51,6 +54,10 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private HomeworkRecordAdapter homeworkRecordAdapter;
     private QuestionDetail data;
     private CorrectPresenter correctPresenter;
+    private GPaginator paginator;
+    private int pages;
+    private int currentPage = 1;
+    private int DEFAULT = 1;
 
     @Override
     protected void loadData() {
@@ -71,6 +78,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkAdapter = new FillHomeworkAdapter();
         fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
         homeworkRecordAdapter = new HomeworkRecordAdapter();
+        paginator = fillHomeworkBinding.fillHomeworkRecycler.getPaginator();
     }
 
     @Override
@@ -88,6 +96,17 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarTitle.setOnClickListener(this);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarRecord.setOnClickListener(this);
         fillHomeworkBinding.fillHomeworkTitleBar.titleBarSubmit.setOnClickListener(this);
+        fillHomeworkBinding.fillHomeworkRecycler.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+            @Override
+            public void onPrevPage(int prevPosition, int itemCount, int pageSize) {
+                setPage(prevPosition / pageSize + 1);
+            }
+
+            @Override
+            public void onNextPage(int nextPosition, int itemCount, int pageSize) {
+                setPage(nextPosition / pageSize + 1);
+            }
+        });
     }
 
     @Override
@@ -145,6 +164,11 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     }
 
+    @Override
+    public void setNullFinishedData() {
+
+    }
+
     public void setTaskId(int id, String type, String title) {
         this.id = id;
         this.type = type;
@@ -198,14 +222,17 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     private void setTitleBarRecord() {
         if (getResources().getString(R.string.file_homework_record).equals(fillHomeworkBinding.fillHomeworkTitleBar.getRecord())) {
+            fillHomeworkBinding.fillHomeworkPageLayout.setVisibility(View.GONE);
             fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.question));
             fillHomeworkBinding.fillHomeworkRecycler.setIntercepted(true);
             fillHomeworkBinding.fillHomeworkRecycler.setAdapter(homeworkRecordAdapter);
             homeworkPresenter.getAllQuestion(data.taskId + "", null);
         } else {
+            fillHomeworkBinding.fillHomeworkPageLayout.setVisibility(View.VISIBLE);
             fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
             fillHomeworkBinding.fillHomeworkRecycler.setIntercepted(false);
             fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
+            setPage(paginator.getCurrentPage() == 0 ? DEFAULT : paginator.getCurrentPage());
         }
     }
 
@@ -242,7 +269,14 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkRecycler.scrollToPosition(0);
         if (fillHomeworkAdapter != null) {
             fillHomeworkAdapter.setData(questionList, title, data.taskId);
+            fillHomeworkBinding.fillHomeworkRecycler.resize(fillHomeworkAdapter.getRowCount(), fillHomeworkAdapter.getColumnCount(), questionList.size());
+            pages = paginator.pages();
+            setPage(currentPage);
         }
+    }
+
+    private void setPage(int current) {
+        fillHomeworkBinding.fillHomeworkPageSize.setText((current > pages ? 0 : current) + "/" + pages + SunApplication.getInstance().getResources().getString(R.string.page));
     }
 
     @Override

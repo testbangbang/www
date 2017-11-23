@@ -8,7 +8,7 @@
     <dimen name="line_height">1dp</dimen>
     <dimen name="item_homework_subject_padding">10dp</dimen>
     <dimen name="homework_course_margin_top">10dp</dimen>
-    <dimen name="homework_course_time_width">360dp</dimen>
+    <dimen name="homework_course_time_width">380dp</dimen>
     <dimen name="homework_course_time_margin_right">10dp</dimen>
     <dimen name="homework_course_time_interval_width">20dp</dimen>
     <dimen name="main_fragment_score_text_margin_top">10dp</dimen>
@@ -127,7 +127,7 @@
     <dimen name="item_remind_time_margin_top">10dp</dimen>
     <dimen name="item_course_padding">5dp</dimen>
     <dimen name="question_title_whole_height">160dp</dimen>
-    <dimen name="question_title_web_height">140dp</dimen>
+    <dimen name="question_title_web_height">120dp</dimen>
     <dimen name="item_knowledge_progress_chart_width_and_height">150dp</dimen>
     <dimen name="goal_advanced_common_space">15dp</dimen>
     <dimen name="goal_advanced_common_padding_left_and_right">10dp</dimen>
@@ -148,4 +148,6 @@
     <dimen name="record_result_padding_left">20dp</dimen>
     <dimen name="custom_parse_padding">40dp</dimen>
     <dimen name="load_again_padding">10dp</dimen>
+    <dimen name="fill_homework_page_padding">10dp</dimen>
+    <dimen name="fill_homework_page_title_margin_top">10dp</dimen>
 </resources>

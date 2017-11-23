@@ -18,6 +18,7 @@ import com.onyx.android.plato.databinding.FinishedBinding;
 import com.onyx.android.plato.event.HomeworkFinishedEvent;
 import com.onyx.android.plato.event.HomeworkReportEvent;
 import com.onyx.android.plato.event.HomeworkUnfinishedEvent;
+import com.onyx.android.plato.event.ToMainFragmentEvent;
 import com.onyx.android.plato.interfaces.HomeworkView;
 import com.onyx.android.plato.presenter.HomeworkPresenter;
 import com.onyx.android.plato.utils.HomeworkFinishComparator;
@@ -114,7 +115,8 @@ public class FinishedFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     public boolean onKeyBack() {
-        return false;
+        EventBus.getDefault().post(new ToMainFragmentEvent());
+        return true;
     }
 
     @Override
@@ -209,5 +211,12 @@ public class FinishedFragment extends BaseFragment implements View.OnClickListen
         this.exerciseTypes = exerciseTypes;
         subjectType = exerciseTypes.get(0).type;
         courseStateAdapter.setData(exerciseTypes);
+    }
+
+    @Override
+    public void setNullFinishedData() {
+        if (homeworkFinishedAdapter != null) {
+            homeworkFinishedAdapter.clear();
+        }
     }
 }

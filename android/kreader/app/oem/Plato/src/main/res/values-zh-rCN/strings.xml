@@ -218,4 +218,5 @@
     <string name="lose_data">数据丢失</string>
     <string name="score_detail">%1$d分(满分%2$d分)</string>
     <string name="load_again">重新加载</string>
+    <string name="page">页</string>
 </resources>

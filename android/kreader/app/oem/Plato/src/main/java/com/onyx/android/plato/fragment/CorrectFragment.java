@@ -11,9 +11,8 @@ import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
-import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
 import com.onyx.android.plato.databinding.CorrectDataBinding;
-import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.plato.event.HomeworkFinishedEvent;
 import com.onyx.android.plato.event.TimerEvent;
 import com.onyx.android.plato.interfaces.CorrectView;
 import com.onyx.android.plato.presenter.CorrectPresenter;
@@ -42,7 +41,9 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
     protected void loadData() {
         presenter = new CorrectPresenter(this);
         //TODO:fake practice id,student id
-        presenter.getCorrectData(content.id, SunApplication.getStudentId());
+        if (content.correctTime != null) {
+            presenter.getCorrectData(content.id, SunApplication.getStudentId());
+        }
     }
 
     @Override
@@ -84,14 +85,15 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public boolean onKeyBack() {
-        return false;
+        EventBus.getDefault().post(new HomeworkFinishedEvent());
+        return true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnTimerEvent(TimerEvent event) {
         correctDataBinding.setCount(event.getResult());
         if(event.getResult() == 0 && content.correctTime == null) {
-            EventBus.getDefault().post(new BackToHomeworkFragmentEvent());
+            EventBus.getDefault().post(new HomeworkFinishedEvent());
         }
     }
 
@@ -103,7 +105,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
             setVisible();
         }
 
-        if(presenter != null) {
+        if(presenter != null && content.correctTime != null) {
             //TODO:fake practice id 25,student id 108
             presenter.getCorrectData(content.id, SunApplication.getStudentId());
         }
@@ -117,7 +119,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        EventBus.getDefault().post(new BackToHomeworkFragmentEvent());
+        EventBus.getDefault().post(new HomeworkFinishedEvent());
     }
 
     @Override

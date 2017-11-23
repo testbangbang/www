@@ -2,18 +2,20 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data class="FillHomeworkBinding">
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="taskName"
-            type="String"/>
-        
+            type="String" />
+
         <variable
             name="wholeScore"
-            type="int"/>
+            type="int" />
 
         <variable
             name="showTaskType"
-            type="boolean"/>
+            type="boolean" />
     </data>
 
     <LinearLayout
@@ -30,18 +32,18 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/fill_homework_page_title_margin_top"
             android:gravity="center_horizontal"
+            android:text="@{taskName}"
             android:textSize="@dimen/level_one_heading_font"
-            android:layout_marginTop="10dp"
-            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}"
-            android:text="@{taskName}"/>
+            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{@string/full_score(wholeScore)}"
             android:textSize="@dimen/level_three_heading_font"
-            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}"
-            android:text="@{@string/full_score(wholeScore)}"/>
+            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}" />
 
         <com.onyx.android.plato.view.NestedPageRecyclerView
             android:id="@+id/fill_homework_recycler"
@@ -49,5 +51,35 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:padding="@dimen/fill_homework_recycler_view_padding" />
+
+        <LinearLayout
+            android:id="@+id/fill_homework_page_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/fill_homework_page_padding">
+
+            <ImageButton
+                android:id="@+id/fill_homework_page_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_left"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/fill_homework_page_size"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <ImageButton
+                android:id="@+id/fill_homework_page_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_right"
+                android:visibility="gone" />
+        </LinearLayout>
     </LinearLayout>
 </layout>

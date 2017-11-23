@@ -160,6 +160,11 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     }
 
+    @Override
+    public void setNullFinishedData() {
+
+    }
+
     public void setPracticeId(int id,String title) {
         if (homeworkPresenter == null){
             homeworkPresenter = new HomeworkPresenter(this);

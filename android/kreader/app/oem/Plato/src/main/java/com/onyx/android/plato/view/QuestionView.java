@@ -12,6 +12,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.webkit.WebSettings;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -152,6 +153,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         this.questionViewBean = questionViewBean;
         this.title = title;
         questionTitleLayout.setVisibility(GONE);
+        questionTitle.getSettings().setTextSize(WebSettings.TextSize.LARGER);
         subjectiveImage.setImageResource(R.drawable.ic_answer_area);
         questionIntroduce.setVisibility(questionViewBean.isShow() ? VISIBLE : GONE);
         format = SunApplication.getInstance().getResources().getString(R.string.item_fill_homework_title);
@@ -253,7 +255,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         Spanned spanned = Html.fromHtml(selectionBean.content);
         button.setGravity(Gravity.TOP | Gravity.CENTER);
         button.setText(selectionBean.name + "." + spanned);
-        button.setTextSize(20);
+        button.setTextSize(18);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {

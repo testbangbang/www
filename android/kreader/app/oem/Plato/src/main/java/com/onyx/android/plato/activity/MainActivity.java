@@ -324,7 +324,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 return true;
             }
         }
-        return super.dispatchKeyEvent(event);
+        return true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
