@@ -42,12 +42,12 @@ public class RxMetadataLoadAction extends BaseAction<LibraryDataHolder> {
             @Override
             public void onNext(RxLibraryLoadRequest rxLibraryLoadRequest) {
                 hideLoadingDialog();
-                dataModel.count.set((int) libraryRequest.getTotalCount() + CollectionUtils.getSize(libraryRequest.getLibraryList()));
-                dataModel.items.clear();
-                dataModel.items.addAll(libraryRequest.getModels());
-                dataModel.libraryCount.set(CollectionUtils.getSize(libraryRequest.getLibraryList()));
-                dataModel.getPageLibraryDataModel();
                 if (baseCallback != null) {
+                    dataModel.count.set((int) libraryRequest.getTotalCount() + CollectionUtils.getSize(libraryRequest.getLibraryList()));
+                    dataModel.items.clear();
+                    dataModel.items.addAll(libraryRequest.getModels());
+                    dataModel.libraryCount.set(CollectionUtils.getSize(libraryRequest.getLibraryList()));
+                    dataModel.getPageLibraryDataModel();
                     baseCallback.onNext(rxLibraryLoadRequest);
                 }
             }

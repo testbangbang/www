@@ -279,6 +279,7 @@ public class QueryBuilder {
         }
         return new SQLCondition() {
             private String separator;
+
             @Override
             public void appendConditionToQuery(com.raizlabs.android.dbflow.sql.QueryBuilder queryBuilder) {
                 queryBuilder.append(columnName()).append(operation());
@@ -474,5 +475,14 @@ public class QueryBuilder {
             queryArgs.conditionGroup = group;
         }
         return queryArgs;
+    }
+
+    public static ConditionGroup storageIdCondition(String cid) {
+        ConditionGroup conditionGroup = ConditionGroup.clause()
+                .or(Metadata_Table.storageId.isNull());
+        if (StringUtils.isNotBlank(cid)) {
+            conditionGroup.or(Metadata_Table.storageId.is(cid));
+        }
+        return conditionGroup;
     }
 }

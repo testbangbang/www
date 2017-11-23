@@ -14,14 +14,11 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kcb.R;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -123,16 +120,6 @@ public class LibraryViewDataModel extends Observable {
         return EnvironmentUtil.getRemovableSDCardCid();
     }
 
-    private ConditionGroup storageIdCondition() {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
-                .or(Metadata_Table.storageId.isNull());
-        String cid = getSdcardCid();
-        if (StringUtils.isNotBlank(cid)) {
-            conditionGroup.or(Metadata_Table.storageId.is(cid));
-        }
-        return conditionGroup;
-    }
-
     public QueryArgs generateMetadataInQueryArgs(QueryArgs queryArgs) {
         return QueryBuilder.generateMetadataInQueryArgs(queryArgs);
     }
@@ -160,7 +147,7 @@ public class LibraryViewDataModel extends Observable {
         args.offset = 0;
         args.libraryUniqueId = libraryId;
         generateQueryArgs(args);
-        QueryBuilder.andWith(args.conditionGroup, storageIdCondition());
+        QueryBuilder.andWith(args.conditionGroup, QueryBuilder.storageIdCondition(getSdcardCid()));
         return generateMetadataInQueryArgs(args);
     }
 
@@ -227,7 +214,7 @@ public class LibraryViewDataModel extends Observable {
             model.checked.set(isSelected(selectedList, metadata));
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
             if (bitmap != null) {
-                model.coverBitMap.set(bitmap.get());
+                model.coverBitMap.set(bitmap);
             } else {
                 model.coverDefault.set(R.drawable.book_default_cover);
             }

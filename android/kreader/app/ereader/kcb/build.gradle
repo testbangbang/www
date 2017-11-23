@@ -59,9 +59,7 @@ dependencies {
         exclude group: 'com.alibaba', module: 'fastjson'
     }
 
-    compile(project(':libraries:onyxsdk-data')) {
-        exclude group: 'com.alibaba', module: 'fastjson'
-    }
+    compile project(':libraries:onyxsdk-data')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
 }

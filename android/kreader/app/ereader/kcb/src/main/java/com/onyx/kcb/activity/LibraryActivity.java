@@ -11,12 +11,15 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.event.ItemLongClickEvent;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
@@ -29,12 +32,14 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kcb.KCPApplication;
 import com.onyx.kcb.R;
+import com.onyx.kcb.action.ActionChain;
 import com.onyx.kcb.action.LibraryBuildAction;
 import com.onyx.kcb.action.LibraryChoiceAction;
 import com.onyx.kcb.action.LibraryDeleteAction;
 import com.onyx.kcb.action.LibraryMoveToAction;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.action.RxMetadataLoadAction;
+import com.onyx.kcb.action.ScanThumbnailAction;
 import com.onyx.kcb.adapter.ModelAdapter;
 import com.onyx.kcb.databinding.ActivityLibraryBinding;
 import com.onyx.kcb.holder.LibraryDataHolder;
@@ -52,7 +57,6 @@ import java.util.List;
  */
 
 public class LibraryActivity extends OnyxAppCompatActivity {
-    static private boolean hasMetadataScanned = false;
     private ActivityLibraryBinding dataBinding;
     private LibraryViewDataModel dataModel;
     private LibraryDataHolder dataHolder;
@@ -79,7 +83,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void initData() {
-        if (!isHasMetadataScanned()) {
+        if (!KCPApplication.getInstance().isHasMetadataScanned()) {
             processFileSystemScan();
             return;
         }
@@ -110,6 +114,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 loadAction.hideLoadingDialog();
             }
         });
+        nextLoad();
     }
 
     private void updateContentView() {
@@ -144,19 +149,24 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     private void processFileSystemScan() {
         final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
         dialogLoading.show();
-        RxFileSystemScanAction action = new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true);
-        action.execute(dataHolder, new RxCallback() {
+        ActionChain actionChain = new ActionChain();
+        actionChain.addAction(new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true));
+        String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
+        if (StringUtils.isNotBlank(sdcardCid)) {
+            actionChain.addAction(new RxFileSystemScanAction(sdcardCid, false));
+        }
+        actionChain.execute(dataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                dialogLoading.dismiss();
-                setHasMetadataScanned(true);
-                loadData();
+
             }
 
             @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
+            public void onComplete() {
+                super.onComplete();
                 dialogLoading.dismiss();
+                KCPApplication.getInstance().setHasMetadataScanned(true);
+                loadData();
             }
         });
     }
@@ -211,6 +221,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onRefresh() {
+                pagination.setCurrentPage(0);
                 loadData();
             }
         });
@@ -272,14 +283,6 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             }
         });
         nextLoad();
-    }
-
-    public static boolean isHasMetadataScanned() {
-        return hasMetadataScanned;
-    }
-
-    public static void setHasMetadataScanned(boolean hasMetadataScanned) {
-        LibraryActivity.hasMetadataScanned = hasMetadataScanned;
     }
 
     private LibraryDataHolder getDataHolder() {
@@ -365,10 +368,36 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             case R.id.menu_library_toc_index:
                 processGotoLibrary();
                 break;
+            case R.id.menu_scan_thumbnail:
+                processScanThumbnail();
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void processScanThumbnail() {
+        final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
+        dialogLoading.show();
+        final QueryArgs queryArgs = dataModel.gotoPage(pagination.getCurrentPage());
+        ScanThumbnailAction action = new ScanThumbnailAction(queryArgs, false);
+        action.execute(getDataHolder(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                loadData(queryArgs);
+                dialogLoading.dismiss();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                dialogLoading.dismiss();
+            }
+        });
+
+        ScanThumbnailAction allScanAction = new ScanThumbnailAction(QueryBuilder.allBooksQuery(queryArgs.sortBy, queryArgs.order), false);
+        allScanAction.execute(getDataHolder(), null);
     }
 
     private void processGotoLibrary() {
