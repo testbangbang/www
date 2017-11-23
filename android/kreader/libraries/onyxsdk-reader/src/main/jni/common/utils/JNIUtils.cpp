@@ -1,7 +1,7 @@
 #include "JNIUtils.h"
 
 #include <math.h>
-
+#include <time.h>
 
 #define LOG_TAG "JNIUtils"
 

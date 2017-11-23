@@ -603,4 +603,6 @@ bool OnyxPdfWriter::setDocumentTitle(const std::string &path, const std::string 
     doc.Load(contents.data(), contents.size());
     doc.GetInfo()->SetTitle(title.c_str());
     doc.Write(path.c_str());
+
+    return true;
 }
