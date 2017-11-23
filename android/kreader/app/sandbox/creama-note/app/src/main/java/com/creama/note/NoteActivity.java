@@ -1,4 +1,4 @@
-package com.onyx.creama.note;
+package com.creama.note;
 
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -31,10 +31,10 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.creama.note.event.ChangePenWidthEvent;
-import com.onyx.creama.note.event.EraseEvent;
-import com.onyx.creama.note.event.ShapeChangeEvent;
-import com.onyx.creama.note.view.NoteSubMenu;
+import com.creama.note.event.ChangePenWidthEvent;
+import com.creama.note.event.EraseEvent;
+import com.creama.note.event.ShapeChangeEvent;
+import com.creama.note.view.NoteSubMenu;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

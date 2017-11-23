@@ -1,4 +1,4 @@
-package com.onyx.note;
+package com.creama.note;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
@@ -21,6 +21,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getTargetContext();
 
-        assertEquals("com.onyx.creama_note", appContext.getPackageName());
+        assertEquals("com.creama.note", appContext.getPackageName());
     }
 }

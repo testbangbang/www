@@ -1,4 +1,4 @@
-package com.onyx.note;
+package com.creama.note;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.onyx.creama.note.event;
+package com.creama.note.event;
 
 /**
  * Created by solskjaer49 on 2017/11/18 16:48.
