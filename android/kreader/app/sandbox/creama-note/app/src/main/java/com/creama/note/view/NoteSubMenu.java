@@ -1,4 +1,4 @@
-package com.onyx.creama.note.view;
+package com.creama.note.view;
 
 import android.content.Context;
 import android.graphics.Color;
@@ -9,10 +9,10 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.creama.note.R;
-import com.onyx.creama.note.event.ChangePenWidthEvent;
-import com.onyx.creama.note.event.EraseEvent;
-import com.onyx.creama.note.event.ShapeChangeEvent;
+import com.creama.note.R;
+import com.creama.note.event.ChangePenWidthEvent;
+import com.creama.note.event.EraseEvent;
+import com.creama.note.event.ShapeChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;
 

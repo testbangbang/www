@@ -1,4 +1,4 @@
-package com.onyx.creama.note.event;
+package com.creama.note.event;
 
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 
