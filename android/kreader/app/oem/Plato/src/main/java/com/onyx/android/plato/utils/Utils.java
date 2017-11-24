@@ -1,5 +1,14 @@
 package com.onyx.android.plato.utils;
 
+import android.graphics.Bitmap;
+import android.os.Environment;
+
+import com.onyx.android.plato.common.Constants;
+
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+
 /**
  * Created by hehai on 17-10-19.
  */
@@ -18,5 +27,18 @@ public class Utils {
                 power++;
             }
         }
+    }
+
+    public static File bitmap2File(Bitmap bitmap) {
+        File file = new File(Environment.getExternalStorageDirectory(), Constants.BITMAP_NAME);
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+            bos.flush();
+            bos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return file;
     }
 }

@@ -12,4 +12,5 @@ public class ExerciseSelectionBean {
     public int no;
     public String name;
     public String content;
+    public int breakUpId;
 }

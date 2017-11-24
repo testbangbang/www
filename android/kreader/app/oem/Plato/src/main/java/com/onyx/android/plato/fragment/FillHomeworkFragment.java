@@ -49,7 +49,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private FillHomeworkBinding fillHomeworkBinding;
     private String type;
     private String title;
-    private int id;
+    private int practiceId;
     private FillHomeworkAdapter fillHomeworkAdapter;
     private HomeworkRecordAdapter homeworkRecordAdapter;
     private QuestionDetail data;
@@ -63,7 +63,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
         correctPresenter = new CorrectPresenter(this);
-        homeworkPresenter.getTaskDetail(id);
+        homeworkPresenter.getTaskDetail(practiceId);
     }
 
     @Override
@@ -140,7 +140,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         this.data = data;
         showTaskTitle();
         if (data.volumeExerciseDTOS != null && data.volumeExerciseDTOS.size() > 0) {
-            correctPresenter.resolveAdapterData(data.volumeExerciseDTOS, null, id);
+            correctPresenter.resolveAdapterData(data.volumeExerciseDTOS, null, practiceId);
         }
     }
 
@@ -169,12 +169,12 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     }
 
-    public void setTaskId(int id, String type, String title) {
-        this.id = id;
+    public void setTaskId(int practiceId, String type, String title) {
+        this.practiceId = practiceId;
         this.type = type;
         this.title = title;
         if (homeworkPresenter != null) {
-            homeworkPresenter.getTaskDetail(id);
+            homeworkPresenter.getTaskDetail(practiceId);
         }
     }
 
@@ -210,7 +210,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
                 list.add(answerBean);
             }
             //TODO:fake student id
-            homeworkPresenter.submitAnswer(list, id, SunApplication.getStudentId());
+            homeworkPresenter.submitAnswer(list, practiceId, SunApplication.getStudentId());
         }
     }
 

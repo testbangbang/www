@@ -12,17 +12,21 @@ import com.onyx.android.plato.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseResultBean;
 import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.plato.cloud.bean.TaskBean;
+import com.onyx.android.plato.cloud.bean.UploadBean;
 import com.onyx.android.plato.cloud.bean.UserLoginResultBean;
 import com.onyx.android.plato.cloud.bean.UserLogoutResultBean;
 import com.onyx.android.plato.common.CloudApiContext;
 
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -124,4 +128,8 @@ public interface ContentService {
     @GET("api/practice/getReportList/{courseId}")
     Call<GetReportListBean> getReportList(@Path(CloudApiContext.Practices.COURSE_ID) int courseId,
                                           @Query(CloudApiContext.Practices.STUDENTID) int studentId);
+
+    @Multipart
+    @POST("api/upload/getFileInfo")
+    Call<UploadBean> getUploadKey(@Part MultipartBody.Part file);
 }

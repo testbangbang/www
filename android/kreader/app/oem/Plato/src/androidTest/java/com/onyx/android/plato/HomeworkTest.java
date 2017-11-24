@@ -1,5 +1,7 @@
 package com.onyx.android.plato;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
@@ -20,6 +22,7 @@ import com.onyx.android.plato.cloud.bean.PracticeParseResultBean;
 import com.onyx.android.plato.cloud.bean.SubmitPracticeRequestBean;
 import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.plato.cloud.bean.TaskBean;
+import com.onyx.android.plato.cloud.bean.UploadBean;
 import com.onyx.android.plato.requests.cloud.FavoriteOrDeletePracticeRequest;
 import com.onyx.android.plato.requests.cloud.GetCorrectedTaskRequest;
 import com.onyx.android.plato.requests.cloud.GetExerciseTypeRequest;
@@ -29,12 +32,15 @@ import com.onyx.android.plato.requests.cloud.GetStudyReportDetailRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkUnfinishedRequest;
 import com.onyx.android.plato.requests.cloud.PracticeIntrospectionRequest;
+import com.onyx.android.plato.requests.cloud.RequestUploadFile;
 import com.onyx.android.plato.requests.cloud.SubmitPracticeRequest;
 import com.onyx.android.plato.requests.cloud.TaskDetailRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
 import com.onyx.android.plato.requests.requestTool.SunRequestManager;
+import com.onyx.android.plato.utils.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.concurrent.CountDownLatch;
 
@@ -281,6 +287,23 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
                 GetSubjectBean exerciseTypes = rq.getExerciseTypes();
                 assertNotNull(exerciseTypes);
                 assertNotNull(exerciseTypes.data);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testUploadFile() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        Bitmap bitmap = BitmapFactory.decodeResource(SunApplication.getInstance().getResources(), R.drawable.book_cover);
+        File file = Utils.bitmap2File(bitmap);
+
+        final RequestUploadFile rq = new RequestUploadFile(file);
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                UploadBean uploadBean = rq.getBean();
+                assertNotNull(uploadBean);
                 countDownLatch.countDown();
             }
         });

@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@{data.num}"
-            android:textSize="@{@dimen/level_three_heading_font}" />
+            android:textSize="@dimen/level_three_heading_font" />
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -32,11 +32,27 @@
             android:layout_marginLeft="@dimen/item_today_task_title_margin_left"
             android:orientation="vertical">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@{@string/homework_unfinished_title_format(StringUtil.transitionHomeworkType(data.type), data.title)}"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/homework_unfinished_title_format(StringUtil.transitionHomeworkType(data.type), data.title)}"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:layout_width="@dimen/item_today_task_course_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/item_homework_subject_margin_left"
+                    android:background="@drawable/text_unselected_state"
+                    android:gravity="center"
+                    android:padding="@dimen/item_homework_subject_padding"
+                    android:text="@{data.course}"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -47,31 +63,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@{data.auth}"
-                    android:textSize="@{@dimen/level_three_heading_font}" />
+                    android:textSize="@dimen/level_three_heading_font" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/item_today_task_deadline_margin_left"
                     android:text="@{@string/homework_item_deadline_format(data.deadline)}"
-                    android:textSize="@{@dimen/level_three_heading_font}" />
+                    android:textSize="@dimen/level_three_heading_font" />
             </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:layout_width="@dimen/item_today_task_course_width"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:layout_marginRight="@dimen/item_today_task_course_margin_right"
-            android:background="@{@drawable/text_unselected_state}"
-            android:clickable="true"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:padding="@{@dimen/item_homework_subject_padding}"
-            android:text="@{data.course}"
-            android:textSize="@{@dimen/level_three_heading_font}" />
 
         <TextView
             android:layout_width="wrap_content"

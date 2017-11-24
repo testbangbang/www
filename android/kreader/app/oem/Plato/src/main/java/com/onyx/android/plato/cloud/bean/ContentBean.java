@@ -21,6 +21,7 @@ public class ContentBean implements Comparable<ContentBean> {
     public int practiceStudentId;
     public int readStatus;
     public int practiceType;
+    public int practiceId;
 
     @Override
     public int compareTo(@NonNull ContentBean contentBean) {
