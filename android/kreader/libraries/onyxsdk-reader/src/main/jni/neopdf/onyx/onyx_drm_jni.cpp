@@ -2,7 +2,8 @@
 
 #include "JNIUtils.h"
 
-#include "core/fpdfapi/onyx_drm_decrypt.h"
+#include <fpdf_onyx_ext.h>
+#include "onyx_drm_decrypt.h"
 
 #include <android/log.h>
 
@@ -37,39 +38,38 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_utils_OnyxDrmUtils_s
         oad = strOad.getLocalString();
     }
 
-    onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
-    drmManager.reset();
-
-    return drmManager.setupWithManifest(id, certificate, manifest, oad);
+    return static_cast<jboolean>(DrmDecryptManager::singleton().setupWithManifest(id.c_str(), certificate.c_str(), manifest.c_str(), oad.c_str()));
 }
 
 JNIEXPORT jint JNICALL Java_com_onyx_android_sdk_reader_utils_OnyxDrmUtils_decrypt
   (JNIEnv *env, jclass, jbyteArray encryptedData, jint encryptedSize, jbyteArray result) {
-    if (!onyx::DrmDecryptManager::singleton().isEncrypted()) {
+    if (!DrmDecryptManager::singleton().isEncrypted()) {
         LOGE("doc is not DRM protected!");
         return 0;
     }
 
     jsize len = env->GetArrayLength(encryptedData);
-    JNIByteArray array(env, len);
+    JNIByteArray array(env, static_cast<size_t>(len));
     env->GetByteArrayRegion(encryptedData, 0, len, array.getBuffer());
 
     size_t resultLen = 0;
-    unsigned char *dec = onyx::DrmDecryptManager::singleton().aesDecrypt((unsigned char *)array.getBuffer(), encryptedSize, &resultLen);
+    unsigned char *dec = DrmDecryptManager::singleton().aesDecrypt(reinterpret_cast<unsigned char *>(array.getBuffer()),
+                                                                   static_cast<size_t>(encryptedSize),
+                                                                   &resultLen);
     if (!dec) {
         LOGE("DRM decrypt failed!");
         return 0;
     }
 
     jsize resultSize = env->GetArrayLength(result);
-    if (resultSize < resultLen) {
+    if (resultSize < static_cast<jsize>(resultLen)) {
         LOGE("DRM decrypt out of result range!");
         return 0;
     }
 
-    env->SetByteArrayRegion(result, 0, resultLen, (jbyte *)dec);
+    env->SetByteArrayRegion(result, 0, static_cast<jsize>(resultLen), reinterpret_cast<jbyte *>(dec));
     free(dec);
 
-    return resultLen;
+    return static_cast<jint>(resultLen);
 }
 

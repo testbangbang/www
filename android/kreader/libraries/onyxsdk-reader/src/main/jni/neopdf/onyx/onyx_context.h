@@ -28,7 +28,7 @@
 #include "fpdf_text.h"
 #include "fpdf_formfill.h"
 
-#include "core/fxge/include/cfx_gemodule.h"
+#include "fpdf_onyx_ext.h"
 
 class OnyxPdfiumPage {
 
@@ -156,13 +156,13 @@ public:
     }
 
     void setTextGamma(float gamma) {
-        if (std::abs(gamma - textGamma) <= 0.001) {
+        if (::abs(gamma - textGamma) <= 0.001) {
             return;
         }
 
         // gamma used in pdfium is reciprocal of the value being passed in
         float realGamma = 2.2f / gamma;
-        CFX_GEModule::Get()->SetTextGamma(realGamma);
+        FPDF_ONYX_SetTextGamma(realGamma);
         textGamma = gamma;
         clearPages();
     }
