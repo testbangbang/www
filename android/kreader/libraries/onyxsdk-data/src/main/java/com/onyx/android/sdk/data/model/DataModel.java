@@ -30,7 +30,7 @@ public class DataModel extends BaseObservable {
     public final ObservableField<String> desc = new ObservableField<>();
     public final ObservableField<String> absolutePath = new ObservableField<>();
     public final ObservableField<String> associationId = new ObservableField<>();
-    public final ObservableField<CloseableReference<Bitmap>> coverBitMap = new ObservableField<>();
+    public final ObservableField<CloseableReference<Bitmap>> coverBitmap = new ObservableField<>();
     public final ObservableInt coverDefault = new ObservableInt();
     public final ObservableBoolean checked = new ObservableBoolean(false);
     public final ObservableBoolean enableSelection = new ObservableBoolean(false);

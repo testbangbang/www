@@ -52,7 +52,7 @@ public class DataModelUtil {
             model.checked.set(isSelected(selectedList, metadata));
             CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
             if (bitmap != null) {
-                model.coverBitMap.set(bitmap);
+                model.coverBitmap.set(bitmap);
             } else {
                 model.coverDefault.set(R.drawable.book_default_cover);
             }
