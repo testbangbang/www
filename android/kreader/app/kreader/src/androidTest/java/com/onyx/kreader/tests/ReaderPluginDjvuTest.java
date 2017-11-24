@@ -126,7 +126,7 @@ public class ReaderPluginDjvuTest extends ActivityInstrumentationTestCase2<Reade
         doc.close();
     }
 
-    public void testPageRender() {
+    public void testPageRender() throws ReaderException {
         DjvuReaderPlugin plugin = (DjvuReaderPlugin)openTestFile();
         String position = String.valueOf(plugin.getTotalPage() - 1);
         RectF rect = plugin.getPageOriginSize(position);

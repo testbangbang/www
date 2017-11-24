@@ -269,7 +269,7 @@ public class ReaderHelper {
         }
     }
 
-    private void initLayoutManager() {
+    private void initLayoutManager() throws ReaderException {
         updateView();
         getReaderLayoutManager().init();
     }

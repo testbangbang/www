@@ -156,7 +156,7 @@ public class LayoutProviderUtils {
 
     static private void updateVisiblePagesForFlowDocument(final Reader reader,
                                                           final ReaderViewInfo readerViewInfo,
-                                                          final ReaderLayoutManager layoutManager) {
+                                                          final ReaderLayoutManager layoutManager) throws ReaderException {
         clear(layoutManager);
         String startPage = PagePositionUtils.fromPageNumber(reader.getNavigator().getScreenStartPageNumber());
         addPage(layoutManager, startPage, reader.getNavigator().getScreenStartPosition());
@@ -233,11 +233,11 @@ public class LayoutProviderUtils {
         layoutManager.getPageManager().clear();
     }
 
-    static public void addPage(final ReaderLayoutManager layoutManager, final String name) {
+    static public void addPage(final ReaderLayoutManager layoutManager, final String name) throws ReaderException {
         addPage(layoutManager, name, name);
     }
 
-    static public void addPage(final ReaderLayoutManager layoutManager, final String name, final String position) {
+    static public void addPage(final ReaderLayoutManager layoutManager, final String name, final String position) throws ReaderException {
         PageInfo pageInfo = layoutManager.getPageManager().getPageInfo(position);
         if (pageInfo == null) {
             RectF size = layoutManager.getReaderDocument().getPageOriginSize(position);
@@ -247,7 +247,7 @@ public class LayoutProviderUtils {
         layoutManager.getPageManager().add(pageInfo);
     }
 
-    static public void addAllPage(final ReaderLayoutManager layoutManager) {
+    static public void addAllPage(final ReaderLayoutManager layoutManager) throws ReaderException {
         int total = layoutManager.getNavigator().getTotalPage();
         LayoutProviderUtils.clear(layoutManager);
         for(int i = 0; i < total; ++i) {
@@ -257,11 +257,12 @@ public class LayoutProviderUtils {
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);
     }
 
-    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name) {
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name) throws ReaderException {
         addSinglePage(layoutManager, name, name);
     }
 
-    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name, final String position) {
+    static public void addSinglePage(final ReaderLayoutManager layoutManager, final String name,
+                                     final String position) throws ReaderException {
         LayoutProviderUtils.clear(layoutManager);
         LayoutProviderUtils.addPage(layoutManager, name, position);
         LayoutProviderUtils.updatePageBoundingRect(layoutManager);

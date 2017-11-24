@@ -142,7 +142,7 @@ public class LayoutSinglePageProvider extends LayoutProvider {
     }
 
     public boolean gotoPosition(final String position) throws ReaderException {
-        if (StringUtils.isNullOrEmpty(position) || Integer.parseInt(position) < 0) {
+        if (StringUtils.isNullOrEmpty(position)) {
             return false;
         }
 

@@ -30,7 +30,7 @@ public interface ReaderDocument {
      * @param position
      * @return
      */
-    public RectF getPageOriginSize(final String position);
+    public RectF getPageOriginSize(final String position) throws ReaderException;
 
     public boolean supportTextPage();
 

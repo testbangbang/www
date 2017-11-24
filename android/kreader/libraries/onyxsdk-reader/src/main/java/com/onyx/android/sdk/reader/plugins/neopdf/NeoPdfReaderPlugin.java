@@ -129,7 +129,11 @@ public class NeoPdfReaderPlugin implements ReaderPlugin,
                 0, bitmap);
     }
 
-    public RectF getPageOriginSize(final String position) {
+    public RectF getPageOriginSize(final String position) throws ReaderException {
+        if (Integer.parseInt(position) < 0) {
+            throw ReaderException.outOfRange();
+        }
+
         float size [] = {0, 0};
         getPluginImpl().pageSize(Integer.parseInt(position), size);
         return new RectF(0, 0, size[0], size[1]);
