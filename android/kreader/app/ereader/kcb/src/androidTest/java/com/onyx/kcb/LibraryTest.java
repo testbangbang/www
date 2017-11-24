@@ -32,9 +32,9 @@ import java.util.concurrent.CountDownLatch;
  * Created by hehai on 17-11-21.
  */
 
-public class LibraryTest extends ApplicationTestCase<KCPApplication> {
+public class LibraryTest extends ApplicationTestCase<KCBApplication> {
     public LibraryTest() {
-        super(KCPApplication.class);
+        super(KCBApplication.class);
     }
 
     @Override

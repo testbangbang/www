@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.data.rxrequest.data.db;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.compatability.OnyxMetadata;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -18,11 +17,11 @@ import io.reactivex.schedulers.Schedulers;
  * Created by hehai on 17-11-23.
  */
 
-public class RxThumbnailLoadRequest extends RxBaseDBRequest {
+public class RxExtractMetadataRequest extends RxBaseDBRequest {
     private QueryArgs queryArg;
     private boolean forceScanMetadata;
 
-    public RxThumbnailLoadRequest(DataManager dm, QueryArgs queryArg) {
+    public RxExtractMetadataRequest(DataManager dm, QueryArgs queryArg) {
         super(dm);
         this.queryArg = queryArg;
     }
@@ -37,7 +36,7 @@ public class RxThumbnailLoadRequest extends RxBaseDBRequest {
     }
 
     @Override
-    public RxThumbnailLoadRequest call() throws Exception {
+    public RxExtractMetadataRequest call() throws Exception {
         List<Metadata> metadataList = getDataProvider().findMetadataByQueryArgs(getAppContext(), queryArg);
         extractMetadata(metadataList);
         return this;

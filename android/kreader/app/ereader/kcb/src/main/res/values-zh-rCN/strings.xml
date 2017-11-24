@@ -42,4 +42,5 @@
     <string name="library_toc_loading">书库目录加载中...</string>
     <string name="library_toc_load_fail">书库目录加载异常</string>
     <string name="menu_scan_thumbnail">扫描封面</string>
+    <string name="search_hint">请输入书名或者作者名进行搜索</string>
 </resources>

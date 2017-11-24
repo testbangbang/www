@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.rxrequest.data.fs.RxFilesDiffFromMetadataReques
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kcb.holder.LibraryDataHolder;
@@ -48,7 +49,7 @@ public class RxFileSystemScanAction extends BaseAction<LibraryDataHolder> {
     private void startFileSystemScan(final LibraryDataHolder dataHolder, final RxCallback baseCallback,
                                      final String storageId, List<String> bookDirList) {
         final RxFileSystemScanRequest fileSystemScanRequest = new RxFileSystemScanRequest(dataHolder.getDataManager(), storageId, bookDirList, true);
-        fileSystemScanRequest.setExtensionFilterSet(TestUtils.defaultContentTypes());
+        fileSystemScanRequest.setExtensionFilterSet(MimeTypeUtils.getDocumentExtension());
         fileSystemScanRequest.execute(new RxCallback<RxFileSystemScanRequest>() {
             @Override
             public void onNext(RxFileSystemScanRequest rxFileSystemScanRequest) {

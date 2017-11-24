@@ -11,8 +11,6 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
-import com.onyx.android.sdk.data.SortBy;
-import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.event.ItemLongClickEvent;
 import com.onyx.android.sdk.data.model.DataModel;
@@ -30,7 +28,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
-import com.onyx.kcb.KCPApplication;
+import com.onyx.kcb.KCBApplication;
 import com.onyx.kcb.R;
 import com.onyx.kcb.action.ActionChain;
 import com.onyx.kcb.action.LibraryBuildAction;
@@ -39,9 +37,10 @@ import com.onyx.kcb.action.LibraryDeleteAction;
 import com.onyx.kcb.action.LibraryMoveToAction;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.action.RxMetadataLoadAction;
-import com.onyx.kcb.action.ScanThumbnailAction;
+import com.onyx.kcb.action.ExtractMetadataAction;
 import com.onyx.kcb.adapter.ModelAdapter;
 import com.onyx.kcb.databinding.ActivityLibraryBinding;
+import com.onyx.kcb.event.SearchBookEvent;
 import com.onyx.kcb.holder.LibraryDataHolder;
 import com.onyx.kcb.model.LibraryViewDataModel;
 import com.onyx.kcb.model.PageIndicatorModel;
@@ -62,8 +61,8 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     private LibraryDataHolder dataHolder;
     private QueryPagination pagination;
     private PageIndicatorModel pageIndicatorModel;
-    private int row = KCPApplication.getInstance().getResources().getInteger(R.integer.library_row);
-    private int col = KCPApplication.getInstance().getResources().getInteger(R.integer.library_col);
+    private int row = KCBApplication.getInstance().getResources().getInteger(R.integer.library_row);
+    private int col = KCBApplication.getInstance().getResources().getInteger(R.integer.library_col);
     private boolean longClickMode = false;
     private ModelAdapter modelAdapter;
     private DataModel currentChosenModel;
@@ -83,7 +82,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void initData() {
-        if (!KCPApplication.getInstance().isHasMetadataScanned()) {
+        if (!KCBApplication.getInstance().isHasMetadataScanned()) {
             processFileSystemScan();
             return;
         }
@@ -165,7 +164,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             public void onComplete() {
                 super.onComplete();
                 dialogLoading.dismiss();
-                KCPApplication.getInstance().setHasMetadataScanned(true);
+                KCBApplication.getInstance().setHasMetadataScanned(true);
                 loadData();
             }
         });
@@ -381,7 +380,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
         dialogLoading.show();
         final QueryArgs queryArgs = dataModel.gotoPage(pagination.getCurrentPage());
-        ScanThumbnailAction action = new ScanThumbnailAction(queryArgs, false);
+        ExtractMetadataAction action = new ExtractMetadataAction(queryArgs, false);
         action.execute(getDataHolder(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -396,7 +395,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             }
         });
 
-        ScanThumbnailAction allScanAction = new ScanThumbnailAction(QueryBuilder.allBooksQuery(queryArgs.sortBy, queryArgs.order), false);
+        ExtractMetadataAction allScanAction = new ExtractMetadataAction(QueryBuilder.allBooksQuery(queryArgs.sortBy, queryArgs.order), false);
         allScanAction.execute(getDataHolder(), null);
     }
 
@@ -486,6 +485,11 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         } else {
             processNormalModeItemClick(event.getModel());
         }
+    }
+
+    @Subscribe
+    public void onSearchBookEvent(SearchBookEvent event) {
+        loadData(event.getQueryArgs());
     }
 
     private void processNormalModeItemClick(DataModel model) {

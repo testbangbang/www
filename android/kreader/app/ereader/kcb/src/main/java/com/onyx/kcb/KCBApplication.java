@@ -9,8 +9,6 @@ import android.util.Log;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
-import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kcb.action.ActionChain;
@@ -18,21 +16,19 @@ import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.device.DeviceConfig;
 import com.onyx.kcb.holder.LibraryDataHolder;
 
-import org.greenrobot.eventbus.EventBus;
-
 
 /**
  * Created by hehai on 17-11-13.
  */
 
-public class KCPApplication extends MultiDexApplication {
+public class KCBApplication extends MultiDexApplication {
     private boolean hasMetadataScanned = false;
-    private static final String TAG = KCPApplication.class.getSimpleName();
-    private static KCPApplication instance = null;
+    private static final String TAG = KCBApplication.class.getSimpleName();
+    private static KCBApplication instance = null;
     private LibraryDataHolder libraryDataHolder;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
-    public static KCPApplication getInstance() {
+    public static KCBApplication getInstance() {
         return instance;
     }
 
@@ -45,7 +41,7 @@ public class KCPApplication extends MultiDexApplication {
     @Override
     protected void attachBaseContext(Context context) {
         super.attachBaseContext(context);
-        MultiDex.install(KCPApplication.this);
+        MultiDex.install(KCBApplication.this);
     }
 
     private void initConfig() {
@@ -60,7 +56,7 @@ public class KCPApplication extends MultiDexApplication {
 
             @Override
             public void onMediaScanStarted(Intent intent) {
-                if (DeviceConfig.sharedInstance(getApplicationContext()).supportMediaScan()) {
+                if (DeviceConfig.sharedInstance(getApplicationContext()).isMediaScanSupport()) {
                     processRemovableSDCardScan();
                 }
             }
