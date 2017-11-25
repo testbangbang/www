@@ -99,6 +99,12 @@ public class ViewDocumentUtils {
         return new ComponentName(packageName, className);
     }
 
+    public static ComponentName getKreaderServiceComponentName() {
+        String packageName = "com.onyx.kreader";
+        String className = packageName + ".ui.ReaderMetadataService";
+        return new ComponentName(packageName, className);
+    }
+
     public static ComponentName getReaderComponentName(Context context) {
         return getReaderComponentName(context, getKreaderComponentName());
     }

@@ -14,6 +14,7 @@ android {
         versionName gitVersionCode(projectDir).toString() + " - " + gitHash(projectDir)
         multiDexEnabled true
 
+        testInstrumentationRunner "com.android.test.runner.MultiDexTestRunner"
     }
 
     buildTypes {
@@ -52,14 +53,13 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile "com.android.support.constraint:constraint-layout:$rootProject.constraintlayoutVersion"
     testCompile "junit:junit:$rootProject.junitVersion"
+    compile "com.android.support:multidex:$multidexVersion"
 
     compile(project(':libraries:onyxsdk-ui')) {
         exclude group: 'com.alibaba', module: 'fastjson'
     }
 
-    compile(project(':libraries:onyxsdk-data')) {
-        exclude group: 'com.alibaba', module: 'fastjson'
-    }
+    compile project(':libraries:onyxsdk-data')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
 }

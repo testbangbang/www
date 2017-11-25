@@ -41,4 +41,6 @@
     <string name="current_page">Current Page</string>
     <string name="library_toc_loading">Library toc loading...</string>
     <string name="library_toc_load_fail">Library toc loading failed</string>
+    <string name="menu_scan_thumbnail">Scan thumbnail</string>
+    <string name="search_hint">Enter name or author</string>
 </resources>

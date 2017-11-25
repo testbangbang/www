@@ -7,6 +7,7 @@ import android.databinding.ObservableList;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
+import com.onyx.android.sdk.data.BookFilter;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
@@ -14,14 +15,13 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.ModelType;
+import com.onyx.android.sdk.data.model.SearchHistory;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kcb.R;
-import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
+import com.onyx.kcb.event.SearchBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -39,6 +39,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableList<DataModel> items = new ObservableArrayList<>();
     public final ObservableList<DataModel> visibleItems = new ObservableArrayList<>();
     public final ObservableField<String> title = new ObservableField<>();
+    public final ObservableField<String> searchKey = new ObservableField<>("");
     public final ObservableInt count = new ObservableInt();
     public final ObservableInt libraryCount = new ObservableInt(0);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
@@ -48,7 +49,7 @@ public class LibraryViewDataModel extends Observable {
     private List<DataModel> listSelected = new ArrayList<>();
     private EventBus eventBus;
 
-    public LibraryViewDataModel(EventBus eventBus) {
+    private LibraryViewDataModel(EventBus eventBus) {
         this.eventBus = eventBus;
         this.queryArgs = new QueryArgs();
         queryArgs.limit = queryLimit;
@@ -123,16 +124,6 @@ public class LibraryViewDataModel extends Observable {
         return EnvironmentUtil.getRemovableSDCardCid();
     }
 
-    private ConditionGroup storageIdCondition() {
-        ConditionGroup conditionGroup = ConditionGroup.clause()
-                .or(Metadata_Table.storageId.isNull());
-        String cid = getSdcardCid();
-        if (StringUtils.isNotBlank(cid)) {
-            conditionGroup.or(Metadata_Table.storageId.is(cid));
-        }
-        return conditionGroup;
-    }
-
     public QueryArgs generateMetadataInQueryArgs(QueryArgs queryArgs) {
         return QueryBuilder.generateMetadataInQueryArgs(queryArgs);
     }
@@ -160,7 +151,7 @@ public class LibraryViewDataModel extends Observable {
         args.offset = 0;
         args.libraryUniqueId = libraryId;
         generateQueryArgs(args);
-        QueryBuilder.andWith(args.conditionGroup, storageIdCondition());
+        QueryBuilder.andWith(args.conditionGroup, QueryBuilder.storageIdCondition(getSdcardCid()));
         return generateMetadataInQueryArgs(args);
     }
 
@@ -193,47 +184,6 @@ public class LibraryViewDataModel extends Observable {
 
     private int min(int a, int b) {
         return a < b ? a : b;
-    }
-
-    public static void libraryToDataModel(EventBus eventBus, ObservableList<DataModel> dataModels, List<Library> libraryList) {
-        if (CollectionUtils.isNullOrEmpty(libraryList)) {
-            return;
-        }
-        for (Library library : libraryList) {
-            DataModel model = new DataModel(eventBus);
-            model.type.set(ModelType.Library);
-            model.parentId.set(library.getParentUniqueId());
-            model.id.set(library.getId());
-            model.idString.set(library.getIdString());
-            model.title.set(library.getName());
-            model.desc.set(library.getDescription());
-            model.checked.set(false);
-            model.coverDefault.set(R.drawable.library_default_cover);
-            dataModels.add(model);
-        }
-    }
-
-    public static void metadataToDataModel(EventBus eventBus, ObservableList<DataModel> dataModels, List<Metadata> metadataList, List<DataModel> selectedList, Map<String, CloseableReference<Bitmap>> thumbnailMap) {
-        if (CollectionUtils.isNullOrEmpty(metadataList)) {
-            return;
-        }
-        for (Metadata metadata : metadataList) {
-            DataModel model = new DataModel(eventBus);
-            model.type.set(ModelType.Metadata);
-            model.idString.set(metadata.getIdString());
-            model.title.set(metadata.getName());
-            model.desc.set(metadata.getDescription());
-            model.absolutePath.set(metadata.getNativeAbsolutePath());
-            model.checked.set(isSelected(selectedList, metadata));
-            CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
-            if (bitmap != null) {
-                model.coverBitMap.set(bitmap.get());
-            } else {
-                model.coverDefault.set(R.drawable.book_default_cover);
-            }
-
-            dataModels.add(model);
-        }
     }
 
     private static boolean isSelected(List<DataModel> selectedList, Metadata metadata) {
@@ -279,5 +229,10 @@ public class LibraryViewDataModel extends Observable {
             return null;
         }
         return libraryPathList.get(libraryPathList.size() - 1).idString.get();
+    }
+
+    public void searchBook() {
+        queryArgs = QueryBuilder.librarySearchQuery(this.queryArgs.libraryUniqueId, searchKey.get(), this.queryArgs.sortBy, this.queryArgs.order);
+        eventBus.post(new SearchBookEvent(queryArgs));
     }
 }

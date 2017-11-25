@@ -20,6 +20,11 @@
     <item
         android:id="@+id/menu_build_library"
         android:title="@string/menu_library_build" />
+
+    <item
+        android:id="@+id/menu_scan_thumbnail"
+        android:title="@string/menu_scan_thumbnail" />
+
     <item
         android:id="@+id/menu_add_to_library"
         android:title="@string/menu_library_add" />
