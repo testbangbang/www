@@ -17,7 +17,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.action.RxMetadataLoadAction;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 import com.onyx.kcb.model.LibraryViewDataModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,7 +45,7 @@ public class LibraryTest extends ApplicationTestCase<KCBApplication> {
     public void testMetadataLoadAction() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(2);
         Debug.setDebug(true);
-        final LibraryDataHolder dataHolder = new LibraryDataHolder(getContext());
+        final DataBundle dataHolder = new DataBundle(getContext());
         clearData(dataHolder.getDataManager());
         boolean isFlash = true;
         FileUtils.deleteFile(new File(getBookDirList(isFlash)), true);
@@ -93,7 +93,7 @@ public class LibraryTest extends ApplicationTestCase<KCBApplication> {
         FileUtils.deleteFile(new File(getBookDirList(true)), true);
     }
 
-    private void loadData(final List<DataModel> fileList, LibraryDataHolder dataHolder, final RxCallback rxCallback) {
+    private void loadData(final List<DataModel> fileList, DataBundle dataHolder, final RxCallback rxCallback) {
         final LibraryViewDataModel libraryViewDataModel = LibraryViewDataModel.create(EventBus.getDefault(), Integer.MAX_VALUE, Integer.MAX_VALUE);
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.Name, SortOrder.Asc);
         RxMetadataLoadAction rxMetadataLoadAction = new RxMetadataLoadAction(libraryViewDataModel, queryArgs, false);

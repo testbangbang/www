@@ -49,7 +49,7 @@ public class LibraryViewDataModel extends Observable {
     private List<DataModel> listSelected = new ArrayList<>();
     private EventBus eventBus;
 
-    private LibraryViewDataModel(EventBus eventBus) {
+    public LibraryViewDataModel(EventBus eventBus) {
         this.eventBus = eventBus;
         this.queryArgs = new QueryArgs();
         queryArgs.limit = queryLimit;
@@ -71,6 +71,19 @@ public class LibraryViewDataModel extends Observable {
     public void updateSortBy(SortBy sortBy, SortOrder sortOrder) {
         queryArgs.sortBy = sortBy;
         queryArgs.order = sortOrder;
+    }
+
+
+    public void setCurrentSortOrder(SortOrder sortOrder) {
+        this.queryArgs.order = sortOrder;
+    }
+
+    public SortOrder getCurrentSortOrder() {
+        return queryArgs.order;
+    }
+
+    public SortBy getCurrentSortBy() {
+        return queryArgs.sortBy;
     }
 
     public int getOffset(int currentPage) {
@@ -234,5 +247,10 @@ public class LibraryViewDataModel extends Observable {
     public void searchBook() {
         queryArgs = QueryBuilder.librarySearchQuery(this.queryArgs.libraryUniqueId, searchKey.get(), this.queryArgs.sortBy, this.queryArgs.order);
         eventBus.post(new SearchBookEvent(queryArgs));
+    }
+
+    public void updateFilterBy(BookFilter bookFilter, SortOrder sortOrder) {
+        queryArgs.filter = bookFilter;
+        queryArgs.order = sortOrder;
     }
 }

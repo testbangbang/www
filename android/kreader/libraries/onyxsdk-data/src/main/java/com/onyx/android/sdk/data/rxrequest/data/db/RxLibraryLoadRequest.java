@@ -12,7 +12,9 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.db.BaseDBRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,6 +22,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by suicheng on 2016/9/5.
@@ -49,6 +56,11 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         this.queryArgs = queryArgs;
         this.loadMetadata = loadMetadata;
         this.selectedList = selectedList;
+    }
+
+    @Override
+    public Scheduler subscribeScheduler() {
+        return generateScheduler();
     }
 
     public void setLoadFromCache(boolean loadFromCache) {

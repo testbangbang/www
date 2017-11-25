@@ -43,4 +43,23 @@
     <string name="library_toc_load_fail">书库目录加载异常</string>
     <string name="menu_scan_thumbnail">扫描封面</string>
     <string name="search_hint">请输入书名或者作者名进行搜索</string>
+
+    <string name="filter_all">全部</string>
+    <string name="filter_new_books">未读</string>
+    <string name="filter_read">已阅读完</string>
+    <string name="filter_reading">正在阅读</string>
+    <string name="filter_tag">标签</string>
+
+    <string name="by_name">按名称</string>
+    <string name="by_type">按类型</string>
+    <string name="by_size">按大小</string>
+    <string name="by_tittle">按标题</string>
+    <string name="by_author">按作者</string>
+
+    <string name="filter">筛选</string>
+    <string name="filter_fail">筛选失败</string>
+    <string name="sort">排序</string>
+    <string name="sort_fail">排序失败</string>
+    <string name="library_build">创建书库</string>
+    <string name="by_creation_time">按创建时间</string>
 </resources>

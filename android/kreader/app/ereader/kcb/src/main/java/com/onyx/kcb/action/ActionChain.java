@@ -1,7 +1,7 @@
 package com.onyx.kcb.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +19,7 @@ public class ActionChain {
         return this;
     }
 
-    public void execute(final LibraryDataHolder dataHolder, final RxCallback callback) {
+    public void execute(final DataBundle dataHolder, final RxCallback callback) {
         if (isFinished(callback)) {
             return;
         }
@@ -33,7 +33,7 @@ public class ActionChain {
         });
     }
 
-    private void executeAction(final LibraryDataHolder dataHolder, final BaseAction action, final RxCallback callback) {
+    private void executeAction(final DataBundle dataHolder, final BaseAction action, final RxCallback callback) {
         action.execute(dataHolder, callback);
     }
 

@@ -43,4 +43,28 @@
     <string name="library_toc_load_fail">Library toc loading failed</string>
     <string name="menu_scan_thumbnail">Scan thumbnail</string>
     <string name="search_hint">Enter name or author</string>
+
+    <string name="filter_all">All</string>
+    <string name="filter_new_books">New Books</string>
+    <string name="filter_read">Finish Read</string>
+    <string name="filter_reading">Now Reading</string>
+    <string name="filter_tag">Tag</string>
+
+    <string name="by_name">By name</string>
+    <string name="by_type">By type</string>
+    <string name="by_size">By Size</string>
+    <string name="by_tittle">By title</string>
+    <string name="by_author">By author</string>
+    <string name="by_creation_time">By creation time</string>
+
+    <string name="filter">Filter</string>
+    <string name="filter_fail">Filter fail</string>
+    <string name="sort">Sort</string>
+    <string name="sort_fail">Sort fail</string>
+    <string name="library_build">Build Library</string>
+
+    <string name="library_activity_asc_order_key" translatable="false">library_activity_asc_order</string>
+    <string name="library_activity_sort_by_key" translatable="false">library_activity_sort_by</string>
+    <string name="library_activity_book_filter_key" translatable="false">library_activity_book_filter</string>
+
 </resources>

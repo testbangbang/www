@@ -113,7 +113,7 @@ public class RequestManager {
         return submitRequestToSingleThreadPoolImpl(executorOfIdentifier, request, runnable);
     }
 
-    private final ExecutorContext getExecutorByIdentifier(final String identifier) {
+    public final ExecutorContext getExecutorByIdentifier(final String identifier) {
         if (StringUtils.isNullOrEmpty(identifier)) {
             return executor;
         }
