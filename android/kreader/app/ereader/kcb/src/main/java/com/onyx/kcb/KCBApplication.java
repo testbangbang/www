@@ -10,11 +10,15 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.DeviceReceiver;
+import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.RxBroadcastReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kcb.action.ActionChain;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.device.DeviceConfig;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
+
+import io.reactivex.functions.Consumer;
 
 
 /**
@@ -25,7 +29,7 @@ public class KCBApplication extends MultiDexApplication {
     private boolean hasMetadataScanned = false;
     private static final String TAG = KCBApplication.class.getSimpleName();
     private static KCBApplication instance = null;
-    private LibraryDataHolder libraryDataHolder;
+    private static DataBundle dataBundle;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
     public static KCBApplication getInstance() {
@@ -46,6 +50,7 @@ public class KCBApplication extends MultiDexApplication {
 
     private void initConfig() {
         instance = this;
+        PreferenceManager.init(instance);
         DataManager.init(this, null);
         initFrescoLoader();
         initEventListener();
@@ -102,14 +107,14 @@ public class KCBApplication extends MultiDexApplication {
         if (StringUtils.isNotBlank(sdcardCid)) {
             actionChain.addAction(new RxFileSystemScanAction(sdcardCid, false));
         }
-        actionChain.execute(getLibraryDataHolder(), null);
+        actionChain.execute(getDataBundle(), null);
     }
 
-    public LibraryDataHolder getLibraryDataHolder() {
-        if (libraryDataHolder == null) {
-            libraryDataHolder = new LibraryDataHolder(instance);
+    public static DataBundle getDataBundle() {
+        if (dataBundle == null) {
+            dataBundle = new DataBundle(instance);
         }
-        return libraryDataHolder;
+        return dataBundle;
     }
 
     public boolean isHasMetadataScanned() {
