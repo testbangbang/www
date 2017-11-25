@@ -368,7 +368,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 processGotoLibrary();
                 break;
             case R.id.menu_scan_thumbnail:
-                processScanThumbnail();
+                processExtractMetadata();
                 break;
             default:
                 break;
@@ -376,7 +376,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void processScanThumbnail() {
+    private void processExtractMetadata() {
         final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
         dialogLoading.show();
         final QueryArgs queryArgs = dataModel.gotoPage(pagination.getCurrentPage());
