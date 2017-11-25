@@ -27,7 +27,7 @@
 
             <ImageView
                 android:id="@+id/image_cover"
-                thumbnail="@{model.coverBitMap}"
+                thumbnail="@{model.coverBitmap}"
                 android:layout_width="@dimen/model_item_cover_width"
                 android:layout_height="@dimen/model_item_cover_height"
                 android:scaleType="fitXY"
