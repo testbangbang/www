@@ -113,7 +113,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 loadAction.hideLoadingDialog();
             }
         });
-        nextLoad();
+        preloadNext();
     }
 
     private void updateContentView() {
@@ -136,7 +136,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         return dataModel.count.get();
     }
 
-    private void nextLoad() {
+    private void preloadNext() {
         int preLoadPage = pagination.getCurrentPage() + 1;
         if (preLoadPage >= pagination.pages()) {
             return;
@@ -257,10 +257,10 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 updateContentView();
             }
         });
-        prevLoad();
+        preloadPrev();
     }
 
-    private void prevLoad() {
+    private void preloadPrev() {
         int preLoadPage = pagination.getCurrentPage() - 1;
         if (preLoadPage < 0) {
             return;
@@ -281,7 +281,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 updateContentView();
             }
         });
-        nextLoad();
+        preloadNext();
     }
 
     private LibraryDataHolder getDataHolder() {
