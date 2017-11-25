@@ -31,7 +31,7 @@ public class LayoutProvider {
 
     }
 
-    public void activate() {
+    public void activate() throws ReaderException {
     }
 
     public boolean canHitTest() {

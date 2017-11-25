@@ -24,7 +24,7 @@ public class LayoutContinuousProvider extends LayoutProvider {
         return PageConstants.CONTINUOUS_PAGE;
     }
 
-    public void activate() {
+    public void activate() throws ReaderException {
         LayoutProviderUtils.addAllPage(getLayoutManager());
         getPageManager().setPageRepeat(100);
     }

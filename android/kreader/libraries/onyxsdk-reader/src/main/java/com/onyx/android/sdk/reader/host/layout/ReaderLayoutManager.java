@@ -84,7 +84,7 @@ public class ReaderLayoutManager {
         return readerHelper.getImageReflowManager();
     }
 
-    public void init()  {
+    public void init() throws ReaderException {
         supportScale = getReaderRendererFeatures().supportScale();
         supportTextFlow = getReaderRendererFeatures().supportFontSizeAdjustment();
         if (supportScale) {
@@ -140,7 +140,7 @@ public class ReaderLayoutManager {
         return true;
     }
 
-    private void setActiveProvider(String layoutName) {
+    private void setActiveProvider(String layoutName) throws ReaderException {
         if (currentProvider != null) {
             getCurrentLayoutProvider().deactivate();
         }

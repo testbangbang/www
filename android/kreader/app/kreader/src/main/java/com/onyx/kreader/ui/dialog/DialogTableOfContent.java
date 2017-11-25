@@ -540,6 +540,10 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                     new GotoPositionAction(entry.getPosition()).execute(readerDataHolder, new BaseCallback() {
                         @Override
                         public void done(BaseRequest request, Throwable e) {
+                            if (e != null) {
+                                Toast.makeText(getContext(), getContext().getString(R.string.can_not_go_to_content), Toast.LENGTH_SHORT).show();
+                                return;
+                            }
                             DialogTableOfContent.this.dismiss();
                         }
                     });

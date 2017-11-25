@@ -368,4 +368,5 @@
     <string name="network_data">Network data</string>
     <string name="local_data">Local data</string>
     <string name="file_not_exists">File not exists!</string>
+    <string name="can_not_go_to_content">Can not go to this content</string>
 </resources>

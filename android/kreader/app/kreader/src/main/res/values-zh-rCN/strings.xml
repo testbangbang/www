@@ -300,5 +300,6 @@
   <string name="auto_crop_for_each_block">以上手动设置后，自动裁剪可见范围内空白区域</string>
   <string name="network_data">联网数据</string>
   <string name="local_data">本地数据</string>
-    <string name="file_not_exists">文件不存在!</string>
+  <string name="file_not_exists">文件不存在!</string>
+  <string name="can_not_go_to_content">无法跳转到该内容！</string>
 </resources>
