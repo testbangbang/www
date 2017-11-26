@@ -222,8 +222,8 @@ public class SchoolApp extends MultiDexApplication {
     }
 
     private void initDeviceConfig() {
+        AppCompatUtils.setColorSupport(DeviceConfig.sharedInstance(this).isDeviceSupportColor());
         AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
-        DeviceConfig.sharedInstance(this);
     }
 
     private void initEventListener() {

@@ -54,6 +54,7 @@ public class DeviceConfig {
     static public final String DEVICE_INFO_SHOW_CONFIG = "info_show_config";
 
     static public final String ENABLE_FULL_REFRESH = "enable_full_refresh";
+    static public final String DEVICE_SUPPORT_COLOR = "support_color";
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -230,5 +231,9 @@ public class DeviceConfig {
 
     public boolean enableFullRefresh() {
         return backend.getBoolean(ENABLE_FULL_REFRESH, true);
+    }
+
+    public boolean isDeviceSupportColor() {
+        return backend.getBoolean(DEVICE_SUPPORT_COLOR, false);
     }
 }
