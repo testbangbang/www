@@ -127,6 +127,17 @@
         android:layout_alignParentLeft="true">
 
         <ImageButton
+            android:id="@+id/image_view_quick_first_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imagebtn_bg"
+            android:padding="5dp"
+            android:src="@drawable/ic_dialog_reader_first_page" />
+
+        <ImageButton
             android:id="@+id/image_view_prev_page"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
