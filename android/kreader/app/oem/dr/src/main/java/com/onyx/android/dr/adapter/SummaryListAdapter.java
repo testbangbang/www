@@ -86,7 +86,6 @@ public class SummaryListAdapter extends PageRecyclerView.PageAdapter<SummaryList
 
     @Override
     public void onClick(View v) {
-
     }
 
     static class ViewHolder extends PageRecyclerView.ViewHolder {

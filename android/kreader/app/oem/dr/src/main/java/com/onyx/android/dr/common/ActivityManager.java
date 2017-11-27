@@ -15,6 +15,7 @@ import com.onyx.android.dr.activity.AddMemorandumActivity;
 import com.onyx.android.dr.activity.AnnotationListActivity;
 import com.onyx.android.dr.activity.ApplicationsActivity;
 import com.onyx.android.dr.activity.ApplyForGroupActivity;
+import com.onyx.android.dr.activity.ArticlePushActivity;
 import com.onyx.android.dr.activity.BaiduBaiKeActivity;
 import com.onyx.android.dr.activity.BookDetailActivity;
 import com.onyx.android.dr.activity.BookReportDetailActivity;
@@ -295,6 +296,13 @@ public class ActivityManager {
         Intent intent = new Intent();
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.setClass(context, ManageGroupActivity.class);
+        context.startActivity(intent);
+    }
+
+    public static void startArticlePushActivity(Context context) {
+        Intent intent = new Intent();
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setClass(context, ArticlePushActivity.class);
         context.startActivity(intent);
     }
 

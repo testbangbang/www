@@ -752,4 +752,6 @@
     <string name="menu_input_method_setting">input method setting</string>
     <string name="schoolchildren_start_time">School year</string>
     <string name="school_year">school year</string>
+    <string name="register_date">Register Date: </string>
+    <string name="language_hint">language: </string>
 </resources>

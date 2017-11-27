@@ -746,4 +746,6 @@
     <string name="menu_input_method_setting">输入法设置</string>
     <string name="schoolchildren_start_time">*入学年度:</string>
     <string name="school_year">入学年度:</string>
+    <string name="register_date">上架时间:  </string>
+    <string name="language_hint">语言:  </string>
 </resources>

@@ -52,6 +52,40 @@
             android:gravity="right"
             android:visibility="visible">
 
+            <LinearLayout
+                android:id="@+id/title_bar_right_checkbox_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:background="@drawable/rectangle_stroke"
+                android:visibility="visible"
+                android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
+                android:orientation="horizontal">
+
+                <RelativeLayout
+                    android:layout_width="@dimen/new_word_activity_all_check_width"
+                    android:layout_height="@dimen/item_summary_list_height"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/title_bar_right_checkbox_margin_right"
+                    android:layout_marginLeft="@dimen/title_bar_right_checkbox_margin_top"
+                    android:gravity="center">
+
+                    <CheckBox
+                        android:id="@+id/title_bar_right_checkbox"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:scaleX="1.4"
+                        android:scaleY="1.4" />
+                </RelativeLayout>
+
+                <TextView
+                    style="@style/reading_rate_item_text_view_style"
+                    android:text="@string/good_sentence_activity_check_all"
+                    android:layout_marginRight="@dimen/title_bar_right_checkbox_textview_margin_right"
+                    android:textSize="@dimen/level_one_font_size" />
+
+            </LinearLayout>
+
             <TextView
                 android:id="@+id/title_bar_right_select_time"
                 android:layout_width="wrap_content"

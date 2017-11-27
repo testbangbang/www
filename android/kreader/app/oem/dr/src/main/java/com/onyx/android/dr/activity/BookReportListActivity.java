@@ -381,7 +381,6 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     private void exportInformalData() {
-
     }
 
     @Override

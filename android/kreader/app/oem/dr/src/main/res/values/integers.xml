@@ -92,4 +92,5 @@
     <integer name="manager_group_adapter_row">12</integer>
     <integer name="reading_activity_skip_annotation">500</integer>
     <integer name="memorandum_row">7</integer>
+    <integer name="item_article_push_row">5</integer>
 </resources>
