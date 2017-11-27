@@ -3283,7 +3283,7 @@ public class AlBookEng{
 
 			if ((vE > 0 || vP > 0) && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
 				if (!profiles.classicFirstLetter || (style & AlStyles.SL_MARKFIRTSTLETTER0) == 0) {
-					oi.isRed = (int)(fontParam.em_width * vE / 2) + (int)(((double)width) * vP / 100.0);
+					oi.isRed = (int)(fontParam.space_width * vE / 2) + (int)(((double)width) * vP / 100.0);
 					if (oi.isRed > oi.allWidth * 0.8)
 						oi.isRed = (int) (oi.allWidth * 0.8);
 					oi.allWidth -= oi.isRed;
@@ -3388,7 +3388,7 @@ public class AlBookEng{
 		vP = (oi.prop & (AlParProperty.SL2_MARGL_PERCENT_MASK)) >> AlParProperty.SL2_MARGL_PERCENT_SHIFT;
 		vE = (oi.prop & (AlParProperty.SL2_MARGL_EM_MASK)) >> AlParProperty.SL2_MARGL_EM_SHIFT;
 		if (vP != 0 || vE != 0) {
-			oi.isLeft = (int)(fontParam.em_width * vE / 2) + (int)(((double)width) * vP / 100.0);
+			oi.isLeft = (int)(fontParam.space_width * vE / 2) + (int)(((double)width) * vP / 100.0);
 			if (oi.isLeft > oi.allWidth * 0.8)
 				oi.isLeft = (int) (oi.allWidth * 0.8);
 
@@ -3398,7 +3398,7 @@ public class AlBookEng{
 		vP = (oi.prop & (AlParProperty.SL2_MARGR_PERCENT_MASK)) >> AlParProperty.SL2_MARGR_PERCENT_SHIFT;
 		vE = (oi.prop & (AlParProperty.SL2_MARGR_EM_MASK)) >> AlParProperty.SL2_MARGR_EM_SHIFT;
 		if (vP != 0 || vE != 0) {
-			oi.isRight = (int)(fontParam.em_width * vE / 2) + (int)(((double)width) * vP / 100.0);
+			oi.isRight = (int)(fontParam.space_width * vE / 2) + (int)(((double)width) * vP / 100.0);
 			if (oi.isRight > oi.allWidth * 0.8)
 				oi.isRight = (int) (oi.allWidth * 0.8);
 
