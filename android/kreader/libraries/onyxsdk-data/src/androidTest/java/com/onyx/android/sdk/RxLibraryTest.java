@@ -314,7 +314,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
 
     public static DataModel generateDataModel(Library library) {
         final DataModel dataModel = new DataModel(EventBus.getDefault());
-        dataModel.type.set(ModelType.Library);
+        dataModel.type.set(ModelType.TYPE_LIBRARY);
         dataModel.idString.set(library.getIdString());
         dataModel.desc.set(library.getDescription());
         dataModel.parentId.set(library.getParentUniqueId());
@@ -408,7 +408,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
         }
         parentList.remove(parentList.size() - 1);
         DataModel dataModel = new DataModel(EventBus.getDefault());
-        dataModel.type.set(ModelType.Library);
+        dataModel.type.set(ModelType.TYPE_LIBRARY);
         dataModel.idString.set(library.getIdString());
         dataModel.desc.set(library.getDescription());
         dataModel.parentId.set(library.getParentUniqueId());

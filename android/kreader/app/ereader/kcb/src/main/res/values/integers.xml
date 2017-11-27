@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <integer name="library_row">3</integer>
-    <integer name="library_col">3</integer>
+    <integer name="library_view_type_thumbnail_row">3</integer>
+    <integer name="library_view_type_thumbnail_col">3</integer>
+    <integer name="library_view_type_details_row">7</integer>
+    <integer name="library_view_type_details_col">1</integer>
 </resources>

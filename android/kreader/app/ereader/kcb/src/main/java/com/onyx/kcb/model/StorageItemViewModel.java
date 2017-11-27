@@ -6,8 +6,7 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.graphics.Bitmap;
 
-import com.onyx.kcb.event.StorageItemViewModelClickEvent;
-import com.onyx.kcb.event.StorageItemViewModelLongClickEvent;
+import com.onyx.android.sdk.data.model.FileModel;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -46,7 +45,7 @@ public class StorageItemViewModel extends BaseObservable {
         if (model == null) {
             return;
         }
-        getEventBus().post(new StorageItemViewModelClickEvent(this));
+//        getEventBus().post(new DataModelClickEvent(this));
     }
 
     public boolean itemLongClicked() {
@@ -54,7 +53,7 @@ public class StorageItemViewModel extends BaseObservable {
         if (model == null) {
             return false;
         }
-        getEventBus().post(new StorageItemViewModelLongClickEvent(this));
+//        getEventBus().post(new DataModelLongClickEvent(this));
         return true;
     }
 

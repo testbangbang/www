@@ -1,22 +1,16 @@
 package com.onyx.kcb.activity;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.databinding.DataBindingUtil;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.AppDataInfo;
 import com.onyx.android.sdk.data.FileOperateMode;
@@ -25,9 +19,12 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.ViewType;
+import com.onyx.android.sdk.data.event.ItemClickEvent;
+import com.onyx.android.sdk.data.event.ItemLongClickEvent;
+import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.model.common.AppPreference;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
@@ -40,31 +37,26 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
+import com.onyx.kcb.KCPApplication;
 import com.onyx.kcb.R;
 import com.onyx.kcb.action.FileCopyAction;
 import com.onyx.kcb.action.FileDeleteAction;
 import com.onyx.kcb.action.FileOpenWithAction;
 import com.onyx.kcb.action.SortByProcessAction;
 import com.onyx.kcb.action.StorageDataLoadAction;
-import com.onyx.kcb.holder.BindingViewHolder;
-import com.onyx.kcb.adapter.PageAdapter;
+import com.onyx.kcb.adapter.ModelAdapter;
 import com.onyx.kcb.databinding.ActivityStorageBinding;
-import com.onyx.kcb.databinding.FileDetailsItemBinding;
-import com.onyx.kcb.databinding.FileThumbnailItemBinding;
 import com.onyx.kcb.device.DeviceConfig;
 import com.onyx.kcb.dialog.DialogCreateNewFolder;
 import com.onyx.kcb.dialog.DialogFileProperty;
 import com.onyx.kcb.dialog.DialogRenameFile;
 import com.onyx.kcb.event.OperationEvent;
-import com.onyx.kcb.event.StorageItemViewModelClickEvent;
-import com.onyx.kcb.event.StorageItemViewModelLongClickEvent;
 import com.onyx.kcb.event.ViewTypeEvent;
 import com.onyx.kcb.holder.LibraryDataHolder;
 import com.onyx.kcb.manager.ConfigPreferenceManager;
-import com.onyx.kcb.model.FileModel;
 import com.onyx.kcb.model.OperationItem;
-import com.onyx.kcb.model.StorageItemViewModel;
 import com.onyx.kcb.model.StorageViewModel;
+import com.onyx.kcb.utils.Constant;
 
 import org.apache.commons.io.FilenameUtils;
 import org.greenrobot.eventbus.EventBus;
@@ -87,6 +79,10 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private ActivityStorageBinding binding;
 
     private FileOperateMode fileOperateMode = FileOperateMode.ReadOnly;
+    private int viewTypeThumbnailRow = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
+    private int viewTypeThumbnailCol = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
+    private int viewTypeDetailsRow = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_row);
+    private int viewTypeDetailsCol = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_col);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,8 +134,6 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private void initToolbar() {
         initSupportActionBarWithCustomBackFunction();
         actionBar.addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
-            //AppCompat would not called onOptionMenuClosed();
-            // Use this listener to obtain menu visibility.
             @Override
             public void onMenuVisibilityChanged(boolean isVisible) {
                 if (!isVisible) {
@@ -155,7 +149,9 @@ public class StorageActivity extends OnyxAppCompatActivity {
         PageRecyclerView contentPageView = getContentView();
         contentPageView.setHasFixedSize(true);
         contentPageView.setLayoutManager(new DisableScrollGridManager(getApplicationContext()));
-        contentPageView.setAdapter(new ManagerAdapter(this));
+        ModelAdapter modelAdapter = new ModelAdapter();
+        modelAdapter.setRowAndCol(viewTypeThumbnailRow, viewTypeThumbnailCol);
+        contentPageView.setAdapter(modelAdapter);
         contentPageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
             public void onPageChange(int position, int itemCount, int pageSize) {
@@ -195,7 +191,6 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private void updatePageStatus(boolean resetPage) {
         PageRecyclerView contentPageView = getContentView();
         if (contentPageView == null || contentPageView.getPaginator() == null) {
-            Log.w(TAG, "detect the null contentPageView or Paginator");
             return;
         }
         GPaginator paginator = contentPageView.getPaginator();
@@ -245,6 +240,8 @@ public class StorageActivity extends OnyxAppCompatActivity {
         viewModel.clearItemSelectedMap();
         viewModel.switchOperationPanel(false, OperationEvent.OPERATION_PASTE);
         viewModel.setShowOperationFunc(true);
+        ModelAdapter modelAdapter = (ModelAdapter) getContentView().getAdapter();
+        modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
         updateContentView();
     }
 
@@ -447,7 +444,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private StorageItemViewModel getCurrentSelectedItem() {
+    private DataModel getCurrentSelectedItem() {
         return getStorageViewModel().getItemSelectedItemModelList().get(0);
     }
 
@@ -475,7 +472,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         }
     }
 
-    private void onFileRename(final StorageItemViewModel model) {
+    private void onFileRename(final DataModel model) {
         final DialogRenameFile dlgRename = new DialogRenameFile();
         final File originFile = model.getFileModel().getFile();
         Bundle args = new Bundle();
@@ -580,8 +577,8 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onItemClickEvent(StorageItemViewModelClickEvent event) {
-        StorageItemViewModel itemModel = event.model;
+    public void onItemClickEvent(ItemClickEvent event) {
+        DataModel itemModel = event.getModel();
         if (itemModel.getFileModel().isGoUpType()) {
             onLevelGoUpEvent();
             return;
@@ -594,11 +591,11 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onItemLongClickEvent(StorageItemViewModelLongClickEvent event) {
+    public void onItemLongClickEvent(ItemLongClickEvent event) {
         switch (getStorageViewModel().getSelectionMode()) {
             case SelectionMode.NORMAL_MODE:
                 getStorageViewModel().setSelectionMode(SelectionMode.LONG_PRESS_MODE);
-                getStorageViewModel().addItemSelected(event.model, true);
+                getStorageViewModel().addItemSelected(event.getDataModel(), true);
                 actionBar.openOptionsMenu();
                 break;
             default:
@@ -674,7 +671,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
                         dialog.dismiss();
                     }
                 }));
-        dialog.show(getFragmentManager(), "DeleteDialog");
+        dialog.show(getFragmentManager(), Constant.DIALOG_TAG_DELETE);
     }
 
     private void processShortCutDelete(List<File> removeItemsList) {
@@ -758,7 +755,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private void loadData(File dir) {
-        StorageDataLoadAction dataLoadAction = new StorageDataLoadAction(dir, getStorageViewModel().items);
+        StorageDataLoadAction dataLoadAction = new StorageDataLoadAction(KCPApplication.getInstance(),dir, getStorageViewModel().items);
         dataLoadAction.setSort(ConfigPreferenceManager.getStorageSortBy(getApplicationContext()),
                 ConfigPreferenceManager.getStorageSortOrder(getApplicationContext()));
         dataLoadAction.execute(getDataHolder(), new RxCallback() {
@@ -768,37 +765,6 @@ public class StorageActivity extends OnyxAppCompatActivity {
                 notifyContentChanged();
             }
         });
-    }
-
-    private int getDrawable(File file) {
-        Integer res = ThumbnailUtils.defaultThumbnailMapping().get(FilenameUtils.getExtension(file.getName()));
-        if (res == null) {
-            return ThumbnailUtils.thumbnailUnknown();
-        }
-        return res;
-    }
-
-    private void loadThumbnail(StorageItemViewModel itemModel) {
-        FileModel fileModel = itemModel.getFileModel();
-        int res;
-        switch (fileModel.getType()) {
-            case FileModel.TYPE_DIRECTORY:
-                res = R.drawable.directory;
-                break;
-            case FileModel.TYPE_GO_UP:
-                res = R.drawable.directory_go_up;
-                break;
-            case FileModel.TYPE_SHORT_CUT:
-                res = R.drawable.directory_shortcut;
-                break;
-            case FileModel.TYPE_FILE:
-                res = getDrawable(fileModel.getFile());
-                break;
-            default:
-                res = R.drawable.unknown_document;
-                break;
-        }
-        itemModel.setCoverThumbnail(BitmapFactory.decodeResource(getResources(), res));
     }
 
     private void openFile(File file) {
@@ -847,28 +813,6 @@ public class StorageActivity extends OnyxAppCompatActivity {
         return binding.contentPageView;
     }
 
-    private static class FileThumbnailItemViewHolder extends BindingViewHolder<FileThumbnailItemBinding, StorageItemViewModel> {
-        FileThumbnailItemViewHolder(FileThumbnailItemBinding binding) {
-            super(binding);
-        }
-
-        public void bindTo(StorageItemViewModel model) {
-            mBinding.setViewModel(model);
-            mBinding.executePendingBindings();
-        }
-    }
-
-    private static class FileDetailsItemViewHolder extends BindingViewHolder<FileDetailsItemBinding, StorageItemViewModel> {
-        FileDetailsItemViewHolder(FileDetailsItemBinding binding) {
-            super(binding);
-        }
-
-        public void bindTo(StorageItemViewModel model) {
-            mBinding.setViewModel(model);
-            mBinding.executePendingBindings();
-        }
-    }
-
     private int getRowCountBasedViewType() {
         return getRowCount(getViewType());
     }
@@ -878,72 +822,11 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private int getRowCount(ViewType viewType) {
-        return viewType == ViewType.Thumbnail ? 3 : 7;
+        return viewType == ViewType.Thumbnail ? viewTypeThumbnailRow : viewTypeDetailsRow;
     }
 
     private int getColCount(ViewType viewType) {
-        return viewType == ViewType.Thumbnail ? 3 : 1;
-    }
-
-    public class ManagerAdapter extends PageAdapter<RecyclerView.ViewHolder, StorageItemViewModel, StorageItemViewModel> {
-        private LayoutInflater mLayoutInflater;
-
-        ManagerAdapter(Context context) {
-            mLayoutInflater = LayoutInflater.from(context);
-        }
-
-        @Override
-        public int getRowCount() {
-            return getRowCountBasedViewType();
-        }
-
-        @Override
-        public int getColumnCount() {
-            return getColCountBasedViewType();
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return getViewType().ordinal();
-        }
-
-        @Override
-        public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-            if (viewType == ViewType.Thumbnail.ordinal()) {
-                return new FileThumbnailItemViewHolder(FileThumbnailItemBinding.inflate(mLayoutInflater, parent, false));
-            }
-            else {
-                return new FileDetailsItemViewHolder(FileDetailsItemBinding.inflate(mLayoutInflater, parent, false));
-            }
-        }
-
-        @Override
-        public void onPageBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
-            StorageItemViewModel model = getItemVMList().get(position);
-            if (model.getFileModel().isGoUpType()) {
-                model.setEnableSelection(false);
-            }
-            else {
-                model.setEnableSelection(getStorageViewModel().isInMultiSelectionMode());
-                model.setSelected(getStorageViewModel().isItemSelected(model));
-            }
-            loadThumbnail(model);
-            if (getItemViewType(position) == ViewType.Thumbnail.ordinal()) {
-                FileThumbnailItemViewHolder holder = (FileThumbnailItemViewHolder) viewHolder;
-                holder.bindTo(model);
-            }
-            else {
-                FileDetailsItemViewHolder holder = (FileDetailsItemViewHolder) viewHolder;
-                holder.bindTo(model);
-            }
-        }
-
-        @Override
-        public void setRawData(List<StorageItemViewModel> rawData, Context context) {
-            super.setRawData(rawData, context);
-            getItemVMList().addAll(rawData);
-            notifyContentChanged();
-        }
+        return viewType == ViewType.Thumbnail ? viewTypeThumbnailCol : viewTypeDetailsCol;
     }
 
     private void notifyContentChanged() {

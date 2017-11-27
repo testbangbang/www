@@ -1,5 +1,6 @@
 package com.onyx.kcb.activity;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,6 +8,7 @@ import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.data.QueryArgs;
@@ -58,8 +60,8 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     private LibraryDataHolder dataHolder;
     private QueryPagination pagination;
     private PageIndicatorModel pageIndicatorModel;
-    private int row = KCPApplication.getInstance().getResources().getInteger(R.integer.library_row);
-    private int col = KCPApplication.getInstance().getResources().getInteger(R.integer.library_col);
+    private int row = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
+    private int col = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
     private boolean longClickMode = false;
     private ModelAdapter modelAdapter;
     private DataModel currentChosenModel;
@@ -460,7 +462,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processNormalModeItemClick(DataModel model) {
-        if (model.type.get() == ModelType.Library) {
+        if (model.type.get() == ModelType.TYPE_LIBRARY) {
             processLibraryItem(model);
         } else {
             processBookItemOpen(model);
@@ -477,7 +479,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processMultiModeItemClick(DataModel dataModel) {
-        if (dataModel.type.get() == ModelType.Library) {
+        if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
             return;
         }
         dataModel.checked.set(!dataModel.checked.get());
@@ -539,7 +541,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private boolean isLibraryItem(DataModel dataModel) {
-        return dataModel.type.get() == ModelType.Library;
+        return dataModel.type.get() == ModelType.TYPE_LIBRARY;
     }
 
     private void processBookItemOpen(DataModel dataModel) {

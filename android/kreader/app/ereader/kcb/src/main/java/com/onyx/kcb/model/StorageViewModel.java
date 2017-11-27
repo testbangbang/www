@@ -10,6 +10,7 @@ import android.util.SparseArray;
 import android.view.View;
 
 import com.onyx.android.sdk.data.ViewType;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.kcb.event.ViewTypeEvent;
@@ -29,7 +30,7 @@ import java.util.Map;
 public class StorageViewModel extends BaseObservable {
     private static final String TAG = StorageViewModel.class.getSimpleName();
 
-    public final ObservableList<StorageItemViewModel> items = new ObservableArrayList<>();
+    public final ObservableList<DataModel> items = new ObservableArrayList<>();
     public final ObservableInt folderCount = new ObservableInt();
     public final ObservableInt fileCount = new ObservableInt();
     public final ObservableInt currentPage = new ObservableInt();
@@ -41,7 +42,7 @@ public class StorageViewModel extends BaseObservable {
 
     private final EventBus eventBus;
 
-    private Map<StorageItemViewModel, Boolean> mapSelected = new HashMap<>();
+    private Map<DataModel, Boolean> mapSelected = new HashMap<>();
     private int selectionMode = SelectionMode.NORMAL_MODE;
 
     public StorageViewModel(EventBus bus) {
@@ -60,42 +61,42 @@ public class StorageViewModel extends BaseObservable {
     }
 
     private void initDataListChangeListener() {
-        items.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<StorageItemViewModel>>() {
+        items.addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<DataModel>>() {
             @Override
-            public void onChanged(ObservableList<StorageItemViewModel> sender) {
+            public void onChanged(ObservableList<DataModel> sender) {
             }
 
             @Override
-            public void onItemRangeChanged(ObservableList<StorageItemViewModel> sender, int positionStart, int itemCount) {
+            public void onItemRangeChanged(ObservableList<DataModel> sender, int positionStart, int itemCount) {
                 updateTypeCount(sender);
             }
 
             @Override
-            public void onItemRangeInserted(ObservableList<StorageItemViewModel> sender, int positionStart, int itemCount) {
+            public void onItemRangeInserted(ObservableList<DataModel> sender, int positionStart, int itemCount) {
                 updateTypeCount(sender);
             }
 
             @Override
-            public void onItemRangeMoved(ObservableList<StorageItemViewModel> sender, int fromPosition, int toPosition, int itemCount) {
+            public void onItemRangeMoved(ObservableList<DataModel> sender, int fromPosition, int toPosition, int itemCount) {
                 updateTypeCount(sender);
             }
 
             @Override
-            public void onItemRangeRemoved(ObservableList<StorageItemViewModel> sender, int positionStart, int itemCount) {
+            public void onItemRangeRemoved(ObservableList<DataModel> sender, int positionStart, int itemCount) {
                 updateTypeCount(sender);
             }
         });
     }
 
-    private void updateTypeCount(ObservableList<StorageItemViewModel> sender) {
+    private void updateTypeCount(ObservableList<DataModel> sender) {
         int folderTotal = 0, fileTotal = 0;
-        for (StorageItemViewModel model : sender) {
+        for (DataModel model : sender) {
             switch (model.getFileModel().getType()) {
-                case FileModel.TYPE_SHORT_CUT:
-                case FileModel.TYPE_DIRECTORY:
+                case TYPE_SHORT_CUT:
+                case TYPE_DIRECTORY:
                     folderTotal++;
                     break;
-                case FileModel.TYPE_FILE:
+                case TYPE_FILE:
                     fileTotal++;
                     break;
             }
@@ -147,9 +148,9 @@ public class StorageViewModel extends BaseObservable {
         return EnvironmentUtil.getStorageRootDirectory().getAbsolutePath().contains(targetDirectory.getAbsolutePath());
     }
 
-    public void toggleItemModelSelection(StorageItemViewModel itemModel) {
-        boolean isSelected = !itemModel.isSelected.get();
-        itemModel.setSelected(isSelected);
+    public void toggleItemModelSelection(DataModel itemModel) {
+        boolean isSelected = !itemModel.checked.get();
+        itemModel.setChecked(isSelected);
         if (!isSelected) {
             getItemSelectedMap().remove(itemModel);
         }
@@ -171,7 +172,7 @@ public class StorageViewModel extends BaseObservable {
         return selectionMode;
     }
 
-    public Map<StorageItemViewModel, Boolean> getItemSelectedMap() {
+    public Map<DataModel, Boolean> getItemSelectedMap() {
         return mapSelected;
     }
 
@@ -179,7 +180,7 @@ public class StorageViewModel extends BaseObservable {
         getItemSelectedMap().clear();
     }
 
-    public void addItemSelected(StorageItemViewModel itemModel, boolean clearBeforeAdd) {
+    public void addItemSelected(DataModel itemModel, boolean clearBeforeAdd) {
         if (clearBeforeAdd) {
             clearItemSelectedMap();
         }
@@ -188,17 +189,17 @@ public class StorageViewModel extends BaseObservable {
 
     public List<File> getItemSelectedFileList() {
         List<File> fileList = new ArrayList<>();
-        for (StorageItemViewModel model : getItemSelectedMap().keySet()) {
+        for (DataModel model : getItemSelectedMap().keySet()) {
             fileList.add(model.getFileModel().getFile());
         }
         return fileList;
     }
 
-    public List<StorageItemViewModel> getItemSelectedItemModelList() {
-        return Arrays.asList(getItemSelectedMap().keySet().toArray(new StorageItemViewModel[0]));
+    public List<DataModel> getItemSelectedItemModelList() {
+        return Arrays.asList(getItemSelectedMap().keySet().toArray(new DataModel[0]));
     }
 
-    public boolean isItemSelected(StorageItemViewModel key) {
+    public boolean isItemSelected(DataModel key) {
         Boolean selected = getItemSelectedMap().get(key);
         if (selected == null) {
             return false;

@@ -58,7 +58,7 @@ public class ModelAdapter extends PageAdapter<ModelAdapter.ModelViewHolder, Data
     }
 
     private boolean canSelected(DataModel dataModel) {
-        return multiSelectionMode == SelectionMode.MULTISELECT_MODE && dataModel.type.get() == ModelType.Metadata;
+        return multiSelectionMode == SelectionMode.MULTISELECT_MODE && (dataModel.type.get() == ModelType.TYPE_METADATA || dataModel.type.get() == ModelType.TYPE_FILE);
     }
 
     @Override

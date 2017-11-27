@@ -1,4 +1,4 @@
-package com.onyx.kcb.model;
+package com.onyx.android.sdk.data.model;
 
 import android.graphics.Bitmap;
 
@@ -8,35 +8,31 @@ import java.io.File;
  * Created by suicheng on 2017/9/9.
  */
 public class FileModel {
-    public static final int TYPE_DIRECTORY = 0;
-    public static final int TYPE_FILE = 1;
-    public static final int TYPE_GO_UP = 2;
-    public static final int TYPE_SHORT_CUT = 3;
 
     private File file;
     private Bitmap thumbnail;
-    private int type;
+    private ModelType type;
     private String name;
 
     public static FileModel create(File file, Bitmap thumbnail) {
         FileModel model = new FileModel();
         model.file = file;
         model.thumbnail = thumbnail;
-        model.type = file.isDirectory() ? TYPE_DIRECTORY : TYPE_FILE;
+        model.type = file.isDirectory() ? ModelType.TYPE_DIRECTORY : ModelType.TYPE_FILE;
         return model;
     }
 
     public static FileModel createGoUpModel(File file, String name) {
         FileModel model = new FileModel();
         model.file = file;
-        model.type = TYPE_GO_UP;
+        model.type = ModelType.TYPE_GO_UP;
         model.name = name;
         return model;
     }
 
     public static FileModel createShortcutModel(File file) {
         FileModel model = create(file, null);
-        model.type = TYPE_SHORT_CUT;
+        model.type = ModelType.TYPE_SHORT_CUT;
         return model;
     }
 
@@ -56,11 +52,11 @@ public class FileModel {
         this.thumbnail = thumbnail;
     }
 
-    public int getType() {
+    public ModelType getType() {
         return type;
     }
 
-    public void setType(int type) {
+    public void setType(ModelType type) {
         this.type = type;
     }
 
@@ -83,10 +79,10 @@ public class FileModel {
     }
 
     public boolean isGoUpType() {
-        return getType() == TYPE_GO_UP;
+        return getType() == ModelType.TYPE_GO_UP;
     }
 
     public boolean isFileType() {
-        return getType() == TYPE_FILE;
+        return getType() == ModelType.TYPE_FILE;
     }
 }
