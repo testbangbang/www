@@ -4,7 +4,6 @@ package com.neverland.engbook.level2;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;
-import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
@@ -31,7 +30,7 @@ public class AlFormatBaseHTML extends AlAXML {
         if (s.length() == 0)
             return;
 
-        if (allState.isNoteSection)
+        if (!allState.isNoteSection)
             addContent(AlOneContent.add(s, allState.content_start, level));
     }
 
