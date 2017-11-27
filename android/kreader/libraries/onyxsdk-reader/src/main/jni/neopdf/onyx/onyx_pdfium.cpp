@@ -13,8 +13,7 @@
 #include "fpdf_formfill.h"
 #include "fpdf_edit.h"
 
-#include "core/fpdfapi/fpdf_page/include/cpdf_pageobject.h"
-#include "core/fpdfapi/onyx_drm_decrypt.h"
+#include "fpdf_onyx_ext.h"
 
 #include "podofo/podofo.h"
 
@@ -22,6 +21,7 @@
 #include "JNIUtils.h"
 #include "jsonxx.h"
 #include "form_helper.h"
+#include "onyx_drm_decrypt.h"
 
 static const char * selectionClassName = "com/onyx/android/sdk/reader/plugins/neopdf/NeoPdfSelection";
 static const char * splitterClassName = "com/onyx/android/sdk/reader/api/ReaderTextSplitter";
@@ -45,8 +45,16 @@ void pageToDevice(FPDF_PAGE page, double pageWidth, double pageHeight, int rotat
                          double *newLeft, double *newTop, double *newRight, double *newBottom) {
     int pw = static_cast<int>(pageWidth);
     int ph = static_cast<int>(pageHeight);
-    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, left, top, newLeft, newTop);
-    FPDF_PageToDeviceEx(page, 0, 0, pw, ph, rotation, right, bottom, newRight, newBottom);
+    int i, j;
+
+    FPDF_PageToDevice(page, 0, 0, pw, ph, rotation, left, top, &i, &j);
+    *newLeft = i;
+    *newTop = j;
+
+    FPDF_PageToDevice(page, 0, 0, pw, ph, rotation, right, bottom, &i, &j);
+    *newRight = i;
+    *newBottom = j;
+
     if (*newRight < *newLeft) {
         std::swap(*newRight, *newLeft);
     }
@@ -188,6 +196,8 @@ bool addRichMediaObjectToList(JNIEnv *env, jint id, jint pageIndex, jobject obje
 
     env->DeleteLocalRef(rectFloatArray);
     env->DeleteLocalRef(dataByteArray);
+
+    return true;
 }
 
 }
@@ -258,18 +268,19 @@ JNIEXPORT jlong JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJn
         return errorCode;
     }
 
-    onyx::DrmDecryptManager &drmManager = onyx::DrmDecryptManager::singleton();
-    drmManager.reset();
+    FPDF_ONYX_DrmSetupCallback(nullptr);
+    DrmDecryptManager::singleton().reset();
 
     std::vector<char16_t> manifestBuf;
     std::vector<char16_t> oadBuf;
     if (readDrmManifest(document, &manifestBuf, &oadBuf)) {
         std::string drmManifest = StringUtils::utf16leto8(manifestBuf.data());
         std::string additionalData = StringUtils::utf16leto8(oadBuf.data());
-        if (!drmManager.setupWithManifest(deviceId, drmCertificate, drmManifest, additionalData)) {
+        if (!DrmDecryptManager::singleton().setupWithManifest(deviceId, drmCertificate, drmManifest, additionalData)) {
             LOGE("parse document DRM failed!");
             return -1;
         }
+        FPDF_ONYX_DrmSetupCallback(&DrmDecryptManager::singleton().getDrmCallback());
     }
 
     FPDF_FORMFILLINFO formInfo;
@@ -687,18 +698,8 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
         LOGE("get page failed: %d", pageIndex);
         return false;
     }
-    int objCount = FPDFPage_CountObject(page);
-    for (int i = 0; i < objCount; i++) {
-        CPDF_PageObject *obj = static_cast<CPDF_PageObject *>(FPDFPage_GetObject(page, i));
-        if (obj == NULL) {
-            LOGE("get page object failed: %d", i);
-            return false;
-        }
-        if (obj->GetType() != FPDF_PAGEOBJ_FORM && obj->GetType() != FPDF_PAGEOBJ_TEXT) {
-            return false;
-        }
-    }
-    return true;
+
+    return static_cast<jboolean>(FPDF_ONYX_IsTextPage(page));
 }
 
 JNIEXPORT jbyteArray JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeGetPageText
@@ -943,6 +944,7 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetRenderFormFields
   (JNIEnv *env, jobject thiz, jint id, jboolean render) {
     OnyxPdfiumManager::setRenderFormFields(env, id, render);
+    return true;
 }
 
 JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeLoadFormFields

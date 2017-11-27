@@ -22,7 +22,7 @@ APP_ABI := armeabi-v7a
 #APP_ABI := mips
 
 APP_OPTIM := release
-APP_STL := gnustl_static
+APP_STL := c++_static
 
 # If the ndk is r8b then workaround bug by uncommenting the following line
 #NDK_TOOLCHAIN_VERSION=4.4.3
