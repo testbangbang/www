@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/item_article_push_checkbox_container_margin_left"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:layout_width="@dimen/new_word_activity_all_check_width"
+            android:layout_height="@dimen/item_summary_list_height"
+            android:layout_gravity="center"
+            android:layout_marginRight="@dimen/new_word_item_order_number_margin_left"
+            android:gravity="center">
+
+            <CheckBox
+                android:id="@+id/item_article_push_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:scaleX="1.4"
+                android:scaleY="1.4" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/item_article_push_title"
+            style="@style/article_push_item_text_view_style"
+            android:text="@string/book_name"
+            android:textSize="@dimen/level_one_font_size" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/item_article_push_author"
+            style="@style/article_push_item_text_view_style"
+            android:layout_marginLeft="@dimen/item_article_push_author_margin_left"
+            android:text="@string/book_name" />
+
+        <TextView
+            android:id="@+id/item_article_push_book_name"
+            style="@style/article_push_item_text_view_style"
+            android:layout_marginLeft="@dimen/item_article_push_book_name_margin_left"
+            android:text="@string/book_name" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/article_push_item_text_view_style"
+            android:layout_marginLeft="@dimen/item_article_push_language_margin_left"
+            android:text="@string/language_hint" />
+
+        <TextView
+            android:id="@+id/item_article_push_language"
+            style="@style/article_push_item_text_view_style"
+            android:layout_marginLeft="@dimen/item_article_push_language_text_margin_left"
+            android:text="@string/chinese" />
+
+        <TextView
+            style="@style/article_push_item_text_view_style"
+            android:layout_marginLeft="@dimen/item_article_push_time_margin_left"
+            android:text="@string/register_date" />
+
+        <TextView
+            android:id="@+id/item_article_push_time"
+            style="@style/article_push_item_text_view_style"
+            android:layout_marginLeft="@dimen/item_article_push_language_text_margin_left"
+            android:text="@string/book_name" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/item_article_push_enter_bookstore"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/item_article_push_enter_bookstore_margin_right"
+            android:background="@drawable/rectangle_stroke_focused"
+            android:padding="@dimen/info_item_group_join_padding"
+            android:text="@string/enter_bookstore"
+            android:textColor="@color/white"
+            android:textSize="@dimen/level_two_heading_font" />
+    </RelativeLayout>
+
+</LinearLayout>

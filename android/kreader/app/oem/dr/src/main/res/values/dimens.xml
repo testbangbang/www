@@ -502,5 +502,17 @@
     <dimen name="add_memorandum_activity_container_margin">20dp</dimen>
     <dimen name="memorandum_item_day_of_week_margin_left">2dp</dimen>
     <dimen name="new_words_review_title_hint_margin_left">20dp</dimen>
+    <dimen name="title_bar_right_checkbox_textview_margin_right">15dp</dimen>
+    <dimen name="title_bar_right_checkbox_margin_right">-15dp</dimen>
+    <dimen name="title_bar_right_checkbox_margin_top">-10dp</dimen>
+    <dimen name="title_bar_right_checkbox_margin_bottom">10dp</dimen>
+    <dimen name="item_article_push_author_margin_left">95dp</dimen>
+    <dimen name="item_article_push_book_name_margin_left">40dp</dimen>
+    <dimen name="item_article_push_time_margin_left">70dp</dimen>
+    <dimen name="item_article_push_enter_bookstore_margin_right">40dp</dimen>
+    <dimen name="item_article_push_language_margin_left">85dp</dimen>
+    <dimen name="item_article_push_language_text_margin_left">10dp</dimen>
+    <dimen name="item_article_push_checkbox_container_margin_left">20dp</dimen>
+    <dimen name="title_bar_right_checkbox_container_margin_left">10dp</dimen>
     <item name="activity_content_pageView_row_count" format="float" type="dimen">6</item>
 </resources>

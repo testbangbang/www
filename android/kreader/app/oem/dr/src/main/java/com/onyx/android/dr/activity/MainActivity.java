@@ -14,7 +14,6 @@ import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.adapter.TabMenuAdapter;
 import com.onyx.android.dr.common.ActivityManager;
-import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.data.MainTabMenuConfig;
 import com.onyx.android.dr.data.MenuBean;
@@ -189,7 +188,7 @@ public class MainActivity extends BaseActivity implements MainView {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onArticlePushMenuEvent(ArticlePushMenuEvent event) {
-        CommonNotices.showMessage(this, getString(R.string.menu_article_push));
+        ActivityManager.startArticlePushActivity(this);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
