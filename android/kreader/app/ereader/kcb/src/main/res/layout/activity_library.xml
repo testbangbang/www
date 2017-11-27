@@ -46,6 +46,52 @@
                         android:layout_toRightOf="@+id/imageView_back"
                         android:text="@{dataModel.title??@string/library}" />
 
+                    <LinearLayout
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="5dp"
+                        android:layout_marginRight="10dp"
+                        android:background="@drawable/background_white_rectangle_black_border"
+                        android:focusable="true"
+                        android:layout_centerVertical="true"
+                        android:focusableInTouchMode="true">
+
+                        <EditText
+                            android:id="@+id/editText_search_box"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@android:color/transparent"
+                            android:ellipsize="end"
+                            android:gravity="center_vertical"
+                            android:hint="@string/search_hint"
+                            android:singleLine="true"
+                            android:textColor="@android:color/black"
+                            android:text="@={dataModel.searchKey}"
+                            android:textSize="@dimen/reader_layer_menu_button_item_text_size" />
+
+                        <View
+                            android:id="@+id/search_divider_line"
+                            style="@style/single_line_Y_axis_View"
+                            android:layout_width="3dp"
+                            android:layout_marginBottom="1dp"
+                            android:layout_marginTop="1dp" />
+
+                        <ImageView
+                            android:id="@+id/button_search"
+                            android:layout_width="@dimen/library_search_button_size"
+                            android:layout_height="@dimen/library_search_button_size"
+                            android:layout_margin="2dp"
+                            android:background="@drawable/imagebtn_bg"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:scaleType="fitXY"
+                            android:onClick="@{()->dataModel.searchBook()}"
+                            android:src="@drawable/search_open_icon" />
+
+                    </LinearLayout>
+
                 </RelativeLayout>
 
             </RelativeLayout>
@@ -66,6 +112,7 @@
             android:layout_marginRight="@dimen/parent_library_ref_margin"
             android:layout_marginTop="@dimen/parent_library_ref_margin"
             android:orientation="horizontal" />
+
 
         <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
             android:id="@+id/content_pageView"

@@ -50,12 +50,11 @@ public class DataModelUtil {
             model.desc.set(metadata.getDescription());
             model.absolutePath.set(metadata.getNativeAbsolutePath());
             model.checked.set(isSelected(selectedList, metadata));
-            model.coverDefault.set(R.drawable.book_default_cover);
-            if (!CollectionUtils.isNullOrEmpty(thumbnailMap)) {
-                CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
-                if (bitmap != null) {
-                    model.coverBitMap.set(bitmap.get());
-                }
+            CloseableReference<Bitmap> bitmap = thumbnailMap.get(metadata.getAssociationId());
+            if (bitmap != null) {
+                model.coverBitmap.set(bitmap);
+            } else {
+                model.coverDefault.set(R.drawable.book_default_cover);
             }
 
             dataModels.add(model);

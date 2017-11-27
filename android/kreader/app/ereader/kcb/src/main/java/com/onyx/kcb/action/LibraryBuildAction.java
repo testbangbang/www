@@ -10,7 +10,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.kcb.R;
 import com.onyx.kcb.dialog.DialogAddEdit;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 import com.onyx.kcb.model.DialogAddEditModel;
 
 import java.util.UUID;
@@ -19,7 +19,7 @@ import java.util.UUID;
  * Created by hehai on 17-11-13.
  */
 
-public class LibraryBuildAction extends BaseAction<LibraryDataHolder> {
+public class LibraryBuildAction extends BaseAction<DataBundle> {
     private FragmentManager fragmentManager;
     private String parentLibraryIdString;
     private DialogAddEditModel model;
@@ -30,30 +30,30 @@ public class LibraryBuildAction extends BaseAction<LibraryDataHolder> {
     }
 
     @Override
-    public void execute(final LibraryDataHolder dataHolder, final RxCallback baseCallback) {
-        Context context = dataHolder.getContext();
+    public void execute(final DataBundle dataBundle, final RxCallback baseCallback) {
+        Context context = dataBundle.getAppContext();
         model = new DialogAddEditModel();
         model.contentTitle.set(context.getString(R.string.menu_library_build));
         model.titles.add(context.getString(R.string.library_name));
         model.titles.add(context.getString(R.string.description));
-        DialogAddEdit dialog = new DialogAddEdit(dataHolder.getContext(), model);
+        DialogAddEdit dialog = new DialogAddEdit(dataBundle.getAppContext(), model);
         dialog.setOnCreatedListener(new DialogAddEdit.OnCreatedListener() {
             @Override
             public void onCreate() {
                 String[] contentList = model.combine.get().split(model.spitSymbol.get());
-                buildLibrary(dataHolder, contentList, baseCallback);
+                buildLibrary(dataBundle, contentList, baseCallback);
             }
         });
         dialog.show(fragmentManager);
     }
 
-    private void buildLibrary(final LibraryDataHolder dataHolder, String[] contentList, final RxCallback baseCallback) {
+    private void buildLibrary(final DataBundle dataBundle, String[] contentList, final RxCallback baseCallback) {
         Library library = new Library();
         library.setParentUniqueId(parentLibraryIdString);
         library.setIdString(UUID.randomUUID().toString());
         library.setName(contentList[0]);
         library.setDescription(contentList[1]);
-        final RxLibraryBuildRequest buildLibraryRequest = new RxLibraryBuildRequest(dataHolder.getDataManager(), library, null);
+        final RxLibraryBuildRequest buildLibraryRequest = new RxLibraryBuildRequest(dataBundle.getDataManager(), library, null);
         buildLibraryRequest.execute(new RxCallback<RxLibraryBuildRequest>() {
             @Override
             public void onNext(RxLibraryBuildRequest rxLibraryBuildRequest) {
@@ -64,7 +64,7 @@ public class LibraryBuildAction extends BaseAction<LibraryDataHolder> {
             public void onError(Throwable throwable) {
                 super.onError(throwable);
                 if (throwable != null) {
-                    ToastUtils.showToast(dataHolder.getContext(), R.string.library_build_fail);
+                    ToastUtils.showToast(dataBundle.getAppContext(), R.string.library_build_fail);
                 }
                 baseCallback.onError(throwable);
             }

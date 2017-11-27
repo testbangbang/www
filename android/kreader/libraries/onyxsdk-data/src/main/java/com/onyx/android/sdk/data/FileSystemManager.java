@@ -1,10 +1,8 @@
 package com.onyx.android.sdk.data;
 
-import com.onyx.android.sdk.utils.CollectionUtils;
-
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Created by zhuzeng on 02/04/2017.
@@ -12,12 +10,12 @@ import java.util.HashSet;
 
 public class FileSystemManager {
 
-    private HashMap<String, FileSystemSnapshot> storageSnapshot = new HashMap<>();
+    private ConcurrentHashMap<String, FileSystemSnapshot> storageSnapshot = new ConcurrentHashMap<>();
 
     public FileSystemManager() {
     }
 
-    public void diff(final String storageId, final HashSet<String> newSet, final HashSet<String> added, final HashSet<String> removed) {
+    public synchronized void diff(final String storageId, final HashSet<String> newSet, final HashSet<String> added, final HashSet<String> removed) {
         final FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
         if (wrapper == null) {
             return;
@@ -25,7 +23,7 @@ public class FileSystemManager {
         wrapper.diff(newSet, added, removed);
     }
 
-    public void clear(final String storageId) {
+    public synchronized void clear(final String storageId) {
         final FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
         if (wrapper == null) {
             return;
@@ -33,7 +31,7 @@ public class FileSystemManager {
         wrapper.clear();
     }
 
-    public void addAll(final String storageId, final Collection<String> pathList, boolean createIfNotExist) {
+    public synchronized void addAll(final String storageId, final Collection<String> pathList, boolean createIfNotExist) {
         FileSystemSnapshot wrapper = storageSnapshot.get(storageId);
         if (wrapper == null) {
             if (!createIfNotExist) {

@@ -6,6 +6,8 @@
     <dimen name="model_item_cover_height">280dp</dimen>
     <dimen name="page_indicator_layout_margin">10dp</dimen>
     <dimen name="page_indicator_layout_refresh_margin_right">25dp</dimen>
+    <dimen name="library_search_button_size">40dp</dimen>
+    <dimen name="library_search_edit_padding_left">10dp</dimen>
 
     <dimen name="dialog_content_text_size">26sp</dimen>
     <dimen name="dialog_app_open_list_item_height">112dp</dimen>

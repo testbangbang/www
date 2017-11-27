@@ -19,6 +19,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
@@ -29,18 +30,24 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
-import com.onyx.kcb.KCPApplication;
+import com.onyx.kcb.KCBApplication;
 import com.onyx.kcb.R;
+import com.onyx.kcb.action.ActionChain;
+import com.onyx.kcb.action.ConfigFilterAction;
+import com.onyx.kcb.action.ConfigSortAction;
 import com.onyx.kcb.action.LibraryBuildAction;
-import com.onyx.kcb.action.LibraryChoiceAction;
+import com.onyx.kcb.action.LibrarySelectionAction;
 import com.onyx.kcb.action.LibraryDeleteAction;
 import com.onyx.kcb.action.LibraryMoveToAction;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.action.RxMetadataLoadAction;
+import com.onyx.kcb.action.ExtractMetadataAction;
 import com.onyx.kcb.adapter.ModelAdapter;
 import com.onyx.kcb.databinding.ActivityLibraryBinding;
-import com.onyx.kcb.holder.LibraryDataHolder;
-import com.onyx.kcb.model.LibraryViewDataModel;
+import com.onyx.kcb.event.HideAllDialogEvent;
+import com.onyx.kcb.event.LoadingDialogEvent;
+import com.onyx.kcb.event.SearchBookEvent;
+import com.onyx.kcb.holder.DataBundle;
 import com.onyx.kcb.model.PageIndicatorModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -54,14 +61,12 @@ import java.util.List;
  */
 
 public class LibraryActivity extends OnyxAppCompatActivity {
-    static private boolean hasMetadataScanned = false;
     private ActivityLibraryBinding dataBinding;
-    private LibraryViewDataModel dataModel;
-    private LibraryDataHolder dataHolder;
+    private DataBundle dataBundle;
     private QueryPagination pagination;
     private PageIndicatorModel pageIndicatorModel;
-    private int row = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
-    private int col = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
+    private int row = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
+    private int col = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
     private boolean longClickMode = false;
     private ModelAdapter modelAdapter;
     private DataModel currentChosenModel;
@@ -81,7 +86,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void initData() {
-        if (!isHasMetadataScanned()) {
+        if (!KCBApplication.getInstance().isHasMetadataScanned()) {
             processFileSystemScan();
             return;
         }
@@ -93,7 +98,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private QueryArgs libraryBuildQueryArgs() {
-        QueryArgs args = dataModel.libraryQuery();
+        QueryArgs args = dataBundle.getLibraryViewDataModel().libraryQuery();
         QueryBuilder.andWith(args.conditionGroup, null);
         return args;
     }
@@ -103,15 +108,15 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void loadData(QueryArgs queryArgs, boolean loadFromCache) {
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataModel, queryArgs);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(queryArgs);
         loadAction.setLoadFromCache(loadFromCache);
-        loadAction.execute(dataHolder, new RxCallback() {
+        loadAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
-                loadAction.hideLoadingDialog();
             }
         });
+        preloadNext();
     }
 
     private void updateContentView() {
@@ -131,47 +136,59 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private int getTotalCount() {
-        return dataModel.count.get();
+        return dataBundle.getLibraryViewDataModel().count.get();
     }
 
-    private void nextLoad() {
+    private void preloadNext() {
         int preLoadPage = pagination.getCurrentPage() + 1;
         if (preLoadPage >= pagination.pages()) {
             return;
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataModel, dataModel.pageQueryArgs(preLoadPage), false);
-        loadAction.execute(dataHolder, null);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
+        loadAction.execute(dataBundle, null);
     }
 
     private void processFileSystemScan() {
         final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
         dialogLoading.show();
-        RxFileSystemScanAction action = new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true);
-        action.execute(dataHolder, new RxCallback() {
+        ActionChain actionChain = new ActionChain();
+        actionChain.addAction(new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true));
+        String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
+        if (StringUtils.isNotBlank(sdcardCid)) {
+            actionChain.addAction(new RxFileSystemScanAction(sdcardCid, false));
+        }
+        actionChain.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                dialogLoading.dismiss();
-                setHasMetadataScanned(true);
-                loadData();
+
             }
 
             @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
+            public void onComplete() {
+                super.onComplete();
                 dialogLoading.dismiss();
+                KCBApplication.getInstance().setHasMetadataScanned(true);
+                loadData();
             }
         });
     }
 
     private void initView() {
-        dataHolder = getDataHolder();
-        dataModel = LibraryViewDataModel.create(getEventBus(), row, col);
-        dataModel.title.set(getString(R.string.library));
-        dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_library);
-        dataBinding.setDataModel(dataModel);
+        initHolder();
+        initDataBinding();
         initActionBar();
         initPageRecyclerView();
         initPageIndicator();
+    }
+
+    private void initDataBinding() {
+        dataBinding = DataBindingUtil.setContentView(this, R.layout.activity_library);
+        dataBinding.setDataModel(dataBundle.getLibraryViewDataModel());
+    }
+
+    private void initHolder() {
+        dataBundle = KCBApplication.getDataBundle();
+        dataBundle.getLibraryViewDataModel().title.set(getString(R.string.library));
     }
 
     private void initActionBar() {
@@ -193,7 +210,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void initPageIndicator() {
-        pagination = dataModel.getQueryPagination();
+        pagination = dataBundle.getLibraryViewDataModel().getQueryPagination();
         pagination.setCurrentPage(0);
         pageIndicatorModel = new PageIndicatorModel(pagination, new PageIndicatorModel.PageChangedListener() {
             @Override
@@ -213,6 +230,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
             @Override
             public void onRefresh() {
+                pagination.setCurrentPage(0);
                 loadData();
             }
         });
@@ -242,57 +260,41 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         if (!pagination.prevPage()) {
             return;
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataModel, dataModel.prevPage(), false);
-        loadAction.execute(dataHolder, new RxCallback() {
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().prevPage(), false);
+        loadAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
             }
         });
-        prevLoad();
+        preloadPrev();
     }
 
-    private void prevLoad() {
+    private void preloadPrev() {
         int preLoadPage = pagination.getCurrentPage() - 1;
         if (preLoadPage < 0) {
             return;
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataModel,
-                dataModel.pageQueryArgs(preLoadPage), false);
-        loadAction.execute(dataHolder, null);
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().pageQueryArgs(preLoadPage), false);
+        loadAction.execute(dataBundle, null);
     }
 
     private void nextPage() {
         if (!pagination.nextPage()) {
             return;
         }
-        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataModel, dataModel.nextPage(), false);
-        loadAction.execute(dataHolder, new RxCallback() {
+        final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().nextPage(), false);
+        loadAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateContentView();
             }
         });
-        nextLoad();
-    }
-
-    public static boolean isHasMetadataScanned() {
-        return hasMetadataScanned;
-    }
-
-    public static void setHasMetadataScanned(boolean hasMetadataScanned) {
-        LibraryActivity.hasMetadataScanned = hasMetadataScanned;
-    }
-
-    private LibraryDataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new LibraryDataHolder(this);
-        }
-        return dataHolder;
+        preloadNext();
     }
 
     private EventBus getEventBus() {
-        return getDataHolder().getEventBus();
+        return dataBundle.getEventBus();
     }
 
     public SinglePageRecyclerView getContentView() {
@@ -327,7 +329,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             updateContentView();
             return;
         }
-        if (CollectionUtils.isNullOrEmpty(dataModel.libraryPathList)) {
+        if (CollectionUtils.isNullOrEmpty(dataBundle.getLibraryViewDataModel().libraryPathList)) {
             super.onBackPressed();
             return;
         }
@@ -336,7 +338,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void removeLastParentLibrary() {
-        dataModel.libraryPathList.remove(dataModel.libraryPathList.size() - 1);
+        dataBundle.getLibraryViewDataModel().libraryPathList.remove(dataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
         loadData();
     }
 
@@ -367,24 +369,50 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             case R.id.menu_library_toc_index:
                 processGotoLibrary();
                 break;
+            case R.id.menu_scan_thumbnail:
+                processExtractMetadata();
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
     }
 
-    private void processGotoLibrary() {
-        final LibraryChoiceAction choiceAction = new LibraryChoiceAction(getFragmentManager(), getString(R.string.menu_library_toc_index));
-        choiceAction.execute(dataHolder, new RxCallback() {
+    private void processExtractMetadata() {
+        final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
+        dialogLoading.show();
+        final QueryArgs queryArgs = dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage());
+        ExtractMetadataAction action = new ExtractMetadataAction(queryArgs, false);
+        action.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                final DataModel gotoLibrary = choiceAction.getChooseLibrary();
-                choiceAction.gotoLibrary(dataHolder, gotoLibrary, new RxCallback() {
+                loadData(queryArgs);
+                dialogLoading.dismiss();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                dialogLoading.dismiss();
+            }
+        });
+
+        ExtractMetadataAction allScanAction = new ExtractMetadataAction(QueryBuilder.allBooksQuery(queryArgs.sortBy, queryArgs.order), false);
+        allScanAction.execute(dataBundle, null);
+    }
+
+    private void processGotoLibrary() {
+        final LibrarySelectionAction choiceAction = new LibrarySelectionAction(getFragmentManager(), getString(R.string.menu_library_toc_index));
+        choiceAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                final DataModel gotoLibrary = choiceAction.getLibrarySelected();
+                choiceAction.gotoLibrary(dataBundle, gotoLibrary, new RxCallback() {
                     @Override
                     public void onNext(Object o) {
-                        dataModel.libraryPathList.clear();
-                        dataModel.libraryPathList.addAll(choiceAction.getParentPathList());
-                        loadData(dataModel.libraryQuery(gotoLibrary.idString.get()));
+                        dataBundle.getLibraryViewDataModel().libraryPathList.clear();
+                        dataBundle.getLibraryViewDataModel().libraryPathList.addAll(choiceAction.getParentPathList());
+                        loadData(dataBundle.getLibraryViewDataModel().libraryQuery(gotoLibrary.idString.get()));
                     }
                 });
             }
@@ -396,7 +424,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         library.setId(currentChosenModel.id.get());
         library.setIdString(currentChosenModel.idString.get());
         library.setParentUniqueId(currentChosenModel.parentId.get());
-        new LibraryDeleteAction(this, library).execute(dataHolder, new RxCallback() {
+        new LibraryDeleteAction(this, library).execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 loadData();
@@ -409,9 +437,9 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processAddToLibrary() {
-        List<DataModel> listSelected = dataModel.getListSelected();
+        List<DataModel> listSelected = dataBundle.getLibraryViewDataModel().getListSelected();
         LibraryMoveToAction libraryMoveToAction = new LibraryMoveToAction(this, listSelected);
-        libraryMoveToAction.execute(getDataHolder(), new RxCallback() {
+        libraryMoveToAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 quitLongClickMode();
@@ -422,8 +450,8 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processBuildLibrary() {
-        LibraryBuildAction libraryBuildAction = new LibraryBuildAction(this, dataModel.getLibraryIdString());
-        libraryBuildAction.execute(dataHolder, new RxCallback() {
+        LibraryBuildAction libraryBuildAction = new LibraryBuildAction(this, dataBundle.getLibraryViewDataModel().getLibraryIdString());
+        libraryBuildAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 loadData();
@@ -433,16 +461,38 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     private void getIntoMultiSelectMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
-        dataModel.clearItemSelectedList();
+        dataBundle.getLibraryViewDataModel().clearItemSelectedList();
         updateContentView();
     }
 
     private void processFilterByBy() {
+        ConfigFilterAction filterAction = new ConfigFilterAction(this);
+        filterAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
 
+            }
+
+            @Override
+            public void onComplete() {
+                loadData(dataBundle.getLibraryViewDataModel().getCurrentQueryArgs());
+            }
+        });
     }
 
     private void processSortBy() {
+        ConfigSortAction sortAction = new ConfigSortAction(this);
+        sortAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
 
+            }
+
+            @Override
+            public void onComplete() {
+                loadData(dataBundle.getLibraryViewDataModel().getCurrentQueryArgs());
+            }
+        });
     }
 
     @Subscribe
@@ -461,6 +511,11 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         }
     }
 
+    @Subscribe
+    public void onSearchBookEvent(SearchBookEvent event) {
+        loadData(event.getQueryArgs());
+    }
+
     private void processNormalModeItemClick(DataModel model) {
         if (model.type.get() == ModelType.TYPE_LIBRARY) {
             processLibraryItem(model);
@@ -475,7 +530,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void addLibraryToParentRefList(DataModel model) {
-        dataModel.libraryPathList.add(model);
+        dataBundle.getLibraryViewDataModel().libraryPathList.add(model);
     }
 
     private void processMultiModeItemClick(DataModel dataModel) {
@@ -484,9 +539,9 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         }
         dataModel.checked.set(!dataModel.checked.get());
         if (dataModel.checked.get()) {
-            this.dataModel.addItemSelected(dataModel, false);
+            dataBundle.getLibraryViewDataModel().addItemSelected(dataModel, false);
         } else {
-            this.dataModel.removeFromSelected(dataModel);
+            dataBundle.getLibraryViewDataModel().removeFromSelected(dataModel);
         }
         updateContentView();
     }
@@ -503,7 +558,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                         menu.getItem(i).setVisible(false);
                     } else {
                         menu.getItem(i).setVisible(!CollectionUtils.isNullOrEmpty(
-                                dataHolder.getLibraryViewInfo().getLibraryPathList()));
+                                dataBundle.getLibraryViewDataModel().libraryPathList));
                     }
                     break;
                 case R.id.menu_delete_library:
@@ -520,7 +575,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         for (int i = 0; i < menu.size(); i++) {
             switch (menu.getItem(i).getItemId()) {
                 case R.id.menu_remove_from_library:
-                    if (CollectionUtils.isNullOrEmpty(dataHolder.getLibraryViewInfo().getLibraryPathList())) {
+                    if (CollectionUtils.isNullOrEmpty(dataBundle.getLibraryViewDataModel().libraryPathList)) {
                         menu.getItem(i).setVisible(false);
                     } else {
                         menu.getItem(i).setVisible(isMultiSelectionMode());
@@ -570,6 +625,16 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
-        dataModel.clearItemSelectedList();
+        dataBundle.getLibraryViewDataModel().clearItemSelectedList();
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        showProgressDialog(event, event.getResId(), null);
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        dismissAllProgressDialog();
     }
 }

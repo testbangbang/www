@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.facebook.common.references.CloseableReference;
+import com.facebook.drawee.backends.pipeline.DrawableFactory;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kcb.R;
@@ -24,7 +26,7 @@ import java.util.List;
 public class OnyxDataBindingUtil {
     @BindingAdapter({"android:src"})
     public static void setImageViewResource(ImageView imageView, int resource) {
-        if (resource != 0){
+        if (resource != 0) {
             imageView.setImageResource(resource);
         }
     }
@@ -35,9 +37,9 @@ public class OnyxDataBindingUtil {
     }
 
     @BindingAdapter({"thumbnail"})
-    public static void setImageViewBitmap(ImageView imageView, Bitmap bitmap) {
-        if (bitmap != null){
-            imageView.setImageBitmap(bitmap);
+    public static void setImageViewBitmap(ImageView imageView, CloseableReference<Bitmap> bitmap) {
+        if (bitmap != null) {
+            imageView.setImageBitmap(bitmap.get());
         }
     }
 
