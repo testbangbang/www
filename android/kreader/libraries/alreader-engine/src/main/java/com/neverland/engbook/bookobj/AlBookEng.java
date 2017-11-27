@@ -3188,7 +3188,7 @@ public class AlBookEng{
 	private void initOneItem(AlOneItem oi, AlOneItem poi, long style,
 							 int pos, int width, boolean addEmptyLine, TAL_CALC_MODE calcMode, AlOnePage page) {
 
-		long v;
+		long vP, vE;
 
         if (profiles.specialModeRoll)
             addEmptyLine = true;
@@ -3267,31 +3267,38 @@ public class AlBookEng{
 			oi.isStart = true;
 
 			if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
-				v = 8 * 3;
+				vE = 8 * 2;
+				vP = 0;
 			} else {
-				v = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
-				if (preferences.chinezeFormatting) {
-					v *= 2;
+				if ((oi.prop & AlParProperty.SL2_INDENT_EM) != 0L) {
+					vE = (oi.prop & (AlParProperty.SL2_INDENT_MASK - AlParProperty.SL2_INDENT_EM)) >> AlParProperty.SL2_INDENT_SHIFT;
+					if (preferences.chinezeFormatting)
+						vE *= 2;
+					vP = 0;
+				} else {
+					vP = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
+					vE = 0;
 				}
 			}
 
-			if (v > 0 && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
+			if ((vE > 0 || vP > 0) && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
 				if (!profiles.classicFirstLetter || (style & AlStyles.SL_MARKFIRTSTLETTER0) == 0) {
-					//oi.isRed = (int)(((double)width) * v / 300.0);
-					oi.isRed = (int)(fontParam.space_width * v / 3);
+					oi.isRed = (int)(fontParam.em_width * vE / 2) + (int)(((double)width) * vP / 100.0);
+					if (oi.isRed > oi.allWidth * 0.8)
+						oi.isRed = (int) (oi.allWidth * 0.8);
 					oi.allWidth -= oi.isRed;
 				}
 			}
 			
 			if (addEmptyLine || preferences.isASRoll) {
 
-				v = (oi.prop & (AlParProperty.SL2_MARGT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_MARGT_SHIFT;
-				if (v != 0) {
+				vP = (oi.prop & (AlParProperty.SL2_MARGT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_MARGT_SHIFT;
+				if (vP != 0) {
 					//v = (int32_t)(((double)page->pageHeight) * v / 100) * profiles.multiplexer;
-					v = (int)(((double)width) * v / 300.0);
-					if (v > (page.pageHeight >> 1))
-						v = page.pageHeight >> 1;
-					oi.height += v;
+					vP = (int)(((double)width) * vP / 100.0);
+					if (vP > (page.pageHeight >> 1))
+						vP = page.pageHeight >> 1;
+					oi.height += vP;
 				}
 
 				/*if ((poi == null && (style & AlStyles.SL_STANZA) != 0) || (oi.isTableRow) ||
@@ -3378,22 +3385,22 @@ public class AlBookEng{
 			}
 		}
 
-		v = (oi.prop & (AlParProperty.SL2_MARGL_MASK/* - AlParProperty::SL2_MARGL_MASK_EM*/)) >> AlParProperty.SL2_MARGL_SHIFT;
-		if (v != 0) {
-			//oi.isLeft = (int)(((double)width) * v / 300.0);
-			oi.isLeft = (int)(fontParam.space_width * v / 3);
+		vP = (oi.prop & (AlParProperty.SL2_MARGL_PERCENT_MASK)) >> AlParProperty.SL2_MARGL_PERCENT_SHIFT;
+		vE = (oi.prop & (AlParProperty.SL2_MARGL_EM_MASK)) >> AlParProperty.SL2_MARGL_EM_SHIFT;
+		if (vP != 0 || vE != 0) {
+			oi.isLeft = (int)(fontParam.em_width * vE / 2) + (int)(((double)width) * vP / 100.0);
 			if (oi.isLeft > oi.allWidth * 0.8)
-				oi.isLeft = (int)(oi.allWidth * 0.8);
+				oi.isLeft = (int) (oi.allWidth * 0.8);
 
 			oi.allWidth -= oi.isLeft;
 		}
 
-		v = (oi.prop & (AlParProperty.SL2_MARGR_MASK/* - AlParProperty::SL2_MARGR_MASK_EM*/)) >> AlParProperty.SL2_MARGR_SHIFT;
-		if (v != 0) {
-			//oi.isRight = (int)(((double)width) * v / 300.0);
-			oi.isRight = (int)(fontParam.space_width * v / 3);
+		vP = (oi.prop & (AlParProperty.SL2_MARGR_PERCENT_MASK)) >> AlParProperty.SL2_MARGR_PERCENT_SHIFT;
+		vE = (oi.prop & (AlParProperty.SL2_MARGR_EM_MASK)) >> AlParProperty.SL2_MARGR_EM_SHIFT;
+		if (vP != 0 || vE != 0) {
+			oi.isRight = (int)(fontParam.em_width * vE / 2) + (int)(((double)width) * vP / 100.0);
 			if (oi.isRight > oi.allWidth * 0.8)
-				oi.isRight = (int)(oi.allWidth * 0.8);
+				oi.isRight = (int) (oi.allWidth * 0.8);
 
 			oi.allWidth -= oi.isRight;
 		}
