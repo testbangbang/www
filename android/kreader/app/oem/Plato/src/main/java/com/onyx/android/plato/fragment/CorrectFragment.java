@@ -6,8 +6,8 @@ import android.view.View;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.FillHomeworkAdapter;
+import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
@@ -32,7 +32,7 @@ import java.util.List;
 
 public class CorrectFragment extends BaseFragment implements View.OnClickListener, CorrectView {
     private CorrectDataBinding correctDataBinding;
-    private FinishContent content;
+    private ContentBean content;
     private FillHomeworkAdapter adapter;
     private String title;
     private CorrectPresenter presenter;
@@ -92,20 +92,20 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnTimerEvent(TimerEvent event) {
         correctDataBinding.setCount(event.getResult());
-        if(event.getResult() == 0 && content.correctTime == null) {
+        if (event.getResult() == 0 && content.correctTime == null) {
             EventBus.getDefault().post(new HomeworkFinishedEvent());
         }
     }
 
-    public void setStartTimer(FinishContent content) {
+    public void setStartTimer(ContentBean content) {
         this.content = content;
         TimerEvent timerEvent = new TimerEvent();
         timerEvent.timeCountDown(3);
-        if(correctDataBinding != null) {
+        if (correctDataBinding != null) {
             setVisible();
         }
 
-        if(presenter != null && content.correctTime != null) {
+        if (presenter != null && content.correctTime != null) {
             //TODO:fake practice id 25,student id 108
             presenter.getCorrectData(content.id, SunApplication.getStudentId());
         }
@@ -135,7 +135,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void setQuestionBeanList(List<QuestionViewBean> questionList) {
-        if(adapter == null) {
+        if (adapter == null) {
             return;
         }
         //TODO:fake practice id 25

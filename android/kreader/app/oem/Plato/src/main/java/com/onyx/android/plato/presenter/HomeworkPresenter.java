@@ -5,7 +5,6 @@ import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.ExerciseBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.GetReportListBean;
 import com.onyx.android.plato.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.plato.cloud.bean.GetSubjectBean;
@@ -103,7 +102,7 @@ public class HomeworkPresenter {
                 }
 
                 HomeworkFinishedResultBean.FinishData data = resultBean.data;
-                List<FinishContent> content = data.content;
+                List<ContentBean> content = data.content;
                 if (content != null && content.size() > 0) {
                     homeworkView.setFinishedData(content);
                 } else {

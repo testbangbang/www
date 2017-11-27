@@ -29,21 +29,28 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <TextView
+        <LinearLayout
+            android:id="@+id/fill_homework_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/fill_homework_page_title_margin_top"
-            android:gravity="center_horizontal"
-            android:text="@{taskName}"
-            android:textSize="@dimen/level_one_heading_font"
-            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}" />
+            android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{@string/full_score(wholeScore)}"
-            android:textSize="@dimen/level_three_heading_font"
-            android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fill_homework_page_title_margin_top"
+                android:gravity="center_horizontal"
+                android:text="@{taskName}"
+                android:textSize="@dimen/level_one_heading_font"
+                android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/full_score(wholeScore)}"
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="@{showTaskType ? View.VISIBLE : View.GONE}" />
+        </LinearLayout>
 
         <com.onyx.android.plato.view.NestedPageRecyclerView
             android:id="@+id/fill_homework_recycler"

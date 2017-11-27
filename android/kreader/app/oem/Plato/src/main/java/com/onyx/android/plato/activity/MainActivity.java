@@ -14,7 +14,6 @@ import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.bean.MainTabBean;
 import com.onyx.android.plato.bean.User;
 import com.onyx.android.plato.cloud.bean.ContentBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
 import com.onyx.android.plato.common.AppConfigData;
 import com.onyx.android.plato.common.CommonNotices;
@@ -357,7 +356,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onUnfinishedEvent(UnfinishedEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_FILL_HOMEWORK);
         FillHomeworkFragment fillHomeworkFragment = (FillHomeworkFragment) getPageView(ChildViewID.FRAGMENT_FILL_HOMEWORK);
-        fillHomeworkFragment.setTaskId(event.getId(), event.getType(), event.getTitle());
+        fillHomeworkFragment.setTaskId(event.getId(), event.getPracticeId(), event.getType(), event.getTitle());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -381,7 +380,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onToCorrectEvent(ToCorrectEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_CORRECT);
         CorrectFragment correctFragment = (CorrectFragment) getPageView(ChildViewID.FRAGMENT_CORRECT);
-        FinishContent content = event.getContent();
+        ContentBean content = event.getContent();
         if (content != null) {
             correctFragment.setStartTimer(content);
         }

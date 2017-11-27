@@ -2,7 +2,11 @@ package com.onyx.android.plato.utils;
 
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.common.Constants;
 
 import java.io.BufferedOutputStream;
@@ -40,5 +44,9 @@ public class Utils {
             e.printStackTrace();
         }
         return file;
+    }
+
+    public static void loadImageUrl(String url, ImageView imageView, int defaultImage) {
+        Glide.with(SunApplication.getInstance()).load(url).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(defaultImage).into(imageView);
     }
 }

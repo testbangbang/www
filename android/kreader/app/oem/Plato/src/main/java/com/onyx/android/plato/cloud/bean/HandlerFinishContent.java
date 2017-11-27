@@ -5,7 +5,7 @@ package com.onyx.android.plato.cloud.bean;
  */
 
 public class HandlerFinishContent {
-    public FinishContent content;
+    public ContentBean content;
     public int type;
     public String time;
 }

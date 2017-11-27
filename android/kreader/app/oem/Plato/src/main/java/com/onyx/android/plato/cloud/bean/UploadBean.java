@@ -9,7 +9,7 @@ public class UploadBean {
     public String msg;
     public UploadResult data;
 
-    private static class UploadResult {
+    public  static class UploadResult {
         public String hash;
         public String key;
     }

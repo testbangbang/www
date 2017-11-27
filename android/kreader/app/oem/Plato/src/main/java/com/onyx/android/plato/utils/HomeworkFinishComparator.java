@@ -1,6 +1,6 @@
 package com.onyx.android.plato.utils;
 
-import com.onyx.android.plato.cloud.bean.FinishContent;
+import com.onyx.android.plato.cloud.bean.ContentBean;
 
 import java.util.Comparator;
 
@@ -8,9 +8,9 @@ import java.util.Comparator;
  * Created by li on 2017/10/11.
  */
 
-public class HomeworkFinishComparator implements Comparator<FinishContent> {
+public class HomeworkFinishComparator implements Comparator<ContentBean> {
     @Override
-    public int compare(FinishContent t0, FinishContent t1) {
+    public int compare(ContentBean t0, ContentBean t1) {
         if (t0.submitTime == null || t1.submitTime == null) {
             return 0;
         }

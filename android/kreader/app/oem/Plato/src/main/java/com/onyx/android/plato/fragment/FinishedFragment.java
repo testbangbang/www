@@ -8,7 +8,6 @@ import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.CourseAdapter;
 import com.onyx.android.plato.adapter.HomeworkFinishedAdapter;
 import com.onyx.android.plato.cloud.bean.ContentBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
 import com.onyx.android.plato.cloud.bean.ReportListBean;
 import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
@@ -54,7 +53,7 @@ public class FinishedFragment extends BaseFragment implements View.OnClickListen
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
         //TODO:fake student id = 106
-        homeworkPresenter.getSubjects("106");
+        homeworkPresenter.getSubjects(SunApplication.getStudentId() + "");
     }
 
     @Override
@@ -172,7 +171,7 @@ public class FinishedFragment extends BaseFragment implements View.OnClickListen
     }
 
     @Override
-    public void setFinishedData(List<FinishContent> content) {
+    public void setFinishedData(List<ContentBean> content) {
         if (homeworkFinishedAdapter != null) {
             Collections.sort(content, new HomeworkFinishComparator());
             homeworkFinishedAdapter.setData(content);

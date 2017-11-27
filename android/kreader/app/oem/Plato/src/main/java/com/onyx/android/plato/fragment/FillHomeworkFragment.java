@@ -1,7 +1,7 @@
 package com.onyx.android.plato.fragment;
 
 import android.databinding.ViewDataBinding;
-import android.util.Log;
+import android.graphics.Bitmap;
 import android.view.View;
 
 import com.onyx.android.plato.R;
@@ -9,16 +9,15 @@ import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.FillHomeworkAdapter;
 import com.onyx.android.plato.adapter.HomeworkRecordAdapter;
 import com.onyx.android.plato.cloud.bean.ContentBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
 import com.onyx.android.plato.cloud.bean.ReportListBean;
+import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
-import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
 import com.onyx.android.plato.databinding.FillHomeworkBinding;
 import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
 import com.onyx.android.plato.event.SubjectiveResultEvent;
@@ -26,17 +25,21 @@ import com.onyx.android.plato.event.UnansweredEvent;
 import com.onyx.android.plato.interfaces.CorrectView;
 import com.onyx.android.plato.interfaces.HomeworkView;
 import com.onyx.android.plato.presenter.CorrectPresenter;
+import com.onyx.android.plato.presenter.FillHomeworkPresenter;
 import com.onyx.android.plato.presenter.HomeworkPresenter;
 import com.onyx.android.plato.utils.StringUtil;
+import com.onyx.android.plato.utils.Utils;
 import com.onyx.android.plato.view.DisableScrollGridManager;
 import com.onyx.android.plato.view.DividerItemDecoration;
 import com.onyx.android.plato.view.GPaginator;
 import com.onyx.android.plato.view.PageRecyclerView;
+import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,11 +61,14 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     private int pages;
     private int currentPage = 1;
     private int DEFAULT = 1;
+    private FillHomeworkPresenter fillHomeworkPresenter;
+    private int id;
 
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
         correctPresenter = new CorrectPresenter(this);
+        fillHomeworkPresenter = new FillHomeworkPresenter();
         homeworkPresenter.getTaskDetail(practiceId);
     }
 
@@ -126,7 +132,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     }
 
     @Override
-    public void setFinishedData(List<FinishContent> content) {
+    public void setFinishedData(List<ContentBean> content) {
 
     }
 
@@ -169,7 +175,8 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     }
 
-    public void setTaskId(int practiceId, String type, String title) {
+    public void setTaskId(int id, int practiceId, String type, String title) {
+        this.id = id;
         this.practiceId = practiceId;
         this.type = type;
         this.title = title;
@@ -210,7 +217,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
                 list.add(answerBean);
             }
             //TODO:fake student id
-            homeworkPresenter.submitAnswer(list, practiceId, SunApplication.getStudentId());
+            homeworkPresenter.submitAnswer(list, id, SunApplication.getStudentId());
         }
     }
 
@@ -250,9 +257,10 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         List<QuestionViewBean> questionList = fillHomeworkAdapter.getQuestionList();
         if (questionList != null && questionList.size() > 0) {
             for (QuestionViewBean bean : questionList) {
-                if (bean.getId() == Integer.parseInt(event.getQuestionId())) {
-                    bean.setUserAnswer(event.getQuestionId());
-                    fillHomeworkAdapter.insertAnswer(data.taskId, bean);
+                if ((String.valueOf(bean.getTaskId()) + String.valueOf(bean.getId())).equals(event.getQuestionId())) {
+                    Bitmap bitmap = NoteDataProvider.loadThumbnail(SunApplication.getInstance(), event.getQuestionId());
+                    File file = Utils.bitmap2File(bitmap);
+                    fillHomeworkPresenter.uploadFile(file, bean);
                 }
             }
         }
@@ -277,6 +285,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     private void setPage(int current) {
         fillHomeworkBinding.fillHomeworkPageSize.setText((current > pages ? 0 : current) + "/" + pages + SunApplication.getInstance().getResources().getString(R.string.page));
+        fillHomeworkBinding.fillHomeworkName.setVisibility(current == DEFAULT ? View.VISIBLE : View.GONE);
     }
 
     @Override

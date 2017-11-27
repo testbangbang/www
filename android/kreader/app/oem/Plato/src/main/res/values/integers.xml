@@ -30,4 +30,5 @@
     <integer name="knowledge_progress_adapter_col">4</integer>
     <integer name="knowledge_progress_adapter_row">2</integer>
     <integer name="goal_advanced_recycler_view_item_divider_space">10</integer>
+    <integer name="web_view_font_size">20</integer>
 </resources>

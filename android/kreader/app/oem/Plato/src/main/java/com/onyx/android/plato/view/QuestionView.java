@@ -2,17 +2,14 @@ package com.onyx.android.plato.view;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.webkit.WebSettings;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
@@ -24,16 +21,16 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.onyx.android.plato.cloud.bean.KnowledgeBean;
-import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ExerciseSelectionBean;
+import com.onyx.android.plato.cloud.bean.KnowledgeBean;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
 import com.onyx.android.plato.common.ManagerActivityUtils;
 import com.onyx.android.plato.event.ParseAnswerEvent;
 import com.onyx.android.plato.interfaces.OnCheckAnswerListener;
 import com.onyx.android.plato.utils.StringUtil;
+import com.onyx.android.plato.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -153,7 +150,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         this.questionViewBean = questionViewBean;
         this.title = title;
         questionTitleLayout.setVisibility(GONE);
-        questionTitle.getSettings().setTextSize(WebSettings.TextSize.LARGER);
+        questionTitle.getSettings().setDefaultFontSize(context.getResources().getInteger(R.integer.web_view_font_size));
         subjectiveImage.setImageResource(R.drawable.ic_answer_area);
         questionIntroduce.setVisibility(questionViewBean.isShow() ? VISIBLE : GONE);
         format = SunApplication.getInstance().getResources().getString(R.string.item_fill_homework_title);
@@ -233,19 +230,18 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         if (exerciseSelections == null || exerciseSelections.size() == 0) {
             setVisibleType(R.id.subjective_item);
             if (!StringUtil.isNullOrEmpty(questionViewBean.getUserAnswer())) {
-                Bitmap bitmap = NoteDataProvider.loadThumbnail(SunApplication.getInstance(), questionViewBean.getUserAnswer());
-                subjectiveImage.setImageBitmap(bitmap);
+                Utils.loadImageUrl(questionViewBean.getUserAnswer(), subjectiveImage, R.drawable.ic_answer_area);
             }
             return;
         }
 
-        for (ExerciseSelectionBean selectionBean : exerciseSelections) {
-            CompoundButton button = getCompoundButton(selectionBean, false);
+        for (int i = 0; i < exerciseSelections.size(); i++) {
+            CompoundButton button = getCompoundButton(exerciseSelections.get(i), i, false);
             choiceGroup.addView(button);
         }
     }
 
-    private CompoundButton getCompoundButton(final ExerciseSelectionBean selectionBean, boolean isMulti) {
+    private CompoundButton getCompoundButton(final ExerciseSelectionBean selectionBean, int i, boolean isMulti) {
         CompoundButton button = null;
         if (isMulti) {
             button = new CheckBox(context);
@@ -256,6 +252,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         button.setGravity(Gravity.TOP | Gravity.CENTER);
         button.setText(selectionBean.name + "." + spanned);
         button.setTextSize(18);
+        button.setId(i);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
@@ -307,7 +304,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
 
     private void jump() {
         if (!isFinished) {
-            ManagerActivityUtils.startScribbleActivity(SunApplication.getInstance(), questionViewBean.getId() + "", title, Html.fromHtml(questionViewBean.getContent()) + "");
+            ManagerActivityUtils.startScribbleActivity(SunApplication.getInstance(), String.valueOf(questionViewBean.getTaskId()) + String.valueOf(questionViewBean.getId()), title, Html.fromHtml(questionViewBean.getContent()) + "");
         } else {
             EventBus.getDefault().post(new ParseAnswerEvent(questionViewBean, title));
         }

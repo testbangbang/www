@@ -7,7 +7,6 @@ import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.HomeworkUnfinishedAdapter;
 import com.onyx.android.plato.cloud.bean.ContentBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
 import com.onyx.android.plato.cloud.bean.ReportListBean;
 import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
@@ -82,7 +81,7 @@ public class UnfinishedFragment extends BaseFragment implements HomeworkView, Vi
     }
 
     @Override
-    public void setFinishedData(List<FinishContent> content) {
+    public void setFinishedData(List<ContentBean> content) {
 
     }
 

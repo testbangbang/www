@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
-import com.onyx.android.plato.cloud.bean.FinishContent;
+import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.HandlerFinishContent;
 import com.onyx.android.plato.databinding.ItemContentBinding;
 import com.onyx.android.plato.databinding.ItemTimeBinding;
@@ -96,25 +96,25 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
         EventBus.getDefault().post(new ToCorrectEvent(handlerFinishContent.content));
     }
 
-    public void setData(List<FinishContent> data) {
+    public void setData(List<ContentBean> data) {
         handleData(data);
         notifyDataSetChanged();
     }
 
-    private void handleData(List<FinishContent> data) {
+    private void handleData(List<ContentBean> data) {
         if (data == null || data.size() == 0) {
             return;
         }
-        FinishContent finishContent = data.get(0);
+        ContentBean finishContent = data.get(0);
         HandlerFinishContent handlerContent = new HandlerFinishContent();
         handlerContent.type = TIME_TYPE;
         handlerContent.time = finishContent.submitTime;
         contents.add(handlerContent);
 
         if (finishContent.submitTime != null) {
-            Iterator<FinishContent> iterator = data.iterator();
+            Iterator<ContentBean> iterator = data.iterator();
             while (iterator.hasNext()) {
-                FinishContent content = iterator.next();
+                ContentBean content = iterator.next();
                 if (finishContent.submitTime.equals(content.submitTime)) {
                     HandlerFinishContent handlerFinishContent = new HandlerFinishContent();
                     handlerFinishContent.content = content;

@@ -138,7 +138,7 @@
     <dimen name="goal_advanced_knowledge_structure_view_height">400dp</dimen>
     <dimen name="goal_advanced_knowledge_progress_recycler_view_height">400dp</dimen>
     <dimen name="question_knowledge_level_margin">10dp</dimen>
-    <dimen name="question_choice_height">60dp</dimen>
+    <dimen name="question_choice_height">50dp</dimen>
     <dimen name="question_parse_height">280dp</dimen>
     <dimen name="question_parse_margin_left">10dp</dimen>
     <dimen name="question_parse_margin_top">20dp</dimen>

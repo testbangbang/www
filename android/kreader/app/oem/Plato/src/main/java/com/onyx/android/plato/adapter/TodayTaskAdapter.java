@@ -69,7 +69,7 @@ public class TodayTaskAdapter extends PageRecyclerView.PageAdapter<TodayTaskAdap
         }
         int position = (int) tag;
         ContentBean contentBean = data.get(position);
-        EventBus.getDefault().post(new UnfinishedEvent(contentBean.practiceId, contentBean.type, contentBean.title));
+        EventBus.getDefault().post(new UnfinishedEvent(contentBean.id, contentBean.practiceId, contentBean.type, contentBean.title));
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

@@ -217,4 +217,5 @@
     <string name="score_detail">%1$d points(out of %2$d)</string>
     <string name="load_again">Load again</string>
     <string name="page">Page</string>
+    <string name="upload_failed">Upload failed</string>
 </resources>
