@@ -152,7 +152,7 @@ public class AlFonts {
 				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
 
 				if (calc.mainWidth[EM_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
-					calc.mainWidth[EM_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
+					calc.mainWidth[EM_SPECIAL_CHAR] = (char) text_size;//(char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
 				fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR];
 			} else {
 				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);

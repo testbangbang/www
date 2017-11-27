@@ -68,14 +68,4 @@ public class EngBitmap {
 
 		return true;
 	}
-
-	public static AlBitmap createBookBitmap(Bitmap bmp) {
-		AlBitmap bitmap = new AlBitmap();
-		bitmap.bmp = bmp;
-		bitmap.width = (bmp.getWidth() + 0x03) & 0xfffc;
-		bitmap.height = (bmp.getHeight() + 0x03) & 0xfffc;
-		bitmap.canvas = new Canvas(bmp);
-		bitmap.canvas.drawColor(0x00000000);
-		return bitmap;
-	}
 }

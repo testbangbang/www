@@ -1,15 +1,14 @@
 package com.neverland.engbook.bookobj;
 
 
-import com.neverland.engbook.forpublic.EngBookListener;
+import android.app.Activity;
 
 import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.EngBookListener;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_ID;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 import com.neverland.engbook.level1.AlFiles;
-
-import android.app.Activity;
 
 
 class AlThreadData {

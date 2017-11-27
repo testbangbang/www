@@ -14,8 +14,8 @@ public interface EngBookListener {
 	/**
 	 *
 	 * @param id - id выполненой операции
-	 * @param result - результат выполненой операции
+	 * @param res - результат выполненой операции
 	 */
-	public void	engBookGetMessage(TAL_NOTIFY_ID id, TAL_NOTIFY_RESULT result);
+	public void	engBookGetMessage(TAL_NOTIFY_ID id, TAL_NOTIFY_RESULT res);
 
 }

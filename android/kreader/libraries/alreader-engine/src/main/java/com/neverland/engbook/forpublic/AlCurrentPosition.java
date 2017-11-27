@@ -3,7 +3,7 @@ package com.neverland.engbook.forpublic;
 public class AlCurrentPosition {
     public int      readPositionStart = 0;
     public int      readPositionEnd = 0;
-    public long      readPositionAddon = 0;
+    public long     readPositionAddon = 0;
 
     public boolean	noNeedSave = true;
 
