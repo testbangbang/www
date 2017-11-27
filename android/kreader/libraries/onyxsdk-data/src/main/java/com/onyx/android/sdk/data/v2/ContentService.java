@@ -20,6 +20,7 @@ import com.onyx.android.sdk.data.model.v2.CloudMetadata;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportRequestBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.CreateGroupCommonBean;
+import com.onyx.android.sdk.data.model.v2.GetArticlePushBean;
 import com.onyx.android.sdk.data.model.v2.GetBookReportList;
 import com.onyx.android.sdk.data.model.v2.GetInformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.GetReadingRateBean;
@@ -187,6 +188,9 @@ public interface ContentService {
     @DELETE("/api/impressions/{id}")
     Call<String> deleteImpression(@Path(Constant.ID_TAG) final String id);
 
+    @DELETE("/api/messages/{id}")
+    Call<String> deleteArticlePush(@Path(Constant.ID_TAG) final String id);
+
     @DELETE("/api/InformalEssays/{id}")
     Call<String> deleteInformalEssay(@Path(Constant.ID_TAG) final String id);
 
@@ -225,4 +229,7 @@ public interface ContentService {
 
     @GET("/api/librarys/{id}/readRecords")
     Call<GetReadingRateBean> getReadingRate(@Path(Constant.ID_TAG) final String id, @Query(Constant.WHERE_TAG) final String param);
+
+    @GET("/api/librarys/{id}/messages")
+    Call<GetArticlePushBean> getArticlePush(@Path(Constant.ID_TAG) final String id, @Query(Constant.WHERE_TAG) final String param);
 }
