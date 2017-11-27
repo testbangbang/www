@@ -37,7 +37,7 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
-import com.onyx.kcb.KCPApplication;
+import com.onyx.kcb.KCBApplication;
 import com.onyx.kcb.R;
 import com.onyx.kcb.action.FileCopyAction;
 import com.onyx.kcb.action.FileDeleteAction;
@@ -52,7 +52,7 @@ import com.onyx.kcb.dialog.DialogFileProperty;
 import com.onyx.kcb.dialog.DialogRenameFile;
 import com.onyx.kcb.event.OperationEvent;
 import com.onyx.kcb.event.ViewTypeEvent;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 import com.onyx.kcb.manager.ConfigPreferenceManager;
 import com.onyx.kcb.model.OperationItem;
 import com.onyx.kcb.model.StorageViewModel;
@@ -75,14 +75,14 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private static final String TAG = StorageActivity.class.getSimpleName();
 
     private StorageViewModel storageViewModel;
-    private LibraryDataHolder dataHolder;
+    private DataBundle dataBundle;
     private ActivityStorageBinding binding;
 
     private FileOperateMode fileOperateMode = FileOperateMode.ReadOnly;
-    private int viewTypeThumbnailRow = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
-    private int viewTypeThumbnailCol = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
-    private int viewTypeDetailsRow = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_row);
-    private int viewTypeDetailsCol = KCPApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_col);
+    private int viewTypeThumbnailRow = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
+    private int viewTypeThumbnailCol = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
+    private int viewTypeDetailsRow = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_row);
+    private int viewTypeDetailsCol = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_col);
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -648,7 +648,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                copyAction.processFileException(StorageActivity.this, dataHolder, (Exception) throwable);
+                copyAction.processFileException(StorageActivity.this, dataBundle, (Exception) throwable);
             }
         });
     }
@@ -710,7 +710,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                deleteAction.processFileException(StorageActivity.this, dataHolder, (Exception) throwable);
+                deleteAction.processFileException(StorageActivity.this, dataBundle, (Exception) throwable);
             }
         });
     }
@@ -755,7 +755,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private void loadData(File dir) {
-        StorageDataLoadAction dataLoadAction = new StorageDataLoadAction(KCPApplication.getInstance(),dir, getStorageViewModel().items);
+        StorageDataLoadAction dataLoadAction = new StorageDataLoadAction(KCBApplication.getInstance(),dir, getStorageViewModel().items);
         dataLoadAction.setSort(ConfigPreferenceManager.getStorageSortBy(getApplicationContext()),
                 ConfigPreferenceManager.getStorageSortOrder(getApplicationContext()));
         dataLoadAction.execute(getDataHolder(), new RxCallback() {
@@ -790,11 +790,11 @@ public class StorageActivity extends OnyxAppCompatActivity {
         return getDataHolder().getEventBus();
     }
 
-    private LibraryDataHolder getDataHolder() {
-        if (dataHolder == null) {
-            dataHolder = new LibraryDataHolder(getApplicationContext());
+    private DataBundle getDataHolder() {
+        if (dataBundle == null) {
+            dataBundle = new DataBundle(getApplicationContext());
         }
-        return dataHolder;
+        return dataBundle;
     }
 
     private DeviceConfig getDeviceConfig() {

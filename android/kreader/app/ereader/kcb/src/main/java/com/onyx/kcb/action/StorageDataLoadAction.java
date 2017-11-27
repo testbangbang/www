@@ -3,9 +3,9 @@ package com.onyx.kcb.action;
 import android.content.Context;
 import android.databinding.ObservableList;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 
 import com.alibaba.fastjson.TypeReference;
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
@@ -18,18 +18,19 @@ import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.kcb.R;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 
 import org.apache.commons.io.FilenameUtils;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jackdeng on 2017/11/21.
  */
-public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
+public class StorageDataLoadAction extends BaseAction<DataBundle> {
 
     private final ObservableList<DataModel> resultDataItemList;
     private final File parentFile;
@@ -49,11 +50,11 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
     }
 
     @Override
-    public void execute(LibraryDataHolder dataHolder, RxCallback rxCallback) {
+    public void execute(DataBundle dataHolder, RxCallback rxCallback) {
         loadData(dataHolder, parentFile, rxCallback);
     }
 
-    private void loadData(final LibraryDataHolder dataHolder, final File parentFile, final RxCallback rxCallback) {
+    private void loadData(final DataBundle dataHolder, final File parentFile, final RxCallback rxCallback) {
         List<String> filterList = new ArrayList<>();
         final RxStorageFileListLoadRequest fileListLoadRequest = new RxStorageFileListLoadRequest(dataHolder.getDataManager(), parentFile, filterList);
         if (isStorageRoot(parentFile)) {
@@ -73,9 +74,9 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
         });
     }
 
-    public List<DataModel> loadShortcutModelList(LibraryDataHolder dataHolder) {
+    public List<DataModel> loadShortcutModelList(DataBundle dataHolder) {
         List<DataModel> list = new ArrayList<>();
-        List<String> dirPathList = loadShortcutList(dataHolder.getContext());
+        List<String> dirPathList = loadShortcutList(dataHolder.getAppContext());
         if (!CollectionUtils.isNullOrEmpty(dirPathList)) {
             for (String path : dirPathList) {
                 list.add(createShortcutModel(dataHolder, new File(path)));
@@ -99,7 +100,7 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
                 JSONObjectParseUtils.toJson(list));
     }
 
-    private void addToModelItemList(LibraryDataHolder dataHolder, File parentFile, List<File> fileList) {
+    private void addToModelItemList(DataBundle dataHolder, File parentFile, List<File> fileList) {
         resultDataItemList.clear();
         resultDataItemList.add(createGoUpModel(dataHolder, parentFile));
         if (!CollectionUtils.isNullOrEmpty(fileList)) {
@@ -109,7 +110,7 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
         }
     }
 
-    private void addShortcutModelItemList(LibraryDataHolder dataHolder) {
+    private void addShortcutModelItemList(DataBundle dataHolder) {
         if (isStorageRoot(parentFile)) {
             List<DataModel> list = loadShortcutModelList(dataHolder);
             if (!CollectionUtils.isNullOrEmpty(list)) {
@@ -118,22 +119,22 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
         }
     }
 
-    public DataModel createGoUpModel(LibraryDataHolder dataHolder, File file) {
+    public DataModel createGoUpModel(DataBundle dataHolder, File file) {
         DataModel model = new DataModel(dataHolder.getEventBus());
-        model.setFileModel(FileModel.createGoUpModel(file, dataHolder.getContext().getString(R.string.storage_go_up)));
+        model.setFileModel(FileModel.createGoUpModel(file, dataHolder.getAppContext().getString(R.string.storage_go_up)));
         model.setEnableSelection(false);
         loadThumbnail(model);
         return model;
     }
 
-    public DataModel createNormalModel(LibraryDataHolder dataHolder, File file) {
+    public DataModel createNormalModel(DataBundle dataHolder, File file) {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.create(file, null));
         loadThumbnail(model);
         return model;
     }
 
-    public DataModel createShortcutModel(LibraryDataHolder dataHolder, File file) {
+    public DataModel createShortcutModel(DataBundle dataHolder, File file) {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.createShortcutModel(file));
         loadThumbnail(model);
@@ -144,7 +145,7 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
         return EnvironmentUtil.getStorageRootDirectory().getAbsolutePath().contains(targetDirectory.getAbsolutePath());
     }
 
-    private void loadThumbnail(DataModel itemModel) {
+    private void loadThumbnail(final DataModel itemModel) {
         FileModel fileModel = itemModel.getFileModel();
         if (fileModel == null){
             return;
@@ -169,8 +170,10 @@ public class StorageDataLoadAction extends BaseAction<LibraryDataHolder> {
         }
 
         try {
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), res);
-            itemModel.setCoverThumbnail(bitmap);
+            @SuppressWarnings("ResourceType")
+            InputStream inputStream = context.getResources().openRawResource(res);
+            CloseableReference<Bitmap> bitmapCloseableReference = ThumbnailUtils.decodeStream(inputStream, null);
+            itemModel.setCoverThumbnail(bitmapCloseableReference);
         }catch (Exception e){
             e.printStackTrace();
         }

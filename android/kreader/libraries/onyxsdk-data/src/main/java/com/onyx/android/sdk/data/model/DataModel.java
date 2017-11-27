@@ -51,9 +51,9 @@ public class DataModel extends BaseObservable {
                 if (fileModel != null) {
                     title.set(fileModel.getName());
                     isDocument.set(fileModel.isFileType());
-                    Bitmap coverBitmap = fileModel.getThumbnail();
+                    CloseableReference<Bitmap> coverBitmap = fileModel.getThumbnail();
                     if (coverBitmap != null) {
-                        coverBitMap.set(coverBitmap);
+                        setCoverThumbnail(coverBitmap);
                     }
                 }
             }
@@ -87,8 +87,8 @@ public class DataModel extends BaseObservable {
         checked.set(isChecked);
     }
 
-    public void setCoverThumbnail(Bitmap bitmap) {
-        coverBitMap.set(bitmap);
+    public void setCoverThumbnail(CloseableReference<Bitmap> bitmap) {
+        coverBitmap.set(bitmap);
     }
 
     public EventBus getEventBus() {

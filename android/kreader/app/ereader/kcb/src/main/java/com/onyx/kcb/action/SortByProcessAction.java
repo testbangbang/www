@@ -11,7 +11,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.DialogSortBy;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.kcb.R;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Created by jackdeng on 2017/11/21.
  */
-public class SortByProcessAction extends BaseAction<LibraryDataHolder> {
+public class SortByProcessAction extends BaseAction<DataBundle> {
 
     private FragmentManager fragmentManager;
     private Map<String, SortBy> sortByMap;
@@ -62,8 +62,8 @@ public class SortByProcessAction extends BaseAction<LibraryDataHolder> {
     }
 
     @Override
-    public void execute(final LibraryDataHolder dataHolder, final RxCallback baseCallback) {
-        final Map<String, SortBy> sortByMap = getSortByMap(dataHolder.getContext());
+    public void execute(final DataBundle dataHolder, final RxCallback baseCallback) {
+        final Map<String, SortBy> sortByMap = getSortByMap(dataHolder.getAppContext());
         getSortByDialog(dataHolder, sortByMap, new DialogSortBy.OnSortByListener() {
             @Override
             public void onSortBy(int position, String sortBy, SortOrder sortOrder) {
@@ -74,9 +74,9 @@ public class SortByProcessAction extends BaseAction<LibraryDataHolder> {
         });
     }
 
-    private DialogSortBy getSortByDialog(LibraryDataHolder dataHolder, Map<String, SortBy> sortByMap,
+    private DialogSortBy getSortByDialog(DataBundle dataHolder, Map<String, SortBy> sortByMap,
                                          DialogSortBy.OnSortByListener listener) {
-        Resources resources = dataHolder.getContext().getResources();
+        Resources resources = dataHolder.getAppContext().getResources();
         List<String> contentList = Arrays.asList(sortByMap.keySet().toArray(new String[0]));
         DialogSortBy dialog = new DialogSortBy(null, contentList);
         dialog.setOnSortByListener(listener);

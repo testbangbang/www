@@ -19,7 +19,7 @@ import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.kcb.R;
 import com.onyx.kcb.device.DeviceConfig;
 import com.onyx.kcb.dialog.DialogApplicationOpenList;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 import com.onyx.kcb.utils.Constant;
 
 import org.apache.commons.io.FilenameUtils;
@@ -35,7 +35,7 @@ import static com.onyx.android.sdk.data.provider.SystemConfigProvider.KEY_APP_PR
 /**
  * Created by jackdeng on 2017/11/21.
  */
-public class FileOpenWithAction extends BaseAction<LibraryDataHolder> {
+public class FileOpenWithAction extends BaseAction<DataBundle> {
 
     private File file;
     private FragmentManager fragmentManager;
@@ -57,8 +57,8 @@ public class FileOpenWithAction extends BaseAction<LibraryDataHolder> {
     }
 
     @Override
-    public void execute(LibraryDataHolder dataHolder, final RxCallback rxCallback) {
-        processOpenWith(dataHolder, rxCallback, file, null);
+    public void execute(DataBundle dataBundle, final RxCallback rxCallback) {
+        processOpenWith(dataBundle, rxCallback, file, null);
     }
 
     private Map<String, String> getDefaultMimeTypeMap(Context context) {
@@ -79,14 +79,14 @@ public class FileOpenWithAction extends BaseAction<LibraryDataHolder> {
         return typeIgnoreList;
     }
 
-    public void showFileOpenWithDialog(final Context activityContext, final LibraryDataHolder dataHolder) {
+    public void showFileOpenWithDialog(final Context activityContext, final DataBundle dataBundle) {
         final Map<String, String> map = getDefaultMimeTypeMap(activityContext);
         final String[] items = map.keySet().toArray(new String[0]);
         new AlertDialog.Builder(activityContext).setTitle(R.string.open_with).setItems(items,
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        processOpenWith(dataHolder, new RxCallback<RxFileOpenWithRequest>() {
+                        processOpenWith(dataBundle, new RxCallback<RxFileOpenWithRequest>() {
 
                             @Override
                             public void onNext(RxFileOpenWithRequest request) {
@@ -94,7 +94,7 @@ public class FileOpenWithAction extends BaseAction<LibraryDataHolder> {
                                     return;
                                 }
                                 if (CollectionUtils.isNullOrEmpty(request.getAppInfoList())) {
-                                    ToastUtils.showToast(dataHolder.getContext(), R.string.unable_to_open_this_type_of_file);
+                                    ToastUtils.showToast(dataBundle.getAppContext(), R.string.unable_to_open_this_type_of_file);
                                     return;
                                 }
                                 showAppListWithDialog(activityContext, file, request.getAppInfoList());
@@ -129,13 +129,13 @@ public class FileOpenWithAction extends BaseAction<LibraryDataHolder> {
         ToastUtils.showToast(context, success ? R.string.succeedSetting : R.string.failSetting);
     }
 
-    private void processOpenWith(LibraryDataHolder dataHolder, final RxCallback rxCallback,
+    private void processOpenWith(DataBundle dataBundle, final RxCallback rxCallback,
                                  File file, String mimeType) {
-        final RxFileOpenWithRequest openWithRequest = new RxFileOpenWithRequest(dataHolder.getDataManager(), file,
-                DeviceConfig.sharedInstance(dataHolder.getContext()).getAppsIgnoreListMap(),
-                getTypeIgnoreList(dataHolder.getContext()));
+        final RxFileOpenWithRequest openWithRequest = new RxFileOpenWithRequest(dataBundle.getDataManager(), file,
+                DeviceConfig.sharedInstance(dataBundle.getAppContext()).getAppsIgnoreListMap(),
+                getTypeIgnoreList(dataBundle.getAppContext()));
         openWithRequest.setDefaultMimeType(mimeType);
-        openWithRequest.setCustomizedIconAppsMap(DeviceConfig.sharedInstance(dataHolder.getContext()).getCustomizedIconApps());
+        openWithRequest.setCustomizedIconAppsMap(DeviceConfig.sharedInstance(dataBundle.getAppContext()).getCustomizedIconApps());
         openWithRequest.execute(new RxCallback<RxFileOpenWithRequest>() {
             @Override
             public void onNext(RxFileOpenWithRequest request) {

@@ -14,7 +14,7 @@ import com.onyx.android.sdk.data.rxrequest.data.fs.RxFileDeleteRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.kcb.R;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 import com.onyx.kcb.utils.Constant;
 
 import java.io.File;
@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * Created by jackdeng on 2017/11/21.
  */
-public class FileDeleteAction extends BaseAction<LibraryDataHolder> {
+public class FileDeleteAction extends BaseAction<DataBundle> {
 
     private List<File> sourceFileList;
     private OnyxAlertDialog dialogFileRemoving;
@@ -41,7 +41,7 @@ public class FileDeleteAction extends BaseAction<LibraryDataHolder> {
     }
 
     @Override
-    public void execute(LibraryDataHolder dataHolder, RxCallback callback) {
+    public void execute(DataBundle dataHolder, RxCallback callback) {
         rxCallback = callback;
         dialogFileRemoving = showFileRemovingDialog();
         request = new RxFileDeleteRequest(dataHolder.getDataManager(), sourceFileList);
@@ -104,14 +104,14 @@ public class FileDeleteAction extends BaseAction<LibraryDataHolder> {
         return map;
     }
 
-    private void reSendRequest(LibraryDataHolder dataHolder) {
+    private void reSendRequest(DataBundle dataHolder) {
         if (request != null) {
             request.execute(requestCallback);
         }
     }
 
-    public void showFileErrorAlertDialog(final Context activityContext, final LibraryDataHolder dataHolder) {
-        final Map<String, FileErrorPolicy> policyMap = getErrorPolicyMap(dataHolder.getContext());
+    public void showFileErrorAlertDialog(final Context activityContext, final DataBundle dataHolder) {
+        final Map<String, FileErrorPolicy> policyMap = getErrorPolicyMap(dataHolder.getAppContext());
         final String[] items = policyMap.keySet().toArray(new String[0]);
         new AlertDialog.Builder(activityContext).setTitle(R.string.copy_file_failed).setItems(items,
                 new DialogInterface.OnClickListener() {
@@ -147,7 +147,7 @@ public class FileDeleteAction extends BaseAction<LibraryDataHolder> {
         }
     }
 
-    public boolean processFileException(Context context, LibraryDataHolder dataHolder, Exception e) {
+    public boolean processFileException(Context context, DataBundle dataHolder, Exception e) {
         if (e instanceof ContentException.FileDeleteException) {
             showFileErrorAlertDialog(context, dataHolder);
             return true;

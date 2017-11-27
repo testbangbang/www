@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -11,7 +12,9 @@ import com.onyx.kcb.BuildConfig;
 import com.onyx.kcb.R;
 
 import java.lang.reflect.Field;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by hehai on 17-11-24.
@@ -40,6 +43,12 @@ public class DeviceConfig {
     private List<String> contentMenuItemList;
     private List<String> musicDir;
     private List<String> galleryDir;
+    private boolean AudioTag;
+    private boolean supportScreenSaver;
+    private boolean contentReadOnly;
+    private Map<String, JSONArray> appIgnoreListMap;
+    private Map<String, String> defaultCustomizedIconAppsMap;
+    private Map<String, String> customizedIconAppsMap;
 
     private DeviceConfig() {
     }
@@ -330,5 +339,53 @@ public class DeviceConfig {
         public void setStartY(int startY) {
             this.startY = startY;
         }
+    }
+
+    public final boolean hasAudio() {
+        return AudioTag;
+    }
+
+    public final boolean isContentReadOnly() {
+        return contentReadOnly;
+    }
+
+    public boolean supportScreenSaver() {
+        return supportScreenSaver;
+    }
+
+    public Map<String, JSONArray> getAppsIgnoreListMap() {
+        if (appIgnoreListMap != null && !appIgnoreListMap.isEmpty()) {
+            return appIgnoreListMap;
+        }
+        return new HashMap<>();
+    }
+
+    public Map<String, String> getCustomizedIconApps() {
+        if (defaultCustomizedIconAppsMap == null) {
+            defaultCustomizedIconAppsMap = new HashMap<>();
+            defaultCustomizedIconAppsMap.put("com.android.vending", "app_play");
+            defaultCustomizedIconAppsMap.put("com.android.browser", "app_browser");
+            defaultCustomizedIconAppsMap.put("com.android.calendar", "app_calendar");
+            defaultCustomizedIconAppsMap.put("com.android.calculator2", "app_calculator");
+            defaultCustomizedIconAppsMap.put("com.android.deskclock", "app_deskclock");
+            defaultCustomizedIconAppsMap.put("com.onyx.android.dict", "app_dict");
+            defaultCustomizedIconAppsMap.put("com.onyx.dict", "app_dict");
+            defaultCustomizedIconAppsMap.put("com.android.providers.downloads.ui", "app_download");
+            defaultCustomizedIconAppsMap.put("com.android.email", "app_email");
+            defaultCustomizedIconAppsMap.put("com.android.gallery", "app_gallery");
+            defaultCustomizedIconAppsMap.put("com.android.music", "app_music");
+            defaultCustomizedIconAppsMap.put("com.onyx.android.scribbler", "app_scribbler");
+            defaultCustomizedIconAppsMap.put("com.neverland.oreader", "app_oreader");
+            defaultCustomizedIconAppsMap.put("com.android.quicksearchbox", "app_search");
+            defaultCustomizedIconAppsMap.put("com.android.settings", "app_setting");
+            defaultCustomizedIconAppsMap.put("com.android.soundrecorder", "app_recorder");
+            defaultCustomizedIconAppsMap.put("com.google.android.gms", "app_google_setting");
+            defaultCustomizedIconAppsMap.put("com.onyx.android.note", "app_note");
+            defaultCustomizedIconAppsMap.put("com.onyx.calculator", "app_calculator");
+        }
+        if (customizedIconAppsMap != null && !customizedIconAppsMap.isEmpty() ) {
+            defaultCustomizedIconAppsMap.putAll(customizedIconAppsMap);
+        }
+        return defaultCustomizedIconAppsMap;
     }
 }

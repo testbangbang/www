@@ -17,7 +17,7 @@ import com.onyx.android.sdk.data.rxrequest.data.fs.RxFileCopyRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.kcb.R;
 import com.onyx.kcb.dialog.DialogFileCopy;
-import com.onyx.kcb.holder.LibraryDataHolder;
+import com.onyx.kcb.holder.DataBundle;
 
 import java.io.File;
 import java.util.LinkedHashMap;
@@ -28,7 +28,7 @@ import java.util.Map;
 /**
  * Created by jackdeng on 2017/11/21.
  */
-public class FileCopyAction extends BaseAction<LibraryDataHolder> {
+public class FileCopyAction extends BaseAction<DataBundle> {
 
     private List<File> sourceFileList;
     private File dstDir;
@@ -49,10 +49,10 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
     }
 
     @Override
-    public void execute(final LibraryDataHolder dataHolder, final RxCallback rxCallback) {
+    public void execute(final DataBundle dataBundle, final RxCallback rxCallback) {
         this.rxCallback = rxCallback;
         showCopyDialog();
-        executeCopyProcess(dataHolder, rxCallback);
+        executeCopyProcess(dataBundle, rxCallback);
     }
 
     private void showCopyDialog() {
@@ -72,8 +72,8 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
         }
     }
 
-    private void executeCopyProcess(final LibraryDataHolder dataHolder, final RxCallback rxCallback) {
-        request = new RxFileCopyRequest(dataHolder.getDataManager(), sourceFileList, dstDir, isCut);
+    private void executeCopyProcess(final DataBundle dataBundle, final RxCallback rxCallback) {
+        request = new RxFileCopyRequest(dataBundle.getDataManager(), sourceFileList, dstDir, isCut);
         requestCallback = new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -120,14 +120,14 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
         return map;
     }
 
-    private void reSendRequest(LibraryDataHolder dataHolder) {
+    private void reSendRequest(DataBundle dataBundle) {
         if (request != null) {
             request.execute(requestCallback);
         }
     }
 
-    public void showReplaceAlertDialog(final Context activityContext, final LibraryDataHolder dataHolder, File toReplaceFile) {
-        final Context appContext = dataHolder.getContext().getApplicationContext();
+    public void showReplaceAlertDialog(final Context activityContext, final DataBundle dataBundle, File toReplaceFile) {
+        final Context appContext = dataBundle.getAppContext();
         final Map<String, FileReplacePolicy> policyMap = getReplacePolicyMap(appContext);
         new AlertDialog.Builder(activityContext).setTitle(appContext.getString(R.string.file_already_exists) + ": " + toReplaceFile)
                 .setItems(policyMap.keySet().toArray(new String[0]), new DialogInterface.OnClickListener() {
@@ -136,7 +136,7 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
                         FileReplacePolicy[] policies = policyMap.values().toArray(new FileReplacePolicy[0]);
                         if (which < policies.length - 1) {
                             request.replacePolicy = policies[which];
-                            reSendRequest(dataHolder);
+                            reSendRequest(dataBundle);
                             return;
                         }
                         notifyCopyFinished();
@@ -144,8 +144,8 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
                 }).show();
     }
 
-    public void showFileErrorAlertDialog(final Context activityContext, final LibraryDataHolder dataHolder) {
-        final Map<String, FileErrorPolicy> policyMap = getErrorPolicyMap(dataHolder.getContext());
+    public void showFileErrorAlertDialog(final Context activityContext, final DataBundle dataBundle) {
+        final Map<String, FileErrorPolicy> policyMap = getErrorPolicyMap(dataBundle.getAppContext());
         final String[] items = policyMap.keySet().toArray(new String[0]);
         new AlertDialog.Builder(activityContext).setTitle(R.string.copy_file_failed).setItems(items,
                 new DialogInterface.OnClickListener() {
@@ -154,7 +154,7 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
                         FileErrorPolicy[] policies = policyMap.values().toArray(new FileErrorPolicy[0]);
                         if (which < policies.length - 1) {
                             request.errorPolicy = policies[which];
-                            reSendRequest(dataHolder);
+                            reSendRequest(dataBundle);
                             return;
                         }
                         notifyCopyFinished();
@@ -162,15 +162,15 @@ public class FileCopyAction extends BaseAction<LibraryDataHolder> {
                 }).show();
     }
 
-    public boolean processFileException(Context context, LibraryDataHolder dataHolder, Exception e) {
+    public boolean processFileException(Context context, DataBundle dataBundle, Exception e) {
         if (e instanceof FileException) {
             if (e instanceof FileAskForReplaceException) {
                 FileAskForReplaceException exception = (FileAskForReplaceException) e;
-                showReplaceAlertDialog(context, dataHolder, exception.to);
+                showReplaceAlertDialog(context, dataBundle, exception.to);
             }
             else if (e instanceof FileDeleteException || e instanceof FileCopyException ||
                     e instanceof FileCreateException) {
-                showFileErrorAlertDialog(context, dataHolder);
+                showFileErrorAlertDialog(context, dataBundle);
             }
             return true;
         }

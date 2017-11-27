@@ -2,6 +2,8 @@ package com.onyx.android.sdk.data.model;
 
 import android.graphics.Bitmap;
 
+import com.facebook.common.references.CloseableReference;
+
 import java.io.File;
 
 /**
@@ -10,11 +12,11 @@ import java.io.File;
 public class FileModel {
 
     private File file;
-    private Bitmap thumbnail;
+    private CloseableReference<Bitmap> thumbnail;
     private ModelType type;
     private String name;
 
-    public static FileModel create(File file, Bitmap thumbnail) {
+    public static FileModel create(File file, CloseableReference<Bitmap> thumbnail) {
         FileModel model = new FileModel();
         model.file = file;
         model.thumbnail = thumbnail;
@@ -44,11 +46,11 @@ public class FileModel {
         this.file = file;
     }
 
-    public Bitmap getThumbnail() {
+    public CloseableReference<Bitmap> getThumbnail() {
         return thumbnail;
     }
 
-    public void setThumbnail(Bitmap thumbnail) {
+    public void setThumbnail(CloseableReference<Bitmap> thumbnail) {
         this.thumbnail = thumbnail;
     }
 
