@@ -57,7 +57,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:background="@drawable/rectangle_stroke"
-                android:visibility="visible"
+                android:visibility="gone"
                 android:layout_marginRight="@dimen/title_bar_right_container_margin_right"
                 android:orientation="horizontal">
 
