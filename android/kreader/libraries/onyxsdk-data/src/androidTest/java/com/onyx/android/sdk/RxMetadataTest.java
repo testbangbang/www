@@ -2,7 +2,6 @@ package com.onyx.android.sdk;
 
 import android.app.Application;
 import android.content.ContentValues;
-import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
@@ -29,12 +28,11 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.provider.RemoteDataProvider;
 import com.onyx.android.sdk.data.request.data.db.LibraryClearRequest;
-import com.onyx.android.sdk.data.request.data.db.MetadataRequest;
-import com.onyx.android.sdk.data.request.data.db.RemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryDeleteRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxRecentAddRequest;
+import com.onyx.android.sdk.data.rxrequest.data.db.RxRecentlyReadRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxRemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
@@ -54,7 +52,6 @@ import com.raizlabs.android.dbflow.sql.language.SQLite;
 import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -1080,7 +1077,7 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
             @Override
             public void onNext(RxRecentAddRequest addRequest) {
                 List<DataModel> targetList = new ArrayList<>();
-                assertSort(addRequest.getList());
+                assertRecentAdd(addRequest.getList());
                 Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), addRequest.getDataManager(), metadatas);
                 DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetList, metadatas, thumbnailMap);
                 RxLibraryTest.assertListEqual(modelList, targetList);
@@ -1098,7 +1095,55 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         countDownLatch.await();
     }
 
-    private void assertSort(List<Metadata> metadataList) {
+    public void testRecentReading() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        clearTestFolder();
+        DataProviderBase dataProviderBase = getProviderBaseAndClearTable();
+        final List<Metadata> metadatas = new ArrayList<>();
+        for (int i = 0; i < getRandomInt(20, 100); i++) {
+            Metadata metadata = randomMetadata(testFolder(), true);
+            metadata.setReadingStatus(1);
+            dataProviderBase.saveMetadata(getContext(), metadata);
+            metadatas.add(metadata);
+        }
+
+        final List<DataModel> modelList = new ArrayList<>();
+        RxRecentlyReadRequest recentlyReadRequest = new RxRecentlyReadRequest(new DataManager(), EventBus.getDefault(), modelList);
+        RxRecentlyReadRequest.setAppContext(getContext());
+        recentlyReadRequest.execute(new RxCallback<RxRecentlyReadRequest>() {
+            @Override
+            public void onNext(RxRecentlyReadRequest readRequest) {
+                List<DataModel> targetList = new ArrayList<>();
+                assertRecentlyRead(readRequest.getList());
+                Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), readRequest.getDataManager(), metadatas);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetList, metadatas, thumbnailMap);
+                RxLibraryTest.assertListEqual(modelList, targetList);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+
+        countDownLatch.await();
+    }
+
+    private void assertRecentlyRead(List<Metadata> metadataList) {
+        assertFalse(CollectionUtils.isNullOrEmpty(metadataList));
+        Metadata tmp = metadataList.get(0);
+        for (Metadata metadata : metadataList) {
+            long tmpTime = DateTimeUtil.parse(DateTimeUtil.formatDate(tmp.getUpdatedAt()), DATE_FORMAT_YYYYMMDD_HHMMSS);
+            long parse = DateTimeUtil.parse(DateTimeUtil.formatDate(metadata.getUpdatedAt()), DATE_FORMAT_YYYYMMDD_HHMMSS);
+            assertTrue(tmpTime >= parse);
+            tmp = metadata;
+        }
+    }
+
+    private void assertRecentAdd(List<Metadata> metadataList) {
         assertFalse(CollectionUtils.isNullOrEmpty(metadataList));
         Metadata tmp = metadataList.get(0);
         for (Metadata metadata : metadataList) {
