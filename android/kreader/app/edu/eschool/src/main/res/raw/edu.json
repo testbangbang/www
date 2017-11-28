@@ -37,14 +37,15 @@
   "cloud_main_index_server_host" : "http://119.23.143.188/",
   "cloud_main_index_server_api" : "http://119.23.143.188/api/",
   "qr_code_show_config": {
-    "orientation": 0,
-    "startX": 30,
-    "startY": 740
+    "orientation": 2,
+    "startX": 1059,
+    "startY": 30
   },
   "info_show_config": {
     "orientation": 0,
-    "startX": 225,
-    "startY": 930
+    "rotationAngle": 270,
+    "startX": 959,
+    "startY": 239
   },
   "enable_full_refresh": false,
   "media_scan_support": true,
