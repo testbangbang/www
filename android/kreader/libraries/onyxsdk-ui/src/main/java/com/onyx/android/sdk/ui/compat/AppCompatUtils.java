@@ -42,9 +42,7 @@ public class AppCompatUtils {
     }
 
     public static boolean isColorDevice(Context context) {
-        return isColorSupport ||
-                ("pl107".equalsIgnoreCase(Build.MODEL) &&
-                        context.getResources().getConfiguration().smallestScreenWidthDp == 960);
+        return isColorSupport;
     }
 
     public static void setColorSupport(boolean support) {
