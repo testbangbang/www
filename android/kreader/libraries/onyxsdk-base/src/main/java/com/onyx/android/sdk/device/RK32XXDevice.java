@@ -165,6 +165,9 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodStartTpd;
     private static Method sMethodEnableTpd;
 
+    private static Method sMethodSetQRShowConfig;
+    private static Method sMethodSetInfoShowConfig;
+
     private RK32XXDevice() {
     }
 
@@ -601,6 +604,8 @@ public class RK32XXDevice extends BaseDevice {
             sMethodEnableScreenUpdate = ReflectUtil.getMethodSafely(cls, "enableScreenUpdate", boolean.class);
             sMethodSetDisplayScheme = ReflectUtil.getMethodSafely(cls, "setDisplayScheme", int.class);
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
+            sMethodSetQRShowConfig = ReflectUtil.getMethodSafely(cls,"setQRShowConfig",int.class,int.class,int.class);
+            sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
 
             sMethodSetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "setVCom", Context.class, int.class, String.class);
             sMethodGetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "getVCom", String.class);
@@ -935,5 +940,15 @@ public class RK32XXDevice extends BaseDevice {
     public void gotoSleep(final Context context) {
         long value = System.currentTimeMillis();
         ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
+    }
+
+    @Override
+    public void setQRShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetQRShowConfig, null, orientation, startX, startY);
+    }
+
+    @Override
+    public void setInfoShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetInfoShowConfig, null, orientation, startX, startY);
     }
 }
