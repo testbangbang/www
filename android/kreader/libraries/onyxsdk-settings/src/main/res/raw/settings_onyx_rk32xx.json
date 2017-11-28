@@ -1,0 +1,21 @@
+{
+  "system_wifi_inactivity_key": "wifi_inactivity_timeout",
+  "screen_screen_off_values": [
+    180000,
+    300000,
+    600000,
+    1800000,
+    -1
+  ],
+  "power_off_timeout_values": [
+    900000,
+    1800000,
+    3600000,
+    -1
+  ],
+  "test_apps": [
+    "com.onyx.test",
+    "com.onyx.android.production.test",
+    "com.onyx.android.screenmanager"
+  ]
+}
