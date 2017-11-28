@@ -137,6 +137,7 @@ public class ArticlePushActivity extends BaseActivity implements ArticlePushView
         switch (view.getId()) {
             case R.id.menu_back:
                 finish();
+                ActivityManager.startMainActivity(this);
                 break;
             case R.id.title_bar_right_icon_one:
                 delete();

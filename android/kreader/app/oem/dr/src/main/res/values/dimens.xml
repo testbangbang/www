@@ -377,7 +377,7 @@
     <dimen name="create_group_activity_cancel_margin_left">-10dp</dimen>
     <dimen name="create_group_activity_create_marin_left">80dp</dimen>
     <dimen name="create_group_activity_cancel_container_margin_top">100dp</dimen>
-    <dimen name="create_group_activity_recommend_group_name_margin_left">120dp</dimen>
+    <dimen name="create_group_activity_recommend_group_name_margin_left">65dp</dimen>
     <dimen name="info_item_group_join_container_width">140dp</dimen>
     <dimen name="info_item_group_join_padding">10dp</dimen>
     <dimen name="info_item_group_join_margin_left">25dp</dimen>
