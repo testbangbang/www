@@ -20,6 +20,10 @@ typedef struct _IPDF_ONYX_DrmCallback {
 typedef void* FPDF_ONYX_FORMFIELD;
 typedef void* FPDF_ONYX_FORMCONTROL;
 
+FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FPDF_ONYX_IsUsingHighQualityImageRenderer();
+
+FPDF_EXPORT void FPDF_CALLCONV FPDF_ONYX_SetUsingHighQualityImageRenderer(FPDF_BOOL use);
+
 FPDF_EXPORT FPDF_BOOL FPDF_CALLCONV FPDF_ONYX_IsTextPage(FPDF_PAGE page);
 
 FPDF_EXPORT void FPDF_CALLCONV FPDF_ONYX_SetTextGamma(FS_FLOAT gamma);
