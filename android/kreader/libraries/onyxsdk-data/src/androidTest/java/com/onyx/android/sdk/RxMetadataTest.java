@@ -2,10 +2,13 @@ package com.onyx.android.sdk;
 
 import android.app.Application;
 import android.content.ContentValues;
+import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
 import android.util.Log;
 
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.DataManager;
@@ -14,6 +17,7 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.db.table.OnyxMetadataCollectionProvider;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -30,11 +34,14 @@ import com.onyx.android.sdk.data.request.data.db.RemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryDeleteRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
+import com.onyx.android.sdk.data.rxrequest.data.db.RxRecentAddRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxRemoveFromLibraryRequest;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -44,7 +51,10 @@ import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -56,6 +66,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 
+import static com.onyx.android.sdk.utils.DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMMSS;
 import static com.onyx.android.sdk.utils.TestUtils.defaultContentTypes;
 import static com.onyx.android.sdk.utils.TestUtils.generateRandomFile;
 import static com.onyx.android.sdk.utils.TestUtils.randString;
@@ -1049,5 +1060,52 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
     private void clearTestFolder() {
         FileUtils.purgeDirectory(new File(testFolder()));
         FileUtils.mkdirs(testFolder());
+    }
+
+    public void testRecentAdd() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        clearTestFolder();
+        DataProviderBase dataProviderBase = getProviderBaseAndClearTable();
+        final List<Metadata> metadatas = new ArrayList<>();
+        for (int i = 0; i < getRandomInt(20, 100); i++) {
+            Metadata metadata = randomMetadata(testFolder(), true);
+            dataProviderBase.saveMetadata(getContext(), metadata);
+            metadatas.add(metadata);
+        }
+
+        final List<DataModel> modelList = new ArrayList<>();
+        RxRecentAddRequest recentAddRequest = new RxRecentAddRequest(new DataManager(), EventBus.getDefault(), modelList);
+        RxRecentAddRequest.setAppContext(getContext());
+        recentAddRequest.execute(new RxCallback<RxRecentAddRequest>() {
+            @Override
+            public void onNext(RxRecentAddRequest addRequest) {
+                List<DataModel> targetList = new ArrayList<>();
+                assertSort(addRequest.getList());
+                Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), addRequest.getDataManager(), metadatas);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetList, metadatas, thumbnailMap);
+                RxLibraryTest.assertListEqual(modelList, targetList);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+
+        countDownLatch.await();
+    }
+
+    private void assertSort(List<Metadata> metadataList) {
+        assertFalse(CollectionUtils.isNullOrEmpty(metadataList));
+        Metadata tmp = metadataList.get(0);
+        for (Metadata metadata : metadataList) {
+            long tmpTime = DateTimeUtil.parse(DateTimeUtil.formatDate(tmp.getCreatedAt()), DATE_FORMAT_YYYYMMDD_HHMMSS);
+            long parse = DateTimeUtil.parse(DateTimeUtil.formatDate(metadata.getCreatedAt()), DATE_FORMAT_YYYYMMDD_HHMMSS);
+            assertTrue(tmpTime >= parse);
+            tmp = metadata;
+        }
     }
 }

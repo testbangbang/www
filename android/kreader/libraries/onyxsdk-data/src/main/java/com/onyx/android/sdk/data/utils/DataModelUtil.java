@@ -61,6 +61,10 @@ public class DataModelUtil {
         }
     }
 
+    public static void metadataToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Metadata> metadataList, Map<String, CloseableReference<Bitmap>> thumbnailMap) {
+        metadataToDataModel(eventBus,dataModels,metadataList,null, thumbnailMap);
+    }
+
     private static boolean isSelected(List<DataModel> selectedList, Metadata metadata) {
         if (CollectionUtils.isNullOrEmpty(selectedList)) {
             return false;
