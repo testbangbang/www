@@ -13,7 +13,7 @@ import retrofit2.Response;
 
 public class RxGetAccountInfoRequest extends RxBaseAccountRequest {
     private String sessionToken;
-    public OnyxAccount result;
+    private OnyxAccount result;
 
     public RxGetAccountInfoRequest(String sessionToken) {
         this.sessionToken = sessionToken;

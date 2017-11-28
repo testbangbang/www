@@ -13,7 +13,7 @@ import retrofit2.Response;
 
 public class RxSignUpAccountRequest extends RxBaseAccountRequest {
     private OnyxAccount account;
-    public OnyxAccount result;
+    private OnyxAccount result;
 
     public RxSignUpAccountRequest(OnyxAccount account) {
         this.account = account;

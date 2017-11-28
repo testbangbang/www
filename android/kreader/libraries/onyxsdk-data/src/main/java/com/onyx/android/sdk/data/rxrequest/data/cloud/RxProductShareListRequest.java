@@ -14,7 +14,7 @@ import retrofit2.Response;
 
 public class RxProductShareListRequest extends RxBaseBookStoreRequest {
     private final String bookId;
-    public ProductResult<ProductShared> result;
+    private ProductResult<ProductShared> result;
 
     public RxProductShareListRequest(String bookId) {
         this.bookId = bookId;

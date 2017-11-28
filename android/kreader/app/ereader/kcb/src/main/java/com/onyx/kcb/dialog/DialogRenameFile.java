@@ -96,13 +96,11 @@ public class DialogRenameFile extends OnyxAlertDialog {
         File sourceFile = new File(sourceFilePath);
         File targetFile = new File(targetFilePath);
         try {
-            if (sourceFile.renameTo(targetFile)) {
-            }
+            return sourceFile.renameTo(targetFile);
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
-        return true;
     }
 
     private String buildRenameFile(File originFile, String targetName) {

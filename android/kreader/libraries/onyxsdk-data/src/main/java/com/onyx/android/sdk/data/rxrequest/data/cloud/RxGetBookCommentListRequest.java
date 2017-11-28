@@ -15,7 +15,7 @@ import retrofit2.Response;
 
 public class RxGetBookCommentListRequest extends RxBaseBookStoreRequest {
     private final GetBookCommentListRequestBean requestBean;
-    public ProductResult<Comment> result;
+    private ProductResult<Comment> result;
 
     public RxGetBookCommentListRequest(GetBookCommentListRequestBean requestBean) {
         this.requestBean = requestBean;

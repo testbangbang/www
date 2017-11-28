@@ -14,7 +14,7 @@ import retrofit2.Response;
 
 public class RxPostBookCommentRequest extends RxBaseBookStoreRequest {
     private final PostBookCommentRequestBean requestBean;
-    public Comment result;
+    private Comment result;
 
     public RxPostBookCommentRequest(PostBookCommentRequestBean requestBean) {
         this.requestBean = requestBean;

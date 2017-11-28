@@ -1,6 +1,5 @@
 package com.onyx.kcb.action;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -41,8 +40,8 @@ public class FileCopyAction extends BaseAction<DataBundle> {
     private FragmentManager fragmentManager;
     private RxCallback rxCallback;
 
-    public FileCopyAction(Activity activity, List<File> sourceFileList, File dstDir, boolean isCut) {
-        fragmentManager = activity.getFragmentManager();
+    public FileCopyAction(FragmentManager fragmentManager, List<File> sourceFileList, File dstDir, boolean isCut) {
+        this.fragmentManager = fragmentManager;
         this.sourceFileList = sourceFileList;
         this.dstDir = dstDir;
         this.isCut = isCut;

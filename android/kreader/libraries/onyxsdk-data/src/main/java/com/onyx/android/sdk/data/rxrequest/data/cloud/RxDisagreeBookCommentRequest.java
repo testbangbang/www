@@ -14,7 +14,7 @@ import retrofit2.Response;
 
 public class RxDisagreeBookCommentRequest extends RxBaseBookStoreRequest {
     private final DisagreeBookCommentRequestBean requestBean;
-    public Comment result;
+    private Comment result;
 
     public RxDisagreeBookCommentRequest(DisagreeBookCommentRequestBean requestBean) {
         this.requestBean = requestBean;

@@ -160,7 +160,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         return EnvironmentUtil.getStorageRootDirectory().getAbsolutePath().contains(targetDirectory.getAbsolutePath());
     }
 
-    private void loadNormalThumbnail(final DataModel itemModel) {
+    private void loadNormalThumbnail(DataModel itemModel) {
         FileModel fileModel = itemModel.getFileModel();
         if (fileModel == null){
             return;

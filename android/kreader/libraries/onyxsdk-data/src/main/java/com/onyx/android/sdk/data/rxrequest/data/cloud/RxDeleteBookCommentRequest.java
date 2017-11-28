@@ -14,7 +14,7 @@ import retrofit2.Response;
 
 public class RxDeleteBookCommentRequest extends RxBaseBookStoreRequest {
     private final DeleteBookCommentRequestBean requestBean;
-    public ResponseBody result;
+    private ResponseBody result;
 
     public RxDeleteBookCommentRequest(DeleteBookCommentRequestBean requestBean) {
         this.requestBean = requestBean;

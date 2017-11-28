@@ -15,7 +15,7 @@ import retrofit2.Response;
 public class RxBookRecommendedListRequest extends RxBaseBookStoreRequest {
 
     private final String params;
-    public ProductResult<Product> result;
+    private ProductResult<Product> result;
 
     public RxBookRecommendedListRequest(String params) {
         this.params = params;

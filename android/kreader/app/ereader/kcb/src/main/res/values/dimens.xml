@@ -63,4 +63,6 @@
     <dimen name="item_model_details_title_width">0dp</dimen>
     <dimen name="item_model_details_title_height">20dp</dimen>
     <dimen name="item_model_details_check_box_margin">12dp</dimen>
+    <dimen name="dialog_sort_by_width">310px</dimen>
+    <dimen name="dialog_sort_by_height">374px</dimen>
 </resources>

@@ -1,6 +1,6 @@
 package com.onyx.android.sdk.data.rxrequest.data.cloud.base;
 
-import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.DataBundle;
 import com.onyx.android.sdk.data.v1.OnyxAccountService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 
@@ -10,7 +10,7 @@ import com.onyx.android.sdk.data.v1.ServiceFactory;
 
 public abstract class RxBaseAccountRequest extends RxBaseCloudRequest {
     protected final String TAG = this.getClass().getSimpleName();
-    private CloudManager cloudManager;
+    private DataBundle dataBundle;
     private OnyxAccountService service;
 
     public RxBaseAccountRequest() {
@@ -18,12 +18,12 @@ public abstract class RxBaseAccountRequest extends RxBaseCloudRequest {
     }
 
     private void initService() {
-        if (cloudManager == null) {
-            cloudManager = new CloudManager();
+        if (dataBundle == null) {
+            dataBundle = new DataBundle();
         }
 
         if (service == null) {
-            service = ServiceFactory.getAccountService(cloudManager.getCloudConf().getApiBase());
+            service = ServiceFactory.getAccountService(dataBundle.getCloudManager().getCloudConf().getApiBase());
         }
     }
 

@@ -15,7 +15,7 @@ import retrofit2.Response;
 public class RxGetBookCoverRequest extends RxBaseBookStoreRequest {
 
     private final GetBookCoverRequestBean requestBean;
-    public ResponseBody result;
+    private ResponseBody result;
 
     public RxGetBookCoverRequest(GetBookCoverRequestBean requestBean) {
         this.requestBean = requestBean;

@@ -14,7 +14,7 @@ import retrofit2.Response;
 public class RxGetSingleBookRequest extends RxBaseBookStoreRequest {
 
     private final String uniqueId;
-    public Product result;
+    private Product result;
 
     public RxGetSingleBookRequest(String uniqueId) {
         this.uniqueId = uniqueId;

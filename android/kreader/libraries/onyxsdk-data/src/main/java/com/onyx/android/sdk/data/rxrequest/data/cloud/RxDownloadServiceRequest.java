@@ -17,7 +17,7 @@ import retrofit2.Response;
 public class RxDownloadServiceRequest extends RxBaseCloudRequest {
 
     private final String url;
-    public ResponseBody result;
+    private ResponseBody result;
 
     public RxDownloadServiceRequest(String url) {
         this.url = url;

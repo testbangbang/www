@@ -180,7 +180,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         final SortByProcessAction sortByAction = new SortByProcessAction(this,
                 ConfigPreferenceManager.getStorageSortBy(this),
                 ConfigPreferenceManager.getStorageSortOrder(this));
-        sortByAction.execute(getDataHolder(), new RxCallback() {
+        sortByAction.execute(getDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 saveSortConfig(sortByAction.getResultSortBy(), sortByAction.getResultSortOrder());
@@ -499,12 +499,12 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private void onFileOpenWith() {
         final File file = getCurrentSelectedItem().getFileModel().getFile();
         final FileOpenWithAction openWithAction = new FileOpenWithAction(this, file);
-        openWithAction.execute(getDataHolder(), new RxCallback() {
+        openWithAction.execute(getDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 List<AppDataInfo> list = openWithAction.getAppDataInfoList();
                 if (CollectionUtils.isNullOrEmpty(list)) {
-                    openWithAction.showFileOpenWithDialog(StorageActivity.this, getDataHolder());
+                    openWithAction.showFileOpenWithDialog(StorageActivity.this, getDataBundle());
                     return;
                 }
                 openWithAction.showAppListWithDialog(StorageActivity.this, file, list);
@@ -637,9 +637,9 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private void processFilePaste() {
-        final FileCopyAction copyAction = new FileCopyAction(this, getStorageViewModel().getItemSelectedFileList(),
+        final FileCopyAction copyAction = new FileCopyAction(getFragmentManager(), getStorageViewModel().getItemSelectedFileList(),
                 getStorageViewModel().getCurrentFile(), isFileOperationCut());
-        copyAction.execute(getDataHolder(), new RxCallback() {
+        copyAction.execute(getDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 switchToNormalMode();
@@ -700,7 +700,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
             return;
         }
         final FileDeleteAction deleteAction = new FileDeleteAction(this, removeItemsList);
-        deleteAction.execute(getDataHolder(), new RxCallback() {
+        deleteAction.execute(getDataBundle(), new RxCallback() {
 
             @Override
             public void onNext(Object o) {
@@ -759,7 +759,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         StorageDataLoadAction dataLoadAction = new StorageDataLoadAction(KCBApplication.getInstance(),dir, getStorageViewModel().items);
         dataLoadAction.setSort(ConfigPreferenceManager.getStorageSortBy(getApplicationContext()),
                 ConfigPreferenceManager.getStorageSortOrder(getApplicationContext()));
-        dataLoadAction.execute(getDataHolder(), new RxCallback() {
+        dataLoadAction.execute(getDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
                 getStorageViewModel().updateCurrentTitleName(getString(R.string.storage));
@@ -788,10 +788,10 @@ public class StorageActivity extends OnyxAppCompatActivity {
     }
 
     private EventBus getEventBus() {
-        return getDataHolder().getEventBus();
+        return getDataBundle().getEventBus();
     }
 
-    private DataBundle getDataHolder() {
+    private DataBundle getDataBundle() {
         if (dataBundle == null) {
             dataBundle = new DataBundle(getApplicationContext());
         }

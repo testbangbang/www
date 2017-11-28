@@ -83,8 +83,8 @@ public class SortByProcessAction extends BaseAction<DataBundle> {
         DialogSortBy.AlignLayoutParams alignParams = new DialogSortBy.AlignLayoutParams(
                 resources.getDimensionPixelSize(R.dimen.dialog_sort_by_x_pos),
                 resources.getDimensionPixelSize(R.dimen.dialog_sort_by_y_pos));
-        alignParams.width = 310;
-        alignParams.height = 374;
+        alignParams.width =  resources.getDimensionPixelSize(R.dimen.dialog_sort_by_width);
+        alignParams.height = resources.getDimensionPixelSize(R.dimen.dialog_sort_by_height);
         dialog.setCurrentSortBySelectedIndex(getCurrentSortByIndex(defaultSortBy, sortByMap));
         dialog.setCurrentSortOrderSelected(defaultSortOrder);
         dialog.setAlignParams(alignParams);

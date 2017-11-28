@@ -13,7 +13,7 @@ import retrofit2.Response;
 
 public class RxBookContainerRequest extends RxBaseBookStoreRequest {
     private final String bookId;
-    public Category result;
+    private Category result;
 
     public RxBookContainerRequest(String bookId) {
         this.bookId = bookId;

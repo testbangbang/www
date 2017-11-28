@@ -43,7 +43,7 @@ public class DeviceConfig {
     private List<String> contentMenuItemList;
     private List<String> musicDir;
     private List<String> galleryDir;
-    private boolean AudioTag;
+    private boolean audioTag;
     private boolean supportScreenSaver;
     private boolean contentReadOnly;
     private Map<String, JSONArray> appIgnoreListMap;
@@ -342,7 +342,7 @@ public class DeviceConfig {
     }
 
     public final boolean hasAudio() {
-        return AudioTag;
+        return audioTag;
     }
 
     public final boolean isContentReadOnly() {

@@ -14,7 +14,7 @@ import retrofit2.Response;
  */
 
 public class RxBookContainerListRequest extends RxBaseBookStoreRequest {
-    public List<Category> result;
+    private List<Category> result;
 
     public RxBookContainerListRequest() {
     }
