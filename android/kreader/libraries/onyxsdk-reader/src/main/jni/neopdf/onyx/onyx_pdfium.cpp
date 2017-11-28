@@ -1006,3 +1006,9 @@ JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPd
 
     return true;
 }
+
+JNIEXPORT jboolean JNICALL Java_com_onyx_android_sdk_reader_plugins_neopdf_NeoPdfJniWrapper_nativeSetUsingHighQualityImageRenderer
+  (JNIEnv *, jobject, jboolean use) {
+    FPDF_ONYX_SetUsingHighQualityImageRenderer(use);
+    return true;
+}

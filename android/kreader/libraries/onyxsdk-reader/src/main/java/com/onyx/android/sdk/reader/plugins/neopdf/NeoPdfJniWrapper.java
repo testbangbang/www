@@ -84,6 +84,8 @@ public class NeoPdfJniWrapper {
 
     private native boolean nativeGetPageTextRegions(int id, int page, final List<ReaderSelection> list);
 
+    private native boolean nativeSetUsingHighQualityImageRenderer(boolean use);
+
     private int id;
     private String filePath = null;
 
@@ -195,5 +197,9 @@ public class NeoPdfJniWrapper {
 
     public boolean getPageTextRegions(int page, final List<ReaderSelection> list) {
         return nativeGetPageTextRegions(id, page, list);
+    }
+
+    public boolean setUsingHighQualityImageRenderer(boolean use) {
+        return nativeSetUsingHighQualityImageRenderer(use);
     }
 }
