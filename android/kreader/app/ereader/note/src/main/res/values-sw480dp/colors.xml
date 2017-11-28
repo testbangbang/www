@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <drawable name="app_logo">@mipmap/ic_launcher_color</drawable>
+    <drawable name="app_logo">@mipmap/sketch</drawable>
 </resources>
