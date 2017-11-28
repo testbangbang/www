@@ -12,13 +12,12 @@ import java.lang.annotation.RetentionPolicy;
 public class DeviceType {
     public static final int IMX6 = 0;
     public static final int RK = 1;
-    public static final int IMX7 = 2;
 
     // ... type definitions
     // Describes when the annotation will be discarded
     @Retention(RetentionPolicy.SOURCE)
     // Enumerate valid values for this interface
-    @IntDef({IMX6, RK, IMX7})
+    @IntDef({IMX6, RK})
     // Create an interface for validating int types
     public @interface DeviceTypeDef {
     }
