@@ -8,12 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
-import com.onyx.android.plato.cloud.bean.ExerciseBean;
-import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
-import com.onyx.android.plato.cloud.bean.Question;
-import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
-import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
 import com.onyx.android.plato.databinding.ItemFillHomeworkBinding;
 import com.onyx.android.plato.event.ParseAnswerEvent;
 import com.onyx.android.plato.interfaces.OnCheckAnswerListener;
@@ -22,7 +17,6 @@ import com.onyx.android.plato.view.PageRecyclerView;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -107,7 +101,6 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public void deleteOrFavoriteQuestion(int taskId, int questionId) {
-        //TODO:fake student id 108
         fillHomeworkPresenter.deleteOrFavorite(taskId, questionId, SunApplication.getStudentId());
     }
 

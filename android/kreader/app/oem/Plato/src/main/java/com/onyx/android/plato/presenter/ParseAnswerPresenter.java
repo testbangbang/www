@@ -2,12 +2,14 @@ package com.onyx.android.plato.presenter;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
+import com.onyx.android.plato.cloud.bean.GetAnalysisBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseRequestBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseResultBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.data.ParseAnswerData;
 import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.ParseAnswerView;
+import com.onyx.android.plato.requests.cloud.GetAnalysisRequest;
 import com.onyx.android.plato.requests.cloud.GetPracticeParseRequest;
 import com.onyx.android.plato.requests.local.GetRecordRequest;
 import com.onyx.android.plato.requests.local.RecorderRequest;
@@ -98,6 +100,26 @@ public class ParseAnswerPresenter {
                 }
 
                 parseAnswerView.setRecordDuration(recordDuration);
+            }
+        });
+    }
+
+    public void getAnalysis(int taskId, int questionId, int studentId) {
+        PracticeParseRequestBean requestBean = new PracticeParseRequestBean();
+        requestBean.id = questionId;
+        requestBean.pid = taskId;
+        requestBean.studentId = studentId;
+
+        final GetAnalysisRequest rq = new GetAnalysisRequest(requestBean);
+        parseAnswerData.getAnalysis(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetAnalysisBean resultBean = rq.getResultBean();
+                if (resultBean == null) {
+                    EventBus.getDefault().post(new EmptyEvent());
+                    return;
+                }
+                parseAnswerView.setAnalysis(resultBean.data);
             }
         });
     }

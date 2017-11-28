@@ -106,7 +106,6 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         }
 
         if (presenter != null && content.correctTime != null) {
-            //TODO:fake practice id 25,student id 108
             presenter.getCorrectData(content.id, SunApplication.getStudentId());
         }
     }
@@ -128,8 +127,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         List<ExerciseMessageBean> questionMessages = data.exerciseMessageDtos;
         if (questionDataList != null && questionDataList.size() > 0 &&
                 questionMessages != null && questionMessages.size() > 0) {
-            //TODO:fake task id (should:content.id)
-            resolveAdapterData(questionDataList, questionMessages, content.id);
+            resolveAdapterData(questionDataList, questionMessages, content.practiceId);
         }
     }
 
@@ -138,10 +136,9 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         if (adapter == null) {
             return;
         }
-        //TODO:fake practice id 25
         correctDataBinding.correctRecycler.scrollToPosition(0);
         adapter.setFinished(true);
-        adapter.setData(questionList, title, content.id);
+        adapter.setData(questionList, title, content.practiceId);
     }
 
     @Override

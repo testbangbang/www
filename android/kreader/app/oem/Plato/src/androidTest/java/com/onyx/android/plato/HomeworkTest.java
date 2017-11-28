@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory;
 import android.test.ApplicationTestCase;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.plato.cloud.bean.GetAnalysisBean;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskRequestBean;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskResultBean;
 import com.onyx.android.plato.cloud.bean.GetSubjectBean;
@@ -12,6 +13,8 @@ import com.onyx.android.plato.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.plato.cloud.bean.HomeworkUnfinishedResultBean;
+import com.onyx.android.plato.cloud.bean.InsertParseBean;
+import com.onyx.android.plato.cloud.bean.InsertParseRequestBean;
 import com.onyx.android.plato.cloud.bean.IntrospectionRequestBean;
 import com.onyx.android.plato.cloud.bean.IntrospectionBean;
 import com.onyx.android.plato.cloud.bean.PracticeAnswerBean;
@@ -24,6 +27,7 @@ import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.plato.cloud.bean.TaskBean;
 import com.onyx.android.plato.cloud.bean.UploadBean;
 import com.onyx.android.plato.requests.cloud.FavoriteOrDeletePracticeRequest;
+import com.onyx.android.plato.requests.cloud.GetAnalysisRequest;
 import com.onyx.android.plato.requests.cloud.GetCorrectedTaskRequest;
 import com.onyx.android.plato.requests.cloud.GetExerciseTypeRequest;
 import com.onyx.android.plato.requests.cloud.GetPracticeParseRequest;
@@ -31,6 +35,7 @@ import com.onyx.android.plato.requests.cloud.GetSubjectRequest;
 import com.onyx.android.plato.requests.cloud.GetStudyReportDetailRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkFinishedRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkUnfinishedRequest;
+import com.onyx.android.plato.requests.cloud.InsertAnalysisRequest;
 import com.onyx.android.plato.requests.cloud.PracticeIntrospectionRequest;
 import com.onyx.android.plato.requests.cloud.RequestUploadFile;
 import com.onyx.android.plato.requests.cloud.SubmitPracticeRequest;
@@ -42,6 +47,7 @@ import com.onyx.android.plato.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import okhttp3.MediaType;
@@ -304,6 +310,59 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
             public void done(BaseRequest request, Throwable e) {
                 UploadBean uploadBean = rq.getBean();
                 assertNotNull(uploadBean);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testGetAnalysis() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        PracticeParseRequestBean requestBean = new PracticeParseRequestBean();
+        requestBean.id = 2125;
+        requestBean.pid = 232;
+        requestBean.studentId = 190;
+
+        final GetAnalysisRequest rq = new GetAnalysisRequest(requestBean);
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                GetAnalysisBean resultBean = rq.getResultBean();
+                assertNotNull(resultBean);
+                assertNotNull(resultBean.data);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testInsertAnalysis() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        InsertParseRequestBean requestBean = new InsertParseRequestBean();
+        List<Integer> ids = new ArrayList<>();
+        ids.add(14556);
+        ids.add(14557);
+        ids.add(14558);
+
+        List<InsertParseBean> errors = new ArrayList<>();
+        InsertParseBean bean = new InsertParseBean();
+        bean.name = "知识点混淆1";
+        errors.add(bean);
+        InsertParseBean bean2 = new InsertParseBean();
+        bean2.name = "查看错1误";
+        errors.add(bean2);
+
+        requestBean.ids = ids;
+        requestBean.radio = "78473578478.mp3";
+        requestBean.error = errors;
+
+        final InsertAnalysisRequest rq = new InsertAnalysisRequest(232, 2125, 190, requestBean);
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                SubmitPracticeResultBean resultBean = rq.getResultBean();
+                assertNotNull(resultBean);
+                assertEquals("ok", resultBean.msg);
                 countDownLatch.countDown();
             }
         });

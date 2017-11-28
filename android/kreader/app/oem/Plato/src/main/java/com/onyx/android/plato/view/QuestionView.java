@@ -205,6 +205,10 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         }
     }
 
+    public void setParse(boolean isParse) {
+        subjectiveGroup.setVisibility(isParse ? GONE : VISIBLE);
+    }
+
     private void generateChoice(QuestionViewBean questionViewBean) {
         if (choiceGroup.getChildCount() > 0) {
             choiceGroup.removeAllViews();
@@ -220,7 +224,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
             handler.sendEmptyMessageDelayed(WEBVIEW_FRESH_WHAT, DELAY_TIME);
         } else {
             TextView problem = new TextView(context);
-            problem.setTextSize(20);
+            problem.setTextSize(SunApplication.getInstance().getResources().getDimension(R.dimen.question_view_title_font));
             Spanned spanned = Html.fromHtml(questionViewBean.getContent());
             String problemTitle = questionViewBean.getId() + "." + spanned;
             problem.setText(problemTitle);
@@ -229,8 +233,10 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         List<ExerciseSelectionBean> exerciseSelections = questionViewBean.getExerciseSelections();
         if (exerciseSelections == null || exerciseSelections.size() == 0) {
             setVisibleType(R.id.subjective_item);
-            if (!StringUtil.isNullOrEmpty(questionViewBean.getUserAnswer())) {
+            if (!StringUtil.isNullOrEmpty(questionViewBean.getUserAnswer()) && !isFinished) {
                 Utils.loadImageUrl(questionViewBean.getUserAnswer(), subjectiveImage, R.drawable.ic_answer_area);
+            } else {
+                Utils.loadImageUrl(questionViewBean.getAnswer(), subjectiveImage, R.drawable.ic_answer_area);
             }
             return;
         }
@@ -251,7 +257,7 @@ public class QuestionView extends LinearLayout implements View.OnClickListener {
         Spanned spanned = Html.fromHtml(selectionBean.content);
         button.setGravity(Gravity.TOP | Gravity.CENTER);
         button.setText(selectionBean.name + "." + spanned);
-        button.setTextSize(18);
+        button.setTextSize(SunApplication.getInstance().getResources().getDimension(R.dimen.question_view_question_font));
         button.setId(i);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override

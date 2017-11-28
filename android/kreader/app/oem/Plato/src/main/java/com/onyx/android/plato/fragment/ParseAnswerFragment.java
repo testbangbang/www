@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
+import com.onyx.android.plato.cloud.bean.AnalysisBean;
 import com.onyx.android.plato.cloud.bean.AnswerBean;
 import com.onyx.android.plato.cloud.bean.KnowledgeBean;
 import com.onyx.android.plato.cloud.bean.ParseBean;
@@ -55,6 +56,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         //TODO:fake id 1 1523 105
         parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
         parseAnswerPresenter.getRecord(questionData.getTaskId(), questionData.getId());
+        parseAnswerPresenter.getAnalysis(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
     }
 
     @Override
@@ -62,6 +64,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         parseAnswerBinding = (ParseAnswerBinding) binding;
         parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
         parseAnswerBinding.parseQuestionView.setFinished(true);
+        parseAnswerBinding.parseQuestionView.setParse(true);
         parseAnswerBinding.parseTitleBar.setTitle(SunApplication.getInstance().getString(R.string.parse_of_answer));
         parseAnswerBinding.parseTitleBar.titleBarRecord.setVisibility(View.GONE);
         parseAnswerBinding.parseTitleBar.titleBarSubmit.setVisibility(View.GONE);
@@ -137,13 +140,14 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         if (parseAnswerBinding != null) {
             parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
             parseAnswerBinding.parseQuestionView.setFinished(true);
+            parseAnswerBinding.parseQuestionView.setParse(true);
         }
 
         if (parseAnswerPresenter != null) {
-            //TODO:fake id 1 1523 105
             setVisible(questionData.isCorrect() ? R.id.parse_add_sound_layout : R.id.parse_mistake_layout);
             parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
             parseAnswerPresenter.getRecord(questionData.getTaskId(), questionData.getId());
+            parseAnswerPresenter.getAnalysis(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
         }
     }
 
@@ -266,6 +270,11 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             setVisible(R.id.parse_modify_sound_layout);
             parseAnswerBinding.setRecorderTime(recordDuration + "s");
         }
+    }
+
+    @Override
+    public void setAnalysis(AnalysisBean analysisBean) {
+        //TODO
     }
 
     private String insertPMark(String htmlText, String insertText) {
