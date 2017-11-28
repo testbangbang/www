@@ -8,13 +8,14 @@ import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.manager.CacheManager;
-import com.onyx.android.sdk.data.model.common.FetchPolicy;
-import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
+import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.model.common.FetchPolicy;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
 import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
@@ -211,6 +212,31 @@ public class DataManagerHelper {
                                                                           Metadata metadata) {
         BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
         String associationId = metadata.getAssociationId();
+        if (StringUtils.isNullOrEmpty(associationId)) {
+            return null;
+        }
+        CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(associationId);
+        if (refBitmap != null) {
+            return refBitmap.clone();
+        }
+        return decodeFileAndCache(context, dataManager.getRemoteContentProvider(), bitmapLruCache, associationId);
+    }
+
+    public static Map<String, CloseableReference<Bitmap>> loadThumbnailBitmapsWithCacheByDataModel(Context context, DataManager dataManager,
+                                                                                        List<DataModel> dataModelList) {
+        Map<String, CloseableReference<Bitmap>> map = new HashMap<>();
+        for (DataModel dtaModel : dataModelList) {
+            CloseableReference<Bitmap> refBitmap = loadThumbnailBitmapWithCache(context, dataManager, dtaModel.associationId.get());
+            if (refBitmap == null) {
+                continue;
+            }
+            map.put(dtaModel.associationId.get(), refBitmap);
+        }
+        return map;
+    }
+
+    public static CloseableReference<Bitmap> loadThumbnailBitmapWithCache(Context context, DataManager dataManager, String associationId) {
+        BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
         if (StringUtils.isNullOrEmpty(associationId)) {
             return null;
         }

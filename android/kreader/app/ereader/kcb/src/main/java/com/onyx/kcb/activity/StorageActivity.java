@@ -83,6 +83,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private int viewTypeThumbnailCol = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
     private int viewTypeDetailsRow = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_row);
     private int viewTypeDetailsCol = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_details_col);
+    private ModelAdapter modelAdapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,7 +150,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         PageRecyclerView contentPageView = getContentView();
         contentPageView.setHasFixedSize(true);
         contentPageView.setLayoutManager(new DisableScrollGridManager(getApplicationContext()));
-        ModelAdapter modelAdapter = new ModelAdapter();
+        modelAdapter = new ModelAdapter(getStorageViewModel());
         modelAdapter.setRowAndCol(viewTypeThumbnailRow, viewTypeThumbnailCol);
         contentPageView.setAdapter(modelAdapter);
         contentPageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
@@ -194,7 +195,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
             return;
         }
         GPaginator paginator = contentPageView.getPaginator();
-        paginator.resize(getRowCountBasedViewType(), getColCountBasedViewType(), contentPageView.getAdapter().getItemCount());
+        paginator.resize(modelAdapter.getRowCountBasedViewType(), modelAdapter.getColCountBasedViewType(), modelAdapter.getItemCount());
         if (resetPage) {
             gotoPage(0);
         }
@@ -549,7 +550,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private void setDirectoryToShortcut() {
         List<String> shortcutList = StorageDataLoadAction.loadShortcutList(getApplicationContext());
         if (CollectionUtils.getSize(shortcutList) + 3 >=
-                getRowCount(ViewType.Thumbnail) * getColCount(ViewType.Thumbnail)) {
+                modelAdapter.getRowCount(ViewType.Thumbnail) * modelAdapter.getColCount(ViewType.Thumbnail)) {
             ToastUtils.showToast(getApplicationContext(), R.string.shortcut_link_full);
             return;
         }
@@ -805,28 +806,8 @@ public class StorageActivity extends OnyxAppCompatActivity {
         return storageViewModel;
     }
 
-    private ViewType getViewType() {
-        return getStorageViewModel().getCurrentViewType();
-    }
-
     private PageRecyclerView getContentView() {
         return binding.contentPageView;
-    }
-
-    private int getRowCountBasedViewType() {
-        return getRowCount(getViewType());
-    }
-
-    private int getColCountBasedViewType() {
-        return getColCount(getViewType());
-    }
-
-    private int getRowCount(ViewType viewType) {
-        return viewType == ViewType.Thumbnail ? viewTypeThumbnailRow : viewTypeDetailsRow;
-    }
-
-    private int getColCount(ViewType viewType) {
-        return viewType == ViewType.Thumbnail ? viewTypeThumbnailCol : viewTypeDetailsCol;
     }
 
     private void notifyContentChanged() {
