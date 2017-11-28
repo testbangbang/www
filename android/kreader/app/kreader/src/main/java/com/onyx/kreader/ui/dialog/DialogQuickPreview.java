@@ -380,6 +380,13 @@ public class DialogQuickPreview extends OnyxBaseDialog {
             }
         });
 
+        findViewById(R.id.image_view_quick_first_page).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                firstPage();
+            }
+        });
+
         fourImageGrid.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -755,6 +762,10 @@ public class DialogQuickPreview extends OnyxBaseDialog {
 
     private void prevPage() {
         gridRecyclerView.prevPage();
+    }
+
+    private void firstPage() {
+        gridRecyclerView.gotoPage(0);
     }
 
     @Override
