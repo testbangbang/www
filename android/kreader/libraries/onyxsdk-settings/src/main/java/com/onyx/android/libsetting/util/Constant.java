@@ -22,6 +22,7 @@ public class Constant {
     static final public String IMX6_ICS_BASED_CONFIG_NAME = "onyx_imx6_ics";
     static final public String IMX6_KIT_KAT_BASED_CONFIG_NAME = "onyx_imx6_kit_kat";
     static final public String RK3026_BASED_CONFIG_NAME = "onyx_rk3026";
+    static final public String RK32XX_BASED_CONFIG_NAME = "onyx_rk32xx";
 
     static final public int EDU_DEVICE_INFO_TRIGGER_VALUE = 5;
     //unit:ms
