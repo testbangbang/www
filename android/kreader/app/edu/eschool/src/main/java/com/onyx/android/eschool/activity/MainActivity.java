@@ -34,6 +34,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -120,6 +121,9 @@ public class MainActivity extends BaseActivity {
 
     private void notifyDataChanged(List<Library> list) {
         for (Library library : list) {
+            if (library == null || StringUtils.isNullOrEmpty(library.getIdString())) {
+                continue;
+            }
             addToLibraryMap(library);
             EventBus.getDefault().postSticky(new BookLibraryEvent(library));
         }
