@@ -187,15 +187,23 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 } catch (Exception e) {
                     e.printStackTrace();
                 } finally {
-                    if (isResumeRawInputProcessor() && parent.isDFBForCurrentShape()) {
-                        Debug.d(getClass(), "raw status: resume");
-                        parent.resumeRawEventProcessor(getContext());
-                    }
+                    updateRawInputProcessor(parent);
                     parent.getRequestManager().releaseWakeLock();
                 }
             }
         };
         return runnable;
+    }
+
+    private void updateRawInputProcessor(NoteManager noteManager) {
+        if (isPauseRawInputProcessor()) {
+            Debug.d(getClass(), "raw status: pause");
+            noteManager.pauseRawEventProcessor();
+        }
+        if (isResumeRawInputProcessor() && noteManager.isDFBForCurrentShape()) {
+            Debug.d(getClass(), "raw status: resume");
+            noteManager.resumeRawEventProcessor(getContext());
+        }
     }
 
     public final ReaderNoteDataInfo getNoteDataInfo() {
