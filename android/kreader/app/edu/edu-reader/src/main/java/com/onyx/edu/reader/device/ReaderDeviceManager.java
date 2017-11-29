@@ -24,7 +24,9 @@ public class ReaderDeviceManager {
     private final static EpdDevice epdDevice;
 
     static {
-        if (DeviceUtils.isRkDevice()) {
+        if (DeviceUtils.isRk32xxDevice()) {
+            epdDevice = new EpdRk32xx();
+        } else if (DeviceUtils.isRkDevice()) {
             epdDevice = new EpdRk3026();
         } else {
             epdDevice = new EpdImx6();

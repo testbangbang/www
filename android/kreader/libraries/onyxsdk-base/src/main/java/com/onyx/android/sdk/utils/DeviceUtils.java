@@ -58,6 +58,10 @@ public class DeviceUtils {
         return Build.HARDWARE.startsWith("rk");
     }
 
+    public static boolean isRk32xxDevice() {
+        return getSystemProperty("ro.board.platform").contains("3288");
+    }
+
     public enum FontType {
         CHINESE,ENGLISH,ALL
     }
@@ -377,5 +381,17 @@ public class DeviceUtils {
     static public void turnOffSystemPMSettings(Context context) {
         android.provider.Settings.System.putInt(context.getContentResolver(), Settings.System.SCREEN_OFF_TIMEOUT, NEVER_SLEEP);
         android.provider.Settings.System.putInt(context.getContentResolver(), "auto_poweroff_timeout", NEVER_SLEEP);
+    }
+
+    public static String getSystemProperty(String key) {
+        String value = "";
+        try {
+            value = (String) Class.forName("android.os.SystemProperties")
+                    .getMethod("get", String.class).invoke(null, key);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return value;
     }
 }

@@ -61,6 +61,7 @@ import com.onyx.edu.reader.device.DeviceConfig;
 import com.onyx.edu.reader.device.ReaderDeviceManager;
 import com.onyx.edu.reader.note.actions.FlushNoteAction;
 import com.onyx.edu.reader.note.actions.RemoveShapesByTouchPointListAction;
+import com.onyx.edu.reader.note.actions.RenderStashShapesInBackgroundAction;
 import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.StopNoteActionChain;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
@@ -739,7 +740,8 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onDFBShapeFinished(final ShapeAddedEvent event) {
-        flushReaderNote(true, false, false, false, null);
+        new RenderStashShapesInBackgroundAction(getReaderDataHolder().getVisiblePages()).execute(getReaderDataHolder(), null);
+//        flushReaderNote(true, false, false, false, null);
     }
 
     private void prepareForErasing() {

@@ -85,7 +85,7 @@ public class FormScribbleHandler extends FormFieldHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
-        return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
+        return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
     }
 
     @Override

@@ -23,11 +23,23 @@ public class RectUtils {
         return new Rect((int)source.left, (int)source.top, (int)source.width(), (int)source.height());
     }
 
+    static public List<Rect> toRectList(final List<RectF> source) {
+        ArrayList<Rect> list = new ArrayList<>();
+        for (RectF r : source) {
+            list.add(toRect(r));
+        }
+        return list;
+    }
+
     static public RectF remove(final RectF parent, final float childTop, final float childHeight, final float spacing) {
         if (childTop + childHeight +  spacing >= parent.bottom) {
             return null;
         }
         return new RectF(parent.left, childTop + childHeight + spacing, parent.right, parent.bottom);
+    }
+
+    static public RectF toRectF(final Rect source) {
+        return new RectF(source.left, source.top, source.right, source.bottom);
     }
 
     static public RectF rectangle(double result[]) {

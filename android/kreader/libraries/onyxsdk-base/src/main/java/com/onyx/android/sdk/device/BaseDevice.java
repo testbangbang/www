@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.Build;
 import android.os.PowerManager;
 import android.view.View;
 import android.view.WindowManager;
+import android.webkit.WebView;
+
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
@@ -51,6 +55,11 @@ public class BaseDevice {
         }
     }
 
+    //TODO:for FileUtil to parse uri.
+    public File getBluetoothRootDirectory() {
+        return new File(getExternalStorageDirectory().getPath() + File.separator + "bluetooth");
+    }
+
     public boolean isFileOnRemovableSDCard(File file) {
         return file.getAbsolutePath().startsWith(getRemovableSDCardDirectory().getAbsolutePath());
     }
@@ -83,6 +92,57 @@ public class BaseDevice {
 
     public float getTouchHeight() {
         return 0;
+    }
+
+    public float getEpdWidth() {
+        return 0;
+    }
+
+    public float getEpdHeight() {
+        return 0;
+    }
+
+    public void mapToView(View view, float[] src, float[] dst) {
+    }
+
+    public void mapToEpd(View view, float[] src, float[] dst) {
+    }
+
+    public Rect mapToEpd(View view, Rect srcRect) {
+        float src[] = new float[]{srcRect.left, srcRect.top};
+        float dst[] = new float[2];
+        float dst2[] = new float[2];
+        mapToEpd(view, src, dst);
+        src[0] = srcRect.right;
+        src[1] = srcRect.bottom;
+        mapToEpd(view, src, dst2);
+        return new Rect(
+                (int)Math.min(dst[0], dst2[0]),
+                (int)Math.min(dst[1], dst2[1]),
+                (int)Math.max(dst[0], dst2[0]),
+                (int)Math.max(dst[1], dst2[1]));
+    }
+
+    public void mapFromRawTouchPoint(View view, float[] src, float[] dst) {
+    }
+
+    public void mapToRawTouchPoint(View view, float[] src, float[] dst) {
+    }
+
+    public RectF mapToRawTouchPoint(View view, RectF rect) {
+        float src[] = new float[]{rect.left, rect.top};
+        float dst[] = new float[2];
+        float dst2[] = new float[2];
+        mapToRawTouchPoint(view, src, dst);
+
+        src[0] = rect.right;
+        src[1] = rect.bottom;
+        mapToRawTouchPoint(view, src, dst2);
+        return new RectF(
+                Math.min(dst[0], dst2[0]),
+                Math.min(dst[1], dst2[1]),
+                Math.max(dst[0], dst2[0]),
+                Math.max(dst[1], dst2[1]));
     }
 
     public int getFrontLightBrightnessMinimum(Context context) {
@@ -168,6 +228,10 @@ public class BaseDevice {
         return false;
     }
 
+    public boolean applyApplicationFastMode(final String application, boolean enable, boolean clear, UpdateMode repeatMode, int repeatLimit) {
+        return false;
+    }
+
     public boolean setDisplayScheme(int scheme) {
         return false;
     }
@@ -220,10 +284,19 @@ public class BaseDevice {
     public void moveTo(float x, float y, float width) {
     }
 
+    public void moveTo(View view, float x, float y, float width) {
+    }
+
     public void lineTo(float x, float y, UpdateMode mode) {
     }
 
+    public void lineTo(View view, float x, float y, UpdateMode mode) {
+    }
+
     public void quadTo(float x, float y, UpdateMode mode) {
+    }
+
+    public void quadTo(View view, float x, float y, UpdateMode mode) {
     }
 
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
@@ -247,10 +320,29 @@ public class BaseDevice {
     public void enablePost(View view, int enable) {
     }
 
+    public void resetEpdPost() {
+    }
+
     public void setScreenHandWritingPenState(View view, int penState) {
     }
 
+    public void setScreenHandWritingRegionLimit(View view) {
+    }
+
     public void setScreenHandWritingRegionLimit(View view, int left, int top, int right, int bottom) {
+    }
+
+    public void setScreenHandWritingRegionLimit(View view, int[] array) {
+    }
+
+
+    public void setScreenHandWritingRegionLimit(View view, Rect[] regions) {
+    }
+
+    public void setScreenHandWritingRegionExclude(View view, int[] array) {
+    }
+
+    public void setScreenHandWritingRegionExclude(View view, Rect[] regions) {
     }
 
     public void postInvalidate(View view, UpdateMode mode) {
@@ -369,6 +461,10 @@ public class BaseDevice {
     public void enableA2ForSpecificView(View view) {
     }
 
+    public void setWebViewContrastOptimize(WebView view, boolean enabled) {
+
+    }
+
     public boolean isLegalSystem(final Context context){
         return true;
     }
@@ -389,4 +485,12 @@ public class BaseDevice {
     public void setQRShowConfig(int orientation, int startX, int startY) {};
 
     public void setInfoShowConfig(int orientation, int startX, int startY) {}
+
+    public void setUpdListSize(int size) {
+    }
+
+    public boolean inSystemFastMode() {
+        return false;
+    }
+
 }

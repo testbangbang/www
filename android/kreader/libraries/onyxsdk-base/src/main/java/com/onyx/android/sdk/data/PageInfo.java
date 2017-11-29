@@ -26,6 +26,7 @@ public class PageInfo {
 
     private RectF positionRect = new RectF(); // page position rect in document coordinates system with actual scale.
     private RectF displayRect = new RectF(); // page display rect in viewport(screen) coordinates system with actual scale.
+    private RectF visibleRect = new RectF(); // page visible rect in viewport(screen) coordinates
     private float actualScale = 1.0f;
     private int specialScale = PageConstants.SCALE_INVALID;
 
@@ -48,6 +49,7 @@ public class PageInfo {
         originHeight = pageInfo.getOriginHeight();
         positionRect.set(pageInfo.positionRect);
         displayRect.set(pageInfo.displayRect);
+        visibleRect.set(pageInfo.visibleRect);
         actualScale = pageInfo.actualScale;
         specialScale = pageInfo.specialScale;
         isTextPage = pageInfo.isTextPage;
@@ -133,6 +135,15 @@ public class PageInfo {
 
     public RectF getDisplayRect() {
         return displayRect;
+    }
+
+    public RectF updateVisibleRect(final RectF rect) {
+        visibleRect = new RectF(rect);
+        return visibleRect;
+    }
+
+    public RectF getVisibleRect() {
+        return visibleRect;
     }
 
     public int getPageDisplayOrientation() {
