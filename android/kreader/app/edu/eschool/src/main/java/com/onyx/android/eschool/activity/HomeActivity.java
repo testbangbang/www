@@ -41,6 +41,7 @@ import butterknife.OnClick;
  */
 public class HomeActivity extends BaseActivity {
     private static boolean checkedOnBootComplete = false;
+    private long lastGcTs = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -210,6 +211,13 @@ public class HomeActivity extends BaseActivity {
     // Back button is a no-op here
     @Override
     public void onBackPressed() {
-        EpdController.invalidate(findViewById(android.R.id.content), UpdateMode.GC);
+        processBackPressedFullUpdate();
+    }
+
+    private void processBackPressedFullUpdate() {
+        if (System.currentTimeMillis() - lastGcTs >= DeviceConfig.sharedInstance(this).gcIgnoreInterval()) {
+            EpdController.invalidate(findViewById(android.R.id.content), UpdateMode.GC);
+            lastGcTs = System.currentTimeMillis();
+        }
     }
 }
