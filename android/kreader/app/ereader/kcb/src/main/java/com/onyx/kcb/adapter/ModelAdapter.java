@@ -84,7 +84,7 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
     @Override
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
         final DataModel dataModel = getItemVMList().get(position);
-        dataModel.enableSelection.set(canSelected(dataModel));
+        setEnableSelection(dataModel);
         if (getItemViewType(position) == ViewType.Thumbnail.ordinal()) {
             ModelViewHolder viewHolder = (ModelViewHolder) holder;
             viewHolder.bindTo(dataModel);
@@ -94,8 +94,23 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
         }
     }
 
-    private boolean canSelected(DataModel dataModel) {
-        return multiSelectionMode == SelectionMode.MULTISELECT_MODE && dataModel.isDocument.get();
+    private void setEnableSelection(DataModel dataModel) {
+        if (dataModel.getFileModel() != null && dataModel.getFileModel().isGoUpType()) {
+            dataModel.setEnableSelection(false);
+        } else {
+            if (storageViewModel != null){
+                dataModel.setEnableSelection(storageViewModel.isInMultiSelectionMode());
+            }else {
+                dataModel.setEnableSelection(isMultiSelectionMode());
+            }
+            setChecked(dataModel);
+        }
+    }
+
+    private void setChecked(DataModel dataModel) {
+        if (storageViewModel != null) {
+            dataModel.setChecked(storageViewModel.isItemSelected(dataModel));
+        }
     }
 
     @Override
