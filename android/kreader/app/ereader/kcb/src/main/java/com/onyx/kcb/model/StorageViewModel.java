@@ -123,7 +123,7 @@ public class StorageViewModel extends BaseObservable {
         getEventBus().post(ViewTypeEvent.create(viewType.get()));
     }
 
-    private EventBus getEventBus() {
+    public EventBus getEventBus() {
         return eventBus;
     }
 

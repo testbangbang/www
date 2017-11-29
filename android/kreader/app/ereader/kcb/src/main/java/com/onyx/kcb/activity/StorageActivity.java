@@ -50,6 +50,7 @@ import com.onyx.kcb.device.DeviceConfig;
 import com.onyx.kcb.dialog.DialogCreateNewFolder;
 import com.onyx.kcb.dialog.DialogFileProperty;
 import com.onyx.kcb.dialog.DialogRenameFile;
+import com.onyx.kcb.event.OnModelAdapterRawDataChangeEvent;
 import com.onyx.kcb.event.OperationEvent;
 import com.onyx.kcb.event.ViewTypeEvent;
 import com.onyx.kcb.holder.DataBundle;
@@ -602,6 +603,11 @@ public class StorageActivity extends OnyxAppCompatActivity {
             default:
                 break;
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onModelAdapterRawDataChangeEvent(OnModelAdapterRawDataChangeEvent event) {
+        notifyContentChanged();
     }
 
     @Subscribe(threadMode = ThreadMode.POSTING)

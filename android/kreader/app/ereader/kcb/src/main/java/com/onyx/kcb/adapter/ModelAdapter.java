@@ -14,6 +14,7 @@ import com.onyx.kcb.KCBApplication;
 import com.onyx.kcb.R;
 import com.onyx.kcb.databinding.ModelItemBinding;
 import com.onyx.kcb.databinding.ModelItemDetailsBinding;
+import com.onyx.kcb.event.OnModelAdapterRawDataChangeEvent;
 import com.onyx.kcb.model.StorageViewModel;
 
 import java.util.List;
@@ -102,6 +103,9 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
+        if (storageViewModel != null){
+            storageViewModel.getEventBus().post(new OnModelAdapterRawDataChangeEvent());
+        }
     }
 
     public void setMultiSelectionMode(int multiSelectionMode) {
