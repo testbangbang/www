@@ -64,6 +64,9 @@ public class DeviceConfig {
     static public final String GALLERY_DIR = "gallery_dir";
     static public final String MUSIC_DIR = "music_dir";
 
+    static public final String DEVICE_SUPPORT_COLOR = "support_color";
+    static public final String GC_IGNORE_INTERVAL_TAG = "gc_ignore_interval";
+
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
             globalInstance = new DeviceConfig(context);
@@ -282,5 +285,13 @@ public class DeviceConfig {
             list.addAll(getGalleryDir());
         }
         return list;
+    }
+
+    public boolean isDeviceSupportColor() {
+        return backend.getBoolean(DEVICE_SUPPORT_COLOR, false);
+    }
+
+    public int gcIgnoreInterval() {
+        return backend.getInt(GC_IGNORE_INTERVAL_TAG, 5 * 1000);
     }
 }
