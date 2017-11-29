@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -61,8 +62,8 @@ public class RxRecentDataRequest extends RxBaseDBRequest {
         if (!CollectionUtils.isNullOrEmpty(recentlyReadMetadata)) {
             loadBitmap(recentlyReadMetadata);
         }
-        DataModelUtil.metadataToDataModel(eventBus, recentAddList, recentlyAddMetadata, thumbnailMap);
-        DataModelUtil.metadataToDataModel(eventBus, recentlyReadList, recentlyReadMetadata, thumbnailMap);
+        DataModelUtil.metadataToDataModel(eventBus, recentAddList, recentlyAddMetadata, thumbnailMap, R.drawable.book_default_cover);
+        DataModelUtil.metadataToDataModel(eventBus, recentlyReadList, recentlyReadMetadata, thumbnailMap, R.drawable.book_default_cover);
         return this;
     }
 
