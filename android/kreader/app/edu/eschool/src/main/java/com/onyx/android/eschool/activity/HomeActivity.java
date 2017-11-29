@@ -206,4 +206,10 @@ public class HomeActivity extends BaseActivity {
     public void onAccountTokenErrorEvent(AccountTokenErrorEvent errorEvent) {
         StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, getString(R.string.account_un_login));
     }
+
+    // Back button is a no-op here
+    @Override
+    public void onBackPressed() {
+        EpdController.invalidate(findViewById(android.R.id.content), UpdateMode.GC);
+    }
 }
