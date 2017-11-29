@@ -1,6 +1,7 @@
 package com.onyx.kcb;
 
 import android.test.ApplicationTestCase;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.QueryArgs;
@@ -15,6 +16,8 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.onyx.kcb.action.ActionChain;
+import com.onyx.kcb.action.BaseAction;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.action.RxMetadataLoadAction;
 import com.onyx.kcb.holder.DataBundle;
@@ -96,7 +99,7 @@ public class LibraryTest extends ApplicationTestCase<KCBApplication> {
     private void loadData(final List<DataModel> fileList, DataBundle dataHolder, final RxCallback rxCallback) {
         final LibraryViewDataModel libraryViewDataModel = LibraryViewDataModel.create(EventBus.getDefault(), Integer.MAX_VALUE, Integer.MAX_VALUE);
         QueryArgs queryArgs = QueryBuilder.allBooksQuery(SortBy.Name, SortOrder.Asc);
-        RxMetadataLoadAction rxMetadataLoadAction = new RxMetadataLoadAction(libraryViewDataModel, queryArgs, false);
+        RxMetadataLoadAction rxMetadataLoadAction = new RxMetadataLoadAction(queryArgs, false);
         rxMetadataLoadAction.execute(dataHolder, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -148,5 +151,56 @@ public class LibraryTest extends ApplicationTestCase<KCBApplication> {
             rootDir = EnvironmentUtil.getRemovableSDCardDirectory().getAbsolutePath();
         }
         return rootDir;
+    }
+
+    public void testConcat() {
+        final RxCallback rxCallback = new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                Log.e("##testContact", "onNext");
+            }
+
+            @Override
+            public void onComplete() {
+                Log.e("##testContact", "onComplete");
+            }
+        };
+        ActionChain chain = new ActionChain();
+        chain.addAction(new BaseAction() {
+            @Override
+            public void execute(DataBundle dataBundle, RxCallback baseCallback) {
+                Log.e("##testContact", "BaseAction1");
+            }
+        });
+
+        chain.addAction(new BaseAction() {
+            @Override
+            public void execute(DataBundle dataBundle, RxCallback baseCallback) {
+                Log.e("##testContact", "BaseAction2");
+            }
+        });
+
+        chain.addAction(new BaseAction() {
+            @Override
+            public void execute(DataBundle dataBundle, RxCallback baseCallback) {
+                Log.e("##testContact", "BaseAction3");
+            }
+        });
+        chain.addAction(new BaseAction() {
+            @Override
+            public void execute(DataBundle dataBundle, RxCallback baseCallback) {
+                Log.e("##testContact", "BaseAction4");
+            }
+        });
+        chain.addAction(new BaseAction() {
+            @Override
+            public void execute(DataBundle dataBundle, RxCallback baseCallback) {
+                Log.e("##testContact", "BaseAction5");
+            }
+        });
+
+        DataBundle dataBundle = new DataBundle(getContext());
+
+        chain.execute(dataBundle, rxCallback);
     }
 }

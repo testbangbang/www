@@ -6,42 +6,45 @@ import com.onyx.kcb.holder.DataBundle;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.reactivex.Observable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
+
 /**
  * Created by suicheng on 2017/5/18.
  */
 
-public class ActionChain {
+public class ActionChain<T extends BaseAction> {
+    private List<T> observableList = new ArrayList<>();
 
-    private List<BaseAction> actionList = new ArrayList<>();
-
-    public ActionChain addAction(final BaseAction action) {
-        actionList.add(action);
-        return this;
+    public void addAction(final T action) {
+        observableList.add(action);
     }
 
-    public void execute(final DataBundle dataHolder, final RxCallback callback) {
-        if (isFinished(callback)) {
-            return;
-        }
-
-        final BaseAction action = actionList.remove(0);
-        executeAction(dataHolder, action, new RxCallback() {
+    public void execute(final DataBundle dataBundle, final RxCallback<T> callback) {
+        Observable<T> observable = Observable.fromIterable(observableList);
+        observable.subscribe(new Consumer<T>() {
             @Override
-            public void onNext(Object o) {
-                execute(dataHolder, callback);
+            public void accept(T t) throws Exception {
+                t.execute(dataBundle, null);
+                if (callback != null) {
+                    callback.onNext(t);
+                }
+            }
+        }, new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                if (callback != null) {
+                    callback.onError(throwable);
+                }
+            }
+        }, new Action() {
+            @Override
+            public void run() throws Exception {
+                if (callback != null) {
+                    callback.onComplete();
+                }
             }
         });
-    }
-
-    private void executeAction(final DataBundle dataHolder, final BaseAction action, final RxCallback callback) {
-        action.execute(dataHolder, callback);
-    }
-
-    private boolean isFinished(final RxCallback callback) {
-        if (actionList.size() <= 0) {
-            callback.onComplete();
-            return true;
-        }
-        return false;
     }
 }
