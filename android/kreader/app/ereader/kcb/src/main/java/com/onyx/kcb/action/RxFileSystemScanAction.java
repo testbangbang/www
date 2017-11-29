@@ -102,14 +102,18 @@ public class RxFileSystemScanAction extends BaseAction<DataBundle> {
             @Override
             public void onNext(RxFilesAddToMetadataRequest rxFilesAddToMetadataRequest) {
                 dataHolder.getDataManager().getCacheManager().clearMetadataCache();
-                baseCallback.onNext(rxFilesAddToMetadataRequest);
-                baseCallback.onComplete();
+                if (baseCallback != null) {
+                    baseCallback.onNext(rxFilesAddToMetadataRequest);
+                    baseCallback.onComplete();
+                }
             }
 
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                baseCallback.onError(throwable);
+                if (baseCallback != null) {
+                    baseCallback.onError(throwable);
+                }
             }
         });
     }

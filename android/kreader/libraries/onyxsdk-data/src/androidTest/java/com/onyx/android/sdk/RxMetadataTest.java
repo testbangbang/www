@@ -31,8 +31,7 @@ import com.onyx.android.sdk.data.request.data.db.LibraryClearRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryDeleteRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
-import com.onyx.android.sdk.data.rxrequest.data.db.RxRecentAddRequest;
-import com.onyx.android.sdk.data.rxrequest.data.db.RxRecentlyReadRequest;
+import com.onyx.android.sdk.data.rxrequest.data.db.RxRecentDataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxRemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
@@ -1059,65 +1058,38 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         FileUtils.mkdirs(testFolder());
     }
 
-    public void testRecentAdd() throws Exception {
+    public void testRecent() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         clearTestFolder();
         DataProviderBase dataProviderBase = getProviderBaseAndClearTable();
-        final List<Metadata> metadatas = new ArrayList<>();
+        final List<Metadata> recentlyAddMetadata = new ArrayList<>();
         for (int i = 0; i < getRandomInt(20, 100); i++) {
             Metadata metadata = randomMetadata(testFolder(), true);
             dataProviderBase.saveMetadata(getContext(), metadata);
-            metadatas.add(metadata);
+            recentlyAddMetadata.add(metadata);
         }
-
-        final List<DataModel> modelList = new ArrayList<>();
-        RxRecentAddRequest recentAddRequest = new RxRecentAddRequest(new DataManager(), EventBus.getDefault(), modelList);
-        RxRecentAddRequest.setAppContext(getContext());
-        recentAddRequest.execute(new RxCallback<RxRecentAddRequest>() {
-            @Override
-            public void onNext(RxRecentAddRequest addRequest) {
-                List<DataModel> targetList = new ArrayList<>();
-                assertRecentAdd(addRequest.getList());
-                Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), addRequest.getDataManager(), metadatas);
-                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetList, metadatas, thumbnailMap);
-                RxLibraryTest.assertListEqual(modelList, targetList);
-                countDownLatch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                super.onError(throwable);
-                assertNull(throwable);
-                countDownLatch.countDown();
-            }
-        });
-
-        countDownLatch.await();
-    }
-
-    public void testRecentReading() throws Exception {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
-        clearTestFolder();
-        DataProviderBase dataProviderBase = getProviderBaseAndClearTable();
-        final List<Metadata> metadatas = new ArrayList<>();
+        final List<Metadata> recentlyReadMetadata = new ArrayList<>();
         for (int i = 0; i < getRandomInt(20, 100); i++) {
             Metadata metadata = randomMetadata(testFolder(), true);
             metadata.setReadingStatus(1);
             dataProviderBase.saveMetadata(getContext(), metadata);
-            metadatas.add(metadata);
+            recentlyReadMetadata.add(metadata);
         }
 
-        final List<DataModel> modelList = new ArrayList<>();
-        RxRecentlyReadRequest recentlyReadRequest = new RxRecentlyReadRequest(new DataManager(), EventBus.getDefault(), modelList);
-        RxRecentlyReadRequest.setAppContext(getContext());
-        recentlyReadRequest.execute(new RxCallback<RxRecentlyReadRequest>() {
+        RxRecentDataRequest recentAddRequest = new RxRecentDataRequest(new DataManager(), EventBus.getDefault());
+        RxRecentDataRequest.setAppContext(getContext());
+        recentAddRequest.execute(new RxCallback<RxRecentDataRequest>() {
             @Override
-            public void onNext(RxRecentlyReadRequest readRequest) {
-                List<DataModel> targetList = new ArrayList<>();
-                assertRecentlyRead(readRequest.getList());
-                Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), readRequest.getDataManager(), metadatas);
-                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetList, metadatas, thumbnailMap);
-                RxLibraryTest.assertListEqual(modelList, targetList);
+            public void onNext(RxRecentDataRequest dataRequest) {
+                List<DataModel> targetAddList = new ArrayList<>();
+                List<DataModel> targetReadList = new ArrayList<>();
+                assertRecentAdd(dataRequest.getRecentlyAddMetadata());
+                assertRecentlyRead(dataRequest.getRecentlyReadMetadata());
+                Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), dataRequest.getDataManager(), dataRequest.getRecentlyReadMetadata());
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetAddList, recentlyAddMetadata, thumbnailMap);
+                RxLibraryTest.assertListEqual(dataRequest.getRecentAddList(), targetAddList);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetReadList, recentlyReadMetadata, thumbnailMap);
+                RxLibraryTest.assertListEqual(dataRequest.getRecentlyReadList(), targetReadList);
                 countDownLatch.countDown();
             }
 
