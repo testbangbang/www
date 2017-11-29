@@ -2,14 +2,16 @@ package com.onyx.android.sdk.reader.tests;
 
 import android.app.Application;
 import android.graphics.Bitmap;
-import android.test.ActivityInstrumentationTestCase2;
 import android.test.ApplicationTestCase;
 import android.util.Log;
+
 import com.alibaba.fastjson.JSON;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
+import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfJniWrapper;
+import com.onyx.android.sdk.utils.Benchmark;
+import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +33,7 @@ public class ReaderPluginPdfiumTest2 extends ApplicationTestCase<Application> {
 
     public ReaderPluginPdfiumTest2() {
         super(Application.class);
+        Debug.setDebug(true);
     }
 
     public void testOpen() throws Exception {
@@ -78,6 +81,43 @@ public class ReaderPluginPdfiumTest2 extends ApplicationTestCase<Application> {
         Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
         assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
         assertFalse(wrapper.pageSize(page + 1, size));
+        assertTrue(wrapper.closeDocument());
+        assertTrue(wrapper.nativeDestroyLibrary());
+    }
+
+    public void testImageRender() {
+        NeoPdfJniWrapper wrapper = new NeoPdfJniWrapper();
+        assertTrue(wrapper.nativeInitLibrary());
+        assertTrue(wrapper.openDocument("/sdcard/Books/longzhu.pdf", null) == NeoPdfJniWrapper.NO_ERROR);
+        int pageCount = wrapper.pageCount();
+        assertTrue(pageCount > 0);
+
+        Benchmark benchmark = new Benchmark();
+        wrapper.setUsingHighQualityImageRenderer(false);
+        for (int page = 0; page < 10 && page < pageCount - 1; page++) {
+            float size[] = new float[2];
+            assertTrue(wrapper.pageSize(page, size));
+            assertTrue(size[0] > 0);
+            assertTrue(size[1] > 0);
+            Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
+            assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
+            bitmap.recycle();
+        }
+        benchmark.report("draw without using high quality image renderer");
+
+        benchmark.restart();
+        wrapper.setUsingHighQualityImageRenderer(true);
+        for (int page = 0; page < 10 && page < pageCount - 1; page++) {
+            float size[] = new float[2];
+            assertTrue(wrapper.pageSize(page, size));
+            assertTrue(size[0] > 0);
+            assertTrue(size[1] > 0);
+            Bitmap bitmap = Bitmap.createBitmap((int)size[0], (int)size[1], Bitmap.Config.ARGB_8888);
+            assertTrue(wrapper.drawPage(page, 0, 0, bitmap.getWidth(), bitmap.getHeight(), 0, bitmap));
+            bitmap.recycle();
+        }
+        benchmark.report("draw using high quality image renderer");
+
         assertTrue(wrapper.closeDocument());
         assertTrue(wrapper.nativeDestroyLibrary());
     }
