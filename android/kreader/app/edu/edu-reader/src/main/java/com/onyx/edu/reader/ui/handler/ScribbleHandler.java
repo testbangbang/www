@@ -72,7 +72,7 @@ public class ScribbleHandler extends BaseHandler {
             return false;
         }
 
-        return readerDataHolder.getNoteManager().getNoteEventProcessorManager().onTouchEvent(e);
+        return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
     }
 
     private boolean inSelection(final ReaderDataHolder readerDataHolder) {

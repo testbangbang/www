@@ -1,10 +1,21 @@
 {
-  "defaultFontSizeIndex" : 3,
-  "defaultLineSpacingIndex" : 2,
   "ttsEnabled" : true,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
+  "askForClose" : true,
+  "supportColor" : true,
+  "defaultGamma": 100,
+  "defaultTextGamma": 150,
+  "fixedGamma": 100,
+  "frontLight" : 100,
+  "regalEnable" : true,
+  "defaultUseSystemStatusBar" : false,
   "supportBrushPen": true,
+  "gcInterval" : 5,
+  "customFormEnabled" : true,
+  "enableDictWebSearch" : false,
+  "ttsEngine" : "com.iflytek.tts",
+  "enableCustomRefreshConfig" : true,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
@@ -25,7 +36,5 @@
       "KEYCODE_SCRIBBLER":  {"action": "changeToScribbleMode", "args": ""},
       "KEYCODE_BACK": {"action": "close", "args": ""}
     }
-  },
-  "umengKey": "5871bb2907fe65168c000f07",
-  "channel": "onyx"
+  }
 }

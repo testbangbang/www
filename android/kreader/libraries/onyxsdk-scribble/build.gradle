@@ -98,6 +98,7 @@ dependencies {
     apt "com.github.Raizlabs.DBFlow:dbflow-processor:$rootProject.dbflowVersion"
     compile "com.github.Raizlabs.DBFlow:dbflow-core:$rootProject.dbflowVersion"
     compile "com.github.Raizlabs.DBFlow:dbflow:$rootProject.dbflowVersion"
+    compile "org.greenrobot:eventbus:$rootProject.eventbusVersion"
 }
 
 apply from: file(rootProject.projectDir.absolutePath + '/deploy.gradle')

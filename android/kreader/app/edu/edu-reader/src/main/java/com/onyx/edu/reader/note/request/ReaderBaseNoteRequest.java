@@ -35,6 +35,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     private boolean debugPathBenchmark = false;
     private volatile boolean pauseRawInputProcessor = true;
     private volatile boolean resumeRawInputProcessor = false;
+    private volatile boolean renderToScreen = true;
     private volatile boolean render = true;
     private volatile boolean transfer = true;
     private volatile boolean resetNoteDataInfo = true;
@@ -75,6 +76,14 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     public void setParentLibraryId(String parentLibraryId) {
         this.parentLibraryId = parentLibraryId;
+    }
+
+    private boolean isRenderToScreen() {
+        return renderToScreen;
+    }
+
+    public void setRenderToScreen(boolean toScreen) {
+        renderToScreen = toScreen;
     }
 
     public void setViewportSize(final Rect size) {
@@ -164,7 +173,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
             @Override
             public void run() {
                 try {
-                    parent.enableScreenPost(true);
+                    if (isRenderToScreen()) {
+                        parent.enableScreenPost(true);
+                    }
                     synchronized (parent) {
                         updateShapeDataInfo(parent);
                         if (isRender() && isTransfer()) {

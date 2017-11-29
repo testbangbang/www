@@ -42,6 +42,7 @@ public class BaseShape implements Shape {
     private boolean lock;
     private boolean review;
 
+    private static boolean useRawInput;
     /**
      * rectangle, circle, etc.
      * @return
@@ -434,5 +435,13 @@ public class BaseShape implements Shape {
     @Override
     public boolean inVisibleDrawRectF(RectF rect) {
         return true;
+    }
+
+    public static boolean useRawInput() {
+        return useRawInput;
+    }
+
+    public static void setUseRawInput(boolean useRawInput) {
+        BaseShape.useRawInput = useRawInput;
     }
 }

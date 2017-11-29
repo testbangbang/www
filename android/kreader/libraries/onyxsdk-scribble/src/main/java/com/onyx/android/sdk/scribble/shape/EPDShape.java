@@ -1,9 +1,5 @@
 package com.onyx.android.sdk.scribble.shape;
 
-import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.Paint;
-import android.util.Log;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -30,7 +26,9 @@ public class EPDShape extends BaseShape {
     public void onDown(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         setPenDown();
         super.onDown(normalizedPoint, screenPoint);
-        EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getDisplayStrokeWidth());
+        if (!useRawInput()) {
+            EPDRenderer.moveTo(screenPoint.x, screenPoint.y, getDisplayStrokeWidth());
+        }
     }
 
     public void onMove(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
@@ -39,13 +37,17 @@ public class EPDShape extends BaseShape {
         }
         setPenMove();
         super.onMove(normalizedPoint, screenPoint);
-        EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        if (!useRawInput()) {
+            EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+        }
     }
 
     public void onUp(final TouchPoint normalizedPoint, final TouchPoint screenPoint) {
         if (isPenMove()) {
             super.onUp(normalizedPoint, screenPoint);
-            EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+            if (!useRawInput()) {
+                EPDRenderer.quadTo(screenPoint.x, screenPoint.y, updateMode);
+            }
         }
         setPenNull();
     }

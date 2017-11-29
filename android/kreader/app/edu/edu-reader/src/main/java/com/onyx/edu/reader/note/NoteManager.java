@@ -15,10 +15,13 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
+import com.onyx.android.sdk.scribble.api.TouchHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -26,8 +29,7 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.utils.Debug;
-import com.onyx.edu.reader.note.bridge.NoteEventProcessorBase;
-import com.onyx.edu.reader.note.bridge.NoteEventProcessorManager;
+import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.note.data.ReaderNoteDocument;
 import com.onyx.edu.reader.note.data.ReaderNotePage;
@@ -41,6 +43,8 @@ import com.onyx.edu.reader.ui.events.ShortcutDrawingStartEvent;
 import com.onyx.edu.reader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.edu.reader.ui.events.ShortcutErasingStartEvent;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -52,7 +56,7 @@ public class NoteManager {
 
     private static final String TAG = NoteManager.class.getSimpleName();
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private NoteEventProcessorManager noteEventProcessorManager;
+    private TouchHelper touchHelper;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
@@ -67,13 +71,18 @@ public class NoteManager {
     private RenderContext noteRenderContext = new RenderContext();
     private RenderContext reviewRenderContext = new RenderContext();
 
+    private ShapeEventHandler shapeEventHandler;
+
     private List<Shape> shapeStash = new ArrayList<>();
     private DeviceConfig noteConfig;
     private MappingConfig mappingConfig;
     private List<PageInfo> visiblePages = new ArrayList<>();
+    private EventBus eventBus;
+    private boolean sideNoting = false;
     private ReaderDataHolder parent;
     private ReaderNoteDataInfo noteDataInfo = new ReaderNoteDataInfo();
     private RectF visibleDrawRectF;
+    private List<RectF> excludeRect;
     private volatile boolean enableRawEventProcessor = false;
     private AtomicBoolean noteDirty = new AtomicBoolean(false);
     private volatile boolean enableShortcutDrawing = false;
@@ -81,8 +90,14 @@ public class NoteManager {
     private boolean useWakeLock = true;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder(false);
 
-    public NoteManager(final ReaderDataHolder p) {
+    public NoteManager(final ReaderDataHolder p, final EventBus bus) {
         parent = p;
+        eventBus = bus;
+        shapeEventHandler = new ShapeEventHandler(this);
+        shapeEventHandler.registerEventBus();
+        ConfigManager.init(p.getContext().getApplicationContext());
+        BaseShape.setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
+        getTouchHelper().setUseRawInput(ConfigManager.getInstance().getDeviceConfig().useRawInput());
     }
 
     public final RequestManager getRequestManager() {
@@ -94,7 +109,7 @@ public class NoteManager {
     }
 
     public void startRawEventProcessor() {
-        getNoteEventProcessorManager().start();
+        getTouchHelper().startRawDrawing();
     }
 
     public void enableRawEventProcessor(boolean enable) {
@@ -106,19 +121,19 @@ public class NoteManager {
 
     public void stopRawEventProcessor() {
         releaseWakeLock();
-        getNoteEventProcessorManager().stop();
+        getTouchHelper().stopRawDrawing();
     }
 
     public void pauseRawEventProcessor() {
         releaseWakeLock();
-        getNoteEventProcessorManager().pause();
+        getTouchHelper().pauseRawDrawing();
     }
 
     public void resumeRawEventProcessor(final Context context) {
         if (enableRawEventProcessor) {
             acquireWakeLock(context);
         }
-        getNoteEventProcessorManager().resume();
+        getTouchHelper().resumeRawDrawing();
     }
 
     private void acquireWakeLock(final Context context) {
@@ -146,15 +161,36 @@ public class NoteManager {
             initNoteArgs(context);
         }
         view = sv;
-        getNoteEventProcessorManager().update(view, noteConfig, mappingConfig, visibleDrawRect, excludeRect, orientation);
+        getTouchHelper().setup(view);
+
+        getTouchHelper().setLimitRect(visibleDrawRect, RectUtils.toRectList(excludeRect));
         setVisibleDrawRectF(new RectF(visibleDrawRect.left, visibleDrawRect.top, visibleDrawRect.right, visibleDrawRect.bottom));
+        setExcludeRectFs(excludeRect);
     }
 
-    public final NoteEventProcessorManager getNoteEventProcessorManager() {
-        if (noteEventProcessorManager == null) {
-            noteEventProcessorManager = new NoteEventProcessorManager(this);
+    private void setExcludeRectFs(final List<RectF> exclude) {
+        if (exclude == null) {
+            return;
         }
-        return noteEventProcessorManager;
+        excludeRect = new ArrayList<>();
+        for (RectF rectF : exclude) {
+            excludeRect.add(new RectF(rectF.left, rectF.top, rectF.right, rectF.bottom));
+        }
+    }
+
+    public final TouchHelper getTouchHelper() {
+        if (touchHelper == null) {
+            touchHelper = new TouchHelper(getEventBus());
+        }
+        return touchHelper;
+    }
+
+    public View getHostView() {
+        return view;
+    }
+
+    public EventBus getEventBus() {
+        return eventBus;
     }
 
     public final DeviceConfig getNoteConfig() {
@@ -170,92 +206,6 @@ public class NoteManager {
 
     public ReaderDataHolder getParent() {
         return parent;
-    }
-
-    public final NoteEventProcessorBase.InputCallback getInputCallback() {
-        NoteEventProcessorBase.InputCallback inputCallback = new NoteEventProcessorBase.InputCallback() {
-
-            @Override
-            public void onDrawingTouchDown(MotionEvent motionEvent, Shape shape) {
-                if (shape != null && !shape.supportDFB()) {
-                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
-                }
-            }
-
-            @Override
-            public void onDrawingTouchMove(MotionEvent motionEvent, Shape shape, boolean last) {
-                if (shape != null && !shape.supportDFB() && last) {
-                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
-                }
-            }
-
-            @Override
-            public void onDrawingTouchUp(MotionEvent motionEvent, Shape shape) {
-                if (shape == null) {
-                    return;
-                }
-                onNewStash(shape);
-                if (!shape.supportDFB()) {
-                    getParent().getEventBus().post(new ShapeDrawingEvent(shape));
-                }
-            }
-
-            public void onErasingTouchDown(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(true, false, list));
-            }
-
-            public void onErasingTouchMove(final MotionEvent motionEvent, final TouchPointList list, boolean last) {
-                if (last) {
-                    getParent().getEventBus().post(new ShapeErasingEvent(false, false, list));
-                }
-            }
-
-            public void onErasingTouchUp(final MotionEvent motionEvent, final TouchPointList list) {
-                getParent().getEventBus().post(new ShapeErasingEvent(false, true, list));
-            }
-
-            public void onRawErasingStart() {
-                getParent().getEventBus().post(new ShortcutErasingStartEvent());
-            }
-
-            public void onRawErasingFinished(final TouchPointList list) {
-                getParent().getEventBus().post(new ShortcutErasingFinishEvent(list));
-            }
-
-            public void onDFBShapeStart(boolean shortcut) {
-                if (shortcut) {
-                    getParent().getEventBus().post(new ShortcutDrawingStartEvent());
-                }
-            }
-
-            public void onDFBShapeFinished(final Shape shape, boolean shortcut) {
-                onNewStash(shape);
-                if (shortcut) {
-                    getParent().getEventBus().post(new ShortcutDrawingFinishedEvent());
-                }
-            }
-
-            public boolean enableShortcutDrawing() {
-                if (getNoteDataInfo() == null) {
-                    return enableShortcutDrawing;
-                }
-                return enableShortcutDrawing && !isInSelection();
-            }
-
-            public boolean enableShortcutErasing() {
-                return enableShortcutErasing;
-            }
-
-            public boolean enableRawEventProcessor() {
-                return enableRawEventProcessor;
-            }
-
-            public void enableTouchInput(boolean enable) {
-                getParent().getHandlerManager().setEnableTouch(enable);
-            }
-
-        };
-        return inputCallback;
     }
 
     public void enableScreenPost(boolean enable) {
@@ -372,7 +322,7 @@ public class NoteManager {
         return null;
     }
 
-    private void onNewStash(final Shape shape) {
+    public void onNewStash(final Shape shape) {
         shapeStash.add(shape);
     }
 
@@ -394,6 +344,7 @@ public class NoteManager {
 
     public void setCurrentStrokeWidth(float w) {
         getNoteDrawingArgs().strokeWidth = w;
+        getTouchHelper().setStrokeWidth(w);
     }
 
     public Shape createNewShape(final PageInfo pageInfo) {
@@ -407,7 +358,11 @@ public class NoteManager {
     }
 
     public Shape getCurrentShape() {
-        return currentShape;
+        return shapeEventHandler.getCurrentShape();
+    }
+
+    public TouchPoint getEraserPoint() {
+        return shapeEventHandler.getEraserPoint();
     }
 
     public boolean isDFBForCurrentShape() {
@@ -454,8 +409,35 @@ public class NoteManager {
         return null;
     }
 
-    public boolean inScribbleRect(TouchPoint point) {
-        return noteEventProcessorManager.inScribbleRect(point);
+    public List<PageInfo> getVisiblePages() {
+        return visiblePages;
+    }
+
+    public void restoreStrokeWidth() {
+        if (noteDocument != null && noteDocument.isOpen()) {
+            setCurrentStrokeWidth(noteDocument.getStrokeWidth());
+        }
+    }
+
+
+    public boolean inScribbleRect(TouchPoint touchPoint) {
+        return inLimitRect(touchPoint.x, touchPoint.y) && !inExcludeRect(touchPoint.x, touchPoint.y);
+    }
+
+    private boolean inLimitRect(final float x, final float y) {
+        return visibleDrawRectF != null && visibleDrawRectF.contains(x, y);
+    }
+
+    private boolean inExcludeRect(final float x, final float y) {
+        if (excludeRect == null || excludeRect.size() == 0) {
+            return false;
+        }
+        for (RectF rect : excludeRect) {
+            if (rect.contains(x, y)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public final RenderContext getNoteRenderContext() {
@@ -635,5 +617,13 @@ public class NoteManager {
         if (noteConfig != null && noteConfig.isShortcutDrawingEnabled() && noteConfig.supportBigPen()) {
             this.enableShortcutErasing = enableShortcutErasing;
         }
+    }
+
+    public boolean isSideNoting() {
+        return sideNoting;
+    }
+
+    public void setSideNoting(boolean sideNoting) {
+        this.sideNoting = sideNoting;
     }
 }
