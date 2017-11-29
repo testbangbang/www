@@ -149,7 +149,7 @@
     <dimen name="parse_sound_padding_left">25dp</dimen>
     <dimen name="record_result_margin_left">100dp</dimen>
     <dimen name="record_result_padding_left">20dp</dimen>
-    <dimen name="custom_parse_padding">40dp</dimen>
+    <dimen name="custom_parse_padding">10dp</dimen>
     <dimen name="load_again_padding">10dp</dimen>
     <dimen name="fill_homework_page_padding">10dp</dimen>
     <dimen name="fill_homework_page_title_margin_top">10dp</dimen>

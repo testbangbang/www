@@ -11,12 +11,14 @@ import android.widget.TextView;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
+import com.onyx.android.plato.adapter.MistakeAdapter;
 import com.onyx.android.plato.cloud.bean.AnalysisBean;
 import com.onyx.android.plato.cloud.bean.AnswerBean;
 import com.onyx.android.plato.cloud.bean.KnowledgeBean;
 import com.onyx.android.plato.cloud.bean.ParseBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseBean;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
+import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.databinding.ParseAnswerBinding;
@@ -25,6 +27,9 @@ import com.onyx.android.plato.event.ToCorrectEvent;
 import com.onyx.android.plato.interfaces.ParseAnswerView;
 import com.onyx.android.plato.presenter.ParseAnswerPresenter;
 import com.onyx.android.plato.utils.MediaManager;
+import com.onyx.android.plato.utils.Utils;
+import com.onyx.android.plato.view.DisableScrollGridManager;
+import com.onyx.android.plato.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -49,6 +54,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     private long duration;
     private TimerEvent timerEvent;
     private PracticeParseBean data;
+    private MistakeAdapter mistakeAdapter;
 
     @Override
     protected void loadData() {
@@ -70,24 +76,28 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         parseAnswerBinding.parseTitleBar.titleBarSubmit.setVisibility(View.GONE);
         mediaManager = MediaManager.newInstance();
         timerEvent = new TimerEvent();
-        parseAnswerBinding.parseDeleteSound.setEnabled(false);
-        parseAnswerBinding.parseMistakeDelete.setEnabled(false);
-        setVisible(questionData.isCorrect() ? R.id.parse_add_sound_layout : R.id.parse_mistake_layout);
+        parseAnswerBinding.parseAddSoundLayout.parseDeleteSound.setEnabled(false);
+        parseAnswerBinding.parseMistakeLayout.parseMistakeDelete.setEnabled(false);
+
+        parseAnswerBinding.parseMistakeLayout.mistakeRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
+        parseAnswerBinding.parseMistakeLayout.mistakeRecycler.addItemDecoration(new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST));
+        mistakeAdapter = new MistakeAdapter();
+        parseAnswerBinding.parseMistakeLayout.mistakeRecycler.setAdapter(mistakeAdapter);
     }
 
     @Override
     protected void initListener() {
         parseAnswerBinding.parseTitleBar.titleBarTitle.setOnClickListener(this);
-        parseAnswerBinding.parseAddSound.setOnClickListener(this);
-        parseAnswerBinding.parseDeleteSound.setOnClickListener(this);
-        parseAnswerBinding.parseModify.setOnClickListener(this);
-        parseAnswerBinding.parseReadRecord.setOnClickListener(this);
-        parseAnswerBinding.parseReadRecordModify.setOnClickListener(this);
-        parseAnswerBinding.parseMistakeAdd.setOnClickListener(this);
-        parseAnswerBinding.parseMistakeInputImage.setOnTouchListener(this);
-        parseAnswerBinding.parseSoundInput.setOnTouchListener(this);
-        parseAnswerBinding.parseMistakeVoice.setOnClickListener(this);
-        parseAnswerBinding.parseMistakeModify.setOnClickListener(this);
+        parseAnswerBinding.parseAddSoundLayout.parseAddSound.setOnClickListener(this);
+        parseAnswerBinding.parseAddSoundLayout.parseDeleteSound.setOnClickListener(this);
+        parseAnswerBinding.parseModifySoundLayout.parseModify.setOnClickListener(this);
+        parseAnswerBinding.parseAddSoundLayout.parseReadRecord.setOnClickListener(this);
+        parseAnswerBinding.parseModifySoundLayout.parseReadRecordModify.setOnClickListener(this);
+        parseAnswerBinding.parseMistakeLayout.parseMistakeAdd.setOnClickListener(this);
+        parseAnswerBinding.parseMistakeLayout.parseMistakeInputImage.setOnTouchListener(this);
+        parseAnswerBinding.parseAddSoundLayout.parseSoundInput.setOnTouchListener(this);
+        parseAnswerBinding.parseMistakeLayout.parseMistakeVoice.setOnClickListener(this);
+        parseAnswerBinding.parseMistakeLayout.parseMistakeModify.setOnClickListener(this);
     }
 
     private File getOutputFile() {
@@ -144,7 +154,6 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         }
 
         if (parseAnswerPresenter != null) {
-            setVisible(questionData.isCorrect() ? R.id.parse_add_sound_layout : R.id.parse_mistake_layout);
             parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
             parseAnswerPresenter.getRecord(questionData.getTaskId(), questionData.getId());
             parseAnswerPresenter.getAnalysis(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
@@ -163,7 +172,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             case R.id.parse_delete_sound:
                 break;
             case R.id.parse_modify:
-                parseAnswerBinding.parseReadRecord.setVisibility(View.VISIBLE);
+                parseAnswerBinding.parseAddSoundLayout.parseReadRecord.setVisibility(View.VISIBLE);
                 setVisible(R.id.parse_add_sound_layout);
                 break;
             case R.id.parse_read_record_modify:
@@ -175,14 +184,14 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             case R.id.parse_mistake_add:
                 if (setRecordTime(R.id.parse_mistake_layout)) {
                     setItemVisible(R.id.parse_mistake_sound_layout);
-                    parseAnswerBinding.parseMistakeLayout.setBackgroundColor(SunApplication.getInstance().getResources().getColor(R.color.white));
+                    parseAnswerBinding.parseMistakeLayout.parseMistakeWhole.setBackgroundColor(SunApplication.getInstance().getResources().getColor(R.color.white));
                 }
                 break;
             case R.id.parse_mistake_voice:
                 readRecord();
                 break;
             case R.id.parse_mistake_modify:
-                parseAnswerBinding.parseMistakeLayout.setBackgroundResource(R.drawable.rectangle_gray_stroke);
+                parseAnswerBinding.parseMistakeLayout.parseMistakeWhole.setBackgroundResource(R.drawable.rectangle_gray_stroke);
                 break;
         }
     }
@@ -212,9 +221,9 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     }
 
     private void setVisible(int id) {
-        parseAnswerBinding.parseAddSoundLayout.setVisibility(id == R.id.parse_add_sound_layout ? View.VISIBLE : View.GONE);
-        parseAnswerBinding.parseModifySoundLayout.setVisibility(id == R.id.parse_modify_sound_layout ? View.VISIBLE : View.GONE);
-        parseAnswerBinding.parseMistakeLayout.setVisibility(id == R.id.parse_mistake_layout ? View.VISIBLE : View.GONE);
+        parseAnswerBinding.setAddVisible(id == R.id.parse_add_sound_layout);
+        parseAnswerBinding.setModifyVisible(id == R.id.parse_modify_sound_layout);
+        parseAnswerBinding.setMistakeVisible(id == R.id.parse_mistake_layout);
     }
 
     @Override
@@ -238,10 +247,10 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             parseAnswerBinding.parseAnswerImage.setVisibility(View.GONE);
         }else {
             parseAnswerBinding.parseAnswerImage.setVisibility(View.VISIBLE);
-            String scoreDetail = String.format(SunApplication.getInstance().getResources().getString(R.string.score_detail), answerBean.score, answerBean.value);
+            String scoreDetail = String.format(SunApplication.getInstance().getResources().getString(R.string.score_detail), answerBean.value, answerBean.score);
             String subjectAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.user_answer), scoreDetail);
             parseAnswerBinding.setUserAnswer(subjectAnswer);
-            //TODO:load image answer
+            Utils.loadImageUrl(answerBean.answer, parseAnswerBinding.parseAnswerImage, R.drawable.ic_answer_area);
         }
 
         if (parseAnswerBinding.parseKnowledge.getChildCount() > 0) {
@@ -257,6 +266,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         }
 
         parseAnswerBinding.setAnswerParse(Html.fromHtml(parseBean.analysis).toString());
+        setVisible(answerBean.value == answerBean.score ? R.id.parse_add_sound_layout : R.id.parse_mistake_layout);
     }
 
     @Override
@@ -275,6 +285,10 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     @Override
     public void setAnalysis(AnalysisBean analysisBean) {
         //TODO
+        List<SubjectBean> systemErrors = analysisBean.systemErrors;
+        if (systemErrors != null && systemErrors.size() > 0) {
+            mistakeAdapter.setData(systemErrors);
+        }
     }
 
     private String insertPMark(String htmlText, String insertText) {
@@ -317,7 +331,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     }
 
     public void setItemVisible(int itemId) {
-        parseAnswerBinding.parseMistakeSoundLayout.setVisibility(itemId == R.id.parse_mistake_sound_layout ? View.VISIBLE : View.GONE);
-        parseAnswerBinding.parseMistakeInputText.setVisibility(itemId == R.id.parse_mistake_input_text ? View.VISIBLE : View.GONE);
+        parseAnswerBinding.parseMistakeLayout.parseMistakeSoundLayout.setVisibility(itemId == R.id.parse_mistake_sound_layout ? View.VISIBLE : View.GONE);
+        parseAnswerBinding.parseMistakeLayout.parseMistakeInputText.setVisibility(itemId == R.id.parse_mistake_input_text ? View.VISIBLE : View.GONE);
     }
 }

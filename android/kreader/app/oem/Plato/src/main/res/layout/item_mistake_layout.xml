@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ItemMistakeBinding">
+
+        <variable
+            name="bean"
+            type="com.onyx.android.plato.cloud.bean.SubjectBean" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/item_mistake"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/text_selector"
+            android:padding="@dimen/question_parse_add_sound_layout_padding"
+            android:text="@{bean.name}"
+            android:textSize="@dimen/level_three_heading_font" />
+    </LinearLayout>
+</layout>

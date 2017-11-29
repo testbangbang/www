@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="recorderTime"
+            type="String" />
+
+        <variable
+            name="modifyVisible"
+            type="boolean"/>
+    </data>
+
+    <LinearLayout
+        android:id="@+id/parse_modify_sound_whole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:visibility="@{modifyVisible ? View.VISIBLE : View.GONE}"
+        android:padding="@dimen/question_parse_add_sound_layout_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableRight="@drawable/ic_sound"
+            android:gravity="center_vertical"
+            android:text="@string/voice_remark"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <TextView
+            android:id="@+id/parse_read_record_modify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
+            android:background="@drawable/ic_voice_background"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/parse_sound_padding_left"
+            android:text="@{recorderTime}"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="@dimen/line_height"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/parse_modify"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/question_parse_add_sound_button_margin"
+            android:background="@drawable/button_backup_selector"
+            android:text="@string/modify"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/level_three_heading_font" />
+    </LinearLayout>
+</layout>

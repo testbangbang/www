@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <variable
+            name="recorderTime"
+            type="String" />
+
+        <variable
+            name="mistakeVisible"
+            type="boolean"/>
+    </data>
+
+    <LinearLayout
+        android:id="@+id/parse_mistake_whole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_gray_stroke"
+        android:orientation="vertical"
+        android:visibility="@{mistakeVisible ? View.VISIBLE : View.GONE}"
+        android:padding="@dimen/question_parse_add_sound_layout_padding">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/wrong_reflection"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <ImageView
+                android:id="@+id/parse_mistake_input_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sound" />
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/question_parse_margin_left">
+
+                <TextView
+                    android:id="@+id/parse_mistake_input_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/hold_input_voice"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <LinearLayout
+                    android:id="@+id/parse_mistake_sound_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/parse_mistake_voice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_voice_background"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/parse_sound_padding_left"
+                        android:text="@{recorderTime}"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/line_height"
+                        android:layout_weight="1" />
+
+                    <Button
+                        android:id="@+id/parse_mistake_modify"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/record_result_padding_left"
+                        android:background="@drawable/button_backup_selector"
+                        android:text="@string/edit"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/level_three_heading_font" />
+                </LinearLayout>
+            </FrameLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/question_parse_margin_top"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/error_analysis"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!--<LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/text_selector"
+                        android:padding="@dimen/question_parse_add_sound_layout_padding"
+                        android:text="@string/see_wrong"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
+                        android:background="@drawable/text_selector"
+                        android:padding="@dimen/question_parse_add_sound_layout_padding"
+                        android:text="@string/unclear_concept"
+                        android:textSize="@dimen/level_three_heading_font" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
+                        android:background="@drawable/text_selector"
+                        android:padding="@dimen/question_parse_add_sound_layout_padding"
+                        android:text="@string/careless"
+                        android:textSize="@dimen/level_three_heading_font" />
+                </LinearLayout>-->
+
+                <com.onyx.android.plato.view.PageRecyclerView
+                    android:id="@+id/mistake_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/question_parse_margin_top"
+                    android:background="@drawable/text_selector"
+                    android:drawablePadding="@dimen/question_parse_add_sound_layout_padding"
+                    android:drawableTop="@drawable/icon_add_page"
+                    android:padding="@dimen/custom_parse_padding"
+                    android:text="@string/custom"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/question_parse_add_sound_layout_padding">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/line_height"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/parse_mistake_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_backup_selector"
+                android:text="@string/remove"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <Button
+                android:id="@+id/parse_mistake_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
+                android:background="@drawable/button_backup_selector"
+                android:text="@string/add"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/line_height"
+                android:layout_weight="1" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
