@@ -246,6 +246,7 @@ public class LibraryViewDataModel extends Observable {
 
     public void searchBook() {
         queryArgs = QueryBuilder.librarySearchQuery(this.queryArgs.libraryUniqueId, searchKey.get(), this.queryArgs.sortBy, this.queryArgs.order);
+        queryArgs.limit = queryLimit;
         eventBus.post(new SearchBookEvent(queryArgs));
     }
 

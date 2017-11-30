@@ -1086,9 +1086,9 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
                 assertRecentAdd(dataRequest.getRecentlyAddMetadata());
                 assertRecentlyRead(dataRequest.getRecentlyReadMetadata());
                 Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), dataRequest.getDataManager(), dataRequest.getRecentlyReadMetadata());
-                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetAddList, recentlyAddMetadata, thumbnailMap);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetAddList, recentlyAddMetadata, thumbnailMap, R.drawable.book_default_cover);
                 RxLibraryTest.assertListEqual(dataRequest.getRecentAddList(), targetAddList);
-                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetReadList, recentlyReadMetadata, thumbnailMap);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetReadList, recentlyReadMetadata, thumbnailMap, R.drawable.library_default_cover);
                 RxLibraryTest.assertListEqual(dataRequest.getRecentlyReadList(), targetReadList);
                 countDownLatch.countDown();
             }

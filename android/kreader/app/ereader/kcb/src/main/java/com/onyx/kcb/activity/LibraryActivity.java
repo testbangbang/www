@@ -511,6 +511,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     @Subscribe
     public void onSearchBookEvent(SearchBookEvent event) {
+        pagination.setCurrentPage(0);
         loadData(event.getQueryArgs());
     }
 
