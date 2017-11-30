@@ -1156,4 +1156,14 @@ public class RK32XXDevice extends BaseDevice {
     public void setInfoShowConfig(int orientation, int startX, int startY) {
         ReflectUtil.invokeMethodSafely(sMethodSetInfoShowConfig, null, orientation, startX, startY);
     }
+
+    @Override
+    public String getUpgradePackageName() {
+        return "update.upx";
+    }
+
+    @Override
+    public boolean shouldVerifyUpdateModel() {
+        return false;
+    }
 }

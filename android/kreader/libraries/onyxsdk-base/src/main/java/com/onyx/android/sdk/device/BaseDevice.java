@@ -493,4 +493,11 @@ public class BaseDevice {
         return false;
     }
 
+    public String getUpgradePackageName() {
+        return "update.zip";
+    }
+
+    public boolean shouldVerifyUpdateModel() {
+        return true;
+    }
 }
