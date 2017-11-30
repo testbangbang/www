@@ -12,9 +12,13 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.db.BaseDBRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
+import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -69,9 +73,11 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
     @Override
     public RxLibraryLoadRequest call() throws Exception {
+        bookList.clear();
+        libraryList.clear();
         List<Library> tmpList = DataManagerHelper.loadLibraryListWithCache(getAppContext(), getDataManager(),
                 queryArgs.libraryUniqueId, loadFromCache);
-        if (!CollectionUtils.isNullOrEmpty(tmpList)) {
+        if (!CollectionUtils.isNullOrEmpty(tmpList) && StringUtils.isNullOrEmpty(queryArgs.query)) {
             libraryList.addAll(tmpList);
         }
         if (loadMetadata) {
@@ -84,8 +90,9 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
             }
         }
 
-        DataModelUtil.libraryToDataModel(eventBus, models, libraryList);
-        DataModelUtil.metadataToDataModel(eventBus, models, bookList, selectedList, thumbnailMap);
+        models.clear();
+        DataModelUtil.libraryToDataModel(eventBus, models, libraryList, R.drawable.library_default_cover);
+        DataModelUtil.metadataToDataModel(eventBus, models, bookList, selectedList, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
         return this;
     }
 
