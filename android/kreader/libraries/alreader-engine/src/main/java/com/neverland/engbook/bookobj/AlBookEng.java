@@ -395,6 +395,10 @@ public class AlBookEng{
 		return fonts.getFontList();
 	}
 
+	public synchronized AlFonts getFonts() {
+		return fonts;
+	}
+
 
 	/**
      * Метод, дающий возможность изменить визуальные параметры отображения книги. Наиболее логичное применение -
