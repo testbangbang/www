@@ -348,9 +348,9 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
                 List<DataModel> subDataModel = new ArrayList<>();
                 List<DataModel> childDataModel = new ArrayList<>();
                 List<DataModel> parentDataModel = new ArrayList<>();
-                DataModelUtil.libraryToDataModel(EventBus.getDefault(), subDataModel, subLibraryList);
-                DataModelUtil.libraryToDataModel(EventBus.getDefault(), childDataModel, childList);
-                DataModelUtil.libraryToDataModel(EventBus.getDefault(), parentDataModel, parentList);
+                DataModelUtil.libraryToDataModel(EventBus.getDefault(), subDataModel, subLibraryList, R.drawable.library_default_cover);
+                DataModelUtil.libraryToDataModel(EventBus.getDefault(), childDataModel, childList, R.drawable.library_default_cover);
+                DataModelUtil.libraryToDataModel(EventBus.getDefault(), parentDataModel, parentList, R.drawable.library_default_cover);
                 assertListEqual(subDataModel, childDataModel);
                 List<DataModel> parentLibraryList = rxLibraryGotoRequest.getParentLibraryList();
                 assertFalse(CollectionUtils.isNullOrEmpty(parentLibraryList));
@@ -435,7 +435,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             int to = getRandomInt(list.size() - 1, from);
             final List<Metadata> metadataList = generateMetadata(dataManager, getContext(), total, tag, title, author, series);
             List<DataModel> dataModels = new ArrayList<>();
-            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null, null);
+            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null, null, R.drawable.book_default_cover);
             final RxLibraryMoveToRequest request = new RxLibraryMoveToRequest(dataManager, list.get(from), list.get(to), dataModels);
 
             request.execute(new RxCallback<RxLibraryMoveToRequest>() {
