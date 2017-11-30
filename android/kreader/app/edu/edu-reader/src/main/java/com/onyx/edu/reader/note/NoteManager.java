@@ -66,8 +66,6 @@ public class NoteManager {
 
     private volatile View view;
 
-    private volatile Shape currentShape = null;
-    private volatile NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
     private RenderContext noteRenderContext = new RenderContext();
     private RenderContext reviewRenderContext = new RenderContext();
 
@@ -199,8 +197,6 @@ public class NoteManager {
 
     public void updateShapeDataInfo(final Context context, final ReaderNoteDataInfo shapeDataInfo) {
         shapeDataInfo.updateDrawingArgs(getNoteDocument().getNoteDrawingArgs());
-//        shapeDataInfo.setCanRedoShape(getNoteDocument().getCurrentPage(context).canRedo());
-//        shapeDataInfo.setCanUndoShape(getNoteDocument().getCurrentPage(context).canUndo());
         shapeDataInfo.setDocumentUniqueId(getNoteDocument().getDocumentUniqueId());
     }
 
@@ -347,15 +343,6 @@ public class NoteManager {
         getTouchHelper().setStrokeWidth(w);
     }
 
-    public Shape createNewShape(final PageInfo pageInfo) {
-        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
-        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth);
-        shape.setColor(getNoteDrawingArgs().strokeColor);
-        shape.setPageUniqueId(pageInfo.getName());
-        shape.ensureShapeUniqueId();
-        currentShape = shape;
-        return shape;
-    }
 
     public Shape getCurrentShape() {
         return shapeEventHandler.getCurrentShape();
@@ -383,31 +370,11 @@ public class NoteManager {
         }
     }
 
-    public void resetCurrentShape() {
-        currentShape = null;
-    }
-
-    public void onDownMessage(final Shape currentShape) {
-        if (ReaderShapeFactory.isDFBShape(currentShape.getType())) {
-            enableScreenPost(false);
-        } else {
-            enableScreenPost(true);
-        }
-    }
-
     public void setVisiblePages(final List<PageInfo> list) {
         visiblePages.clear();
         visiblePages.addAll(list);
     }
 
-    public final PageInfo hitTest(final float x, final float y) {
-        for(PageInfo pageInfo : visiblePages) {
-            if (pageInfo.getDisplayRect().contains(x, y)) {
-                return pageInfo;
-            }
-        }
-        return null;
-    }
 
     public List<PageInfo> getVisiblePages() {
         return visiblePages;
@@ -451,7 +418,6 @@ public class NoteManager {
     public final List<Shape> detachShapeStash() {
         final List<Shape> list = shapeStash;
         shapeStash = new ArrayList<>();
-        currentShape = null;
         return list;
     }
 
@@ -496,22 +462,6 @@ public class NoteManager {
         }
     }
 
-    public Shape ensureNewShape(final TouchPoint normalizedPoint, final TouchPoint screen) {
-        final PageInfo pageInfo = hitTest(normalizedPoint.x, normalizedPoint.y);
-        if (pageInfo == null) {
-            return null;
-        }
-        Shape shape = getCurrentShape();
-        if (shape == null) {
-            shape = createNewShape(pageInfo);
-            onDownMessage(shape);
-            shape.onDown(normalizedPoint, screen);
-            return shape;
-        }
-        shape.onMove(normalizedPoint, screen);
-        return shape;
-    }
-
     public void setVisibleDrawRectF(RectF visibleDrawRectF) {
         this.visibleDrawRectF = visibleDrawRectF;
     }
@@ -520,83 +470,8 @@ public class NoteManager {
         return visibleDrawRectF.contains(x, y);
     }
 
-    public Shape collectPoint(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, boolean createShape, boolean up) {
-        if (pageInfo == null) {
-            return onShapeUp(pageInfo, normal, screen);
-        }
-        TouchPoint origin = new TouchPoint(normal);
-        normal.normalize(pageInfo);
-        if (getCurrentShape() == null) {
-            if (createShape) {
-                return onShapeDown(pageInfo, normal, screen, origin);
-            }
-            return null;
-        }
-        if (!up) {
-            return onShapeMove(pageInfo, normal, screen);
-        }
-        return onShapeUp(pageInfo, normal, screen);
-    }
-
-    private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, final TouchPoint origin) {
-        Shape shape = ShapeFactory.createShape(getNoteDrawingArgs().getCurrentShapeType());
-        onDownMessage(shape);
-        shape.setStrokeWidth(getNoteDrawingArgs().strokeWidth / pageInfo.getActualScale());
-        shape.setColor(getNoteDrawingArgs().strokeColor);
-        shape.setPageUniqueId(pageInfo.getName());
-        shape.ensureShapeUniqueId();
-        shape.setDisplayStrokeWidth(getNoteDrawingArgs().strokeWidth);
-        shape.setPageOriginWidth((int) pageInfo.getOriginWidth());
-        shape.setPageOriginHeight((int) pageInfo.getOriginHeight());
-        shape.onDown(normal, screen);
-        detectionScribbleFormShape(pageInfo, shape, origin);
-        currentShape = shape;
-        return shape;
-    }
-
-    private void detectionScribbleFormShape(final PageInfo pageInfo, final Shape shape, final TouchPoint origin) {
-        ReaderFormField field = getScribbleFormField(pageInfo, origin);
-        if (field != null) {
-            shape.setFormShape(true);
-            shape.setFormId(field.getName());
-            shape.setFormRect(field.getRect());
-            shape.setFormType(ReaderShapeFactory.SHAPE_FORM_QA);
-        }
-    }
-
-    private ReaderFormField getScribbleFormField(final PageInfo pageInfo, final TouchPoint origin) {
-        if (!parent.getReaderUserDataInfo().hasFormFields(pageInfo)) {
-            return null;
-        }
-        List<ReaderFormField> fields = parent.getReaderUserDataInfo().getFormFields(pageInfo);
-        for (ReaderFormField field : fields) {
-            if (field instanceof ReaderFormScribble) {
-                RectF rect = field.getRect();
-                if (rect.contains(origin.x, origin.y)) {
-                    return field;
-                }
-            }
-        }
-        return null;
-    }
-
-    private Shape onShapeMove(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        if (getCurrentShape().inVisibleDrawRectF(visibleDrawRectF)) {
-            getCurrentShape().onMove(normal, screen);
-        }
-        return getCurrentShape();
-    }
-
-    private Shape onShapeUp(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        final Shape shape = getCurrentShape();
-        if (shape == null) {
-            return null;
-        }
-        TouchPoint normalPoint = shape.inVisibleDrawRectF(visibleDrawRectF) ? normal : shape.getCurrentPoint();
-        TouchPoint screenPoint = shape.inVisibleDrawRectF(visibleDrawRectF) ? screen : shape.getCurrentScreenPoint();
-        shape.onUp(normalPoint, screenPoint);
-        resetCurrentShape();
-        return shape;
+    public RectF getVisibleDrawRectF() {
+        return visibleDrawRectF;
     }
 
     public boolean isNoteDirty() {
