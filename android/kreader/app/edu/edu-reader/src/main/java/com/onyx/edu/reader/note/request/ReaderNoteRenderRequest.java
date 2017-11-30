@@ -12,6 +12,8 @@ import java.util.List;
 public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
 
     public ReaderNoteRenderRequest(final String id, final List<PageInfo> pages, final Rect size, boolean abortPending) {
+        setPauseRawInputProcessor(false);
+        setResumeRawInputProcessor(false);
         setDocUniqueId(id);
         setAbortPendingTasks(abortPending);
         setViewportSize(size);
@@ -24,7 +26,6 @@ public class ReaderNoteRenderRequest extends ReaderBaseNoteRequest {
         loadShapeData(noteManager);
         updateEventProcessor(noteManager);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
-//        setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }
 
     public void loadShapeData(final NoteManager parent) {
