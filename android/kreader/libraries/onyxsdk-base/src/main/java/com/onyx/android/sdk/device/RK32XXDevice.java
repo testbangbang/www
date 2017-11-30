@@ -1141,4 +1141,24 @@ public class RK32XXDevice extends BaseDevice {
         }
         return value.booleanValue();
     }
+
+    @Override
+    public void setQRShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetQRShowConfig, null, orientation, startX, startY);
+    }
+
+    @Override
+    public void setInfoShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetInfoShowConfig, null, orientation, startX, startY);
+    }
+
+    @Override
+    public String getUpgradePackageName() {
+        return "update.upx";
+    }
+
+    @Override
+    public boolean shouldVerifyUpdateModel() {
+        return false;
+    }
 }
