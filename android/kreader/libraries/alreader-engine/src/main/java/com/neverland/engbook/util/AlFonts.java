@@ -64,6 +64,17 @@ public class AlFonts {
 		multiplexer = opt.multiplexer;
 	}
 
+	public boolean isLoaded(String fontName) {
+		return allfontsMaps.get(fontName) != null;
+	}
+
+	public void addNewFont(TTFInfo ttfInfo, File file) {
+		addToCollection(ttfInfo, file);
+		allfontsMaps.clear();
+		for (int i = 0; i < allfonts.size(); i++)
+			allfontsMaps.put(allfonts.get(i).aName, i);
+	}
+
 	public void	modifyPaint(long				old_style,
 		    long				new_style, 
 			AlProfileOptions	profile,

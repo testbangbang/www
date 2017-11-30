@@ -486,8 +486,8 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         if (!wholeEraser) {
             selectShapeAction = null;
             setSelectWidthAction(null);
+            switchDragFunc(true);
         }
-        switchDragFunc(true);
     }
 
     private void onSelectShape() {
