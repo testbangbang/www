@@ -91,6 +91,14 @@ public class DataModel extends BaseObservable {
         coverBitmap.set(bitmap);
     }
 
+    public void setAssociationId(String associationId) {
+        this.associationId.set(associationId);
+    }
+
+    public String getAssociationId() {
+        return associationId.get();
+    }
+
     public EventBus getEventBus() {
         return eventBus;
     }

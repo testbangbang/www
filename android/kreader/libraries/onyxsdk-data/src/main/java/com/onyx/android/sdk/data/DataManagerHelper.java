@@ -8,7 +8,6 @@ import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.manager.CacheManager;
-import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -222,31 +221,6 @@ public class DataManagerHelper {
         return decodeFileAndCache(context, dataManager.getRemoteContentProvider(), bitmapLruCache, associationId);
     }
 
-    public static Map<String, CloseableReference<Bitmap>> loadThumbnailBitmapsWithCacheByDataModel(Context context, DataManager dataManager,
-                                                                                        List<DataModel> dataModelList) {
-        Map<String, CloseableReference<Bitmap>> map = new HashMap<>();
-        for (DataModel dtaModel : dataModelList) {
-            CloseableReference<Bitmap> refBitmap = loadThumbnailBitmapWithCache(context, dataManager, dtaModel.associationId.get());
-            if (refBitmap == null) {
-                continue;
-            }
-            map.put(dtaModel.associationId.get(), refBitmap);
-        }
-        return map;
-    }
-
-    public static CloseableReference<Bitmap> loadThumbnailBitmapWithCache(Context context, DataManager dataManager, String associationId) {
-        BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
-        if (StringUtils.isNullOrEmpty(associationId)) {
-            return null;
-        }
-        CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(associationId);
-        if (refBitmap != null) {
-            return refBitmap.clone();
-        }
-        return decodeFileAndCache(context, dataManager.getRemoteContentProvider(), bitmapLruCache, associationId);
-    }
-
     private static CloseableReference<Bitmap> decodeFileAndCache(File file, BitmapReferenceLruCache bitmapLruCache, String associationId) {
         CloseableReference<Bitmap> refBitmap = null;
         try {
@@ -268,6 +242,59 @@ public class DataManagerHelper {
         String path = getThumbnailPath(context, dataProvider, associationId);
         if (StringUtils.isNotBlank(path)) {
             refBitmap = decodeFileAndCache(new File(path), bitmapLruCache, associationId);
+        }
+        return refBitmap;
+    }
+
+    public static Thumbnail getThumbnailEntryByOriginContentPath(Context context, DataProviderBase dataProvider, String originContentPath) {
+        return dataProvider.getThumbnailEntryByOriginContentPath(context, originContentPath, getDefaultThumbnailKind());
+    }
+
+    public static String getThumbnailPathByOriginContentPath(Context context, DataProviderBase dataProvider, String originContentPath) {
+        Thumbnail thumbnail = getThumbnailEntryByOriginContentPath(context, dataProvider, originContentPath);
+        if (thumbnail == null) {
+            return null;
+        }
+        if (!FileUtils.fileExist(thumbnail.getImageDataPath())) {
+            return null;
+        }
+        return thumbnail.getImageDataPath();
+    }
+
+    public static CloseableReference<Bitmap> loadThumbnailBitmapWithCacheByOriginContentPath(Context context, DataManager dataManager,
+                                                                                             String originContentPath) {
+        BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
+        if (StringUtils.isNullOrEmpty(originContentPath)) {
+            return null;
+        }
+        CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(originContentPath);
+        if (refBitmap != null) {
+            return refBitmap.clone();
+        }
+        return decodeFileAndCacheByOriginContentPath(context, dataManager.getRemoteContentProvider(), bitmapLruCache, originContentPath);
+    }
+
+    private static CloseableReference<Bitmap> decodeFileAndCacheByOriginContentPath(Context context, DataProviderBase dataProvider,
+                                                                                    BitmapReferenceLruCache bitmapLruCache,
+                                                                                    String originContentPath) {
+        CloseableReference<Bitmap> refBitmap = null;
+        String path = getThumbnailPathByOriginContentPath(context, dataProvider, originContentPath);
+        if (StringUtils.isNotBlank(path)) {
+            refBitmap = decodeFileAndCacheByOriginContentPath(new File(path), bitmapLruCache, originContentPath);
+        }
+        return refBitmap;
+    }
+
+    private static CloseableReference<Bitmap> decodeFileAndCacheByOriginContentPath(File file, BitmapReferenceLruCache bitmapLruCache, String originContentPath) {
+        CloseableReference<Bitmap> refBitmap = null;
+        try {
+            refBitmap = ThumbnailUtils.decodeFile(file);
+            if (refBitmap != null && refBitmap.isValid()) {
+                bitmapLruCache.put(originContentPath, refBitmap);
+                return refBitmap.clone();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return refBitmap;
     }

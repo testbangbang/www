@@ -2,13 +2,22 @@ package com.onyx.android.sdk.data.provider;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail.ThumbnailKind;
-import com.onyx.android.sdk.data.model.*;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
+import com.onyx.android.sdk.data.model.Annotation;
+import com.onyx.android.sdk.data.model.Annotation_Table;
+import com.onyx.android.sdk.data.model.Bookmark;
+import com.onyx.android.sdk.data.model.Bookmark_Table;
+import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Library_Table;
+import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.MetadataCollection;
+import com.onyx.android.sdk.data.model.MetadataCollection_Table;
+import com.onyx.android.sdk.data.model.Metadata_Table;
+import com.onyx.android.sdk.data.model.Thumbnail;
+import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -233,6 +242,14 @@ public class LocalDataProvider implements DataProviderBase {
         return new Select().from(Thumbnail.class)
                 .where()
                 .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .querySingle();
+    }
+
+    public Thumbnail getThumbnailEntryByOriginContentPath(Context context, String originContentPath, final ThumbnailKind kind) {
+        return new Select().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.originContentPath.eq(originContentPath))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind))
                 .querySingle();
     }

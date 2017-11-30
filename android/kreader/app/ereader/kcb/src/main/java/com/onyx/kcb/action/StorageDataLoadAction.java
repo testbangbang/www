@@ -6,8 +6,6 @@ import android.graphics.Bitmap;
 
 import com.alibaba.fastjson.TypeReference;
 import com.facebook.common.references.CloseableReference;
-import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
@@ -71,6 +69,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         fileListLoadRequest.execute(new RxCallback<RxStorageFileListLoadRequest>() {
             @Override
             public void onNext(RxStorageFileListLoadRequest request) {
+                thumbnailMap = fileListLoadRequest.getThumbnailSource();
                 addToModelItemList(dataHolder, parentFile, fileListLoadRequest.getResultFileList());
                 addShortcutModelItemList(dataHolder);
                 rxCallback.onNext(request);
@@ -112,16 +111,15 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
                 resultDataItemList.add(createNormalModel(dataBundle, file));
             }
         }
-        loadThumbnailSource(context,dataBundle.getDataManager(),resultDataItemList);
-        loadThumbnailToDataModel();
+        addThumbnailToDataModel();
     }
 
-    private void loadThumbnailToDataModel() {
+    private void addThumbnailToDataModel() {
         for (DataModel dataModel: resultDataItemList) {
             if (dataModel.isDocument.get()) {
-                loadThumbnailFromDB(dataModel);
+                addThumbnailFromDB(dataModel);
             }else {
-                loadNormalThumbnail(dataModel);
+                addNormalThumbnail(dataModel);
             }
         }
     }
@@ -139,20 +137,25 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.createGoUpModel(file, dataHolder.getAppContext().getString(R.string.storage_go_up)));
         model.setEnableSelection(false);
-        loadNormalThumbnail(model);
+        addNormalThumbnail(model);
         return model;
     }
 
     public DataModel createNormalModel(DataBundle dataHolder, File file) {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.create(file, null));
+        setAbsolutePath(file, model);
         return model;
+    }
+
+    private void setAbsolutePath(File file, DataModel model) {
+        model.absolutePath.set(file.getAbsolutePath());
     }
 
     public DataModel createShortcutModel(DataBundle dataHolder, File file) {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.createShortcutModel(file));
-        loadNormalThumbnail(model);
+        addNormalThumbnail(model);
         return model;
     }
 
@@ -160,7 +163,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         return EnvironmentUtil.getStorageRootDirectory().getAbsolutePath().contains(targetDirectory.getAbsolutePath());
     }
 
-    private void loadNormalThumbnail(DataModel itemModel) {
+    private void addNormalThumbnail(DataModel itemModel) {
         FileModel fileModel = itemModel.getFileModel();
         if (fileModel == null){
             return;
@@ -194,14 +197,16 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         }
     }
 
-    private void loadThumbnailFromDB(DataModel itemModel) {
+    private void addThumbnailFromDB(DataModel itemModel) {
         if (thumbnailMap != null) {
-            CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMap.get(itemModel.associationId);
+            CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMap.get(itemModel.absolutePath.get());
             if (bitmapCloseableReference != null){
                 itemModel.setCoverThumbnail(bitmapCloseableReference);
             } else {
-                loadNormalThumbnail(itemModel);
+                addNormalThumbnail(itemModel);
             }
+        }else {
+            addNormalThumbnail(itemModel);
         }
     }
 
@@ -211,9 +216,5 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
             return ThumbnailUtils.thumbnailUnknown();
         }
         return res;
-    }
-
-    private void loadThumbnailSource(Context context, DataManager dataManager,List<DataModel> dataModelList) {
-        thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCacheByDataModel(context, dataManager, dataModelList);
     }
 }
