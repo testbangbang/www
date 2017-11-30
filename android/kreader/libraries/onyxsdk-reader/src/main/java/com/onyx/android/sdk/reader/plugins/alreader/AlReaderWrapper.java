@@ -240,6 +240,9 @@ public class AlReaderWrapper {
             TTFInfo ttf = TTFScan.getTTFInfo(new File(fontface), false);
             if (ttf != null) {
                 profile.font_name = ttf.Name;
+                if (!bookEng.getFonts().isLoaded(ttf.Name)) {
+                    bookEng.getFonts().addNewFont(ttf, new File(fontface));
+                }
                 return;
             }
         }
