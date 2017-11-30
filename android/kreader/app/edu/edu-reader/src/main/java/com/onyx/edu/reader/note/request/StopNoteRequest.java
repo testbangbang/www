@@ -13,6 +13,8 @@ public class StopNoteRequest extends ReaderBaseNoteRequest {
     public StopNoteRequest(boolean s) {
         stop = s;
         setAbortPendingTasks(false);
+        setPauseRawInputProcessor(true);
+        setResumeRawInputProcessor(false);
     }
 
     public void execute(final NoteManager noteManager) throws Exception {

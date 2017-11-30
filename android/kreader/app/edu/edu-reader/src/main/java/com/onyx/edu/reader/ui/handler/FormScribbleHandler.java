@@ -85,6 +85,7 @@ public class FormScribbleHandler extends FormFieldHandler {
         if (e.getPointerCount() > 1) {
             return false;
         }
+
         return readerDataHolder.getNoteManager().getTouchHelper().onTouchEvent(e);
     }
 
@@ -96,13 +97,8 @@ public class FormScribbleHandler extends FormFieldHandler {
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
-        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, false);
-        stopNoteActionChain.execute(readerDataHolder, null);
-    }
-
-
-    public void afterChangePosition(final ReaderDataHolder readerDataHolder) {
-        final ResumeDrawingAction action = new ResumeDrawingAction(readerDataHolder.getVisiblePages());
+        FlushNoteAction action = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, false);
+        action.setPauseNote(true);
         action.execute(readerDataHolder, null);
     }
 
@@ -114,6 +110,7 @@ public class FormScribbleHandler extends FormFieldHandler {
     @Override
     public void beforeChangePosition(ReaderDataHolder readerDataHolder) {
         final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, false);
+        flushNoteAction.setPauseNote(true);
         flushNoteAction.execute(getParent().getReaderDataHolder(), null);
     }
 }

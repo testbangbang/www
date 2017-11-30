@@ -66,6 +66,9 @@ public class TouchReader {
     }
 
     public void processTouchEvent(final MotionEvent motionEvent) {
+        if (!checkTouchPoint(new TouchPoint(motionEvent))) {
+            return;
+        }
         if (motionEvent.getPointerCount() > 1) {
             return;
         }
