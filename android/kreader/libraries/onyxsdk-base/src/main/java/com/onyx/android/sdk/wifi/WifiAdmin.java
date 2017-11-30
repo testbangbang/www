@@ -566,7 +566,14 @@ public class WifiAdmin {
             }
             for (WifiConfiguration config : configurations) {
                 int wcgID = wifiManager.addNetwork(config);
-                wifiManager.enableNetwork(wcgID, true);
+
+                // Since API >= 23 (Android 6.0 Marshmallow)
+                // Your apps can now change the state of WifiConfiguration objects only if you created these objects.
+                // You are not permitted to modify or delete WifiConfiguration objects created by the user or by other apps.
+
+                if (wcgID != -1) {
+                    wifiManager.enableNetwork(wcgID, true);
+                }
             }
             return null;
         }
