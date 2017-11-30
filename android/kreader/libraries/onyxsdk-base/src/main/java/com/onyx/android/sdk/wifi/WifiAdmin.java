@@ -10,6 +10,7 @@ import android.net.wifi.SupplicantState;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.onyx.android.sdk.R;
@@ -542,17 +543,32 @@ public class WifiAdmin {
     }
 
     public void addNetwork(WifiConfiguration wcg) {
-        int wcgID = wifiManager.addNetwork(wcg);
-        wifiManager.enableNetwork(wcgID, true);
+        ArrayList<WifiConfiguration> configurationArrayList = new ArrayList<>();
+        configurationArrayList.add(wcg);
+        addNetwork(configurationArrayList);
     }
 
     public void addNetwork(ArrayList<WifiConfiguration> wcgList) {
-        if (wcgList == null || wcgList.isEmpty()) {
-            return;
+        new AddNetWorkAsyncTask(wifiManager).execute(wcgList.toArray(new WifiConfiguration[0]));
+    }
+
+    private static class AddNetWorkAsyncTask extends AsyncTask<WifiConfiguration, Void, Void> {
+        AddNetWorkAsyncTask(WifiManager wm) {
+            wifiManager = wm;
         }
-        for (WifiConfiguration config : wcgList) {
-            int wcgID = wifiManager.addNetwork(config);
-            wifiManager.enableNetwork(wcgID, true);
+
+        WifiManager wifiManager;
+
+        @Override
+        protected Void doInBackground(WifiConfiguration[] configurations) {
+            if (configurations == null || configurations.length == 0) {
+                return null;
+            }
+            for (WifiConfiguration config : configurations) {
+                int wcgID = wifiManager.addNetwork(config);
+                wifiManager.enableNetwork(wcgID, true);
+            }
+            return null;
         }
     }
 
