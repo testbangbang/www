@@ -1,9 +1,12 @@
 package com.onyx.edu.reader.note;
 
+import android.graphics.RectF;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.api.ReaderFormField;
+import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.api.event.BeginRawDataEvent;
 import com.onyx.android.sdk.scribble.api.event.BeginRawErasingEvent;
 import com.onyx.android.sdk.scribble.api.event.DrawingTouchEvent;
@@ -30,6 +33,8 @@ import com.onyx.edu.reader.ui.events.ShortcutErasingStartEvent;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 /**
  * Created by joy on 9/19/17.
@@ -89,7 +94,7 @@ public class ShapeEventHandler {
         }
     }
 
-    private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
+    private Shape onShapeDown(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen, final TouchPoint origin) {
         ReaderNotePage page = noteManager.getNoteDocument().ensurePageExist(null, pageInfo.getName(), 0);
         Shape shape = ShapeFactory.createShape(noteManager.getNoteDrawingArgs().getCurrentShapeType());
         onDownMessage(shape);
@@ -100,12 +105,42 @@ public class ShapeEventHandler {
         shape.ensureShapeUniqueId();
         shape.setDisplayStrokeWidth(noteManager.getNoteDrawingArgs().strokeWidth);
         shape.onDown(normal, screen);
+        detectionScribbleFormShape(pageInfo, shape, origin);
         currentShape = shape;
         return shape;
     }
 
+    private void detectionScribbleFormShape(final PageInfo pageInfo, final Shape shape, final TouchPoint origin) {
+        ReaderFormField field = getScribbleFormField(pageInfo, origin);
+        if (field != null) {
+            shape.setFormShape(true);
+            shape.setFormId(field.getName());
+            shape.setFormRect(field.getRect());
+            shape.setFormType(ReaderShapeFactory.SHAPE_FORM_QA);
+        }
+    }
+
+    private ReaderFormField getScribbleFormField(final PageInfo pageInfo, final TouchPoint origin) {
+        if (!noteManager.getParent().getReaderUserDataInfo().hasFormFields(pageInfo)) {
+            return null;
+        }
+        List<ReaderFormField> fields = noteManager.getParent().getReaderUserDataInfo().getFormFields(pageInfo);
+        for (ReaderFormField field : fields) {
+            if (field instanceof ReaderFormScribble) {
+                RectF rect = field.getRect();
+                if (rect.contains(origin.x, origin.y)) {
+                    return field;
+                }
+            }
+        }
+        return null;
+    }
+
+
     private Shape onShapeMove(final PageInfo pageInfo, final TouchPoint normal, final TouchPoint screen) {
-        getCurrentShape().onMove(normal, screen);
+        if (getCurrentShape().inVisibleDrawRectF(noteManager.getVisibleDrawRectF())) {
+            getCurrentShape().onMove(normal, screen);
+        }
         return getCurrentShape();
     }
 
@@ -122,6 +157,7 @@ public class ShapeEventHandler {
         float[] srcPoint = new float[2];
         float[] dstPoint = new float[2];
 
+        TouchPoint origin = new TouchPoint(point);
         srcPoint[0] = point.x;
         srcPoint[1] = point.y;
         EpdController.mapToEpd(noteManager.getHostView(), srcPoint, dstPoint);
@@ -135,7 +171,7 @@ public class ShapeEventHandler {
         point.normalize(pageInfo);
         if (getCurrentShape() == null) {
             if (createShape) {
-                return onShapeDown(pageInfo, point, screen);
+                return onShapeDown(pageInfo, point, screen, origin);
             }
             return null;
         }
