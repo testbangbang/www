@@ -678,6 +678,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShowTabWidget(final ShowTabWidgetEvent event) {
+        if (!ReaderTabManager.supportMultipleTabs()) {
+            return;
+        }
         buttonShowTabWidget.setVisibility(View.GONE);
         getReaderDataHolder().setButtonShowTabWidgetVisible(false);
         ReaderTabHostBroadcastReceiver.sendShowTabWidgetEvent(this);
@@ -685,6 +688,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onHideTabWidget(final HideTabWidgetEvent event) {
+        if (!ReaderTabManager.supportMultipleTabs()) {
+            return;
+        }
         buttonShowTabWidget.setVisibility(View.VISIBLE);
         getReaderDataHolder().setButtonShowTabWidgetVisible(true);
         ReaderTabHostBroadcastReceiver.sendHideTabWidgetEvent(this);
