@@ -2,14 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="recorderTime"
             type="String" />
 
         <variable
             name="addVisible"
-            type="boolean"/>
+            type="boolean" />
     </data>
 
     <LinearLayout
@@ -34,14 +36,35 @@
                 android:text="@string/voice_remark"
                 android:textSize="@dimen/level_three_heading_font" />
 
-            <TextView
-                android:id="@+id/parse_sound_input"
+            <ImageView
+                android:id="@+id/parse_add_image"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawableLeft="@drawable/ic_sound"
-                android:gravity="center_vertical"
-                android:text="@string/hold_input_voice"
-                android:textSize="@dimen/level_three_heading_font" />
+                android:src="@drawable/ic_sound" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/parse_sound_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/hold_input_voice"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:id="@+id/parse_sound_read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
+                    android:background="@drawable/ic_voice_background"
+                    android:gravity="center_vertical"
+                    android:text="@{recorderTime}"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:visibility="gone"/>
+            </FrameLayout>
 
             <View
                 android:layout_width="0dp"

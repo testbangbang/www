@@ -8,10 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.plato.R;
+import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.databinding.ItemMistakeBinding;
 import com.onyx.android.plato.view.PageRecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,16 +21,16 @@ import java.util.List;
  */
 
 public class MistakeAdapter extends PageRecyclerView.PageAdapter {
-    private List<SubjectBean> data;
+    private List<SubjectBean> data = new ArrayList<>();
 
     @Override
     public int getRowCount() {
-        return 1;
+        return SunApplication.getInstance().getResources().getInteger(R.integer.mistake_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 5;
+        return SunApplication.getInstance().getResources().getInteger(R.integer.mistake_adapter_col);
     }
 
     @Override
@@ -57,7 +59,7 @@ public class MistakeAdapter extends PageRecyclerView.PageAdapter {
     @Override
     public void onClick(View v) {
         Object tag = v.getTag();
-        if (tag == null ) {
+        if (tag == null) {
             return;
         }
         int position = (int) tag;
@@ -69,6 +71,10 @@ public class MistakeAdapter extends PageRecyclerView.PageAdapter {
     public void setData(List<SubjectBean> data) {
         this.data = data;
         notifyDataSetChanged();
+    }
+
+    public List<SubjectBean> getData() {
+        return data;
     }
 
     static class MistakeViewHolder extends RecyclerView.ViewHolder {

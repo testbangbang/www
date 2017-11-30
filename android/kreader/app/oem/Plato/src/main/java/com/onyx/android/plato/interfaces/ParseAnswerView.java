@@ -13,4 +13,8 @@ public interface ParseAnswerView {
     void setRecordDuration(long recordDuration);
 
     void setAnalysis(AnalysisBean analysisBean);
+
+    void setVoiceUrl(String voiceUrl);
+
+    void insertAnalysis();
 }

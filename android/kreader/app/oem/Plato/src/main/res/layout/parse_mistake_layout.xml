@@ -52,22 +52,23 @@
                     android:text="@string/hold_input_voice"
                     android:textSize="@dimen/level_three_heading_font" />
 
+                <TextView
+                    android:id="@+id/parse_mistake_voice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_voice_background"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/parse_sound_padding_left"
+                    android:text="@{recorderTime}"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:visibility="gone"/>
+
                 <LinearLayout
                     android:id="@+id/parse_mistake_sound_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/parse_mistake_voice"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/ic_voice_background"
-                        android:gravity="center_vertical"
-                        android:paddingLeft="@dimen/parse_sound_padding_left"
-                        android:text="@{recorderTime}"
-                        android:textSize="@dimen/level_three_heading_font" />
 
                     <View
                         android:layout_width="0dp"
@@ -104,44 +105,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <!--<LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/text_selector"
-                        android:padding="@dimen/question_parse_add_sound_layout_padding"
-                        android:text="@string/see_wrong"
-                        android:textSize="@dimen/level_three_heading_font" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
-                        android:background="@drawable/text_selector"
-                        android:padding="@dimen/question_parse_add_sound_layout_padding"
-                        android:text="@string/unclear_concept"
-                        android:textSize="@dimen/level_three_heading_font" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
-                        android:background="@drawable/text_selector"
-                        android:padding="@dimen/question_parse_add_sound_layout_padding"
-                        android:text="@string/careless"
-                        android:textSize="@dimen/level_three_heading_font" />
-                </LinearLayout>-->
-
                 <com.onyx.android.plato.view.PageRecyclerView
                     android:id="@+id/mistake_recycler"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
 
+                <com.onyx.android.plato.view.PageRecyclerView
+                    android:id="@+id/mistake_custom_recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
                 <TextView
+                    android:id="@+id/mistake_custom"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/question_parse_margin_top"

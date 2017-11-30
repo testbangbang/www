@@ -76,7 +76,7 @@ public class MediaManager {
         }
     }
 
-    public int getDurationInSeccend(String path) {
+    public int getDurationInSecond(String path) {
         if (mmr == null) {
             mmr = new MediaMetadataRetriever();
         }

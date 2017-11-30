@@ -3,14 +3,22 @@ package com.onyx.android.plato.presenter;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.GetAnalysisBean;
+import com.onyx.android.plato.cloud.bean.InsertParseBean;
+import com.onyx.android.plato.cloud.bean.InsertParseRequestBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseRequestBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseResultBean;
+import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
+import com.onyx.android.plato.cloud.bean.UploadBean;
+import com.onyx.android.plato.common.CloudApiContext;
 import com.onyx.android.plato.common.CommonNotices;
+import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.data.ParseAnswerData;
 import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.ParseAnswerView;
 import com.onyx.android.plato.requests.cloud.GetAnalysisRequest;
 import com.onyx.android.plato.requests.cloud.GetPracticeParseRequest;
+import com.onyx.android.plato.requests.cloud.InsertAnalysisRequest;
+import com.onyx.android.plato.requests.cloud.RequestUploadFile;
 import com.onyx.android.plato.requests.local.GetRecordRequest;
 import com.onyx.android.plato.requests.local.RecorderRequest;
 import com.onyx.android.plato.requests.local.SaveRecordRequest;
@@ -21,6 +29,9 @@ import com.onyx.android.plato.utils.MediaManager;
 import com.onyx.android.plato.utils.StringUtil;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * Created by li on 2017/10/26.
@@ -120,6 +131,44 @@ public class ParseAnswerPresenter {
                     return;
                 }
                 parseAnswerView.setAnalysis(resultBean.data);
+            }
+        });
+    }
+
+    public void getUploadVoiceKey(File file) {
+        final RequestUploadFile rq = new RequestUploadFile(file);
+        parseAnswerData.getUploadVoiceKey(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                UploadBean bean = rq.getBean();
+                if (bean == null || bean.data == null) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.upload_failed));
+                    return;
+                }
+
+                UploadBean.UploadResult data = bean.data;
+                String voiceUrl = CloudApiContext.APPEND_URL + data.key;
+                parseAnswerView.setVoiceUrl(voiceUrl);
+            }
+        });
+    }
+
+    public void insertAnalysis(int taskId, int questionId, int studentId, List<Integer> ids, String radio, List<InsertParseBean> errors) {
+        InsertParseRequestBean requestBean = new InsertParseRequestBean();
+        requestBean.ids = ids;
+        requestBean.radio = radio;
+        requestBean.error = errors;
+
+        final InsertAnalysisRequest rq = new InsertAnalysisRequest(taskId, questionId, studentId, requestBean);
+        parseAnswerData.insertAnalysis(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                SubmitPracticeResultBean resultBean = rq.getResultBean();
+                if (resultBean == null || !Constants.OK.equals(resultBean.msg)) {
+                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.submit_failed));
+                } else {
+                    parseAnswerView.insertAnalysis();
+                }
             }
         });
     }

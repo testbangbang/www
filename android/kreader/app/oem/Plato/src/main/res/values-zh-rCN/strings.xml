@@ -27,6 +27,7 @@
     <string name="academic_ability_value">学科能力值(点击左侧查看个人总分再班级,年级中排行情况)</string>
     <string name="total_ability_value">总能力值</string>
     <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
     <string name="grade_ranking">年级排名</string>
     <string name="full_score">满分: %d分</string>
     <string name="homework_unfinished_title_format">[%1$s] %2$s</string>
@@ -220,4 +221,6 @@
     <string name="load_again">重新加载</string>
     <string name="page">页</string>
     <string name="upload_failed">上传失败</string>
+    <string name="input_mistake">输入错因</string>
+    <string name="input_mistake_tip">提示：错因分析，最多四个字</string>
 </resources>

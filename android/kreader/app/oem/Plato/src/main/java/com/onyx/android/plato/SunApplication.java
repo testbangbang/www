@@ -27,7 +27,7 @@ import java.util.List;
 public class SunApplication extends Application {
     private static SunApplication instance;
     private NoteManager noteManager;
-    private static int studentId = 1;
+    private static int studentId = 190;
 
     public NoteManager getNoteManager() {
         if (noteManager == null) {

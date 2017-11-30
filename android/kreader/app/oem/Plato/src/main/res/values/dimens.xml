@@ -154,4 +154,6 @@
     <dimen name="fill_homework_page_padding">10dp</dimen>
     <dimen name="fill_homework_page_title_margin_top">10dp</dimen>
     <dimen name="item_homework_num_width">40dp</dimen>
+    <dimen name="custom_mistake_padding">10dp</dimen>
+    <dimen name="custom_mistake_margin">20dp</dimen>
 </resources>

@@ -3,6 +3,8 @@ package com.onyx.android.plato.data;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.requests.cloud.GetAnalysisRequest;
 import com.onyx.android.plato.requests.cloud.GetPracticeParseRequest;
+import com.onyx.android.plato.requests.cloud.InsertAnalysisRequest;
+import com.onyx.android.plato.requests.cloud.RequestUploadFile;
 import com.onyx.android.plato.requests.local.GetRecordRequest;
 import com.onyx.android.plato.requests.local.RecorderRequest;
 import com.onyx.android.plato.requests.local.SaveRecordRequest;
@@ -36,6 +38,14 @@ public class ParseAnswerData {
     }
 
     public void getAnalysis(GetAnalysisRequest rq, BaseCallback callback) {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
+    }
+
+    public void getUploadVoiceKey(RequestUploadFile rq, BaseCallback callback) {
+        SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
+    }
+
+    public void insertAnalysis(InsertAnalysisRequest rq, BaseCallback callback) {
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
     }
 }
