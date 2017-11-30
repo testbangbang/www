@@ -7,8 +7,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by suicheng on 2017/5/18.
@@ -23,7 +26,9 @@ public class ActionChain<T extends BaseAction> {
 
     public void execute(final DataBundle dataBundle, final RxCallback<T> callback) {
         Observable<T> observable = Observable.fromIterable(observableList);
-        observable.subscribe(new Consumer<T>() {
+        observable.observeOn(observeScheduler())
+                .subscribeOn(subscribeScheduler())
+                .subscribe(new Consumer<T>() {
             @Override
             public void accept(T t) throws Exception {
                 t.execute(dataBundle, null);
@@ -46,5 +51,13 @@ public class ActionChain<T extends BaseAction> {
                 }
             }
         });
+    }
+
+    public Scheduler observeScheduler() {
+        return AndroidSchedulers.mainThread();
+    }
+
+    public Scheduler subscribeScheduler() {
+        return Schedulers.newThread();
     }
 }
