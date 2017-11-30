@@ -17,6 +17,7 @@ import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -75,7 +76,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         libraryList.clear();
         List<Library> tmpList = DataManagerHelper.loadLibraryListWithCache(getAppContext(), getDataManager(),
                 queryArgs.libraryUniqueId, loadFromCache);
-        if (!CollectionUtils.isNullOrEmpty(tmpList)) {
+        if (!CollectionUtils.isNullOrEmpty(tmpList) && StringUtils.isNullOrEmpty(queryArgs.query)) {
             libraryList.addAll(tmpList);
         }
         if (loadMetadata) {
