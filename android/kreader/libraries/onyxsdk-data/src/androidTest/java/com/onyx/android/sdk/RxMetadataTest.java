@@ -35,6 +35,7 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxRecentDataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxRemoveFromLibraryRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -1086,9 +1087,9 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
                 assertRecentAdd(dataRequest.getRecentlyAddMetadata());
                 assertRecentlyRead(dataRequest.getRecentlyReadMetadata());
                 Map<String, CloseableReference<Bitmap>> thumbnailMap = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), dataRequest.getDataManager(), dataRequest.getRecentlyReadMetadata());
-                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetAddList, recentlyAddMetadata, thumbnailMap, R.drawable.book_default_cover);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetAddList, recentlyAddMetadata, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
                 RxLibraryTest.assertListEqual(dataRequest.getRecentAddList(), targetAddList);
-                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetReadList, recentlyReadMetadata, thumbnailMap, R.drawable.library_default_cover);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetReadList, recentlyReadMetadata, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
                 RxLibraryTest.assertListEqual(dataRequest.getRecentlyReadList(), targetReadList);
                 countDownLatch.countDown();
             }

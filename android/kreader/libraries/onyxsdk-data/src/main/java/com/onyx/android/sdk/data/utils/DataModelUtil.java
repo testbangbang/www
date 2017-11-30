@@ -38,7 +38,7 @@ public class DataModelUtil {
         }
     }
 
-    public static void metadataToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Metadata> metadataList, List<DataModel> selectedList, Map<String, CloseableReference<Bitmap>> thumbnailMap, int defaultCoverRes) {
+    public static void metadataToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Metadata> metadataList, List<DataModel> selectedList, Map<String, CloseableReference<Bitmap>> thumbnailMap, Map<String, Integer> defaultCoverResMap) {
         if (CollectionUtils.isNullOrEmpty(metadataList)) {
             return;
         }
@@ -54,15 +54,15 @@ public class DataModelUtil {
             if (bitmap != null) {
                 model.coverBitmap.set(bitmap);
             } else {
-                model.coverDefault.set(defaultCoverRes);
+                model.coverDefault.set(defaultCoverResMap.get(metadata.getType()));
             }
 
             dataModels.add(model);
         }
     }
 
-    public static void metadataToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Metadata> metadataList, Map<String, CloseableReference<Bitmap>> thumbnailMap, int defaultCoverRes) {
-        metadataToDataModel(eventBus, dataModels, metadataList, null, thumbnailMap, defaultCoverRes);
+    public static void metadataToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Metadata> metadataList, Map<String, CloseableReference<Bitmap>> thumbnailMap, Map<String, Integer> defaultCoverResMap) {
+        metadataToDataModel(eventBus, dataModels, metadataList, null, thumbnailMap, defaultCoverResMap);
     }
 
     private static boolean isSelected(List<DataModel> selectedList, Metadata metadata) {

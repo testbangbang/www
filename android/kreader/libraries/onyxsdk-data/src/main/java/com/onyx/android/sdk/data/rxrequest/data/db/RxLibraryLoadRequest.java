@@ -12,6 +12,7 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.data.db.BaseDBRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -91,7 +92,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
         models.clear();
         DataModelUtil.libraryToDataModel(eventBus, models, libraryList, R.drawable.library_default_cover);
-        DataModelUtil.metadataToDataModel(eventBus, models, bookList, selectedList, thumbnailMap, R.drawable.book_default_cover);
+        DataModelUtil.metadataToDataModel(eventBus, models, bookList, selectedList, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
         return this;
     }
 
