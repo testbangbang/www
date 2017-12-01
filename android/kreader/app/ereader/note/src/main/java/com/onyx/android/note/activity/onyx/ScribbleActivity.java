@@ -1079,7 +1079,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         noteTitle = title;
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave, shouldResume());
         saveAction.execute(ScribbleActivity.this, null);
     }
 
@@ -1089,7 +1089,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             return;
         }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
+                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave, shouldResume());
         saveAction.execute(ScribbleActivity.this, null);
     }
 
