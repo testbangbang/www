@@ -95,7 +95,7 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
     }
 
     private void setEnableSelection(DataModel dataModel) {
-        if (dataModel.getFileModel() != null && dataModel.getFileModel().isGoUpType()) {
+        if (isSelectable(dataModel)) {
             dataModel.setEnableSelection(false);
         } else {
             if (storageViewModel != null){
@@ -105,6 +105,10 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
             }
             setChecked(dataModel);
         }
+    }
+
+    private boolean isSelectable(DataModel dataModel){
+        return dataModel.getFileModel() != null && dataModel.getFileModel().isGoUpType();
     }
 
     private void setChecked(DataModel dataModel) {
