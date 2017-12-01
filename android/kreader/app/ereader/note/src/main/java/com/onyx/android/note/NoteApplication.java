@@ -10,7 +10,9 @@ import com.onyx.android.note.utils.NotePreference;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
+import com.onyx.android.sdk.utils.PackageUtils;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
@@ -48,6 +50,7 @@ public class NoteApplication extends Application {
         if (DEBUG_MEMORY_LEAK) {
             LeakCanary.install(this);
         }
+        Debug.setDebug(BuildConfig.DEBUG || DeviceUtils.isEngVersion() || PackageUtils.getAppType(this).equals(PackageUtils.APP_TYPE_DEBUG));
     }
 
     public static NoteApplication getInstance() {

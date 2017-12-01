@@ -8,9 +8,9 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class ClearAllFreeShapesRequest extends BaseNoteRequest {
 
-    public ClearAllFreeShapesRequest() {
+    public ClearAllFreeShapesRequest(boolean resume) {
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
+        setResumeInputProcessor(resume);
     }
 
     @Override

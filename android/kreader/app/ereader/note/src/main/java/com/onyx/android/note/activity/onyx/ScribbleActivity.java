@@ -281,6 +281,20 @@ public class ScribbleActivity extends BaseScribbleActivity {
             settingBtn.setVisibility(View.GONE);
             saveBtn.setVisibility(View.GONE);
         }
+        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible) {
+                    getWindow().getDecorView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean resume = shouldResume();
+                            syncWithCallback(true, resume, null);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void initSpanTextView() {
@@ -899,7 +913,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
         setBackgroundType(type);
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
-                new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
+                new NoteBackgroundChangeAction<>(getBackgroundType(), shouldResume());
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 
@@ -1065,7 +1079,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
         noteTitle = title;
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave, shouldResume());
         saveAction.execute(ScribbleActivity.this, null);
     }
 
@@ -1075,7 +1089,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             return;
         }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
+                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave, shouldResume());
         saveAction.execute(ScribbleActivity.this, null);
     }
 
@@ -1097,7 +1111,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>();
+            boolean resume = shouldResume();
+            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>(resume);
             action.execute(this, null);
         }
     }
