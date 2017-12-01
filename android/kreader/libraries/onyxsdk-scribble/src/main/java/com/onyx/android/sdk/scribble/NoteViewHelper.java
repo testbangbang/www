@@ -32,6 +32,7 @@ import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.touch.RawInputProcessor;
+import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
@@ -84,7 +85,7 @@ public class NoteViewHelper {
     }
 
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
-    private RawInputProcessor rawInputProcessor = null;
+    private RawInputReader rawInputReader = null;
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
@@ -138,8 +139,8 @@ public class NoteViewHelper {
     }
 
     public void flushTouchPointList() {
-        TouchPointList touchPointList = getRawInputProcessor().detachTouchPointList();
-        boolean erasing = getRawInputProcessor().isErasing();
+        TouchPointList touchPointList = getRawInputReader().detachTouchPointList();
+        boolean erasing = getRawInputReader().isErasing();
         if (touchPointList == null || erasing) {
             return;
         }
@@ -247,13 +248,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
-        final Matrix screenMatrix = new Matrix();
-        screenMatrix.postRotate(deviceConfig.getEpdPostOrientation());
-        screenMatrix.postTranslate(deviceConfig.getEpdPostTx(), deviceConfig.getEpdPostTy());
-        screenMatrix.preScale(deviceConfig.getEpdWidth() / getTouchWidth(),
-                deviceConfig.getEpdHeight() / getTouchHeight());
-        getRawInputProcessor().setScreenMatrix(screenMatrix);
+        getRawInputReader().setHostView(surfaceView);
     }
 
     // consider view offset to screen.
@@ -262,10 +257,7 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-
-        final Matrix viewMatrix = new Matrix();
-        viewMatrix.postTranslate(-viewPosition[0], -viewPosition[1]);
-        getRawInputProcessor().setViewMatrix(viewMatrix);
+        getRawInputReader().setHostView(surfaceView);
     }
 
     private OnyxMatrix initViewToEpdMatrix() {
@@ -285,66 +277,23 @@ public class NoteViewHelper {
         updateLimitRect();
     }
 
-    private void resetRawInputProcessor() {
-        rawInputProcessor = null;
+    private void resetRawInputReader() {
+        rawInputReader = null;
     }
 
     private void updateLimitRect() {
-        Rect dfbLimitRect = new Rect();
         softwareLimitRect = new Rect();
-        int xAxisOffset = 0, yAxisOffset = 0;
-
-
-        if (customLimitRect == null) {
-            //for software render limit rect
-            surfaceView.getLocalVisibleRect(softwareLimitRect);
-            //for dfb render limit rect
-            surfaceView.getGlobalVisibleRect(dfbLimitRect);
-        } else {
-            Rect surfaceLocalVisibleRect = new Rect();
-
-            surfaceView.getLocalVisibleRect(surfaceLocalVisibleRect);
-            softwareLimitRect = customLimitRect;
-
-            //a little tricky here,we assume target rect is always smaller than visible rect.
-            xAxisOffset = customLimitRect.left - surfaceLocalVisibleRect.left;
-            yAxisOffset = surfaceLocalVisibleRect.bottom - customLimitRect.bottom;
-
-            surfaceView.getGlobalVisibleRect(dfbLimitRect);
-
-            //do the transform here.
-            dfbLimitRect.set(dfbLimitRect.left + xAxisOffset,
-                    dfbLimitRect.top + yAxisOffset,
-                    dfbLimitRect.right - xAxisOffset,
-                    dfbLimitRect.bottom - yAxisOffset);
-        }
-
-        dfbLimitRect.offsetTo(0, 0);
-        getRawInputProcessor().setLimitRect(customLimitRect == null ? dfbLimitRect : customLimitRect);
-
-        int viewPosition[] = {0, 0};
-        surfaceView.getLocationOnScreen(viewPosition);
-        if (DeviceConfig.sharedInstance(surfaceView.getContext()).getEpdPostOrientation() == 270) {
-            int reverseTop = ((Activity) surfaceView.getContext()).getWindow().getDecorView().getBottom() - surfaceView.getHeight() - viewPosition[1];
-            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, reverseTop + yAxisOffset);
-        }else {
-            dfbLimitRect.offsetTo(viewPosition[0] + xAxisOffset, viewPosition[1] + yAxisOffset);
-        }
-
-        final OnyxMatrix matrix = matrixFromViewToEpd();
-        matrix.mapInPlace(dfbLimitRect);
-        EpdController.setScreenHandWritingRegionLimit(surfaceView,
-                Math.min(dfbLimitRect.left, dfbLimitRect.right),
-                Math.min(dfbLimitRect.top, dfbLimitRect.bottom),
-                Math.max(dfbLimitRect.left, dfbLimitRect.right),
-                Math.max(dfbLimitRect.top, dfbLimitRect.bottom));
+        surfaceView.getLocalVisibleRect(softwareLimitRect);
+        getRawInputReader().setHostView(surfaceView);
+        getRawInputReader().setLimitRect(softwareLimitRect);
+        EpdController.setScreenHandWritingRegionLimit(surfaceView);
     }
 
     private void startDrawing() {
         if (!useRawInput()) {
             return;
         }
-        getRawInputProcessor().start();
+        getRawInputReader().start();
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_START);
     }
 
@@ -354,7 +303,7 @@ public class NoteViewHelper {
             return;
         }
 
-        getRawInputProcessor().resume();
+        getRawInputReader().resume();
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_DRAWING);
     }
 
@@ -363,7 +312,7 @@ public class NoteViewHelper {
             return;
         }
 
-        getRawInputProcessor().pause();
+        getRawInputReader().pause();
         EpdController.setScreenHandWritingPenState(surfaceView, PEN_PAUSE);
     }
 
@@ -379,8 +328,8 @@ public class NoteViewHelper {
             return;
         }
         callback = null;
-        getRawInputProcessor().quit();
-        resetRawInputProcessor();
+        getRawInputReader().quit();
+        resetRawInputReader();
     }
 
     public void setBackground(int bgType) {
@@ -464,11 +413,11 @@ public class NoteViewHelper {
         return requestManager;
     }
 
-    public final RawInputProcessor getRawInputProcessor() {
-        if (rawInputProcessor == null) {
-            rawInputProcessor = new RawInputProcessor();
+    public final RawInputReader getRawInputReader() {
+        if (rawInputReader == null) {
+            rawInputReader = new RawInputReader();
         }
-        return rawInputProcessor;
+        return rawInputReader;
     }
 
     public final NoteDocument getNoteDocument() {
@@ -527,22 +476,32 @@ public class NoteViewHelper {
         if (!useRawInput()) {
             return;
         }
-        getRawInputProcessor().setRawInputCallback(new RawInputProcessor.RawInputCallback() {
+        getRawInputReader().setRawInputCallback(new RawInputReader.RawInputCallback() {
             @Override
-            public void onBeginRawData() {
+            public void onBeginRawData(boolean shortcut, TouchPoint point) {
                 if (callback != null) {
                     callback.onBeginRawData();
                 }
             }
 
             @Override
-            public void onRawTouchPointListReceived(final Shape shape, TouchPointList pointList) {
+            public void onRawTouchPointMoveReceived(TouchPoint point) {
+
+            }
+
+            @Override
+            public void onRawTouchPointListReceived(TouchPointList pointList) {
                 NoteViewHelper.this.onNewTouchPointListReceived(pointList);
             }
 
             @Override
-            public void onBeginErasing() {
+            public void onBeginErasing(boolean shortcut, TouchPoint point) {
                 ensureErasing();
+            }
+
+            @Override
+            public void onEraseTouchPointMoveReceived(TouchPoint point) {
+
             }
 
             @Override
@@ -550,11 +509,11 @@ public class NoteViewHelper {
             }
 
             @Override
-            public void onEndRawData() {
+            public void onEndRawData(final boolean outLimitRegion, TouchPoint point) {
             }
 
             @Override
-            public void onEndErasing() {
+            public void onEndErasing(final boolean outLimitRegion, TouchPoint point) {
             }
         });
         startDrawing();

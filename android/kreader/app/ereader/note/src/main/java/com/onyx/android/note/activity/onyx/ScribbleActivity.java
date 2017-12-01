@@ -913,7 +913,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
         setBackgroundType(type);
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
-                new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing());
+                new NoteBackgroundChangeAction<>(getBackgroundType(), shouldResume());
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 
