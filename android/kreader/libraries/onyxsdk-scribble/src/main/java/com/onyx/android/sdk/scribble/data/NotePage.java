@@ -167,8 +167,19 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            hitTestAndRemoveShape(entry, touchPointList, radius);
+            hitTestAndSelectShape(entry, touchPointList, radius);
         }
+    }
+
+    private List<Shape> hitTestAndSelectShape(Map.Entry<String, Shape> entry,
+                                              TouchPointList touchPointList, float radius) {
+        List<Shape> resultList = new ArrayList<>();
+        for (TouchPoint touchPoint : touchPointList.getPoints()) {
+            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                resultList.add(entry.getValue());
+            }
+        }
+        return resultList;
     }
 
     private boolean hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
