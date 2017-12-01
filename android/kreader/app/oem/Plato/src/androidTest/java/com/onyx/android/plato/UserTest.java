@@ -4,6 +4,7 @@ import android.test.ApplicationTestCase;
 
 import com.onyx.android.plato.cloud.bean.ChangePasswordRequestBean;
 import com.onyx.android.plato.cloud.bean.ChangePasswordResultBean;
+import com.onyx.android.plato.cloud.bean.LoginRequestBean;
 import com.onyx.android.plato.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.plato.cloud.bean.UserLoginResultBean;
 import com.onyx.android.plato.cloud.bean.UserLogoutRequestBean;
@@ -29,12 +30,11 @@ public class UserTest extends ApplicationTestCase<SunApplication> {
     }
 
     public void testUserLogin() throws Exception {
-
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         UserLoginActivityData userLoginData = new UserLoginActivityData();
-        UserLoginRequestBean requestBean = new UserLoginRequestBean();
-        requestBean.account = "123456";
-        requestBean.password = "321";
+        LoginRequestBean requestBean = new LoginRequestBean();
+        requestBean.username = "1713000053";
+        requestBean.password = "E10ADC3949BA59ABBE56E057F20F883E";
         final UserLoginRequest rq = new UserLoginRequest(requestBean);
 
         userLoginData.userLogin(rq, new BaseCallback() {

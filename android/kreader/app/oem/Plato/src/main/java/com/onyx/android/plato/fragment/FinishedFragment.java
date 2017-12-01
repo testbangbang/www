@@ -52,8 +52,7 @@ public class FinishedFragment extends BaseFragment implements View.OnClickListen
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
-        //TODO:fake student id = 106
-        homeworkPresenter.getSubjects(SunApplication.getStudentId() + "");
+        homeworkPresenter.getSubjects();
     }
 
     @Override
@@ -162,7 +161,7 @@ public class FinishedFragment extends BaseFragment implements View.OnClickListen
     }
 
     private void loadHomeworkFinish() {
-        homeworkPresenter.getHomeworkFinishedData(SunApplication.getStudentId() + "", subjectId + "", startTime, endTime, subjectType);
+        homeworkPresenter.getHomeworkFinishedData(subjectId + "", startTime, endTime, subjectType);
     }
 
     @Override

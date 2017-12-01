@@ -63,13 +63,12 @@ public class FillHomeworkPresenter {
         });
     }
 
-    public void deleteOrFavorite(int taskId, int questionId, int studentId) {
+    public void deleteOrFavorite(int taskId, int questionId) {
         PracticeFavoriteBean bean = new PracticeFavoriteBean();
         bean.id = questionId;
         bean.pid = taskId;
         RequestBody requestBody = RequestBody.create(MediaType.parse(Constants.REQUEST_HEAD), JSON.toJSONString(bean));
         PracticeFavoriteOrDeleteBean requestBean = new PracticeFavoriteOrDeleteBean();
-        requestBean.studentId = studentId;
         requestBean.requestBody = requestBody;
         final FavoriteOrDeletePracticeRequest rq = new FavoriteOrDeletePracticeRequest(requestBean);
         fillHomeworkData.deleteOrFavorite(rq, new BaseCallback() {

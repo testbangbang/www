@@ -37,7 +37,7 @@ public class FavoriteOrDeletePracticeRequest extends BaseCloudRequest {
     }
 
     private Call<SubmitPracticeResultBean> getCall(ContentService service) {
-        Call<SubmitPracticeResultBean> call = service.favoriteOrDeletePractice(requestBean.studentId, requestBean.requestBody);
+        Call<SubmitPracticeResultBean> call = service.favoriteOrDeletePractice(requestBean.requestBody);
         return call;
     }
 }

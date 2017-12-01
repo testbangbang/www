@@ -7,8 +7,6 @@ import okhttp3.RequestBody;
  */
 
 public class SubmitPracticeRequestBean {
-
     public int id;
-    public int studentId;
     public RequestBody practiceListBody;
 }

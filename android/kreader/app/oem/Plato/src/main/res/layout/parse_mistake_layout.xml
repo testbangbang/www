@@ -2,14 +2,16 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data>
-        <import type="android.view.View"/>
+
+        <import type="android.view.View" />
+
         <variable
             name="recorderTime"
             type="String" />
 
         <variable
             name="mistakeVisible"
-            type="boolean"/>
+            type="boolean" />
     </data>
 
     <LinearLayout
@@ -18,8 +20,8 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rectangle_gray_stroke"
         android:orientation="vertical"
-        android:visibility="@{mistakeVisible ? View.VISIBLE : View.GONE}"
-        android:padding="@dimen/question_parse_add_sound_layout_padding">
+        android:padding="@dimen/question_parse_add_sound_layout_padding"
+        android:visibility="@{mistakeVisible ? View.VISIBLE : View.GONE}">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -52,22 +54,37 @@
                     android:text="@string/hold_input_voice"
                     android:textSize="@dimen/level_three_heading_font" />
 
-                <TextView
-                    android:id="@+id/parse_mistake_voice"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/ic_voice_background"
                     android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/parse_sound_padding_left"
-                    android:text="@{recorderTime}"
-                    android:textSize="@dimen/level_three_heading_font"
-                    android:visibility="gone"/>
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/parse_mistake_voice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@drawable/ic_voice_background"
+                        android:gravity="center_vertical"
+                        android:paddingLeft="@dimen/parse_sound_padding_left"
+                        android:text="@{recorderTime}"
+                        android:textSize="@dimen/level_three_heading_font"
+                        android:visibility="gone" />
+
+                    <ImageView
+                        android:id="@+id/parse_delete_voice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/delete_voice"
+                        android:visibility="gone" />
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/parse_mistake_sound_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:gravity="center_vertical"
                     android:visibility="gone">
 
                     <View
@@ -108,12 +125,13 @@
                 <com.onyx.android.plato.view.PageRecyclerView
                     android:id="@+id/mistake_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="@dimen/custom_mistake_height" />
 
                 <com.onyx.android.plato.view.PageRecyclerView
                     android:id="@+id/mistake_custom_recycler"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="@dimen/custom_mistake_height"
+                    android:layout_marginTop="@dimen/custom_mistake_padding" />
 
                 <TextView
                     android:id="@+id/mistake_custom"
@@ -130,6 +148,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/parse_handle_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

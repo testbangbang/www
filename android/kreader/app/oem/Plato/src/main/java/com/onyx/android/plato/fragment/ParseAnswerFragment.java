@@ -67,7 +67,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     @Override
     protected void loadData() {
         parseAnswerPresenter = new ParseAnswerPresenter(this);
-        parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
+        parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId());
     }
 
     @Override
@@ -112,6 +112,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         parseAnswerBinding.parseMistakeLayout.parseMistakeVoice.setOnClickListener(this);
         parseAnswerBinding.parseMistakeLayout.parseMistakeModify.setOnClickListener(this);
         parseAnswerBinding.parseMistakeLayout.mistakeCustom.setOnClickListener(this);
+        parseAnswerBinding.parseMistakeLayout.parseDeleteVoice.setOnClickListener(this);
     }
 
     private File getOutputFile() {
@@ -156,7 +157,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         }
 
         if (parseAnswerPresenter != null) {
-            parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
+            parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId());
         }
     }
 
@@ -167,7 +168,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
                 EventBus.getDefault().post(new ToCorrectEvent(null));
                 break;
             case R.id.parse_add_sound:
-                parseAnswerPresenter.insertAnalysis(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId(), null, voiceUrl, null);
+                parseAnswerPresenter.insertAnalysis(questionData.getTaskId(), questionData.getId(), null, voiceUrl, null);
                 break;
             case R.id.parse_delete_sound:
                 break;
@@ -185,9 +186,15 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
                 break;
             case R.id.parse_mistake_modify:
                 parseAnswerBinding.parseMistakeLayout.parseMistakeWhole.setBackgroundResource(R.drawable.rectangle_gray_stroke);
+                setItemVisible(R.id.parse_delete_voice);
+                mistakeCustomAdapter.clear();
+                parseAnswerBinding.parseMistakeLayout.mistakeCustom.setVisibility(View.VISIBLE);
                 break;
             case R.id.mistake_custom:
                 showCustomDialog();
+                break;
+            case R.id.parse_delete_voice:
+                setItemVisible(R.id.parse_mistake_input_text);
                 break;
         }
     }
@@ -196,8 +203,6 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         if (answerBean.score == answerBean.value) {
             parseAnswerBinding.parseAddSoundLayout.parseReadRecord.setVisibility(View.VISIBLE);
             setVisible(R.id.parse_add_sound_layout);
-        } else {
-            // TODO: 2017/11/30
         }
     }
 
@@ -218,7 +223,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             errors.add(bean);
         }
 
-        parseAnswerPresenter.insertAnalysis(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId(), ids, voiceUrl, errors);
+        parseAnswerPresenter.insertAnalysis(questionData.getTaskId(), questionData.getId(), ids, voiceUrl, errors);
     }
 
     private void showCustomDialog() {
@@ -281,7 +286,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             return;
         }
         answerBean = myAnswer.get(0);
-        parseAnswerPresenter.getAnalysis(questionData.getTaskId(), questionData.getId(), SunApplication.getStudentId());
+        parseAnswerPresenter.getAnalysis(questionData.getTaskId(), questionData.getId());
         String correct = insertPMark(parseBean.answer, "(" + answerBean.accuracy + "%" + ")");
         String userAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.user_answer), answerBean.answer);
         String correctAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.correct_answer), Html.fromHtml(correct));
@@ -344,7 +349,11 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
 
         radio = analysisBean.radio;
         if (!StringUtil.isNullOrEmpty(radio)) {
-            setItemVisible(R.id.parse_sound_read);
+            if (answerBean.value == answerBean.score) {
+                setVisible(R.id.parse_modify_sound_layout);
+            } else {
+                setItemVisible(R.id.parse_mistake_sound_layout);
+            }
             duration = mediaManager.getDurationInSecond(radio);
             parseAnswerBinding.setRecorderTime(duration + "s");
         }
@@ -364,6 +373,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         } else {
             setItemVisible(R.id.parse_mistake_sound_layout);
             parseAnswerBinding.parseMistakeLayout.parseMistakeWhole.setBackgroundColor(SunApplication.getInstance().getResources().getColor(R.color.white));
+            parseAnswerBinding.parseMistakeLayout.mistakeCustom.setVisibility(View.GONE);
         }
     }
 
@@ -409,9 +419,11 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
 
     public void setItemVisible(int itemId) {
         parseAnswerBinding.parseMistakeLayout.parseMistakeSoundLayout.setVisibility(itemId == R.id.parse_mistake_sound_layout ? View.VISIBLE : View.GONE);
+        parseAnswerBinding.parseMistakeLayout.parseHandleLayout.setVisibility(itemId == R.id.parse_mistake_sound_layout ? View.GONE : View.VISIBLE);
         parseAnswerBinding.parseMistakeLayout.parseMistakeInputText.setVisibility(itemId == R.id.parse_mistake_input_text ? View.VISIBLE : View.GONE);
         parseAnswerBinding.parseMistakeLayout.parseMistakeVoice.setVisibility(itemId == R.id.parse_mistake_input_text ? View.GONE : View.VISIBLE);
         parseAnswerBinding.parseAddSoundLayout.parseSoundInput.setVisibility(itemId == R.id.parse_sound_input ? View.VISIBLE : View.GONE);
         parseAnswerBinding.parseAddSoundLayout.parseSoundRead.setVisibility(itemId == R.id.parse_sound_read ? View.VISIBLE : View.GONE);
+        parseAnswerBinding.parseMistakeLayout.parseDeleteVoice.setVisibility(itemId == R.id.parse_delete_voice ? View.VISIBLE : View.GONE);
     }
 }

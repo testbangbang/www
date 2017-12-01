@@ -38,7 +38,7 @@ public class UnfinishedFragment extends BaseFragment implements HomeworkView, Vi
     @Override
     protected void loadData() {
         HomeworkPresenter homeworkPresenter = new HomeworkPresenter(this);
-        homeworkPresenter.getHomeworkUnfinishedData(SunApplication.getStudentId() + "");
+        homeworkPresenter.getHomeworkUnfinishedData();
     }
 
     @Override

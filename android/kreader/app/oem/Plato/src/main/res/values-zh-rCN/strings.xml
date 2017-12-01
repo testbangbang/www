@@ -145,7 +145,6 @@
     <string name="login_activity_login">登录</string>
     <string name="account_format_error_tips">账户名格式错误</string>
     <string name="password_format_error_tips">密码格式错误</string>
-    <string name="login_activity_loading_tips">请稍后</string>
     <string name="common_tips_network_connection_exception">网络连接异常</string>
     <string name="common_tips_request_failed">请求失败</string>
     <string name="user_center_fragment_logout">退出登录</string>

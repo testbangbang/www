@@ -16,15 +16,13 @@ import retrofit2.Response;
 
 public class InsertAnalysisRequest extends BaseCloudRequest {
     private InsertParseRequestBean requestBean;
-    private int studentId;
     private int questionId;
     private int taskId;
     private SubmitPracticeResultBean resultBean;
 
-    public InsertAnalysisRequest(int taskId, int questionId, int studentId, InsertParseRequestBean requestBean) {
+    public InsertAnalysisRequest(int taskId, int questionId, InsertParseRequestBean requestBean) {
         this.taskId = taskId;
         this.questionId = questionId;
-        this.studentId = studentId;
         this.requestBean = requestBean;
     }
 
@@ -43,7 +41,7 @@ public class InsertAnalysisRequest extends BaseCloudRequest {
     }
 
     private Call<SubmitPracticeResultBean> getCall(ContentService service) {
-        Call<SubmitPracticeResultBean> call = service.insertAnalysis(questionId, taskId, studentId, requestBean);
+        Call<SubmitPracticeResultBean> call = service.insertAnalysis(questionId, taskId, requestBean);
         return call;
     }
 }

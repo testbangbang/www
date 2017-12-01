@@ -37,7 +37,7 @@ public class GetAnalysisRequest extends BaseCloudRequest {
     }
 
     private Call<GetAnalysisBean> getCall(ContentService service) {
-        Call<GetAnalysisBean> call = service.getAnalysis(requestBean.id, requestBean.pid, requestBean.studentId);
+        Call<GetAnalysisBean> call = service.getAnalysis(requestBean.id, requestBean.pid);
         return call;
     }
 }

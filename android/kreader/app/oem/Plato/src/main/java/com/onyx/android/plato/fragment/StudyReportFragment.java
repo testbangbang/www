@@ -168,8 +168,7 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
         if (homeworkPresenter == null){
             homeworkPresenter = new HomeworkPresenter(this);
         }
-        //TODO:fake student id
-        homeworkPresenter.getStudyReportDetail(id, 1);
+        homeworkPresenter.getStudyReportDetail(id);
         this.title = title;
         studyReportBinding.setStudyReportTitle(title);
     }

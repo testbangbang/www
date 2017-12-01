@@ -26,9 +26,8 @@ public class MainFragmentPresenter {
         mainFragmentData = new MainFragmentData();
     }
 
-    public void getPractices(int studentId) {
+    public void getPractices() {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.studentId = studentId + "";
         final HomeworkUnfinishedRequest req = new HomeworkUnfinishedRequest(requestBean);
         mainFragmentData.getPractices(req, new BaseCallback() {
             @Override
@@ -44,8 +43,8 @@ public class MainFragmentPresenter {
         });
     }
 
-    public void getSubjectScore(String studentId) {
-        final SubjectAbilityRequest req = new SubjectAbilityRequest(studentId);
+    public void getSubjectScore() {
+        final SubjectAbilityRequest req = new SubjectAbilityRequest();
         mainFragmentData.getSubjectScore(req, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

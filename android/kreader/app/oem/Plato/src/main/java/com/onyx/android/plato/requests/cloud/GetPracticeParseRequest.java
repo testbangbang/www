@@ -37,7 +37,7 @@ public class GetPracticeParseRequest extends BaseCloudRequest {
     }
 
     private Call<PracticeParseResultBean> getCall(ContentService service) {
-        Call<PracticeParseResultBean> call = service.getPracticeParse(requestBean.id, requestBean.pid, requestBean.studentId);
+        Call<PracticeParseResultBean> call = service.getPracticeParse(requestBean.id, requestBean.pid);
         return call;
     }
 }

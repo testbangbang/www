@@ -10,7 +10,7 @@
 
         <variable
             name="userInfo"
-            type="com.onyx.android.plato.cloud.bean.UserInfoBean"/>
+            type="com.onyx.android.plato.cloud.bean.UserInfo"/>
 
     </data>
 

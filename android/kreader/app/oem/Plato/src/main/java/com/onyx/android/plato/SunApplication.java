@@ -4,18 +4,19 @@ import android.app.Application;
 import android.content.Context;
 import android.support.multidex.MultiDex;
 
+import com.onyx.android.plato.common.AppConfigData;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.data.manager.OTAManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.utils.PreferenceManager;
-import com.onyx.android.plato.common.AppConfigData;
 import com.raizlabs.android.dbflow.config.DatabaseHolder;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.config.PlatoGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +28,15 @@ import java.util.List;
 public class SunApplication extends Application {
     private static SunApplication instance;
     private NoteManager noteManager;
-    private static int studentId = 190;
+    private String token;
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getToken() {
+        return token;
+    }
 
     public NoteManager getNoteManager() {
         if (noteManager == null) {
@@ -38,10 +47,6 @@ public class SunApplication extends Application {
 
     public static SunApplication getInstance() {
         return instance;
-    }
-
-    public static int getStudentId() {
-        return studentId;
     }
 
     @Override

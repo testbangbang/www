@@ -27,7 +27,6 @@ import java.net.ConnectException;
  */
 
 public class LoginActivity extends BaseActivity implements View.OnClickListener, UserLoginView {
-
     private ActivityUserLoginBinding loginDataBinding;
     private UserLoginPresenter userLoginPresenter;
     private UserLoginRequestBean userLoginRequestBean = new UserLoginRequestBean();
@@ -36,22 +35,21 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     @Override
     protected void initData() {
         userLoginPresenter = new UserLoginPresenter(this);
-        userLoginRequestBean.isKeepPassword = PreferenceManager.getBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, false);
+        userLoginRequestBean.isKeepPassword = PreferenceManager.getBooleanValue(SunApplication.getInstance(), Constants.SP_KEY_ISKEEPPASSWORD, false);
         restoreUserInfo();
-        loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tip),false);
-        loginLoadingDialog = new DialogLoading(LoginActivity.this,getString(R.string.login_activity_loading_tips),false);
+        loginLoadingDialog = new DialogLoading(LoginActivity.this, getString(R.string.login_activity_loading_tip), false);
         MobclickAgent.setDebugMode(true);
         MobclickAgent.setScenarioType(this, MobclickAgent.EScenarioType.E_UM_NORMAL);
     }
 
     private void restoreUserInfo() {
-        if (userLoginRequestBean.isKeepPassword){
+        if (userLoginRequestBean.isKeepPassword) {
             String account = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_ACCOUNT, "");
-            String password = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD,"");
-            if (!TextUtils.isEmpty(account)){
+            String password = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_PASSWORD, "");
+            if (!TextUtils.isEmpty(account)) {
                 userLoginRequestBean.account = account;
             }
-            if (!TextUtils.isEmpty(password)){
+            if (!TextUtils.isEmpty(password)) {
                 userLoginRequestBean.password = password;
             }
         }
@@ -88,7 +86,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.login_act_tv_startlogin:
                 startLogin();
                 break;
@@ -96,32 +94,30 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     private void startLogin() {
-        if (checkLoginInfo()){
+        if (checkLoginInfo()) {
             loginLoadingDialog.show();
-            String md5Password = FileUtils.computeMD5(userLoginRequestBean.password);
+            String md5Password = FileUtils.computeMD5(userLoginRequestBean.password).toUpperCase();
             userLoginPresenter.loginAccount(userLoginRequestBean.account, md5Password);
         }
     }
 
     private void saveUserInfo(UserInfoBean userInfoBean) {
-        PreferenceManager.setBooleanValue(SunApplication.getInstance(),Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
-        if (userLoginRequestBean.isKeepPassword){
-            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
+        SunApplication.getInstance().setToken(userInfoBean.token);
+        PreferenceManager.setBooleanValue(SunApplication.getInstance(), Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
+        if (userLoginRequestBean.isKeepPassword) {
+            PreferenceManager.setStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
         } else {
-            PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PASSWORD, null);
+            PreferenceManager.setStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_PASSWORD, null);
         }
 
-        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_ACCOUNT, userInfoBean.account);
-        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME, userInfoBean.name);
-        PreferenceManager.setStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PHONE_NUMBER, userInfoBean.phoneNumber);
-
+        PreferenceManager.setStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_ACCOUNT, userLoginRequestBean.account);
     }
 
     private boolean checkLoginInfo() {
-        if (TextUtils.isEmpty(userLoginRequestBean.account)){
+        if (TextUtils.isEmpty(userLoginRequestBean.account)) {
             CommonNotices.show(getString(R.string.account_format_error_tips));
             return false;
-        } else if(TextUtils.isEmpty(userLoginRequestBean.password)){
+        } else if (TextUtils.isEmpty(userLoginRequestBean.password)) {
             CommonNotices.show(getString(R.string.password_format_error_tips));
             return false;
         }
@@ -134,33 +130,37 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onLoginSucced(UserInfoBean userInfoBean) {
-        dissmisLoadDialog();
-        skipToMainActivity();
+    public void onLoginSucceed(UserInfoBean userInfoBean) {
+        dismissLoadDialog();
         saveUserInfo(userInfoBean);
+        skipToMainActivity();
         finish();
     }
 
-    private void dissmisLoadDialog() {
-        if (null != loginLoadingDialog && loginLoadingDialog.isShowing()){
+    private void dismissLoadDialog() {
+        if (null != loginLoadingDialog && loginLoadingDialog.isShowing()) {
             loginLoadingDialog.dismiss();
         }
     }
 
     @Override
     public void onLoginFailed(int errorCode, String msg) {
-        dissmisLoadDialog();
+        dismissLoadDialog();
     }
 
     @Override
-    public void onLoginError(Throwable throwable) {
-        dissmisLoadDialog();
-        if (null != throwable){
-            if (throwable instanceof ConnectException){
-                CommonNotices.show(getString(R.string.common_tips_network_connection_exception));
-            } else {
-                CommonNotices.show(getString(R.string.common_tips_request_failed));
-            }
+    public void onLoginError(String error) {
+        dismissLoadDialog();
+        CommonNotices.show(error);
+    }
+
+    @Override
+    public void onLoginException(Throwable e) {
+        dismissLoadDialog();
+        if (e instanceof ConnectException) {
+            CommonNotices.show(getString(R.string.common_tips_network_connection_exception));
+        } else {
+            CommonNotices.show(getString(R.string.common_tips_request_failed));
         }
     }
 }

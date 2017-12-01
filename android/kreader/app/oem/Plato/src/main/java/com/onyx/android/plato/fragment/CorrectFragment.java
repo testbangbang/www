@@ -40,9 +40,8 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
     @Override
     protected void loadData() {
         presenter = new CorrectPresenter(this);
-        //TODO:fake practice id,student id
         if (content.correctTime != null) {
-            presenter.getCorrectData(content.id, SunApplication.getStudentId());
+            presenter.getCorrectData(content.id);
         }
     }
 
@@ -106,7 +105,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         }
 
         if (presenter != null && content.correctTime != null) {
-            presenter.getCorrectData(content.id, SunApplication.getStudentId());
+            presenter.getCorrectData(content.id);
         }
     }
 

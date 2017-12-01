@@ -62,9 +62,8 @@ public class HomeworkPresenter {
         fillHomeworkData = new FillHomeworkData();
     }
 
-    public void getHomeworkUnfinishedData(String studentId) {
+    public void getHomeworkUnfinishedData() {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.studentId = studentId;
         final HomeworkUnfinishedRequest rq = new HomeworkUnfinishedRequest(requestBean);
         homeworkData.getHomeworkUnfinishedData(rq, new BaseCallback() {
             @Override
@@ -82,13 +81,12 @@ public class HomeworkPresenter {
         });
     }
 
-    public void getHomeworkFinishedData(String studentId, String course, String startTime, String endTime, String type) {
+    public void getHomeworkFinishedData(String course, String startTime, String endTime, String type) {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
         requestBean.status = CloudApiContext.Practices.FINISHED_STATE;
         requestBean.course = course;
         requestBean.endtime = endTime;
         requestBean.starttime = startTime;
-        requestBean.studentId = studentId;
         requestBean.type = type;
 
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
@@ -112,8 +110,8 @@ public class HomeworkPresenter {
         });
     }
 
-    public void getSubjects(final String studentId) {
-        final GetSubjectRequest rq = new GetSubjectRequest(Integer.parseInt(studentId));
+    public void getSubjects() {
+        final GetSubjectRequest rq = new GetSubjectRequest();
         homeworkData.getSubjects(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -125,14 +123,14 @@ public class HomeworkPresenter {
                 List<SubjectBean> subjectBeanList = subjects.data;
                 if (subjectBeanList != null && subjectBeanList.size() > 0) {
                     homeworkView.setSubjects(subjectBeanList);
-                    getExerciseType(studentId, subjectBeanList.get(0).id);
-                    getStudyReportData(subjectBeanList.get(0).id, Integer.parseInt(studentId));
+                    getExerciseType(subjectBeanList.get(0).id);
+                    getStudyReportData(subjectBeanList.get(0).id);
                 }
             }
         });
     }
 
-    public void getExerciseType(final String studentId, final int subjectId) {
+    public void getExerciseType(final int subjectId) {
         final GetExerciseTypeRequest rq = new GetExerciseTypeRequest();
         homeworkData.getExerciseType(rq, new BaseCallback() {
             @Override
@@ -145,14 +143,14 @@ public class HomeworkPresenter {
                 List<SubjectBean> types = exerciseTypes.data;
                 if (types != null && types.size() > 0) {
                     homeworkView.setExerciseType(exerciseTypes.data);
-                    getHomeworkFinishedData(studentId, subjectId + "", null, null, types.get(0).type);
+                    getHomeworkFinishedData(subjectId + "", null, null, types.get(0).type);
                 }
             }
         });
     }
 
-    public void getStudyReportData(int courseId, int studentId) {
-        final GetReportListRequest rq = new GetReportListRequest(courseId, studentId);
+    public void getStudyReportData(int courseId) {
+        final GetReportListRequest rq = new GetReportListRequest(courseId);
         homeworkData.getReportList(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -226,10 +224,9 @@ public class HomeworkPresenter {
         });
     }
 
-    public void submitAnswer(List<PracticeAnswerBean> answerList, int taskId, int studentId) {
+    public void submitAnswer(List<PracticeAnswerBean> answerList, int taskId) {
         SubmitPracticeRequestBean submitPracticeRequestBean = new SubmitPracticeRequestBean();
         submitPracticeRequestBean.id = taskId;
-        submitPracticeRequestBean.studentId = studentId;
         String answers = JSON.toJSONString(answerList);
         RequestBody requestBody = RequestBody.create(MediaType.parse(Constants.REQUEST_HEAD), answers);
         submitPracticeRequestBean.practiceListBody = requestBody;
@@ -252,8 +249,8 @@ public class HomeworkPresenter {
         });
     }
 
-    public void getStudyReportDetail(int id, int studentId) {
-        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(id, studentId);
+    public void getStudyReportDetail(int id) {
+        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(id);
         homeworkData.getStudyReportDetail(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

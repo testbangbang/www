@@ -65,7 +65,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
     public void testHomeworkUnfinished() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.studentId = "1";
         final HomeworkUnfinishedRequest rq = new HomeworkUnfinishedRequest(requestBean);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
@@ -88,7 +87,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestBean.size = "10";
         requestBean.starttime = "2017-02-02";
         requestBean.status = "completed";
-        requestBean.studentId = "2";
         requestBean.type = "all";
 
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
@@ -113,7 +111,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestBean.size = "10";
         requestBean.starttime = "2017-02-02";
         requestBean.status = "report";
-        requestBean.studentId = "2";
         requestBean.type = "all";
 
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
@@ -155,7 +152,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestList.add(practiceAnswerBean);
         String jsonString = JSON.toJSONString(requestList);
         submitPracticeRequestBean.id = 61;
-        submitPracticeRequestBean.studentId = 104 ;
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"),jsonString);
         submitPracticeRequestBean.practiceListBody = requestBody;
 
@@ -180,7 +176,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         bean.pid = 12;
         RequestBody requestBody = RequestBody.create(MediaType.parse("application/json"), JSON.toJSONString(bean));
         PracticeFavoriteOrDeleteBean requestBean = new PracticeFavoriteOrDeleteBean();
-        requestBean.studentId = 108;
         requestBean.requestBody = requestBody;
         final FavoriteOrDeletePracticeRequest rq = new FavoriteOrDeletePracticeRequest(requestBean);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
@@ -198,7 +193,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         GetCorrectedTaskRequestBean requestBean = new GetCorrectedTaskRequestBean();
         requestBean.practiceId = 25;
-        requestBean.studentId = 108;
         final GetCorrectedTaskRequest rq = new GetCorrectedTaskRequest(requestBean);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
@@ -217,7 +211,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         PracticeParseRequestBean requestBean = new PracticeParseRequestBean();
         requestBean.id = 1523;
         requestBean.pid = 1;
-        requestBean.studentId = 105;
         final GetPracticeParseRequest rq = new GetPracticeParseRequest(requestBean);
 
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
@@ -234,7 +227,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
 
     public void testGetStudyReportDetail() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(1, 1);
+        final GetStudyReportDetailRequest rq = new GetStudyReportDetailRequest(1);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(),rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -271,7 +264,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
 
     public void testGetSubject() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final GetSubjectRequest rq = new GetSubjectRequest(107);
+        final GetSubjectRequest rq = new GetSubjectRequest();
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -321,7 +314,6 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         PracticeParseRequestBean requestBean = new PracticeParseRequestBean();
         requestBean.id = 2125;
         requestBean.pid = 232;
-        requestBean.studentId = 190;
 
         final GetAnalysisRequest rq = new GetAnalysisRequest(requestBean);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
@@ -356,7 +348,7 @@ public class HomeworkTest extends ApplicationTestCase<SunApplication> {
         requestBean.radio = "78473578478.mp3";
         requestBean.error = errors;
 
-        final InsertAnalysisRequest rq = new InsertAnalysisRequest(232, 2125, 190, requestBean);
+        final InsertAnalysisRequest rq = new InsertAnalysisRequest(232, 2125, requestBean);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -77,6 +77,13 @@ public class MistakeAdapter extends PageRecyclerView.PageAdapter {
         return data;
     }
 
+    public void clear() {
+        if (data != null && data.size() > 0) {
+            data.clear();
+            notifyDataSetChanged();
+        }
+    }
+
     static class MistakeViewHolder extends RecyclerView.ViewHolder {
         private ItemMistakeBinding itemMistakeBinding;
 

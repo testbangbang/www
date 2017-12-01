@@ -46,11 +46,10 @@ public class ParseAnswerPresenter {
         parseAnswerData = new ParseAnswerData();
     }
 
-    public void getExplanation(int taskId, int questionId, int studentId) {
+    public void getExplanation(int taskId, int questionId) {
         PracticeParseRequestBean requestBean = new PracticeParseRequestBean();
         requestBean.id = questionId;
         requestBean.pid = taskId;
-        requestBean.studentId = studentId;
         final GetPracticeParseRequest rq = new GetPracticeParseRequest(requestBean);
         parseAnswerData.getParse(rq, new BaseCallback() {
             @Override
@@ -115,11 +114,10 @@ public class ParseAnswerPresenter {
         });
     }
 
-    public void getAnalysis(int taskId, int questionId, int studentId) {
+    public void getAnalysis(int taskId, int questionId) {
         PracticeParseRequestBean requestBean = new PracticeParseRequestBean();
         requestBean.id = questionId;
         requestBean.pid = taskId;
-        requestBean.studentId = studentId;
 
         final GetAnalysisRequest rq = new GetAnalysisRequest(requestBean);
         parseAnswerData.getAnalysis(rq, new BaseCallback() {
@@ -153,13 +151,13 @@ public class ParseAnswerPresenter {
         });
     }
 
-    public void insertAnalysis(int taskId, int questionId, int studentId, List<Integer> ids, String radio, List<InsertParseBean> errors) {
+    public void insertAnalysis(int taskId, int questionId, List<Integer> ids, String radio, List<InsertParseBean> errors) {
         InsertParseRequestBean requestBean = new InsertParseRequestBean();
         requestBean.ids = ids;
         requestBean.radio = radio;
         requestBean.error = errors;
 
-        final InsertAnalysisRequest rq = new InsertAnalysisRequest(taskId, questionId, studentId, requestBean);
+        final InsertAnalysisRequest rq = new InsertAnalysisRequest(taskId, questionId, requestBean);
         parseAnswerData.insertAnalysis(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

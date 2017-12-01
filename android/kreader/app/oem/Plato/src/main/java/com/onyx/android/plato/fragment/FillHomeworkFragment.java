@@ -216,8 +216,7 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
                 answerBean.answer = bean.getUserAnswer();
                 list.add(answerBean);
             }
-            //TODO:fake student id
-            homeworkPresenter.submitAnswer(list, id, SunApplication.getStudentId());
+            homeworkPresenter.submitAnswer(list, id);
         }
     }
 

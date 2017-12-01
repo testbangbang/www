@@ -6,5 +6,4 @@ package com.onyx.android.plato.cloud.bean;
 
 public class GetCorrectedTaskRequestBean {
     public int practiceId;
-    public int studentId;
 }

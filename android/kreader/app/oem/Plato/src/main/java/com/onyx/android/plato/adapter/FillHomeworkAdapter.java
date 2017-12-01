@@ -101,7 +101,7 @@ public class FillHomeworkAdapter extends PageRecyclerView.PageAdapter implements
 
     @Override
     public void deleteOrFavoriteQuestion(int taskId, int questionId) {
-        fillHomeworkPresenter.deleteOrFavorite(taskId, questionId, SunApplication.getStudentId());
+        fillHomeworkPresenter.deleteOrFavorite(taskId, questionId);
     }
 
     public void insertAnswer(int taskId, QuestionViewBean questionViewBean) {

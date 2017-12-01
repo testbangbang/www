@@ -34,10 +34,9 @@ public class CorrectPresenter {
         correctData = new CorrectData();
     }
 
-    public void getCorrectData(int practiceId, int studentId) {
+    public void getCorrectData(int practiceId) {
         GetCorrectedTaskRequestBean requestBean = new GetCorrectedTaskRequestBean();
         requestBean.practiceId = practiceId;
-        requestBean.studentId = studentId;
         final GetCorrectedTaskRequest rq = new GetCorrectedTaskRequest(requestBean);
         correctData.getCorrectData(rq, new BaseCallback() {
             @Override

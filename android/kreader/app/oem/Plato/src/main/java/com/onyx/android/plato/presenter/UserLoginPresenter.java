@@ -1,6 +1,6 @@
 package com.onyx.android.plato.presenter;
 
-import com.onyx.android.plato.cloud.bean.UserLoginRequestBean;
+import com.onyx.android.plato.cloud.bean.LoginRequestBean;
 import com.onyx.android.plato.cloud.bean.UserLoginResultBean;
 import com.onyx.android.plato.common.CloudApiContext;
 import com.onyx.android.plato.data.UserLoginActivityData;
@@ -23,24 +23,27 @@ public class UserLoginPresenter {
     }
 
     public void loginAccount(String account, String password) {
-        UserLoginRequestBean requestBean = new UserLoginRequestBean();
-        requestBean.account = account;
+        LoginRequestBean requestBean = new LoginRequestBean();
+        requestBean.username = account;
         requestBean.password = password;
         final UserLoginRequest rq = new UserLoginRequest(requestBean);
         loginData.userLogin(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 UserLoginResultBean resultBean = rq.getLoginResultBean();
-                if (resultBean == null) {
-                    loginView.onLoginError(e);
+                if (e != null) {
+                    loginView.onLoginException(e);
                     return;
                 }
-                if (resultBean.code == CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS){
-                    loginView.onLoginSucced(resultBean.data);
-                } else {
-                    loginView.onLoginFailed(resultBean.code,resultBean.msg);
+                if (resultBean == null) {
+                    loginView.onLoginError(rq.getError());
+                    return;
                 }
-
+                if (resultBean.code == CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS) {
+                    loginView.onLoginSucceed(resultBean.data);
+                } else {
+                    loginView.onLoginFailed(resultBean.code, resultBean.msg);
+                }
             }
         });
     }

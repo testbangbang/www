@@ -7,7 +7,11 @@ import com.onyx.android.plato.cloud.bean.UserInfoBean;
  */
 
 public interface UserLoginView {
-    void onLoginSucced(UserInfoBean userInfoBean);
+    void onLoginSucceed(UserInfoBean userInfoBean);
+
     void onLoginFailed(int errorCode, String msg);
-    void onLoginError(Throwable throwable);
+
+    void onLoginError(String error);
+
+    void onLoginException(Throwable e);
 }

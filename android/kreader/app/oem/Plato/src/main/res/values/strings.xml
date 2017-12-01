@@ -141,7 +141,6 @@
     <string name="un_submit">Not submit</string>
     <string name="account_format_error_tips">Incorrect account name format</string>
     <string name="password_format_error_tips">Incorrect password format</string>
-    <string name="login_activity_loading_tips">Please wait</string>
     <string name="common_tips_network_connection_exception">network connection exception</string>
     <string name="common_tips_request_failed">request failed</string>
     <string name="user_center_fragment_logout">Logout</string>

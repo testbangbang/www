@@ -10,6 +10,7 @@ import com.onyx.android.plato.cloud.bean.GetSubjectBean;
 import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.plato.cloud.bean.InsertParseRequestBean;
+import com.onyx.android.plato.cloud.bean.LoginRequestBean;
 import com.onyx.android.plato.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseResultBean;
 import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
@@ -39,7 +40,6 @@ import retrofit2.http.Query;
 public interface ContentService {
     @GET("api/practice")
     Call<HomeworkUnfinishedResultBean> getHomeworkUnfinished(@Query(CloudApiContext.Practices.STATUS) String status,
-                                                             @Query(CloudApiContext.Practices.STUDENTID) String studentId,
                                                              @Query(CloudApiContext.Practices.PAGE) String page,
                                                              @Query(CloudApiContext.Practices.SIZE) String size,
                                                              @Query(CloudApiContext.Practices.COURSE) String course,
@@ -49,7 +49,6 @@ public interface ContentService {
 
     @GET("api/practice")
     Call<HomeworkFinishedResultBean> getHomeworkFinished(@Query(CloudApiContext.Practices.STATUS) String status,
-                                                         @Query(CloudApiContext.Practices.STUDENTID) String studentId,
                                                          @Query(CloudApiContext.Practices.PAGE) String page,
                                                          @Query(CloudApiContext.Practices.SIZE) String size,
                                                          @Query(CloudApiContext.Practices.COURSE) String course,
@@ -61,57 +60,47 @@ public interface ContentService {
     Call<TaskBean> getTaskDetail(@Path(CloudApiContext.Practices.ID) int id);
 
     @GET("api/message/all")
-    Call<HomeworkUnfinishedResultBean> getMessage(@Query(CloudApiContext.Message.STUDENTID) String studentId,
-                                                  @Query(CloudApiContext.Message.PAGE) String page,
+    Call<HomeworkUnfinishedResultBean> getMessage(@Query(CloudApiContext.Message.PAGE) String page,
                                                   @Query(CloudApiContext.Message.SIZE) String size);
 
     @GET("api/message/del")
-    Call<SubmitPracticeResultBean> deleteMessage(@Query(CloudApiContext.Message.ID) String id,
-                                                 @Query(CloudApiContext.Message.STUDENTID) String studentId);
+    Call<SubmitPracticeResultBean> deleteMessage(@Query(CloudApiContext.Message.ID) String id);
 
     @GET("api/advanced/ability/own")
-    Call<PersonalAbilityResultBean> getSubjectAbility(@Query(CloudApiContext.SubjectAbility.ID) String id);
+    Call<PersonalAbilityResultBean> getSubjectAbility();
 
-    @FormUrlEncoded
-    @POST("api/user/login")
-    Call<UserLoginResultBean> userLogin(@Field(CloudApiContext.UserInfo.ACCOUNT) String account,
-                                        @Field(CloudApiContext.UserInfo.PASSWORD) String password);
+    @POST("api/auth/login")
+    Call<UserLoginResultBean> userLogin(@Body LoginRequestBean bean);
 
     @POST("api/practice/{id}")
     Call<SubmitPracticeResultBean> submitPractice(@Path(CloudApiContext.Practices.ID) int id,
-                                                  @Query(CloudApiContext.Practices.STUDENTID) int studentId,
                                                   @Body RequestBody practiceBeanBody);
 
     @POST("api/practice/favorite")
-    Call<SubmitPracticeResultBean> favoriteOrDeletePractice(@Query(CloudApiContext.Practices.ID) int id,
-                                                            @Body RequestBody requestBody);
+    Call<SubmitPracticeResultBean> favoriteOrDeletePractice(@Body RequestBody requestBody);
 
     @GET("api/practice/review/{id}")
-    Call<GetCorrectedTaskResultBean> getCorrectedTask(@Path(CloudApiContext.Practices.ID) int id,
-                                                      @Query(CloudApiContext.Practices.STUDENTID) int studentId);
+    Call<GetCorrectedTaskResultBean> getCorrectedTask(@Path(CloudApiContext.Practices.ID) int id);
 
     @GET("api/practice/log/analysis")
     Call<PracticeParseResultBean> getPracticeParse(@Query(CloudApiContext.Practices.ID) int id,
-                                                   @Query(CloudApiContext.Practices.PID) int pid,
-                                                   @Query(CloudApiContext.Practices.STUDENTID) int studentId);
+                                                   @Query(CloudApiContext.Practices.PID) int pid);
 
     @POST("api/practice/insertAnalysis")
     Call<SubmitPracticeResultBean> insertAnalysis(@Query(CloudApiContext.Practices.ID) int id,
                                                   @Query(CloudApiContext.Practices.PID) int pid,
-                                                  @Query(CloudApiContext.Practices.STUDENTID) int studentId,
                                                   @Body InsertParseRequestBean requestBody);
 
     @GET("api/practice/getAnalysis")
     Call<GetAnalysisBean> getAnalysis(@Query(CloudApiContext.Practices.ID) int id,
-                                      @Query(CloudApiContext.Practices.PID) int pid,
-                                      @Query(CloudApiContext.Practices.STUDENTID) int studentId);
+                                      @Query(CloudApiContext.Practices.PID) int pid);
 
     @POST("api/practice/exerciseResult/{id}/introspect")
     Call<SubmitPracticeResultBean> practiceIntrospection(@Path(CloudApiContext.Practices.ID) int id,
                                                          @Body RequestBody requestBody);
 
     @GET("api/subject/getSubject")
-    Call<GetSubjectBean> getSubject(@Query(CloudApiContext.Practices.STUDENTID) int studentId);
+    Call<GetSubjectBean> getSubject();
 
     @GET("api/subject/getExerciseType")
     Call<GetSubjectBean> getExerciseType();
@@ -127,8 +116,7 @@ public interface ContentService {
                                                   @Field(CloudApiContext.ChangePassword.NEW_PASSWORD) String newPassword);
 
     @GET("/api/practice/{id}/report")
-    Call<GetStudyReportDetailResultBean> getStudyReportDetail(@Path(CloudApiContext.Practices.ID) int id,
-                                                              @Query(CloudApiContext.Practices.STUDENTID) int studentId);
+    Call<GetStudyReportDetailResultBean> getStudyReportDetail(@Path(CloudApiContext.Practices.ID) int id);
 
     @GET("api/advanced/ability")
     Call<GetSubjectAbilityResultBean> getSubjectAbility(@Query(CloudApiContext.SubjectAbility.ID) String id,
@@ -140,8 +128,7 @@ public interface ContentService {
                                                               @Query(CloudApiContext.SubjectAbility.TERM) String term);
 
     @GET("api/practice/getReportList/{courseId}")
-    Call<GetReportListBean> getReportList(@Path(CloudApiContext.Practices.COURSE_ID) int courseId,
-                                          @Query(CloudApiContext.Practices.STUDENTID) int studentId);
+    Call<GetReportListBean> getReportList(@Path(CloudApiContext.Practices.COURSE_ID) int courseId);
 
     @Multipart
     @POST("api/upload/getFileInfo")

@@ -43,8 +43,7 @@ public class ReportFragment extends BaseFragment implements HomeworkView, View.O
     @Override
     protected void loadData() {
         homeworkPresenter = new HomeworkPresenter(this);
-        //TODO:fake student id = 106
-        homeworkPresenter.getSubjects(SunApplication.getStudentId() + "");
+        homeworkPresenter.getSubjects();
     }
 
     @Override
@@ -76,7 +75,7 @@ public class ReportFragment extends BaseFragment implements HomeworkView, View.O
             public void onItemClick(View view, Object position) {
                 SubjectBean subjectBean = subjects.get((int) position);
                 subjectId = subjectBean.id;
-                homeworkPresenter.getStudyReportData(subjectId, SunApplication.getStudentId());
+                homeworkPresenter.getStudyReportData(subjectId);
             }
         });
     }

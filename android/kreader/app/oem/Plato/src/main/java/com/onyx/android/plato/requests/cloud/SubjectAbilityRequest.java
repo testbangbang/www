@@ -14,12 +14,7 @@ import retrofit2.Response;
  */
 
 public class SubjectAbilityRequest extends BaseCloudRequest {
-    private String id;
     private PersonalAbilityResultBean resultBean;
-
-    public SubjectAbilityRequest(String id) {
-        this.id = id;
-    }
 
     public PersonalAbilityResultBean getResultBean() {
         return resultBean;
@@ -44,6 +39,6 @@ public class SubjectAbilityRequest extends BaseCloudRequest {
     }
 
     private Call<PersonalAbilityResultBean> getCall(ContentService service) {
-        return service.getSubjectAbility(id);
+        return service.getSubjectAbility();
     }
 }

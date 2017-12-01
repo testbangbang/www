@@ -46,6 +46,6 @@ public class SubmitPracticeRequest extends BaseCloudRequest {
     }
 
     private Call<SubmitPracticeResultBean> getCall(ContentService service) {
-        return service.submitPractice(requestBean.id,requestBean.studentId,requestBean.practiceListBody);
+        return service.submitPractice(requestBean.id, requestBean.practiceListBody);
     }
 }

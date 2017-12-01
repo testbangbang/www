@@ -46,7 +46,7 @@ public class HomeworkUnfinishedRequest extends BaseCloudRequest {
     }
 
     private Call<HomeworkUnfinishedResultBean> getCall(ContentService service) {
-        return service.getHomeworkUnfinished(requestBean.status, requestBean.studentId,
+        return service.getHomeworkUnfinished(requestBean.status,
                 requestBean.page, requestBean.size,
                 requestBean.course, requestBean.type,
                 requestBean.starttime, requestBean.endtime);
