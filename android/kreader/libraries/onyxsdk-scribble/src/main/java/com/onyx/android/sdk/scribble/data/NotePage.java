@@ -96,7 +96,7 @@ public class NotePage {
     }
 
     public void addShapeList(final List<Shape> shapes) {
-        addShapeList(shapes,true);
+        addShapeList(shapes, true);
     }
 
     public void addShapeList(final List<Shape> shapes, boolean addToHistory) {
@@ -167,17 +167,29 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            hitTestShape(entry, touchPointList, radius);
+            hitTestAndSelectShape(entry, touchPointList, radius);
         }
     }
 
-    private void hitTestShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
+    private List<Shape> hitTestAndSelectShape(Map.Entry<String, Shape> entry,
+                                              TouchPointList touchPointList, float radius) {
+        List<Shape> resultList = new ArrayList<>();
+        for (TouchPoint touchPoint : touchPointList.getPoints()) {
+            if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
+                resultList.add(entry.getValue());
+            }
+        }
+        return resultList;
+    }
+
+    private boolean hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
         for(TouchPoint touchPoint : touchPointList.getPoints()) {
             if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                 removeShape(entry.getValue(), true);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     public void removeShapesByGroupId(final String removeGroupId) {
