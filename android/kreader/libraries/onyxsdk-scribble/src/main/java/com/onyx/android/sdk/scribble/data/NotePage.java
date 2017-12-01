@@ -140,7 +140,7 @@ public class NotePage {
     }
 
     public void addShapeList(final List<Shape> shapes) {
-        addShapeList(shapes,true);
+        addShapeList(shapes, true);
     }
 
     public void addShapeList(final List<Shape> shapes, boolean addToHistory) {
@@ -307,13 +307,14 @@ public class NotePage {
         return resultList;
     }
 
-    private void hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
+    private boolean hitTestAndRemoveShape(Map.Entry<String, Shape> entry, final TouchPointList touchPointList, final float radius) {
         for(TouchPoint touchPoint : touchPointList.getPoints()) {
             if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                 removeShape(entry.getValue(), true);
-                return;
+                return true;
             }
         }
+        return false;
     }
 
     public void removeShapesByGroupId(final String removeGroupId) {
