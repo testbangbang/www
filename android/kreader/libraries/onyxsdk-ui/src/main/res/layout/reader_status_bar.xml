@@ -7,13 +7,14 @@
 
     <com.onyx.android.sdk.ui.view.StatusBarAlProgressLine
         android:id="@+id/progress_line"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:id="@+id/statusbar_info_layout">
@@ -23,7 +24,7 @@
             android:layout_height="@dimen/navigatorHeight"
             android:id="@+id/status_page_layout"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/view_navigator"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
@@ -60,7 +61,7 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentLeft="true"
             MyTextView:textSize="@dimen/reader_status_bar_text_size"
             android:visibility="gone"
             android:text="--:--" />
@@ -86,6 +87,7 @@
             android:layout_alignWithParentIfMissing="true"
             android:layout_marginBottom="2dp"
             android:layout_marginRight="2dp"
+            android:visibility="gone"
             android:layout_centerVertical="true" />
 
     </RelativeLayout>

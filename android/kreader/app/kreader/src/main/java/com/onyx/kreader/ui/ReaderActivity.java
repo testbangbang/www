@@ -1089,6 +1089,8 @@ public class ReaderActivity extends OnyxBaseActivity {
             if (StringUtils.isNotBlank(getReaderDataHolder().getBookTitle())) {
                 title = getReaderDataHolder().getBookTitle();
             }
+        } else {
+            statusBar.hideInfoText();
         }
         int endBatteryPercent = DeviceUtils.getBatteryPecentLevel(getReaderDataHolder().getContext());
         statusBar.updateStatusBar(new ReaderStatusInfo(pageRect, displayRect,

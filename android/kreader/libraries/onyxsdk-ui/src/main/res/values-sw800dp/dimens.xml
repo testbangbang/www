@@ -31,7 +31,7 @@
     <dimen name="tree_recycler_item_view_padding">20dp</dimen>
     <dimen name="reader_layer_menu_tts_item_padding">30dp</dimen>
     <dimen name="dialog_reader_menu_text_view_size">26sp</dimen>
-    <dimen name="navigatorHeight">42dp</dimen>
+    <dimen name="navigatorHeight">22dp</dimen>
     <dimen name="reader_status_bar_text_size">20sp</dimen>
     <dimen name="navigatorWidth">30dp</dimen>
     <dimen name="dialog_reader_menu_top_bar_function_icon_margin">5dp</dimen>
