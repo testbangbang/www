@@ -14,7 +14,7 @@
   "gcInterval" : 5,
   "customFormEnabled" : true,
   "enableDictWebSearch" : false,
-  "ttsEngine" : "com.iflytek.tts",
+  "ttsEngine" : "com.iflytek.speechcloud",
   "enableCustomRefreshConfig" : true,
   "keyBinding": {
     "HandlerManager": {
