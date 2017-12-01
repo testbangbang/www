@@ -948,10 +948,10 @@ public class ShowReaderMenuAction extends BaseAction {
                 toggleMenu(readerDataHolder);
                 break;
             case SCRIBBLE_PREV_PAGE:
-                prevScreen(readerDataHolder);
+                prevScreenForScribble(readerDataHolder);
                 break;
             case SCRIBBLE_NEXT_PAGE:
-                nextScreen(readerDataHolder);
+                nextScreenForScribble(readerDataHolder);
                 break;
             case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
@@ -1007,38 +1007,31 @@ public class ShowReaderMenuAction extends BaseAction {
 
     private static void save(final ReaderDataHolder readerDataHolder) {
         FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, true, true);
-        flushNoteAction.execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                resumeDrawing(readerDataHolder);
-            }
-        });
+        flushNoteAction.execute(readerDataHolder, null);
     }
 
     private static void nextScreen(final ReaderDataHolder readerDataHolder) {
+        new NextScreenAction().execute(readerDataHolder, null);
+    }
+
+    private static void prevScreen(final ReaderDataHolder readerDataHolder) {
+        new PreviousScreenAction().execute(readerDataHolder, null);
+    }
+
+    private static void nextScreenForScribble(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new NextScreenAction());
-        actionChain.execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                resumeDrawing(readerDataHolder);
-            }
-        });
+        actionChain.execute(readerDataHolder, null);
     }
 
-    private static void prevScreen(final ReaderDataHolder readerDataHolder) {
+    private static void prevScreenForScribble(final ReaderDataHolder readerDataHolder) {
         final ActionChain actionChain = new ActionChain();
         final List<PageInfo> pages = readerDataHolder.getReaderViewInfo().getVisiblePages();
         actionChain.addAction(new FlushNoteAction(pages, true, true, false, false));
         actionChain.addAction(new PreviousScreenAction());
-        actionChain.execute(readerDataHolder, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                resumeDrawing(readerDataHolder);
-            }
-        });
+        actionChain.execute(readerDataHolder, null);
     }
 
     private static void resumeDrawing(final ReaderDataHolder readerDataHolder) {
