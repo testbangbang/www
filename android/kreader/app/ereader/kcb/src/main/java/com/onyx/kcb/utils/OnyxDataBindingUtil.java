@@ -11,7 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.common.references.CloseableReference;
-import com.facebook.drawee.backends.pipeline.DrawableFactory;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kcb.R;
@@ -38,7 +37,7 @@ public class OnyxDataBindingUtil {
 
     @BindingAdapter({"thumbnail"})
     public static void setImageViewBitmap(ImageView imageView, CloseableReference<Bitmap> bitmap) {
-        if (bitmap != null) {
+        if (bitmap != null && bitmap.isValid()) {
             imageView.setImageBitmap(bitmap.get());
         }
     }

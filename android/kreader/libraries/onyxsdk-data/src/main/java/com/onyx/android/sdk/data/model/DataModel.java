@@ -52,7 +52,7 @@ public class DataModel extends BaseObservable {
                     title.set(fileModel.getName());
                     isDocument.set(fileModel.isFileType());
                     CloseableReference<Bitmap> coverBitmap = fileModel.getThumbnail();
-                    if (coverBitmap != null) {
+                    if (coverBitmap != null && coverBitmap.isValid()) {
                         setCoverThumbnail(coverBitmap);
                     }
                 }

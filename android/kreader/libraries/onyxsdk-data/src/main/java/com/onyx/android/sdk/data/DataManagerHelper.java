@@ -268,7 +268,7 @@ public class DataManagerHelper {
             return null;
         }
         CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(originContentPath);
-        if (refBitmap != null) {
+        if (refBitmap != null && refBitmap.isValid()) {
             return refBitmap.clone();
         }
         return decodeFileAndCacheByOriginContentPath(context, dataManager.getRemoteContentProvider(), bitmapLruCache, originContentPath);

@@ -117,7 +117,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     private void addThumbnailToDataModel() {
         for (DataModel dataModel: resultDataItemList) {
             if (dataModel.isDocument.get()) {
-                addThumbnailFromDB(dataModel);
+                addThumbnailFromCache(dataModel);
             }else {
                 addNormalThumbnail(dataModel);
             }
@@ -191,22 +191,20 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
             @SuppressWarnings("ResourceType")
             InputStream inputStream = context.getResources().openRawResource(res);
             CloseableReference<Bitmap> bitmapCloseableReference = ThumbnailUtils.decodeStream(inputStream, null);
-            itemModel.setCoverThumbnail(bitmapCloseableReference);
+            if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()) {
+                itemModel.setCoverThumbnail(bitmapCloseableReference);
+            }
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    private void addThumbnailFromDB(DataModel itemModel) {
+    private void addThumbnailFromCache(DataModel itemModel) {
         if (thumbnailMap != null) {
             CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMap.get(itemModel.absolutePath.get());
-            if (bitmapCloseableReference != null){
+            if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()){
                 itemModel.setCoverThumbnail(bitmapCloseableReference);
-            } else {
-                addNormalThumbnail(itemModel);
             }
-        }else {
-            addNormalThumbnail(itemModel);
         }
     }
 

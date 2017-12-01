@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.facebook.common.references.CloseableReference;
+import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.common.ContentException;
@@ -61,10 +61,19 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
 
     private void loadThumbnai() {
         thumbnailMap.clear();
-        for (File file : resultFileList) {
-            if (file.exists() && file.isFile()) {
-                String absolutePath = file.getAbsolutePath();
-                thumbnailMap.put(absolutePath, loadThumbnailSource(absolutePath));
+        if (resultFileList != null && !resultFileList.isEmpty()) {
+            for (int i = 0; i < resultFileList.size(); i++) {
+                File file = resultFileList.get(i);
+                if (file.exists() && file.isFile()) {
+                    String absolutePath = file.getAbsolutePath();
+                    CloseableReference<Bitmap> bitmapCloseableReference = loadThumbnailSource(absolutePath.replace("mnt", "storage"));
+                    if (bitmapCloseableReference != null) {
+                        thumbnailMap.put(absolutePath, bitmapCloseableReference);
+                    }
+                }
+                if (i >= Constant.PRE_LOAD_THUMBNAI_COUNT) {
+                    return;
+                }
             }
         }
     }
@@ -116,7 +125,7 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
     }
 
     private CloseableReference<Bitmap> loadThumbnailSource(String originContentPath) {
-        return DataManagerHelper.loadThumbnailBitmapWithCacheByOriginContentPath(getAppContext(), getDataManager(), originContentPath);
+        return getDataManager().getCacheManager().getBitmapRefCache(originContentPath);
     }
 
     public Map<String, CloseableReference<Bitmap>> getThumbnailSource() {
