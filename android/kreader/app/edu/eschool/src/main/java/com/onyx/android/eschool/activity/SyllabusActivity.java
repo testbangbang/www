@@ -69,7 +69,7 @@ public class SyllabusActivity extends BaseActivity {
 
     private void loadSyllabusImageFromCloud(final String path) {
         final CourseImageRequest courseImageRequest = new CourseImageRequest(path);
-        SchoolApp.getSchoolCloudStore().submitRequest(this, courseImageRequest, new BaseCallback() {
+        SchoolApp.getSchoolCloudStore().submitRequest(getApplicationContext(), courseImageRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e != null || !courseImageRequest.isSuccess()) {
@@ -81,7 +81,10 @@ public class SyllabusActivity extends BaseActivity {
     }
 
     private void loadSyllabusImageFromLocal(final String filePath, final boolean fullUpdate) {
-        Glide.with(this.getApplicationContext())
+        if (syllabusIView == null) {
+            return;
+        }
+        Glide.with(getApplicationContext())
                 .load(new File(filePath))
                 .error(R.drawable.syllabus)
                 .dontAnimate()
