@@ -158,8 +158,10 @@ public class DataManagerHelper {
         return list;
     }
 
-    public static List<Library> loadLibraryListWithCache(Context context, DataManager dataManager,
-                                                         String libraryUniqueId, boolean loadFromCache) {
+    public static List<Library> loadLibraryListWithCache(Context context,
+                                                         DataManager dataManager,
+                                                         String libraryUniqueId,
+                                                         boolean loadFromCache) {
         String queryKey = String.valueOf(libraryUniqueId);
         List<Library> list = null;
         if (loadFromCache) {
@@ -179,7 +181,9 @@ public class DataManagerHelper {
         return OnyxThumbnail.ThumbnailKind.Large;
     }
 
-    public static Thumbnail getThumbnailEntry(Context context, DataProviderBase dataProvider, String associationId) {
+    public static Thumbnail getThumbnailEntry(Context context,
+                                              DataProviderBase dataProvider,
+                                              String associationId) {
         return dataProvider.getThumbnailEntry(context, associationId, getDefaultThumbnailKind());
     }
 

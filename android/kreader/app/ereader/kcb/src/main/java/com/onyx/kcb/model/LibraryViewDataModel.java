@@ -185,18 +185,14 @@ public class LibraryViewDataModel extends Observable {
         int currentPage = queryPagination.getCurrentPage();
         int itemsPerPage = queryPagination.itemsPerPage();
         if (currentPage > libraryCount.get() / itemsPerPage) {
-            for (int i = libraryCount.get(); i < min((currentPage + 1) * itemsPerPage, items.size()); i++) {
+            for (int i = libraryCount.get(); i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
                 visibleItems.add(items.get(i));
             }
         } else {
-            for (int i = currentPage * itemsPerPage; i < min((currentPage + 1) * itemsPerPage, items.size()); i++) {
+            for (int i = currentPage * itemsPerPage; i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
                 visibleItems.add(items.get(i));
             }
         }
-    }
-
-    private int min(int a, int b) {
-        return a < b ? a : b;
     }
 
     private static boolean isSelected(List<DataModel> selectedList, Metadata metadata) {

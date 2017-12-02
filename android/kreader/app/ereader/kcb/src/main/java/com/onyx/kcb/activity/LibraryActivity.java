@@ -1,6 +1,5 @@
 package com.onyx.kcb.activity;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,7 +7,6 @@ import android.support.v7.app.ActionBar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.data.QueryArgs;
@@ -86,7 +84,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void initData() {
-        if (!KCBApplication.getInstance().isHasMetadataScanned()) {
+        if (!KCBApplication.getInstance().isMetadataScanned()) {
             processFileSystemScan();
             return;
         }
@@ -167,14 +165,14 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             public void onComplete() {
                 super.onComplete();
                 dialogLoading.dismiss();
-                KCBApplication.getInstance().setHasMetadataScanned(true);
+                KCBApplication.getInstance().setMetadataScanned(true);
                 loadData();
             }
         });
     }
 
     private void initView() {
-        initHolder();
+        initDataBundle();
         initDataBinding();
         initActionBar();
         initPageRecyclerView();
@@ -186,7 +184,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         dataBinding.setDataModel(dataBundle.getLibraryViewDataModel());
     }
 
-    private void initHolder() {
+    private void initDataBundle() {
         dataBundle = KCBApplication.getDataBundle();
         dataBundle.getLibraryViewDataModel().title.set(getString(R.string.library));
     }
