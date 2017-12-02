@@ -11,14 +11,12 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.PreferenceManager;
-import com.onyx.android.sdk.utils.RxBroadcastReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kcb.action.ActionChain;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.device.DeviceConfig;
 import com.onyx.kcb.holder.DataBundle;
-
-import io.reactivex.functions.Consumer;
+import com.onyx.kcb.manager.ConfigPreferenceManager;
 
 
 /**
@@ -54,6 +52,7 @@ public class KCBApplication extends MultiDexApplication {
         DataManager.init(this, null);
         initFrescoLoader();
         initEventListener();
+        ConfigPreferenceManager.init(KCBApplication.this);
     }
 
     private void initEventListener() {

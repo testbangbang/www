@@ -1,6 +1,7 @@
 package com.onyx.android.sdk;
 
 import android.app.Application;
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.test.ApplicationTestCase;
 
@@ -10,19 +11,23 @@ import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxCreateDBRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxExportDataToDBRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxFilesAddToMetadataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxFilesRemoveFromMetadataRequest;
+import com.onyx.android.sdk.data.rxrequest.data.db.RxThumbnailRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import static com.onyx.android.sdk.utils.TestUtils.generateRandomFile;
@@ -165,6 +170,42 @@ public class RxDBRequestTest extends ApplicationTestCase<Application> {
     public static String testFolder() {
         String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
         return path;
+    }
+
+    public void testRxThumbnailRequest() throws Exception {
+        init();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        File books = new File(Environment.getExternalStorageDirectory(), "Books/红楼梦.pdf");
+        String associationId = FileUtils.computeMD5(books);
+        RxThumbnailRequest request = new RxThumbnailRequest(new DataManager(), associationId, books.getAbsolutePath());
+        request.execute(new RxCallback<RxThumbnailRequest>() {
+            @Override
+            public void onNext(RxThumbnailRequest rxThumbnailRequest) {
+                Thumbnail thumbnail = rxThumbnailRequest.getThumbnail();
+                Bitmap resultBitmap = rxThumbnailRequest.getResultBitmap();
+                assertNotNull(thumbnail);
+                assertNotNull(resultBitmap);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testDbGetThumbnail() throws Exception {
+        init();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        List<Thumbnail> thumbnails = new Select().from(Thumbnail.class).queryList();
+        assertNotNull(thumbnails);
+        assertTrue(thumbnails.size()>0);
+        countDownLatch.countDown();
+        countDownLatch.await();
     }
 }
 

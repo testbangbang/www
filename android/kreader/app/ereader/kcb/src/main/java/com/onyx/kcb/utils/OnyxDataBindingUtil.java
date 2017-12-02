@@ -2,7 +2,6 @@ package com.onyx.kcb.utils;
 
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.view.Gravity;
 import android.view.View;

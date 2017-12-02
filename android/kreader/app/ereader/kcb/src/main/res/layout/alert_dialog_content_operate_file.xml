@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_operating"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/alert_dialog_content_operate_file_layout_operating_margin_top"
+    android:gravity="center"
+    android:orientation="horizontal">
+
+    <com.onyx.android.sdk.ui.view.OnyxProgressBar
+        android:id="@+id/imageview_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/operating_msg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/alert_dialog_content_operate_file_message_padding_left"
+        android:text="@string/copying"
+        android:textColor="@color/normal_black"
+        android:textSize="@dimen/alert_dialog_content_operate_file_message_text_size" />
+</LinearLayout>

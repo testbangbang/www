@@ -12,7 +12,6 @@ import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
 import com.onyx.android.sdk.data.model.Thumbnail;
-import com.onyx.android.sdk.utils.BitmapUtils;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 
 import java.util.List;
@@ -79,6 +78,8 @@ public interface DataProviderBase {
     void saveThumbnailEntry(Context context, Thumbnail thumbnail);
 
     Thumbnail getThumbnailEntry(Context context, String associationId, final ThumbnailKind kind);
+
+    Thumbnail getThumbnailEntryByOriginContentPath(Context context, String originContentPath, final ThumbnailKind kind);
 
     void deleteThumbnailEntry(Thumbnail thumbnail);
 

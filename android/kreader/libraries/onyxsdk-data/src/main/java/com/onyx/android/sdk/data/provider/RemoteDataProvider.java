@@ -26,7 +26,6 @@ import com.onyx.android.sdk.data.model.MetadataCollection_Table;
 import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -36,7 +35,6 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
-import com.raizlabs.android.dbflow.sql.language.Select;
 import com.raizlabs.android.dbflow.sql.language.property.Property;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
@@ -312,6 +310,17 @@ public class RemoteDataProvider implements DataProviderBase {
 
     public Thumbnail getThumbnailEntry(Context context, String associationId, final OnyxThumbnail.ThumbnailKind kind) {
         ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind));
+        return ContentUtils.querySingle(context.getContentResolver(),
+                OnyxThumbnailProvider.CONTENT_URI,
+                Thumbnail.class,
+                group,
+                null);
+    }
+
+    @Override
+    public Thumbnail getThumbnailEntryByOriginContentPath(Context context, String originContentPath, OnyxThumbnail.ThumbnailKind kind) {
+        ConditionGroup group = ConditionGroup.clause().and(Thumbnail_Table.originContentPath.eq(originContentPath))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind));
         return ContentUtils.querySingle(context.getContentResolver(),
                 OnyxThumbnailProvider.CONTENT_URI,

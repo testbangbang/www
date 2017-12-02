@@ -26,7 +26,7 @@ public class DataModelUtil {
         }
         for (Library library : libraryList) {
             DataModel model = new DataModel(eventBus);
-            model.type.set(ModelType.Library);
+            model.type.set(ModelType.TYPE_LIBRARY);
             model.parentId.set(library.getParentUniqueId());
             model.id.set(library.getId());
             model.idString.set(library.getIdString());
@@ -44,7 +44,7 @@ public class DataModelUtil {
         }
         for (Metadata metadata : metadataList) {
             DataModel model = new DataModel(eventBus);
-            model.type.set(ModelType.Metadata);
+            model.type.set(ModelType.TYPE_METADATA);
             model.idString.set(metadata.getIdString());
             model.title.set(metadata.getName());
             model.desc.set(metadata.getDescription());
