@@ -38,7 +38,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     private final Context context;
     private SortBy sortBy;
     private SortOrder sortOrder;
-    private Map<String, CloseableReference<Bitmap>> thumbnailMap;
+    private Map<String, CloseableReference<Bitmap>> thumbnailMapCache;
 
     public StorageDataLoadAction(Context context,final File parentFile, final ObservableList<DataModel> resultDataItemList) {
         this.context = context;
@@ -69,7 +69,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         fileListLoadRequest.execute(new RxCallback<RxStorageFileListLoadRequest>() {
             @Override
             public void onNext(RxStorageFileListLoadRequest request) {
-                thumbnailMap = fileListLoadRequest.getThumbnailSource();
+                thumbnailMapCache = fileListLoadRequest.getThumbnailSourceCache();
                 addToModelItemList(dataHolder, parentFile, fileListLoadRequest.getResultFileList());
                 addShortcutModelItemList(dataHolder);
                 rxCallback.onNext(request);
@@ -111,16 +111,13 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
                 resultDataItemList.add(createNormalModel(dataBundle, file));
             }
         }
-        addThumbnailToDataModel();
     }
 
-    private void addThumbnailToDataModel() {
-        for (DataModel dataModel: resultDataItemList) {
-            if (dataModel.isDocument.get()) {
-                addThumbnailFromCache(dataModel);
-            }else {
-                addNormalThumbnail(dataModel);
-            }
+    private void addThumbnailToDataModel(DataModel dataModel ) {
+        if (dataModel.isDocument.get()) {
+            addThumbnailFromCache(dataModel);
+        }else {
+            addNormalThumbnail(dataModel);
         }
     }
 
@@ -145,6 +142,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.create(file, null));
         setAbsolutePath(file, model);
+        addThumbnailToDataModel(model);
         return model;
     }
 
@@ -200,8 +198,8 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     }
 
     private void addThumbnailFromCache(DataModel itemModel) {
-        if (thumbnailMap != null) {
-            CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMap.get(itemModel.absolutePath.get());
+        if (thumbnailMapCache != null) {
+            CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMapCache.get(itemModel.absolutePath.get());
             if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()){
                 itemModel.setCoverThumbnail(bitmapCloseableReference);
             }

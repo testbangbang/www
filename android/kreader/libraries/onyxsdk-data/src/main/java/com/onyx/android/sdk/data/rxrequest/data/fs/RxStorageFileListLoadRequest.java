@@ -32,7 +32,7 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
     private List<File> resultFileList = new ArrayList<>();
     private SortBy sortBy;
     private SortOrder sortOrder;
-    private Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
+    private static Map<String, CloseableReference<Bitmap>> thumbnailMapCache = new HashMap<>();
 
     public RxStorageFileListLoadRequest(DataManager dataManager, File targetDir, List<String> filterFileList) {
         super(dataManager);
@@ -60,15 +60,16 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
     }
 
     private void loadThumbnai() {
-        thumbnailMap.clear();
         if (resultFileList != null && !resultFileList.isEmpty()) {
             for (int i = 0; i < resultFileList.size(); i++) {
                 File file = resultFileList.get(i);
                 if (file.exists() && file.isFile()) {
                     String absolutePath = file.getAbsolutePath();
-                    CloseableReference<Bitmap> bitmapCloseableReference = loadThumbnailSource(absolutePath.replace("mnt", "storage"));
-                    if (bitmapCloseableReference != null) {
-                        thumbnailMap.put(absolutePath, bitmapCloseableReference);
+                    if (!thumbnailMapCache.containsKey(absolutePath)){
+                        CloseableReference<Bitmap> bitmapCloseableReference = loadThumbnailSource(absolutePath);
+                        if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()) {
+                            thumbnailMapCache.put(absolutePath, bitmapCloseableReference);
+                        }
                     }
                 }
                 if (i >= Constant.PRE_LOAD_THUMBNAI_COUNT) {
@@ -128,7 +129,7 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
         return getDataManager().getCacheManager().getBitmapRefCache(originContentPath);
     }
 
-    public Map<String, CloseableReference<Bitmap>> getThumbnailSource() {
-        return thumbnailMap;
+    public Map<String, CloseableReference<Bitmap>> getThumbnailSourceCache() {
+        return thumbnailMapCache;
     }
 }

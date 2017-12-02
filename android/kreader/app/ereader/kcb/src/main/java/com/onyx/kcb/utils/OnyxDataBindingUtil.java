@@ -3,6 +3,7 @@ package com.onyx.kcb.utils;
 import android.databinding.BindingAdapter;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -37,7 +38,7 @@ public class OnyxDataBindingUtil {
 
     @BindingAdapter({"thumbnail"})
     public static void setImageViewBitmap(ImageView imageView, CloseableReference<Bitmap> bitmap) {
-        if (bitmap != null && bitmap.isValid()) {
+        if (bitmap != null && bitmap.get() != null && !bitmap.get().isRecycled()) {
             imageView.setImageBitmap(bitmap.get());
         }
     }

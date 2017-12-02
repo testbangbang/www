@@ -28,6 +28,7 @@
         appCompat:alwaysLayoutImageView="true">
 
         <ImageView
+            android:src="@{viewModel.coverDefault}"
             android:id="@+id/imageview_bg"
             thumbnail="@{viewModel.coverBitmap}"
             android:layout_width="@dimen/item_model_details_cover_width"
