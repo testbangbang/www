@@ -6,6 +6,8 @@
   "disableNoteFunc" : false,
   "supportBrushPen": true,
   "supportMultipleTabs": true,
+  "defaultUseReaderStatusBar": true,
+  "defaultShowDocTitleInStatusBar": false,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

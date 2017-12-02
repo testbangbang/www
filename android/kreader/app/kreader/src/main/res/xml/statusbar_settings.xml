@@ -20,7 +20,7 @@
         android:layout="@layout/settings_custom_preference_item"
         android:summaryOn="@string/settings_show"
         android:summaryOff="@string/settings_hide"
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:title="@string/settings_time_show_tittle" />
     <CheckBoxPreference
         android:key="@string/settings_time_show_format_key"
@@ -28,6 +28,6 @@
         android:summaryOn="@string/settings_time_show_format_24hours"
         android:summaryOff="@string/settings_time_show_format_12hours"
         android:dependency="@string/settings_time_show_key"
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:title="@string/settings_time_show_format_tittle" />
 </PreferenceScreen>

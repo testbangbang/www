@@ -227,7 +227,7 @@ public class ReaderTextStyle {
     static public PageMargin SMALL_PAGE_MARGIN = new PageMargin(Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN));
     static public PageMargin NORMAL_PAGE_MARGIN = new PageMargin(Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN));
     static public PageMargin LARGE_PAGE_MARGIN = new PageMargin(Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN), Percentage.create(LARGE_MARGIN));
-    static public PageMargin DEFAULT_PAGE_MARGIN = new PageMargin(Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN), Percentage.create(NORMAL_MARGIN));;
+    static public PageMargin DEFAULT_PAGE_MARGIN = new PageMargin(Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN), Percentage.create(SMALL_MARGIN));;
 
     static public SPUnit[] DEFAULT_FONT_SIZE_LIST = {SPUnit.create(20.0f), SPUnit.create(24.0f), SPUnit.create(28.0f),
             SPUnit.create(32.0f), SPUnit.create(36.0f), SPUnit.create(40.0f), SPUnit.create(44.0f), SPUnit.create(48.0f)};
