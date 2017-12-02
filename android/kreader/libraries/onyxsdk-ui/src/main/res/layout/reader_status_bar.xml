@@ -17,6 +17,7 @@
         android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:id="@+id/statusbar_info_layout">
 
         <RelativeLayout
@@ -61,10 +62,19 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
+            android:layout_toRightOf="@+id/status_battery_icon"
             MyTextView:textSize="@dimen/reader_status_bar_text_size"
             android:visibility="gone"
             android:text="--:--" />
+
+        <ImageView
+            android:id="@+id/status_battery_icon"
+            android:layout_gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="6dip"
+            android:scaleType="fitCenter" />
 
         <com.onyx.android.sdk.ui.view.StatusBarTextView
             android:id="@+id/status_battery"

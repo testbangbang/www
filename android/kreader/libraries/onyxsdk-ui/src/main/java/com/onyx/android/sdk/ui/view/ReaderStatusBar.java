@@ -7,8 +7,10 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.onyx.android.sdk.ui.R;
@@ -29,6 +31,7 @@ public class ReaderStatusBar extends LinearLayout {
     private StatusBarTextView progressTextView;
     private StatusBarTextView infoTextView;
     private StatusBarTextView batteryView;
+    private ImageView batteryIconView;
     private StatusBarTextView timeView;
     private StatusBarNavigatorView mStatusBarNavigatorView;
     private RelativeLayout statusPageButton;
@@ -53,6 +56,7 @@ public class ReaderStatusBar extends LinearLayout {
         progressTextView = (StatusBarTextView)findViewById(R.id.status_page);
         infoTextView=(StatusBarTextView)findViewById(R.id.status_info);
         batteryView=(StatusBarTextView)findViewById(R.id.status_battery);
+        batteryIconView = (ImageView)findViewById(R.id.status_battery_icon);
         timeView = (StatusBarTextView)findViewById(R.id.status_time);
         statusPageButton=(RelativeLayout)findViewById(R.id.status_page_layout);
         mProgressLine = (StatusBarAlProgressLine)findViewById(R.id.progress_line);
@@ -82,6 +86,7 @@ public class ReaderStatusBar extends LinearLayout {
         updateStatusBarProgressGraphic(info.currentPage, info.totalPage);
         updateStatusBarInfoText(info.currentDocumentTittle);
         updateStatusBarBatteryText(info.batteryStatus);
+        updateStatusBarBatteryIcon(info.batteryCharging, info.batteryLevel);
     }
 
     public void clear() {
@@ -154,6 +159,20 @@ public class ReaderStatusBar extends LinearLayout {
             return false;
         }
     }
+
+    public boolean updateStatusBarBatteryIcon(boolean batteryCharging, int level) {
+        try{
+            int resId = batteryCharging ? R.drawable.status_battery_charge : R.drawable.status_battery_normal;
+            batteryIconView.setImageResource(resId);
+            batteryIconView.setImageLevel(level);
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public void reConfigure(boolean isBatteryPercentageShow, boolean isTimeShow,boolean is24HourFormat,boolean isBatteryGraphicShow) {
         if (isBatteryPercentageShow) {
             batteryView.setVisibility(View.VISIBLE);
