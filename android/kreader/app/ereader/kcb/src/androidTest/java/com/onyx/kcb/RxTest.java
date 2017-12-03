@@ -130,12 +130,13 @@ public class RxTest extends ApplicationTestCase<KCBApplication> {
         chain.execute(new RxCallback<RxRequest>() {
             @Override
             public void onNext(RxRequest request) {
-                assertTrue(chain.getRequestList().contains(request));
+                assertEquals(chain.getRequestList().remove(0), request);
             }
 
             @Override
             public void onComplete() {
                 super.onComplete();
+                assertTrue(chain.getRequestList().size() <= 0);
                 countDownLatch.countDown();
             }
         });
