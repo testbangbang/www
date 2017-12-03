@@ -3,6 +3,9 @@ package com.onyx.kcb;
 import android.test.ApplicationTestCase;
 import android.util.Log;
 
+import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.rx.RxRequest;
+import com.onyx.android.sdk.rx.RxRequestChain;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -23,6 +26,17 @@ import io.reactivex.schedulers.Schedulers;
 
 public class RxTest extends ApplicationTestCase<KCBApplication> {
 
+    static public class FirstRequest extends RxRequest {
+        public RxRequest call() {
+            return this;
+        }
+    }
+
+    static public class SecondRequest extends RxRequest {
+        public RxRequest call() {
+            return this;
+        }
+    }
 
     public RxTest() {
         super(KCBApplication.class);
@@ -102,6 +116,26 @@ public class RxTest extends ApplicationTestCase<KCBApplication> {
             public void accept(String o) throws Exception {
                 String v = String.valueOf(value.remove(0));
                 assertEquals(v, o);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public void testRequestChain() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final RxRequestChain chain = new RxRequestChain();
+        chain.add(new FirstRequest());
+        chain.add(new SecondRequest());
+        chain.execute(new RxCallback<RxRequest>() {
+            @Override
+            public void onNext(RxRequest request) {
+                assertTrue(chain.getRequestList().contains(request));
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
                 countDownLatch.countDown();
             }
         });
