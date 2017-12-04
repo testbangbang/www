@@ -328,7 +328,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         statusBar.reConfigure(SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_percentage_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_format_key, false),
-                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false));
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false),
+                DeviceConfig.sharedInstance(this).isSupportBrushPen());
 
         if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)) {
             statusBar.setVisibility(View.GONE);
@@ -338,7 +339,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         statusBar.reConfigure(SingletonSharedPreference.isStatusBarShowBatteryPercentage(this),
                 SingletonSharedPreference.isStatusBarTimeShow(this),
                 SingletonSharedPreference.isStatusBarTime24HourFormat(this),
-                SingletonSharedPreference.isStatusBarShowBatteryGraphical(this));
+                SingletonSharedPreference.isStatusBarShowBatteryGraphical(this),
+                DeviceConfig.sharedInstance(this).isSupportBrushPen());
     }
 
     private void initSurfaceView() {

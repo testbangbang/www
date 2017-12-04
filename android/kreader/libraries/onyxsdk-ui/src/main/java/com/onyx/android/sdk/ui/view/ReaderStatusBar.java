@@ -15,6 +15,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
+import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.PackageUtils;
 
 import java.util.Calendar;
 
@@ -22,6 +24,8 @@ import java.util.Calendar;
  * Created by solskjaer49 on 14-4-21.
  */
 public class ReaderStatusBar extends LinearLayout {
+    private static final String SCRIBLE_PACKAGE_NAME = "com.moxi.writeNote";
+    private static final String SCRIBLE_CLASS_NAME = "com.moxi.writeNote.MainActivity";
 
     public static abstract class Callback {
         public abstract void onGotoPage();
@@ -32,6 +36,7 @@ public class ReaderStatusBar extends LinearLayout {
     private StatusBarTextView infoTextView;
     private StatusBarTextView batteryView;
     private ImageView batteryIconView;
+    private ImageView mGotoScribleView;
     private StatusBarTextView timeView;
     private StatusBarNavigatorView mStatusBarNavigatorView;
     private RelativeLayout statusPageButton;
@@ -44,14 +49,14 @@ public class ReaderStatusBar extends LinearLayout {
         final LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.reader_status_bar, this, true);
-        init();
+        init(context);
     }
 
     public ReaderStatusBar(Context context) {
         this(context,null);
     }
 
-    private void init(){
+    private void init(Context context){
         mStatusBarNavigatorView =(StatusBarNavigatorView)findViewById(R.id.view_navigator);
         progressTextView = (StatusBarTextView)findViewById(R.id.status_page);
         infoTextView=(StatusBarTextView)findViewById(R.id.status_info);
@@ -60,6 +65,7 @@ public class ReaderStatusBar extends LinearLayout {
         timeView = (StatusBarTextView)findViewById(R.id.status_time);
         statusPageButton=(RelativeLayout)findViewById(R.id.status_page_layout);
         mProgressLine = (StatusBarAlProgressLine)findViewById(R.id.progress_line);
+        mGotoScribleView = (ImageView)findViewById(R.id.status_scrible);
         progressTextView.setTypeface(Typeface.SERIF);
         infoTextView.setTypeface(Typeface.SERIF);
         batteryView.setTypeface(Typeface.SERIF);
@@ -72,6 +78,14 @@ public class ReaderStatusBar extends LinearLayout {
                 if (callback != null) {
                     callback.onGotoPage();
                 }
+            }
+        });
+
+        mGotoScribleView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ActivityUtil.startActivitySafely(v.getContext(),
+                        ActivityUtil.createIntent(SCRIBLE_PACKAGE_NAME, SCRIBLE_CLASS_NAME));
             }
         });
     }
@@ -173,7 +187,7 @@ public class ReaderStatusBar extends LinearLayout {
         }
     }
 
-    public void reConfigure(boolean isBatteryPercentageShow, boolean isTimeShow,boolean is24HourFormat,boolean isBatteryGraphicShow) {
+    public void reConfigure(boolean isBatteryPercentageShow, boolean isTimeShow,boolean is24HourFormat,boolean isBatteryGraphicShow, boolean isShowScribleIcon) {
         if (isBatteryPercentageShow) {
             batteryView.setVisibility(View.VISIBLE);
         } else {
@@ -195,9 +209,14 @@ public class ReaderStatusBar extends LinearLayout {
             mProgressLine.setShowBatteryGraphic(false);
             mProgressLine.invalidate();
         }
+        if(isShowScribleIcon) {
+            mGotoScribleView.setVisibility(View.VISIBLE);
+        }else {
+            mGotoScribleView.setVisibility(View.INVISIBLE);
+        }
     }
 
-    public void setStatusPageButtonOnClickListener(OnClickListener l){
+    public void setStatusPageButtonOnClickListener(OnClickListener l) {
         statusPageButton.setOnClickListener(l);
     }
 
@@ -244,4 +263,5 @@ public class ReaderStatusBar extends LinearLayout {
         }
         return String.format("%02d:%02d", ca.get(Calendar.HOUR),ca.get(Calendar.MINUTE))+" AM";
     }
+
 }
