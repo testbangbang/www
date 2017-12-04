@@ -115,4 +115,6 @@
     <string name="file_total_count">总计:%1$d/%2$d</string>
     <string name="storage_go_up">向上一级</string>
     <string name="storage">存储</string>
+    <string name="menu_display_mode">显示模式</string>
+    <string name="remove_metadata_failed">移除失败</string>
 </resources>
