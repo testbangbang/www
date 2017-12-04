@@ -261,20 +261,20 @@ public class DataManagerHelper {
         return thumbnail.getImageDataPath();
     }
 
-    public static CloseableReference<Bitmap> loadThumbnailBitmapWithCacheByOriginContentPath(Context context, DataManager dataManager,
+    public static synchronized CloseableReference<Bitmap> loadThumbnailBitmapWithCacheByOriginContentPath(Context context, DataManager dataManager,
                                                                                              String originContentPath) {
         BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
         if (StringUtils.isNullOrEmpty(originContentPath)) {
             return null;
         }
         CloseableReference<Bitmap> refBitmap = bitmapLruCache.get(originContentPath);
-        if (refBitmap != null) {
+        if (refBitmap != null && refBitmap.isValid()) {
             return refBitmap.clone();
         }
         return decodeFileAndCacheByOriginContentPath(context, dataManager.getRemoteContentProvider(), bitmapLruCache, originContentPath);
     }
 
-    private static CloseableReference<Bitmap> decodeFileAndCacheByOriginContentPath(Context context, DataProviderBase dataProvider,
+    private static synchronized CloseableReference<Bitmap> decodeFileAndCacheByOriginContentPath(Context context, DataProviderBase dataProvider,
                                                                                     BitmapReferenceLruCache bitmapLruCache,
                                                                                     String originContentPath) {
         CloseableReference<Bitmap> refBitmap = null;

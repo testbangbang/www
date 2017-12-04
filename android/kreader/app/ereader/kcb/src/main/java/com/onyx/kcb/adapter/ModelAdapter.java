@@ -8,13 +8,16 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.ViewType;
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.kcb.KCBApplication;
 import com.onyx.kcb.R;
+import com.onyx.kcb.action.LoadFileThumbnailAction;
 import com.onyx.kcb.databinding.ModelItemBinding;
 import com.onyx.kcb.databinding.ModelItemDetailsBinding;
 import com.onyx.kcb.event.OnModelAdapterRawDataChangeEvent;
+import com.onyx.kcb.holder.DataBundle;
 import com.onyx.kcb.model.StorageViewModel;
 
 import java.util.List;
@@ -24,6 +27,8 @@ import java.util.List;
  */
 
 public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataModel, DataModel> {
+    private DataBundle dataBundle;
+    private Context context;
     private StorageViewModel storageViewModel;
     private int viewTypeThumbnailRow = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
     private int viewTypeThumbnailCol = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
@@ -33,7 +38,9 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
     private int row = viewTypeThumbnailRow;
     private int col = viewTypeThumbnailCol;
 
-    public ModelAdapter(StorageViewModel storageViewModel) {
+    public ModelAdapter(Context context, DataBundle dataBundle, StorageViewModel storageViewModel) {
+        this.context = context;
+        this.dataBundle = dataBundle;
         this.storageViewModel = storageViewModel;
     }
 
@@ -85,6 +92,9 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
         final DataModel dataModel = getItemVMList().get(position);
         setEnableSelection(dataModel);
+        if (storageViewModel != null && dataModel.coverBitmap.get() == null){
+            LoadFileThumbnail(dataModel);
+        }
         if (getItemViewType(position) == ViewType.Thumbnail.ordinal()) {
             ModelViewHolder viewHolder = (ModelViewHolder) holder;
             viewHolder.bindTo(dataModel);
@@ -92,6 +102,16 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
             ModelItemDetailsViewHolder viewHolder = (ModelItemDetailsViewHolder) holder;
             viewHolder.bindTo(dataModel);
         }
+    }
+
+    private void LoadFileThumbnail(final DataModel dataModel) {
+        LoadFileThumbnailAction loadFileThumbnailAction = new LoadFileThumbnailAction(context,dataModel);
+        loadFileThumbnailAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 
     private void setEnableSelection(DataModel dataModel) {

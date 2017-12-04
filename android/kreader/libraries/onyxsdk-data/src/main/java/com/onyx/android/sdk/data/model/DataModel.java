@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.event.ItemLongClickEvent;
+import com.onyx.android.sdk.dataprovider.R;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -31,7 +32,7 @@ public class DataModel extends BaseObservable {
     public final ObservableField<String> absolutePath = new ObservableField<>();
     public final ObservableField<String> associationId = new ObservableField<>();
     public final ObservableField<CloseableReference<Bitmap>> coverBitmap = new ObservableField<>();
-    public final ObservableInt coverDefault = new ObservableInt();
+    public final ObservableInt coverDefault = new ObservableInt(R.drawable.book_default_cover);
     public final ObservableBoolean checked = new ObservableBoolean(false);
     public final ObservableBoolean enableSelection = new ObservableBoolean(false);
     public final ObservableField<FileModel> fileModel = new ObservableField<>();
@@ -52,7 +53,7 @@ public class DataModel extends BaseObservable {
                     title.set(fileModel.getName());
                     isDocument.set(fileModel.isFileType());
                     CloseableReference<Bitmap> coverBitmap = fileModel.getThumbnail();
-                    if (coverBitmap != null) {
+                    if (coverBitmap != null && coverBitmap.isValid()) {
                         setCoverThumbnail(coverBitmap);
                     }
                 }

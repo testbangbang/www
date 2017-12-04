@@ -151,7 +151,7 @@ public class StorageActivity extends OnyxAppCompatActivity {
         PageRecyclerView contentPageView = getContentView();
         contentPageView.setHasFixedSize(true);
         contentPageView.setLayoutManager(new DisableScrollGridManager(getApplicationContext()));
-        modelAdapter = new ModelAdapter(getStorageViewModel());
+        modelAdapter = new ModelAdapter(StorageActivity.this,getDataBundle(),getStorageViewModel());
         modelAdapter.setRowAndCol(viewTypeThumbnailRow, viewTypeThumbnailCol);
         contentPageView.setAdapter(modelAdapter);
         contentPageView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
