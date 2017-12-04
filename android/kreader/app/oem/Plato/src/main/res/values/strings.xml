@@ -220,4 +220,6 @@
     <string name="upload_failed">Upload failed</string>
     <string name="input_mistake">Input wrong reason</string>
     <string name="input_mistake_tip">Tip: error analysis, up to four words</string>
+    <string name="verify_original_password_error">Verify the original password error</string>
+    <string name="password_length_less_than_normal">The password length is less than 6</string>
 </resources>

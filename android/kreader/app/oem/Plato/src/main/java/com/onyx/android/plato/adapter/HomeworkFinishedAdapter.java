@@ -97,6 +97,9 @@ public class HomeworkFinishedAdapter extends PageRecyclerView.PageAdapter {
     }
 
     public void setData(List<ContentBean> data) {
+        if (contents != null && contents.size() > 0) {
+            contents.clear();
+        }
         handleData(data);
         notifyDataSetChanged();
     }

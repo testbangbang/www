@@ -111,6 +111,7 @@
     <dimen name="change_password_confirm_button_margin_top">50dp</dimen>
     <dimen name="change_password_account_item_margin_top">40dp</dimen>
     <dimen name="change_password_input_box_margin_top">20dp</dimen>
+    <dimen name="change_password_input_box_padding">10dp</dimen>
     <dimen name="change_password_input_box_height">45dp</dimen>
     <dimen name="change_password_password_item_margin_top">30dp</dimen>
     <dimen name="study_report_fragment_pading_left_and_right">15dp</dimen>

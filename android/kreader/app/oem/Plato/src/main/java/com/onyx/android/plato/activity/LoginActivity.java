@@ -4,13 +4,13 @@ import android.databinding.ViewDataBinding;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.onyx.android.plato.cloud.bean.UserBean;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.plato.BR;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
-import com.onyx.android.plato.cloud.bean.UserInfoBean;
 import com.onyx.android.plato.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
@@ -101,15 +101,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         }
     }
 
-    private void saveUserInfo(UserInfoBean userInfoBean) {
-        SunApplication.getInstance().setToken(userInfoBean.token);
+    private void saveUserInfo(UserBean userBean) {
+        SunApplication.getInstance().setToken(userBean.token);
         PreferenceManager.setBooleanValue(SunApplication.getInstance(), Constants.SP_KEY_ISKEEPPASSWORD, userLoginRequestBean.isKeepPassword);
-        if (userLoginRequestBean.isKeepPassword) {
-            PreferenceManager.setStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
-        } else {
-            PreferenceManager.setStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_PASSWORD, null);
-        }
-
+        PreferenceManager.setStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_PASSWORD, userLoginRequestBean.password);
         PreferenceManager.setStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_ACCOUNT, userLoginRequestBean.account);
     }
 
@@ -130,9 +125,9 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
     }
 
     @Override
-    public void onLoginSucceed(UserInfoBean userInfoBean) {
+    public void onLoginSucceed(UserBean userBean) {
         dismissLoadDialog();
-        saveUserInfo(userInfoBean);
+        saveUserInfo(userBean);
         skipToMainActivity();
         finish();
     }

@@ -25,6 +25,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/homework_finished_item_margin_left"
+            android:background="@drawable/ic_shape_circle"
+            android:gravity="center"
             android:text="@{content.content.num}"
             android:textSize="@dimen/level_three_heading_font" />
 

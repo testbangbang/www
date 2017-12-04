@@ -1,11 +1,11 @@
 package com.onyx.android.plato.cloud.bean;
 
 /**
- * Created by jackdeng on 2017/10/21.
+ * Created by li on 2017/12/4.
  */
 
-public class UserLoginResultBean {
+public class UserCenterBean {
     public int code;
     public String msg;
-    public UserBean data;
+    public UserInfoBean data;
 }

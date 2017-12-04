@@ -21,7 +21,7 @@ public class GetReportListTest extends ApplicationTestCase<SunApplication> {
 
     public void testGetReportList() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final GetReportListRequest rq = new GetReportListRequest(1,105);
+        final GetReportListRequest rq = new GetReportListRequest(1);
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

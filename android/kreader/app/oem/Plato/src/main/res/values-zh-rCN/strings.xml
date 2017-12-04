@@ -222,4 +222,6 @@
     <string name="upload_failed">上传失败</string>
     <string name="input_mistake">输入错因</string>
     <string name="input_mistake_tip">提示：错因分析，最多四个字</string>
+    <string name="verify_original_password_error">验证原密码错误</string>
+    <string name="password_length_less_than_normal">密码长度小于6</string>
 </resources>

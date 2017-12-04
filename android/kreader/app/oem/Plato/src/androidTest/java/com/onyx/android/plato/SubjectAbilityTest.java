@@ -21,7 +21,7 @@ public class SubjectAbilityTest extends ApplicationTestCase<SunApplication> {
 
     public void testAbility() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        final SubjectAbilityRequest rq = new SubjectAbilityRequest("1");
+        final SubjectAbilityRequest rq = new SubjectAbilityRequest();
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

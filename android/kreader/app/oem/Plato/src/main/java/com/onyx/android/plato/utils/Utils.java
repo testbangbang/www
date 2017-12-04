@@ -1,7 +1,10 @@
 package com.onyx.android.plato.utils;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Environment;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -48,5 +51,10 @@ public class Utils {
 
     public static void loadImageUrl(String url, ImageView imageView, int defaultImage) {
         Glide.with(SunApplication.getInstance()).load(url).asBitmap().diskCacheStrategy(DiskCacheStrategy.ALL).placeholder(defaultImage).into(imageView);
+    }
+
+    public static void hideSoftWindow(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) SunApplication.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
     }
 }

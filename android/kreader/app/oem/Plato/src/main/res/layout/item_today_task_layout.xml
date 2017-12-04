@@ -22,6 +22,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:background="@drawable/ic_shape_circle"
+            android:gravity="center"
             android:text="@{data.num}"
             android:textSize="@dimen/level_three_heading_font" />
 

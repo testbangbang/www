@@ -15,6 +15,7 @@ import com.onyx.android.plato.bean.MainTabBean;
 import com.onyx.android.plato.bean.User;
 import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
+import com.onyx.android.plato.cloud.bean.UserInfoBean;
 import com.onyx.android.plato.common.AppConfigData;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
@@ -59,7 +60,9 @@ import com.onyx.android.plato.fragment.StudyReportFragment;
 import com.onyx.android.plato.fragment.UnfinishedFragment;
 import com.onyx.android.plato.fragment.UserCenterFragment;
 import com.onyx.android.plato.interfaces.MainView;
+import com.onyx.android.plato.interfaces.UserLogoutView;
 import com.onyx.android.plato.presenter.MainPresenter;
+import com.onyx.android.plato.presenter.UserCenterPresenter;
 import com.onyx.android.plato.utils.ApkUtils;
 import com.onyx.android.plato.utils.SystemUtils;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
@@ -75,7 +78,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends BaseActivity implements MainView, View.OnClickListener {
+public class MainActivity extends BaseActivity implements MainView, View.OnClickListener, UserLogoutView {
     private ActivityMainBinding mainBinding;
     private User user = new User();
     private FragmentManager fragmentManager;
@@ -96,23 +99,17 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private int oldPageID = ChildViewID.FRAGMENT_MAIN;
     private MainPresenter mainPresenter;
     private List<ContentBean> remindContent;
+    private UserCenterPresenter userCenterPresenter;
 
     @Override
     protected void initData() {
-        restoreUserName();
         currentTitleIconID = userCenterTitleIconID;
         userCenterFragmentTitle = getString(R.string.user_center_title);
         changePasswordFragmentTitle = getString(R.string.user_center_fragment_change_password);
         mainPresenter = new MainPresenter(this);
+        userCenterPresenter = new UserCenterPresenter(this);
         mainPresenter.getNewMessage();
-    }
-
-    private void restoreUserName() {
-        String name = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_NAME, "");
-        if (!TextUtils.isEmpty(name)) {
-            mainFragmentTitle = name + getString(R.string.main_activity_hello);
-            currentTitle = mainFragmentTitle;
-        }
+        userCenterPresenter.getUserInfo();
     }
 
     @Override
@@ -241,6 +238,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         BaseFragment baseFragment = getPageView(pageID);
         if (baseFragment.isStored) {
             transaction.show(baseFragment);
+            baseFragment.refresh();
         } else {
             transaction.add(R.id.main_frame_layout, baseFragment);
             childViewList.put(pageID, baseFragment);
@@ -318,11 +316,11 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public boolean dispatchKeyEvent(KeyEvent event) {
         BaseFragment currentFragment = getPageView(currentPageID);
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if (currentFragment != null && currentFragment.onKeyBack()) {
+            if (currentFragment != null && currentFragment.onKeyBack() || currentPageID == ChildViewID.FRAGMENT_MAIN) {
                 return true;
             }
         }
-        return true;
+        return super.dispatchKeyEvent(event);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -503,5 +501,27 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         if (remindContent != null) {
             remindContent.clear();
         }
+    }
+
+    @Override
+    public void onLogoutSucceed() {
+
+    }
+
+    @Override
+    public void onLogoutFailed(int errorCode, String msg) {
+
+    }
+
+    @Override
+    public void onLogoutError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void setUserInfo(UserInfoBean data) {
+        mainFragmentTitle = data.name + getString(R.string.main_activity_hello);
+        currentTitle = mainFragmentTitle;
+        setTitleAndIcon();
     }
 }

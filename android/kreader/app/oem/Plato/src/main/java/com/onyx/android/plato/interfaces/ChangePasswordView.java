@@ -5,7 +5,7 @@ package com.onyx.android.plato.interfaces;
  */
 
 public interface ChangePasswordView {
-    void onChangePasswordSucced();
-    void onChangePasswordFailed(int errorCode, String msg);
+    void onChangePasswordSucceed();
+    void onChangePasswordFailed(String msg);
     void onChangePasswordError(Throwable throwable);
 }

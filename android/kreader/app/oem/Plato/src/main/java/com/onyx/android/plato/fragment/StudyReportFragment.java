@@ -1,6 +1,7 @@
 package com.onyx.android.plato.fragment;
 
 import android.databinding.ViewDataBinding;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,10 +34,12 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
     private FragmentStudyReportBinding studyReportBinding;
     String[] heads = SunApplication.getInstance().getResources().getStringArray(R.array.study_report_table_heads);
     private String title = "";
+    private int id;
 
     @Override
     protected void loadData() {
-
+        homeworkPresenter = new HomeworkPresenter(this);
+        homeworkPresenter.getStudyReportDetail(id);
     }
 
     private void setSpiderWebViewScoresData(List<StudyReportDetailBean.CompetenceBean> competenceDatas) {
@@ -165,11 +168,10 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
     }
 
     public void setPracticeId(int id,String title) {
-        if (homeworkPresenter == null){
-            homeworkPresenter = new HomeworkPresenter(this);
-        }
-        homeworkPresenter.getStudyReportDetail(id);
         this.title = title;
-        studyReportBinding.setStudyReportTitle(title);
+        this.id = id;
+        if (homeworkPresenter != null){
+            homeworkPresenter.getStudyReportDetail(id);
+        }
     }
 }

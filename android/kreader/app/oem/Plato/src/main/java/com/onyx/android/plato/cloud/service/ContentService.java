@@ -11,11 +11,13 @@ import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.plato.cloud.bean.InsertParseRequestBean;
 import com.onyx.android.plato.cloud.bean.LoginRequestBean;
+import com.onyx.android.plato.cloud.bean.ModifyPasswordBean;
 import com.onyx.android.plato.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseResultBean;
 import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.plato.cloud.bean.TaskBean;
 import com.onyx.android.plato.cloud.bean.UploadBean;
+import com.onyx.android.plato.cloud.bean.UserCenterBean;
 import com.onyx.android.plato.cloud.bean.UserLoginResultBean;
 import com.onyx.android.plato.cloud.bean.UserLogoutResultBean;
 import com.onyx.android.plato.common.CloudApiContext;
@@ -29,6 +31,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -109,12 +112,6 @@ public interface ContentService {
     @POST("api/user/logout")
     Call<UserLogoutResultBean> userLogout(@Field(CloudApiContext.UserInfo.ACCOUNT) String account);
 
-    @FormUrlEncoded
-    @POST("api/user/changePassword")
-    Call<ChangePasswordResultBean> changePassword(@Field(CloudApiContext.ChangePassword.ACCOUNT) String account,
-                                                  @Field(CloudApiContext.ChangePassword.OLD_PASSWORD) String oldPassword,
-                                                  @Field(CloudApiContext.ChangePassword.NEW_PASSWORD) String newPassword);
-
     @GET("/api/practice/{id}/report")
     Call<GetStudyReportDetailResultBean> getStudyReportDetail(@Path(CloudApiContext.Practices.ID) int id);
 
@@ -133,4 +130,10 @@ public interface ContentService {
     @Multipart
     @POST("api/upload/getFileInfo")
     Call<UploadBean> getUploadKey(@Part MultipartBody.Part file);
+
+    @GET("api/user/info")
+    Call<UserCenterBean> getUserInfo();
+
+    @PUT("api/user/passwd")
+    Call<SubmitPracticeResultBean> modifyPassword(@Body ModifyPasswordBean bean);
 }

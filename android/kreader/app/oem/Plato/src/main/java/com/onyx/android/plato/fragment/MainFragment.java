@@ -41,13 +41,13 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
         presenter = new MainFragmentPresenter(this);
         presenter.getPractices();
         presenter.getSubjectScore();
-        Date date = new Date(System.currentTimeMillis());
-        mainBinding.setDate(DateTimeUtil.formatDate(date, new SimpleDateFormat("MM-dd", Locale.getDefault())));
     }
 
     @Override
     protected void initView(ViewDataBinding rootView) {
         mainBinding = (MainBinding) rootView;
+        Date date = new Date(System.currentTimeMillis());
+        mainBinding.setDate(DateTimeUtil.formatDate(date, new SimpleDateFormat("MM-dd", Locale.getDefault())));
         mainBinding.todayTaskRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);

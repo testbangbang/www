@@ -21,9 +21,10 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/item_homework_num_width"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:background="@drawable/ic_shape_circle"
             android:text="@{data.num}"
             android:textSize="@dimen/level_three_heading_font" />
 
