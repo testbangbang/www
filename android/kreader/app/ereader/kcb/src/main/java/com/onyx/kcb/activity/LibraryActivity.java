@@ -4,6 +4,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.ActionBar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -36,6 +37,7 @@ import com.onyx.kcb.action.ActionChain;
 import com.onyx.kcb.action.ConfigFilterAction;
 import com.onyx.kcb.action.ConfigSortAction;
 import com.onyx.kcb.action.LibraryBuildAction;
+import com.onyx.kcb.action.LibraryRemoveFromAction;
 import com.onyx.kcb.action.LibrarySelectionAction;
 import com.onyx.kcb.action.LibraryDeleteAction;
 import com.onyx.kcb.action.LibraryMoveToAction;
@@ -75,13 +77,18 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        getEventBus().register(this);
         initData();
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onResume() {
+        super.onResume();
+        getEventBus().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
         getEventBus().unregister(this);
     }
 
@@ -374,10 +381,17 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             case R.id.menu_scan_thumbnail:
                 processExtractMetadata();
                 break;
+            case R.id.menu_display_mode:
+                processDisplayMode();
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void processDisplayMode() {
+
     }
 
     private void processExtractMetadata() {
@@ -435,7 +449,23 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processRemoveFromLibrary() {
+        List<DataModel> listSelected = dataBundle.getLibraryViewDataModel().getListSelected();
+        DataModel library = dataBundle.getLibraryViewDataModel().libraryPathList.get(dataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
+        LibraryRemoveFromAction removeFromAction = new LibraryRemoveFromAction(listSelected, library);
+        removeFromAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                quitLongClickMode();
+                quitMultiSelectionMode();
+                loadData(libraryBuildQueryArgs(), false);
+            }
 
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                showToast(R.string.remove_metadata_failed, Toast.LENGTH_SHORT);
+            }
+        });
     }
 
     private void processAddToLibrary() {
@@ -446,7 +476,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             public void onNext(Object o) {
                 quitLongClickMode();
                 quitMultiSelectionMode();
-                loadData();
+                loadData(libraryBuildQueryArgs(), false);
             }
         });
     }
@@ -456,7 +486,8 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         libraryBuildAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                loadData();
+                quitLongClickMode();
+                loadData(libraryBuildQueryArgs(), false);
             }
         });
     }
@@ -501,6 +532,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     public void onItemLongClickEvent(ItemLongClickEvent event) {
         currentChosenModel = event.getDataModel();
         longClickMode = true;
+        dataBundle.getLibraryViewDataModel().addItemSelected(currentChosenModel, true);
         actionBar.openOptionsMenu();
     }
 
@@ -529,7 +561,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     private void processLibraryItem(DataModel model) {
         addLibraryToParentRefList(model);
-        loadData();
+        loadData(libraryBuildQueryArgs(), false);
     }
 
     private void addLibraryToParentRefList(DataModel model) {
