@@ -10,9 +10,12 @@ import android.widget.TextView;
 import com.onyx.android.dr.DRApplication;
 import com.onyx.android.dr.R;
 import com.onyx.android.dr.data.database.GoodSentenceNoteEntity;
+import com.onyx.android.dr.event.OpenDialogEvent;
 import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -55,7 +58,7 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
 
     @Override
     public void onPageBindViewHolder(final ViewHolder holder, final int position) {
-        GoodSentenceNoteEntity goodSentenceEntity = dataList.get(position);
+        final GoodSentenceNoteEntity goodSentenceEntity = dataList.get(position);
 		long currentTime = goodSentenceEntity.currentTime;
         holder.time.setText(TimeUtils.getDate(currentTime));
         holder.content.setText(goodSentenceEntity.details);
@@ -87,6 +90,12 @@ public class GoodSentenceAdapter extends PageRecyclerView.PageAdapter<GoodSenten
                         onItemClickListener.setOnItemClick(position, true);
                     }
                 }
+            }
+        });
+        holder.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                EventBus.getDefault().post(new OpenDialogEvent(goodSentenceEntity.details));
             }
         });
     }

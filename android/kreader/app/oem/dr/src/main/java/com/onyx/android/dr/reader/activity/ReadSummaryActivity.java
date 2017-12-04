@@ -25,6 +25,7 @@ import com.onyx.android.dr.reader.data.ReadSummaryGoodSentenceReviewBean;
 import com.onyx.android.dr.reader.data.ReadSummaryNewWordReviewBean;
 import com.onyx.android.dr.reader.event.RedrawPageEvent;
 import com.onyx.android.dr.reader.presenter.ReadSummaryPresenter;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.PageIndicator;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.QueryPagination;
@@ -248,6 +249,7 @@ public class ReadSummaryActivity extends BaseActivity implements ReadSummaryView
     @Override
     public void setSummary(String summary) {
         editReadSummary.setText(summary);
+        Utils.movingCursor(editReadSummary);
     }
 
     public void saveReadSummary() {

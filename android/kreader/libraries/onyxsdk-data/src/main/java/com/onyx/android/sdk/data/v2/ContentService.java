@@ -3,6 +3,7 @@ package com.onyx.android.sdk.data.v2;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.CreateInformalSecondBean;
 import com.onyx.android.sdk.data.model.DeleteGroupMemberBean;
 import com.onyx.android.sdk.data.model.GroupNameExistBean;
 import com.onyx.android.sdk.data.model.InformalEssayBean;
@@ -198,7 +199,7 @@ public interface ContentService {
     Call<CreateBookReportResult> addComment(@Path(Constant.ID_TAG) String id, @Body AddCommentRequestBean bean);
 
     @POST("/api/InformalEssays/{id}/addComment")
-    Call<CreateInformalEssayBean> addInformalComment(@Path(Constant.ID_TAG) String id, @Body AddCommentRequestBean bean);
+    Call<CreateInformalSecondBean> addInformalComment(@Path(Constant.ID_TAG) String id, @Body AddCommentRequestBean bean);
 
     @DELETE("/api/impressions/{id}/removeComment")
     Call<CreateBookReportResult> removeComment(@Path(Constant.ID_TAG) String id, @Query(Constant.REMOVE_COMMENT_ID) String commentId);

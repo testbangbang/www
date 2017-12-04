@@ -110,8 +110,7 @@
             android:id="@+id/memorandum_activity_sunday_matter"
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="5"
-            android:text="@string/nothing" />
+            android:layout_weight="5" />
 
         <View style="@style/vertical_view" />
 
@@ -149,8 +148,7 @@
             android:id="@+id/memorandum_activity_monday_matter"
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="5"
-            android:text="@string/nothing" />
+            android:layout_weight="5" />
 
         <View style="@style/vertical_view" />
 
@@ -188,8 +186,7 @@
             android:id="@+id/memorandum_activity_tuesday_matter"
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="5"
-            android:text="@string/nothing" />
+            android:layout_weight="5" />
 
         <View style="@style/vertical_view" />
 
@@ -228,8 +225,7 @@
             android:id="@+id/memorandum_activity_wednesday_matter"
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="5"
-            android:text="@string/nothing" />
+            android:layout_weight="5" />
 
         <View style="@style/vertical_view" />
 
@@ -268,8 +264,7 @@
             android:id="@+id/memorandum_activity_thursday_matter"
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="5"
-            android:text="@string/nothing" />
+            android:layout_weight="5" />
 
         <View style="@style/vertical_view" />
 
@@ -308,8 +303,7 @@
             android:id="@+id/memorandum_activity_friday_matter"
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="5"
-            android:text="@string/nothing" />
+            android:layout_weight="5" />
 
         <View style="@style/vertical_view" />
 
@@ -347,8 +341,7 @@
             android:id="@+id/memorandum_activity_saturday_matter"
             style="@style/good_sentence_activity_textview"
             android:layout_marginLeft="1dp"
-            android:layout_weight="5"
-            android:text="@string/nothing" />
+            android:layout_weight="5" />
 
         <View style="@style/vertical_view" />
     </LinearLayout>
@@ -366,13 +359,13 @@
             android:id="@+id/memorandum_activity_last_week"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="50dp"
+            android:layout_marginRight="200dp"
+            android:layout_marginTop="50dp"
             android:background="@drawable/rectangle_stroke"
             android:padding="@dimen/join_group_activity_all_number_padding"
             android:text="@string/last_week"
             android:textColor="@android:color/black"
-            android:layout_marginRight="200dp"
-            android:layout_marginTop="50dp"
-            android:layout_marginBottom="50dp"
             android:textSize="@dimen/level_two_heading_font" />
 
         <TextView

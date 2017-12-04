@@ -1,6 +1,7 @@
 package com.onyx.android.dr.interfaces;
 
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.CreateInformalSecondBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 
@@ -19,7 +20,7 @@ public interface BookReportView {
 
     void addCommentResult(CreateBookReportResult result);
 
-    void addInformalCommentResult(CreateInformalEssayBean result);
+    void addInformalCommentResult(CreateInformalSecondBean result);
 
     void setLibraryId(String bookId, String libraryId);
 

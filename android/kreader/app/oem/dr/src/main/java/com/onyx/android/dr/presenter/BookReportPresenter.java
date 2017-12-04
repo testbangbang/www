@@ -29,6 +29,7 @@ import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.CreateInformalSecondBean;
 import com.onyx.android.sdk.data.model.InformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.AddCommentRequestBean;
 import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
@@ -386,7 +387,7 @@ public class BookReportPresenter {
         bookReportData.addInformalComment(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                CreateInformalEssayBean result = rq.getResult();
+                CreateInformalSecondBean result = rq.getResult();
                 bookReportView.addInformalCommentResult(result);
             }
         });
