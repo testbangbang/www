@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.onyx.android.sdk.data.ViewType" />
+
+        <import type="android.widget.ImageView" />
+
+        <import type="android.graphics.drawable.Drawable" />
+        <import type="com.onyx.kcb.model.StorageViewModel" />
+
+        <variable
+            name="viewModel"
+            type="StorageViewModel" />
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@id/tool_bar"
+            style="@style/OnyxToolBarStyle">
+
+            <RelativeLayout
+                android:id="@+id/back_function_layout"
+                style="@style/global_activities_back_function_layout">
+
+                <ImageView
+                    android:id="@+id/imageView_back"
+                    style="@style/global_activities_back_btn_image" />
+
+                <ImageView
+                    android:id="@+id/imageView_main_title"
+                    style="@style/global_activities_back_btn_category_image"
+                    android:layout_toRightOf="@+id/imageView_back"
+                    android:src="@drawable/home_storage" />
+
+                <TextView
+                    android:id="@+id/textView_main_title"
+                    style="@style/global_activities_back_btn_category_tittle"
+                    android:layout_toRightOf="@+id/imageView_main_title"
+                    android:ellipsize="middle"
+                    android:gravity="left|center_vertical"
+                    android:maxWidth="@dimen/textView_main_title_maxwidth"
+                    android:singleLine="true"
+                    android:text="@{viewModel.currentFolderTitle??@string/storage}" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/title_right_function_layout"
+                style="@style/global_activities_right_function_layout">
+
+                <ImageView
+                    android:id="@+id/button_sort_by"
+                    style="@style/global_activities_function_icon"
+                    android:layout_alignParentRight="true"
+                    android:nextFocusRight="@+id/button_change_view"
+                    android:src="@drawable/button_filter" />
+
+                <ImageView
+                    android:id="@+id/divider_line"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="@dimen/activity_storage_title_divider_line_margin_bottom_and_top"
+                    android:layout_marginLeft="@dimen/activity_storage_title_divider_line_margin_left_and_right"
+                    android:layout_marginRight="@dimen/activity_storage_title_divider_line_margin_left_and_right"
+                    android:layout_marginTop="@dimen/activity_storage_title_divider_line_margin_bottom_and_top"
+                    android:layout_toLeftOf="@+id/button_sort_by"
+                    android:src="@drawable/vertical_dot_line" />
+
+                <ImageView
+                    android:id="@+id/button_change_view"
+                    style="@style/global_activities_function_icon"
+                    android:layout_toLeftOf="@+id/divider_line"
+                    android:background="@drawable/imagebtn_bg"
+                    android:onClick="@{() ->viewModel.onViewChangeClick()}"
+                    android:src="@{viewModel.viewType==ViewType.Thumbnail?@drawable/button_grid:@drawable/button_detail}" />
+            </RelativeLayout>
+
+        </android.support.v7.widget.Toolbar>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/content_pageView"
+            items="@{viewModel.items}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_storage_page_recycler_view_height"
+            android:layout_weight="1" />
+
+        <include
+            layout="@layout/file_operation_function_layout"
+            bind:viewModel="@{viewModel}" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/activity_storage_divider_height"
+            android:background="@android:color/black" />
+
+        <RelativeLayout
+            android:id="@+id/indicator_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/content_pageView"
+            android:layout_margin="@dimen/activity_storage_indicator_layout_margin">
+
+            <TextView
+                android:id="@+id/file_total_counter_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/file_total_counter_text_view_margin_left"
+                android:text="@{@string/file_total_count(viewModel.folderCount,viewModel.fileCount)}"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
+
+            <TextView
+                android:id="@+id/page_counter_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/page_counter_text_view_margin_right"
+                android:text="@{@string/page_count(viewModel.currentPage,viewModel.totalPage)}"
+                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium" />
+        </RelativeLayout>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>

@@ -12,12 +12,6 @@ import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.converter.QueryArgsFilter;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
-import com.onyx.android.sdk.data.model.v2.CloudLibrary;
-import com.onyx.android.sdk.data.model.v2.CloudLibrary_Table;
-import com.onyx.android.sdk.data.model.v2.CloudMetadata;
-import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
-import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection_Table;
-import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.MetadataCollection;
@@ -25,13 +19,17 @@ import com.onyx.android.sdk.data.model.ProductResult;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
+import com.onyx.android.sdk.data.model.v2.CloudLibrary;
+import com.onyx.android.sdk.data.model.v2.CloudLibrary_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection;
+import com.onyx.android.sdk.data.model.v2.CloudMetadataCollection_Table;
+import com.onyx.android.sdk.data.model.v2.CloudMetadata_Table;
 import com.onyx.android.sdk.data.utils.CloudConf;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.data.utils.ResultCode;
 import com.onyx.android.sdk.data.utils.RetrofitUtils;
-import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.raizlabs.android.dbflow.sql.language.Delete;
@@ -44,7 +42,6 @@ import com.raizlabs.android.dbflow.sql.language.property.IProperty;
 import java.util.ArrayList;
 import java.util.List;
 
-import retrofit2.Call;
 import retrofit2.Response;
 
 /**
@@ -350,6 +347,15 @@ public class CloudDataProvider implements DataProviderBase {
         return new Select().from(Thumbnail.class)
                 .where()
                 .and(Thumbnail_Table.idString.eq(associationId))
+                .and(Thumbnail_Table.thumbnailKind.eq(kind))
+                .querySingle();
+    }
+
+    @Override
+    public Thumbnail getThumbnailEntryByOriginContentPath(Context context, String originContentPath, OnyxThumbnail.ThumbnailKind kind) {
+        return new Select().from(Thumbnail.class)
+                .where()
+                .and(Thumbnail_Table.originContentPath.eq(originContentPath))
                 .and(Thumbnail_Table.thumbnailKind.eq(kind))
                 .querySingle();
     }

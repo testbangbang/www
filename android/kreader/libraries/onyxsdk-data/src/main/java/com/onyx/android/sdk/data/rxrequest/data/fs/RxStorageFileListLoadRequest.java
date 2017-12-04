@@ -1,8 +1,11 @@
 package com.onyx.android.sdk.data.rxrequest.data.fs;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 
+import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.common.ContentException;
@@ -14,7 +17,9 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by suicheng on 2017/9/10.
@@ -27,6 +32,7 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
     private List<File> resultFileList = new ArrayList<>();
     private SortBy sortBy;
     private SortOrder sortOrder;
+    private Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
 
     public RxStorageFileListLoadRequest(DataManager dataManager, File targetDir, List<String> filterFileList) {
         super(dataManager);
@@ -49,7 +55,18 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
         if (checkSortNeed()) {
             fileListSort(resultFileList, sortBy, sortOrder);
         }
+        loadThumbnai();
         return this;
+    }
+
+    private void loadThumbnai() {
+        thumbnailMap.clear();
+        for (File file : resultFileList) {
+            if (file.exists() && file.isFile()) {
+                String absolutePath = file.getAbsolutePath();
+                thumbnailMap.put(absolutePath, loadThumbnailSource(absolutePath));
+            }
+        }
     }
 
     private List<File> loadStorageFileList(File targetDir) throws ContentException {
@@ -96,5 +113,13 @@ public class RxStorageFileListLoadRequest extends RxBaseFSRequest {
 
     private boolean checkSortNeed() {
         return sortBy != null && sortOrder != null;
+    }
+
+    private CloseableReference<Bitmap> loadThumbnailSource(String originContentPath) {
+        return DataManagerHelper.loadThumbnailBitmapWithCacheByOriginContentPath(getAppContext(), getDataManager(), originContentPath);
+    }
+
+    public Map<String, CloseableReference<Bitmap>> getThumbnailSource() {
+        return thumbnailMap;
     }
 }

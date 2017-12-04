@@ -65,8 +65,8 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     private DataBundle dataBundle;
     private QueryPagination pagination;
     private PageIndicatorModel pageIndicatorModel;
-    private int row = KCBApplication.getInstance().getResources().getInteger(R.integer.library_row);
-    private int col = KCBApplication.getInstance().getResources().getInteger(R.integer.library_col);
+    private int row = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_row);
+    private int col = KCBApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
     private boolean longClickMode = false;
     private ModelAdapter modelAdapter;
     private DataModel currentChosenModel;
@@ -86,7 +86,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void initData() {
-        if (!KCBApplication.getInstance().isHasMetadataScanned()) {
+        if (!KCBApplication.getInstance().isMetadataScanned()) {
             processFileSystemScan();
             return;
         }
@@ -116,7 +116,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 updateContentView();
             }
         });
-        nextLoad();
+        preloadNext();
     }
 
     private void updateContentView() {
@@ -139,7 +139,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         return dataBundle.getLibraryViewDataModel().count.get();
     }
 
-    private void nextLoad() {
+    private void preloadNext() {
         int preLoadPage = pagination.getCurrentPage() + 1;
         if (preLoadPage >= pagination.pages()) {
             return;
@@ -167,14 +167,14 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             public void onComplete() {
                 super.onComplete();
                 dialogLoading.dismiss();
-                KCBApplication.getInstance().setHasMetadataScanned(true);
+                KCBApplication.getInstance().setMetadataScanned(true);
                 loadData();
             }
         });
     }
 
     private void initView() {
-        initHolder();
+        initDataBundle();
         initDataBinding();
         initActionBar();
         initPageRecyclerView();
@@ -186,7 +186,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         dataBinding.setDataModel(dataBundle.getLibraryViewDataModel());
     }
 
-    private void initHolder() {
+    private void initDataBundle() {
         dataBundle = KCBApplication.getDataBundle();
         dataBundle.getLibraryViewDataModel().title.set(getString(R.string.library));
     }
@@ -268,10 +268,10 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 updateContentView();
             }
         });
-        prevLoad();
+        preloadPrev();
     }
 
-    private void prevLoad() {
+    private void preloadPrev() {
         int preLoadPage = pagination.getCurrentPage() - 1;
         if (preLoadPage < 0) {
             return;
@@ -292,7 +292,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 updateContentView();
             }
         });
-        nextLoad();
+        preloadNext();
     }
 
     private EventBus getEventBus() {
@@ -372,7 +372,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
                 processGotoLibrary();
                 break;
             case R.id.menu_scan_thumbnail:
-                processScanThumbnail();
+                processExtractMetadata();
                 break;
             default:
                 break;
@@ -380,7 +380,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void processScanThumbnail() {
+    private void processExtractMetadata() {
         final DialogLoading dialogLoading = new DialogLoading(this, R.string.loading, false);
         dialogLoading.show();
         final QueryArgs queryArgs = dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage());
@@ -520,7 +520,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processNormalModeItemClick(DataModel model) {
-        if (model.type.get() == ModelType.Library) {
+        if (model.type.get() == ModelType.TYPE_LIBRARY) {
             processLibraryItem(model);
         } else {
             processBookItemOpen(model);
@@ -537,7 +537,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void processMultiModeItemClick(DataModel dataModel) {
-        if (dataModel.type.get() == ModelType.Library) {
+        if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
             return;
         }
         dataModel.checked.set(!dataModel.checked.get());
@@ -599,7 +599,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private boolean isLibraryItem(DataModel dataModel) {
-        return dataModel.type.get() == ModelType.Library;
+        return dataModel.type.get() == ModelType.TYPE_LIBRARY;
     }
 
     private void processBookItemOpen(DataModel dataModel) {

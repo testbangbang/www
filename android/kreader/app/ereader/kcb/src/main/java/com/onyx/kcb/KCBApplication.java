@@ -11,14 +11,12 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.PreferenceManager;
-import com.onyx.android.sdk.utils.RxBroadcastReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kcb.action.ActionChain;
 import com.onyx.kcb.action.RxFileSystemScanAction;
 import com.onyx.kcb.device.DeviceConfig;
 import com.onyx.kcb.holder.DataBundle;
-
-import io.reactivex.functions.Consumer;
+import com.onyx.kcb.manager.ConfigPreferenceManager;
 
 
 /**
@@ -26,7 +24,7 @@ import io.reactivex.functions.Consumer;
  */
 
 public class KCBApplication extends MultiDexApplication {
-    private boolean hasMetadataScanned = false;
+    private boolean isMetadataScanned = false;
     private static final String TAG = KCBApplication.class.getSimpleName();
     private static KCBApplication instance = null;
     private static DataBundle dataBundle;
@@ -54,6 +52,7 @@ public class KCBApplication extends MultiDexApplication {
         DataManager.init(this, null);
         initFrescoLoader();
         initEventListener();
+        ConfigPreferenceManager.init(KCBApplication.this);
     }
 
     private void initEventListener() {
@@ -71,7 +70,7 @@ public class KCBApplication extends MultiDexApplication {
                 Log.w(TAG, "onMediaMounted " + intent.getData().toString());
                 if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
                     processRemovableSDCardScan();
-                    setHasMetadataScanned(true);
+                    setMetadataScanned(true);
                 }
             }
 
@@ -117,12 +116,12 @@ public class KCBApplication extends MultiDexApplication {
         return dataBundle;
     }
 
-    public boolean isHasMetadataScanned() {
-        return hasMetadataScanned;
+    public boolean isMetadataScanned() {
+        return isMetadataScanned;
     }
 
-    public void setHasMetadataScanned(boolean hasMetadataScanned) {
-        this.hasMetadataScanned = hasMetadataScanned;
+    public void setMetadataScanned(boolean metadataScanned) {
+        this.isMetadataScanned = metadataScanned;
     }
 
     private void initFrescoLoader() {

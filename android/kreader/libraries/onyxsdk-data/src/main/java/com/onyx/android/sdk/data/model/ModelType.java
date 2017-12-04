@@ -5,5 +5,5 @@ package com.onyx.android.sdk.data.model;
  */
 
 public enum ModelType {
-    File,Directory,Library,Metadata
+    TYPE_DIRECTORY,TYPE_FILE,TYPE_GO_UP,TYPE_SHORT_CUT,TYPE_LIBRARY,TYPE_METADATA;
 }
