@@ -55,21 +55,27 @@ public class SideNoteHandler extends BaseHandler {
                 true, readerDataHolder.getSideNoteStartSubPageIndex());
         readerDataHolder.getNoteManager().submit(readerDataHolder.getContext(), request, null);
         readerDataHolder.getEventBus().post(new HideTabWidgetEvent());
+
         readerDataHolder.getEventBus().register(this);
     }
 
     public void onDeactivate(final ReaderDataHolder readerDataHolder) {
-        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
-        stopNoteActionChain.execute(readerDataHolder, null);
-        readerDataHolder.getEventBus().post(new ShowTabWidgetEvent());
-        if (readerDataHolder.getOrientationBeforeSideNote() > 0) {
-            readerDataHolder.getEventBus().post(new ChangeOrientationEvent(readerDataHolder.getOrientationBeforeSideNote()));
-            readerDataHolder.setOrientationBeforeSideNote(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-        }
-        if (menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing()) {
-            toggleSideNoteMenu(readerDataHolder);
-        }
         readerDataHolder.getEventBus().unregister(this);
+
+        StopNoteActionChain stopNoteActionChain = new StopNoteActionChain(true, true, true, false, false, true);
+        stopNoteActionChain.execute(readerDataHolder, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                readerDataHolder.getEventBus().post(new ShowTabWidgetEvent());
+                if (readerDataHolder.getOrientationBeforeSideNote() > 0) {
+                    readerDataHolder.getEventBus().post(new ChangeOrientationEvent(readerDataHolder.getOrientationBeforeSideNote()));
+                    readerDataHolder.setOrientationBeforeSideNote(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                }
+                if (menuManager.getMainMenu() != null && menuManager.getMainMenu().isShowing()) {
+                    toggleSideNoteMenu(readerDataHolder);
+                }
+            }
+        });
     }
 
     @Override
