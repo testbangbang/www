@@ -25,7 +25,9 @@ import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.kcb.KCBApplication;
@@ -102,7 +104,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
     }
 
     private void loadData(QueryArgs queryArgs) {
-        loadData(queryArgs, false);
+        loadData(queryArgs, true);
     }
 
     private void loadData(QueryArgs queryArgs, boolean loadFromCache) {
@@ -259,6 +261,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             return;
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().prevPage(), false);
+        loadAction.setLoadFromCache(true);
         loadAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -282,6 +285,7 @@ public class LibraryActivity extends OnyxAppCompatActivity {
             return;
         }
         final RxMetadataLoadAction loadAction = new RxMetadataLoadAction(dataBundle.getLibraryViewDataModel().nextPage(), false);
+        loadAction.setLoadFromCache(true);
         loadAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
