@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.onyx.android.sdk.device.EnvironmentUtil;
 
+import org.apache.commons.io.FileUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -53,6 +55,7 @@ public class LogUtils {
     public static final String BATTERY = "battery";
     public static final String BATTERY_STATS = "batterystats";
     public static final String ALARM = "alarm";
+    public static final String ANR_TRACES_PATH = "/data/anr/traces.txt";
 
     public static final String SEPARATOR_NEW_LINE = "\r\n";
     public static final String SEPARATOR_BLANK = " ";
@@ -76,6 +79,7 @@ public class LogUtils {
     public static final String PROGRAM_EXEC_DUMPSYS_ALARM = COMMAND_DUMPSYS + ALARM;
 
     public static final String PROGRAM_EXEC_WAKEUP_REASON_SUSPEND_HISTORY = COMMAND_CAT + "/sys/kernel/wakeup_reasons/suspend_history";
+    public static final String PROGRAM_EXEC_CAT_ANR = COMMAND_CAT + ANR_TRACES_PATH;
 
 
     public static final String ENCODING_TYPE = "utf-8";
@@ -86,6 +90,7 @@ public class LogUtils {
     public static final String OUTPUT_FILE_DUMPSYS_SPECIFY_PREFIX = "dumpsys_specify_";
     public static final String OUTPUT_FILE_WAKEUP_REASONS_PREFIX = "wakeup_reasons_";
     public static final String OUTPUT_FILE_KMSG_PREFIX = "kmsg_";
+    public static final String OUTPUT_FILE_ANR_PREFIX = "anr_";
     public static final String OUTPUT_FILE_TXT_EXTENSION = ".txt";
     public static final String OUTPUT_FILE_ZIP_EXTENSION = ".zip";
 
@@ -122,6 +127,10 @@ public class LogUtils {
             PROGRAM_EXEC_CAT_LINUX_LAST_KMSG
     };
 
+    public static final String[] COMMAND_ANR_SET = new String[]{
+            PROGRAM_EXEC_CAT_ANR
+    };
+
     private static String getFileNameBasedOnDate(String prefix, String suffix) {
         return prefix + DATE_FORMAT_YYYY_MM_DD_HHMMSS.format(new Date()) + suffix;
     }
@@ -155,7 +164,8 @@ public class LogUtils {
             File dumpsysSpecifyFile = generateExceptionFile(context, COMMAND_DUMPSYS_SPECIFY_SET, OUTPUT_FILE_DUMPSYS_SPECIFY_PREFIX);
             File wakeupReasonsFile = generateExceptionFile(context, COMMAND_WAKEUP_REASON_SET, OUTPUT_FILE_WAKEUP_REASONS_PREFIX);
             File kmsgFile = generateExceptionFile(context, COMMAND_KMSG_SET, OUTPUT_FILE_KMSG_PREFIX);
-            wantCompressFiles = new File[]{logcatFile, kernelFile, dumpsysFile, dumpsysSpecifyFile, wakeupReasonsFile, kmsgFile};
+            File anrFile = generateExceptionFile(context, COMMAND_ANR_SET, OUTPUT_FILE_ANR_PREFIX);
+            wantCompressFiles = new File[]{logcatFile, kernelFile, dumpsysFile, dumpsysSpecifyFile, wakeupReasonsFile, kmsgFile, anrFile};
             zipFile = new File(context.getFilesDir(), getFileNameBasedOnDate(OUTPUT_FILE_ZIP_PREFIX, OUTPUT_FILE_ZIP_EXTENSION));
             boolean isSuccess = ZipUtils.compress(wantCompressFiles, zipFile);
             if (!isSuccess) {
@@ -163,6 +173,7 @@ public class LogUtils {
             }
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
             deleteFiles(wantCompressFiles);
         }
         return zipFile;
@@ -173,8 +184,8 @@ public class LogUtils {
             return;
         }
         for (File file : files) {
-            if (file != null) {
-                file.delete();
+            if (file != null && file.exists()) {
+                FileUtils.deleteQuietly(file);
             }
         }
     }
