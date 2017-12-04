@@ -48,7 +48,10 @@
         <activity
             android:name=".activity.LibraryActivity"
             android:windowSoftInputMode="adjustPan"/>
-        <activity android:name=".activity.MainActivity"/>
+
+        <activity
+            android:name=".activity.MainActivity"
+            android:windowSoftInputMode="adjustNothing" />
 
         <receiver android:name=".receiver.ContentBroadcastReceiver">
             <intent-filter>
