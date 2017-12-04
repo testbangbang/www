@@ -21,6 +21,7 @@ import com.onyx.android.dr.dialog.ExportSuccessHintDialog;
 import com.onyx.android.dr.dialog.TimePickerDialog;
 import com.onyx.android.dr.event.ExportHtmlFailedEvent;
 import com.onyx.android.dr.event.ExportHtmlSuccessEvent;
+import com.onyx.android.dr.event.OpenDialogEvent;
 import com.onyx.android.dr.interfaces.GoodSentenceView;
 import com.onyx.android.dr.presenter.GoodSentencePresenter;
 import com.onyx.android.dr.view.DividerItemDecoration;
@@ -347,6 +348,12 @@ public class GoodSentenceNotebookActivity extends BaseActivity implements GoodSe
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onExportHtmlFailedEvent(ExportHtmlFailedEvent event) {
         CommonNotices.showMessage(this, getString(R.string.export_failed));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onOpenDialogEvent(OpenDialogEvent event) {
+        ExportSuccessHintDialog dialog = new ExportSuccessHintDialog(this);
+        dialog.initData(getString(R.string.good_sententce_title), event.getContent());
     }
 
     @Override

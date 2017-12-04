@@ -29,6 +29,7 @@ import com.onyx.android.dr.view.DividerItemDecoration;
 import com.onyx.android.dr.view.PageRecyclerView;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.CreateInformalSecondBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 
@@ -397,7 +398,7 @@ public class BookReportListActivity extends BaseActivity implements BookReportVi
     }
 
     @Override
-    public void addInformalCommentResult(CreateInformalEssayBean result) {
+    public void addInformalCommentResult(CreateInformalSecondBean result) {
     }
 
     @Override

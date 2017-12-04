@@ -73,7 +73,7 @@ public class SummaryListAdapter extends PageRecyclerView.PageAdapter<SummaryList
                 entity.isChecked = isChecked;
             }
         });
-        holder.itemSummaryBookAbstract.setOnClickListener(new View.OnClickListener() {
+        holder.rootView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ReadingSummaryMenuEvent event = new ReadingSummaryMenuEvent();
@@ -99,9 +99,11 @@ public class SummaryListAdapter extends PageRecyclerView.PageAdapter<SummaryList
         TextView itemSummaryBookAbstract;
         @Bind(R.id.item_summary_checkbox)
         CheckBox itemSummaryCheckbox;
+        View rootView;
 
         ViewHolder(View view) {
             super(view);
+            this.rootView = view;
             ButterKnife.bind(this, view);
         }
     }

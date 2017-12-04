@@ -18,6 +18,7 @@ import com.onyx.android.dr.common.Constants;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.presenter.BookReportPresenter;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.CreateInformalSecondBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
 import com.onyx.android.sdk.data.model.v2.GetBookReportListBean;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -127,7 +128,7 @@ public class NotationDialog extends DialogFragment implements BookReportView {
     }
 
     @Override
-    public void addInformalCommentResult(CreateInformalEssayBean result) {
+    public void addInformalCommentResult(CreateInformalSecondBean result) {
         if (result != null) {
             CommonNotices.showMessage(DRApplication.getInstance(), DRApplication.getInstance().getResources().getString(R.string.notation_add_success));
         } else {

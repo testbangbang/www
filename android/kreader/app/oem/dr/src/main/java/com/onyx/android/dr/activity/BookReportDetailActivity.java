@@ -23,6 +23,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.onyx.android.dr.DRApplication;
@@ -43,6 +44,7 @@ import com.onyx.android.dr.util.Utils;
 import com.onyx.android.dr.view.BookMarksPopupWindow;
 import com.onyx.android.dr.view.NotationDialog;
 import com.onyx.android.sdk.data.model.CreateInformalEssayBean;
+import com.onyx.android.sdk.data.model.CreateInformalSecondBean;
 import com.onyx.android.sdk.data.model.InformalEssayBean;
 import com.onyx.android.sdk.data.model.v2.CommentsBean;
 import com.onyx.android.sdk.data.model.v2.CreateBookReportResult;
@@ -95,6 +97,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     EditText bookReportDetailContents;
     @Bind(R.id.book_report_detail_web_view)
     WebView bookReportWebContent;
+    @Bind(R.id.menu_back)
+    LinearLayout menuBack;
     private Button dialogCancel;
     private Button dialogSure;
     private AlertDialog dialog;
@@ -331,15 +335,12 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         notationDialog.show(this.getFragmentManager(), "tag");
     }
 
-    @OnClick({R.id.image_view_back, R.id.title_bar_title, R.id.title_bar_right_select_time,
+    @OnClick({R.id.menu_back, R.id.title_bar_right_select_time,
             R.id.title_bar_right_icon_one, R.id.title_bar_right_icon_two, R.id.title_bar_right_icon_three})
     public void onViewClicked(View view) {
         switch (view.getId()) {
-            case R.id.image_view_back:
-                backActivity();
-                break;
-            case R.id.title_bar_title:
-                backActivity();
+            case R.id.menu_back:
+                finish();
                 break;
             case R.id.title_bar_right_select_time:
                 showMarks();
@@ -452,7 +453,6 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            backActivity();
             return true;
         }
         return super.dispatchKeyEvent(event);
@@ -540,7 +540,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     }
 
     @Override
-    public void addInformalCommentResult(CreateInformalEssayBean result) {
+    public void addInformalCommentResult(CreateInformalSecondBean result) {
     }
 
     @Override

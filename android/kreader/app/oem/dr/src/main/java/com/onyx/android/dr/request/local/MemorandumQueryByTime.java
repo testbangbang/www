@@ -2,6 +2,7 @@ package com.onyx.android.dr.request.local;
 
 import com.onyx.android.dr.data.database.MemorandumEntity;
 import com.onyx.android.dr.data.database.MemorandumEntity_Table;
+import com.onyx.android.dr.util.TimeUtils;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.raizlabs.android.dbflow.sql.language.Select;
@@ -41,8 +42,9 @@ public class MemorandumQueryByTime extends BaseDataRequest {
         if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
                 MemorandumEntity bean = list.get(i);
-                if (bean.currentTime >= startDateMillisecond &&
-                        bean.currentTime <= endDateMillisecond) {
+                long currentMillisecond = TimeUtils.getStartDateMillisecond(bean.date);
+                if (currentMillisecond >= this.startDateMillisecond &&
+                        currentMillisecond <= endDateMillisecond) {
                     if (!memorandumList.contains(bean)){
                         memorandumList.add(bean);
                     }

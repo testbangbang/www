@@ -133,7 +133,7 @@ public class MemorandumActivity extends BaseActivity implements MemorandumView, 
         tuesdayTime.setText(memorandumList.get(2).getDate());
         wednesdayTime.setText(memorandumList.get(3).getDate());
         thursdayTime.setText(memorandumList.get(4).getDate());
-        fridayTime.setText(memorandumList.get(4).getDate());
+        fridayTime.setText(memorandumList.get(5).getDate());
         saturdayTime.setText(memorandumList.get(6).getDate());
     }
 
