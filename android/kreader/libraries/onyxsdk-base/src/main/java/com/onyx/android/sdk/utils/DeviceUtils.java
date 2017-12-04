@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -254,14 +253,25 @@ public class DeviceUtils {
     }
 
     public static int getBatteryPecentLevel(final Context context) {
-        IntentFilter ifilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
-        Intent batteryStatus = context.registerReceiver(null, ifilter);
+        Intent batteryStatus = getBatteryIntent(context);
         int level = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
         int scale = batteryStatus.getIntExtra(BatteryManager.EXTRA_SCALE, -1);
 
         float batteryPercent = level / (float)scale;
 
         return (int)(batteryPercent*100);
+    }
+
+    public static boolean getBatteryChargingStutas(final Context context) {
+        Intent batteryStatus = getBatteryIntent(context);
+        int status = batteryStatus.getIntExtra(BatteryManager.EXTRA_STATUS, -1);
+
+        return (status == BatteryManager.BATTERY_STATUS_CHARGING);
+    }
+
+    private static Intent getBatteryIntent(Context context) {
+        IntentFilter intentfilter = new IntentFilter(Intent.ACTION_BATTERY_CHANGED);
+        return context.registerReceiver(null, intentfilter);
     }
 
     public static boolean isEngVersion() {

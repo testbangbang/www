@@ -148,11 +148,11 @@ public class SingletonSharedPreference {
     }
 
     public static boolean isStatusBarTimeShow(Context context){
-        return getBooleanByStringID(context,R.string.settings_time_show_key,false);
+        return getBooleanByStringID(context,R.string.settings_time_show_key,true);
     }
 
     public static boolean isStatusBarTime24HourFormat(Context context){
-        return getBooleanByStringID(context,R.string.settings_time_show_format_key,false);
+        return getBooleanByStringID(context,R.string.settings_time_show_format_key,true);
     }
 
     public static boolean isShowQuitDialog(Context context){

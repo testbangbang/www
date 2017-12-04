@@ -7,15 +7,17 @@
 
     <com.onyx.android.sdk.ui.view.StatusBarAlProgressLine
         android:id="@+id/progress_line"
+        android:visibility="gone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_marginTop="0dp"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
         android:id="@+id/statusbar_info_layout">
 
         <RelativeLayout
@@ -23,7 +25,7 @@
             android:layout_height="@dimen/navigatorHeight"
             android:id="@+id/status_page_layout"
             android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignTop="@+id/view_navigator"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
@@ -39,6 +41,17 @@
                 android:text="0/0" />
         </RelativeLayout>
 
+        <com.onyx.android.sdk.ui.view.StatusBarNavigatorView
+            android:id="@+id/view_navigator"
+            android:layout_width="@dimen/navigatorWidth"
+            android:layout_height="@dimen/navigatorHeight"
+            android:layout_toLeftOf="@id/status_page_layout"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginBottom="2dp"
+            android:layout_marginRight="2dp"
+            android:visibility="gone"
+            android:layout_centerVertical="true" />
+
 
         <com.onyx.android.sdk.ui.view.StatusBarTextView
             android:id="@+id/status_info"
@@ -47,46 +60,45 @@
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
             android:layout_alignBottom="@+id/view_navigator"
-            android:layout_toLeftOf="@+id/view_navigator"
-            android:layout_toRightOf="@+id/status_page_layout"
             android:layout_centerInParent="true"
             MyTextView:textSize="@dimen/reader_status_bar_text_size"
             android:visibility="visible" />
 
-        <com.onyx.android.sdk.ui.view.StatusBarTextView
-            android:id="@+id/status_time"
+        <LinearLayout
+            android:id="@+id/status_battery_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            MyTextView:textSize="@dimen/reader_status_bar_text_size"
-            android:visibility="gone"
-            android:text="--:--" />
+            android:gravity="center_vertical"
+            android:layout_alignParentLeft="true">
+            <ImageView
+                android:id="@+id/status_battery_icon"
+                android:layout_gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginRight="6dip"
+                android:scaleType="fitCenter" />
 
-        <com.onyx.android.sdk.ui.view.StatusBarTextView
-            android:id="@+id/status_battery"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_centerVertical="true"
-            MyTextView:textSize="@dimen/reader_status_bar_text_size"
-            android:layout_toLeftOf="@id/status_time"
-            android:layout_alignWithParentIfMissing="true"
-            android:visibility="gone"
-            android:text="100%" />
+            <com.onyx.android.sdk.ui.view.StatusBarTextView
+                android:id="@+id/status_battery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_centerVertical="true"
+                MyTextView:textSize="@dimen/reader_status_bar_text_size"
+                android:visibility="gone"
+                android:text="100%" />
 
-        <com.onyx.android.sdk.ui.view.StatusBarNavigatorView
-            android:id="@+id/view_navigator"
-            android:layout_width="@dimen/navigatorWidth"
-            android:layout_height="@dimen/navigatorHeight"
-            android:layout_toLeftOf="@id/status_battery"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_marginBottom="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_centerVertical="true" />
-
+            <com.onyx.android.sdk.ui.view.StatusBarTextView
+                android:id="@+id/status_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="2dp"
+                android:layout_marginRight="2dp"
+                android:layout_centerVertical="true"
+                MyTextView:textSize="@dimen/reader_status_bar_text_size"
+                android:visibility="gone"
+                android:text="--:--" />
+        </LinearLayout>
     </RelativeLayout>
 </merge>
