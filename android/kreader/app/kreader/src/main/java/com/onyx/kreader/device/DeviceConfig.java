@@ -79,6 +79,9 @@ public class DeviceConfig {
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 
+    private String noteAppPackageName = "com.moxi.writeNote";
+    private String noteAppClassName = "com.moxi.writeNote.MainActivity";
+
     private DeviceConfig(Context context) {
         String content = readConfig(context);
         if (!StringUtils.isNullOrEmpty(content)) {
@@ -565,6 +568,22 @@ public class DeviceConfig {
 
     public void setStatisticsUrl(String statisticsUrl) {
         this.statisticsUrl = statisticsUrl;
+    }
+
+    public String getNoteAppPackageName() {
+        return noteAppPackageName;
+    }
+
+    public void setNoteAppPackageName(String noteAppPackageName) {
+        this.noteAppPackageName = noteAppPackageName;
+    }
+
+    public String getNoteAppClassName() {
+        return noteAppClassName;
+    }
+
+    public void setNoteAppClassName(String noteAppClassName) {
+        this.noteAppClassName = noteAppClassName;
     }
 }
 

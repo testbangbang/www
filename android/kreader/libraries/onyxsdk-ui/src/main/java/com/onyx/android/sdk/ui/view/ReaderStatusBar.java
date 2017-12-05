@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import com.onyx.android.sdk.ui.R;
 import com.onyx.android.sdk.ui.data.ReaderStatusInfo;
-import com.onyx.android.sdk.utils.ActivityUtil;
-import com.onyx.android.sdk.utils.PackageUtils;
 
 import java.util.Calendar;
 
@@ -29,6 +26,7 @@ public class ReaderStatusBar extends LinearLayout {
 
     public static abstract class Callback {
         public abstract void onGotoPage();
+        public abstract void onGotoNote();
     }
 
     private StatusBarAlProgressLine mProgressLine;
@@ -84,8 +82,9 @@ public class ReaderStatusBar extends LinearLayout {
         mGotoScribleView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityUtil.startActivitySafely(v.getContext(),
-                        ActivityUtil.createIntent(SCRIBLE_PACKAGE_NAME, SCRIBLE_CLASS_NAME));
+                if (callback != null) {
+                    callback.onGotoNote();
+                }
             }
         });
     }

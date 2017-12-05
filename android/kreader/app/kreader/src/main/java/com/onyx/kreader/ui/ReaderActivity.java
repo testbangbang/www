@@ -36,6 +36,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
@@ -319,6 +320,13 @@ public class ReaderActivity extends OnyxBaseActivity {
             @Override
             public void onGotoPage() {
                 new ShowQuickPreviewAction(getReaderDataHolder()).execute(getReaderDataHolder(), null);
+            }
+
+            @Override
+            public void onGotoNote() {
+                ActivityUtil.startActivitySafely(ReaderActivity.this,
+                        ActivityUtil.createIntent(DeviceConfig.sharedInstance(ReaderActivity.this).getNoteAppPackageName(),
+                                DeviceConfig.sharedInstance(ReaderActivity.this).getNoteAppClassName()));
             }
         });
         reconfigStatusBar();
