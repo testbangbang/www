@@ -219,6 +219,7 @@ public class DialogTextStyle extends DialogBase {
             @Override
             public void onCancel(DialogInterface dialog) {
                 updateReaderStyle(originalStyle);
+                restoreSharedPreference(originalStyle);
             }
         });
 
@@ -259,13 +260,23 @@ public class DialogTextStyle extends DialogBase {
         if (originalChineseConvertType != readerDataHolder.getReaderUserDataInfo().getChineseConvertType()) {
             new ChangeChineseConvertTypeAction(originalChineseConvertType).execute(readerDataHolder, null);
         }
-        SingletonSharedPreference.setLastFontSize(originalStyle.getFontSize().getValue());
         updateReaderStyle(originalStyle, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                restoreSharedPreference(originalStyle);
                 dismiss();
             }
         });
+    }
+
+    private void restoreSharedPreference(ReaderTextStyle originalStyle) {
+        SingletonSharedPreference.setLastFontFace(originalStyle.getFontFace());
+        SingletonSharedPreference.setLastFontSize(originalStyle.getFontSize().getValue());
+        SingletonSharedPreference.setLastTopMargin(originalStyle.getPageMargin().getTopMargin().getPercent());
+        SingletonSharedPreference.setLastBottomMargin(originalStyle.getPageMargin().getBottomMargin().getPercent());
+        SingletonSharedPreference.setLastLeftMargin(originalStyle.getPageMargin().getLeftMargin().getPercent());
+        SingletonSharedPreference.setLastRightMargin(originalStyle.getPageMargin().getRightMargin().getPercent());
+        SingletonSharedPreference.setLastLineSpacing(originalStyle.getLineSpacing().getPercent());
     }
 
     private View initFontFaceView(final DeviceUtils.FontType fontType) {
@@ -613,7 +624,9 @@ public class DialogTextStyle extends DialogBase {
                         pageView.getPageAdapter().notifyItemChanged(selectFontIndex.getIndex());
                         selectFontIndex.setIndex(position);
                         pageView.getPageAdapter().notifyItemChanged(selectFontIndex.getIndex());
-                        getReaderStyle().setFontFace(fonts.get(position).getId());
+                        String face = fonts.get(position).getId();
+                        getReaderStyle().setFontFace(face);
+                        SingletonSharedPreference.setLastFontFace(face);
                         updateReaderStyle(getReaderStyle());
                         if (fontType == DeviceUtils.FontType.ENGLISH) {
                             chineseSelectFontIndex.setIndex(-1);
@@ -755,9 +768,9 @@ public class DialogTextStyle extends DialogBase {
                             percentage.setPercent(Math.max(ReaderTextStyle.SMALL_LINE_SPACING.getPercent(), percentage.getPercent() - ReaderTextStyle.LINE_SPACING_STEP.getPercent()));
                             break;
                     }
-                    readerTextStyle.setLineSpacing(percentage);
-                    updateReaderStyle(readerTextStyle);
-                    updateFontSpacingView(spacingViewMap, readerTextStyle);
+                    getReaderStyle().setLineSpacing(percentage);
+                    updateReaderStyle(getReaderStyle());
+                    updateFontSpacingView(spacingViewMap, getReaderStyle());
                     SingletonSharedPreference.setLastLineSpacing(percentage.getPercent());
                 }
             });
@@ -813,13 +826,13 @@ public class DialogTextStyle extends DialogBase {
                             currentPageMargin.decreasePageMargin(ReaderTextStyle.PAGE_MARGIN_STEP);
                             break;
                     }
-                    readerTextStyle.setPageMargin(currentPageMargin);
+                    getReaderStyle().setPageMargin(currentPageMargin);
                     SingletonSharedPreference.setLastLeftMargin(currentPageMargin.getLeftMargin().getPercent());
                     SingletonSharedPreference.setLastTopMargin(currentPageMargin.getTopMargin().getPercent());
                     SingletonSharedPreference.setLastRightMargin(currentPageMargin.getRightMargin().getPercent());
                     SingletonSharedPreference.setLastBottomMargin(currentPageMargin.getBottomMargin().getPercent());
-                    updateReaderStyle(readerTextStyle);
-                    updateFontMarginView(marginViewMap, readerTextStyle);
+                    updateReaderStyle(getReaderStyle());
+                    updateFontMarginView(marginViewMap, getReaderStyle());
                 }
             });
         }
