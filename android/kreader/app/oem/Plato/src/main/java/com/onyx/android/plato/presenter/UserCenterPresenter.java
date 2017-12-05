@@ -57,7 +57,6 @@ public class UserCenterPresenter {
             public void done(BaseRequest request, Throwable e) {
                 UserCenterBean userCenterBean = rq.getUserCenterBean();
                 if (userCenterBean == null || userCenterBean.data == null) {
-                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 UserInfoBean data = userCenterBean.data;

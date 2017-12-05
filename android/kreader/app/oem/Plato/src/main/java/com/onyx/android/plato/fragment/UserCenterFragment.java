@@ -103,7 +103,8 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
                 EventBus.getDefault().post(new ToChangePasswordEvent());
                 break;
             case R.id.tv_user_center_fragment_logout:
-                //userCenterPresenter.logoutAccount(account);
+                ManagerActivityUtils.startLoginActivity(SunApplication.getInstance());
+                getActivity().finish();
                 break;
         }
     }

@@ -29,7 +29,6 @@ import java.util.List;
  */
 
 public class StudyReportFragment extends BaseFragment implements HomeworkView, View.OnClickListener {
-
     private HomeworkPresenter homeworkPresenter;
     private FragmentStudyReportBinding studyReportBinding;
     String[] heads = SunApplication.getInstance().getResources().getStringArray(R.array.study_report_table_heads);
@@ -38,7 +37,9 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     @Override
     protected void loadData() {
-        homeworkPresenter = new HomeworkPresenter(this);
+        if (homeworkPresenter == null) {
+            homeworkPresenter = new HomeworkPresenter(this);
+        }
         homeworkPresenter.getStudyReportDetail(id);
     }
 

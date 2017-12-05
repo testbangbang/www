@@ -34,10 +34,13 @@ import java.util.List;
 public class UnfinishedFragment extends BaseFragment implements HomeworkView, View.OnClickListener {
     private UnfinishedBinding unfinishedBinding;
     private HomeworkUnfinishedAdapter homeworkUnfinishedAdapter;
+    private HomeworkPresenter homeworkPresenter;
 
     @Override
     protected void loadData() {
-        HomeworkPresenter homeworkPresenter = new HomeworkPresenter(this);
+        if (homeworkPresenter == null) {
+            homeworkPresenter = new HomeworkPresenter(this);
+        }
         homeworkPresenter.getHomeworkUnfinishedData();
     }
 

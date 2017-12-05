@@ -39,7 +39,9 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     protected void loadData() {
-        presenter = new CorrectPresenter(this);
+        if (presenter == null) {
+            presenter = new CorrectPresenter(this);
+        }
         if (content.correctTime != null) {
             presenter.getCorrectData(content.id);
         }

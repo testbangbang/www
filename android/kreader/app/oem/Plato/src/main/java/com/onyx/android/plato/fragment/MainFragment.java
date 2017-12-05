@@ -38,7 +38,9 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
 
     @Override
     protected void loadData() {
-        presenter = new MainFragmentPresenter(this);
+        if (presenter == null) {
+            presenter = new MainFragmentPresenter(this);
+        }
         presenter.getPractices();
         presenter.getSubjectScore();
     }

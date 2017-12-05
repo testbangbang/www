@@ -51,7 +51,9 @@ public class FinishedFragment extends BaseFragment implements View.OnClickListen
 
     @Override
     protected void loadData() {
-        homeworkPresenter = new HomeworkPresenter(this);
+        if (homeworkPresenter == null) {
+            homeworkPresenter = new HomeworkPresenter(this);
+        }
         homeworkPresenter.getSubjects();
     }
 

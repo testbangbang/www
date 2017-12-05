@@ -40,7 +40,9 @@ public class GoalAdvancedFragment extends BaseFragment implements GoalAdvancedVi
 
     @Override
     protected void loadData() {
-        goalAdvancedPresenter = new GoalAdvancedPresenter(this);
+        if (goalAdvancedPresenter == null) {
+            goalAdvancedPresenter = new GoalAdvancedPresenter(this);
+        }
         goalAdvancedPresenter.getSubjectAbility(null,null,null);
     }
 

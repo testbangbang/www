@@ -66,9 +66,11 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Override
     protected void loadData() {
-        homeworkPresenter = new HomeworkPresenter(this);
-        correctPresenter = new CorrectPresenter(this);
-        fillHomeworkPresenter = new FillHomeworkPresenter();
+        if (homeworkPresenter == null || correctPresenter == null || fillHomeworkPresenter == null) {
+            homeworkPresenter = new HomeworkPresenter(this);
+            correctPresenter = new CorrectPresenter(this);
+            fillHomeworkPresenter = new FillHomeworkPresenter();
+        }
         homeworkPresenter.getTaskDetail(practiceId);
     }
 

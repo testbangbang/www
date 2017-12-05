@@ -42,7 +42,9 @@ public class ReportFragment extends BaseFragment implements HomeworkView, View.O
 
     @Override
     protected void loadData() {
-        homeworkPresenter = new HomeworkPresenter(this);
+        if (homeworkPresenter == null) {
+            homeworkPresenter = new HomeworkPresenter(this);
+        }
         homeworkPresenter.getSubjects();
     }
 

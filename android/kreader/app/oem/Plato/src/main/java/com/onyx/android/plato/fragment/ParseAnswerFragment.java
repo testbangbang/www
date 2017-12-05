@@ -66,7 +66,9 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     protected void loadData() {
-        parseAnswerPresenter = new ParseAnswerPresenter(this);
+        if (parseAnswerPresenter == null) {
+            parseAnswerPresenter = new ParseAnswerPresenter(this);
+        }
         parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId());
     }
 
