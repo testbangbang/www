@@ -75,11 +75,8 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
     public RxLibraryLoadRequest call() throws Exception {
         bookList.clear();
         libraryList.clear();
-        List<Library> tmpList = DataManagerHelper.loadLibraryListWithCache(getAppContext(), getDataManager(),
-                queryArgs.libraryUniqueId, loadFromCache);
-        if (!CollectionUtils.isNullOrEmpty(tmpList) && StringUtils.isNullOrEmpty(queryArgs.query)) {
-            libraryList.addAll(tmpList);
-        }
+        DataManagerHelper.loadLibraryList(getDataProvider(), libraryList, queryArgs);
+
         if (loadMetadata) {
             totalCount = getDataProvider().count(getAppContext(), queryArgs);
             List<Metadata> metadataList = DataManagerHelper.loadMetadataListWithCache(getAppContext(), getDataManager(),

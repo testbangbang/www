@@ -15,4 +15,10 @@ public class Constant {
     public static final String DIALOG_TAG_FILE_REMOVING = "FileRemoving";
     public static final String DIALOG_TAG_OPEN_LIST = "DialogApplicationOpenList";
     public static final String DIALOG_TAG_DELETE = "DeleteDialog";
+
+    public static class LibraryDisplayMode {
+        public static final int NORMAL_MODE = 0;
+        public static final int CHILD_LIBRARY_MODE = 1;
+        public static final int DIR_MODE = 2;
+    }
 }
