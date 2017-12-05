@@ -117,4 +117,7 @@
     <string name="storage">存储</string>
     <string name="menu_display_mode">显示模式</string>
     <string name="remove_metadata_failed">移除失败</string>
+    <string name="normal_mode">正常模式</string>
+    <string name="child_library_mode">子书库模式</string>
+    <string name="directory_mode">文件夹模式</string>
 </resources>

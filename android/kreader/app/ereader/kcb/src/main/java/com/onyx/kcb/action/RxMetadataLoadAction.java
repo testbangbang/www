@@ -18,6 +18,7 @@ public class RxMetadataLoadAction extends BaseAction<DataBundle> {
 
     private QueryArgs queryArgs;
     private LibraryViewDataModel dataModel;
+    private boolean loadMetadata = true;
 
     public RxMetadataLoadAction(QueryArgs queryArgs) {
         this.queryArgs = queryArgs;
@@ -32,10 +33,14 @@ public class RxMetadataLoadAction extends BaseAction<DataBundle> {
         this.loadFromCache = loadFromCache;
     }
 
+    public void setLoadMetadata(boolean loadMetadata) {
+        this.loadMetadata = loadMetadata;
+    }
+
     @Override
     public void execute(final DataBundle dataHolder, final RxCallback baseCallback) {
         dataModel = dataHolder.getLibraryViewDataModel();
-        final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getListSelected(), dataHolder.getEventBus(), true);
+        final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getListSelected(), dataHolder.getEventBus(), loadMetadata);
         libraryRequest.setLoadFromCache(loadFromCache);
         RxLibraryLoadRequest.setAppContext(dataHolder.getAppContext());
         libraryRequest.execute(new RxCallback<RxLibraryLoadRequest>() {
