@@ -40,6 +40,12 @@
         </activity>
 
         <activity android:name=".activity.MainActivity" />
+
+        <provider
+            android:authorities="com.onyx.system.database.ContentProvider"
+            android:exported="true"
+            android:name="com.onyx.android.sdk.data.db.OnyxSystemContentProvider_Provider"/>
+
     </application>
 
 </manifest>
