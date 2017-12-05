@@ -7,5 +7,5 @@ package com.onyx.android.plato.cloud.bean;
 public class UserLoginResultBean {
     public int code;
     public String msg;
-    public UserInfoBean data;
+    public UserBean data;
 }

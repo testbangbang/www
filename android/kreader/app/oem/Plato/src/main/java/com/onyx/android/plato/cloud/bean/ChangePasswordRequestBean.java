@@ -7,19 +7,9 @@ import android.databinding.BaseObservable;
  */
 
 public class ChangePasswordRequestBean extends BaseObservable{
-    public String account;
     public String oldPassword;
-    public String newPpassword;
+    public String newPassword;
     public String finalPassword;
-
-    public String getAccount() {
-        return account;
-    }
-
-    public void setAccount(String account) {
-        this.account = account;
-        notifyChange();
-    }
 
     public String getOldPassword() {
         return oldPassword;
@@ -30,12 +20,12 @@ public class ChangePasswordRequestBean extends BaseObservable{
         notifyChange();
     }
 
-    public String getNewPpassword() {
-        return newPpassword;
+    public String getNewPassword() {
+        return newPassword;
     }
 
-    public void setNewPpassword(String newPpassword) {
-        this.newPpassword = newPpassword;
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
         notifyChange();
     }
 
@@ -45,6 +35,13 @@ public class ChangePasswordRequestBean extends BaseObservable{
 
     public void setFinalPassword(String finalPassword) {
         this.finalPassword = finalPassword;
+        notifyChange();
+    }
+
+    public void clear() {
+        oldPassword = "";
+        newPassword = "";
+        finalPassword = "";
         notifyChange();
     }
 }

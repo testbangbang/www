@@ -15,12 +15,10 @@ import retrofit2.Response;
 
 public class GetReportListRequest extends BaseCloudRequest {
     private int courseId;
-    private int studentId;
     private GetReportListBean reportList;
 
-    public GetReportListRequest(int courseId, int studentId) {
+    public GetReportListRequest(int courseId) {
         this.courseId = courseId;
-        this.studentId = studentId;
     }
 
     public GetReportListBean getReportList() {
@@ -38,6 +36,6 @@ public class GetReportListRequest extends BaseCloudRequest {
     }
 
     private Call<GetReportListBean> getCall(ContentService service) {
-        return service.getReportList(courseId, studentId);
+        return service.getReportList(courseId);
     }
 }

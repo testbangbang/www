@@ -9,4 +9,5 @@ public class ReportListBean {
     public String num;
     public String name;
     public long correct_datetime;
+    public int report_status;
 }

@@ -27,6 +27,7 @@
     <string name="academic_ability_value">学科能力值(点击左侧查看个人总分再班级,年级中排行情况)</string>
     <string name="total_ability_value">总能力值</string>
     <string name="confirm">确定</string>
+    <string name="cancel">取消</string>
     <string name="grade_ranking">年级排名</string>
     <string name="full_score">满分: %d分</string>
     <string name="homework_unfinished_title_format">[%1$s] %2$s</string>
@@ -144,7 +145,6 @@
     <string name="login_activity_login">登录</string>
     <string name="account_format_error_tips">账户名格式错误</string>
     <string name="password_format_error_tips">密码格式错误</string>
-    <string name="login_activity_loading_tips">请稍后</string>
     <string name="common_tips_network_connection_exception">网络连接异常</string>
     <string name="common_tips_request_failed">请求失败</string>
     <string name="user_center_fragment_logout">退出登录</string>
@@ -218,4 +218,10 @@
     <string name="lose_data">数据丢失</string>
     <string name="score_detail">%1$d分(满分%2$d分)</string>
     <string name="load_again">重新加载</string>
+    <string name="page">页</string>
+    <string name="upload_failed">上传失败</string>
+    <string name="input_mistake">输入错因</string>
+    <string name="input_mistake_tip">提示：错因分析，最多四个字</string>
+    <string name="verify_original_password_error">验证原密码错误</string>
+    <string name="password_length_less_than_normal">密码长度小于6</string>
 </resources>

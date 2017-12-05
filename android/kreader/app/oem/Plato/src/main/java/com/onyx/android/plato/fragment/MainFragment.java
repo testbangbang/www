@@ -38,17 +38,18 @@ public class MainFragment extends BaseFragment implements MainFragmentView, View
 
     @Override
     protected void loadData() {
-        presenter = new MainFragmentPresenter(this);
-        //TODO:fake studentId 1, 108
-        presenter.getPractices(1);
-        presenter.getSubjectScore("108");
-        Date date = new Date(System.currentTimeMillis());
-        mainBinding.setDate(DateTimeUtil.formatDate(date, new SimpleDateFormat("MM-dd", Locale.getDefault())));
+        if (presenter == null) {
+            presenter = new MainFragmentPresenter(this);
+        }
+        presenter.getPractices();
+        presenter.getSubjectScore();
     }
 
     @Override
     protected void initView(ViewDataBinding rootView) {
         mainBinding = (MainBinding) rootView;
+        Date date = new Date(System.currentTimeMillis());
+        mainBinding.setDate(DateTimeUtil.formatDate(date, new SimpleDateFormat("MM-dd", Locale.getDefault())));
         mainBinding.todayTaskRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         dividerItemDecoration.setDrawLine(true);

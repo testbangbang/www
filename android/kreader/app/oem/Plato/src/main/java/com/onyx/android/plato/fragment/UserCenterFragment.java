@@ -4,11 +4,11 @@ import android.databinding.ViewDataBinding;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.onyx.android.plato.cloud.bean.UserInfoBean;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.plato.BR;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
-import com.onyx.android.plato.cloud.bean.UserInfoBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.common.ManagerActivityUtils;
@@ -27,23 +27,21 @@ import java.net.ConnectException;
  */
 
 public class UserCenterFragment extends BaseFragment implements UserLogoutView, View.OnClickListener {
-
-    private UserInfoBean userInfoBean = new UserInfoBean();
     private UserCenterPresenter userCenterPresenter;
     private FragmentUserCenterBinding userCenterBinding;
-    private String account;
 
     @Override
     protected void loadData() {
-        restoreUserInfo();
+        if (userCenterPresenter == null) {
+            userCenterPresenter = new UserCenterPresenter(this);
+        }
+        userCenterPresenter.getUserInfo();
     }
 
     @Override
     protected void initView(ViewDataBinding binding) {
-        userCenterPresenter = new UserCenterPresenter(this);
         userCenterBinding = (FragmentUserCenterBinding) binding;
         userCenterBinding.setListener(this);
-        userCenterBinding.setVariable(BR.userInfo,userInfoBean);
     }
 
     @Override
@@ -56,23 +54,8 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
         return R.layout.fragment_user_center;
     }
 
-    private void restoreUserInfo() {
-        account = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_ACCOUNT, "");
-        String name = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_NAME,"");
-        String phoneNumber = PreferenceManager.getStringValue(SunApplication.getInstance(),Constants.SP_KEY_USER_PHONE_NUMBER,"");
-        if (!TextUtils.isEmpty(account)){
-            userInfoBean.account = account;
-        }
-        if (!TextUtils.isEmpty(name)){
-            userInfoBean.name = name;
-        }
-        if (!TextUtils.isEmpty(phoneNumber)){
-            userInfoBean.phoneNumber = phoneNumber;
-        }
-    }
-
     @Override
-    public void onLogoutSucced() {
+    public void onLogoutSucceed() {
         if (null != getActivity()){
             ManagerActivityUtils.startLoginActivity(getActivity());
             getActivity().finish();
@@ -98,6 +81,13 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
     }
 
     @Override
+    public void setUserInfo(UserInfoBean data) {
+        if (userCenterBinding != null) {
+            userCenterBinding.setVariable(BR.userInfo,data);
+        }
+    }
+
+    @Override
     public boolean onKeyBack() {
         EventBus.getDefault().post(new OnBackPressEvent(ChildViewID.FRAGMENT_USER_CENTER));
         return true;
@@ -113,7 +103,8 @@ public class UserCenterFragment extends BaseFragment implements UserLogoutView, 
                 EventBus.getDefault().post(new ToChangePasswordEvent());
                 break;
             case R.id.tv_user_center_fragment_logout:
-                userCenterPresenter.logoutAccount(account);
+                ManagerActivityUtils.startLoginActivity(SunApplication.getInstance());
+                getActivity().finish();
                 break;
         }
     }

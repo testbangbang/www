@@ -12,9 +12,9 @@ public class StudyReportDetailBean {
 
     public int score;
     public int classRank;
-    public int classSize;
+    public int classNum;
     public int gradeRank;
-    public int gradeSize;
+    public int gradeNum;
     public int SN;
     public int STP;
     public int STS;
@@ -31,7 +31,7 @@ public class StudyReportDetailBean {
 
         public static class PointsBean {
 
-            @SerializedName("class")
+            @SerializedName("Class")
             public float classX;
             public float own;
         }

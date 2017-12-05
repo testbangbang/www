@@ -33,7 +33,6 @@ public class HttpGetTest extends ApplicationTestCase<SunApplication> {
         requestBean.course = null;
         requestBean.endtime = null;
         requestBean.starttime = null;
-        requestBean.studentId = "2";
         requestBean.type = null;
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
 
@@ -56,7 +55,6 @@ public class HttpGetTest extends ApplicationTestCase<SunApplication> {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
         requestBean.page = "1";
         requestBean.size = "2";
-        requestBean.studentId = "2";
         final GetNewMessageRequest rq = new GetNewMessageRequest(requestBean);
 
         mainActivityData.getNewMessage(rq, new BaseCallback() {

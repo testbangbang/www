@@ -1,5 +1,6 @@
 package com.onyx.android.plato.interfaces;
 
+import com.onyx.android.plato.cloud.bean.AnalysisBean;
 import com.onyx.android.plato.cloud.bean.PracticeParseBean;
 
 /**
@@ -10,4 +11,10 @@ public interface ParseAnswerView {
     void setExplanation(PracticeParseBean data);
 
     void setRecordDuration(long recordDuration);
+
+    void setAnalysis(AnalysisBean analysisBean);
+
+    void setVoiceUrl(String voiceUrl);
+
+    void insertAnalysis();
 }

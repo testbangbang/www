@@ -18,9 +18,11 @@ public class ContentBean implements Comparable<ContentBean> {
     public String status;
     public String num;
     public String correctTime;
+    public String submitTime;
     public int practiceStudentId;
     public int readStatus;
     public int practiceType;
+    public int practiceId;
 
     @Override
     public int compareTo(@NonNull ContentBean contentBean) {

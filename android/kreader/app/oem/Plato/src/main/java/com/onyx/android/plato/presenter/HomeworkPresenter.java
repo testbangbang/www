@@ -5,7 +5,7 @@ import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.ExerciseBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
+import com.onyx.android.plato.cloud.bean.GetReportListBean;
 import com.onyx.android.plato.cloud.bean.GetStudyReportDetailResultBean;
 import com.onyx.android.plato.cloud.bean.GetSubjectBean;
 import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
@@ -14,6 +14,7 @@ import com.onyx.android.plato.cloud.bean.HomeworkUnfinishedResultBean;
 import com.onyx.android.plato.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.plato.cloud.bean.Question;
 import com.onyx.android.plato.cloud.bean.QuestionData;
+import com.onyx.android.plato.cloud.bean.ReportListBean;
 import com.onyx.android.plato.cloud.bean.SubjectBean;
 import com.onyx.android.plato.cloud.bean.SubmitPracticeRequestBean;
 import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
@@ -24,8 +25,10 @@ import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.data.FillHomeworkData;
 import com.onyx.android.plato.data.HomeworkData;
 import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
+import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.HomeworkView;
 import com.onyx.android.plato.requests.cloud.GetExerciseTypeRequest;
+import com.onyx.android.plato.requests.cloud.GetReportListRequest;
 import com.onyx.android.plato.requests.cloud.GetStudyReportDetailRequest;
 import com.onyx.android.plato.requests.cloud.GetSubjectRequest;
 import com.onyx.android.plato.requests.cloud.HomeworkFinishedRequest;
@@ -36,6 +39,8 @@ import com.onyx.android.plato.requests.local.FillAnswerRequest;
 import com.onyx.android.plato.requests.local.GetAllQuestionRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -57,16 +62,15 @@ public class HomeworkPresenter {
         fillHomeworkData = new FillHomeworkData();
     }
 
-    public void getHomeworkUnfinishedData(String studentId) {
+    public void getHomeworkUnfinishedData() {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.studentId = studentId;
         final HomeworkUnfinishedRequest rq = new HomeworkUnfinishedRequest(requestBean);
         homeworkData.getHomeworkUnfinishedData(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkUnfinishedResultBean resultBean = rq.getResultBean();
                 if (resultBean == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 List<ContentBean> content = resultBean.data.content;
@@ -77,13 +81,12 @@ public class HomeworkPresenter {
         });
     }
 
-    public void getHomeworkFinishedData(String studentId, String course, String startTime, String endTime, String type) {
+    public void getHomeworkFinishedData(String course, String startTime, String endTime, String type) {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
         requestBean.status = CloudApiContext.Practices.FINISHED_STATE;
         requestBean.course = course;
         requestBean.endtime = endTime;
         requestBean.starttime = startTime;
-        requestBean.studentId = studentId;
         requestBean.type = type;
 
         final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
@@ -91,76 +94,73 @@ public class HomeworkPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 HomeworkFinishedResultBean resultBean = rq.getResultBean();
-                if (resultBean == null || resultBean.data == null) {
-                CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                if (resultBean == null) {
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
 
                 HomeworkFinishedResultBean.FinishData data = resultBean.data;
-                List<FinishContent> content = data.content;
+                List<ContentBean> content = data.content;
                 if (content != null && content.size() > 0) {
                     homeworkView.setFinishedData(content);
+                } else {
+                    homeworkView.setNullFinishedData();
                 }
             }
         });
     }
 
-    public void getSubjects(final String studentId) {
-        final GetSubjectRequest rq = new GetSubjectRequest(Integer.parseInt(studentId));
+    public void getSubjects() {
+        final GetSubjectRequest rq = new GetSubjectRequest();
         homeworkData.getSubjects(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSubjectBean subjects = rq.getSubjects();
                 if (subjects == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 List<SubjectBean> subjectBeanList = subjects.data;
                 if (subjectBeanList != null && subjectBeanList.size() > 0) {
                     homeworkView.setSubjects(subjectBeanList);
-                    getExerciseType(studentId, subjectBeanList.get(0).id);
+                    getExerciseType(subjectBeanList.get(0).id);
+                    getStudyReportData(subjectBeanList.get(0).id);
                 }
             }
         });
     }
 
-    public void getExerciseType(final String studentId, final int subjectId) {
+    public void getExerciseType(final int subjectId) {
         final GetExerciseTypeRequest rq = new GetExerciseTypeRequest();
         homeworkData.getExerciseType(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 GetSubjectBean exerciseTypes = rq.getExerciseTypes();
                 if (exerciseTypes == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 List<SubjectBean> types = exerciseTypes.data;
                 if (types != null && types.size() > 0) {
                     homeworkView.setExerciseType(exerciseTypes.data);
-                    getHomeworkFinishedData(studentId, subjectId + "", null, null, types.get(0).type);
+                    getHomeworkFinishedData(subjectId + "", null, null, types.get(0).type);
                 }
             }
         });
     }
 
-    public void getStudyReportData(String course) {
-        HomeworkRequestBean requestBean = new HomeworkRequestBean();
-        requestBean.status = CloudApiContext.Practices.REPORT_STATE;
-        requestBean.course = course;
-        requestBean.studentId = "2";
-
-        final HomeworkFinishedRequest rq = new HomeworkFinishedRequest(requestBean);
-        homeworkData.getHomeworkFinishedData(rq, new BaseCallback() {
+    public void getStudyReportData(int courseId) {
+        final GetReportListRequest rq = new GetReportListRequest(courseId);
+        homeworkData.getReportList(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                HomeworkFinishedResultBean resultBean = rq.getResultBean();
-                if (resultBean == null || resultBean.data == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                GetReportListBean reportList = rq.getReportList();
+                if (reportList == null) {
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
 
-                HomeworkFinishedResultBean.FinishData data = resultBean.data;
-                List<FinishContent> content = data.content;
+                List<ReportListBean> content = reportList.data.content;
                 if (content != null && content.size() > 0) {
                     homeworkView.setReportData(content);
                 }
@@ -213,8 +213,8 @@ public class HomeworkPresenter {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 TaskBean taskBean = rq.getTaskBean();
-                if (taskBean == null || taskBean.data == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                if (taskBean == null) {
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 taskBean.data.taskId = taskId;
@@ -224,10 +224,9 @@ public class HomeworkPresenter {
         });
     }
 
-    public void submitAnswer(List<PracticeAnswerBean> answerList, int taskId, int studentId) {
+    public void submitAnswer(List<PracticeAnswerBean> answerList, int taskId) {
         SubmitPracticeRequestBean submitPracticeRequestBean = new SubmitPracticeRequestBean();
         submitPracticeRequestBean.id = taskId;
-        submitPracticeRequestBean.studentId = studentId;
         String answers = JSON.toJSONString(answerList);
         RequestBody requestBody = RequestBody.create(MediaType.parse(Constants.REQUEST_HEAD), answers);
         submitPracticeRequestBean.practiceListBody = requestBody;
@@ -238,7 +237,7 @@ public class HomeworkPresenter {
             public void done(BaseRequest request, Throwable e) {
                 SubmitPracticeResultBean result = rq.getResult();
                 if (result == null) {
-                    CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.login_activity_request_failed));
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 if (Constants.OK.equals(result.msg)) {
@@ -257,6 +256,7 @@ public class HomeworkPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetStudyReportDetailResultBean resultBean = rq.getStudyReportDetailResultBean();
                 if (resultBean == null) {
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
 

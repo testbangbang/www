@@ -14,13 +14,11 @@ import retrofit2.Response;
  */
 
 public class DeleteNewMessageRequest extends BaseCloudRequest {
-    private String studentId;
     private String messageId;
     private SubmitPracticeResultBean resultBean;
 
-    public DeleteNewMessageRequest(String messageId, String studentId) {
+    public DeleteNewMessageRequest(String messageId) {
         this.messageId = messageId;
-        this.studentId = studentId;
     }
 
     public SubmitPracticeResultBean getResultBean() {
@@ -38,7 +36,7 @@ public class DeleteNewMessageRequest extends BaseCloudRequest {
     }
 
     private Call<SubmitPracticeResultBean> getCall(ContentService service) {
-        Call<SubmitPracticeResultBean> call = service.deleteMessage(messageId, studentId);
+        Call<SubmitPracticeResultBean> call = service.deleteMessage(messageId);
         return call;
     }
 }

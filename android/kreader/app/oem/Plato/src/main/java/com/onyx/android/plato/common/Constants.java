@@ -46,4 +46,5 @@ public class Constants {
     public static final String EXAM = "exam";
     public static final String P_MARK = "</p>";
     public static final String VOICE_FORMAT = ".amr";
+    public static final String BITMAP_NAME = "bitmap.png";
 }

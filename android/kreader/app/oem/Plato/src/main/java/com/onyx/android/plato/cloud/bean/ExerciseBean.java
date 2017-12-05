@@ -9,5 +9,6 @@ import java.util.List;
 public class ExerciseBean {
     public int id;
     public String scene;
+    public String state;
     public List<Question> exercises;
 }

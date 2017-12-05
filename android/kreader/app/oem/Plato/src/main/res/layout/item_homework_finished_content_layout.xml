@@ -25,7 +25,9 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/homework_finished_item_margin_left"
-            android:text="1.1"
+            android:background="@drawable/ic_shape_circle"
+            android:gravity="center"
+            android:text="@{content.content.num}"
             android:textSize="@dimen/level_three_heading_font" />
 
         <LinearLayout
@@ -33,7 +35,7 @@
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/homework_finished_unit"
-            android:gravity="center"
+            android:gravity="center_vertical"
             android:orientation="vertical"
             android:paddingLeft="@dimen/homework_item_chapter_margin">
 

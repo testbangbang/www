@@ -5,14 +5,20 @@ package com.onyx.android.plato.event;
  */
 
 public class UnfinishedEvent {
+    private int practiceId;
     private String title;
     private String type;
     private int id;
 
-    public UnfinishedEvent(int id, String type, String title) {
+    public UnfinishedEvent(int id, int practiceId, String type, String title) {
         this.id = id;
+        this.practiceId = practiceId;
         this.type = type;
         this.title = title;
+    }
+
+    public int getPracticeId() {
+        return practiceId;
     }
 
     public int getId() {

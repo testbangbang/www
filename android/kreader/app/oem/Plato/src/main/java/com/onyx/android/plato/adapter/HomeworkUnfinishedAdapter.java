@@ -63,7 +63,7 @@ public class HomeworkUnfinishedAdapter extends PageRecyclerView.PageAdapter {
         }
         int position = (int) tag;
         ContentBean contentBean = data.get(position);
-        EventBus.getDefault().post(new UnfinishedEvent(contentBean.id, contentBean.type, contentBean.title));
+        EventBus.getDefault().post(new UnfinishedEvent(contentBean.id, contentBean.practiceId, contentBean.type, contentBean.title));
     }
 
     public void setData(List<ContentBean> data) {

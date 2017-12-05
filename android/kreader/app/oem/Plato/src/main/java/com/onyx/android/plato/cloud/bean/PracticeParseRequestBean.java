@@ -7,5 +7,4 @@ package com.onyx.android.plato.cloud.bean;
 public class PracticeParseRequestBean {
     public int id;
     public int pid;
-    public int studentId;
 }

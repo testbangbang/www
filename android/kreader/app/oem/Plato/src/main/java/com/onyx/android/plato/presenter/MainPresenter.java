@@ -33,11 +33,10 @@ public class MainPresenter {
         this.mainView = mainView;
     }
 
-    public void getNewMessage(String studentId) {
+    public void getNewMessage() {
         HomeworkRequestBean requestBean = new HomeworkRequestBean();
         requestBean.page = Constants.DEFAULT_PAGE;
         requestBean.size = Constants.DEFAULT_PAGE_SIZE;
-        requestBean.studentId = studentId;
         final GetNewMessageRequest rq = new GetNewMessageRequest(requestBean);
         mainActivityData.getNewMessage(rq, new BaseCallback() {
             @Override
@@ -58,8 +57,8 @@ public class MainPresenter {
         });
     }
 
-    public void deleteRemindMessage(final String messageId, final String studentId) {
-        final DeleteNewMessageRequest rq = new DeleteNewMessageRequest(messageId, studentId);
+    public void deleteRemindMessage(final String messageId) {
+        final DeleteNewMessageRequest rq = new DeleteNewMessageRequest(messageId);
         mainActivityData.deleteMessage(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -69,7 +68,7 @@ public class MainPresenter {
                     return;
                 }
                 if (Constants.OK.equals(resultBean.msg)) {
-                    getNewMessage(studentId);
+                    getNewMessage();
                 } else {
                     CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.refresh_failed));
                 }

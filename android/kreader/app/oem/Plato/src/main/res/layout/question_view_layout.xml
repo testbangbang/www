@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <FrameLayout
@@ -50,7 +50,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_toLeftOf="@+id/correct_state"
         android:orientation="vertical">
 
@@ -58,7 +58,7 @@
             android:id="@+id/question_introduce"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/level_three_heading_font" />
+            android:textSize="@dimen/level_two_heading_font" />
 
         <RelativeLayout
             android:id="@+id/question_title_layout"
@@ -76,6 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
+                android:layout_below="@+id/question_title"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:gravity="center_vertical"

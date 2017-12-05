@@ -26,7 +26,8 @@
     <string name="personal_portrait">Personal portrait</string>
     <string name="academic_ability_value">Academic ability value (click on the left side to see the total score and then the class, ranking in the rankings)</string>
     <string name="total_ability_value">Total ability value</string>
-    <string name="confirm">Yes</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
     <string name="grade_ranking">Grade ranking</string>
     <string name="full_score">full: %d</string>
     <string name="homework_unfinished_title_format">[%1$s] %2$s</string>
@@ -140,7 +141,6 @@
     <string name="un_submit">Not submit</string>
     <string name="account_format_error_tips">Incorrect account name format</string>
     <string name="password_format_error_tips">Incorrect password format</string>
-    <string name="login_activity_loading_tips">Please wait</string>
     <string name="common_tips_network_connection_exception">network connection exception</string>
     <string name="common_tips_request_failed">request failed</string>
     <string name="user_center_fragment_logout">Logout</string>
@@ -216,4 +216,10 @@
     <string name="lose_data">Lose of data</string>
     <string name="score_detail">%1$d points(out of %2$d)</string>
     <string name="load_again">Load again</string>
+    <string name="page">Page</string>
+    <string name="upload_failed">Upload failed</string>
+    <string name="input_mistake">Input wrong reason</string>
+    <string name="input_mistake_tip">Tip: error analysis, up to four words</string>
+    <string name="verify_original_password_error">Verify the original password error</string>
+    <string name="password_length_less_than_normal">The password length is less than 6</string>
 </resources>

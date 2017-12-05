@@ -1,13 +1,13 @@
 package com.onyx.android.plato.fragment;
 
 import android.databinding.ViewDataBinding;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ContentBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.QuestionDetail;
 import com.onyx.android.plato.cloud.bean.ReportListBean;
 import com.onyx.android.plato.cloud.bean.StudyReportDetailBean;
@@ -29,15 +29,18 @@ import java.util.List;
  */
 
 public class StudyReportFragment extends BaseFragment implements HomeworkView, View.OnClickListener {
-
     private HomeworkPresenter homeworkPresenter;
     private FragmentStudyReportBinding studyReportBinding;
     String[] heads = SunApplication.getInstance().getResources().getStringArray(R.array.study_report_table_heads);
     private String title = "";
+    private int id;
 
     @Override
     protected void loadData() {
-
+        if (homeworkPresenter == null) {
+            homeworkPresenter = new HomeworkPresenter(this);
+        }
+        homeworkPresenter.getStudyReportDetail(id);
     }
 
     private void setSpiderWebViewScoresData(List<StudyReportDetailBean.CompetenceBean> competenceDatas) {
@@ -122,7 +125,7 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
     }
 
     @Override
-    public void setFinishedData(List<FinishContent> content) {
+    public void setFinishedData(List<ContentBean> content) {
 
     }
 
@@ -160,12 +163,16 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     }
 
-    public void setPracticeId(int id,String tilte) {
-        if (homeworkPresenter == null){
-            homeworkPresenter = new HomeworkPresenter(this);
+    @Override
+    public void setNullFinishedData() {
+
+    }
+
+    public void setPracticeId(int id,String title) {
+        this.title = title;
+        this.id = id;
+        if (homeworkPresenter != null){
+            homeworkPresenter.getStudyReportDetail(id);
         }
-        homeworkPresenter.getStudyReportDetail(id);
-        this.title = tilte;
-        studyReportBinding.setStudyReportTitle(title);
     }
 }

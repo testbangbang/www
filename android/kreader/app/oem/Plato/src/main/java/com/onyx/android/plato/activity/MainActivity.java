@@ -14,8 +14,8 @@ import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.bean.MainTabBean;
 import com.onyx.android.plato.bean.User;
 import com.onyx.android.plato.cloud.bean.ContentBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
+import com.onyx.android.plato.cloud.bean.UserInfoBean;
 import com.onyx.android.plato.common.AppConfigData;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
@@ -26,6 +26,9 @@ import com.onyx.android.plato.event.DeleteRemindEvent;
 import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.event.HaveNewVersionApkEvent;
 import com.onyx.android.plato.event.HaveNewVersionEvent;
+import com.onyx.android.plato.event.HomeworkFinishedEvent;
+import com.onyx.android.plato.event.HomeworkReportEvent;
+import com.onyx.android.plato.event.HomeworkUnfinishedEvent;
 import com.onyx.android.plato.event.OnBackPressEvent;
 import com.onyx.android.plato.event.ParseAnswerEvent;
 import com.onyx.android.plato.event.RefreshFragmentEvent;
@@ -46,16 +49,20 @@ import com.onyx.android.plato.fragment.CorrectFragment;
 import com.onyx.android.plato.fragment.DeviceSettingFragment;
 import com.onyx.android.plato.fragment.EmptyFragment;
 import com.onyx.android.plato.fragment.FillHomeworkFragment;
+import com.onyx.android.plato.fragment.FinishedFragment;
 import com.onyx.android.plato.fragment.GoalAdvancedFragment;
-import com.onyx.android.plato.fragment.HomeWorkFragment;
 import com.onyx.android.plato.fragment.MainFragment;
 import com.onyx.android.plato.fragment.ParseAnswerFragment;
 import com.onyx.android.plato.fragment.RankingFragment;
 import com.onyx.android.plato.fragment.RemindFragment;
+import com.onyx.android.plato.fragment.ReportFragment;
 import com.onyx.android.plato.fragment.StudyReportFragment;
+import com.onyx.android.plato.fragment.UnfinishedFragment;
 import com.onyx.android.plato.fragment.UserCenterFragment;
 import com.onyx.android.plato.interfaces.MainView;
+import com.onyx.android.plato.interfaces.UserLogoutView;
 import com.onyx.android.plato.presenter.MainPresenter;
+import com.onyx.android.plato.presenter.UserCenterPresenter;
 import com.onyx.android.plato.utils.ApkUtils;
 import com.onyx.android.plato.utils.SystemUtils;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
@@ -71,7 +78,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class MainActivity extends BaseActivity implements MainView, View.OnClickListener {
+public class MainActivity extends BaseActivity implements MainView, View.OnClickListener, UserLogoutView {
     private ActivityMainBinding mainBinding;
     private User user = new User();
     private FragmentManager fragmentManager;
@@ -92,24 +99,17 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     private int oldPageID = ChildViewID.FRAGMENT_MAIN;
     private MainPresenter mainPresenter;
     private List<ContentBean> remindContent;
+    private UserCenterPresenter userCenterPresenter;
 
     @Override
     protected void initData() {
-        restoreUserName();
         currentTitleIconID = userCenterTitleIconID;
         userCenterFragmentTitle = getString(R.string.user_center_title);
         changePasswordFragmentTitle = getString(R.string.user_center_fragment_change_password);
         mainPresenter = new MainPresenter(this);
-        //TODO:fake student id 1
-        mainPresenter.getNewMessage("135");
-    }
-
-    private void restoreUserName() {
-        String name = PreferenceManager.getStringValue(SunApplication.getInstance(), Constants.SP_KEY_USER_NAME, "");
-        if (!TextUtils.isEmpty(name)) {
-            mainFragmentTitle = name + getString(R.string.main_activity_hello);
-            currentTitle = mainFragmentTitle;
-        }
+        userCenterPresenter = new UserCenterPresenter(this);
+        mainPresenter.getNewMessage();
+        userCenterPresenter.getUserInfo();
     }
 
     @Override
@@ -238,6 +238,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         BaseFragment baseFragment = getPageView(pageID);
         if (baseFragment.isStored) {
             transaction.show(baseFragment);
+            baseFragment.refresh();
         } else {
             transaction.add(R.id.main_frame_layout, baseFragment);
             childViewList.put(pageID, baseFragment);
@@ -258,9 +259,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
             switch (pageID) {
                 case ChildViewID.FRAGMENT_MAIN:
                     baseFragment = new MainFragment();
-                    break;
-                case ChildViewID.FRAGMENT_EXAMINATION_WORK:
-                    baseFragment = new HomeWorkFragment();
                     break;
                 case ChildViewID.FRAGMENT_GOAL_ADVANCED:
                     baseFragment = new GoalAdvancedFragment();
@@ -298,6 +296,15 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 case ChildViewID.FRAGMENT_EMPTY:
                     baseFragment = new EmptyFragment();
                     break;
+                case ChildViewID.FRAGMENT_UNFINISHED:
+                    baseFragment = new UnfinishedFragment();
+                    break;
+                case ChildViewID.FRAGMENT_FINISHED:
+                    baseFragment = new FinishedFragment();
+                    break;
+                case ChildViewID.FRAGMENT_REPORT:
+                    baseFragment = new ReportFragment();
+                    break;
             }
         } else {
             baseFragment.isStored = true;
@@ -309,7 +316,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public boolean dispatchKeyEvent(KeyEvent event) {
         BaseFragment currentFragment = getPageView(currentPageID);
         if (event.getAction() == KeyEvent.ACTION_UP && event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-            if (currentFragment != null && currentFragment.onKeyBack()) {
+            if (currentFragment != null && currentFragment.onKeyBack() || currentPageID == ChildViewID.FRAGMENT_MAIN) {
                 return true;
             }
         }
@@ -318,20 +325,34 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToHomeworkEvent(ToHomeworkEvent event) {
-        mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_EXAMINATION_WORK).select();
+        mainBinding.mainActivityTab.getTabAt(ChildViewID.FRAGMENT_UNFINISHED).select();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeworkUnfinishedEvent(HomeworkUnfinishedEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_UNFINISHED);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeworkFinishedEvent(HomeworkFinishedEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_FINISHED);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onHomeworkReportEvent(HomeworkReportEvent event) {
+        switchCurrentFragment(ChildViewID.FRAGMENT_REPORT);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeleteRemindEvent(DeleteRemindEvent event) {
-        //TODO:fake student id 1
-        mainPresenter.deleteRemindMessage(event.getRemindId() + "", "135");
+        mainPresenter.deleteRemindMessage(event.getRemindId() + "");
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUnfinishedEvent(UnfinishedEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_FILL_HOMEWORK);
         FillHomeworkFragment fillHomeworkFragment = (FillHomeworkFragment) getPageView(ChildViewID.FRAGMENT_FILL_HOMEWORK);
-        fillHomeworkFragment.setTaskId(event.getId(), event.getType(), event.getTitle());
+        fillHomeworkFragment.setTaskId(event.getId(), event.getPracticeId(), event.getType(), event.getTitle());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -348,15 +369,15 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToHomeworkFragmentEvent(BackToHomeworkFragmentEvent event) {
-        switchCurrentFragment(ChildViewID.FRAGMENT_EXAMINATION_WORK);
+        switchCurrentFragment(ChildViewID.FRAGMENT_UNFINISHED);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onToCorrectEvent(ToCorrectEvent event) {
         switchCurrentFragment(ChildViewID.FRAGMENT_CORRECT);
         CorrectFragment correctFragment = (CorrectFragment) getPageView(ChildViewID.FRAGMENT_CORRECT);
-        FinishContent content = event.getContent();
-        if(content != null) {
+        ContentBean content = event.getContent();
+        if (content != null) {
             correctFragment.setStartTimer(content);
         }
     }
@@ -372,7 +393,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         ParseAnswerFragment parseAnswerFragment = (ParseAnswerFragment) getPageView(ChildViewID.FRAGMENT_PARSE_ANSWER);
         QuestionViewBean questionViewBean = event.getQuestion();
         String title = event.getTitle();
-        if(questionViewBean != null && !StringUtils.isNullOrEmpty(title)) {
+        if (questionViewBean != null && !StringUtils.isNullOrEmpty(title)) {
             parseAnswerFragment.setQuestionData(questionViewBean, title);
         }
     }
@@ -480,5 +501,27 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
         if (remindContent != null) {
             remindContent.clear();
         }
+    }
+
+    @Override
+    public void onLogoutSucceed() {
+
+    }
+
+    @Override
+    public void onLogoutFailed(int errorCode, String msg) {
+
+    }
+
+    @Override
+    public void onLogoutError(Throwable throwable) {
+
+    }
+
+    @Override
+    public void setUserInfo(UserInfoBean data) {
+        mainFragmentTitle = data.name + getString(R.string.main_activity_hello);
+        currentTitle = mainFragmentTitle;
+        setTitleAndIcon();
     }
 }

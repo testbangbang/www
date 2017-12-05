@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="recorderTime"
+            type="String" />
+
+        <variable
+            name="addVisible"
+            type="boolean" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/parse_add_sound_whole"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rectangle_gray_stroke"
+        android:orientation="vertical"
+        android:padding="@dimen/question_parse_add_sound_layout_padding"
+        android:visibility="@{addVisible ? View.VISIBLE : View.GONE}">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:text="@string/voice_remark"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <ImageView
+                android:id="@+id/parse_add_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_sound" />
+
+            <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/parse_sound_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="@string/hold_input_voice"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:id="@+id/parse_sound_read"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
+                    android:background="@drawable/ic_voice_background"
+                    android:gravity="center_vertical"
+                    android:text="@{recorderTime}"
+                    android:textSize="@dimen/level_three_heading_font"
+                    android:visibility="gone"/>
+            </FrameLayout>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="@dimen/line_height"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/parse_delete_sound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/button_backup_selector"
+                android:text="@string/remove"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <Button
+                android:id="@+id/parse_add_sound"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/question_parse_add_sound_button_margin"
+                android:layout_marginRight="@dimen/question_parse_add_sound_button_margin"
+                android:background="@drawable/button_backup_selector"
+                android:text="@string/add"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/level_three_heading_font" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/parse_read_record"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/record_result_margin_left"
+            android:background="@drawable/ic_voice_background"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/parse_sound_padding_left"
+            android:text="@{recorderTime}"
+            android:textSize="@dimen/level_three_heading_font"
+            android:visibility="gone" />
+    </LinearLayout>
+</layout>

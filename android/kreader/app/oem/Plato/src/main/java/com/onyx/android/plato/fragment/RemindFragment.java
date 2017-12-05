@@ -7,8 +7,11 @@ import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.RemindAdapter;
 import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.databinding.RemindBinding;
+import com.onyx.android.plato.event.ToMainFragmentEvent;
 import com.onyx.android.plato.view.DisableScrollGridManager;
 import com.onyx.android.plato.view.DividerItemDecoration;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -51,7 +54,8 @@ public class RemindFragment extends BaseFragment {
 
     @Override
     public boolean onKeyBack() {
-        return false;
+        EventBus.getDefault().post(new ToMainFragmentEvent());
+        return true;
     }
 
     public void setRemindContent(List<ContentBean> remindContent) {

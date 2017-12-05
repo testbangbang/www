@@ -7,6 +7,5 @@ import okhttp3.RequestBody;
  */
 
 public class PracticeFavoriteOrDeleteBean {
-    public int studentId;
     public RequestBody requestBody;
 }

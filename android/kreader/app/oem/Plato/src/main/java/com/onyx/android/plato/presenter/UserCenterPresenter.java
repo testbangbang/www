@@ -1,13 +1,19 @@
 package com.onyx.android.plato.presenter;
 
+import com.onyx.android.plato.cloud.bean.UserCenterBean;
+import com.onyx.android.plato.cloud.bean.UserInfoBean;
 import com.onyx.android.plato.cloud.bean.UserLogoutRequestBean;
 import com.onyx.android.plato.cloud.bean.UserLogoutResultBean;
 import com.onyx.android.plato.common.CloudApiContext;
 import com.onyx.android.plato.data.UserCenterFragmentData;
+import com.onyx.android.plato.event.EmptyEvent;
 import com.onyx.android.plato.interfaces.UserLogoutView;
+import com.onyx.android.plato.requests.cloud.GetUserInfoRequest;
 import com.onyx.android.plato.requests.cloud.UserLogoutRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by jackdeng on 2017/10/24.
@@ -35,11 +41,26 @@ public class UserCenterPresenter {
                     return;
                 }
                 if (resultBean.code == CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS){
-                    logoutView.onLogoutSucced();
+                    logoutView.onLogoutSucceed();
                 } else {
                     logoutView.onLogoutFailed(resultBean.code,resultBean.msg);
                 }
 
+            }
+        });
+    }
+
+    public void getUserInfo() {
+        final GetUserInfoRequest rq = new GetUserInfoRequest();
+        userCenterFragmentData.getUserInfo(rq, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                UserCenterBean userCenterBean = rq.getUserCenterBean();
+                if (userCenterBean == null || userCenterBean.data == null) {
+                    return;
+                }
+                UserInfoBean data = userCenterBean.data;
+                logoutView.setUserInfo(data);
             }
         });
     }

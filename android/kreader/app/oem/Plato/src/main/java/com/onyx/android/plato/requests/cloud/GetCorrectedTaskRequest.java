@@ -37,7 +37,7 @@ public class GetCorrectedTaskRequest extends BaseCloudRequest {
     }
 
     private Call<GetCorrectedTaskResultBean> getCall(ContentService service) {
-        Call<GetCorrectedTaskResultBean> call = service.getCorrectedTask(requestBean.practiceId, requestBean.studentId);
+        Call<GetCorrectedTaskResultBean> call = service.getCorrectedTask(requestBean.practiceId);
         return call;
     }
 }

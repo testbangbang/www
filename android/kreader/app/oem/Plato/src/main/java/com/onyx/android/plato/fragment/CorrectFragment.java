@@ -6,14 +6,13 @@ import android.view.View;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.FillHomeworkAdapter;
+import com.onyx.android.plato.cloud.bean.ContentBean;
 import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
-import com.onyx.android.plato.cloud.bean.FinishContent;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskBean;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
-import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
 import com.onyx.android.plato.databinding.CorrectDataBinding;
-import com.onyx.android.plato.event.BackToHomeworkFragmentEvent;
+import com.onyx.android.plato.event.HomeworkFinishedEvent;
 import com.onyx.android.plato.event.TimerEvent;
 import com.onyx.android.plato.interfaces.CorrectView;
 import com.onyx.android.plato.presenter.CorrectPresenter;
@@ -33,16 +32,19 @@ import java.util.List;
 
 public class CorrectFragment extends BaseFragment implements View.OnClickListener, CorrectView {
     private CorrectDataBinding correctDataBinding;
-    private FinishContent content;
+    private ContentBean content;
     private FillHomeworkAdapter adapter;
     private String title;
     private CorrectPresenter presenter;
 
     @Override
     protected void loadData() {
-        presenter = new CorrectPresenter(this);
-        //TODO:fake practice id,student id
-        presenter.getCorrectData(25, 108);
+        if (presenter == null) {
+            presenter = new CorrectPresenter(this);
+        }
+        if (content.correctTime != null) {
+            presenter.getCorrectData(content.id);
+        }
     }
 
     @Override
@@ -84,28 +86,28 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public boolean onKeyBack() {
-        return false;
+        EventBus.getDefault().post(new HomeworkFinishedEvent());
+        return true;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void OnTimerEvent(TimerEvent event) {
         correctDataBinding.setCount(event.getResult());
-        if(event.getResult() == 0 && content.correctTime == null) {
-            EventBus.getDefault().post(new BackToHomeworkFragmentEvent());
+        if (event.getResult() == 0 && content.correctTime == null) {
+            EventBus.getDefault().post(new HomeworkFinishedEvent());
         }
     }
 
-    public void setStartTimer(FinishContent content) {
+    public void setStartTimer(ContentBean content) {
         this.content = content;
         TimerEvent timerEvent = new TimerEvent();
         timerEvent.timeCountDown(3);
-        if(correctDataBinding != null) {
+        if (correctDataBinding != null) {
             setVisible();
         }
 
-        if(presenter != null) {
-            //TODO:fake practice id,student id
-            presenter.getCorrectData(25, 108);
+        if (presenter != null && content.correctTime != null) {
+            presenter.getCorrectData(content.id);
         }
     }
 
@@ -117,7 +119,7 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        EventBus.getDefault().post(new BackToHomeworkFragmentEvent());
+        EventBus.getDefault().post(new HomeworkFinishedEvent());
     }
 
     @Override
@@ -126,20 +128,25 @@ public class CorrectFragment extends BaseFragment implements View.OnClickListene
         List<ExerciseMessageBean> questionMessages = data.exerciseMessageDtos;
         if (questionDataList != null && questionDataList.size() > 0 &&
                 questionMessages != null && questionMessages.size() > 0) {
-            //TODO:fake task id (should:content.id)
-            resolveAdapterData(questionDataList, questionMessages, 1);
+            resolveAdapterData(questionDataList, questionMessages, content.practiceId);
         }
     }
 
     @Override
     public void setQuestionBeanList(List<QuestionViewBean> questionList) {
-        if(adapter == null) {
+        if (adapter == null) {
             return;
         }
-        //TODO:fake practice id 25
         correctDataBinding.correctRecycler.scrollToPosition(0);
         adapter.setFinished(true);
-        adapter.setData(questionList, title, 25);
+        adapter.setData(questionList, title, content.practiceId);
+    }
+
+    @Override
+    public void clearAdapter() {
+        if (adapter != null) {
+            adapter.clearData();
+        }
     }
 
     private void resolveAdapterData(List<QuestionData> questionDataList, List<ExerciseMessageBean> questionMessages, int id) {

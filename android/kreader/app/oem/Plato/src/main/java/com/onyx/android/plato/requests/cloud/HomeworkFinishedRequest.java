@@ -45,7 +45,7 @@ public class HomeworkFinishedRequest extends BaseCloudRequest {
     }
 
     private Call<HomeworkFinishedResultBean> getCall(ContentService service) {
-        return service.getHomeworkFinished(requestBean.status, requestBean.studentId,
+        return service.getHomeworkFinished(requestBean.status,
                 requestBean.page, requestBean.size,
                 requestBean.course, requestBean.type,
                 requestBean.starttime, requestBean.endtime);

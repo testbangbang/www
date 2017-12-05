@@ -18,7 +18,7 @@ public class AppConfigData {
 
     public static void loadMainTabData(Context context) {
         mainTabList.add(new MainTabBean(context.getString(R.string.main_view), ChildViewID.FRAGMENT_MAIN));
-        mainTabList.add(new MainTabBean(context.getString(R.string.examination_work), ChildViewID.FRAGMENT_EXAMINATION_WORK));
+        mainTabList.add(new MainTabBean(context.getString(R.string.examination_work), ChildViewID.FRAGMENT_UNFINISHED));
         mainTabList.add(new MainTabBean(context.getString(R.string.goal_advanced), ChildViewID.FRAGMENT_GOAL_ADVANCED));
         mainTabList.add(new MainTabBean(context.getString(R.string.study_management), ChildViewID.FRAGMENT_STUDY_MANAGEMENT));
     }

@@ -6,7 +6,6 @@ package com.onyx.android.plato.cloud.bean;
 
 public class HomeworkRequestBean {
     public String status;
-    public String studentId;
     public String page;
     public String size;
     public String course;

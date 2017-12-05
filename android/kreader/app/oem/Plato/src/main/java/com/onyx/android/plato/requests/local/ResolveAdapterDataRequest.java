@@ -5,8 +5,11 @@ import com.onyx.android.plato.cloud.bean.ExerciseMessageBean;
 import com.onyx.android.plato.cloud.bean.Question;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.QuestionViewBean;
+import com.onyx.android.plato.data.database.TaskAndAnswerEntity;
+import com.onyx.android.plato.data.database.TaskAndAnswerEntity_Table;
 import com.onyx.android.plato.requests.requestTool.BaseLocalRequest;
 import com.onyx.android.plato.requests.requestTool.SunRequestManager;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,6 +82,19 @@ public class ResolveAdapterDataRequest extends BaseLocalRequest {
                         bean.setAccuracy(message.accuracy);
                         bean.setCorrect(message.correct);
                         bean.setExerciseFavored(message.exerciseFavored);
+                    }
+                }
+            }
+        }
+
+        List<TaskAndAnswerEntity> entities = new Select().from(TaskAndAnswerEntity.class).where(TaskAndAnswerEntity_Table.taskId.eq(taskId + "")).queryList();
+        if (entities != null && entities.size() > 0) {
+            for (int i = 0; i < entities.size(); i++) {
+                TaskAndAnswerEntity taskAndAnswerEntity = entities.get(i);
+                for (int j = 0; j < questionList.size(); j++) {
+                    QuestionViewBean questionViewBean = questionList.get(j);
+                    if (taskAndAnswerEntity.questionId.equals(questionViewBean.getId() + "")) {
+                        questionViewBean.setUserAnswer(taskAndAnswerEntity.userAnswer);
                     }
                 }
             }

@@ -66,7 +66,7 @@ public class RemindAdapter extends PageRecyclerView.PageAdapter {
 
         int position = (int) tag;
         ContentBean bean = data.get(position);
-        EventBus.getDefault().post(new UnfinishedEvent(bean.practiceStudentId, bean.practiceType == 1 ? Constants.TASK : Constants.EXAM, bean.title));
+        EventBus.getDefault().post(new UnfinishedEvent(bean.id, bean.practiceId, bean.practiceType == 1 ? Constants.TASK : Constants.EXAM, bean.title));
         EventBus.getDefault().post(new DeleteRemindEvent(bean.id));
     }
 

@@ -40,7 +40,7 @@ android {
 }
 apt {
     arguments {
-        targetModuleName 'Sun'
+        targetModuleName 'Plato'
     }
 }
 dependencies {

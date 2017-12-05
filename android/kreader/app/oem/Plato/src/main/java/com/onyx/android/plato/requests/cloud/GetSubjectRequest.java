@@ -14,12 +14,7 @@ import retrofit2.Response;
  */
 
 public class GetSubjectRequest extends BaseCloudRequest {
-    private int studentId;
     private GetSubjectBean subjects;
-
-    public GetSubjectRequest(int studentId) {
-        this.studentId = studentId;
-    }
 
     public GetSubjectBean getSubjects() {
         return subjects;
@@ -36,7 +31,7 @@ public class GetSubjectRequest extends BaseCloudRequest {
     }
 
     private Call<GetSubjectBean> getCall(ContentService service) {
-        Call<GetSubjectBean> call = service.getSubject(studentId);
+        Call<GetSubjectBean> call = service.getSubject();
         return call;
     }
 }

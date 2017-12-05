@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edit_mistake"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/custom_mistake_margin"
+        android:background="@drawable/rectangle_stroke"
+        android:hint="@string/input_mistake"
+        android:maxLength="4"
+        android:padding="@dimen/custom_mistake_padding"
+        android:singleLine="true"
+        android:textColorHint="@color/gray"
+        android:textSize="@dimen/level_three_heading_font" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/custom_mistake_margin"
+        android:text="@string/input_mistake_tip" />
+</LinearLayout>

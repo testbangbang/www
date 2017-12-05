@@ -45,6 +45,6 @@ public class GetNewMessageRequest extends BaseCloudRequest {
     }
 
     private Call<HomeworkUnfinishedResultBean> getCall(ContentService service) {
-        return service.getMessage(requestBean.studentId,requestBean.page,requestBean.size);
+        return service.getMessage(requestBean.page,requestBean.size);
     }
 }

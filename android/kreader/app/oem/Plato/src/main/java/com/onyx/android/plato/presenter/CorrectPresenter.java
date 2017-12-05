@@ -34,10 +34,9 @@ public class CorrectPresenter {
         correctData = new CorrectData();
     }
 
-    public void getCorrectData(int practiceId, int studentId) {
+    public void getCorrectData(int practiceId) {
         GetCorrectedTaskRequestBean requestBean = new GetCorrectedTaskRequestBean();
         requestBean.practiceId = practiceId;
-        requestBean.studentId = studentId;
         final GetCorrectedTaskRequest rq = new GetCorrectedTaskRequest(requestBean);
         correctData.getCorrectData(rq, new BaseCallback() {
             @Override
@@ -64,6 +63,8 @@ public class CorrectPresenter {
                 List<QuestionViewBean> questionList = rq.getQuestionList();
                 if (questionList != null && questionList.size() > 0) {
                     correctView.setQuestionBeanList(questionList);
+                } else {
+                    correctView.clearAdapter();
                 }
             }
         });

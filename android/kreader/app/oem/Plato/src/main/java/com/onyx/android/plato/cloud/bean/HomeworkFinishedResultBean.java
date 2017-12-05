@@ -15,6 +15,6 @@ public class HomeworkFinishedResultBean {
         public int page;
         public int size;
         public String status;
-        public List<FinishContent> content;
+        public List<ContentBean> content;
     }
 }

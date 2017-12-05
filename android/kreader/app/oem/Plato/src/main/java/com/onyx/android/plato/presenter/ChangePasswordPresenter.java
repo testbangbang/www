@@ -2,10 +2,12 @@ package com.onyx.android.plato.presenter;
 
 import com.onyx.android.plato.cloud.bean.ChangePasswordRequestBean;
 import com.onyx.android.plato.cloud.bean.ChangePasswordResultBean;
+import com.onyx.android.plato.cloud.bean.ModifyPasswordBean;
+import com.onyx.android.plato.cloud.bean.SubmitPracticeResultBean;
 import com.onyx.android.plato.common.CloudApiContext;
 import com.onyx.android.plato.data.ChangePasswordFragmentData;
 import com.onyx.android.plato.interfaces.ChangePasswordView;
-import com.onyx.android.plato.requests.cloud.ChangePasswordRequest;
+import com.onyx.android.plato.requests.cloud.ModifyPasswordRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.BaseRequest;
 
@@ -22,24 +24,24 @@ public class ChangePasswordPresenter {
         this.changePasswordView = changePasswordView;
     }
 
-    public void changePassword(String account,String newPassword) {
-        ChangePasswordRequestBean requestBean = new ChangePasswordRequestBean();
-        requestBean.account = account;
-        requestBean.finalPassword = newPassword;
-        final ChangePasswordRequest rq = new ChangePasswordRequest(requestBean);
-        changePasswordFragmentData.changePassword(rq, new BaseCallback() {
+    public void modifyPassword(String oldPassword, String newPassword) {
+        ModifyPasswordBean bean = new ModifyPasswordBean();
+        bean.oldPassword = oldPassword;
+        bean.newPassword = newPassword;
+        final ModifyPasswordRequest rq = new ModifyPasswordRequest(bean);
+        changePasswordFragmentData.modifyPassword(rq, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                ChangePasswordResultBean resultBean = rq.getChangePasswordResultBean();
-                if (resultBean == null) {
+                if (e != null) {
                     changePasswordView.onChangePasswordError(e);
                     return;
                 }
-                if (resultBean.code == CloudApiContext.HttpReusltCode.RESULT_CODE_SUCCESS){
-                    changePasswordView.onChangePasswordSucced();
-                } else {
-                    changePasswordView.onChangePasswordFailed(resultBean.code,resultBean.msg);
+                SubmitPracticeResultBean resultBean = rq.getResultBean();
+                if (resultBean == null) {
+                    changePasswordView.onChangePasswordFailed(rq.getErrorBean());
+                    return;
                 }
+                changePasswordView.onChangePasswordSucceed();
             }
         });
     }

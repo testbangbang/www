@@ -1,7 +1,7 @@
 package com.onyx.android.plato.data;
 
 import com.onyx.android.plato.SunApplication;
-import com.onyx.android.plato.requests.cloud.ChangePasswordRequest;
+import com.onyx.android.plato.requests.cloud.ModifyPasswordRequest;
 import com.onyx.android.plato.requests.requestTool.BaseCallback;
 import com.onyx.android.plato.requests.requestTool.SunRequestManager;
 
@@ -10,7 +10,7 @@ import com.onyx.android.plato.requests.requestTool.SunRequestManager;
  */
 
 public class ChangePasswordFragmentData {
-    public void changePassword(ChangePasswordRequest rq, BaseCallback callback) {
+    public void modifyPassword(ModifyPasswordRequest rq, BaseCallback callback) {
         SunRequestManager.getInstance().submitRequest(SunApplication.getInstance(), rq, callback);
     }
 }
