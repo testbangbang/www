@@ -76,7 +76,7 @@ public class OpenDocumentAction extends BaseAction {
         activity.getWindow().getDecorView().post(new Runnable() {
             @Override
             public void run() {
-                showLoadingDialog(readerDataHolder, R.string.loading_document, new DialogLoading.Callback() {
+                showLoadingDialog(readerDataHolder, R.string.loading, new DialogLoading.Callback() {
                     @Override
                     public void onCanceled() {
                         canceled = true;
