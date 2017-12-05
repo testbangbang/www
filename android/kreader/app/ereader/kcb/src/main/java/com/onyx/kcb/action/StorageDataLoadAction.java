@@ -12,18 +12,15 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.provider.SystemConfigProvider;
 import com.onyx.android.sdk.data.rxrequest.data.fs.RxStorageFileListLoadRequest;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.kcb.R;
 import com.onyx.kcb.holder.DataBundle;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -162,39 +159,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     }
 
     private void addNormalThumbnail(DataModel itemModel) {
-        FileModel fileModel = itemModel.getFileModel();
-        if (fileModel == null){
-            return;
-        }
-        int res;
-        switch (fileModel.getType()) {
-            case TYPE_DIRECTORY:
-                res = R.drawable.directory;
-                break;
-            case TYPE_GO_UP:
-                res = R.drawable.directory_go_up;
-                break;
-            case TYPE_SHORT_CUT:
-                res = R.drawable.directory_shortcut;
-                break;
-            case TYPE_FILE:
-                res = getDrawable(fileModel.getFile());
-                break;
-            default:
-                res = R.drawable.unknown_document;
-                break;
-        }
-
-        try {
-            @SuppressWarnings("ResourceType")
-            InputStream inputStream = context.getResources().openRawResource(res);
-            CloseableReference<Bitmap> bitmapCloseableReference = ThumbnailUtils.decodeStream(inputStream, null);
-            if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()) {
-                itemModel.setCoverThumbnail(bitmapCloseableReference);
-            }
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+        DataModelUtil.addNormalThumbnail(itemModel,context);
     }
 
     private void addThumbnailFromCache(DataModel itemModel) {
@@ -204,13 +169,5 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
                 itemModel.setCoverThumbnail(bitmapCloseableReference);
             }
         }
-    }
-
-    private int getDrawable(File file) {
-        Integer res = ThumbnailUtils.defaultThumbnailMapping().get(FilenameUtils.getExtension(file.getName()));
-        if (res == null) {
-            return ThumbnailUtils.thumbnailUnknown();
-        }
-        return res;
     }
 }
