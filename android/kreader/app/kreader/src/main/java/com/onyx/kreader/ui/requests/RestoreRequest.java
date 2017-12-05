@@ -24,6 +24,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private BaseOptions baseOptions;
     private String position;
+    private boolean useSameSettings = true;
 
     public RestoreRequest(final BaseOptions options) {
         baseOptions = options;
@@ -105,7 +106,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private void restoreReaderTextStyle(final Reader reader) throws ReaderException {
         ReaderTextStyle.setDefaultFontSizes(DeviceConfig.sharedInstance(getContext()).getDefaultFontSizes());
-        String fontface = baseOptions.getFontFace();
+        String fontface = getFontFace();
         if (StringUtils.isNullOrEmpty(fontface) && LocaleUtils.isChinese()) {
             fontface = DeviceConfig.sharedInstance(getContext()).getDefaultFontFileForChinese();
         }
@@ -127,9 +128,17 @@ public class RestoreRequest extends BaseReaderRequest {
         reader.getReaderLayoutManager().setStyle(style);
     }
 
+    private String getFontFace() {
+        String fontFace = baseOptions.getFontFace();
+        if (useSameSettings) {
+            fontFace = SingletonSharedPreference.getLastFontFace();
+        }
+        return fontFace;
+    }
+
     private float getFontSize() {
         float fontSize = baseOptions.getFontSize();
-        if (fontSize == BaseOptions.INVALID_FLOAT_VALUE) {
+        if (fontSize == BaseOptions.INVALID_FLOAT_VALUE || useSameSettings) {
             int index = DeviceConfig.sharedInstance(getContext()).getDefaultFontSizeIndex();
             fontSize = ReaderTextStyle.getFontSizeByIndex(index).getValue();
             fontSize = SingletonSharedPreference.getLastFontSize(fontSize);
@@ -139,7 +148,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private int getLineSpacing() {
         int lineSpacing = baseOptions.getLineSpacing();
-        if (lineSpacing == BaseOptions.INVALID_INT_VALUE) {
+        if (lineSpacing == BaseOptions.INVALID_INT_VALUE || useSameSettings) {
             int index = DeviceConfig.sharedInstance(getContext()).getDefaultLineSpacingIndex();
             lineSpacing = ReaderTextStyle.getLineSpacingByIndex(index).getPercent();
             lineSpacing = SingletonSharedPreference.getLastLineSpacing(lineSpacing);
@@ -149,7 +158,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private int getLeftMargin() {
         int leftMargin = baseOptions.getLeftMargin();
-        if (leftMargin == BaseOptions.INVALID_INT_VALUE) {
+        if (leftMargin == BaseOptions.INVALID_INT_VALUE || useSameSettings) {
             leftMargin = getDefaultPageMargin(getContext()).getLeftMargin().getPercent();
             leftMargin = SingletonSharedPreference.getLastLeftMargin(leftMargin);
         }
@@ -158,7 +167,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private int getTopMargin() {
         int topMargin = baseOptions.getTopMargin();
-        if (topMargin == BaseOptions.INVALID_INT_VALUE) {
+        if (topMargin == BaseOptions.INVALID_INT_VALUE || useSameSettings) {
             topMargin = getDefaultPageMargin(getContext()).getTopMargin().getPercent();
             topMargin = SingletonSharedPreference.getLastTopMargin(topMargin);
         }
@@ -167,7 +176,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private int getRightMargin() {
         int rightMargin = baseOptions.getRightMargin();
-        if (rightMargin == BaseOptions.INVALID_INT_VALUE) {
+        if (rightMargin == BaseOptions.INVALID_INT_VALUE || useSameSettings) {
             rightMargin = getDefaultPageMargin(getContext()).getRightMargin().getPercent();
             rightMargin = SingletonSharedPreference.getLastRightMargin(rightMargin);
         }
@@ -176,7 +185,7 @@ public class RestoreRequest extends BaseReaderRequest {
 
     private int getBottomMargin() {
         int bottomMargin = baseOptions.getBottomMargin();
-        if (bottomMargin == BaseOptions.INVALID_INT_VALUE) {
+        if (bottomMargin == BaseOptions.INVALID_INT_VALUE || useSameSettings) {
             bottomMargin = getDefaultPageMargin(getContext()).getBottomMargin().getPercent();
             bottomMargin = SingletonSharedPreference.getLastBottomMargin(bottomMargin);
         }
