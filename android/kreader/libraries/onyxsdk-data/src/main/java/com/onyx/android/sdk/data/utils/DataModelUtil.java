@@ -1,22 +1,16 @@
 package com.onyx.android.sdk.data.utils;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.model.DataModel;
-import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ModelType;
-import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
-import org.apache.commons.io.FilenameUtils;
 import org.greenrobot.eventbus.EventBus;
 
-import java.io.File;
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -82,47 +76,7 @@ public class DataModelUtil {
         return false;
     }
 
-    public static void addNormalThumbnail(DataModel itemModel, Context context) {
-        FileModel fileModel = itemModel.getFileModel();
-        if (fileModel == null) {
-            return;
-        }
-        int res;
-        switch (fileModel.getType()) {
-            case TYPE_DIRECTORY:
-                res = R.drawable.directory;
-                break;
-            case TYPE_GO_UP:
-                res = R.drawable.directory_go_up;
-                break;
-            case TYPE_SHORT_CUT:
-                res = R.drawable.directory_shortcut;
-                break;
-            case TYPE_FILE:
-                res = getDrawable(fileModel.getFile());
-                break;
-            default:
-                res = R.drawable.unknown_document;
-                break;
-        }
-
-        try {
-            @SuppressWarnings("ResourceType")
-            InputStream inputStream = context.getResources().openRawResource(res);
-            CloseableReference<Bitmap> bitmapCloseableReference = ThumbnailUtils.decodeStream(inputStream, null);
-            if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()){
-                itemModel.setCoverThumbnail(bitmapCloseableReference);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static int getDrawable(File file) {
-        Integer res = ThumbnailUtils.defaultThumbnailMapping().get(FilenameUtils.getExtension(file.getName()));
-        if (res == null) {
-            return ThumbnailUtils.thumbnailUnknown();
-        }
-        return res;
+    public static boolean isBitmapValid(CloseableReference<Bitmap> refBitmap) {
+        return refBitmap != null && refBitmap.isValid();
     }
 }

@@ -5,8 +5,8 @@ import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.rxrequest.data.db.RxLoadDefaultThumbnailRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLoadFileThumbnailRequest;
-import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.kcb.holder.DataBundle;
 
@@ -29,9 +29,9 @@ public class LoadFileThumbnailAction extends BaseAction<DataBundle> {
         LoadFileThumbnail(dataBundle, rxCallback);
     }
 
-    private void LoadFileThumbnail(DataBundle dataBundle, final RxCallback rxCallback) {
+    private void LoadFileThumbnail(final DataBundle dataBundle, final RxCallback rxCallback) {
         if (dataModel != null) {
-            if (dataModel.isDocument.get()){
+            if (dataModel.isDocument.get()) {
                 RxLoadFileThumbnailRequest LoadFileThumbnailRequest = new RxLoadFileThumbnailRequest(dataBundle.getDataManager(), dataModel.absolutePath.get());
                 LoadFileThumbnailRequest.execute(new RxCallback<RxLoadFileThumbnailRequest>() {
                     @Override
@@ -40,7 +40,7 @@ public class LoadFileThumbnailAction extends BaseAction<DataBundle> {
                         if (resultRefBitmap != null && resultRefBitmap.isValid()) {
                             dataModel.setCoverThumbnail(resultRefBitmap);
                         } else {
-                            addNormalThumbnail(dataModel);
+                            addNormalThumbnail(dataBundle);
                         }
                         if (rxCallback != null) {
                             rxCallback.onNext(request);
@@ -48,12 +48,18 @@ public class LoadFileThumbnailAction extends BaseAction<DataBundle> {
                     }
                 });
             } else {
-                addNormalThumbnail(dataModel);
+                addNormalThumbnail(dataBundle);
             }
         }
     }
 
-    private void addNormalThumbnail(DataModel itemModel) {
-        DataModelUtil.addNormalThumbnail(itemModel,context);
+    private void addNormalThumbnail(DataBundle dataBundle) {
+        RxLoadDefaultThumbnailRequest getDefaultThumbnailRequest = new RxLoadDefaultThumbnailRequest(dataBundle.getDataManager(), dataModel, context);
+        getDefaultThumbnailRequest.execute(new RxCallback<RxLoadDefaultThumbnailRequest>() {
+            @Override
+            public void onNext(RxLoadDefaultThumbnailRequest request) {
+
+            }
+        });
     }
 }

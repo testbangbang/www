@@ -11,8 +11,8 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.provider.SystemConfigProvider;
+import com.onyx.android.sdk.data.rxrequest.data.db.RxLoadDefaultThumbnailRequest;
 import com.onyx.android.sdk.data.rxrequest.data.fs.RxStorageFileListLoadRequest;
-import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -37,7 +37,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     private SortOrder sortOrder;
     private Map<String, CloseableReference<Bitmap>> thumbnailMapCache;
 
-    public StorageDataLoadAction(Context context,final File parentFile, final ObservableList<DataModel> resultDataItemList) {
+    public StorageDataLoadAction(Context context, final File parentFile, final ObservableList<DataModel> resultDataItemList) {
         this.context = context;
         this.parentFile = parentFile;
         this.resultDataItemList = resultDataItemList;
@@ -110,11 +110,11 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         }
     }
 
-    private void addThumbnailToDataModel(DataModel dataModel ) {
+    private void addThumbnailToDataModel(DataModel dataModel, DataBundle dataBundle) {
         if (dataModel.isDocument.get()) {
             addThumbnailFromCache(dataModel);
-        }else {
-            addNormalThumbnail(dataModel);
+        } else {
+            addNormalThumbnail(dataModel, dataBundle);
         }
     }
 
@@ -127,19 +127,19 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         }
     }
 
-    public DataModel createGoUpModel(DataBundle dataHolder, File file) {
-        DataModel model = new DataModel(dataHolder.getEventBus());
-        model.setFileModel(FileModel.createGoUpModel(file, dataHolder.getAppContext().getString(R.string.storage_go_up)));
+    public DataModel createGoUpModel(DataBundle dataBundle, File file) {
+        DataModel model = new DataModel(dataBundle.getEventBus());
+        model.setFileModel(FileModel.createGoUpModel(file, dataBundle.getAppContext().getString(R.string.storage_go_up)));
         model.setEnableSelection(false);
-        addNormalThumbnail(model);
+        addNormalThumbnail(model, dataBundle);
         return model;
     }
 
-    public DataModel createNormalModel(DataBundle dataHolder, File file) {
-        DataModel model = new DataModel(dataHolder.getEventBus());
+    public DataModel createNormalModel(DataBundle dataBundle, File file) {
+        DataModel model = new DataModel(dataBundle.getEventBus());
         model.setFileModel(FileModel.create(file, null));
         setAbsolutePath(file, model);
-        addThumbnailToDataModel(model);
+        addThumbnailToDataModel(model, dataBundle);
         return model;
     }
 
@@ -150,7 +150,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     public DataModel createShortcutModel(DataBundle dataHolder, File file) {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.createShortcutModel(file));
-        addNormalThumbnail(model);
+        addNormalThumbnail(model, dataHolder);
         return model;
     }
 
@@ -158,14 +158,20 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         return EnvironmentUtil.getStorageRootDirectory().getAbsolutePath().contains(targetDirectory.getAbsolutePath());
     }
 
-    private void addNormalThumbnail(DataModel itemModel) {
-        DataModelUtil.addNormalThumbnail(itemModel,context);
+    private void addNormalThumbnail(final DataModel itemModel, DataBundle dataBundle) {
+        RxLoadDefaultThumbnailRequest getDefaultThumbnailRequest = new RxLoadDefaultThumbnailRequest(dataBundle.getDataManager(), itemModel, context);
+        getDefaultThumbnailRequest.execute(new RxCallback<RxLoadDefaultThumbnailRequest>() {
+            @Override
+            public void onNext(RxLoadDefaultThumbnailRequest request) {
+
+            }
+        });
     }
 
     private void addThumbnailFromCache(DataModel itemModel) {
         if (thumbnailMapCache != null) {
             CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMapCache.get(itemModel.absolutePath.get());
-            if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()){
+            if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()) {
                 itemModel.setCoverThumbnail(bitmapCloseableReference);
             }
         }
