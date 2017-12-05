@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.onyx.edu.reader.R;
 
@@ -18,6 +19,7 @@ public class DialogLoading extends DialogBase
     private Callback callback;
     private TextView mTextViewMessage = null;
     private ImageView mCancelButton=null;
+    private ProgressBar progressBar;
 
     public DialogLoading(Context context, String msg, boolean enableCancel, Callback callback)
     {
@@ -27,6 +29,7 @@ public class DialogLoading extends DialogBase
 
         this.callback = callback;
         mTextViewMessage = (TextView) findViewById(R.id.textview_message);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
         mTextViewMessage.setText(msg);
         mCancelButton=(ImageView)findViewById(R.id.button_cancel);
         if (!enableCancel) {
@@ -48,6 +51,11 @@ public class DialogLoading extends DialogBase
         if (!mTextViewMessage.getText().equals(msg)) {
             mTextViewMessage.setText(msg);
         }
+    }
+
+    public DialogLoading disableProgress() {
+        progressBar.setVisibility(View.GONE);
+        return this;
     }
 
     @Override

@@ -14,7 +14,7 @@ public abstract class BaseAction {
     public DialogLoading showLoadingDialog(final ReaderDataHolder holder, String title, DialogLoading.Callback callback) {
         if (dialogLoading == null) {
             dialogLoading = new DialogLoading(holder.getContext(),
-                    title, true, callback);
+                    title, true, callback).disableProgress();
         }
         dialogLoading.show();
         return dialogLoading;
