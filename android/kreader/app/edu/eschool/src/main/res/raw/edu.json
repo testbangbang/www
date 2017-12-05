@@ -21,6 +21,7 @@
     "com.onyx.android.edu",
     "com.android.providers.downloads.ui",
     "com.onyx.kreader",
+    "com.iflytek.speechcloud",
     "com.android.soundrecorder"
   ],
   "test_apps": [
