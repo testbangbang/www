@@ -8,7 +8,8 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class RedoRequest extends BaseNoteRequest {
 
-    public RedoRequest() {
+    public RedoRequest(boolean resumeDrawing) {
+        setResumeInputProcessor(resumeDrawing);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
