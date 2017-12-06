@@ -47,6 +47,10 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    dexOptions {
+        additionalParameters = ['--multi-dex', '--set-max-idx-number=40000']
+    }
 }
 
 dependencies {

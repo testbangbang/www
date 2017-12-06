@@ -119,4 +119,10 @@
     <string name="file_total_count">Total:%1$d/%2$d</string>
     <string name="storage_go_up">Go Up</string>
     <string name="storage">Storage</string>
+    <string name="menu_display_mode">Display mode</string>
+    <string name="remove_metadata_failed">Remove failed</string>
+    <string name="library_display_mode_key">library_display_mode_key</string>
+    <string name="normal_mode">Normal mode</string>
+    <string name="child_library_mode">Child library mode</string>
+    <string name="directory_mode">Directory mode</string>
 </resources>

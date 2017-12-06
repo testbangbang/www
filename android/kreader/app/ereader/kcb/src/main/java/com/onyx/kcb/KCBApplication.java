@@ -24,7 +24,7 @@ import com.onyx.kcb.manager.ConfigPreferenceManager;
  */
 
 public class KCBApplication extends MultiDexApplication {
-    private boolean hasMetadataScanned = false;
+    private boolean isMetadataScanned = false;
     private static final String TAG = KCBApplication.class.getSimpleName();
     private static KCBApplication instance = null;
     private static DataBundle dataBundle;
@@ -70,7 +70,7 @@ public class KCBApplication extends MultiDexApplication {
                 Log.w(TAG, "onMediaMounted " + intent.getData().toString());
                 if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
                     processRemovableSDCardScan();
-                    setHasMetadataScanned(true);
+                    setMetadataScanned(true);
                 }
             }
 
@@ -116,12 +116,12 @@ public class KCBApplication extends MultiDexApplication {
         return dataBundle;
     }
 
-    public boolean isHasMetadataScanned() {
-        return hasMetadataScanned;
+    public boolean isMetadataScanned() {
+        return isMetadataScanned;
     }
 
-    public void setHasMetadataScanned(boolean hasMetadataScanned) {
-        this.hasMetadataScanned = hasMetadataScanned;
+    public void setMetadataScanned(boolean metadataScanned) {
+        this.isMetadataScanned = metadataScanned;
     }
 
     private void initFrescoLoader() {
