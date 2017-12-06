@@ -13,4 +13,6 @@
     <string name="search_hint">Search (empty string to search all)</string>
     <string name="no_category_found">No category found</string>
     <string name="all">All</string>
+
+    <string name="cancel_the_downloading_task">Cancel the downloading task</string>
 </resources>

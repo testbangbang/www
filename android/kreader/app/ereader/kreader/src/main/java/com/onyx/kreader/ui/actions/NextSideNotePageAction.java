@@ -14,6 +14,6 @@ public class NextSideNotePageAction extends BaseAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         readerDataHolder.nextSideNotePage();
-        readerDataHolder.redrawPage();
+        readerDataHolder.redrawPage(callback);
     }
 }

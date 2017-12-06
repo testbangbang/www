@@ -202,10 +202,8 @@ public class PreviewFragment extends Fragment
             // This method is called when the camera is opened.  We start camera preview here.
             mCameraOpenCloseLock.release();
             mCameraDevice = cameraDevice;
-            EpdController.setUpdListSize(1);
             createCameraPreviewSession();
-            enterA2();
-            checkBatteryChargeState();
+            afterCameraDeviceOpened();
         }
 
         @Override
@@ -220,7 +218,7 @@ public class PreviewFragment extends Fragment
             mCameraOpenCloseLock.release();
             cameraDevice.close();
             mCameraDevice = null;
-            new ConnectErrorDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
+            afterCameraDeviceOpenError();
         }
 
     };
@@ -293,6 +291,8 @@ public class PreviewFragment extends Fragment
 
     private AlertDialog exitConfirmDialog;
     private DialogPreviewMenu menuDialog;
+    private boolean isTest;
+    private int connectErrorCount;
 
     /**
      * A {@link CameraCaptureSession.CaptureCallback} that handles events related to JPEG capture.
@@ -438,6 +438,7 @@ public class PreviewFragment extends Fragment
     public void onCreate(Bundle savedInstanceState) {
         setRequestedOrientation();
         super.onCreate(savedInstanceState);
+        isTest = getActivity().getIntent().getBooleanExtra("Test", false);
     }
 
     @Override
@@ -1108,5 +1109,34 @@ public class PreviewFragment extends Fragment
             new ChargeRemindDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
         }
     }
+
+    private void afterCameraDeviceOpened() {
+        EpdController.setUpdListSize(1);
+        enterA2();
+        if (isTest) {
+            exitTest();
+            return;
+        }
+        checkBatteryChargeState();
+    }
+
+    private void exitTest() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getActivity().setResult(Activity.RESULT_OK);
+                getActivity().finish();
+            }
+        }, 1000 * 10);
+    }
+
+    private void afterCameraDeviceOpenError() {
+        if (++connectErrorCount >= 3 && isTest) {
+            getActivity().finish();
+            return;
+        }
+        new ConnectErrorDialog().show(getChildFragmentManager(), FRAGMENT_DIALOG);
+    }
+
 }
 

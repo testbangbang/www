@@ -3,10 +3,12 @@ package com.onyx.kreader.ui.actions;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.util.Log;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -18,9 +20,19 @@ import com.onyx.android.sdk.data.ReaderMenu;
 import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.data.ReaderMenuItem;
 import com.onyx.android.sdk.data.ReaderMenuState;
+import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.WindowParameters;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.reader.api.ReaderDocumentTableOfContent;
+import com.onyx.android.sdk.reader.common.BaseReaderRequest;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
+import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
+import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.reader.utils.TocUtils;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -31,22 +43,14 @@ import com.onyx.android.sdk.ui.data.ReaderLayerMenuItem;
 import com.onyx.android.sdk.ui.data.ReaderLayerMenuRepository;
 import com.onyx.android.sdk.ui.dialog.DialogBrightness;
 import com.onyx.android.sdk.ui.dialog.DialogNaturalLightBrightness;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.kreader.R;
-import com.onyx.android.sdk.reader.common.BaseReaderRequest;
-import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.device.ReaderDeviceManager;
-import com.onyx.android.sdk.reader.host.navigation.NavigationArgs;
-import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.reader.host.request.ChangeLayoutRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageCropRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToPageRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthContentRequest;
-import com.onyx.android.sdk.reader.host.request.ScaleToWidthRequest;
 import com.onyx.kreader.note.actions.AddNoteSubPageAction;
 import com.onyx.kreader.note.actions.ChangeNoteShapeAction;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
@@ -70,7 +74,6 @@ import com.onyx.kreader.ui.dialog.DialogSearch;
 import com.onyx.kreader.ui.dialog.DialogTableOfContent;
 import com.onyx.kreader.ui.dialog.DialogTextStyle;
 import com.onyx.kreader.ui.events.QuitEvent;
-import com.onyx.kreader.device.DeviceConfig;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -624,6 +627,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 if (sideNotePage >= 0) {
                     readerDataHolder.setSideNotePage(sideNotePage);
                     readerDataHolder.redrawPage();
+                    resumeDrawing(readerDataHolder);
                     return;
                 }
 
@@ -633,6 +637,7 @@ public class ShowReaderMenuAction extends BaseAction {
                     public void done(BaseRequest request, Throwable e) {
                         readerDataHolder.setSideNotePage(0);
                         readerDataHolder.redrawPage();
+                        resumeDrawing(readerDataHolder);
                     }
                 });
             }
@@ -924,7 +929,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 addSideNoteSubPage(readerDataHolder);
                 break;
             case SCRIBBLE_SIDE_NOTE_DELETE_PAGE:
-                deleteSideNoteSubPage(readerDataHolder);
+                deleteNotePage(readerDataHolder);
                 break;
             case SCRIBBLE_UNDO:
                 undo(readerDataHolder);
@@ -936,6 +941,26 @@ public class ShowReaderMenuAction extends BaseAction {
                 redo(readerDataHolder);
                 break;
         }
+    }
+
+    private static void deleteNotePage(final ReaderDataHolder readerDataHolder) {
+        OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(),
+                readerDataHolder.getContext().getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                deleteSideNoteSubPage(readerDataHolder);
+            }
+        }, null);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                final List<PageInfo> pages = readerDataHolder.getVisiblePages();
+                new FlushNoteAction(pages, true, true, false, false).execute(readerDataHolder, null);
+            }
+        });
+        WindowManager.LayoutParams params = dialog.getWindow().getAttributes();
+        params.x = (readerDataHolder.getDisplayWidth() / 4);
+        dialog.show();
     }
 
     public static void useStrokeWidth(final ReaderDataHolder readerDataHolder, float width) {
@@ -1146,7 +1171,7 @@ public class ShowReaderMenuAction extends BaseAction {
         if (map.containsKey(width)) {
             return map.get(width);
         }
-        return ReaderMenuAction.SCRIBBLE_WIDTH1;
+        return ReaderMenuAction.SCRIBBLE_CUSTOM_WIDTH;
     }
 
     public static final ReaderMenuAction createShapeAction(int type) {

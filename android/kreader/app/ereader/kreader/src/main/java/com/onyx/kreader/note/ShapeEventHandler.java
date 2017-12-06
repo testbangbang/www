@@ -74,7 +74,7 @@ public class ShapeEventHandler {
 
     private PageInfo hitTest(final float x, final float y) {
         for(PageInfo pageInfo : noteManager.getVisiblePages()) {
-            if (pageInfo.getDisplayRect().contains(x, y)) {
+            if (pageInfo.getVisibleRect().contains(x, y)) {
                 return pageInfo;
             }
         }
@@ -115,7 +115,6 @@ public class ShapeEventHandler {
             return null;
         }
         shape.onUp(normal, screen);
-        resetCurrentShape();
         return shape;
     }
 
@@ -190,9 +189,11 @@ public class ShapeEventHandler {
     }
 
     public void onDrawingTouchUp(MotionEvent motionEvent) {
-        if (lastPageInfo == null) {
+        if (lastPageInfo == null || currentShape == null) {
             return;
         }
+        TouchPoint touchPoint = new TouchPoint(motionEvent);
+        collectPoint(lastPageInfo, touchPoint, false, true);
         finishCurrentShape();
     }
 
@@ -260,6 +261,7 @@ public class ShapeEventHandler {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
                 if (noteManager.isEraser()) {
                     onErasingTouchUp(e.getMotionEvent());
                 } else {

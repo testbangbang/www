@@ -416,11 +416,13 @@
     <string name="setting_touch_left_bottom_key" translatable="false">TOUCH_LEFT_BOTTOM</string>
     <string name="setting_touch_right_top_key" translatable="false">TOUCH_RIGHT_TOP</string>
     <string name="setting_touch_right_bottom_key" translatable="false">TOUCH_RIGHT_BOTTOM</string>
+    <string name="settings_touch_binding_reset_default_key" translatable="false">settings_touch_binding_reset_default_key</string>
 
     <string name="setting_touch_left_top_tittle">Left Top</string>
     <string name="setting_touch_left_bottom_tittle">Left Bottom</string>
     <string name="setting_touch_right_top_tittle">Right Top</string>
     <string name="setting_touch_right_bottom_tittle">Right Bottom</string>
+    <string name="settings_touch_binding_reset_default">Reset Default Touch Binding</string>
 
     <string name="settings_touch_binding_increase_brightness_tittle">Increase Brightness</string>
     <string name="settings_touch_binding_decrease_brightness_tittle">Decrease Brightness</string>
@@ -439,4 +441,5 @@
     <string name="dialog_tab_host_menu_quit_side_reading">Quit side reading</string>
     <string name="dialog_tab_host_menu_open_doc">Open the doc</string>
     <string name="settings_show_side_note_indicator_title">Show side note indicator</string>
+    <string name="ask_for_delete_page">Are you sure you want to delete the page？</string>
 </resources>

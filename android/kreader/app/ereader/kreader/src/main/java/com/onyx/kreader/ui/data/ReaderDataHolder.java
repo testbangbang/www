@@ -195,6 +195,8 @@ public class ReaderDataHolder {
             subNotePage.setScale(scale);
             subNotePage.updateDisplayRect(pageRect);
 
+            PageUtils.updateVisibleRect(subNotePage, viewportRect);
+
             subNotePage.setSubPage(getSubPageIndex());
             pages.add(subNotePage);
         }
@@ -276,6 +278,14 @@ public class ReaderDataHolder {
     public void setDisplaySize(int width, int height) {
         displayWidth = width;
         displayHeight = height;
+    }
+
+    public int getDocumentViewportWidth() {
+        return sideNoting ? displayWidth / 2 : displayWidth;
+    }
+
+    public int getDocumentViewportHeight() {
+        return displayHeight;
     }
 
     public boolean canCurrentPageScaleDown() {
@@ -462,7 +472,6 @@ public class ReaderDataHolder {
     public void submitRenderRequest(final BaseReaderRequest renderRequest, final BaseCallback callback) {
         beforeSubmitRequest();
         reader.submitRequest(context, renderRequest, new BaseCallback() {
-
             @Override
             public void beforeDone(BaseRequest request, Throwable e) {
                 BaseCallback.invokeBeforeDone(callback, request, e);
@@ -572,6 +581,12 @@ public class ReaderDataHolder {
     public void redrawPage() {
         if (getReader() != null) {
             submitRenderRequest(new RenderRequest());
+        }
+    }
+
+    public void redrawPage(BaseCallback callback) {
+        if (getReader() != null) {
+            submitRenderRequest(new RenderRequest(), callback);
         }
     }
 

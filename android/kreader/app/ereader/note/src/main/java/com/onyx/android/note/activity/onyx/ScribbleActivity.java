@@ -100,7 +100,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
     private LinedEditText spanTextView;
     private SpanTextHandler spanTextHandler;
     private boolean isKeyboardInput = false;
-    private boolean buildingSpan = false;
     private boolean isPictureEditMode = false;
     private Uri editPictUri;
     private WakeLockHolder wakeLockHolder = new WakeLockHolder();
@@ -133,6 +132,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     @Override
     protected void onDestroy() {
+        spanTextView.clear();
         super.onDestroy();
     }
 
@@ -154,7 +154,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView redoBtn = (ImageView) findViewById(R.id.button_redo);
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
-        ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
+        final ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
         workView = (FrameLayout) findViewById(R.id.work_view);
         rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
         spanTextView = (LinedEditText) findViewById(R.id.span_text_view);
@@ -220,7 +220,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onSave(false);
+                onSave(false, true);
             }
         });
         exportBtn.setOnClickListener(new View.OnClickListener() {
@@ -245,15 +245,6 @@ public class ScribbleActivity extends BaseScribbleActivity {
                         }
                     }
                 });
-            }
-        });
-
-        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
-            @Override
-            public void onMenuVisibilityChanged(boolean isVisible) {
-                if (!isVisible) {
-                    syncWithCallback(true, true, null);
-                }
             }
         });
 
@@ -282,6 +273,20 @@ public class ScribbleActivity extends BaseScribbleActivity {
             settingBtn.setVisibility(View.GONE);
             saveBtn.setVisibility(View.GONE);
         }
+        getSupportActionBar().addOnMenuVisibilityListener(new ActionBar.OnMenuVisibilityListener() {
+            @Override
+            public void onMenuVisibilityChanged(boolean isVisible) {
+                if (!isVisible) {
+                    getWindow().getDecorView().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            boolean resume = shouldResume();
+                            syncWithCallback(true, resume, null);
+                        }
+                    });
+                }
+            }
+        });
     }
 
     private void initSpanTextView() {
@@ -289,9 +294,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
             @Override
             public void OnFinishedSpan(SpannableStringBuilder builder, final List<Shape> spanShapeList, final ShapeSpan lastShapeSpan) {
                 if (builder == null) {
+                    setBuildingSpan(false);
                     return;
                 }
-                setBuildingSpan(true);
                 spanTextView.setText(builder);
                 spanTextView.setSelection(builder.length());
                 spanTextView.requestFocus();
@@ -400,9 +405,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     loadLineLayoutShapes();
+                    setBuildingSpan(false);
                 }
             });
-            setBuildingSpan(false);
             return;
         }
 
@@ -618,16 +623,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void onSave(final boolean finishAfterSave) {
+    private void onSave(final boolean finishAfterSave,final  boolean resumeDrawing) {
         hideSoftInput();
         getNoteViewHelper().flushTouchPointList();
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (isPictureEditMode){
+                if (isPictureEditMode) {
                     saveEditPic();
-                }else {
-                    saveDocument(finishAfterSave);
+                } else {
+                    saveDocument(finishAfterSave, resumeDrawing);
                 }
             }
         });
@@ -666,6 +671,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onDelete(boolean resume) {
+        if (isBuildingSpan()) {
+            return;
+        }
         String groupId = spanTextHandler.getLastGroupId();
         if (StringUtils.isNullOrEmpty(groupId)) {
             syncWithCallback(false, resume, null);
@@ -682,6 +690,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void onSpace() {
+        if (isBuildingSpan()) {
+            return;
+        }
         spanTextHandler.buildSpaceShape(SpanTextHandler.SPACE_WIDTH, getSpanTextFontHeight());
     }
 
@@ -983,7 +994,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
             getScribbleSubMenu().dismiss();
         }else {
             getNoteViewHelper().pauseDrawing();
-            onSave(true);
+            onSave(true, false);
         }
     }
 
@@ -1030,11 +1041,11 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void saveDocument(boolean finishAfterSave) {
+    private void saveDocument(boolean finishAfterSave,boolean resumeDrawing) {
         if (isNewDocument()) {
-            saveNewNoteDocument(finishAfterSave);
+            saveNewNoteDocument(finishAfterSave, resumeDrawing);
         } else {
-            saveExistingNoteDocument(finishAfterSave);
+            saveExistingNoteDocument(finishAfterSave, resumeDrawing);
         }
     }
 
@@ -1043,7 +1054,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 StringUtils.isNullOrEmpty(noteTitle);
     }
 
-    private void saveNewNoteDocument(final boolean finishAfterSave) {
+    private void saveNewNoteDocument(final boolean finishAfterSave , final boolean resumeDrawing) {
         final DialogNoteNameInput dialogNoteNameInput = new DialogNoteNameInput();
         Bundle bundle = new Bundle();
         bundle.putString(DialogNoteNameInput.ARGS_TITTLE, getString(R.string.save_note));
@@ -1060,7 +1071,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (action.isLegal()) {
-                            saveDocumentWithTitle(input, finishAfterSave);
+                            saveDocumentWithTitle(input, finishAfterSave, resumeDrawing);
                         } else {
                             showNoteNameIllegal();
                         }
@@ -1090,20 +1101,20 @@ public class ScribbleActivity extends BaseScribbleActivity {
         });
     }
 
-    private void saveDocumentWithTitle(final String title, final boolean finishAfterSave) {
+    private void saveDocumentWithTitle(final String title, final boolean finishAfterSave, final boolean resumeDrawing) {
         noteTitle = title;
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave);
+                DocumentSaveAction<>(shapeDataInfo.getDocumentUniqueId(), noteTitle, finishAfterSave, resumeDrawing);
         saveAction.execute(ScribbleActivity.this, null);
     }
 
-    private void saveExistingNoteDocument(final boolean finishAfterSave) {
+    private void saveExistingNoteDocument(final boolean finishAfterSave, final boolean resumeDrawing) {
         String documentUniqueId = shapeDataInfo.getDocumentUniqueId();
         if (StringUtils.isNullOrEmpty(documentUniqueId)) {
             return;
         }
         final DocumentSaveAction<ScribbleActivity> saveAction = new
-                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave);
+                DocumentSaveAction<>(documentUniqueId, noteTitle, finishAfterSave, resumeDrawing);
         saveAction.execute(ScribbleActivity.this, null);
     }
 
@@ -1125,7 +1136,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             setCurrentShapeType(ShapeFactory.SHAPE_ERASER);
             syncWithCallback(true, false, null);
         } else {
-            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>();
+            boolean resume = shouldResume();
+            ClearAllFreeShapesAction<ScribbleActivity> action = new ClearAllFreeShapesAction<>(resume);
             action.execute(this, null);
         }
     }
@@ -1176,16 +1188,16 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     public boolean isBuildingSpan() {
-        return buildingSpan;
+        return isLineLayoutMode() && spanTextHandler.isBuildingSpan();
     }
 
     public void setBuildingSpan(boolean buildingSpan) {
-        this.buildingSpan = buildingSpan;
+        spanTextHandler.setBuildingSpan(buildingSpan);
     }
 
     @Override
     protected void onScreenShotStart() {
-        onSave(false);
+        onSave(false, false);
         super.onScreenShotStart();
     }
 

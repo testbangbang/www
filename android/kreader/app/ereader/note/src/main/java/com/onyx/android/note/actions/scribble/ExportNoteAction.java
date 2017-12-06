@@ -15,7 +15,6 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.request.navigation.ExportNoteRequest;
 import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.android.sdk.ui.dialog.DialogProgress;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.ExportUtils;
 
 import java.util.ArrayList;
@@ -55,7 +54,7 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        count = pageUniqueIds.size();
+        count = exportCurPage ? 1 : pageUniqueIds.size();
         progress = new DialogProgress(activity, 0, count);
         progress.setTitle(activity.getString(R.string.exporting_info));
         String location = activity.getString(R.string.export_location, ExportUtils.NOTE_EXPORT_LOCATION + noteTitle);
@@ -108,9 +107,14 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
                     return;
                 }
 
-                progress.setProgress(index);
-                if (index == count) {
+                if (exportCurPage) {
+                    progress.setProgress(1);
                     onExportSuccess(activity, progress);
+                } else {
+                    progress.setProgress(index);
+                    if (index == count) {
+                        onExportSuccess(activity, progress);
+                    }
                 }
             }
         });
@@ -121,7 +125,13 @@ public class ExportNoteAction<T extends BaseScribbleActivity> extends BaseNoteAc
         progress.getProgressBar().setVisibility(View.GONE);
     }
 
-    private void onExportSuccess(final T activity, DialogProgress progress) {
+    private void onExportSuccess(final T activity, final DialogProgress progress) {
         progress.setTitle(activity.getString(R.string.export_success));
+        progress.enableDismissButton(activity.getString(android.R.string.ok), new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progress.dismiss();
+            }
+        });
     }
 }

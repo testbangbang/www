@@ -14,6 +14,7 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
+import com.onyx.kreader.ui.dialog.DialogScreenRefresh;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -88,6 +89,8 @@ public class DeviceConfig {
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
 
+    private int defaultRefreshInterval = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT; // default value, can be overridden by user
+
     private DeviceConfig(Context context) {
         String content = readConfig(context);
         if (!StringUtils.isNullOrEmpty(content)) {
@@ -160,10 +163,17 @@ public class DeviceConfig {
         return contentFromRawResource(context, "onyx");
     }
 
+    private String convertSymbolMinusToUnderscore(final String name) {
+        if (StringUtils.isNotBlank(name)) {
+            return name.replaceAll("-", "_");
+        }
+        return name;
+    }
+
     private String contentFromRawResource(Context context, String name) {
         String content = "";
         try {
-            int res = context.getResources().getIdentifier(name.toLowerCase(), "raw", context.getPackageName());
+            int res = context.getResources().getIdentifier(convertSymbolMinusToUnderscore(name).toLowerCase(), "raw", context.getPackageName());
             content = RawResourceUtil.contentOfRawResource(context, res);
         } catch (Exception e) {
             Debug.w(getClass(), e);
@@ -566,6 +576,14 @@ public class DeviceConfig {
 
     public void setDefaultFontSizes(Float[] defaultFontSizes) {
         this.defaultFontSizes = defaultFontSizes;
+    }
+
+    public int getDefaultRefreshInterval() {
+        return defaultRefreshInterval;
+    }
+
+    public void setDefaultRefreshInterval(int defaultRefreshInterval) {
+        this.defaultRefreshInterval = defaultRefreshInterval;
     }
 
     public String getUmengKey() {

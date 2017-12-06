@@ -1,1 +1,0 @@
-package com.onyx.libedu;import com.onyx.android.sdk.data.v1.OnyxGroupService;import com.onyx.android.sdk.data.v1.ServiceFactory;/** * Created by ming on 2016/10/31. */public class EduServiceFactory extends ServiceFactory{    public static final OnyxEduService getEduService(final String baseUrl) {        return getSpecifyService(OnyxEduService.class, baseUrl);    }}

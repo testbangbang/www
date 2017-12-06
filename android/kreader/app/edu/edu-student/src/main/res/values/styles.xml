@@ -1,0 +1,56 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="@style/OnyxAppCompat">
+        <item name="spinnerDropDownItemStyle">@style/OnyxAppCompat.SpinnerItemStyle</item>
+    </style>
+
+    <style name="ToolBarStyle.Transparent.TextLarge" parent="@style/OnyxToolBarStyle">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="popupTheme">@style/ToolBar.Popup</item>
+    </style>
+
+    <style name="ToolBar.Popup" parent="@style/OnyxAppCompat.ToolBar.Popup"> 
+        <item name="android:textSize">@dimen/menu_item_text_size</item>
+    </style>
+
+    <style name="tabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
+        <item name="android:textSize">24sp</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="func_button_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="OnyxAppCompat.SpinnerItemStyle" parent="Widget.AppCompat.DropDownItem.Spinner">
+        <item name="android:textSize">20sp</item>
+        <item name="android:textAppearance">@style/OnyxAppCompat.TextAppearance.Light.Small</item>
+    </style>
+
+    <style name="radio_button_without_background_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">6dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:button">@null</item>
+        <item name="android:textSize">29sp</item>
+        <item name="android:minHeight">60dp</item>
+        <item name="android:padding">4dp</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:text">@string/text_style</item>
+        <item name="android:background">@drawable/none_radiobutton_selector</item>
+        <item name="android:textColor">@drawable/radio_button_text_color</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:gravity">center</item>
+    </style>
+
+</resources>

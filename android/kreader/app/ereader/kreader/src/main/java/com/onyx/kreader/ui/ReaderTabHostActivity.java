@@ -105,11 +105,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                         }
                         return;
                     }
-
-                    if (ReaderTabActivityManager.bringTabToFront(ReaderTabHostActivity.this, tabManager, entry.getKey(), tabWidgetVisible.get())) {
-                        updateCurrentTabInHost(entry.getKey());
-                    }
-                    return;
                 }
             }
         }
@@ -298,6 +293,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         if (isSideReading) {
             quitSideReadingMode();
         }
+
+        // bring self to front before close, so we can hide the intermediate process of closing reader tabs
+        bringSelfToFront();
 
         // move background reader tabs to back first, so we can avoid unintended screen update
         ReaderTabManager.ReaderTab currentTab = getCurrentTabInHost();
@@ -610,6 +608,8 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
 
             ReaderTabActivityManager.bringTabToFront(this, tabManager, currentTab, tabWidgetVisible.get());
         }
+
+        ensureFront();
     }
 
     private void addTabToHost(final ReaderTabManager.ReaderTab tab, final String path) {
@@ -789,7 +789,9 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             startupWakeLock = new WakeLockHolder();
         }
 
-        startupWakeLock.acquireWakeLock(this, ReaderActivity.class.getSimpleName());
+        startupWakeLock.acquireWakeLock(this,
+                WakeLockHolder.FULL_FLAGS | WakeLockHolder.ON_AFTER_RELEASE,
+                ReaderActivity.class.getSimpleName());
     }
 
     private void releaseStartupWakeLock() {
@@ -1017,8 +1019,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void ensureFront() {
-        if (!isFront) {
-            bringSelfToFront();
+        // ensure tab host and current reader tab be front by hiding irrelevant tabs,
+        // fix the issue of randomly losing focus of tab host on Rk3288
+        ReaderTabManager.ReaderTab tab = getCurrentTabInHost();
+        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
+            if (tab == entry.getKey()) {
+                continue;
+            }
+            ReaderTabActivityManager.moveReaderTabToBack(this, tabManager, entry.getKey());
         }
     }
 
@@ -1065,14 +1073,19 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         }
         SingletonSharedPreference.setMultipleTabState(tabManager.toJson());
         SingletonSharedPreference.setMultipleTabVisibility(tabWidgetVisible.get());
+        SingletonSharedPreference.setCurrentTab(getCurrentTabInHost().toString());
     }
 
     private void restoreReaderTabState() {
         Debug.d(TAG, "restoreReaderTabState");
         tabManager = ReaderTabManager.createFromJson(SingletonSharedPreference.getMultipleTabState());
         tabWidgetVisible.set(SingletonSharedPreference.getMultipleTabVisibility());
+        String tab = SingletonSharedPreference.getCurrentTab();
         showTabWidgetOnCondition();
         rebuildTabWidget();
+        if (!StringUtils.isNullOrEmpty(tab)) {
+            updateCurrentTabInHost(Enum.valueOf(ReaderTabManager.ReaderTab.class, tab));
+        }
     }
 
     private void updateTabWidgetVisibility(boolean visible) {

@@ -48,5 +48,6 @@
     "startX": 225,
     "startY": 930
   },
-  "enable_full_refresh": false
+  "enable_full_refresh": false,
+  "support_color": true
 }

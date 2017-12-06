@@ -167,15 +167,10 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
         afterResume();
+        ReaderTabHostBroadcastReceiver.sendTabBringToFrontIntent(this, getClass());
     }
 
     @Override
@@ -215,7 +210,7 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Override
     protected void onStop() {
-        onDocumentDeactivated();
+        onDocumentDeactivated(true);
         super.onStop();
     }
 
@@ -407,8 +402,12 @@ public class ReaderActivity extends OnyxBaseActivity {
                 if (!getReaderDataHolder().isDocumentInitRendered()) {
                     return;
                 }
-
-                onSurfaceViewSizeChanged();
+                if (surfaceView.getWidth() == getReaderDataHolder().getDisplayWidth() &&
+                    surfaceView.getHeight() == getReaderDataHolder().getDisplayHeight()) {
+                    getReaderDataHolder().redrawPage();
+                } else {
+                    onSurfaceViewSizeChanged();
+                }
             }
 
             @Override
@@ -475,6 +474,9 @@ public class ReaderActivity extends OnyxBaseActivity {
         enablePenShortcut();
         updateNoteState();
         getReaderDataHolder().onActivityResume();
+        if (getReaderDataHolder().isDocumentInitRendered()) {
+            saveDocumentOptions();
+        }
     }
 
     private void enablePenShortcut() {
@@ -654,7 +656,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         if (!getReaderDataHolder().getDocumentPath().contains(event.getActiveDocPath())) {
-            onDocumentDeactivated();
+            onDocumentDeactivated(false);
             return;
         }
 
@@ -676,6 +678,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShowTabWidget(final ShowTabWidgetEvent event) {
+        if (!ReaderTabManager.supportMultipleTabs()) {
+            return;
+        }
         buttonShowTabWidget.setVisibility(View.GONE);
         getReaderDataHolder().setButtonShowTabWidgetVisible(false);
         ReaderTabHostBroadcastReceiver.sendShowTabWidgetEvent(this);
@@ -683,6 +688,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onHideTabWidget(final HideTabWidgetEvent event) {
+        if (!ReaderTabManager.supportMultipleTabs()) {
+            return;
+        }
         buttonShowTabWidget.setVisibility(View.VISIBLE);
         getReaderDataHolder().setButtonShowTabWidgetVisible(true);
         ReaderTabHostBroadcastReceiver.sendHideTabWidgetEvent(this);
@@ -704,7 +712,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         return pinchZoomingPopupMenu;
     }
 
-    private void onDocumentDeactivated() {
+    private void onDocumentDeactivated(final boolean saveOptions) {
         Debug.e(getClass(), "onDocumentDeactivated");
         enablePost(true);
         if (!verifyReader()) {
@@ -718,12 +726,16 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (!getReaderDataHolder().isNoteWritingProvider()) {
-            saveDocumentOptions();
+            if (saveOptions) {
+                saveDocumentOptions();
+            }
         } else {
             stopNoteWriting(new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
-                    saveDocumentOptions();
+                    if (saveOptions) {
+                        saveDocumentOptions();
+                    }
                 }
             });
         }
@@ -873,6 +885,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (!getReaderDataHolder().isDocumentInitRendered()) {
             return;
         }
+        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         updateNoteHostView();
 
         if (getReaderDataHolder().isNoteWritingProvider()) {
@@ -903,7 +916,6 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void updateNoteHostView() {
-        getReaderDataHolder().setDisplaySize(surfaceView.getWidth(), surfaceView.getHeight());
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
@@ -1053,7 +1065,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
                 getReaderDataHolder().getVisiblePages(),
-                event.getTouchPointList());
+                event.getTouchPointList(),
+                getReaderDataHolder().getNoteManager().detachShapeStash(),
+                surfaceView);
         action.execute(getReaderDataHolder(), null);
     }
 

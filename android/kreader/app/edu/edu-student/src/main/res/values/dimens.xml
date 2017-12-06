@@ -1,0 +1,63 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+
+    <dimen name="home_item_divider">8dp</dimen>
+    <dimen name="home_layout_padding">8dp</dimen>
+    <dimen name="home_item_radius">4dp</dimen>
+    <dimen name="home_normal_item_category_image_size">108dp</dimen>
+    <dimen name="home_normal_item_category_image_margin">14dp</dimen>
+    <dimen name="home_normal_item_category_text_size">31sp</dimen>
+    <dimen name="home_normal_item_category_margin">13dp</dimen>
+
+    <dimen name="home_item_personal_space_padding">15dp</dimen>
+    <dimen name="home_item_personal_space_label_text_size">27sp</dimen>
+    <dimen name="home_item_personal_space_avatar_size">142dp</dimen>
+    <dimen name="home_item_personal_space_avatar_margin">24dp</dimen>
+    <dimen name="home_item_personal_space_username_text_size">29sp</dimen>
+    <dimen name="home_item_personal_space_date_text_size">27sp</dimen>
+    <dimen name="home_item_personal_space_week_text_margin_left">25dp</dimen>
+    <dimen name="home_item_personal_space_date_qr_code_size">150dp</dimen>
+    <dimen name="home_item_personal_space_date_qr_code_margin">16dp</dimen>
+
+    <dimen name="home_item_background_normal_stroke_width">2dp</dimen>
+    <dimen name="home_item_background_select_stroke_width">3dp</dimen>
+    <dimen name="home_main_item_category_title_text_size">37sp</dimen>
+
+    <dimen name="menu_item_text_size">28sp</dimen>
+
+    <dimen name="common_radio_group_content_radio_margin_left_right">60dp</dimen>
+    <dimen name="common_radio_group_content_radio_margin_top_bottom">24dp</dimen>
+    <dimen name="common_radio_group_content_radio_min_height">66dp</dimen>
+
+    <dimen name="book_item_text_size">26sp</dimen>
+    <dimen name="book_item_text_margin_right">19dp</dimen>
+    <dimen name="book_item_cover_image_width">232dp</dimen>
+    <dimen name="book_item_cover_image_height">320dp</dimen>
+    <dimen name="book_item_get_image_width">55dp</dimen>
+    <dimen name="book_item_get_image_height">32dp</dimen>
+    <dimen name="book_item_notification_image_margin_top">-16dp</dimen>
+    <dimen name="book_item_notification_image_margin_right">12dp</dimen>
+
+    <dimen name="book_list_item_cover_image_width">118dp</dimen>
+    <dimen name="book_list_item_cover_image_height">144dp</dimen>
+    <dimen name="book_list_item_get_image_width">35dp</dimen>
+    <dimen name="book_list_item_get_image_height">21dp</dimen>
+    <dimen name="book_list_item_notification_image_margin_top">-15dp</dimen>
+    <dimen name="book_list_item_notification_image_margin_right">-16dp</dimen>
+    <dimen name="book_list_item_text_size">24sp</dimen>
+    <dimen name="book_list_item_text_margin_left">26dp</dimen>
+    <dimen name="book_list_item_author_text_margin_left">8dp</dimen>
+    <dimen name="book_list_item_padding">14dp</dimen>
+
+    <dimen name="message_notification_layout_unread_image_size">18dp</dimen>
+    <dimen name="message_notification_layout_unread_image_margin_top">-8dp</dimen>
+    <dimen name="message_notification_layout_unread_image_margin_right">-13dp</dimen>
+    <dimen name="message_notification_layout_text_size">25sp</dimen>
+    <dimen name="message_notification_layout_text_margin_left_right">8dp</dimen>
+    <dimen name="message_notification_layout_order_text_size">26sp</dimen>
+
+    <dimen name="application_item_image_size">120dp</dimen>
+    <dimen name="application_item_text_size">24sp</dimen>
+</resources>

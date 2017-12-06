@@ -41,6 +41,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -71,6 +72,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected int totalPageCount;
     protected boolean isLineLayoutMode = false;
     protected boolean fullUpdate = false;
+    private boolean syncOnErasing = false;
     protected boolean drawPageDuringErasing = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
@@ -167,7 +169,8 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void updateDataInfo(final BaseNoteRequest request) {
         shapeDataInfo = request.getShapeDataInfo();
         currentVisualPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
-        totalPageCount = shapeDataInfo.getPageCount();
+        //TODO:avoid change shapedatainfo structure,simple detect here.
+        totalPageCount = shapeDataInfo.getPageCount() == 0 ? 1 : shapeDataInfo.getPageCount();
         if (pageIndicator != null) {
             pageIndicator.setText(currentVisualPageIndex + File.separator + totalPageCount);
         }
@@ -417,6 +420,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onBeginErasing() {
+        if (!syncOnErasing) {
+            return;
+        }
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -438,14 +444,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
+        final List<Shape> stash = getNoteViewHelper().detachStash();
         RemoveByPointListAction<BaseScribbleActivity> removeByPointListAction = new
-                RemoveByPointListAction<>(pointList);
-        removeByPointListAction.execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                drawPage();
-            }
-        });
+                RemoveByPointListAction<>(pointList, stash, surfaceView);
+        removeByPointListAction.execute(this, null);
     }
 
     private void drawContent(final Canvas canvas, final Paint paint) {
@@ -530,7 +532,13 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
         resetFullUpdate();
     }
 
+    public boolean isBuildingSpan() {
+        return false;
+    }
     protected void onNextPage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -547,6 +555,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onPrevPage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -563,6 +574,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onAddNewPage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -579,6 +593,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onDeletePage() {
+        if (isBuildingSpan()) {
+            return;
+        }
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -586,6 +603,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
             }
         });
     }
+
 
     private void deletePage() {
         OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(this, getString(R.string.ask_for_delete_page), new DialogInterface.OnClickListener() {
@@ -672,5 +690,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     public void resetFullUpdate() {
         this.fullUpdate = false;
+    }
+
+    public boolean shouldResume() {
+        boolean resume = !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
+        return resume;
     }
 }

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:appCompat="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <import type="com.onyx.android.sdk.ui.data.MenuId"/>
+        <import type="com.onyx.android.sdk.ui.data.MenuItem"/>
+        <import type="android.util.SparseArray"/>
+        <import type="com.onyx.knote.R"/>
+
+        <variable
+            name="item"
+            type="SparseArray&lt;MenuItem>"/>
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        appCompat:alwaysLayoutImageView="true">
+
+        <LinearLayout
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:onClick="@{(v) ->item[MenuId.SCRIBBLE_TITLE].menuClicked(v)}"
+            android:id="@id/back_function_layout"
+            style="@style/global_activities_back_function_layout">
+
+            <ImageView
+                android:id="@+id/imageView_back"
+                style="@style/global_activities_back_btn_image" />
+
+            <TextView
+                android:id="@+id/textView_main_title"
+                style="@style/global_activities_back_btn_category_tittle"
+                android:ellipsize="middle"
+                android:gravity="left|center_vertical"
+                android:maxEms="10"
+                android:singleLine="true"
+                android:text="@{item[MenuId.SCRIBBLE_TITLE].text}" />
+        </LinearLayout>
+
+        <View
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"/>
+
+        <include
+            bind:item="@{item[MenuId.SWITCH_TO_SPAN_SCRIBBLE_MODE].setMenuIcon(R.drawable.ic_vector)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.SWITCH_TO_NORMAL_SCRIBBLE_MODE].setMenuIcon(R.drawable.ic_note)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.UNDO].setMenuIcon(R.drawable.ic_undo)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.SAVE].setMenuIcon(R.drawable.ic_save)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.REDO].setMenuIcon(R.drawable.ic_redo)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.SETTING].setMenuIcon(R.drawable.ic_setting)}"
+            layout="@layout/main_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.EXPORT].setMenuIcon(R.drawable.ic_export)}"
+            layout="@layout/main_menu_item"/>
+
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>

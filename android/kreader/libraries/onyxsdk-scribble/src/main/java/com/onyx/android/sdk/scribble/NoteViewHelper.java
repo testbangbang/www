@@ -676,7 +676,7 @@ public class NoteViewHelper {
     }
 
     private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER;
+        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
     }
 
     public boolean isEnableTouchEvent() {
@@ -711,10 +711,25 @@ public class NoteViewHelper {
         if (inShapeSelecting()){
             return forwardShapeSelecting(motionEvent);
         }
-        if (!(useRawInput() && renderByFramework())) {
+
+        /*
+           touch event logic:
+           1.detect raw input, if false,always forward drawing.
+           2.if true, filter all finger touch.
+           3.if not finger touch, detect target shape, if non dfb shape, forward drawing.
+         */
+        if (useRawInput()) {
+            if (isFingerTouch(toolType)) {
+                return true;
+            }
+            if (renderByFramework()) {
+                return true;
+            } else {
+                return forwardDrawing(motionEvent);
+            }
+        } else {
             return forwardDrawing(motionEvent);
         }
-        return true;
     }
 
     private boolean forwardDrawing(final MotionEvent motionEvent) {
@@ -722,7 +737,8 @@ public class NoteViewHelper {
             onDrawingTouchDown(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onDrawingTouchMove(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onDrawingTouchUp(motionEvent);
         }
         return true;
@@ -733,7 +749,8 @@ public class NoteViewHelper {
             onBeginShapeSelecting();
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onShapeSelecting(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onFinishShapeSelecting();
         }
         return true;
@@ -744,7 +761,8 @@ public class NoteViewHelper {
             onBeginErasing();
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onErasing(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onFinishErasing();
         }
         return true;

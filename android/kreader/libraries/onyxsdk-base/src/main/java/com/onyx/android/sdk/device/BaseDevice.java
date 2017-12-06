@@ -55,6 +55,11 @@ public class BaseDevice {
         }
     }
 
+    //TODO:for FileUtil to parse uri.
+    public File getBluetoothRootDirectory() {
+        return new File(getExternalStorageDirectory().getPath() + File.separator + "bluetooth");
+    }
+
     public boolean isFileOnRemovableSDCard(File file) {
         return file.getAbsolutePath().startsWith(getRemovableSDCardDirectory().getAbsolutePath());
     }
@@ -488,4 +493,11 @@ public class BaseDevice {
         return false;
     }
 
+    public String getUpgradePackageName() {
+        return "update.zip";
+    }
+
+    public boolean shouldVerifyUpdateModel() {
+        return true;
+    }
 }

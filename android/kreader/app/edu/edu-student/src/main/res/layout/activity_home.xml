@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.onyx.edu.student.model.MainNormalItem" />
+
+        <variable
+            name="viewModel"
+            type="com.onyx.edu.student.ui.activity.HomeActivity" />
+
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/home_layout_padding"
+        app:alwaysLayoutImageView="true">
+
+        <include
+            android:id="@+id/home_item_1"
+            layout="@layout/home_normal_center_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toTopOf="@+id/home_item_3"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toLeftOf="@+id/home_item_2"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="1"
+            bind:item="@{viewModel.normalItemList[0]}" />
+
+        <include
+            android:id="@+id/home_item_2"
+            layout="@layout/home_normal_center_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/home_item_divider"
+            app:layout_constraintBottom_toBottomOf="@+id/home_item_1"
+            app:layout_constraintLeft_toRightOf="@id/home_item_1"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_weight="1"
+            bind:item="@{viewModel.normalItemList[1]}" />
+
+        <include
+            android:id="@+id/home_item_3"
+            layout="@layout/home_normal_center_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/home_item_divider"
+            app:layout_constraintBottom_toTopOf="@+id/home_item_5"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/home_item_1"
+            app:layout_constraintTop_toBottomOf="@+id/home_item_1"
+            app:layout_constraintVertical_weight="1"
+            bind:item="@{viewModel.normalItemList[2]}" />
+
+        <include
+            android:id="@+id/home_item_4"
+            layout="@layout/home_normal_center_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/home_item_divider"
+            android:layout_marginTop="@dimen/home_item_divider"
+            app:layout_constraintBottom_toTopOf="@+id/home_item_6"
+            app:layout_constraintLeft_toRightOf="@+id/home_item_3"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_item_1"
+            app:layout_constraintVertical_weight="1"
+            bind:item="@{viewModel.normalItemList[3]}" />
+
+        <include
+            android:id="@+id/home_item_5"
+            layout="@layout/home_normal_center_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/home_item_divider"
+            app:layout_constraintBottom_toTopOf="@+id/home_zone_item"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="@+id/home_item_1"
+            app:layout_constraintTop_toBottomOf="@+id/home_item_3"
+            app:layout_constraintVertical_weight="1"
+            bind:item="@{viewModel.normalItemList[4]}" />
+
+        <include
+            android:id="@+id/home_item_6"
+            layout="@layout/home_normal_center_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginLeft="@dimen/home_item_divider"
+            android:layout_marginTop="@dimen/home_item_divider"
+            app:layout_constraintBottom_toBottomOf="@+id/home_item_5"
+            app:layout_constraintLeft_toRightOf="@+id/home_item_5"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_item_4"
+            app:layout_constraintVertical_weight="1"
+            bind:item="@{viewModel.normalItemList[5]}" />
+
+        <include
+            android:id="@+id/home_zone_item"
+            layout="@layout/home_zone_item"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/home_item_divider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/home_item_5"
+            app:layout_constraintVertical_weight="1"
+            bind:item="@{viewModel.zoneViewModel}" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatConstraintLayout>
+
+</layout>

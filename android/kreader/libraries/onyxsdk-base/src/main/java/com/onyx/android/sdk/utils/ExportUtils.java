@@ -1,6 +1,9 @@
 package com.onyx.android.sdk.utils;
 
+import android.os.Build;
 import android.os.Environment;
+
+import com.onyx.android.sdk.device.EnvironmentUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,7 +16,7 @@ import static android.os.Environment.DIRECTORY_PICTURES;
 
 public class ExportUtils {
 
-    public static String NOTE_EXPORT_LOCATION = "/mnt/sdcard/note/";
+    public static String NOTE_EXPORT_LOCATION = EnvironmentUtil.getExternalStorageDirectory().getPath() + File.separator + "note" + File.separator;
 
     private static String getExportFolderPath(String documentPath) throws IOException{
         String parent = FileUtils.getParent(documentPath);
@@ -48,7 +51,15 @@ public class ExportUtils {
     }
 
     public static String getExportPicPath(String document) throws IOException {
-        String documentPath = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getAbsolutePath() + File.separator +"Screenshots";
+        String documentPath = getExportPicDirectoryPath();
         return new File(documentPath, document + ".png").getAbsolutePath();
+    }
+
+    private static String getExportPicDirectoryPath(){
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M){
+            return Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES).getAbsolutePath() + File.separator + "Screenshots";
+        }else {
+            return EnvironmentUtil.getExternalStorageDirectory().getPath() + File.separator + "Screenshots";
+        }
     }
 }

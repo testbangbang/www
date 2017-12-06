@@ -13,6 +13,7 @@ import com.neverland.engbook.unicode.CP949;
 import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlOneLink;
+import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
@@ -51,12 +52,10 @@ public class AlFormatRTF extends AlFormat {
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
-        allState.isOpened = true;
-
         ident = "RTF";
 
         fnt_charset_mode.clear();
-        paragraph_level = 0;
+
         aFiles = myParent;
         preference = pref;
         styles = stl;
@@ -79,16 +78,12 @@ public class AlFormatRTF extends AlFormat {
         }
 
         autoCodePage = true;
-        stack_cp0[paragraph_level] = use_cpR0;
+        styleStack.buffer[styleStack.position].cp = use_cpR0;
         returnLang0();
 
         allState.state_parser = STATE_RTF0_TEXT;
-        stack_styles[0] = 0;
 
         parser(0, aFiles.getSize());
-        newParagraph();
-
-        allState.isOpened = false;
     }
 
     private static final int STATE_RTF0_TEXT = 0x00;
@@ -114,54 +109,59 @@ public class AlFormatRTF extends AlFormat {
 
     //protected int	rtf_level = 0;
     protected int	rtf_skip = 0;
-    protected char[]data_cp0 = null;
+    protected char[]    data_cp0 = null;
 
     @Override
     protected final void doTextChar(char ch, boolean addSpecial) {
-        if (allState.state_skipped_flag) {
-            if (allState.state_special_flag0 && addSpecial)
-                state_specialBuff0.append(ch);
+        if (allState.skipped_flag > 0) {
+            if (allState.state_special_flag && addSpecial)
+                specialBuff.add(ch);
         } else {
-            if (allState.isOpened) {
-                if (allState.text_present) {
-                    size++;
-                    parPositionE = allState.start_position;
-                    allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20);
-                    if (size - parStart > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
-                        if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag)
-                            newParagraph();
-                    }
-                } else {
-                    if (ch == 0x20) {
 
-                    } else {
-                        parPositionS = allState.start_position_par;
-                        formatAddonInt();
-                        parStart = size;
-                        allState.text_present = true;
-                        allState.letter_present = (allState.letter_present) || (ch != 0xa0/* && ch != 0x20*/);
-                        size++;
-                        parPositionE = allState.start_position;
-                    }
+            if (parText.length > 0) {
+                if (ch == 0xad) {
+                    softHyphenCount++;
                 }
+                else
+                if (ch == 0x20 && (styleStack.buffer[styleStack.position].paragraph & AlStyles.SL_PRESERVE_SPACE) != 0) {
+                    if (parText.buffer[parText.length - 1] == 0x20)
+                        ch = 0xa0;
+                }
+                parText.add(ch);
 
-                if (allState.state_special_flag0 && addSpecial)
-                    state_specialBuff0.append(ch);
-
+                size++;
+                parText.positionE = allState.start_position;
+                parText.haveLetter = parText.haveLetter || (ch != 0xa0 && ch != 0x20
+                        && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
+                if (parText.length > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
+                    if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag)
+                    newParagraph();
+                }
             } else {
-                if (allState.text_present) {
-                    stored_par.data[stored_par.cpos++] = ch;
-                } else {
-                    if (ch == 0x20) {
+                if (ch == 0x20 && (styleStack.buffer[styleStack.position].paragraph & AlStyles.SL_PRESERVE_SPACE) == 0) {
 
-                    } else {
-                        stored_par.data[stored_par.cpos++] = ch;
-                        allState.text_present = true;
-                    }
+                } else {
+                    parText.positionS = parText.positionE = allState.start_position_par;
+
+                    parText.paragraph = styleStack.getActualParagraph();
+                    parText.prop = styleStack.getActualProp();
+                    parText.sizeStart = size;
+                    parText.tableStart = currentTable.start;
+                    parText.tableCounter = currentTable.counter;
+
+                    if (ch == 0x20)
+                        ch = 0xa0;
+
+                    parText.haveLetter = (ch != 0xa0 && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
+                    size++;
+
+                    parText.add(ch);
                 }
             }
-        }
 
+            if (allState.state_special_flag && addSpecial)
+                specialBuff.add(ch);
+        }
     }
 
     protected int rtf_tag = 0;
@@ -171,7 +171,7 @@ public class AlFormatRTF extends AlFormat {
     protected void resetTAGCRC() {
         rtf_tag = 0x00;
         rtf_param.setLength(0);
-        allState.start_position_tag = allState.start_position;
+        allState.start_position_par = allState.start_position;
     }
 
     private int getCodePageByCharset(int cs) {
@@ -235,7 +235,7 @@ public class AlFormatRTF extends AlFormat {
 
             //if (ch >= 0x80) {
 
-                switch (stack_cp0[paragraph_level] >> 16) {
+                switch (styleStack.buffer[styleStack.position].cp >> 16) {
                     case 932:
                         switch (chinese_num_hex) {
                             case 0 :
@@ -246,7 +246,7 @@ public class AlFormatRTF extends AlFormat {
                                     case 0xff : ch = 0x0000; break;
                                     default :
                                         chinese_num_prv = ch;
-                                        ch = (char) (!allState.text_present ? 0xa0 : 0x00);
+                                        ch = (char) (parText.length == 0 ? 0xa0 : 0x00);
                                         chinese_num_hex = 1;
                                         break;
                                 }
@@ -271,7 +271,7 @@ public class AlFormatRTF extends AlFormat {
                                     case 0xff : ch = 0x0000; break;
                                     default:
                                         chinese_num_prv = ch;
-                                        ch = (char) (!allState.text_present ? 0xa0 : 0x00);
+                                        ch = (char) (parText.length == 0 ? 0xa0 : 0x00);
                                         chinese_num_hex = 1;
                                         break;
                                 }
@@ -292,7 +292,7 @@ public class AlFormatRTF extends AlFormat {
                                     case 0xff : ch = 0x0000; break;
                                     default:
                                         chinese_num_prv = ch;
-                                        ch = (char) (!allState.text_present ? 0xa0 : 0x00);
+                                        ch = (char) (parText.length == 0 ? 0xa0 : 0x00);
                                         chinese_num_hex = 1;
                                         break;
                                 }
@@ -313,7 +313,7 @@ public class AlFormatRTF extends AlFormat {
                                     case 0xff : ch = 0x0000; break;
                                     default:
                                         chinese_num_prv = ch;
-                                        ch = (char) (!allState.text_present ? 0xa0 : 0x00);
+                                        ch = (char) (parText.length == 0 ? 0xa0 : 0x00);
                                         chinese_num_hex = 1;
                                         break;
                                 }
@@ -368,32 +368,32 @@ public class AlFormatRTF extends AlFormat {
 
     @Override
     protected void newParagraph() {
-        int Len = size - parStart;
-        if (Len != 0 && allState.text_present) {
+        if (parText.length > 0) {
 
         } else {
-            setParagraphStyle(AlStyles.PAR_PREVIOUS_EMPTY_1);
+            setPropStyle(AlParProperty.SL2_EMPTY_BEFORE);
         }
+
 
         super.newParagraph();
     }
 
-    private int		image_start = -1;
+    /*private int		image_start = -1;
     private int		image_stop = -1;
     private int		image_type = 0;
-    private String	image_name = null;
+    private String	image_name = null;*/
 
     public  boolean addImages() {
-        image_name = String.format("://$$$%d.image", allState.start_position);//_par);
+        allState.image_name = String.format("://$$$%d.image", allState.start_position);//_par);
         //addTextFromTag((char)AlStyles.CHAR_IMAGE_S + image_name + (char)AlStyles.CHAR_IMAGE_E, false);
         addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
-        addTextFromTag(image_name, false);
+        addTextFromTag(allState.image_name, false);
         addCharFromTag((char) AlStyles.CHAR_IMAGE_E, false);
 
-        if (allState.isOpened) {
-            image_start = -1;
-            image_stop = -1;
-        }
+        //if (allState.isOpened) {
+        allState.image_start = -1;
+        allState.image_stop = -1;
+        //}
 
         return true;
     }
@@ -543,36 +543,25 @@ public class AlFormatRTF extends AlFormat {
     */
 
     private void incLevel() {
-        if (paragraph_level < MAX_STACK_STYLES) {
-            paragraph_level++;
-
-            stack_styles[paragraph_level] = stack_styles[paragraph_level - 1];
-            stack_cp0[paragraph_level] = stack_cp0[paragraph_level - 1];
-
-            rtf_tag = AlFormatTag.TAG_RTFINCLEVEL;
-            acceptChar((char)0x00);
-        }
+        styleStack.push();
+        rtf_tag = AlFormatTag.TAG_RTFINCLEVEL;
+        acceptChar((char)0x00);
     }
 
     private void decLevel() {
-        if (paragraph_level > 0) {
-            paragraph_level--;
+        styleStack.pop();
+        //if (parText.length)
+        doTextChar(getTextStyle(), false);
+        returnLang0();
 
-            if (stack_styles[paragraph_level] != stack_styles[paragraph_level + 1])
-                returnTextStyle();
-
-            if (stack_cp0[paragraph_level] != stack_cp0[paragraph_level + 1])
-                returnLang0();
-
-            rtf_tag = AlFormatTag.TAG_RTFDECLEVEL;
-            acceptChar((char) 0x00);
-        }
+        rtf_tag = AlFormatTag.TAG_RTFDECLEVEL;
+        acceptChar((char)0x00);
     }
 
-    private final long stack_styles[] = new long[MAX_STACK_STYLES + 1];
-    private final int  stack_cp0[] = new int[MAX_STACK_STYLES + 1];
+    //private final long stack_styles[] = new long[MAX_STACK_STYLES + 1];
+    //private final int  stack_cp0[] = new int[MAX_STACK_STYLES + 1];
 
-    @Override
+    /*@Override
     protected final void setTextStyle(int tag) {
         paragraph |= tag;
 
@@ -580,16 +569,16 @@ public class AlFormatRTF extends AlFormat {
 
         if (allState.text_present)
             doTextChar(getTextStyle(), false);
-    }
+    }*/
 
-    protected final void returnTextStyle() {
+    /*protected final void returnTextStyle() {
         //paragraph &= ~((long)AlStyles.PAR_STYLE_MASK);
         paragraph = stack_styles[paragraph_level];
         if (allState.text_present)
             doTextChar(getTextStyle(), false);
     }
-
-    @Override
+*/
+    /*@Override
     protected final void clearTextStyle(int tag) {
         paragraph &= (~tag);
 
@@ -609,109 +598,19 @@ public class AlFormatRTF extends AlFormat {
     void clearParagraphStyle(long tag) {
         paragraph &= (~tag);
         stack_styles[paragraph_level] = paragraph;
-    }
+    }*/
 
     protected void returnLang0() {
         if (autoCodePage) {
-            data_cp = AlUnicode.getDataCP(stack_cp0[paragraph_level] & 0xffff);
-            if ((stack_cp0[paragraph_level] & 0xffff0000) != 0) {
-                data_cp0 = AlUnicode.getDataCP((stack_cp0[paragraph_level] & 0xffff0000) >> 16);
+            data_cp = AlUnicode.getDataCP(styleStack.buffer[styleStack.position].cp & 0xffff);
+            if ((styleStack.buffer[styleStack.position].cp & 0xffff0000) != 0) {
+                data_cp0 = AlUnicode.getDataCP((styleStack.buffer[styleStack.position].cp & 0xffff0000) >> 16);
             } else {
                 data_cp0 = AlUnicode.getDataCP(use_cpR0);
             }
             chinese_num_hex = 0;
         }
     }
-
-    @Override
-    protected 	void doSpecialGetParagraph(long iType, int addon, long level, long[] stk, int[] cpl) {
-        paragraph = iType;
-        allState.state_parser = 0;
-
-        paragraph_level = (int) (level & LEVEL2_MASK_FOR_LEVEL);
-        stack_cp0[paragraph_level] = addon;
-        returnLang0();
-
-        rtf_skip = 0;
-
-        stack_styles[paragraph_level] = paragraph;
-
-        int i;
-        if (stk == null) {
-            for (i = paragraph_level - 1; i > 0; i--)
-                stack_styles[i] = paragraph;
-            stack_styles[0] = 0x00;
-        } else {
-            for (i = paragraph_level - 1; i >= 0; i--)
-                stack_styles[i] = stk[i];
-        }
-
-        if (cpl == null) {
-            for (i = paragraph_level - 1; i > 0; i--)
-                stack_cp0[i] = stack_cp0[paragraph_level];
-            stack_cp0[0] = use_cpR0;
-        } else {
-            for (i = paragraph_level - 1; i >= 0; i--)
-                stack_cp0[i] = cpl[i];
-        }
-
-        allState.state_skipped_flag = (level & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
-        allState.state_code_flag = (level & LEVEL2_FRM_ADDON_CODETEXT) != 0;
-    }
-
-
-    @Override
-    protected  void formatAddonInt() {
-        pariType = paragraph;
-        parAddon = stack_cp0[paragraph_level];
-
-        parLevel = paragraph_level;
-
-        int i;
-
-        boolean needArray = false;
-        for (i = paragraph_level - 1; i > 0; i--)
-            if (stack_styles[i] != paragraph) {
-                needArray = true;
-                break;
-            }
-        if (!needArray)
-            needArray = stack_styles[i] != 0;
-
-        if (needArray) {
-            parStack = new long [paragraph_level];
-            for (i = paragraph_level - 1; i >= 0; i--)
-                parStack[i] = stack_styles[i];
-        } else {
-            parStack = null;
-        }
-
-        needArray = false;
-        for (i = paragraph_level - 1; i > 0; i--)
-            if (stack_cp0[i] != stack_cp0[paragraph_level]) {
-                needArray = true;
-                break;
-            }
-
-        if (!needArray)
-            needArray = stack_cp0[0] != use_cpR0;
-
-        if (needArray) {
-            parCP = new int [paragraph_level];
-            for (i = paragraph_level - 1; i >= 0; i--)
-                parCP[i] = stack_cp0[i];
-        } else {
-            parCP = null;
-        }
-
-        if (allState.state_skipped_flag)
-            parLevel += LEVEL2_FRM_ADDON_SKIPPEDTEXT;
-        if (allState.state_code_flag)
-            parLevel += LEVEL2_FRM_ADDON_CODETEXT;
-    }
-
-
-
 
     protected void processTag0() {
         char ch;
@@ -722,12 +621,22 @@ public class AlFormatRTF extends AlFormat {
                 break;
             case AlFormatTag.TAG_PC:
                 use_cpR0 = TAL_CODE_PAGES.CP437;
-                stack_cp0[paragraph_level] = use_cpR0;
+                if (autoCodePage) {
+                    for (int i = 0; i <= styleStack.position; i++)
+                        styleStack.buffer[i].cp = use_cpR0;
+                } else {
+                    styleStack.buffer[styleStack.position].cp = use_cpR0;
+                }
                 returnLang0();
                 break;
             case AlFormatTag.TAG_PCA:
                 use_cpR0 = TAL_CODE_PAGES.CP850;
-                stack_cp0[paragraph_level] = use_cpR0;
+                if (autoCodePage) {
+                    for (int i = 0; i <= styleStack.position; i++)
+                        styleStack.buffer[i].cp = use_cpR0;
+                } else {
+                    styleStack.buffer[styleStack.position].cp = use_cpR0;
+                }
                 returnLang0();
                 break;
             case AlFormatTag.TAG_ANSICPG:
@@ -746,8 +655,8 @@ public class AlFormatRTF extends AlFormat {
                                 break;
                             default:
                                 use_cpR0 = c;
-                                for (int i = 0; i <= paragraph_level; i++)
-                                    stack_cp0[i] = use_cpR0;
+                                for (int i = 0; i <= styleStack.position; i++)
+                                    styleStack.buffer[i].cp = use_cpR0;
                                 returnLang0();
                                 break;
                         }
@@ -763,8 +672,8 @@ public class AlFormatRTF extends AlFormat {
                 if (autoCodePage) {
                     try {
                         ch = (char) Integer.parseInt(rtf_param.toString());
-                        stack_cp0[paragraph_level] &= 0xffff0000;
-                        stack_cp0[paragraph_level] |= getLangToCP(ch);
+                        styleStack.buffer[styleStack.position].cp &= 0xffff0000;
+                        styleStack.buffer[styleStack.position].cp |= getLangToCP(ch);
                         returnLang0();
                     } catch (Exception e) {
                         //use_cpR0 = 1252;
@@ -778,12 +687,12 @@ public class AlFormatRTF extends AlFormat {
                 break;
             case AlFormatTag.TAG_SECT:
                 newParagraph();
-                setParagraphStyle(AlStyles.PAR_BREAKPAGE);
+                setPropStyle(AlParProperty.SL2_BREAK_BEFORE);
                 break;
             // styles
             case AlFormatTag.TAG_PARD:
                 newParagraph();
-                clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK);
+                clearPropStyle(AlParProperty.SL2_JUST_MASK);
                 clearTextStyle(AlStyles.STYLE_MASK);
                 break;
             case AlFormatTag.TAG_PLAIN:
@@ -846,20 +755,19 @@ public class AlFormatRTF extends AlFormat {
 
             // justify
             case AlFormatTag.TAG_QL:
-                clearParagraphStyle(AlStyles.SL_JUST_MASK);
-                setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_LEFT);
+                clearPropStyle(AlParProperty.SL2_JUST_MASK);
+                setPropStyle(AlParProperty.SL2_JUST_LEFT);
                 break;
             case AlFormatTag.TAG_QR:
-                clearParagraphStyle(AlStyles.SL_JUST_MASK);
-                setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_RIGHT);
+                clearPropStyle(AlParProperty.SL2_JUST_MASK);
+                setPropStyle(AlParProperty.SL2_JUST_RIGHT);
                 break;
             case AlFormatTag.TAG_QJ:
-                clearParagraphStyle(AlStyles.SL_JUST_MASK);
-                setParagraphStyle(AlStyles.PAR_NATIVEJUST);
+                clearPropStyle(AlParProperty.SL2_JUST_MASK);
                 break;
             case AlFormatTag.TAG_QC:
-                clearParagraphStyle(AlStyles.SL_JUST_MASK);
-                setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_CENTER);
+                clearPropStyle(AlParProperty.SL2_JUST_MASK);
+                setPropStyle(AlParProperty.SL2_JUST_CENTER);
                 break;
             // end justify
 
@@ -920,28 +828,28 @@ public class AlFormatRTF extends AlFormat {
                         break;
                     case AlFormatTag.TAG_F:
                         Integer char_cp = fnt_charset_mode.get(rtf_param.toString());
-                        if (char_cp != null && (char_cp != (stack_cp0[paragraph_level] >> 16))) {
-                            stack_cp0[paragraph_level] &= 0xffff;
-                            stack_cp0[paragraph_level] |= char_cp << 16;
+                        if (char_cp != null && (char_cp != (styleStack.buffer[styleStack.position].cp >> 16))) {
+                            styleStack.buffer[styleStack.position].cp &= 0xffff;
+                            styleStack.buffer[styleStack.position].cp |= char_cp << 16;
                             returnLang0();
                             Log.e("set font " + rtf_param.toString() + " charset =", Integer.toString(char_cp));
                         }
                         break;
                     case AlFormatTag.TAG_PICT:
-                        pict_level = paragraph_level;
+                        pict_level = styleStack.position;
                         processTag0();
-                        allState.state_parser = allState.isOpened ? STATE_RTF2_WAITPICT : STATE_RTF2_PICT;
+                        allState.state_parser = STATE_RTF2_WAITPICT;
                         break;
                     case AlFormatTag.TAG_INFO:
-                        rtf_skip = paragraph_level;
+                        rtf_skip = styleStack.position;
                         allState.state_parser = STATE_RTF2_SKIP;
                         break;
                     case AlFormatTag.TAG_FONTTBL:
-                        rtf_skip = paragraph_level;
+                        rtf_skip = styleStack.position;
                         allState.state_parser = STATE_RTF2_SKIPFNT;
                         break;
                     case AlFormatTag.TAG_LISTTABLE:
-                        rtf_skip = paragraph_level;
+                        rtf_skip = styleStack.position;
                         allState.state_parser = STATE_RTF2_SKIP;
                         break;
                     case AlFormatTag.TAG_COLORTBL:
@@ -952,11 +860,11 @@ public class AlFormatRTF extends AlFormat {
                     case AlFormatTag.TAG_PNTEXT:
                     case AlFormatTag.TAG_FOOTER:
                     case AlFormatTag.TAG_FOOTNOTE:
-                        rtf_skip = paragraph_level;
+                        rtf_skip = styleStack.position;
                         allState.state_parser = STATE_RTF2_SKIP;
                         break;
                     case AlFormatTag.TAG_RTFSTAR:
-                        rtf_skip = paragraph_level;
+                        rtf_skip = styleStack.position;
                         allState.state_parser = STATE_RTF2_COMMENT;
                         break;
                     default:
@@ -967,8 +875,7 @@ public class AlFormatRTF extends AlFormat {
                 switch (ch) {
                     case 0x0a:
                     case 0x0d:
-                        if (allState.isOpened)
-                            newParagraph();
+                        newParagraph();
                         break;
                     default:
                         doTextChar(ch, true);
@@ -980,7 +887,7 @@ public class AlFormatRTF extends AlFormat {
                     if (ch == 0x00) {
                         switch (rtf_tag) {
                             case AlFormatTag.TAG_RTFDECLEVEL:
-                                if (paragraph_level < rtf_skip) {
+                                if (styleStack.position < rtf_skip) {
                                     rtf_skip = 0;
                                     allState.state_parser = 0;
                                 }
@@ -1009,7 +916,7 @@ public class AlFormatRTF extends AlFormat {
                     if (ch == 0x00) {
                         switch (rtf_tag) {
                             case AlFormatTag.TAG_RTFDECLEVEL:
-                                if (paragraph_level < rtf_skip) {
+                                if (styleStack.position < rtf_skip) {
 
                                     switch (readStringMode) {
                                     case RTF_READSTRING_FLDINST:
@@ -1023,9 +930,8 @@ public class AlFormatRTF extends AlFormat {
                                         }
                                         break;
                                     case RTF_READSTRING_BKMKSTART:
-                                        if (allState.isOpened) {
-                                            AlOneLink a = AlOneLink.add(rtf_param.toString(), size, ((paragraph & AlStyles.PAR_NOTE) != 0) ? 1 : 0);
-                                            lnk.add(a);
+                                        if (rtf_param != null) {
+                                            lnk.add(AlOneLink.add(rtf_param.toString(), size, 0));
                                         }
                                         break;
                                     }
@@ -1043,15 +949,15 @@ public class AlFormatRTF extends AlFormat {
                     if (ch == 0x00) {
                         switch (rtf_tag) {
                             case AlFormatTag.TAG_RTFDECLEVEL:
-                                if (paragraph_level < rtf_skip) {
+                                if (styleStack.position < rtf_skip) {
                                     rtf_skip = 0;
                                     allState.state_parser = 0;
                                 }
                                 break;
                             case AlFormatTag.TAG_PICT:
-                                pict_level = paragraph_level;
+                                pict_level = styleStack.position;
                                 processTag0();
-                                allState.state_parser = allState.isOpened ? STATE_RTF2_WAITPICT : STATE_RTF2_SKIP;
+                                allState.state_parser = STATE_RTF2_WAITPICT;
                                 break;
                         }
                     }
@@ -1061,12 +967,12 @@ public class AlFormatRTF extends AlFormat {
                         switch (rtf_tag) {
                             case AlFormatTag.TAG_F:
                                 if (fnt_level == -1)
-                                    fnt_level = paragraph_level;
+                                    fnt_level = styleStack.position;
                                 fnt_name = rtf_param.toString();
                                 break;
                             case AlFormatTag.TAG_FCHARSET:
                                 if (fnt_level == -1)
-                                    fnt_level = paragraph_level;
+                                    fnt_level = styleStack.position;
 
                                 try {
                                     fnt_charset = Integer.parseInt(rtf_param.toString());
@@ -1077,11 +983,11 @@ public class AlFormatRTF extends AlFormat {
 
                                 break;
                             case AlFormatTag.TAG_RTFDECLEVEL:
-                                if (paragraph_level < rtf_skip) {
+                                if (styleStack.position < rtf_skip) {
                                     rtf_skip = 0;
                                     allState.state_parser = 0;
                                 } else
-                                if (paragraph_level < fnt_level) {
+                                if (styleStack.position < fnt_level) {
                                     if (fnt_name != null && fnt_charset != -1) {
                                         fnt_charset_mode.put(fnt_name, fnt_charset);
                                         Log.e("fnttbl", fnt_name + '>' + fnt_charset);
@@ -1098,7 +1004,7 @@ public class AlFormatRTF extends AlFormat {
                     if (ch == 0x00) {
                         switch (rtf_tag) {
                             case AlFormatTag.TAG_RTFDECLEVEL:
-                                if (paragraph_level < rtf_skip) {
+                                if (styleStack.position < rtf_skip) {
                                     rtf_skip = 0;
                                     allState.state_parser = 0;
                                 }
@@ -1113,61 +1019,61 @@ public class AlFormatRTF extends AlFormat {
                     if (ch == 0x00) {
                         switch (rtf_tag) {
                             case AlFormatTag.TAG_BIN:
-                                allState.skip_count = InternalFunc.str2int(rtf_param, 10);
-                                if (allState.skip_count > 0) {
+                                allState.skipped_flag = InternalFunc.str2int(rtf_param, 10);
+                                if (allState.skipped_flag > 0) {
                                     allState.state_parser = STATE_RTF0_SKIP_COUNTBYTES;
-                                    image_start = allState.start_position + 1;
+                                    allState.image_start = allState.start_position + 1;
                                     rtf_tag = 0x00;
-                                    image_type = AlOneImage.IMG_BINARYINFILE;
+                                    allState.image_type = AlOneImage.IMG_BINARYINFILE;
                                     return;
                                 }
                                 break;
                             case AlFormatTag.TAG_RTFDECLEVEL:
-                                if (paragraph_level < pict_level) {
+                                if (styleStack.position < pict_level) {
                                     pict_level = 0;
-                                    allState.state_parser = rtf_skip < paragraph_level ? 0 : STATE_RTF2_SKIP;
+                                    allState.state_parser = rtf_skip < styleStack.position ? 0 : STATE_RTF2_SKIP;
                                 }
-                                if (rtf_skip < paragraph_level)
+                                if (rtf_skip < styleStack.position)
                                     rtf_skip = 0;
                                 break;
                         }
                     } else
-                    if (ch > 0x20 && pict_level == paragraph_level){
+                    if (ch > 0x20 && pict_level == styleStack.position){
                         allState.state_parser = STATE_RTF2_PICT;
-                        image_start = allState.start_position;
-                        image_type = AlOneImage.IMG_HEX;
+                        allState.image_start = allState.start_position;
+                        allState.image_type = AlOneImage.IMG_HEX;
                     }
                     break;
                 case STATE_RTF2_PICT:
                     if (ch == 0x00) {
                         switch (rtf_tag) {
                             case AlFormatTag.TAG_BIN:
-                                allState.skip_count = InternalFunc.str2int(rtf_param, 10);
-                                if (allState.skip_count > 0) {
+                                allState.skipped_flag = InternalFunc.str2int(rtf_param, 10);
+                                if (allState.skipped_flag > 0) {
                                     allState.state_parser = STATE_RTF0_SKIP_COUNTBYTES;
-                                    image_start = allState.start_position + 1;
+                                    allState.image_start = allState.start_position + 1;
                                     rtf_tag = 0x00;
-                                    image_type = AlOneImage.IMG_BINARYINFILE;
+                                    allState.image_type = AlOneImage.IMG_BINARYINFILE;
                                     return;
                                 }
                                 break;
                             case AlFormatTag.TAG_RTFDECLEVEL:
-                                if (paragraph_level < pict_level) {
+                                if (styleStack.position < pict_level) {
 
-                                    if (allState.isOpened && image_start > 0 && image_name != null) {
-                                        image_stop = allState.start_position_par;
-                                        im.add(AlOneImage.add(image_name, image_start, image_stop, image_type));
+                                    if (/*allState.isOpened && */allState.image_start > 0 && allState.image_name != null) {
+                                        allState.image_stop = allState.start_position_par;
+                                        im.add(AlOneImage.add(allState.image_name, allState.image_start, allState.image_stop, allState.image_type));
                                         //addImage(AlImage.addImage(image_name, image_start, image_stop, AlImage.IMG_HEX));
                                     }
 
-                                    image_start = image_stop = -1;
-                                    image_name = null;
+                                    allState.image_start = allState.image_stop = -1;
+                                    allState.image_name = null;
 
                                     pict_level = 0;
-                                    allState.state_parser = rtf_skip < paragraph_level ? 0 : STATE_RTF2_SKIP;
+                                    allState.state_parser = rtf_skip < styleStack.position ? 0 : STATE_RTF2_SKIP;
                                 }
 
-                                if (rtf_skip < paragraph_level)
+                                if (rtf_skip < styleStack.position)
                                     rtf_skip = 0;
                                 break;
                         }
@@ -1190,7 +1096,6 @@ public class AlFormatRTF extends AlFormat {
 
         chinese_num_hex = 0;
 
-        allState.text_present = false;
 
         for (i = start_pos; i < stop_posRequest;) {
             buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
@@ -1210,7 +1115,7 @@ public class AlFormatRTF extends AlFormat {
                 ch &= 0xff;
 
                 if (ch >= 0x80) {
-                    switch (autoCodePage ? (stack_cp0[paragraph_level] & 0xffff) : use_cpR0) {
+                    switch (autoCodePage ? (styleStack.buffer[styleStack.position].cp & 0xffff) : use_cpR0) {
                         case 932:
                             switch (ch) {
                                 case 0x80 :
@@ -1261,6 +1166,8 @@ public class AlFormatRTF extends AlFormat {
                             ch = data_cp[ch - 0x80];
                     }
                 }
+                if ((ch & AlStyles.STYLE_MASK_4CODECONVERT) == AlStyles.STYLE_BASE_4CODECONVERT)
+                    ch = 0x00;
                 // end must be code
                 /////////////////// Begin Real Parser
 
@@ -1268,8 +1175,8 @@ public class AlFormatRTF extends AlFormat {
                 while (true)
                     switch (allState.state_parser & 0x0f) {
                         case STATE_RTF0_SKIP_COUNTBYTES:
-                            allState.skip_count--;
-                            if (allState.skip_count == 0) {
+                            allState.skipped_flag--;
+                            if (allState.skipped_flag == 0) {
                                 allState.state_parser = STATE_RTF2_PICT;
                             }
                             continue label_get_next_char;
@@ -1386,8 +1293,7 @@ public class AlFormatRTF extends AlFormat {
             }
             i += j;
         }
-        if (allState.isOpened)
-            newParagraph();
+        newParagraph();
         // end must be code
 
     }

@@ -18,7 +18,7 @@ import com.onyx.kreader.note.actions.StopNoteActionChain;
 import com.onyx.kreader.note.request.StartNoteRequest;
 import com.onyx.kreader.ui.ReaderActivity;
 import com.onyx.kreader.ui.actions.ChangeScaleWithDeltaAction;
-import com.onyx.kreader.ui.actions.toggleSideNoteMenuAction;
+import com.onyx.kreader.ui.actions.ToggleSideNoteMenuAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.dialog.DialogGotoPage;
 import com.onyx.kreader.ui.events.ChangeOrientationEvent;
@@ -33,10 +33,17 @@ import org.greenrobot.eventbus.Subscribe;
 public class SideNoteHandler extends BaseHandler {
     private static final String TAG = SideNoteHandler.class.getSimpleName();
     private MenuManager menuManager;
+    private BaseCallback resumeDrawingCallBack;
 
     public SideNoteHandler(HandlerManager p) {
         super(p);
         menuManager = new MenuManager();
+        resumeDrawingCallBack = new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
+            }
+        };
     }
 
     private boolean isEnableBigPen() {
@@ -99,6 +106,9 @@ public class SideNoteHandler extends BaseHandler {
     @Override
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder, MotionEvent e) {
         if (e.getPointerCount() > 1) {
+            return true;
+        }
+        if (inDocRegion(e)) {
             return true;
         }
 
@@ -181,61 +191,59 @@ public class SideNoteHandler extends BaseHandler {
     }
 
     private void toggleSideNoteMenu(final ReaderDataHolder readerDataHolder) {
-        if (menuManager.isMainMenuShown()) {
-            hideSideNoteMenu(readerDataHolder);
-        } else {
-            showSideNoteMenu(readerDataHolder);
-        }
-    }
-
-    private void showSideNoteMenu(final ReaderDataHolder readerDataHolder) {
         FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
         flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new toggleSideNoteMenuAction(menuManager,
+                new ToggleSideNoteMenuAction(menuManager,
                         ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
-                        execute(readerDataHolder, null);
-            }});
-    }
-
-    private void hideSideNoteMenu(final ReaderDataHolder readerDataHolder) {
-        new toggleSideNoteMenuAction(menuManager,
-            ((ReaderActivity) readerDataHolder.getContext()).getExtraView(), readerDataHolder.supportScalable()).
-            execute(readerDataHolder, new BaseCallback() {
-                @Override
-                public void done(BaseRequest request, Throwable e) {
-                    new ResumeDrawingAction(getParent().getReaderDataHolder().getVisiblePages()).execute(getParent().getReaderDataHolder(), null);
-                }
-            });
+                        execute(readerDataHolder, resumeDrawingCallBack);
+            }
+        });
     }
 
     @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
         ReaderMenuAction menuAction = ReaderMenuAction.valueOf(event.getMenuId());
+        FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
+        BaseCallback menuActionCallback = null;
         switch (menuAction) {
             case ZOOM_IN:
-                final ChangeScaleWithDeltaAction scaleUpAction = new ChangeScaleWithDeltaAction(0.1f);
-                scaleUpAction.execute(getParent().getReaderDataHolder(), null);
+                menuActionCallback = new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        final ChangeScaleWithDeltaAction scaleUpAction = new ChangeScaleWithDeltaAction(0.1f);
+                        scaleUpAction.execute(getParent().getReaderDataHolder(), resumeDrawingCallBack);
+                    }
+                };
                 break;
             case ZOOM_OUT:
-                final ChangeScaleWithDeltaAction scaleDownAction = new ChangeScaleWithDeltaAction(-0.1f);
-                scaleDownAction.execute(getParent().getReaderDataHolder(), null);
+                menuActionCallback = new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        final ChangeScaleWithDeltaAction scaleDownAction = new ChangeScaleWithDeltaAction(-0.1f);
+                        scaleDownAction.execute(getParent().getReaderDataHolder(), resumeDrawingCallBack);
+                    }
+                };
                 break;
             case ZOOM_BY_CROP_PAGE:
-                final ScaleToPageCropRequest request = new ScaleToPageCropRequest(getParent().getReaderDataHolder().getCurrentPageName());
-                getParent().getReaderDataHolder().submitRenderRequest(request);
+                menuActionCallback = new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        final ScaleToPageCropRequest scaleToPageCropRequest = new ScaleToPageCropRequest(getParent().getReaderDataHolder().getCurrentPageName());
+                        getParent().getReaderDataHolder().submitRenderRequest(scaleToPageCropRequest, resumeDrawingCallBack);
+                    }
+                };
                 break;
             case GOTO_PAGE:
-                FlushNoteAction flushNoteAction = FlushNoteAction.pauseAfterFlush(getParent().getReaderDataHolder().getVisiblePages());
-                flushNoteAction.execute(getParent().getReaderDataHolder(), new BaseCallback() {
+                menuActionCallback = new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         showDialogGoToPage();
                     }
-                });
-                break;
+                };
         }
+        flushNoteAction.execute(getParent().getReaderDataHolder(), menuActionCallback);
     }
 
     private void showDialogGoToPage() {

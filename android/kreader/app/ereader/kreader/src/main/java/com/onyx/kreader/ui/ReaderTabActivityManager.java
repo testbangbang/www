@@ -9,8 +9,10 @@ import android.view.View;
 import com.onyx.android.sdk.utils.Debug;
 
 import java.io.File;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created by joy on 10/12/17.
@@ -18,6 +20,10 @@ import java.util.List;
 
 public class ReaderTabActivityManager {
     private static final Class TAG = ReaderTabActivityManager.class;
+
+    private interface ReaderTabVisitor {
+        void apply(ReaderTabManager.ReaderTab tab, int taskId);
+    }
 
     public static void openDocument(Context context,
                                     ReaderTabManager tabManager,
@@ -66,67 +72,6 @@ public class ReaderTabActivityManager {
                 tabManager.getTabReceiver(tab), gravity, width, height);
     }
 
-    public static boolean bringTabToFront(Context context,
-                                          ReaderTabManager tabManager,
-                                          ReaderTabManager.ReaderTab tab,
-                                          boolean tabWidgetVisible) {
-        if (!tabManager.getOpenedTabs().containsKey(tab)) {
-            return false;
-        }
-
-        String clzName = tabManager.getTabActivity(tab).getName();
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
-            int nSize = tasksList.size();
-            for (int i = 0; i < nSize; i++) {
-                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                    Debug.d(TAG, "bring tab to front succeeded: " + tab);
-                    // TODO
-//                    updateCurrentTabInHost(tab);
-//                    updateReaderTabWindowHeight(tab);
-                    am.moveTaskToFront(tasksList.get(i).id, 0);
-
-                    if (!tabManager.supportMultipleTabs() || tabManager.getOpenedTabs().size() <= 1) {
-                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(context,
-                                tabManager.getTabReceiver(tab), true);
-                    } else {
-                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(context,
-                                tabManager.getTabReceiver(tab), tabWidgetVisible);
-                    }
-                    return true;
-                }
-            }
-        }
-        Debug.d(TAG, "bring tab to front failed: " + tab);
-        return false;
-    }
-
-    public static boolean moveReaderTabToBack(Context context, ReaderTabManager tabManager, ReaderTabManager.ReaderTab tab) {
-        String clzName = tabManager.getTabActivity(tab).getName();
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
-            int nSize = tasksList.size();
-            for (int i = 0; i < nSize; i++) {
-                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                    Debug.d(TAG, "move tab to back succeeded: " + tab);
-                    ReaderBroadcastReceiver.sendMoveTaskToBackIntent(context, tabManager.getTabReceiver(tab));
-                    return true;
-                }
-            }
-        }
-        Debug.d(TAG, "move tab to back failed: " + tab);
-        return false;
-    }
-
-    public static void notifyTabActivated(Context context, ReaderTabManager tabManager, ReaderTabManager.ReaderTab tab) {
-        final String path = tabManager.getOpenedTabs().get(tab);
-        for (LinkedHashMap.Entry<ReaderTabManager.ReaderTab, String> entry : tabManager.getOpenedTabs().entrySet()) {
-            ReaderBroadcastReceiver.sendDocumentActivatedIntent(context, tabManager.getTabReceiver(entry.getKey()), path);
-        }
-    }
-
     public static void showTabHostMenuDialog(Context context, ReaderTabManager tabManager, ReaderTabManager.ReaderTab tab, View buttonMenu) {
         int[] location = new int[2];
         buttonMenu.getLocationOnScreen(location);
@@ -143,48 +88,89 @@ public class ReaderTabActivityManager {
         ReaderBroadcastReceiver.sendStopNoteIntent(context, tabManager.getTabReceiver(tab));
     }
 
-    public static void updateTabWidgetVisibilityOnOpenedReaderTabs(Context context, ReaderTabManager tabManager, boolean visible) {
-        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-        List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
-            int nSize = tasksList.size();
-            for (int i = 0; i < nSize; i++) {
-                for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
-                    String clzName = tabManager.getTabActivity(tab).getName();
-                    if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                        Debug.d(TAG, "update tab widget visibility: " + tab + ", " + visible);
-                        ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(context, tabManager.getTabReceiver(tab), visible);
-                        break;
+    public static boolean bringTabToFront(final Context context,
+                                          final ReaderTabManager tabManager,
+                                          final ReaderTabManager.ReaderTab tab,
+                                          final boolean tabWidgetVisible) {
+        final AtomicBoolean result = new AtomicBoolean(false);
+        final ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        applyOnReaderTabs(context, tabManager,
+                Arrays.asList(new ReaderTabManager.ReaderTab[]{tab}),
+                new ReaderTabVisitor() {
+                    @Override
+                    public void apply(ReaderTabManager.ReaderTab tab, int taskId) {
+                        Debug.d(TAG, "bring tab to front succeeded: " + tab);
+                        am.moveTaskToFront(taskId, 0);
+                        result.set(true);
                     }
+                });
+        return result.get();
+    }
+
+    public static void moveReaderTabToBack(final Context context, final ReaderTabManager tabManager, final ReaderTabManager.ReaderTab tab) {
+        applyOnReaderTabs(context, tabManager,
+                Arrays.asList(new ReaderTabManager.ReaderTab[]{tab}),
+                new ReaderTabVisitor() {
+                    @Override
+                    public void apply(ReaderTabManager.ReaderTab tab, int taskId) {
+                        Debug.d(TAG, "move tab to back succeeded: " + tab);
+                        ReaderBroadcastReceiver.sendMoveTaskToBackIntent(context, tabManager.getTabReceiver(tab));
+                    }
+                });
+    }
+
+    public static void notifyTabActivated(final Context context, final ReaderTabManager tabManager, final ReaderTabManager.ReaderTab tab) {
+        final String path = tabManager.getOpenedTabs().get(tab);
+        applyOnOpenedReaderTabs(context, tabManager, new ReaderTabVisitor() {
+            @Override
+            public void apply(ReaderTabManager.ReaderTab tab, int taskId) {
+                ReaderBroadcastReceiver.sendDocumentActivatedIntent(context, tabManager.getTabReceiver(tab), path);
+            }
+        });
+    }
+
+    public static void updateTabWidgetVisibilityOnOpenedReaderTabs(final Context context, final ReaderTabManager tabManager, final boolean visible) {
+        applyOnOpenedReaderTabs(context, tabManager, new ReaderTabVisitor() {
+            @Override
+            public void apply(ReaderTabManager.ReaderTab tab, int taskId) {
+                Debug.d(TAG, "update tab widget visibility: " + tab + ", " + visible);
+                ReaderBroadcastReceiver.sendUpdateTabWidgetVisibilityIntent(context, tabManager.getTabReceiver(tab), visible);
+            }
+        });
+    }
+
+    public static void enableDebugLog(final Context context, final ReaderTabManager tabManager, final boolean enabled) {
+        applyOnOpenedReaderTabs(context, tabManager, new ReaderTabVisitor() {
+            @Override
+            public void apply(ReaderTabManager.ReaderTab tab, int taskId) {
+                if (enabled) {
+                    ReaderBroadcastReceiver.sendEnableDebugLogIntent(context, tabManager.getTabReceiver(tab));
+                } else {
+                    ReaderBroadcastReceiver.sendDisableDebugLogIntent(context, tabManager.getTabReceiver(tab));
                 }
             }
-        }
+        });
     }
 
-    public static void enableDebugLog(Context context, ReaderTabManager tabManager, boolean enabled) {
-        Debug.d(TAG, "enableDebugLog: " + enabled);
-        enableDebugLogOnOpenedReaderTabs(context, tabManager, enabled);
+    private static void applyOnOpenedReaderTabs(Context context, ReaderTabManager tabManager, ReaderTabVisitor tabVisitor) {
+        applyOnReaderTabs(context, tabManager, tabManager.getOpenedTabs().keySet(), tabVisitor);
     }
 
-    private static void enableDebugLogOnOpenedReaderTabs(Context context,
-                                                  ReaderTabManager tabManager,
-                                                  boolean enabled) {
+    private static void applyOnReaderTabs(Context context, ReaderTabManager tabManager,
+                                          Collection<ReaderTabManager.ReaderTab> tabs,
+                                          ReaderTabVisitor tabVisitor) {
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         List<ActivityManager.RunningTaskInfo> tasksList = am.getRunningTasks(Integer.MAX_VALUE);
-        if (!tasksList.isEmpty()) {
+        if (tasksList.isEmpty()) {
+            return;
+        }
+        for (ReaderTabManager.ReaderTab tab : tabs) {
             int nSize = tasksList.size();
             for (int i = 0; i < nSize; i++) {
-                for (ReaderTabManager.ReaderTab tab : tabManager.getOpenedTabs().keySet()) {
-                    String clzName = tabManager.getTabActivity(tab).getName();
-                    if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
-                        Debug.d(TAG, "set debug log: " + tab + ", " + enabled);
-                        if (enabled) {
-                            ReaderBroadcastReceiver.sendEnableDebugLogIntent(context, tabManager.getTabReceiver(tab));
-                        } else {
-                            ReaderBroadcastReceiver.sendDisableDebugLogIntent(context, tabManager.getTabReceiver(tab));
-                        }
-                        break;
-                    }
+                String clzName = tabManager.getTabActivity(tab).getName();
+                if (tasksList.get(i).topActivity.getClassName().equals(clzName)) {
+                    tabVisitor.apply(tab, tasksList.get(i).id);
+                    break;
                 }
             }
         }

@@ -161,6 +161,7 @@ public class DialogContrast extends OnyxBaseDialog implements CompoundButton.OnC
     }
 
     private void initSeekbar() {
+        seekbarView.setIgnoreSeekBarTrackingValue(true);
         seekbarView.setCallback(new SeekBarWithEditTextView.Callback() {
             @Override
             public void valueChange(int newValue) {

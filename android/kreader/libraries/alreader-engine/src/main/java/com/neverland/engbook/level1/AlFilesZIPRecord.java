@@ -10,6 +10,58 @@ public class AlFilesZIPRecord extends AlFiles {
 
     private final StringBuilder sb = new StringBuilder();
 
+    public final int  removeFilesFromRecord(int num) {
+        if (num >= 0 && num < recordList.size()) {
+            int sz = recordList.get(num).size + recordList.get(num).startSize + recordList.get(num).endSize;
+            recordList.remove(num);
+            size -= sz;
+            return sz;
+        }
+        return 0;
+    }
+
+
+    public final int testFilesToRecord(String fname, int sp) {
+        int num = parent.getExternalFileNum(fname);
+
+        if (num != LEVEL1_FILE_NOT_FOUND) {
+
+            AlOneZIPRecord a = new AlOneZIPRecord();
+            a.file = parent.getExternalAbsoluteFileName(num);
+            a.num = num;
+            a.special = sp;
+
+            if (a.special == AlOneZIPRecord.SPECIAL_IMAGE) {
+                a.size = 0;
+
+                String tmp = String.format("<image numfiles=\"%d\" idref=\"%d\" src=\"%s\"/>\r\n",
+                        a.num, a.special, a.file);
+                a.startSize = AlUnicode.string2utf8(tmp, null);
+                a.startStr = new byte[a.startSize + 1];
+                AlUnicode.string2utf8(tmp, a.startStr);
+                a.endSize = 0;
+            } else {
+                a.size = parent.getExternalFileSize(num);
+
+                String tmp = String.format("<alr:extfile numfiles=\"%d\" idref=\"%d\" id=\"%s\">\r\n",
+                        a.num, a.special, a.file);
+
+                a.startSize = AlUnicode.string2utf8(tmp, null);
+                a.startStr = new byte[a.startSize + 1];
+                AlUnicode.string2utf8(tmp, a.startStr);
+
+                tmp = "\r\n</alr:extfile>\r\n";
+                a.endSize = AlUnicode.string2utf8(tmp, null);
+                a.endStr = new byte[a.endSize + 1];
+                AlUnicode.string2utf8(tmp, a.endStr);
+            }
+
+            return a.size + a.startSize + a.endSize;
+        }
+
+        return 0;
+    }
+
     public final void addFilesToRecord(String fname, int sp) {
         int num = parent.getExternalFileNum(fname);
 
@@ -23,7 +75,7 @@ public class AlFilesZIPRecord extends AlFiles {
             if (a.special == AlOneZIPRecord.SPECIAL_IMAGE) {
                 a.size = 0;
 
-                String tmp = String.format("\r\n<image numfiles=\"%d\" idref=\"%d\" src=\"%s\">\r\n",
+                String tmp = String.format("<image numfiles=\"%d\" idref=\"%d\" src=\"%s\"/>\r\n",
                         a.num, a.special, a.file);
                 a.startSize = AlUnicode.string2utf8(tmp, null);
                 a.startStr = new byte[a.startSize + 1];
@@ -32,18 +84,9 @@ public class AlFilesZIPRecord extends AlFiles {
             } else {
                 a.size = parent.getExternalFileSize(num);
 
-                String tmp = String.format("\r\n<alr:extfile numfiles=\"%d\" idref=\"%d\" id=\"%s\">\r\n",
+                String tmp = String.format("<alr:extfile numfiles=\"%d\" idref=\"%d\" id=\"%s\">\r\n",
                         a.num, a.special, a.file);
-                /*sb.setLength(0);
-                sb.append("\r\n<alr:extfile numfiles=\"");
-                sb.append(Integer.toString(a.num));
-                sb.append("\" idref=\"");
-                sb.append(Integer.toString(a.special));
-                sb.append("\" id=\"");
-                sb.append(a.file);
-                sb.append("\">\r\n");
-                String tmp = sb.toString();
-*/
+
                 a.startSize = AlUnicode.string2utf8(tmp, null);
                 a.startStr = new byte[a.startSize + 1];
                 AlUnicode.string2utf8(tmp, a.startStr);

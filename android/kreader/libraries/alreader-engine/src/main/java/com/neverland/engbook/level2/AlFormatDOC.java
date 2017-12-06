@@ -13,6 +13,7 @@ import com.neverland.engbook.unicode.CP949;
 import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlOneLink;
+import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.AlStylesOptions;
@@ -41,8 +42,6 @@ public class AlFormatDOC extends AlFormat {
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl)  {
-        allState.isOpened = true;
-
         ident = "DOC";
 
         aDoc = (AlFileDoc)myParent;
@@ -75,12 +74,11 @@ public class AlFormatDOC extends AlFormat {
         is_hidden = false;
         section_count = 0;
         allState.state_parser = 0;
+
         parser(0, aFiles.getSize());
         newParagraph();
 
         convertLinkFromPosition(aDoc.isUnicode());
-
-        allState.isOpened = false;
     }
 
     private void convertLinkFromPosition(boolean isUnicode) {
@@ -92,94 +90,69 @@ public class AlFormatDOC extends AlFormat {
                     break;
 
                 lnk.get(i).positionE = ap.positionS;
-                lnk.get(i).positionS = findParagraphPositionBySourcePos(0, par.size(), isUnicode ? ap.positionS << 1 : ap.positionS);
+                lnk.get(i).positionS = findParagraphPositionBySourcePos(0, par0.size(), isUnicode ? ap.positionS << 1 : ap.positionS);
             }
         }
     }
 
     @Override
-    public void formatAddonInt() {
-        pariType = paragraph;
-        parAddon = allState.state_parser;
-
-        parLevel = 0;//paragraph_level;
-
-        if (allState.state_skipped_flag)
-            parAddon += LEVEL2_FRM_ADDON_SKIPPEDTEXT;
-        if (allState.state_code_flag)
-            parAddon += LEVEL2_FRM_ADDON_CODETEXT;
-        if (allState.state_special_flag0)
-            parAddon += LEVEL2_FRM_ADDON_SPECIALTEXT;
-        if (is_hidden)
-            parAddon += FRM_DOC_HIDDEN;
-    }
-
-    @Override
-    public void doSpecialGetParagraph(long iType, int addon, long level, long[] stk, int[] cpl) {
-        paragraph = iType;
-        allState.state_parser = addon & 0xffff;
-        allState.state_skipped_flag = (addon & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
-        allState.state_code_flag = (addon & LEVEL2_FRM_ADDON_CODETEXT) != 0;
-        allState.state_special_flag0 = (addon & LEVEL2_FRM_ADDON_SPECIALTEXT) != 0;
-        is_hidden = (addon & FRM_DOC_HIDDEN) != 0;
-    }
-
-    @Override
     protected void doTextChar(char ch, boolean addSpecial) {
-        if (allState.state_skipped_flag) {
-            if (allState.state_special_flag0 && addSpecial)
-                state_specialBuff0.append(ch);
-        } else
-        if (allState.isOpened) {
-            if (allState.text_present) {
-                if (allState.state_code_flag && addSpecial)
-                    appendTitle(ch);
+        if (allState.skipped_flag > 0) {
+            if (allState.state_special_flag && addSpecial)
+                specialBuff.add(ch);
+        } else {
 
-                if (ch == 0xad)
+            if (parText.length > 0) {
+                if (ch == 0xad) {
                     softHyphenCount++;
+                } else
+                if (ch == 0x20 && (styleStack.buffer[styleStack.position].paragraph & AlStyles.SL_PRESERVE_SPACE) != 0) {
+                    if (parText.buffer[parText.length - 1] == 0x20)
+                        ch = 0xa0;
+                }
+                parText.add(ch);
 
                 size++;
-                parPositionE = allState.start_position;
-                allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20);
-                if (size - parStart > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
-                    if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag && allState.state_parser == 0)
+                parText.positionE = allState.start_position;
+                parText.haveLetter = parText.haveLetter || (ch != 0xa0 && ch != 0x20
+                        && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
+                if (parText.length > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
+                    if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag)
                     newParagraph();
                 }
-            } else
-            if (ch != 0x20) {
-                if (allState.state_code_flag && addSpecial)
-                    appendTitle(ch);
+            } else {
+                if (ch == 0x20 && (styleStack.buffer[styleStack.position].paragraph & AlStyles.SL_PRESERVE_SPACE) == 0) {
 
-                parPositionS = allState.start_position;
-                formatAddonInt();
-                parStart = size;
-                allState.text_present = true;
-                allState.letter_present = (allState.letter_present) || (ch != 0xa0);
-                size++;
-                parPositionE = allState.start_position;
-            }
-        } else {
-            //try {
-                if (allState.text_present) {
-                    stored_par.data[stored_par.cpos++] = ch;
-                } else if (ch != 0x20) {
-                    stored_par.data[stored_par.cpos++] = ch;
-                    allState.text_present = true;
+                } else {
+                    parText.positionS = parText.positionE = allState.start_position_par;
+
+                    parText.paragraph = styleStack.getActualParagraph();
+                    parText.prop = styleStack.getActualProp();
+                    parText.sizeStart = size;
+                    parText.tableStart = currentTable.start;
+                    parText.tableCounter = currentTable.counter;
+
+                    if (ch == 0x20)
+                        ch = 0xa0;
+
+                    parText.haveLetter = (ch != 0xa0 && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
+                    size++;
+
+                    parText.add(ch);
                 }
-            /*} catch (Exception e) {
-                e.printStackTrace();
-                haveProblem = true;
-            }*/
+            }
+
+            if (allState.state_special_flag && addSpecial)
+                specialBuff.add(ch);
         }
     }
 
     @Override
     protected void newParagraph() {
-        int Len = size - parStart;
-        if (Len != 0 && allState.text_present) {
+        if (parText.length != 0) {
 
         } else {
-            setParagraphStyle(AlStyles.PAR_PREVIOUS_EMPTY_1);
+            setPropStyle(AlParProperty.SL2_EMPTY_BEFORE);
         }
 
         super.newParagraph();
@@ -188,12 +161,6 @@ public class AlFormatDOC extends AlFormat {
             appendTitle(' ');
     }
 
-    @Override
-    protected void newEmptyStyleParagraph() {
-        super.newEmptyStyleParagraph();
-        if (allState.state_code_flag)
-            appendTitle(' ');
-    }
 
     @Override
     protected void newEmptyTextParagraph() {
@@ -218,23 +185,23 @@ public class AlFormatDOC extends AlFormat {
         String s = titles.toString().trim();
         if (s.length() == 0)
             s = "\u2026";
-        addContent(AlOneContent.add(s, allState.start_position_tag, cnt));
+        addContent(AlOneContent.add(s, allState.start_position_par, cnt));
         allState.state_code_flag = false;
     }
 
     private void prepareLink(char ch) {
         switch (ch) {
             case 0x13:
-                if (!allState.text_present)
+                if (parText.length == 0)
                     addCharFromTag((char)0xa0, false);
 
                 switch (allState.state_parser) {
                     case STATE_LINK14:
                         clearTextStyle(AlStyles.STYLE_LINK);
                     default:
-                        allState.state_skipped_flag = true;
-                        allState.state_special_flag0 = true;
-                        state_specialBuff0.setLength(0);
+                        allState.incSkipped();
+                        allState.state_special_flag = true;
+                        specialBuff.clear();
                         allState.state_parser = STATE_LINK13;
                 }
                 break;
@@ -244,10 +211,10 @@ public class AlFormatDOC extends AlFormat {
                     case STATE_LINK14:
                         break;
                     default:
-                        allState.state_skipped_flag = false;
-                        allState.state_special_flag0 = false;
+                        allState.incSkipped();
+                        allState.state_special_flag = false;
 
-                        String slink = getHyperLink(state_specialBuff0.toString());
+                        String slink = getHyperLink(specialBuff.buff.toString());
                         if (slink.length() > 0) {
                             addCharFromTag((char)AlStyles.CHAR_LINK_S, false);
                             addTextFromTag(slink, false);
@@ -255,13 +222,13 @@ public class AlFormatDOC extends AlFormat {
                             setTextStyle(AlStyles.STYLE_LINK);
                             allState.state_parser = STATE_LINK14;
 
-                            if (allState.isOpened) {
+
                                 Integer it = aDoc.bookmarks != null ?
                                         aDoc.bookmarks.get(slink) : null;
                                 if (it != null) {
                                     lnk.add(AlOneLink.add(slink, it, 0));
                                 }
-                            }
+
 
                             break;
                         }
@@ -322,8 +289,8 @@ public class AlFormatDOC extends AlFormat {
                 switch (allState.state_parser) {
                     case STATE_LINKNO:
                     case STATE_LINK13:
-                        allState.state_skipped_flag = false;
-                        allState.state_special_flag0 = false;
+                        allState.decSkipped();
+                        allState.state_special_flag = false;
                         break;
                     default:
                         clearTextStyle(AlStyles.STYLE_LINK);
@@ -339,8 +306,6 @@ public class AlFormatDOC extends AlFormat {
         // this code must be in any parser without change!!!
         int 	buf_cnt;
         char 	ch, ch1;
-
-        allState.text_present = false;
 
         for (int i = start_pos, j; i < stop_pos;) {
             buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
@@ -455,6 +420,8 @@ public class AlFormatDOC extends AlFormat {
                             break;
                     }
                 //}
+                if ((ch & AlStyles.STYLE_MASK_4CODECONVERT) == AlStyles.STYLE_BASE_4CODECONVERT)
+                    ch = 0x00;
 
                 // end must be code
                 /////////////////// Begin Real Parser
@@ -471,41 +438,42 @@ public class AlFormatDOC extends AlFormat {
 
                     if ((real_format & AlFileDoc.Format.STYLE_NEWPAR) != 0) {
                         allState.start_position_par = allState.start_position;
-                        if (allState.isOpened) {
-                            if (allState.text_present) {
-                                newParagraph();
-                            }
-                            else {
-                                newEmptyTextParagraph();
-                            }
+                        if (parText.length > 0) {
+                            newParagraph();
+                        } else {
+                            newEmptyTextParagraph();
                         }
 
-                        long old_style = paragraph;
+                        long old_paragraph = styleStack.buffer[styleStack.position].paragraph;
+                        long old_prop = styleStack.buffer[styleStack.position].prop;
 
-                        clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK | AlStyles.PAR_TITLE | AlStyles.PAR_SUBTITLE);
+                        clearParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
+                        clearPropStyle(AlParProperty.SL2_JUST_MASK);
                         switch (aDoc.format.level()) {
                             case 1:
                             case 2:
-                                newEmptyStyleParagraph();
-                                setParagraphStyle(AlStyles.PAR_TITLE);
+                                newEmptyTextParagraph();
+                                setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
+                                setPropStyle(AlParProperty.SL2_JUST_CENTER);
                                 break;
                             case 3:
-                                newEmptyStyleParagraph();
-                                setParagraphStyle(AlStyles.PAR_SUBTITLE);
+                                newEmptyTextParagraph();
+                                setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
+                                setPropStyle(AlParProperty.SL2_JUST_CENTER);
                                 break;
                             default:
-                                if ((old_style & (AlStyles.PAR_TITLE | AlStyles.PAR_SUBTITLE)) != 0)
-                                    newEmptyStyleParagraph();
+                                if ((old_paragraph & AlStyles.SL_SPECIAL_PARAGRAPGH) != 0)
+                                    newEmptyTextParagraph();
 
                                 switch (aDoc.format.align()) {
                                     case AlFileDoc.Format.LEFT:
-                                        setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_LEFT);
+                                        setPropStyle(AlParProperty.SL2_JUST_LEFT);
                                         break;
                                     case AlFileDoc.Format.RIGHT:
-                                        setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_RIGHT);
+                                        setPropStyle(AlParProperty.SL2_JUST_RIGHT);
                                         break;
                                     case AlFileDoc.Format.CENTER:
-                                        setParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_CENTER);
+                                        setPropStyle(AlParProperty.SL2_JUST_CENTER);
                                         break;
                                     default:
                                         //if (fdoc.format.level() != 0)
@@ -524,7 +492,7 @@ public class AlFormatDOC extends AlFormat {
                     setTextStyle(new_setstyle);
 
 
-                    if (allState.isOpened) {
+                    //if (allState.isOpened) {
                         int old_section_count = section_count;
                         section_count = aDoc.format.level();
 
@@ -532,10 +500,10 @@ public class AlFormatDOC extends AlFormat {
                             insertTitle(old_section_count);
                         if (section_count != 0 && old_section_count != section_count) {
                             allState.state_code_flag = true;
-                            allState.start_position_tag = size;
+                            allState.start_position_par = size;
                             titles.setLength(0);
                         }
-                    }
+                   // }
 
                     if (prev_special != real_special) {
                         switch (prev_special) {
@@ -568,7 +536,7 @@ public class AlFormatDOC extends AlFormat {
                             case 0x03: // FOOTTEXT
                                 closeOpenNotes();
 
-                                if (allState.isOpened)
+                                //if (allState.isOpened)
                                     lnk.add(AlOneLink.add(String.format(NOTEFORMAT,
                                             real_special - 1, aDoc.format.xnote), size, 1));
 
@@ -599,21 +567,21 @@ public class AlFormatDOC extends AlFormat {
                             prepareLink(ch);
                             break;
                         case 0x01:
-                            if (!allState.state_skipped_flag && aDoc.format.special() == 0x01) {
+                            if (allState.skipped_flag == 0 && aDoc.format.special() == 0x01) {
                                 addCharFromTag((char) AlStyles.CHAR_IMAGE_S, false);
                                 addTextFromTag(String.format("%d_%d", aDoc.format.xdata, aDoc.format.value), false);
                                 addCharFromTag((char)AlStyles.CHAR_IMAGE_E, false);
                             }
                             break;
                         case 0x0b:
-                            if (allState.isOpened) {
-                                if (allState.text_present) {
+                            //if (allState.isOpened) {
+                                if (parText.length > 0) {
                                     allState.start_position_par = allState.start_position;
                                     newParagraph();
                                 }/* else {
 						 newEmptyTextParagraph();
 						 }*/
-                            }
+                           // }
                             break;
                         default:
 					/*addTextFromTag(String.format("-0x%02x(%x,%x,%x)-", (int)ch,
@@ -640,8 +608,7 @@ public class AlFormatDOC extends AlFormat {
             }
             i += j;
         }
-        if (allState.isOpened)
-            newParagraph();
+        newParagraph();
         // end must be cod
     }
 
@@ -663,6 +630,6 @@ public class AlFormatDOC extends AlFormat {
         return im.get(im.size() - 1);
     }
 
-    private static final int DOCSTYLEMASK = AlStyles.STYLE_ITALIC | AlStyles.STYLE_BOLD | AlStyles.STYLE_UNDER |
-            AlStyles.STYLE_STRIKE | AlStyles.STYLE_SUP | AlStyles.STYLE_SUB;
+    private static final int DOCSTYLEMASK = (int) (AlStyles.STYLE_ITALIC | AlStyles.STYLE_BOLD | AlStyles.STYLE_UNDER |
+                AlStyles.STYLE_STRIKE | AlStyles.STYLE_SUP | AlStyles.STYLE_SUB);
 }

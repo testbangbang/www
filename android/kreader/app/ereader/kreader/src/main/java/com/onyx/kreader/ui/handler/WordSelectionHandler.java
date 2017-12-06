@@ -140,6 +140,13 @@ public class WordSelectionHandler extends BaseHandler{
     }
 
     private void onReleaseClick(final ReaderDataHolder readerDataHolder) {
+        if (!readerDataHolder.getReaderUserDataInfo().hasHighlightResult()) {
+            quitWordSelection(readerDataHolder);
+            setSingleTapUp(false);
+            setActionUp(true);
+            return;
+        }
+
         if (readerDataHolder.getReaderUserDataInfo().hasHighlightResult() && !isSingleTapUp()) {
             String text = readerDataHolder.getReaderUserDataInfo().getHighlightResult().getText();
             if (!StringUtils.isNullOrEmpty(text)) {

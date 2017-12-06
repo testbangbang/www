@@ -4,9 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import com.onyx.android.sdk.data.SortOrder;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 
 import java.io.BufferedReader;
@@ -19,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.RandomAccessFile;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.security.MessageDigest;
@@ -312,11 +316,12 @@ public class FileUtils {
         String filePath = null;
         if (uri != null) {
             if ("content".equals(uri.getScheme())) {
-                Cursor cursor = context.getContentResolver().query(uri, new String[]{
-                        android.provider.MediaStore.Images.ImageColumns.DATA}, null, null, null);
-                cursor.moveToFirst();
-                filePath = cursor.getString(0);
-                cursor.close();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    filePath = getRealFilePathFromUriAboveAPI23(context, uri);
+                } else {
+                    filePath = getRealFilePathFromUriByContentResolver(context,
+                            uri, android.provider.MediaStore.Images.ImageColumns.DATA);
+                }
             } else {
                 filePath = uri.getPath();
             }
@@ -324,6 +329,36 @@ public class FileUtils {
         return filePath;
     }
 
+    private static String getRealFilePathFromUriAboveAPI23(Context context, Uri uri) {
+        String filePath = "";
+        //TODO:should consider other circumstance, e.g browser download.
+        if (uri.getAuthority().equals("com.google.android.bluetooth.fileprovider")) {
+            String encodePath = null;
+            try {
+                encodePath = URLDecoder.decode(uri.getEncodedPath(), "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            String suffix = (String) encodePath.subSequence(encodePath.lastIndexOf(File.separator), encodePath.length());
+            filePath = Device.currentDevice().getBluetoothRootDirectory().getPath() + suffix;
+        } else {
+            filePath = getRealFilePathFromUriByContentResolver(context, uri, android.provider.MediaStore.Images.ImageColumns.DATA);
+        }
+        return filePath;
+    }
+
+    private static String getRealFilePathFromUriByContentResolver(Context context, Uri uri, String projectionName) {
+        String filePath = "";
+        Cursor cursor = context.getContentResolver().query(uri, new String[]{
+                projectionName}, null, null, null);
+        if (cursor == null) {
+            return filePath;
+        }
+        cursor.moveToFirst();
+        filePath = cursor.getString(0);
+        cursor.close();
+        return filePath;
+    }
 
     public static String computeMD5(File file) throws IOException, NoSuchAlgorithmException {
         if (!file.exists()) {

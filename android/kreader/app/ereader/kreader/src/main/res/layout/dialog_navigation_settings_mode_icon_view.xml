@@ -30,6 +30,7 @@
         android:layout_below="@+id/middle_layout"
         android:id="@+id/checkbox_current_select"
         android:button="@drawable/custom_btn_radio"
+        android:background="@null"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:clickable="false"

@@ -1,9 +1,12 @@
 package com.neverland.engbook.level2;
 
+import com.neverland.engbook.allstyles.AlCSSStyles;
+import com.neverland.engbook.allstyles.AlSetCSS;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.EngBookMyType;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
+import com.neverland.engbook.level1.AlRandomAccessFile;
 import com.neverland.engbook.unicode.AlUnicode;
 import com.neverland.engbook.unicode.CP932;
 import com.neverland.engbook.unicode.CP936;
@@ -12,6 +15,7 @@ import com.neverland.engbook.unicode.CP950;
 import com.neverland.engbook.util.AlOneTable;
 import com.neverland.engbook.util.AlOneTableCell;
 import com.neverland.engbook.util.AlOneTableRow;
+import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlStyles;
 import com.neverland.engbook.util.InternalFunc;
 
@@ -38,12 +42,13 @@ public abstract class AlAXML extends AlFormat {
 	private static final int STATE_XML_ECOMMENT1 =  			0x0009;
 	private static final int STATE_XML_ECOMMENT2 =  			0x000a;
 	private static final int STATE_XML_TEST_CDATA =  			0x000b;
-	private static final int STATE_XML_CDATA =  				0x000c;
-	private static final int STATE_XML_ECDATA1 =  				0x000d;
-	private static final int STATE_XML_ECDATA2 =  				0x000e;
-	private static final int STATE_XML_ATTRIBUTE_NAME =  		0x000f;
-	private static final int STATE_XML_ATTRIBUTE_ENAME =  		0x0010;
-	static final int STATE_XML_SKIP =  				0x0011;
+	private static final int STATE_XML_CDATAWAIT =  				0x000c;
+	private static final int STATE_XML_CDATAPROCESS =  				0x000d;
+	private static final int STATE_XML_ECDATA1 =  				0x000e;
+	private static final int STATE_XML_ECDATA2 =  				0x000f;
+	private static final int STATE_XML_ATTRIBUTE_NAME =  		0x0010;
+	private static final int STATE_XML_ATTRIBUTE_ENAME =  		0x0011;
+	static final int STATE_XML_SKIP =  				0x0012;
 		
 	private static final int STATE_XML_ATTRIBUTE_VALUE1 =  	0x0100;
 	private static final int STATE_XML_ATTRIBUTE_VALUE2 =  	0x0200;
@@ -54,15 +59,23 @@ public abstract class AlAXML extends AlFormat {
 	private static final int STATE_XML_ENTITY_ADDNUM0 = 	 	0x3000;
 	private static final int STATE_XML_ENTITY_ADDNUM1 = 	 	0x4000;
 	private static final int STATE_XML_ENTITY_ADDNUMHEX  =		0x5000;
-	
+
 	final AlXMLTag			tag = new AlXMLTag();
 	private final StringBuilder		entity = new StringBuilder();
 	boolean				xml_mode;
+
+	AlCSSStyles			cssStyles = null;
+
 
 	boolean				dinamicSize = false;
 	int					stop_posUsed;
 
 	boolean				noUseCover = false;
+
+	public AlAXML() {
+		stack_styles0[0] = 0;
+		parStyleCollection = 0;
+	}
 
 	boolean isNeedAttribute(int atr) {
 		//noinspection RedundantIfStatement
@@ -79,10 +92,17 @@ public abstract class AlAXML extends AlFormat {
 			case AlFormatTag.TAG_CHARSET:
 			case AlFormatTag.TAG_ALIGN:
 			case AlFormatTag.TAG_CONTENT:
+			case AlFormatTag.TAG_CLASS:
+			case AlFormatTag.TAG_STYLE:
+			case AlFormatTag.TAG_SIZE:
+			case AlFormatTag.TAG_WIDTH:
+
 				return true;
 		}
 		return false;
 	}
+
+
 
 	private int readRealCodepage() {
 		StringBuilder rcp;
@@ -102,131 +122,276 @@ public abstract class AlAXML extends AlFormat {
 	}
 
 	private void prepareTAG() {
+        StringBuilder cls = null;
+
+        if (!tag.closed && !tag.special) {
+
+            styleStack.push(tag.tag, tag.cls);
+            cssStyles.apply1ClassX(tag.tag, tag.cls, styleStack);
+
+            cls = tag.getATTRValue(AlFormatTag.TAG_STYLE);
+            if (cls != null)
+                cssStyles.parseTemp(cls, styleStack);
+
+            switch (tag.tag) {
+                case AlFormatTag.TAG_P:
+                case AlFormatTag.TAG_DIV:
+                case AlFormatTag.TAG_SPAN:
+                case AlFormatTag.TAG_H1: case AlFormatTag.TAG_H2: case AlFormatTag.TAG_H3: case AlFormatTag.TAG_H4: case AlFormatTag.TAG_H5: case AlFormatTag.TAG_H6:
+                    cls = tag.getATTRValue(AlFormatTag.TAG_ALIGN);
+                    if (cls != null && !cssStyles.disableExternal)
+                        AlSetCSS.parseAlign(cls, styleStack);
+                    break;
+                case AlFormatTag.TAG_SMALL:
+                    AlSetCSS.parseFontSize("-1", styleStack);
+                    break;
+                case AlFormatTag.TAG_BIG:
+                    AlSetCSS.parseFontSize("+1", styleStack);
+                    break;
+                case AlFormatTag.TAG_FONT:
+                    cls = tag.getATTRValue(AlFormatTag.TAG_SIZE);
+                    if (cls != null && (cls.length() == 1 || (cls.length() == 2 && (cls.charAt(0) == '+' || cls.charAt(0) == '-'))))
+                        AlSetCSS.parseFontSize(cls.toString(), styleStack);
+                    break;
+            }
+        }
+
+
+        if (externPrepareTAG()) {
+            // kindle specific
+            if (cssStyles != null && cssStyles.isKindle && !tag.ended && !tag.special) {
+                switch (tag.tag) {
+                    case AlFormatTag.TAG_P:
+                    case AlFormatTag.TAG_BLOCKQUOTE:
+                    case AlFormatTag.TAG_DIV:
+                    case AlFormatTag.TAG_SPAN:
+                    case AlFormatTag.TAG_H1: case AlFormatTag.TAG_H2: case AlFormatTag.TAG_H3: case AlFormatTag.TAG_H4: case AlFormatTag.TAG_H5: case AlFormatTag.TAG_H6:
+                        if (parText.length == 0) {
+                            cls = tag.getATTRValue(AlFormatTag.TAG_WIDTH);
+                            if (cls != null) {
+                                int c = AlSetCSS.parseInsertSpaces(cls);
+                                clearPropStyle(AlParProperty.SL2_INDENT_MASK);
+                                if (c > 0) {
+                                    boolean preserve = (styleStack.buffer[styleStack.position].paragraph & AlStyles.SL_PRESERVE_SPACE) != 0;
+
+                                    if (!preserve)
+                                        setParagraphStyle(AlStyles.SL_PRESERVE_SPACE);
+                                    for (int i = 0; i < c; i++)
+                                        doTextChar((char) 0xa0, false);
+                                    if (!preserve)
+                                        clearParagraphStyle(AlStyles.SL_PRESERVE_SPACE);
+                                }
+                            }
+                        }
+                }
+            }
+        } else
+        if (autoCodePage && ((xml_mode && tag.tag == AlFormatTag.TAG_XML) || (!xml_mode && tag.tag == AlFormatTag.TAG_META))) {
+            int cp = readRealCodepage();
+            if (cp != TAL_CODE_PAGES.AUTO)
+                setCP(cp);
+        }
+
+        if (tag.closed || tag.ended) {
+            long tmp_prop = (styleStack.buffer[styleStack.position].prop) & (AlParProperty.SL2_BREAK_BEFORE | AlParProperty.SL2_EMPTY_BEFORE);
+            styleStack.pop(tag.tag);
+            styleStack.buffer[styleStack.position].prop |= tmp_prop;
+        }
+
+        if (parText.length != 0) {
+            doTextChar(getTextStyle(), false);
+            doTextChar(getTextSize(), false);
+        }
+
+		/*StringBuilder cls = null;
+
+		long old_size = 0, old_style = 0;
+
 		if (tag.closed) {
-			// dec style stack
-			paragraph_level--;
-			if(paragraph_level < 0){
-				paragraph_level = 0;
-			}
-		} else
-		if (!tag.ended && !tag.special) {
-			// inc style stack
-			paragraph_level++;
-			paragraph_tag = tag.tag;
+			old_size = getTextSize();
+			old_style = getTextStyle();
 		}
 
-		if (externPrepareTAG()) {
 
+		if (!tag.closed && !tag.special) {
+
+			styleStack.push(tag.tag, tag.cls);
+
+			if (cssStyles.apply1ClassX(tag.tag, tag.cls, styleStack) && parText.length != 0) {
+				doTextChar(getTextStyle(), false);
+				doTextChar(getTextSize(), false);
+			}
+
+			cls = tag.getATTRValue(AlFormatTag.TAG_STYLE);
+			if (cls != null) {
+				if (cssStyles.parseTemp(cls, styleStack)) {
+					if (parText.length != 0) {
+						doTextChar(getTextStyle(), false);
+						doTextChar(getTextSize(), false);
+					}
+				}
+			}
+
+			switch (tag.tag) {
+				case AlFormatTag.TAG_P:
+				case AlFormatTag.TAG_DIV:
+				case AlFormatTag.TAG_SPAN:
+				case AlFormatTag.TAG_H1: case AlFormatTag.TAG_H2: case AlFormatTag.TAG_H3: case AlFormatTag.TAG_H4: case AlFormatTag.TAG_H5: case AlFormatTag.TAG_H6:
+					cls = tag.getATTRValue(AlFormatTag.TAG_ALIGN);
+					if (cls != null && !cssStyles.disableExternal)
+						AlSetCSS.parseAlign(cls, styleStack);
+					break;
+				case AlFormatTag.TAG_SMALL:
+					if (AlSetCSS.parseFontSize("-1", styleStack))
+					if (parText.length != 0)
+						doTextChar(getTextSize(), false);
+					break;
+				case AlFormatTag.TAG_BIG:
+					if (AlSetCSS.parseFontSize("+1", styleStack))
+						if (parText.length != 0)
+							doTextChar(getTextSize(), false);
+					break;
+				case AlFormatTag.TAG_FONT:
+					cls = tag.getATTRValue(AlFormatTag.TAG_SIZE);
+					if (cls != null && (cls.length() == 1 || (cls.length() == 2 && (cls.charAt(0) == '+' || cls.charAt(0) == '-')))) {
+						if (AlSetCSS.parseFontSize(cls.toString(), styleStack))
+						if (parText.length != 0)
+							doTextChar(getTextSize(), false);
+					}
+					break;
+			}
+		}
+
+
+		if (externPrepareTAG()) {
+			// kindle specific
+			if (cssStyles != null && cssStyles.isKindle && !tag.ended && !tag.special) {
+				switch (tag.tag) {
+					case AlFormatTag.TAG_P:
+					case AlFormatTag.TAG_BLOCKQUOTE:
+					case AlFormatTag.TAG_DIV:
+					case AlFormatTag.TAG_SPAN:
+					case AlFormatTag.TAG_H1: case AlFormatTag.TAG_H2: case AlFormatTag.TAG_H3: case AlFormatTag.TAG_H4: case AlFormatTag.TAG_H5: case AlFormatTag.TAG_H6:
+						if (parText.length == 0) {
+							cls = tag.getATTRValue(AlFormatTag.TAG_WIDTH);
+							if (cls != null) {
+								int c = AlSetCSS.parseInsertSpaces(cls);
+								clearPropStyle(AlParProperty.SL2_INDENT_MASK);
+								if (c > 0) {
+									boolean preserve = (styleStack.buffer[styleStack.position].paragraph & AlStyles.SL_PRESERVE_SPACE) != 0;
+
+									if (!preserve)
+										setParagraphStyle(AlStyles.SL_PRESERVE_SPACE);
+									for (int i = 0; i < c; i++)
+										doTextChar((char) 0xa0, false);
+									if (!preserve)
+										clearParagraphStyle(AlStyles.SL_PRESERVE_SPACE);
+								}
+							}
+						}
+				}
+			}
 		} else
 		if (autoCodePage && ((xml_mode && tag.tag == AlFormatTag.TAG_XML) || (!xml_mode && tag.tag == AlFormatTag.TAG_META))) {
 			int cp = readRealCodepage();
 			if (cp != TAL_CODE_PAGES.AUTO)
 				setCP(cp);
 		}
-	}
 
-	@Override
-	void doSpecialGetParagraph(long iType, int addon, long level,  long[] stk, int[] cpl) {
-		paragraph = iType;
-		allState.state_parser = 0;
-		/*int cp = ((addon & 0x80000000) != 0) ? -1 : addon & 0x0000ffff;
-
-		if (cp != use_cpR0) {
-			setCP(cp);
-		}*/
-		if (addon != use_cpR0) {
-			setCP(addon);
+		if (!tag.closed && tag.ended) {
+			old_size = getTextSize();
+			old_style = getTextStyle();
 		}
 
-		paragraph_level = (int) (level & LEVEL2_MASK_FOR_LEVEL);
-		paragraph_tag = (int) ((level >> 31) & 0xffffffff);
+		if (tag.closed || tag.ended) {
+			long tmp_prop = (styleStack.buffer[styleStack.position].prop) & (AlParProperty.SL2_BREAK_BEFORE | AlParProperty.SL2_EMPTY_BEFORE);
 
-		/*allState.state_skipped_flag = (addon & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
-		allState.state_code_flag = (addon & LEVEL2_FRM_ADDON_CODETEXT) != 0;*/
-		allState.state_skipped_flag = (level & LEVEL2_FRM_ADDON_SKIPPEDTEXT) != 0;
-		allState.state_code_flag = (level & LEVEL2_FRM_ADDON_CODETEXT) != 0;
+			styleStack.pop(tag.tag);
 
-		//allState.state_special_flag = (addon & LEVEL2_FRM_ADDON_SPECIALTEXT) != 0;
-	}
+			styleStack.buffer[styleStack.position].prop |= tmp_prop;
 
-	@Override
-	void formatAddonInt() {
-		pariType = paragraph;
-		//parAddon = use_cpR0 & 0x8000ffff;
-        parAddon = use_cpR0;
+			if (parText.length != 0) {
+				long new_size = getTextSize();
+				long new_style = getTextStyle();
 
-		parLevel = paragraph_level | (((long)paragraph_tag) << 31);
+				if (old_style != new_style)
+					doTextChar((char) new_style, false);
+				if (old_size != new_size || ((new_style^old_style) & (AlStyles.STYLE_SUB | AlStyles.STYLE_SUP)) != 0)
+					doTextChar((char) new_size, false);
+			}
+		}*/
 
-		/*if (allState.state_skipped_flag)
-			parAddon += LEVEL2_FRM_ADDON_SKIPPEDTEXT;
-		if (allState.state_code_flag)
-			parAddon += LEVEL2_FRM_ADDON_CODETEXT;*/
-
-        if (allState.state_skipped_flag)
-            parLevel |= LEVEL2_FRM_ADDON_SKIPPEDTEXT;
-        if (allState.state_code_flag)
-            parLevel |= LEVEL2_FRM_ADDON_CODETEXT;
-
-		/*if (allState.state_special_flag)
-			parAddon += LEVEL2_FRM_ADDON_SPECIALTEXT;*/
 	}
 
 	@Override
 	protected void doTextChar(char ch, boolean addSpecial) {
 		
 		
-		if (allState.state_skipped_flag) {
+		if (allState.skipped_flag > 0) {
 			
-			if (allState.state_special_flag0 && addSpecial)
-				state_specialBuff0.append(ch);
+			if (allState.state_special_flag && addSpecial)
+				specialBuff.add(ch);
 			
 		} else {
-			if (allState.isOpened) {
-				if (allState.text_present) {
-
-					if (ch == 0xad)
-						softHyphenCount++;
-
-					size++;
-					parPositionE = allState.start_position;		
-					allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20); 
-					if (size - parStart > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
-						if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag)
-							newParagraph();
-					}
-				} else {
-					if (ch == 0x20 && (paragraph & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) == 0) {
-						
-					} else {		
-						parPositionS = allState.start_position_par;
-						formatAddonInt();
-						parStart = size;
-						parTableStart = currentTable.start;
-						parTableCounter = currentTable.counter;
-						allState.text_present = true;
-						allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20); 
-						size++;
-						parPositionE = allState.start_position;
-					}
-				}	
-
-				if (allState.state_special_flag0 && addSpecial)
-					state_specialBuff0.append(ch);	
-				
-			} else {
-				if (allState.text_present) {					
-					stored_par.data[stored_par.cpos++] = ch;
-				} else {
-					if (ch == 0x20 && ((paragraph & (AlStyles.PAR_PRE | AlStyles.STYLE_CODE)) == 0)) {
-						
-					} else {
-						if (ch == 0x20)
+			switch (ch) {
+				case 0xad:
+					softHyphenCount++;
+					break;
+				case 0x20:
+					if ((styleStack.buffer[styleStack.position].paragraph & AlStyles.SL_PRESERVE_SPACE) != 0) {
+						if (parText.length == 0) {
 							ch = 0xa0;
-						stored_par.data[stored_par.cpos++] = ch;
-						allState.text_present = true;
+						} else {
+							ch = parText.buffer[parText.length - 1];
+							if (ch == 0x20 || ch == 0xa0) {
+								ch = 0xa0;
+							} else {
+								ch = 0x20;
+							}
+						}
+					} else {
+						if (parText.length > 0 && parText.buffer[parText.length - 1] == 0x20)
+							return;
 					}
-				}
+					break;
+				/*case 0xa0:
+					if (((*styleStack.activeParagraph) & AlStyles::SL_PRESERVE_SPACE) == 0) {
+						ch = 0x20;
+						if (parText.length && parText.buffer[parText.length - 1] == 0x20)
+							return;
+					}
+					break;*/
 			}
+			if (parText.length > 0) {
+				parText.add(ch);
+
+				size++;
+				parText.positionE = allState.start_position;
+				parText.haveLetter = parText.haveLetter || (ch != 0xa0 && ch != 0x20
+						&& (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
+				if (parText.length > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
+					if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag)
+					newParagraph();
+				}
+			} else
+			if (ch != 0x20) {
+				parText.positionS = parText.positionE = allState.start_position_par;
+
+				parText.paragraph = styleStack.getActualParagraph();
+				parText.prop = styleStack.getActualProp();
+				parText.sizeStart = size;
+				parText.tableStart = currentTable.start;
+				parText.tableCounter = currentTable.counter;
+				parText.level = styleStack.position;
+
+				parText.haveLetter = (ch != 0xa0 && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
+				size++;
+
+				parText.add(ch);
+			}
+
+			if (allState.state_special_flag && addSpecial)
+				specialBuff.add(ch);
 		}
 	}
 
@@ -249,7 +414,7 @@ public abstract class AlAXML extends AlFormat {
 		switch (tag.tag) {
 			case AlFormatTag.TAG_TBL:
 			case AlFormatTag.TAG_TABLE:
-				if (allState.isOpened && currentTable.counter == 0)
+				if (currentTable.counter == 0)
 					newParagraph();
 
 				if (tag.closed) {
@@ -257,7 +422,7 @@ public abstract class AlAXML extends AlFormat {
 					if (currentTable.counter == 1) {
 						currentTable.stop = allState.start_position;
 
-						if (allState.isOpened) {
+
 							currentTable.verifyIsOneColumn();
 							currentTable.cntrow = currentTable.rows.size();
 
@@ -322,13 +487,18 @@ public abstract class AlAXML extends AlFormat {
 							//
 
 							addTable(currentTable);
-							clearParagraphStyle(AlStyles.PAR_TABLE);
+							clearParagraphStyle(AlStyles.SL_TABLE);
 
-							if (!currentTable.isOneColumn)
-								setParagraphStyle(AlStyles.PAR_NATIVEJUST | (preference.tableMode != EngBookMyType.TAL_TABLEMODE.INTERNAL ? AlStyles.SL_JUST_RIGHT : AlStyles.SL_JUST_LEFT));
-						}
+						if (currentTable.isOneColumn) {
+							for (int i = currentTable.startParagraph; i < par0.size(); i++) {
+								par0.get(i).paragraph &= 0xFFFFFFFFFFFFFFFFL - AlStyles.SL_TABLE;
+								par0.get(i).table_start = -1;
+							}
+						} else {
 
-						if (!currentTable.isOneColumn) {
+							allState.clearSkipped();
+							setPropStyle((preference.tableMode != EngBookMyType.TAL_TABLEMODE.INTERNAL ? AlParProperty.SL2_JUST_RIGHT : AlParProperty.SL2_JUST_LEFT));
+
 							StringBuilder s1 = new StringBuilder();
 
 							if (preference.tableMode != EngBookMyType.TAL_TABLEMODE.EXTERNAL) {
@@ -362,46 +532,33 @@ public abstract class AlAXML extends AlFormat {
 								clearTextStyle(AlStyles.STYLE_LINK);
 							}
 
-							clearParagraphStyle(AlStyles.PAR_NATIVEJUST | AlStyles.SL_JUST_MASK);
+							allState.restoreSkipped();
 						}
 
-						if (allState.isOpened) {
-							if (currentTable.isOneColumn) {
-								for (int i = currentTable.startParagraph; i < par.size(); i++) {
-									par.get(i).iType &= 0xFFFFFFFFFFFFFFFFL - AlStyles.PAR_TABLE;
-									par.get(i).table_start = -1;
-								}
-							}
-
-                            int cnt = currentTable.counter;
-                            currentTable = new AlOneTable();
-                            currentTable.counter = cnt;
-						}
-					}/* else
-					if (currentTable.counter == 2) {
-						allState.state_skipped_flag = false;
-					}*/
+						currentTable = new AlOneTable();
+						currentTable.counter = 1;
+                        newParagraph();
+					}
 
 					currentTable.counter--;
 				} else
 				if (!tag.ended) {
 
 					if (currentTable.counter == 0) {
-						if (allState.isOpened) {
+
 							StringBuilder s = tag.getATTRValue(AlFormatTag.TAG_TITLE);
                             if (s != null)
 							    currentTable.title = s.toString();
 
-							currentTable.startParagraph = par.size();
+							currentTable.startParagraph = par0.size();
 							currentTable.startSize = currentRow.start = size;
 							currentCell.clear(size);
+							currentRow.cells.clear();
 							currentTable.crow = 0;
 							currentTable.start = allState.start_position_par;
-							setParagraphStyle(AlStyles.PAR_TABLE);
-						}
-					} /*else {
-						allState.state_skipped_flag = true;
-					}*/
+							setParagraphStyle(AlStyles.SL_TABLE);
+
+					}
 
 					currentTable.counter++;
 				} else {
@@ -429,10 +586,10 @@ public abstract class AlAXML extends AlFormat {
             case AlFormatTag.TAG_TC:
 			case AlFormatTag.TAG_TH:
 			case AlFormatTag.TAG_TD:
-				if (allState.isOpened && currentTable.counter == 1) {
+				if (currentTable.counter == 1) {
 
 					if (tag.closed) {
-						clearParagraphStyle(AlStyles.SL_JUST_MASK);
+						clearParagraphStyle(AlParProperty.SL2_JUST_MASK);
 
 						currentCell.stop = size;
 						currentRow.cells.add(currentCell);
@@ -456,20 +613,20 @@ public abstract class AlAXML extends AlFormat {
 
 						if (!tag.ended) {
 							if (tag.tag == AlFormatTag.TAG_TH) {
-								setParagraphStyle(AlStyles.SL_JUST_CENTER);
+								setParagraphStyle(AlParProperty.SL2_JUST_CENTER);
 							}
 							if (tag.tag != AlFormatTag.TAG_TC) {
 								s = tag.getATTRValue(AlFormatTag.TAG_ALIGN);
 								if (s != null) {
 									String ss = s.toString().toLowerCase();
 									if (ss.contentEquals("center")) {
-										setParagraphStyle(AlStyles.SL_JUST_CENTER);
+										setParagraphStyle(AlParProperty.SL2_JUST_CENTER);
 									} else
 									if (ss.contentEquals("left")) {
-										setParagraphStyle(AlStyles.SL_JUST_LEFT);
+										setParagraphStyle(AlParProperty.SL2_JUST_LEFT);
 									} else
 									if (ss.contentEquals("right")) {
-										setParagraphStyle(AlStyles.SL_JUST_RIGHT);
+										setParagraphStyle(AlParProperty.SL2_JUST_RIGHT);
 									}
 								}
 							}
@@ -484,7 +641,7 @@ public abstract class AlAXML extends AlFormat {
 				}
 				return true;
 			case AlFormatTag.TAG_TR:
-				if (allState.isOpened && currentTable.counter == 1) {
+				if (currentTable.counter == 1) {
 					if (tag.closed) {
 						currentTable.rows.add(currentRow);
 						currentRow = new AlOneTableRow();
@@ -497,11 +654,27 @@ public abstract class AlAXML extends AlFormat {
 					} else {
 
 					}
+				} else {
+
 				}
 				return true;
 		}
 		return false;
 	}
+
+	@Override
+	public void debugStyles(AlRandomAccessFile df) {
+		if (df != null && cssStyles != null) {
+			cssStyles.debugStyles(df);
+		}
+	}
+
+	protected long[] stack_styles0 = new long[MAX_STACK_STYLES + 1];
+	protected int parStyleCollection;
+
+	protected int	getEntityCode(String val, int base) {
+		return InternalFunc.str2int(val, base);
+	};
 
 	@Override
 	protected void parser(final int start_pos, final int stop_posRequest) {
@@ -512,8 +685,6 @@ public abstract class AlAXML extends AlFormat {
 		int 	buf_cnt, i, j;
 		//AlIntHolder jVal = new AlIntHolder(0);
 		char 	ch, ch1;
-
-		allState.text_present = false;
 
 		for (i = start_pos; i < stop_posUsed;) {
 			
@@ -647,6 +818,8 @@ public abstract class AlAXML extends AlFormat {
 							break;
 						}
 					//}
+					if ((ch & AlStyles.STYLE_MASK_4CODECONVERT) == AlStyles.STYLE_BASE_4CODECONVERT)
+						ch = 0x00;
 
 			// end must be code				
 					/////////////////// Begin Real Parser	
@@ -656,75 +829,71 @@ public abstract class AlAXML extends AlFormat {
 						ch--;
 						ch++;
 					}*/
-					
+
+
+
 					label_repeat_letter:
 					while (true) {
-						switch (allState.state_parser) {				
-						case STATE_XML_TEXT:
-							allState.start_position_par = allState.start_position;
-							if (ch > '<') {
-								if ((ch & AlStyles.STYLE_BASE_MASK) != AlStyles.STYLE_BASE0)
+						switch (allState.state_parser) {
+							case STATE_XML_TEXT:
+								allState.start_position_par = allState.start_position;
+								if (ch > '<') {
+									if ((ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT)
+										doTextChar(ch, true);
+								} else if (ch == '<') {
+									allState.state_parser = STATE_XML_STAG;
+									tag.resetTag(allState.start_position);
+								} else if (ch == '&') {
+									allState.state_parser += STATE_XML_ENTITY_ADDSTART;
+									entity.setLength(0);
+									entity.append('&');
+								} else if (ch < 0x20) {
+									if (allState.state_code_flag) {
+										if (ch == 0x09) {
+											ch = 0xa0;
+										} else if (ch == 0x0a) {
+											newParagraph();
+											continue label_get_next_char;
+										} else if (ch < 0x20)
+											ch = 0x20;
+									} else {
+										if (ch == 0x0a || ch == 0x09) {
+											ch = 0x20;
+										} else if (ch < 0x20)
+											continue label_get_next_char;
+									}
 									doTextChar(ch, true);
-							} else
-							if (ch == '<') {
-								allState.state_parser = STATE_XML_STAG;					
-								tag.resetTag(allState.start_position);
-							} else
-							if (ch == '&') {
-								allState.state_parser += STATE_XML_ENTITY_ADDSTART;
-								entity.setLength(0);
-								entity.append('&');
-							} else								
-							if (ch < 0x20) {
-								if (allState.state_code_flag) {
-									if (ch == 0x09) {
-										ch = 0xa0;
-									} else
-									if (ch == 0x0a) {
-										newParagraph();
-										continue label_get_next_char;								
-									} else 						
-									if (ch < 0x20)
-										ch = 0x20;			
 								} else {
-									if (ch == 0x0a || ch == 0x09) {
-										ch = 0x20;
-									} else
-									if (ch < 0x20)
-										continue label_get_next_char;
+									doTextChar(ch, true);
 								}
-								doTextChar(ch, true);
-							} else {						
-								doTextChar(ch, true);
-							}
-							continue label_get_next_char;
-						case STATE_XML_TEXT + STATE_XML_ENTITY_ADDNUM0:
-							if (ch == 'x') {
-								allState.state_parser += 0x2000;
-								entity.append(ch);
 								continue label_get_next_char;
-							}
-							if (AlUnicode.isDecDigit(ch)) {
-								entity.append(ch);
-								allState.state_parser += 0x1000;
-								continue label_get_next_char;
-							}
-							allState.state_parser = STATE_XML_TEXT;
-							addTextFromTag(entity, true);
-							continue label_repeat_letter;
-						case STATE_XML_TEXT + STATE_XML_ENTITY_ADDNUM1:
-							if (AlUnicode.isDecDigit(ch)) {
-								entity.append(ch);
-								continue label_get_next_char;
-							}
-							allState.state_parser = STATE_XML_TEXT;
-							
+							case STATE_XML_TEXT + STATE_XML_ENTITY_ADDNUM0:
+								if (ch == 'x') {
+									allState.state_parser += 0x2000;
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								if (AlUnicode.isDecDigit(ch)) {
+									entity.append(ch);
+									allState.state_parser += 0x1000;
+									continue label_get_next_char;
+								}
+								allState.state_parser = STATE_XML_TEXT;
+								addTextFromTag(entity, true);
+								continue label_repeat_letter;
+							case STATE_XML_TEXT + STATE_XML_ENTITY_ADDNUM1:
+								if (AlUnicode.isDecDigit(ch)) {
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								allState.state_parser = STATE_XML_TEXT;
+
 							{
-								int res = InternalFunc.str2int(entity.substring(2), 10);
+								int res = getEntityCode(entity.substring(2), 10);//InternalFunc.str2int(entity.substring(2), 10);
 								if (res > 0) {
-                                    if (res < 0x20)
-                                        res = 0x20;
-									doTextChar((char)res, true);
+									if (res < 0x20)
+										res = 0x20;
+									doTextChar((char) res, true);
 								} else {
 									addTextFromTag(entity.toString(), true);
 								}
@@ -733,19 +902,19 @@ public abstract class AlAXML extends AlFormat {
 							if (ch != ';')
 								continue label_repeat_letter;
 							continue label_get_next_char;
-						case STATE_XML_TEXT + STATE_XML_ENTITY_ADDNUMHEX:
-							if (AlUnicode.isHEXDigit(ch)) {
-								entity.append(ch);
-								continue label_get_next_char;
-							}
-							allState.state_parser = STATE_XML_TEXT;
-							
+							case STATE_XML_TEXT + STATE_XML_ENTITY_ADDNUMHEX:
+								if (AlUnicode.isHEXDigit(ch)) {
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								allState.state_parser = STATE_XML_TEXT;
+
 							{
-                                int res = InternalFunc.str2int(entity.substring(3), 16);
+								int res = getEntityCode(entity.substring(3), 16);//InternalFunc.str2int(entity.substring(3), 16);
 								if (res > 0) {
-                                    if (res < 0x20)
-                                        res = 0x20;
-									doTextChar((char)res, true);
+									if (res < 0x20)
+										res = 0x20;
+									doTextChar((char) res, true);
 								} else {
 									addTextFromTag(entity.toString(), true);
 								}
@@ -754,241 +923,216 @@ public abstract class AlAXML extends AlFormat {
 							if (ch != ';')
 								continue label_repeat_letter;
 							continue label_get_next_char;
-						case STATE_XML_TEXT + STATE_XML_ENTITY_ADDDEF:
-							if (AlUnicode.isLetterOrDigit(ch) && ch > 0x20 && ch < 0x80) {
-								entity.append(ch);
-								continue label_get_next_char;
-							}
-							allState.state_parser = STATE_XML_TEXT;
+							case STATE_XML_TEXT + STATE_XML_ENTITY_ADDDEF:
+								if (AlUnicode.isLetterOrDigit(ch) && ch > 0x20 && ch < 0x80) {
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								allState.state_parser = STATE_XML_TEXT;
 
-							ch1 = findEntity(entity.substring(1));
-							if (ch1 != 0) {
-								doTextChar(ch1, true);
-								if (ch != ';')
-									continue label_repeat_letter;
-								continue label_get_next_char;
-							}
-							
-							addTextFromTag(entity, true);
-							continue label_repeat_letter;
-						case STATE_XML_TEXT + STATE_XML_ENTITY_ADDSTART:
-							if (ch == '#') {
-								entity.append(ch);
-								allState.state_parser += 0x2000;
-								continue label_get_next_char;
-							}
-							if (AlUnicode.isLetter(ch) && ch > 0x20 && ch < 0x80) {
-								entity.append(ch);
-								allState.state_parser += 0x1000;
-								continue label_get_next_char;
-							}
-							allState.state_parser = STATE_XML_TEXT;
-							doTextChar('&', true);
-							continue label_repeat_letter;
-							
-						case STATE_XML_SKIP:			
-							if (ch == '<') {						
-								allState.state_parser = STATE_XML_STAG;					
-								tag.resetTag(allState.start_position);	
-								continue label_get_next_char;
-							}
-							switch (use_cpR0) {
-							case 1201:
-								for (; j < buf_cnt; j += 2)							
-									if (parser_inBuff[j + 1] == '<') {
+								ch1 = findEntity(entity.substring(1));
+								if (ch1 != 0) {
+									doTextChar(ch1, true);
+									if (ch != ';')
+										continue label_repeat_letter;
+									continue label_get_next_char;
+								}
+
+								addTextFromTag(entity, true);
+								continue label_repeat_letter;
+							case STATE_XML_TEXT + STATE_XML_ENTITY_ADDSTART:
+								if (ch == '#') {
+									entity.append(ch);
+									allState.state_parser += 0x2000;
+									continue label_get_next_char;
+								}
+								if (AlUnicode.isLetter(ch) && ch > 0x20 && ch < 0x80) {
+									entity.append(ch);
+									allState.state_parser += 0x1000;
+									continue label_get_next_char;
+								}
+								allState.state_parser = STATE_XML_TEXT;
+								doTextChar('&', true);
+								continue label_repeat_letter;
+
+							case STATE_XML_SKIP:
+								if (ch == '<') {
+									allState.state_parser = STATE_XML_STAG;
+									tag.resetTag(allState.start_position);
+									continue label_get_next_char;
+								}
+								switch (use_cpR0) {
+									case 1201:
+										for (; j < buf_cnt; j += 2)
+											if (parser_inBuff[j + 1] == '<') {
+												break;
+											}
 										break;
+									case 1200:
+										for (; j < buf_cnt; j += 2)
+											if (parser_inBuff[j] == '<') {
+												break;
+											}
+										break;
+									default:
+										for (; j < buf_cnt; j++)
+											if (parser_inBuff[j] == '<')
+												break;
+								}
+								continue label_get_next_char;
+							case STATE_XML_STAG:
+								if (AlUnicode.isLetter(ch)) {
+									allState.state_parser = STATE_XML_TAG;
+									tag.add2Tag(ch);
+								} else if (ch == '/') {
+									if (tag.closed)
+										allState.state_parser = STATE_XML_TAG_ERROR;
+									tag.closed = true;
+									tag.resetAttr();
+								} else if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+								} else if (ch == '?') {
+									tag.special = true;
+									continue label_get_next_char;
+								} else if (ch == '!') {
+									allState.state_parser = STATE_XML_TEST;
+								} else if (AlUnicode.isSpace(ch)) {
+
+								} else {
+									allState.state_parser = STATE_XML_TAG_ERROR;
+								}
+								continue label_get_next_char;
+							case STATE_XML_TAG:
+								if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+									prepareTAG();
+								} else if (AlUnicode.isSpace(ch)) {
+									allState.state_parser = STATE_XML_ETAG;
+								} else if (ch == '<' || ch == '&') {
+									allState.state_parser = STATE_XML_TAG_ERROR;
+								} else if (ch == '?') {
+									allState.state_parser = STATE_XML_ETAG2;
+								} else if (ch == '/') {
+									allState.state_parser = STATE_XML_ETAG2;
+									if (tag.closed)
+										allState.state_parser = STATE_XML_TAG_ERROR;
+									tag.ended = true;
+								} else if (ch == ':') {
+									AlIntHolder tmp_position = new AlIntHolder(i + j);
+									ch = getConvertChar(use_cpR0, tmp_position);
+									if (AlUnicode.isLetter(ch)) {
+										tag.clearTag();
+									} else {
+										allState.state_parser = STATE_XML_TAG_ERROR;
 									}
-								break;
-							case 1200:
-								for (; j < buf_cnt; j += 2)
-									if (parser_inBuff[j] == '<') {
-										break;
-									}
-								break;
-							default:
-								for (; j < buf_cnt; j++)
-									if (parser_inBuff[j] == '<')								
-										break;
-							}
-							continue label_get_next_char;				
-						case STATE_XML_STAG:
-							if (AlUnicode.isLetter(ch)) {
-								allState.state_parser = STATE_XML_TAG;
-								tag.add2Tag(ch);						
-							} else
-							if (ch == '/') {
-								if (tag.closed)
+								} else if (AlUnicode.isLetterOrDigit(ch) || ch == '-' || ch == '_') {
+									tag.add2Tag(ch);
+								} else {
 									allState.state_parser = STATE_XML_TAG_ERROR;
-								tag.closed = true;
-								tag.resetAttr();
-							} else
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;
-							} else
-							if (ch == '?') {
-                                tag.special = true;
+								}
 								continue label_get_next_char;
-							} else
-							if (ch == '!') {
-								allState.state_parser = STATE_XML_TEST;
-							} else
-							if (AlUnicode.isSpace(ch)) {
-						
-							} else {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							}
-							continue label_get_next_char;
-						case STATE_XML_TAG:				
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;
-								prepareTAG();
-							} else 				
-							if (AlUnicode.isSpace(ch)) {
-								allState.state_parser = STATE_XML_ETAG;
-							} else				
-							if (ch == '<' || ch == '&') {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							} else
-							if (ch == '?') {
-								allState.state_parser = STATE_XML_ETAG2;
-							} else
-							if (ch == '/') {
-								allState.state_parser = STATE_XML_ETAG2;
-								if (tag.closed)
+							case STATE_XML_ETAG2:
+								if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+									prepareTAG();
+								}
+								continue label_get_next_char;
+							case STATE_XML_TAG_ERROR:
+								if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+								}
+								continue label_get_next_char;
+							case STATE_XML_ETAG:
+								if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+									prepareTAG();
+								} else if (ch == '/') {
+									allState.state_parser = STATE_XML_ETAG2;
+									if (tag.closed)
+										allState.state_parser = STATE_XML_TAG_ERROR;
+									tag.ended = true;
+								} else if (AlUnicode.isLetter(ch)) {
+									tag.clearAttrName();
+									tag.add2AttrName(ch);
+									allState.state_parser = STATE_XML_ATTRIBUTE_NAME;
+								} else if (AlUnicode.isSpace(ch) || ch == '?') {
+
+								} else {
 									allState.state_parser = STATE_XML_TAG_ERROR;
-								tag.ended = true;					
-							} else
-							if (ch == ':') {
-								AlIntHolder tmp_position = new AlIntHolder(i + j);						
-								ch = getConvertChar(use_cpR0, tmp_position);
-								if (AlUnicode.isLetter(ch)) {					
-									tag.clearTag();
-								} else {						
-									allState.state_parser = STATE_XML_TAG_ERROR;
-								}						
-							} else
-							if (AlUnicode.isLetterOrDigit(ch) || ch == '-' || ch == '_') {
-								tag.add2Tag(ch);
-							} else {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							}
-							continue label_get_next_char;	
-						case STATE_XML_ETAG2:
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;
-								prepareTAG();
-							}
-							continue label_get_next_char;
-						case STATE_XML_TAG_ERROR:
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;					
-							}else if (ch == '<') {
-								allState.state_parser = STATE_XML_STAG;
-								tag.resetTag(allState.start_position);
-							}
-							continue label_get_next_char;
-						case STATE_XML_ETAG:
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;
-								prepareTAG();
-							} else
-							if (ch == '/') {
-								allState.state_parser = STATE_XML_ETAG2;
-								if (tag.closed)
-									allState.state_parser = STATE_XML_TAG_ERROR;
-								tag.ended = true;					
-							} else
-							if (AlUnicode.isLetter(ch)) {
-								tag.clearAttrName();
-								tag.add2AttrName(ch);
-								allState.state_parser = STATE_XML_ATTRIBUTE_NAME;					
-							} else				
-							if (AlUnicode.isSpace(ch) || ch == '?') {
-								
-							} else {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							}				
-							continue label_get_next_char;
-						case STATE_XML_ATTRIBUTE_NAME:
-							if (ch == '=' || AlUnicode.isSpace(ch)) {
-								allState.state_parser = STATE_XML_ATTRIBUTE_ENAME;
-							} else		
-								if (ch == '/') {
+								}
+								continue label_get_next_char;
+							case STATE_XML_ATTRIBUTE_NAME:
+								if (ch == '=' || AlUnicode.isSpace(ch)) {
+									allState.state_parser = STATE_XML_ATTRIBUTE_ENAME;
+								} else if (ch == '/') {
 									allState.state_parser = STATE_XML_ETAG;
 									if (tag.closed)
 										allState.state_parser = STATE_XML_TAG_ERROR;
 									tag.closed = true;
-								} else	
-								if (ch == '>') {
+								} else if (ch == '>') {
 									allState.state_parser = STATE_XML_TEXT;
 									prepareTAG();
-								} else
-							if (ch == '<' || ch == '&') {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							} else				
-							if (ch == ':') {
-								AlIntHolder tmp_position = new AlIntHolder(i + j);						
-								ch = getConvertChar(use_cpR0, tmp_position);
-								if (AlUnicode.isLetter(ch)) {											
-									tag.clearAttrName();
-								} else {						
+								} else if (ch == '<' || ch == '&') {
+									allState.state_parser = STATE_XML_TAG_ERROR;
+								} else if (ch == ':') {
+									AlIntHolder tmp_position = new AlIntHolder(i + j);
+									ch = getConvertChar(use_cpR0, tmp_position);
+									if (AlUnicode.isLetter(ch)) {
+										tag.clearAttrName();
+									} else {
+										allState.state_parser = STATE_XML_TAG_ERROR;
+									}
+								} else if (AlUnicode.isLetterOrDigit(ch) || ch == '-' || ch == '_') {
+									tag.add2AttrName(ch);
+								} else {
 									allState.state_parser = STATE_XML_TAG_ERROR;
 								}
-							} else
-							if (AlUnicode.isLetterOrDigit(ch) || ch == '-' || ch == '_') {
-								tag.add2AttrName(ch);
-							} else {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							}
-							continue label_get_next_char;	
-						case STATE_XML_ATTRIBUTE_ENAME:
-							if (ch == '\'') {
-								allState.state_parser = STATE_XML_ATTRIBUTE_VALUE1;
-								tag.clearAttrVal(allState.start_position + (use_cpR0 == 1200 || use_cpR0 == 1201 ? 2 : 1));
-							} else
-							if (ch == '\"') {
-								allState.state_parser = STATE_XML_ATTRIBUTE_VALUE2;
-								tag.clearAttrVal(allState.start_position + (use_cpR0 == 1200 || use_cpR0 == 1201 ? 2 : 1));
-							} else
-							if (ch == '=' || AlUnicode.isSpace(ch)) {
-								
-							} else
-							if (AlUnicode.isLetterOrDigit(ch) || AlUnicode.isPunctuation(ch)){					
-								allState.state_parser = STATE_XML_ATTRIBUTE_VALUE3;
-								tag.clearAttrVal(allState.start_position);
-								tag.add2AttrValue(ch);
-							} else {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							}
-							continue label_get_next_char;
-							
-						case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDNUM0:
-						case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDNUM0:
-						case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDNUM0:
-							if (ch == 'x') {
-								allState.state_parser += 0x2000;
-								entity.append(ch);
 								continue label_get_next_char;
-							}
-							if (AlUnicode.isDecDigit(ch)) {
-								entity.append(ch);
-								allState.state_parser += 0x1000;
+							case STATE_XML_ATTRIBUTE_ENAME:
+								if (ch == '\'') {
+									allState.state_parser = STATE_XML_ATTRIBUTE_VALUE1;
+									tag.clearAttrVal(allState.start_position + (use_cpR0 == 1200 || use_cpR0 == 1201 ? 2 : 1));
+								} else if (ch == '\"') {
+									allState.state_parser = STATE_XML_ATTRIBUTE_VALUE2;
+									tag.clearAttrVal(allState.start_position + (use_cpR0 == 1200 || use_cpR0 == 1201 ? 2 : 1));
+								} else if (ch == '=' || AlUnicode.isSpace(ch)) {
+
+								} else if (AlUnicode.isLetterOrDigit(ch) || AlUnicode.isPunctuation(ch)) {
+									allState.state_parser = STATE_XML_ATTRIBUTE_VALUE3;
+									tag.clearAttrVal(allState.start_position);
+									tag.add2AttrValue(ch);
+								} else {
+									allState.state_parser = STATE_XML_TAG_ERROR;
+								}
 								continue label_get_next_char;
-							}
-							allState.state_parser -= STATE_XML_ENTITY_ADDNUM0;
-							tag.add2AttrValue(entity);
-							continue label_repeat_letter;
-						case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDNUM1:
-						case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDNUM1:
-						case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDNUM1:
-							if (AlUnicode.isDecDigit(ch)) {
-								entity.append(ch);
-								continue label_get_next_char;
-							}
-							allState.state_parser -= STATE_XML_ENTITY_ADDNUM1;
+
+							case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDNUM0:
+							case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDNUM0:
+							case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDNUM0:
+								if (ch == 'x') {
+									allState.state_parser += 0x2000;
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								if (AlUnicode.isDecDigit(ch)) {
+									entity.append(ch);
+									allState.state_parser += 0x1000;
+									continue label_get_next_char;
+								}
+								allState.state_parser -= STATE_XML_ENTITY_ADDNUM0;
+								tag.add2AttrValue(entity);
+								continue label_repeat_letter;
+							case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDNUM1:
+							case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDNUM1:
+							case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDNUM1:
+								if (AlUnicode.isDecDigit(ch)) {
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								allState.state_parser -= STATE_XML_ENTITY_ADDNUM1;
 
 							{
-								Integer res = InternalFunc.str2int(entity.substring(2), 10);
+								Integer res = getEntityCode(entity.substring(2), 10);//InternalFunc.str2int(entity.substring(2), 10);
 								if (res != null) {
 									if (res < 0x20) res = 0x20;
 									tag.add2AttrValue((char) res.intValue());
@@ -1000,17 +1144,17 @@ public abstract class AlAXML extends AlFormat {
 							if (ch != ';')
 								continue label_repeat_letter;
 							continue label_get_next_char;
-						case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDNUMHEX:
-						case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDNUMHEX:
-						case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDNUMHEX:
-							if (AlUnicode.isHEXDigit(ch)) {
-								entity.append(ch);
-								continue label_get_next_char;
-							}
-							allState.state_parser -= STATE_XML_ENTITY_ADDNUMHEX;
+							case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDNUMHEX:
+							case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDNUMHEX:
+							case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDNUMHEX:
+								if (AlUnicode.isHEXDigit(ch)) {
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								allState.state_parser -= STATE_XML_ENTITY_ADDNUMHEX;
 
 							{
-								Integer res = InternalFunc.str2int(entity.substring(3), 16);
+								Integer res = getEntityCode(entity.substring(3), 16);//InternalFunc.str2int(entity.substring(3), 16);
 								if (res != null) {
 									if (res < 0x20) res = 0x20;
 									tag.add2AttrValue((char) res.intValue());
@@ -1018,197 +1162,190 @@ public abstract class AlAXML extends AlFormat {
 									tag.add2AttrValue(entity);
 								}
 							}
-														
+
 							if (ch != ';')
 								continue label_repeat_letter;
 							continue label_get_next_char;
-						case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDDEF:
-						case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDDEF:
-						case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDDEF:
-							if (AlUnicode.isLatinLetter(ch)) {
-								entity.append(ch);
-								continue label_get_next_char;
-							}
-							allState.state_parser -= STATE_XML_ENTITY_ADDDEF;
+							case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDDEF:
+							case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDDEF:
+							case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDDEF:
+								if (AlUnicode.isLatinLetter(ch)) {
+									entity.append(ch);
+									continue label_get_next_char;
+								}
+								allState.state_parser -= STATE_XML_ENTITY_ADDDEF;
 
-							ch1 = findEntity(entity.substring(1));
-							if (ch1 != 0) {
-								tag.add2AttrValue(ch1);
-								continue label_get_next_char;
-							}
+								ch1 = findEntity(entity.substring(1));
+								if (ch1 != 0) {
+									tag.add2AttrValue(ch1);
+									continue label_get_next_char;
+								}
 
-							tag.add2AttrValue(entity);
-							continue label_repeat_letter;
-						case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDSTART:
-						case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDSTART:
-						case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDSTART:
-							if (ch == '#') {
-								entity.append(ch);
-								allState.state_parser += 0x2000;
+								tag.add2AttrValue(entity);
+								continue label_repeat_letter;
+							case STATE_XML_ATTRIBUTE_VALUE1 + STATE_XML_ENTITY_ADDSTART:
+							case STATE_XML_ATTRIBUTE_VALUE2 + STATE_XML_ENTITY_ADDSTART:
+							case STATE_XML_ATTRIBUTE_VALUE3 + STATE_XML_ENTITY_ADDSTART:
+								if (ch == '#') {
+									entity.append(ch);
+									allState.state_parser += 0x2000;
+									continue label_get_next_char;
+								}
+								if (AlUnicode.isLatinLetter(ch)) {
+									entity.append(ch);
+									allState.state_parser += 0x1000;
+									continue label_get_next_char;
+								}
+								allState.state_parser -= STATE_XML_ENTITY_ADDSTART;
+								tag.add2AttrValue('&');
 								continue label_get_next_char;
-							}
-							if (AlUnicode.isLatinLetter(ch)) {
-								entity.append(ch);
-								allState.state_parser += 0x1000;
-								continue label_get_next_char;
-							}
-							allState.state_parser -= STATE_XML_ENTITY_ADDSTART;
-							tag.add2AttrValue('&');
-							continue label_get_next_char;
-						case STATE_XML_ATTRIBUTE_VALUE3:
-							if (ch == '>') {
-								if (isNeedAttribute(tag.aname))
-									tag.addAttribute(allState.start_position);
-								allState.state_parser = STATE_XML_TEXT;
-								prepareTAG();
-							} else
-							if (ch == ';' || AlUnicode.isSpace(ch)) {
-								if (isNeedAttribute(tag.aname))
-									tag.addAttribute(allState.start_position);
-								allState.state_parser = STATE_XML_ETAG;
-							} else 					
-							if (ch == '&') {
-								allState.state_parser += STATE_XML_ENTITY_ADDSTART;
-								entity.setLength(0);
-								entity.append(ch);					
-							} else
-							if (ch < 0x20) {
-								
-							} else {
-								tag.add2AttrValue(ch);
-							}					
-							continue label_get_next_char;
-						case STATE_XML_ATTRIBUTE_VALUE1:
-						case STATE_XML_ATTRIBUTE_VALUE2:	
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;
-							} else
-							if (ch == '\'' && allState.state_parser == STATE_XML_ATTRIBUTE_VALUE1) {
-								if (isNeedAttribute(tag.aname))
-									tag.addAttribute(allState.start_position);
-								allState.state_parser = STATE_XML_ETAG;
-							} else
-							if (ch == '\"' && allState.state_parser == STATE_XML_ATTRIBUTE_VALUE2) {
-								if (isNeedAttribute(tag.aname))
-									tag.addAttribute(allState.start_position);
-								allState.state_parser = STATE_XML_ETAG;
-							} else
-							if (ch == '&') {
-								allState.state_parser += STATE_XML_ENTITY_ADDSTART;
-								entity.setLength(0);
-								entity.append(ch);	
-							} else
-							if (AlUnicode.isSpace(ch)) {
-								tag.add2AttrValue(' ');
-							} else
-							if (ch < 0x20) {
-								
-							} else {
-								tag.add2AttrValue(ch);
-							}
-							continue label_get_next_char;
-						///////////////////////////////////////////////////////////	
-						case STATE_XML_TEST:
-							if (ch == '<') {
-								allState.state_parser = STATE_XML_TAG_ERROR;
-							} else
-							if (ch =='-') {
-								allState.state_parser = STATE_XML_TEST_COMMENT;
-							} else
-							if (ch == 0x20 || ch == 0x09 || ch == 0x0a) {
-								tag.add2Tag(ch);
-								allState.state_parser = STATE_XML_ETAG;
-							} else				
-							if (ch > 0x20) {
-								tag.add2Tag('!');
-								tag.add2Tag(ch);					
-								allState.state_parser = STATE_XML_TAG;
-							}
-							continue label_get_next_char;	
-						case STATE_XML_TEST_CDATA:
-							if (ch == '<') {
-								allState.state_parser = STATE_XML_ETAG2;
-							} else
-							if (ch == 'C') {
-								allState.state_parser = STATE_XML_CDATA;
-							} else
-							if (AlUnicode.isSpace(ch)) {
-								tag.add2Tag('!');
-								allState.state_parser = STATE_XML_ETAG;
-							} else
-							if (ch > 0x20) {
-								tag.add2Tag('!');
-								tag.add2Tag('-');
-								tag.add2Tag(ch);						
-								allState.state_parser = STATE_XML_TAG;
-							}
-							continue label_get_next_char;
-						case STATE_XML_TEST_COMMENT:
-							if (ch == '<') {
-								allState.state_parser = STATE_XML_ETAG2;
-							} else
-							if (ch == '-') {
-								allState.state_parser = STATE_XML_COMMENT;
-							} else
-							if (AlUnicode.isSpace(ch)) {
-								tag.add2Tag('!');
-								allState.state_parser = STATE_XML_ETAG;
-							} else
-							if (ch > 0x20) {
-								tag.add2Tag('!');
-								tag.add2Tag('-');
-								tag.add2Tag(ch);
-								allState.state_parser = STATE_XML_TAG;
-							}
-							continue label_get_next_char;				
-						case STATE_XML_COMMENT:
-							if (ch == '-') {
-								allState.state_parser = STATE_XML_ECOMMENT1;
-							}
-							continue label_get_next_char;
-						case STATE_XML_ECOMMENT1:
-							if (ch == '-') {
-								allState.state_parser = STATE_XML_ECOMMENT2;
-							} else {
-								allState.state_parser = STATE_XML_COMMENT;
-							}
-							continue label_get_next_char;
-						case STATE_XML_ECOMMENT2:
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;
-							} else
-							if (ch == '-') {
-								
-							} else {
-								allState.state_parser = STATE_XML_COMMENT;
-							}
-							continue label_get_next_char;
-						case STATE_XML_CDATA:
-							if (ch == ']') {
-								allState.state_parser = STATE_XML_ECDATA1;
-							}
-							continue label_get_next_char;
-						case STATE_XML_ECDATA1:
-							if (ch == ']') {
-								allState.state_parser = STATE_XML_ECDATA2;
-							} else
-							if (AlUnicode.isSpace(ch)) {
-								allState.state_parser = STATE_XML_CDATA;
-							}
-							continue label_get_next_char;
-						case STATE_XML_ECDATA2:
-							if (ch == '>') {
-								allState.state_parser = STATE_XML_TEXT;
-							} else
-							if (ch == ']') {
-								
-							} else
-							if (AlUnicode.isSpace(ch)) {
-								allState.state_parser = STATE_XML_CDATA;
-							}
-							continue label_get_next_char;			
+							case STATE_XML_ATTRIBUTE_VALUE3:
+								if (ch == '>') {
+									if (isNeedAttribute(tag.aname))
+										tag.addAttribute(allState.start_position);
+									allState.state_parser = STATE_XML_TEXT;
+									prepareTAG();
+								} else if (ch == ';' || AlUnicode.isSpace(ch)) {
+									if (isNeedAttribute(tag.aname))
+										tag.addAttribute(allState.start_position);
+									allState.state_parser = STATE_XML_ETAG;
+								} else if (ch == '&') {
+									allState.state_parser += STATE_XML_ENTITY_ADDSTART;
+									entity.setLength(0);
+									entity.append(ch);
+								} else if (ch < 0x20) {
 
-						}			
+								} else {
+									tag.add2AttrValue(ch);
+								}
+								continue label_get_next_char;
+							case STATE_XML_ATTRIBUTE_VALUE1:
+							case STATE_XML_ATTRIBUTE_VALUE2:
+								if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+								} else if (ch == '\'' && allState.state_parser == STATE_XML_ATTRIBUTE_VALUE1) {
+									if (isNeedAttribute(tag.aname))
+										tag.addAttribute(allState.start_position);
+									allState.state_parser = STATE_XML_ETAG;
+								} else if (ch == '\"' && allState.state_parser == STATE_XML_ATTRIBUTE_VALUE2) {
+									if (isNeedAttribute(tag.aname))
+										tag.addAttribute(allState.start_position);
+									allState.state_parser = STATE_XML_ETAG;
+								} else if (ch == '&') {
+									allState.state_parser += STATE_XML_ENTITY_ADDSTART;
+									entity.setLength(0);
+									entity.append(ch);
+								} else if (AlUnicode.isSpace(ch)) {
+									tag.add2AttrValue(' ');
+								} else if (ch < 0x20) {
+
+								} else {
+									tag.add2AttrValue(ch);
+								}
+								continue label_get_next_char;
+								///////////////////////////////////////////////////////////
+							case STATE_XML_TEST:
+								if (ch == '<') {
+									allState.state_parser = STATE_XML_TAG_ERROR;
+								} else if (ch == '-') {
+									allState.state_parser = STATE_XML_TEST_COMMENT;
+								} else if (ch == 0x20 || ch == 0x09 || ch == 0x0a) {
+									tag.add2Tag(ch);
+									allState.state_parser = STATE_XML_ETAG;
+								} else if (ch == '[') {
+									doTextChar(ch, false);
+									allState.state_parser = STATE_XML_TEXT;
+								} else if (ch > 0x20) {
+									tag.add2Tag('!');
+									tag.add2Tag(ch);
+									allState.state_parser = STATE_XML_TAG;
+								}
+								continue label_get_next_char;
+							case STATE_XML_TEST_CDATA:
+								if (ch == '<') {
+									allState.state_parser = STATE_XML_ETAG2;
+								} else if (ch == 'C') {
+									allState.state_parser = STATE_XML_CDATAWAIT;
+								} else if (AlUnicode.isSpace(ch)) {
+									tag.add2Tag('!');
+									allState.state_parser = STATE_XML_ETAG;
+								} else if (ch > 0x20) {
+									tag.add2Tag('!');
+									tag.add2Tag('-');
+									tag.add2Tag(ch);
+									allState.state_parser = STATE_XML_TAG;
+								}
+								continue label_get_next_char;
+							case STATE_XML_TEST_COMMENT:
+								if (ch == '<') {
+									allState.state_parser = STATE_XML_ETAG2;
+								} else if (ch == '-') {
+									allState.state_parser = STATE_XML_COMMENT;
+								} else if (AlUnicode.isSpace(ch)) {
+									tag.add2Tag('!');
+									allState.state_parser = STATE_XML_ETAG;
+								} else if (ch > 0x20) {
+									tag.add2Tag('!');
+									tag.add2Tag('-');
+									tag.add2Tag(ch);
+									allState.state_parser = STATE_XML_TAG;
+								}
+								continue label_get_next_char;
+							case STATE_XML_COMMENT:
+								if (ch == '-') {
+									allState.state_parser = STATE_XML_ECOMMENT1;
+								}
+								continue label_get_next_char;
+							case STATE_XML_ECOMMENT1:
+								if (ch == '-') {
+									allState.state_parser = STATE_XML_ECOMMENT2;
+								} else {
+									allState.state_parser = STATE_XML_COMMENT;
+								}
+								continue label_get_next_char;
+							case STATE_XML_ECOMMENT2:
+								if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+								} else if (ch == '-') {
+
+								} else {
+									allState.state_parser = STATE_XML_COMMENT;
+								}
+								continue label_get_next_char;
+							case STATE_XML_CDATAWAIT:
+								if (ch == '[') {
+									allState.state_parser = STATE_XML_CDATAPROCESS;
+								}
+								continue label_get_next_char;
+							case STATE_XML_CDATAPROCESS:
+								if (ch == ']') {
+									allState.state_parser = STATE_XML_ECDATA1;
+								} else {
+									if (allState.state_special_flag)
+										specialBuff.add(ch);
+								}
+								continue label_get_next_char;
+							case STATE_XML_ECDATA1:
+								if (ch == ']') {
+									allState.state_parser = STATE_XML_ECDATA2;
+								} else {
+									if (allState.state_special_flag) {
+										specialBuff.add(']');
+										specialBuff.add(ch);
+									}
+									allState.state_parser = STATE_XML_CDATAPROCESS;
+								}
+								continue label_get_next_char;
+							case STATE_XML_ECDATA2:
+								if (ch == '>') {
+									allState.state_parser = STATE_XML_TEXT;
+								} else if (ch == ']') {
+
+								} else if (AlUnicode.isSpace(ch)) {
+									allState.state_parser = STATE_XML_CDATAPROCESS;
+								}
+								continue label_get_next_char;
+						}
 
 						/////////////////// End Real Parser
 					// this code must be in any parser without change!!!
@@ -1216,12 +1353,12 @@ public abstract class AlAXML extends AlFormat {
 				}
 				i += j;
 			}
-			if (allState.isOpened)
-				newParagraph();
-				// end must be code
+
+			newParagraph();
+			// end must be code
 	}
 
-	private char findEntity(String key) {
+	protected char findEntity(String key) {
 		Character ch = entityMap.get(key);
 		if (ch == null)
 			return 0x00;

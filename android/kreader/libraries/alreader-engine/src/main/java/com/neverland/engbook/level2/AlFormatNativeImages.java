@@ -71,8 +71,6 @@ public class AlFormatNativeImages extends AlFormat {
 
     @Override
     public void initState(AlBookOptions bookOptions, AlFiles myParent, AlPreferenceOptions pref, AlStylesOptions stl) {
-        allState.isOpened = true;
-
         ident = "IMAGE";
 
         isTextFormat = false;
@@ -84,13 +82,9 @@ public class AlFormatNativeImages extends AlFormat {
         autoCodePage = true;
         use_cpR0 = TAL_CODE_PAGES.AUTO;
         allState.state_parser = 0;
-        allState.state_skipped_flag = false;
+        allState.clearSkipped();
 
         size = 0;
-        parser(0, aFiles.getSize());
-        newParagraph();
-
-        allState.isOpened = false;
     }
 
     @Override
@@ -105,27 +99,26 @@ public class AlFormatNativeImages extends AlFormat {
 
     @Override
     protected void doTextChar(char ch, boolean addSpecial) {
-        if (allState.isOpened) {
-            if (allState.text_present) {
-                size++;
-                parPositionE = allState.start_position;
-                allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20);
-            } else {
-                parPositionS = allState.start_position_par;
-                formatAddonInt();
-                parStart = size;
-                allState.text_present = true;
-                allState.letter_present = (allState.letter_present) || (ch != 0xa0 && ch != 0x20);
-                size++;
-                parPositionE = allState.start_position;
-            }
+        if (parText.length > 0) {
+            parText.add(ch);
+
+            size++;
+            parText.positionE = allState.start_position;
+            parText.haveLetter = parText.haveLetter || (ch != 0xa0 && ch != 0x20
+                    && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
         } else {
-            if (allState.text_present) {
-                stored_par.data[stored_par.cpos++] = ch;
-            } else {
-                stored_par.data[stored_par.cpos++] = ch;
-                allState.text_present = true;
-            }
+            parText.positionS = parText.positionE = allState.start_position_par;
+
+            parText.paragraph = styleStack.getActualParagraph();
+            parText.prop = styleStack.getActualProp();
+            parText.sizeStart = size;
+            parText.tableStart = currentTable.start;
+            parText.tableCounter = currentTable.counter;
+
+            parText.haveLetter = (ch != 0xa0 && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
+            size++;
+
+            parText.add(ch);
         }
     }
 
@@ -138,10 +131,10 @@ public class AlFormatNativeImages extends AlFormat {
         addCharFromTag(LEVEL2_COVERTOTEXT, false);
         addCharFromTag((char)AlStyles.CHAR_IMAGE_E, false);
 
-        if (allState.isOpened) {
-            im.add(AlOneImage.add(coverName, 0, 0, AlOneImage.IMG_MEMO));
-            newParagraph();
-        }
+
+        im.add(AlOneImage.add(coverName, 0, 0, AlOneImage.IMG_MEMO));
+        newParagraph();
+
     }
 
 }

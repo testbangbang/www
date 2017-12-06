@@ -96,7 +96,7 @@ public class OnyxAlertDialog extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setStyle(DialogFragment.STYLE_NO_FRAME, 0);
+        setStyle(DialogFragment.STYLE_NO_FRAME, params.dialogTheme);
     }
 
     @Override
@@ -276,6 +276,7 @@ public class OnyxAlertDialog extends DialogFragment {
          * if not,dialog itself would use margin Left&Right in x dp,
          * which defines in values/dimens.xml/onyx_alert_dialog_width_margin.
          * @param alertMsgGravity allow outside to control alert msg gravity.
+         * @param dialogTheme changeDialogTheme
          */
         boolean enableTittle = true;
         boolean enableFunctionPanel = true;
@@ -301,6 +302,8 @@ public class OnyxAlertDialog extends DialogFragment {
         int dialogHeight = ViewGroup.LayoutParams.WRAP_CONTENT;
         String tittleString = "";
         String alertMsgString = "";
+
+        int dialogTheme = 0;
 
         public int getAlertMsgGravity() {
             return alertMsgGravity;
@@ -568,6 +571,15 @@ public class OnyxAlertDialog extends DialogFragment {
 
         public Params setKeyAction(DialogInterface.OnKeyListener keyAction) {
             this.keyAction = keyAction;
+            return this;
+        }
+
+        public int getDialogTheme() {
+            return dialogTheme;
+        }
+
+        public Params setDialogTheme(int dialogTheme) {
+            this.dialogTheme = dialogTheme;
             return this;
         }
     }

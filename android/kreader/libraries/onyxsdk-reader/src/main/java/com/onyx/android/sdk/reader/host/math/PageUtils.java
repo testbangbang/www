@@ -183,6 +183,12 @@ public class PageUtils {
         return pageInfo.updateDisplayRect(rect);
     }
 
+    public static RectF updateVisibleRect(final PageInfo pageInfo, final RectF viewport) {
+        RectF rect = new RectF(pageInfo.getDisplayRect());
+        rect.intersect(new RectF(0, 0, viewport.width(), viewport.height()));
+        return pageInfo.updateVisibleRect(rect);
+    }
+
     /**
      * Retrieve viewport in document coordinates system. it's viewport relate to current page.
      * @param viewport

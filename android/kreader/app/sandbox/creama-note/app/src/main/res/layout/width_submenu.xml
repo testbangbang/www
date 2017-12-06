@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:id="@+id/button_width_1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:background="@drawable/image_button_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="@android:dimen/notification_large_icon_width"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_width_1"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:focusable="false"
+            android:src="@drawable/ic_width_1" />
+
+        <TextView
+            android:id="@+id/text_width_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text="@string/ultra_light" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_width_2"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/image_button_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="@android:dimen/notification_large_icon_width"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_width_2"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:focusable="false"
+            android:src="@drawable/ic_width_2" />
+
+        <TextView
+            android:id="@+id/text_width_2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text="@string/light" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_width_3"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/image_button_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="@android:dimen/notification_large_icon_width"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_width_3"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:focusable="false"
+            android:src="@drawable/ic_width_3" />
+
+        <TextView
+            android:id="@+id/text_width_3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text="@string/normal" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_width_4"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/image_button_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="@android:dimen/notification_large_icon_width"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_width_4"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:focusable="false"
+            android:src="@drawable/ic_width_4" />
+
+        <TextView
+            android:id="@+id/text_width_4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text="@string/bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/button_width_5"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/image_button_bg"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:minWidth="@android:dimen/notification_large_icon_width"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon_width_5"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:focusable="false"
+            android:src="@drawable/ic_width_5" />
+
+        <TextView
+            android:id="@+id/text_width_5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:lines="1"
+            android:text="@string/ultra_bold" />
+    </LinearLayout>
+</LinearLayout>

@@ -30,7 +30,7 @@ public class ExportScribbleRequest extends BaseReaderRequest {
     public void execute(Reader reader) throws Exception {
         String pageName = page.getName();
         if (isSideNotePage) {
-            pageName = pageName + "_" + page.getSubPage();
+            pageName = pageName + "_" + page.getPosition() + "_" + page.getSubPage();
         }
         File file = new File(ExportUtils.getExportScribblePath(reader.getDocumentPath(), pageName));
         FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.PNG, 100);

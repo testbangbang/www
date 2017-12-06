@@ -11,9 +11,14 @@ import com.onyx.android.sdk.scribble.request.navigation.ClearAllFreeShapesReques
  */
 public class ClearAllFreeShapesAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
 
+    private boolean resume;
+    public ClearAllFreeShapesAction(boolean r) {
+        resume = r;
+    }
+
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        final ClearAllFreeShapesRequest clearAllFreeShapesRequest = new ClearAllFreeShapesRequest();
+        final ClearAllFreeShapesRequest clearAllFreeShapesRequest = new ClearAllFreeShapesRequest(resume);
         activity.setFullUpdate(true);
         activity.submitRequest(clearAllFreeShapesRequest, new BaseCallback() {
             @Override

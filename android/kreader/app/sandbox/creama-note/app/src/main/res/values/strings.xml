@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">creama-note</string>
+    <string name="width">Width</string>
+    <string name="shape">Shape</string>
+    <string name="eraser">Eraser</string>
+    <string name="ultra_light">Ultra Light</string>
+    <string name="light">Light</string>
+    <string name="normal">Normal</string>
+    <string name="bold">Bold</string>
+    <string name="ultra_bold">Ultra Bold</string>
+    <string name="brush">Brush</string>
+    <string name="line">Line</string>
+    <string name="triangle">Triangle</string>
+    <string name="eraser_partial">Erase Partial</string>
+    <string name="eraser_all">Erase All</string>
+</resources>

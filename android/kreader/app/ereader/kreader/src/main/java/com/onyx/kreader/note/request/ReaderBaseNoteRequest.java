@@ -123,10 +123,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         return visiblePages;
     }
 
-    public boolean hasSideNote() {
-        return hasSideNote;
-    }
-
     public void beforeExecute(final NoteManager noteManager) {
         noteManager.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseRawInputProcessor()) {
@@ -160,6 +156,8 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         if (getException() != null) {
             getException().printStackTrace();
         }
+        loadNoteDataInfo(parent);
+
         benchmarkEnd();
         final Runnable runnable = postExecuteRunnable(parent);
         if (isRunInBackground()) {
@@ -238,7 +236,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         }
     }
 
-    public void loadNotePages(final NoteManager parent) {
+    private void loadNotePages(final NoteManager parent) {
         synchronized (parent) {
             for (PageInfo page : getVisiblePages()) {
                 int pageCount = parent.getNoteDocument().getSubPageCount(page.getRange());
@@ -253,6 +251,11 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 }
             }
         }
+    }
+
+    private void loadNoteDataInfo(final NoteManager parent) {
+        loadNotePages(parent);
+        getNoteDataInfo().setHasSideNote(hasSideNote);
     }
 
     private void updateMatrix(final Matrix matrix, final PageInfo pageInfo) {
