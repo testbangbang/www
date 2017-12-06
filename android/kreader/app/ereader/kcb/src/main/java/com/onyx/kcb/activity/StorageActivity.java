@@ -50,6 +50,8 @@ import com.onyx.kcb.device.DeviceConfig;
 import com.onyx.kcb.dialog.DialogCreateNewFolder;
 import com.onyx.kcb.dialog.DialogFileProperty;
 import com.onyx.kcb.dialog.DialogRenameFile;
+import com.onyx.kcb.event.HideAllDialogEvent;
+import com.onyx.kcb.event.LoadingDialogEvent;
 import com.onyx.kcb.event.OnModelAdapterRawDataChangeEvent;
 import com.onyx.kcb.event.OperationEvent;
 import com.onyx.kcb.event.ViewTypeEvent;
@@ -819,5 +821,15 @@ public class StorageActivity extends OnyxAppCompatActivity {
     private void notifyContentChanged() {
         updateContentView();
         updatePageStatus(true);
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        showProgressDialog(event, event.getResId(), null);
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        dismissAllProgressDialog();
     }
 }

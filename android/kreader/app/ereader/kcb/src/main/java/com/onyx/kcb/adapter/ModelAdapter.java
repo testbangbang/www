@@ -92,7 +92,7 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
         final DataModel dataModel = getItemVMList().get(position);
         setEnableSelection(dataModel);
-        if (storageViewModel != null && dataModel.coverBitmap.get() == null){
+        if (isShouldLoadThumbnail(dataModel)){
             LoadFileThumbnail(dataModel);
         }
         if (getItemViewType(position) == ViewType.Thumbnail.ordinal()) {
@@ -102,6 +102,10 @@ public class ModelAdapter extends PageAdapter<PageRecyclerView.ViewHolder, DataM
             ModelItemDetailsViewHolder viewHolder = (ModelItemDetailsViewHolder) holder;
             viewHolder.bindTo(dataModel);
         }
+    }
+
+    private boolean isShouldLoadThumbnail(DataModel dataModel) {
+        return storageViewModel != null && dataModel.coverBitmap.get() == null && dataModel.coverDefault.get() == 0;
     }
 
     private void LoadFileThumbnail(final DataModel dataModel) {

@@ -11,8 +11,8 @@ import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.provider.SystemConfigProvider;
-import com.onyx.android.sdk.data.rxrequest.data.db.RxLoadDefaultThumbnailRequest;
 import com.onyx.android.sdk.data.rxrequest.data.fs.RxStorageFileListLoadRequest;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -54,6 +54,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     }
 
     private void loadData(final DataBundle dataHolder, final File parentFile, final RxCallback rxCallback) {
+        showLoadingDialog(dataHolder, R.string.loading);
         List<String> filterList = new ArrayList<>();
         final RxStorageFileListLoadRequest fileListLoadRequest = new RxStorageFileListLoadRequest(dataHolder.getDataManager(), parentFile, filterList);
         if (isStorageRoot(parentFile)) {
@@ -70,6 +71,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
                 addToModelItemList(dataHolder, parentFile, fileListLoadRequest.getResultFileList());
                 addShortcutModelItemList(dataHolder);
                 rxCallback.onNext(request);
+                hideLoadingDialog(dataHolder);
             }
         });
     }
@@ -159,13 +161,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     }
 
     private void addNormalThumbnail(final DataModel itemModel, DataBundle dataBundle) {
-        RxLoadDefaultThumbnailRequest getDefaultThumbnailRequest = new RxLoadDefaultThumbnailRequest(dataBundle.getDataManager(), itemModel, context);
-        getDefaultThumbnailRequest.execute(new RxCallback<RxLoadDefaultThumbnailRequest>() {
-            @Override
-            public void onNext(RxLoadDefaultThumbnailRequest request) {
-
-            }
-        });
+        DataModelUtil.setDefaultThumbnail(itemModel);
     }
 
     private void addThumbnailFromCache(DataModel itemModel) {
