@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -25,6 +24,7 @@ public class ReaderStatusBar extends LinearLayout {
 
     public static abstract class Callback {
         public abstract void onGotoPage();
+        public abstract void onGotoNote();
     }
 
     private StatusBarAlProgressLine mProgressLine;
@@ -32,6 +32,7 @@ public class ReaderStatusBar extends LinearLayout {
     private StatusBarTextView infoTextView;
     private StatusBarTextView batteryView;
     private ImageView batteryIconView;
+    private ImageView mGotoScribleView;
     private StatusBarTextView timeView;
     private StatusBarNavigatorView mStatusBarNavigatorView;
     private RelativeLayout statusPageButton;
@@ -44,14 +45,14 @@ public class ReaderStatusBar extends LinearLayout {
         final LayoutInflater inflater = (LayoutInflater)
                 context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(R.layout.reader_status_bar, this, true);
-        init();
+        init(context);
     }
 
     public ReaderStatusBar(Context context) {
         this(context,null);
     }
 
-    private void init(){
+    private void init(Context context){
         mStatusBarNavigatorView =(StatusBarNavigatorView)findViewById(R.id.view_navigator);
         progressTextView = (StatusBarTextView)findViewById(R.id.status_page);
         infoTextView=(StatusBarTextView)findViewById(R.id.status_info);
@@ -60,6 +61,7 @@ public class ReaderStatusBar extends LinearLayout {
         timeView = (StatusBarTextView)findViewById(R.id.status_time);
         statusPageButton=(RelativeLayout)findViewById(R.id.status_page_layout);
         mProgressLine = (StatusBarAlProgressLine)findViewById(R.id.progress_line);
+        mGotoScribleView = (ImageView)findViewById(R.id.status_scrible);
         progressTextView.setTypeface(Typeface.SERIF);
         infoTextView.setTypeface(Typeface.SERIF);
         batteryView.setTypeface(Typeface.SERIF);
@@ -71,6 +73,15 @@ public class ReaderStatusBar extends LinearLayout {
             public void onClick(View v) {
                 if (callback != null) {
                     callback.onGotoPage();
+                }
+            }
+        });
+
+        mGotoScribleView.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callback != null) {
+                    callback.onGotoNote();
                 }
             }
         });
@@ -173,7 +184,7 @@ public class ReaderStatusBar extends LinearLayout {
         }
     }
 
-    public void reConfigure(boolean isBatteryPercentageShow, boolean isTimeShow,boolean is24HourFormat,boolean isBatteryGraphicShow) {
+    public void reConfigure(boolean isBatteryPercentageShow, boolean isTimeShow,boolean is24HourFormat,boolean isBatteryGraphicShow, boolean isShowScribleIcon) {
         if (isBatteryPercentageShow) {
             batteryView.setVisibility(View.VISIBLE);
         } else {
@@ -195,9 +206,14 @@ public class ReaderStatusBar extends LinearLayout {
             mProgressLine.setShowBatteryGraphic(false);
             mProgressLine.invalidate();
         }
+        if(isShowScribleIcon) {
+            mGotoScribleView.setVisibility(View.VISIBLE);
+        }else {
+            mGotoScribleView.setVisibility(View.INVISIBLE);
+        }
     }
 
-    public void setStatusPageButtonOnClickListener(OnClickListener l){
+    public void setStatusPageButtonOnClickListener(OnClickListener l) {
         statusPageButton.setOnClickListener(l);
     }
 
@@ -244,4 +260,5 @@ public class ReaderStatusBar extends LinearLayout {
         }
         return String.format("%02d:%02d", ca.get(Calendar.HOUR),ca.get(Calendar.MINUTE))+" AM";
     }
+
 }

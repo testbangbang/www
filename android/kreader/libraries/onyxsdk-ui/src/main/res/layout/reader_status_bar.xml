@@ -26,10 +26,8 @@
             android:id="@+id/status_page_layout"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/view_navigator"
             android:layout_marginLeft="2dp"
-            android:layout_marginRight="2dp"
-            android:layout_alignBottom="@+id/view_navigator">
+            android:layout_marginRight="2dp">
 
             <com.onyx.android.sdk.ui.view.StatusBarTextView
                 android:background="@drawable/imagebtn_bg"
@@ -41,16 +39,30 @@
                 android:text="0/0" />
         </RelativeLayout>
 
-        <com.onyx.android.sdk.ui.view.StatusBarNavigatorView
-            android:id="@+id/view_navigator"
-            android:layout_width="@dimen/navigatorWidth"
-            android:layout_height="@dimen/navigatorHeight"
+        <LinearLayout
+            android:id="@+id/right_side_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_toLeftOf="@id/status_page_layout"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_marginBottom="2dp"
-            android:layout_marginRight="2dp"
-            android:visibility="gone"
-            android:layout_centerVertical="true" />
+            android:gravity="center_vertical"
+            android:layout_alignWithParentIfMissing="true">
+
+            <com.onyx.android.sdk.ui.view.StatusBarNavigatorView
+                android:id="@+id/view_navigator"
+                android:layout_width="@dimen/navigatorWidth"
+                android:layout_height="@dimen/navigatorHeight"
+                android:layout_marginBottom="2dp"
+                android:layout_marginRight="2dp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/status_scrible"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:src="@drawable/ic_dialog_reader_edit_black"
+                android:background="@drawable/image_button_bg"/>
+        </LinearLayout>
 
 
         <com.onyx.android.sdk.ui.view.StatusBarTextView
@@ -59,7 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="2dp"
             android:layout_marginRight="2dp"
-            android:layout_alignBottom="@+id/view_navigator"
+            android:layout_alignBottom="@+id/right_side_layout"
             android:layout_centerInParent="true"
             MyTextView:textSize="@dimen/reader_status_bar_text_size"
             android:visibility="visible" />
@@ -99,6 +111,7 @@
                 MyTextView:textSize="@dimen/reader_status_bar_text_size"
                 android:visibility="gone"
                 android:text="--:--" />
+
         </LinearLayout>
     </RelativeLayout>
 </merge>

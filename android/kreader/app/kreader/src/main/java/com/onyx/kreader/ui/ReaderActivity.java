@@ -36,6 +36,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.utils.TreeObserverUtils;
@@ -320,6 +321,13 @@ public class ReaderActivity extends OnyxBaseActivity {
             public void onGotoPage() {
                 new ShowQuickPreviewAction(getReaderDataHolder()).execute(getReaderDataHolder(), null);
             }
+
+            @Override
+            public void onGotoNote() {
+                ActivityUtil.startActivitySafely(ReaderActivity.this,
+                        ActivityUtil.createIntent(DeviceConfig.sharedInstance(ReaderActivity.this).getNoteAppPackageName(),
+                                DeviceConfig.sharedInstance(ReaderActivity.this).getNoteAppClassName()));
+            }
         });
         reconfigStatusBar();
     }
@@ -328,7 +336,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         statusBar.reConfigure(SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_percentage_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_format_key, false),
-                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false));
+                SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false),
+                DeviceConfig.sharedInstance(this).isSupportBrushPen());
 
         if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)) {
             statusBar.setVisibility(View.GONE);
@@ -338,7 +347,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         statusBar.reConfigure(SingletonSharedPreference.isStatusBarShowBatteryPercentage(this),
                 SingletonSharedPreference.isStatusBarTimeShow(this),
                 SingletonSharedPreference.isStatusBarTime24HourFormat(this),
-                SingletonSharedPreference.isStatusBarShowBatteryGraphical(this));
+                SingletonSharedPreference.isStatusBarShowBatteryGraphical(this),
+                DeviceConfig.sharedInstance(this).isSupportBrushPen());
     }
 
     private void initSurfaceView() {

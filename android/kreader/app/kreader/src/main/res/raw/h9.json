@@ -8,6 +8,8 @@
   "supportMultipleTabs": true,
   "defaultUseReaderStatusBar": true,
   "defaultShowDocTitleInStatusBar": false,
+  "noteAppPackageName": "com.moxi.writeNote",
+  "noteAppClassName": "com.moxi.writeNote.Activity.ExternalActivity",
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},
