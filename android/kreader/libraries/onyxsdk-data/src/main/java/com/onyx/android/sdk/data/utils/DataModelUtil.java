@@ -54,7 +54,11 @@ public class DataModelUtil {
             if (bitmap != null) {
                 model.coverBitmap.set(bitmap);
             } else {
-                model.coverDefault.set(defaultCoverResMap.get(metadata.getType()));
+                Integer integer = defaultCoverResMap.get(metadata.getType());
+                if (integer == null) {
+                    integer = R.drawable.unknown_document;
+                }
+                model.coverDefault.set(integer);
             }
 
             dataModels.add(model);
