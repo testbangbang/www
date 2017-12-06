@@ -693,7 +693,6 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     public boolean shouldResume() {
-        boolean resume = !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
-        return resume;
+        return !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
     }
 }
