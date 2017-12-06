@@ -12,18 +12,15 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.provider.SystemConfigProvider;
 import com.onyx.android.sdk.data.rxrequest.data.fs.RxStorageFileListLoadRequest;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
-import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.kcb.R;
 import com.onyx.kcb.holder.DataBundle;
 
-import org.apache.commons.io.FilenameUtils;
-
 import java.io.File;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,9 +35,9 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     private final Context context;
     private SortBy sortBy;
     private SortOrder sortOrder;
-    private Map<String, CloseableReference<Bitmap>> thumbnailMap;
+    private Map<String, CloseableReference<Bitmap>> thumbnailMapCache;
 
-    public StorageDataLoadAction(Context context,final File parentFile, final ObservableList<DataModel> resultDataItemList) {
+    public StorageDataLoadAction(Context context, final File parentFile, final ObservableList<DataModel> resultDataItemList) {
         this.context = context;
         this.parentFile = parentFile;
         this.resultDataItemList = resultDataItemList;
@@ -57,6 +54,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     }
 
     private void loadData(final DataBundle dataHolder, final File parentFile, final RxCallback rxCallback) {
+        showLoadingDialog(dataHolder, R.string.loading);
         List<String> filterList = new ArrayList<>();
         final RxStorageFileListLoadRequest fileListLoadRequest = new RxStorageFileListLoadRequest(dataHolder.getDataManager(), parentFile, filterList);
         if (isStorageRoot(parentFile)) {
@@ -69,10 +67,11 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         fileListLoadRequest.execute(new RxCallback<RxStorageFileListLoadRequest>() {
             @Override
             public void onNext(RxStorageFileListLoadRequest request) {
-                thumbnailMap = fileListLoadRequest.getThumbnailSource();
+                thumbnailMapCache = fileListLoadRequest.getThumbnailSourceCache();
                 addToModelItemList(dataHolder, parentFile, fileListLoadRequest.getResultFileList());
                 addShortcutModelItemList(dataHolder);
                 rxCallback.onNext(request);
+                hideLoadingDialog(dataHolder);
             }
         });
     }
@@ -111,16 +110,13 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
                 resultDataItemList.add(createNormalModel(dataBundle, file));
             }
         }
-        addThumbnailToDataModel();
     }
 
-    private void addThumbnailToDataModel() {
-        for (DataModel dataModel: resultDataItemList) {
-            if (dataModel.isDocument.get()) {
-                addThumbnailFromDB(dataModel);
-            }else {
-                addNormalThumbnail(dataModel);
-            }
+    private void addThumbnailToDataModel(DataModel dataModel, DataBundle dataBundle) {
+        if (dataModel.isDocument.get()) {
+            addThumbnailFromCache(dataModel);
+        } else {
+            addNormalThumbnail(dataModel, dataBundle);
         }
     }
 
@@ -133,18 +129,19 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         }
     }
 
-    public DataModel createGoUpModel(DataBundle dataHolder, File file) {
-        DataModel model = new DataModel(dataHolder.getEventBus());
-        model.setFileModel(FileModel.createGoUpModel(file, dataHolder.getAppContext().getString(R.string.storage_go_up)));
+    public DataModel createGoUpModel(DataBundle dataBundle, File file) {
+        DataModel model = new DataModel(dataBundle.getEventBus());
+        model.setFileModel(FileModel.createGoUpModel(file, dataBundle.getAppContext().getString(R.string.storage_go_up)));
         model.setEnableSelection(false);
-        addNormalThumbnail(model);
+        addNormalThumbnail(model, dataBundle);
         return model;
     }
 
-    public DataModel createNormalModel(DataBundle dataHolder, File file) {
-        DataModel model = new DataModel(dataHolder.getEventBus());
+    public DataModel createNormalModel(DataBundle dataBundle, File file) {
+        DataModel model = new DataModel(dataBundle.getEventBus());
         model.setFileModel(FileModel.create(file, null));
         setAbsolutePath(file, model);
+        addThumbnailToDataModel(model, dataBundle);
         return model;
     }
 
@@ -155,7 +152,7 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
     public DataModel createShortcutModel(DataBundle dataHolder, File file) {
         DataModel model = new DataModel(dataHolder.getEventBus());
         model.setFileModel(FileModel.createShortcutModel(file));
-        addNormalThumbnail(model);
+        addNormalThumbnail(model, dataHolder);
         return model;
     }
 
@@ -163,58 +160,16 @@ public class StorageDataLoadAction extends BaseAction<DataBundle> {
         return EnvironmentUtil.getStorageRootDirectory().getAbsolutePath().contains(targetDirectory.getAbsolutePath());
     }
 
-    private void addNormalThumbnail(DataModel itemModel) {
-        FileModel fileModel = itemModel.getFileModel();
-        if (fileModel == null){
-            return;
-        }
-        int res;
-        switch (fileModel.getType()) {
-            case TYPE_DIRECTORY:
-                res = R.drawable.directory;
-                break;
-            case TYPE_GO_UP:
-                res = R.drawable.directory_go_up;
-                break;
-            case TYPE_SHORT_CUT:
-                res = R.drawable.directory_shortcut;
-                break;
-            case TYPE_FILE:
-                res = getDrawable(fileModel.getFile());
-                break;
-            default:
-                res = R.drawable.unknown_document;
-                break;
-        }
-
-        try {
-            @SuppressWarnings("ResourceType")
-            InputStream inputStream = context.getResources().openRawResource(res);
-            CloseableReference<Bitmap> bitmapCloseableReference = ThumbnailUtils.decodeStream(inputStream, null);
-            itemModel.setCoverThumbnail(bitmapCloseableReference);
-        }catch (Exception e){
-            e.printStackTrace();
-        }
+    private void addNormalThumbnail(final DataModel itemModel, DataBundle dataBundle) {
+        DataModelUtil.setDefaultThumbnail(itemModel);
     }
 
-    private void addThumbnailFromDB(DataModel itemModel) {
-        if (thumbnailMap != null) {
-            CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMap.get(itemModel.absolutePath.get());
-            if (bitmapCloseableReference != null){
+    private void addThumbnailFromCache(DataModel itemModel) {
+        if (thumbnailMapCache != null) {
+            CloseableReference<Bitmap> bitmapCloseableReference = thumbnailMapCache.get(itemModel.absolutePath.get());
+            if (bitmapCloseableReference != null && bitmapCloseableReference.isValid()) {
                 itemModel.setCoverThumbnail(bitmapCloseableReference);
-            } else {
-                addNormalThumbnail(itemModel);
             }
-        }else {
-            addNormalThumbnail(itemModel);
         }
-    }
-
-    private int getDrawable(File file) {
-        Integer res = ThumbnailUtils.defaultThumbnailMapping().get(FilenameUtils.getExtension(file.getName()));
-        if (res == null) {
-            return ThumbnailUtils.thumbnailUnknown();
-        }
-        return res;
     }
 }
