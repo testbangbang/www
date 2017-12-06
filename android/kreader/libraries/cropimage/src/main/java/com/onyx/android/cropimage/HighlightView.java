@@ -515,8 +515,8 @@ class HighlightView {
         for (int row = 0; row < pointMatrix.rows(); row++) {
             for (int col = 0; col < pointMatrix.cols(); col++) {
                 PointF p = pointMatrix.get(row, col);
-                matrix.set(row, col, (p.x - cropRect.left) / cropRect.width(),
-                        (p.y - cropRect.top) / cropRect.height());
+                matrix.set(row, col, (p.x - drawRect.left) / drawRect.width(),
+                        (p.y - drawRect.top) / drawRect.height());
             }
         }
         return matrix;
