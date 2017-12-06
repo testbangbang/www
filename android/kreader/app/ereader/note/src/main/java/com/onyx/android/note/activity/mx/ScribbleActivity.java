@@ -372,7 +372,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<ScribbleActivity> undoAction = new UndoAction<>();
+                final UndoAction<ScribbleActivity> undoAction = new UndoAction<>(!getNoteViewHelper().inUserErasing() &&
+                        ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType()));
                 undoAction.execute(ScribbleActivity.this);
 
             }
@@ -383,7 +384,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<ScribbleActivity> redoAction = new RedoAction<>();
+                final RedoAction<ScribbleActivity> redoAction = new RedoAction<>(!getNoteViewHelper().inUserErasing() &&
+                        ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType()));
                 redoAction.execute(ScribbleActivity.this);
             }
         });

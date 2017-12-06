@@ -177,7 +177,8 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<SpanScribbleActivity> action = new RedoAction<>();
+                final RedoAction<SpanScribbleActivity> action = new RedoAction<>(!getNoteViewHelper().inUserErasing() &&
+                        ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType()));
                 action.execute(SpanScribbleActivity.this);
             }
         });
@@ -187,7 +188,8 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<SpanScribbleActivity> action = new UndoAction<>();
+                final UndoAction<SpanScribbleActivity> action = new UndoAction<>(!getNoteViewHelper().inUserErasing() &&
+                        ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType()));
                 action.execute(SpanScribbleActivity.this);
             }
         });
