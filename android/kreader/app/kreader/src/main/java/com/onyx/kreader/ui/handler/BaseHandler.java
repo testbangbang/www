@@ -5,18 +5,16 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
-import com.onyx.android.sdk.reader.api.ReaderImage;
 import com.onyx.android.sdk.reader.api.ReaderSelection;
 import com.onyx.android.sdk.reader.common.PageAnnotation;
 import com.onyx.kreader.R;
@@ -28,7 +26,6 @@ import com.onyx.kreader.ui.actions.PinchZoomAction;
 import com.onyx.kreader.ui.actions.PreviousScreenAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.actions.ShowReaderMenuAction;
-import com.onyx.kreader.ui.actions.ViewImageAction;
 import com.onyx.kreader.ui.data.BookmarkIconFactory;
 import com.onyx.kreader.ui.data.PageTurningDetector;
 import com.onyx.kreader.ui.data.PageTurningDirection;
@@ -62,6 +59,7 @@ public abstract class BaseHandler {
     private static final float IGNORE_PROPORTIONS_WIDTH = 0.95f;
     private static final float IGNORE_PROPORTIONS_HEIGHT_START = 0.50f;
     private static final float IGNORE_PROPORTIONS_HEIGHT_END = 0.60f;
+    private static final float MIN_SLIDE_DISTANCE = 4;
 
     private Point startPoint = new Point();
     private HandlerManager parent;
@@ -105,7 +103,6 @@ public abstract class BaseHandler {
         startPoint = new Point((int)e.getX(), (int)e.getY());
         actionUp = false;
         singleTapUp = false;
-        readerDataHolder.getCurrentBrightness();
         return true;
     }
 
@@ -126,14 +123,6 @@ public abstract class BaseHandler {
     }
 
     public boolean onTouchEvent(ReaderDataHolder readerDataHolder,MotionEvent e) {
-        switch (e.getAction()){
-            case  MotionEvent.ACTION_DOWN:
-                break;
-            case  MotionEvent.ACTION_UP:
-                readerDataHolder.setBrightnessConfigValue();
-                break;
-
-        }
         return true;
     }
 
@@ -319,7 +308,6 @@ public abstract class BaseHandler {
 
     public void onLongPress(ReaderDataHolder readerDataHolder, final float x1, final float y1, final float x2, final float y2) {
         setLongPress(true);
-        readerDataHolder.cleanChangeCount();
         actionUp = false;
     }
 
@@ -342,14 +330,38 @@ public abstract class BaseHandler {
         float endX = e2.getX();
         if (startX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST
                 && endX > getWidthPixels(readerDataHolder.getContext()) * IGNORE_PROPORTIONS_ADJUST) {
-            if (distanceY < 0 && Math.abs(distanceY) > 4) {
-                readerDataHolder.adjustLowerBrightness();
-            } else if ( Math.abs(distanceY) > 4 ){
-                readerDataHolder.adjustRaiseBrightness();
-            }
+            adjustBrightness(readerDataHolder, e1, e2, distanceY);
             return true;
         }
         return false;
+    }
+
+    private void adjustBrightness(ReaderDataHolder readerDataHolder, MotionEvent e1, MotionEvent e2, float distanceY) {
+        Context context = readerDataHolder.getContext();
+        if (DeviceConfig.sharedInstance(context).hasFrontLight()) {
+            adjustFrontLight(context, distanceY, FrontLightController.FRONT_LIGHT_TYPE);
+        } else if (DeviceConfig.sharedInstance(context).hasNaturalLight()) {
+            adjustNaturalLight(context, e1, e2, distanceY);
+        }
+    }
+
+    private void adjustNaturalLight(Context context, MotionEvent e1, MotionEvent e2, float distanceY) {
+        float e1Y = e1.getY();
+        float e2Y = e2.getY();
+        double halfHeight = getHeightPixels(context) * 0.5;
+        if (e1Y < halfHeight && e2Y < halfHeight) {
+            adjustFrontLight(context, distanceY, FrontLightController.WARN_LIGHT_TYPE);
+        } else if (e1Y > halfHeight && e2Y > halfHeight) {
+            adjustFrontLight(context, distanceY, FrontLightController.COLD_LIGHT_TYPE);
+        }
+    }
+
+    private void adjustFrontLight(Context context, float distanceY, int type) {
+        if (distanceY < 0 && Math.abs(distanceY) > MIN_SLIDE_DISTANCE) {
+            FrontLightController.adjustBrightnessBySliding(context, false, type);
+        } else if ( Math.abs(distanceY) > MIN_SLIDE_DISTANCE) {
+            FrontLightController.adjustBrightnessBySliding(context, true, type);
+        }
     }
 
     public void panFinished(ReaderDataHolder readerDataHolder,int offsetX, int offsetY) {

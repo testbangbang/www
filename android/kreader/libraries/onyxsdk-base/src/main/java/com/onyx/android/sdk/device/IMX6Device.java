@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Paint;
 import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.Surface;
 import android.view.View;
@@ -148,8 +149,12 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodCloseFrontLight;
     private static Method sMethodGetFrontLightValue;
     private static Method sMethodSetFrontLightValue;
+    private static Method sMethodSetWarmLightValue;
+    private static Method sMethodSetColdLightValue;
     private static Method sMethodSetNaturalLightValue;
     private static Method sMethodGetFrontLightConfigValue;
+    private static Method sMethodGetWarmLightConfigValue;
+    private static Method sMethodGetColdLightConfigValue;
     private static Method sMethodSetFrontLightConfigValue;
     private static Method sMethodLed;
     private static Method sMethodSetLedColor;
@@ -571,8 +576,12 @@ public class IMX6Device extends BaseDevice {
             sMethodCloseFrontLight = ReflectUtil.getMethodSafely(deviceControllerClass, "closeFrontLight", Context.class);
             sMethodGetFrontLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getFrontLightValue", Context.class);
             sMethodSetFrontLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setFrontLightValue", Context.class, int.class);
+            sMethodSetWarmLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setWarmLightValue", Context.class, int.class);
+            sMethodSetColdLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setColdLightValue", Context.class, int.class);
             sMethodSetNaturalLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setNaturalLightValue", Context.class, int.class);
             sMethodGetFrontLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getFrontLightConfigValue", Context.class);
+            sMethodGetWarmLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getWarmLightConfigValue", Context.class);
+            sMethodGetColdLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getColdLightConfigValue", Context.class);
             sMethodSetFrontLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setFrontLightConfigValue", Context.class, int.class);
             sMethodUseBigPen = ReflectUtil.getMethodSafely(deviceControllerClass, "useBigPen", boolean.class);
             sMethodStopTpd = ReflectUtil.getMethodSafely(deviceControllerClass, "stopTpd");
@@ -978,5 +987,39 @@ public class IMX6Device extends BaseDevice {
     public void gotoSleep(final Context context) {
         long value = System.currentTimeMillis();
         ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
+    }
+
+    @Override
+    public int getWarmLightConfigValue(Context context) {
+        Integer res = (Integer) this.invokeDeviceControllerMethod(context, sMethodGetWarmLightConfigValue, context);
+        return res.intValue();
+    }
+
+    @Override
+    public int getColdLightConfigValue(Context context) {
+        Integer res = (Integer) this.invokeDeviceControllerMethod(context, sMethodGetColdLightConfigValue, context);
+        return res.intValue();
+    }
+
+    @Override
+    public boolean setWarmLightConfigValue(Context context, int value) {
+        return Settings.System.putInt(context.getContentResolver(), WARM_LIGHT_VALUE, value);
+    }
+
+    @Override
+    public boolean setColdLightConfigValue(Context context, int value) {
+        return Settings.System.putInt(context.getContentResolver(), COLD_LIGHT_VALUE, value);
+    }
+
+    @Override
+    public boolean setWarmLightDeviceValue(Context context, int value) {
+        Object res = this.invokeDeviceControllerMethod(context, sMethodSetWarmLightValue, context, Integer.valueOf(value));
+        return res != null;
+    }
+
+    @Override
+    public boolean setColdLightDeviceValue(Context context, int value) {
+        Object res = this.invokeDeviceControllerMethod(context, sMethodSetColdLightValue, context, Integer.valueOf(value));
+        return res != null;
     }
 }

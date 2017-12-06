@@ -16,6 +16,10 @@ import java.util.List;
 public class FrontLightController
 {
 
+    public final static int FRONT_LIGHT_TYPE = 0;
+    public final static int WARN_LIGHT_TYPE = 1;
+    public final static int COLD_LIGHT_TYPE = 2;
+
     public static int getBrightnessMinimum(Context context)
     {
         return Device.currentDevice().getFrontLightBrightnessMinimum(context);
@@ -94,5 +98,82 @@ public class FrontLightController
         }
 
         return false;
+    }
+
+    public static int getWarmLightConfigValue(Context context) {
+        return Device.currentDevice().getWarmLightConfigValue(context);
+    }
+
+    public static int getColdLightConfigValue(Context context) {
+        return Device.currentDevice().getColdLightConfigValue(context);
+    }
+
+    public static boolean setWarmLightConfigValue(Context context, int value) {
+        return Device.currentDevice.setWarmLightConfigValue(context, value);
+    }
+
+    public static boolean setColdLightConfigValue(Context context, int value) {
+        return Device.currentDevice.setColdLightConfigValue(context, value);
+    }
+
+    public static boolean setWarmLightDeviceValue(Context context, int level) {
+        BaseDevice dev = Device.currentDevice();
+        if (dev.setWarmLightDeviceValue(context, level)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static boolean setColdLightDeviceValue(Context context, int level) {
+        BaseDevice dev = Device.currentDevice();
+        if (dev.setColdLightDeviceValue(context, level)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void adjustBrightnessBySliding(Context context, boolean increase, int lightType) {
+        int brightness = 0;
+        List<Integer> lightValueList = null;
+        switch (lightType) {
+            case FRONT_LIGHT_TYPE:
+                brightness = getBrightness(context);
+                lightValueList = getFrontLightValueList(context);
+                break;
+            case WARN_LIGHT_TYPE:
+                brightness = getWarmLightConfigValue(context);
+                lightValueList = getNaturalLightValueList(context);
+                break;
+            case COLD_LIGHT_TYPE:
+                brightness = getColdLightConfigValue(context);
+                lightValueList = getNaturalLightValueList(context);
+                break;
+        }
+
+        if (lightValueList != null && lightValueList.contains(brightness)) {
+            int index = lightValueList.indexOf(brightness);
+            index = increase ? index + 1 : index - 1;
+            if (index >= 0 && index < lightValueList.size()) {
+                int result = lightValueList.get(index);
+                adjustBrightness(context, result, lightType);
+            }
+        }
+    }
+
+    private static void adjustBrightness(Context context, int value, int lightType) {
+        switch (lightType) {
+            case FRONT_LIGHT_TYPE:
+                setBrightness(context, value);
+                setBrightnessConfigValue(context, value);
+                break;
+            case WARN_LIGHT_TYPE:
+                setWarmLightDeviceValue(context, value);
+                setWarmLightConfigValue(context, value);
+                break;
+            case COLD_LIGHT_TYPE:
+                setColdLightDeviceValue(context, value);
+                setColdLightConfigValue(context, value);
+                break;
+        }
     }
 }

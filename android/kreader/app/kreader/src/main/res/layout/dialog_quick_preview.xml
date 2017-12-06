@@ -1,180 +1,189 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:background="@android:color/white"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical">
 
     <LinearLayout
-        android:gravity="bottom"
-        android:orientation="horizontal"
-        android:padding="@dimen/dialog_quick_preview_padding"
         android:id="@+id/layout_grid_indicator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true">
+        android:layout_alignParentBottom="true"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:padding="@dimen/dialog_quick_preview_padding">
 
         <LinearLayout
-            android:gravity="center"
-            android:background="@drawable/square_bg"
-            android:orientation="horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:focusable="true"
-                android:background="@drawable/quick_view_item_bg"
-                android:id="@+id/image_view_one_grids"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_dialog_reader_page_one_black_focused"/>
-
-            <View
-                android:background="@android:color/black"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"/>
-
-            <ImageView
-                android:focusable="true"
-                android:background="@drawable/quick_view_item_bg"
-                android:id="@+id/image_view_four_grids"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_dialog_reader_page_four_white_focused"/>
-
-            <View
-                android:background="@android:color/black"
-                android:layout_width="1dp"
-                android:layout_height="match_parent"/>
-
-            <ImageView
-                android:focusable="true"
-                android:background="@drawable/quick_view_item_bg"
-                android:id="@+id/image_view_nine_grids"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_dialog_reader_page_nine_white_focused"/>
-        </LinearLayout>
-
-
-
-        <LinearLayout
-            android:layout_marginLeft="20dp"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="20dp"
+            android:orientation="horizontal">
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/square_bg"
                 android:gravity="center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:id="@+id/image_view_one_grids"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/quick_view_item_bg"
+                    android:focusable="true"
+                    android:src="@drawable/ic_dialog_reader_page_one_black_focused" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/black" />
+
+                <ImageView
+                    android:id="@+id/image_view_four_grids"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/quick_view_item_bg"
+                    android:focusable="true"
+                    android:src="@drawable/ic_dialog_reader_page_four_white_focused" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/black" />
+
+                <ImageView
+                    android:id="@+id/image_view_nine_grids"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/quick_view_item_bg"
+                    android:focusable="true"
+                    android:src="@drawable/ic_dialog_reader_page_nine_white_focused" />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="horizontal">
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/chapter_back"
-                    android:padding="5dp"
-                    android:background="@drawable/imagebtn_bg"
-                    android:src="@drawable/reader_page_chapter_back_bg"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebtn_bg"
+                    android:padding="5dp"
+                    android:src="@drawable/reader_page_chapter_back_bg" />
 
                 <TextView
-                    android:focusable="true"
-                    android:background="@drawable/imagebtn_bg"
-                    android:gravity="center"
-                    android:layout_weight="1"
-                    android:textSize="@dimen/dialog_quick_view_page_text_size"
                     android:id="@+id/text_view_progress"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebtn_bg"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:text="1/1"
                     android:textColor="@android:color/primary_text_light"
-                    android:text="1/1"/>
+                    android:textSize="@dimen/dialog_quick_view_page_text_size" />
 
                 <ImageButton
-                    android:layout_weight="1"
                     android:id="@+id/chapter_forward"
-                    android:padding="5dp"
-                    android:background="@drawable/imagebtn_bg"
-                    android:src="@drawable/reader_page_chapter_forward_bg"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/imagebtn_bg"
+                    android:padding="5dp"
+                    android:src="@drawable/reader_page_chapter_forward_bg" />
             </LinearLayout>
 
-
-            <SeekBar
-                android:background="@drawable/focused_bg"
-                android:layout_marginTop="5dp"
-                android:thumb="@drawable/seekbar_thumb"
-                android:id="@+id/seek_bar_page"
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/dialog_quick_preview_seek_bar_height"
-                android:progressDrawable="@drawable/seekbar_progress"
-                android:max="20"/>
-
         </LinearLayout>
+
+        <SeekBar
+            android:id="@+id/seek_bar_page"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/dialog_quick_preview_seek_bar_height"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/focused_bg"
+            android:max="20"
+            android:progressDrawable="@drawable/seekbar_progress"
+            android:thumb="@drawable/seekbar_thumb" />
+
     </LinearLayout>
 
     <View
-            android:id="@+id/view_divider"
-            style="@style/single_line_X_axis_View"
-            android:layout_height="@dimen/dialog_reader_menu_top_divider_height"
-            android:layout_above="@id/layout_grid_indicator"/>
+        android:id="@+id/view_divider"
+        style="@style/single_line_X_axis_View"
+        android:layout_height="@dimen/dialog_reader_menu_top_divider_height"
+        android:layout_above="@id/layout_grid_indicator" />
 
     <RelativeLayout
-            android:id="@+id/layout_prev_page_left_area"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_above="@id/layout_grid_indicator"
-            android:layout_alignParentLeft="true" >
+        android:id="@+id/layout_prev_page_left_area"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_grid_indicator"
+        android:layout_alignParentLeft="true">
 
         <ImageButton
-                android:background="@drawable/imagebtn_bg"
-                android:id="@+id/image_view_prev_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_dialog_reader_page_arrow_left"/>
+            android:id="@+id/image_view_quick_first_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imagebtn_bg"
+            android:padding="5dp"
+            android:src="@drawable/ic_dialog_reader_first_page" />
+
+        <ImageButton
+            android:id="@+id/image_view_prev_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/imagebtn_bg"
+            android:src="@drawable/ic_dialog_reader_page_arrow_left" />
 
     </RelativeLayout>
 
     <RelativeLayout
-            android:id="@+id/layout_next_page_right_area"
+        android:id="@+id/layout_next_page_right_area"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_grid_indicator"
+        android:layout_alignParentRight="true">
+
+        <ImageButton
+            android:id="@+id/image_view_close"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_above="@id/layout_grid_indicator"
-            android:layout_alignParentRight="true">
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/imagebtn_bg"
+            android:padding="5dp"
+            android:src="@drawable/ic_dialog_reader_page_closed" />
 
         <ImageButton
-                android:background="@drawable/imagebtn_bg"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:padding="5dp"
-                android:id="@+id/image_view_close"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:src="@drawable/ic_dialog_reader_page_closed"/>
-
-        <ImageButton
-                android:background="@drawable/imagebtn_bg"
-                android:id="@+id/image_view_next_page"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:src="@drawable/ic_dialog_reader_page_arrow_right"/>
+            android:id="@+id/image_view_next_page"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:background="@drawable/imagebtn_bg"
+            android:src="@drawable/ic_dialog_reader_page_arrow_right" />
     </RelativeLayout>
 
     <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:focusable="false"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:id="@+id/grid_view_preview"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_above="@id/layout_grid_indicator"
-            android:layout_toRightOf="@id/layout_prev_page_left_area"
-            android:layout_toLeftOf="@id/layout_next_page_right_area"
-            android:layout_weight="1"/>
+        android:id="@+id/grid_view_preview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_grid_indicator"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_toLeftOf="@id/layout_next_page_right_area"
+        android:layout_toRightOf="@id/layout_prev_page_left_area"
+        android:layout_weight="1"
+        android:focusable="false" />
 
 </RelativeLayout>

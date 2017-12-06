@@ -23,6 +23,7 @@ public class SingletonSharedPreference {
     private final static String EXPORT_SCRIBBLE_COLOR = "export_scribble_color";
     private final static String EXPORT_ALL_PAGES = "export_all_pages";
     private final static String LAST_FONT_SIZE = "last_font_size";
+    private final static String LAST_FONT_FACE = "last_font_face";
     private final static String LAST_LINE_SPACING = "last_line_spacing";
     private final static String LAST_LEFT_MARGIN = "last_left_margin";
     private final static String LAST_TOP_MARGIN = "last_top_margin";
@@ -380,5 +381,13 @@ public class SingletonSharedPreference {
 
     public static boolean getMultipleTabVisibility() {
         return getPrefs().getBoolean(MULTIPLE_TAB_VISIBILITY, true);
+    }
+
+    public static void setLastFontFace(String face) {
+        setStringValue(LAST_FONT_FACE, face);
+    }
+
+    public static String getLastFontFace() {
+        return getStringValue(LAST_FONT_FACE);
     }
 }
