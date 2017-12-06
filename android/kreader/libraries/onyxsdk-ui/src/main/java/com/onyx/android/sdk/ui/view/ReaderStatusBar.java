@@ -21,8 +21,6 @@ import java.util.Calendar;
  * Created by solskjaer49 on 14-4-21.
  */
 public class ReaderStatusBar extends LinearLayout {
-    private static final String SCRIBLE_PACKAGE_NAME = "com.moxi.writeNote";
-    private static final String SCRIBLE_CLASS_NAME = "com.moxi.writeNote.MainActivity";
 
     public static abstract class Callback {
         public abstract void onGotoPage();
