@@ -5,8 +5,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
-import android.util.Log;
-import com.onyx.android.sdk.api.device.FrontLightController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -78,10 +76,6 @@ public class ReaderDataHolder {
     private int displayHeight;
     private int optionsSkippedTimes = 0;
     private int lastRequestSequence;
-
-    private List<Integer> lightSteps;
-    private int changeCount;
-    private int currentBrightness;
 
     /**
      * can be either Dialog or DialogFragment, so we store it as basic Object
@@ -674,61 +668,5 @@ public class ReaderDataHolder {
         final NetworkChangedEvent event = NetworkChangedEvent.create(getContext(), connected, networkType);
         getEventBus().post(event);
     }
-
-    private void cleanCurrentBrightness() {
-        currentBrightness = -1;
-    }
-
-    public void cleanChangeCount() {
-        changeCount = -1;
-    }
-
-    private void setChangeCount(int c) {
-        changeCount = c;
-    }
-
-    public void getCurrentBrightness() {
-        if (lightSteps == null) {
-            lightSteps = FrontLightController.getFrontLightValueList(getContext());
-        }
-        int lightStep = FrontLightController.getBrightness(getContext());
-        currentBrightness = lightStep;
-        for (int i = 0; i < lightSteps.size(); i++) {
-            if (lightStep == lightSteps.get(i)) {
-                setChangeCount(i);
-                return;
-            }
-        }
-        cleanChangeCount();
-    }
-
-    public void adjustLowerBrightness() {
-        if (lightSteps != null && changeCount > 0 && changeCount < lightSteps.size()) {
-            changeCount--;
-            currentBrightness = lightSteps.get(changeCount);
-            if (!FrontLightController.setBrightness(getContext(), currentBrightness)) {
-                cleanCurrentBrightness();
-            }
-        }
-    }
-
-    public void adjustRaiseBrightness() {
-        if (lightSteps != null && changeCount > -1 && changeCount < lightSteps.size() - 1) {
-            changeCount ++;
-            currentBrightness = lightSteps.get(changeCount);
-            if (!FrontLightController.setBrightness(getContext(), currentBrightness)) {
-                cleanCurrentBrightness();
-            }
-        }
-    }
-
-    public void setBrightnessConfigValue() {
-        if (currentBrightness >= 0) {
-            FrontLightController.setBrightnessConfigValue(getContext(), currentBrightness);
-        }
-        cleanCurrentBrightness();
-        cleanChangeCount();
-    }
-
 }
 

@@ -6,13 +6,11 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.PowerManager;
-import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import com.onyx.android.sdk.api.device.epd.EPDMode;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.api.device.epd.UpdateScheme;
-import com.onyx.android.sdk.utils.ReflectUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,6 +25,8 @@ public class BaseDevice {
     private final int ICE_CREAM_SANDWICH = 14;
     private final String SHOW_STATUS_BAR_ACTION = "show_status_bar";
     private final String HIDE_STATUS_BAR_ACTION = "hide_status_bar";
+    public final static String WARM_LIGHT_VALUE = "warm_light_value";
+    public final static String COLD_LIGHT_VALUE = "cold_light_value";
 
     public File getStorageRootDirectory() {
         return android.os.Environment.getExternalStorageDirectory();
@@ -378,4 +378,27 @@ public class BaseDevice {
         return true;
     }
 
+    public int getWarmLightConfigValue(Context context) {
+        return 0;
+    }
+
+    public int getColdLightConfigValue(Context context) {
+        return 0;
+    }
+
+    public boolean setWarmLightConfigValue(Context context, int value) {
+        return false;
+    }
+
+    public boolean setColdLightConfigValue(Context context, int value) {
+        return false;
+    }
+
+    public boolean setWarmLightDeviceValue(Context context, int value) {
+        return false;
+    }
+
+    public boolean setColdLightDeviceValue(Context context, int value) {
+        return false;
+    }
 }

@@ -3,6 +3,7 @@
   "hasFrontLight" : true,
   "disableNoteFunc" : true,
   "regalEnable" :true,
+  "supportMultipleTabs": true,
   "pronounceEnable" :false,
   "keyBinding": {
     "HandlerManager": {
