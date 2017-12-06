@@ -642,7 +642,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<ScribbleActivity> action = new RedoAction<>();
+                final RedoAction<ScribbleActivity> action = new RedoAction<>(!getNoteViewHelper().inUserErasing() &&
+                        ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType()));
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -658,7 +659,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<ScribbleActivity> action = new UndoAction<>();
+                final UndoAction<ScribbleActivity> action = new UndoAction<>(!getNoteViewHelper().inUserErasing() &&
+                        ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType()));
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -933,7 +935,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         setBackgroundType(type);
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
                 new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing() &&
-                        ShapeFactory.createShape(shapeDataInfo.getCurrentShapeType()).supportDFB());
+                        ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType()));
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 
