@@ -62,7 +62,6 @@ public class ManagerActivity extends BaseManagerActivity {
     private ImageView addFolderButton;
     private ImageView moveButton;
     private ImageView deleteButton;
-    private ImageView settingButton;
     private ImageView backupButton;
     private LinearLayout controlPanel;
     private @SortBy.SortByDef int currentSortBy = SortBy.CREATED_AT;
@@ -162,7 +161,6 @@ public class ManagerActivity extends BaseManagerActivity {
         toolBarTitle = (TextView) findViewById(R.id.textView_main_title);
         moveButton = (ImageView) findViewById(R.id.move_btn);
         deleteButton = (ImageView) findViewById(R.id.delete_btn);
-        settingButton = (ImageView) findViewById(R.id.setting_btn);
         backupButton = (ImageView) findViewById(R.id.backup_restore_btn);
         controlPanel = (LinearLayout) findViewById(R.id.control_panel);
         ImageView sortByButton = (ImageView) findViewById(R.id.button_sort_by);
@@ -204,12 +202,6 @@ public class ManagerActivity extends BaseManagerActivity {
                     }
                 });
                 dlgCreateFolder.show(getFragmentManager());
-            }
-        });
-        settingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getSupportActionBar().openOptionsMenu();
             }
         });
         if (NoteAppConfig.sharedInstance(this).useEduConfig()) {
