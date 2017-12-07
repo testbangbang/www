@@ -284,6 +284,8 @@ public class NoteManager {
 
     public void setCurrentShapeType(int type) {
         getNoteDrawingArgs().setCurrentShapeType(type);
+        updateInUserErasingState();
+        updateRenderByFrameworkState();
     }
 
     public void setCurrentShapeColor(int color) {
@@ -445,6 +447,15 @@ public class NoteManager {
             list.add(r);
         }
         return list;
+    }
+
+    private void updateInUserErasingState() {
+        getTouchHelper().setInUserErasing(isEraser());
+    }
+
+    private void updateRenderByFrameworkState() {
+        boolean renderByFramework = ShapeFactory.isDFBShape(getNoteDrawingArgs().getCurrentShapeType());
+        getTouchHelper().setRenderByFramework(renderByFramework);
     }
 
 }
