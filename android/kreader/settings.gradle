@@ -25,4 +25,5 @@ include ':libraries:cropimage', ':libraries:onyxsdk-appcompat',
         ':app:edu:edu-reader',
         ':app:ereader:knote',
         ':app:edu:edu-unitconversion',
-        ':app:phone:phone-reader'
+        ':app:phone:phone-reader',
+        ':app:oem:JDRead'
