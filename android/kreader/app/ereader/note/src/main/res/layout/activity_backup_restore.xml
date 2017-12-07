@@ -12,11 +12,13 @@
         android:layout_height="wrap_content">
 
         <ImageView
-            style="@style/global_activities_back_btn_image" />
+            style="@style/global_activities_back_btn_image"
+            android:layout_gravity="center_vertical" />
 
         <ImageView
-            android:layout_toRightOf="@+id/back_icon"
             style="@style/global_activities_back_btn_category_image"
+            android:layout_gravity="center_vertical"
+            android:layout_toRightOf="@+id/back_icon"
             android:src="@drawable/app_logo" />
 
         <TextView
