@@ -102,6 +102,6 @@ public class ScribbleSubMenuID {
         if (map.containsKey(width)) {
             return map.get(width);
         }
-        return ScribbleSubMenuID.THICKNESS_ULTRA_LIGHT;
+        return ScribbleSubMenuID.THICKNESS_CUSTOM_BOLD;
     }
 }
