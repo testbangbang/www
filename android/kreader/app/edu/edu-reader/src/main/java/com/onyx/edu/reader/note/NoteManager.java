@@ -125,7 +125,7 @@ public class NoteManager {
 
     private void acquireWakeLock(final Context context) {
         if (useWakeLock) {
-            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 40 * 60 * 1000);
+            wakeLockHolder.acquireWakeLock(context, WakeLockHolder.FULL_FLAGS, TAG, 90 * 1000);
         }
     }
 

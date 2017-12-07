@@ -169,7 +169,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void updateDataInfo(final BaseNoteRequest request) {
         shapeDataInfo = request.getShapeDataInfo();
         currentVisualPageIndex = shapeDataInfo.getCurrentPageIndex() + 1;
-        //TODO:avoid change shapedatainfo structure,simple detect here.
+        //TODO:avoid change shape data info structure,simple detect here.
         totalPageCount = shapeDataInfo.getPageCount() == 0 ? 1 : shapeDataInfo.getPageCount();
         if (pageIndicator != null) {
             pageIndicator.setText(currentVisualPageIndex + File.separator + totalPageCount);
@@ -693,7 +693,6 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     public boolean shouldResume() {
-        boolean resume = !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
-        return resume;
+        return !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
     }
 }

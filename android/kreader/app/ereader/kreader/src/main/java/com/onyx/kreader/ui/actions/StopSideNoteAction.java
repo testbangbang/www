@@ -16,7 +16,8 @@ public class StopSideNoteAction extends BaseAction {
     public void execute(final ReaderDataHolder readerDataHolder, final BaseCallback callback) {
         BaseReaderRequest request = new StopSideNodeRequest(readerDataHolder.getDisplayWidth(),
                 readerDataHolder.getDisplayHeight());
-        readerDataHolder.submitRenderRequest(request, new BaseCallback() {
+        // use non render request here as we will render the page after this request
+        readerDataHolder.submitNonRenderRequest(request, new BaseCallback() {
             @Override
             public void beforeDone(BaseRequest request, Throwable e) {
                 if (e == null) {

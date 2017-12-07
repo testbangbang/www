@@ -372,7 +372,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<ScribbleActivity> undoAction = new UndoAction<>();
+                final UndoAction<ScribbleActivity> undoAction = new UndoAction<>(shouldResume());
                 undoAction.execute(ScribbleActivity.this);
 
             }
@@ -383,7 +383,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<ScribbleActivity> redoAction = new RedoAction<>();
+                final RedoAction<ScribbleActivity> redoAction = new RedoAction<>(shouldResume());
                 redoAction.execute(ScribbleActivity.this);
             }
         });

@@ -74,18 +74,8 @@
                 android:layout_width="?attr/actionBarSize"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_marginRight="10dp"
-                android:layout_toLeftOf="@+id/setting_btn"
-                android:src="@drawable/ic_jump_to_export_folder"
-                app:iconDrawingSize="@dimen/global_activities_function_icon_size"
-                app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable"/>
-
-            <com.onyx.android.sdk.ui.view.CustomIconView
-                android:id="@+id/setting_btn"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/backup_restore_btn"
-                android:src="@drawable/ic_setting"
+                android:src="@drawable/ic_jump_to_export_folder"
                 app:iconDrawingSize="@dimen/global_activities_function_icon_size"
                 app:enableZoomDrawable="@bool/iconViewEnableZoomDrawable"/>
 

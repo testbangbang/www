@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="activity_horizontal_margin">0dp</dimen>
+    <dimen name="activity_vertical_margin">0dp</dimen>
+    <dimen name="mx_scribble_bg_item_height">220dp</dimen>
+    <dimen name="mx_scribble_bg_item_width">165dp</dimen>
+    <dimen name="onyx_scribble_bg_item_height">220dp</dimen>
+    <dimen name="onyx_scribble_bg_item_width">165dp</dimen>
+    <dimen name="onyx_main_note_menu_height">72dp</dimen>
+    <dimen name="onyx_note_item_img_size">48dp</dimen>
+    <dimen name="onyx_note_style_width">360dp</dimen>
+    <dimen name="onyx_note_sub_menu_img_top_margin">8dp</dimen>
+    <dimen name="onyx_sub_note_menu_height">80dp</dimen>
+    <dimen name="onyx_note_page_count_control_x_axis_margin">25dp</dimen>
+    <dimen name="page_indicator_area_bottom_margin">10dp</dimen>
+    <dimen name="onyx_scribble_activity_text_size">25sp</dimen>
+    <dimen name="dialog_move_folder_item_height">40dp</dimen>
+</resources>

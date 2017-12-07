@@ -11,7 +11,11 @@ import com.onyx.android.sdk.scribble.request.shape.UndoRequest;
  */
 public class UndoAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
     private UndoRequest undoRequest;
+    private boolean resumeDrawing;
 
+    public UndoAction(boolean resumeDrawing) {
+        this.resumeDrawing = resumeDrawing;
+    }
 
     public void execute(final T activity) {
         execute(activity, new BaseCallback() {
@@ -24,7 +28,7 @@ public class UndoAction<T extends BaseScribbleActivity> extends BaseNoteAction<T
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        undoRequest = new UndoRequest();
+        undoRequest = new UndoRequest(resumeDrawing);
         activity.submitRequest(undoRequest, callback);
     }
 

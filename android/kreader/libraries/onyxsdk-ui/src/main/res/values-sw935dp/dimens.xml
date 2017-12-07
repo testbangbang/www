@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <dimen name="button_minHeight">40dp</dimen>
+    <dimen name="contentView_button_X_axis_margin">30dp</dimen>
+    <dimen name="contentView_button_progress_minWidth">100dp</dimen>
+    <dimen name="global_dialog_imageView_tittle_size">70dp</dimen>
+    <dimen name="alert_dialog_title_text_size">20sp</dimen>
+    <dimen name="onyx_alert_dialog_width_margin">45dp</dimen>
+    <dimen name="global_activities_back_function_layout_padding">7dp</dimen>
+    <dimen name="settings_title_text_size">25sp</dimen>
+    <dimen name="reader_layer_menu_button_item_text_size">16sp</dimen>
+    <dimen name="dialog_reader_menu_top_bar_function_icon_padding">10dp</dimen>
+    <dimen name="dialog_reader_menu_top_divider_height">2dp</dimen>
+    <dimen name="dialog_reader_menu_layer_divider_height">2dp</dimen>
+    <dimen name="reader_layer_menu_font_style_font_size_layout_height">100dp</dimen>
+    <dimen name="reader_layer_menu_font_style_font_size_button_margin">10dp</dimen>
+    <dimen name="reader_layer_menu_font_style_font_face_height">100dp</dimen>
+    <dimen name="reader_layer_menu_font_style_font_face_button_right_padding">25dp</dimen>
+    <dimen name="font_size_item_margin">10dp</dimen>
+    <dimen name="font_size_button_margin">10dp</dimen>
+    <dimen name="dialog_brightness_button_width">50dp</dimen>
+    <dimen name="dialog_brightness_toggle_button_margin_left">15dp</dimen>
+    <dimen name="dialog_brightness_toggle_button_margin_right">15dp</dimen>
+    <dimen name="dialog_brightness_button_margin_left">10dp</dimen>
+    <dimen name="dialog_brightness_button_margin_right">10dp</dimen>
+    <dimen name="dialog_brightness_ratingbar_margin_right">10dp</dimen>
+    <dimen name="dialog_font_setting_display_text_size">18sp</dimen>
+    <dimen name="reader_layer_menu_tts_seek_bar_width">300dp</dimen>
+    <dimen name="image_view_indicator_size">35dp</dimen>
+    <dimen name="image_view_indicator_margin_right">6dp</dimen>
+    <dimen name="tree_recycler_item_view_padding">20dp</dimen>
+    <dimen name="reader_layer_menu_tts_item_padding">30dp</dimen>
+    <dimen name="dialog_reader_menu_text_view_size">26sp</dimen>
+    <dimen name="navigatorHeight">42dp</dimen>
+    <dimen name="reader_status_bar_text_size">20sp</dimen>
+    <dimen name="navigatorWidth">30dp</dimen>
+    <dimen name="dialog_reader_menu_top_bar_function_icon_margin">5dp</dimen>
+    <dimen name="common_dialog_width">600dp</dimen>
+    <dimen name="dialog_reader_menu_text_view_padding">4dp</dimen>
+    <dimen name="global_activities_function_icon_size">36dp</dimen>
+    <dimen name="dialog_set_value_image_size">60dp</dimen>
+
+    <!--dimens value for dialog_loading-->
+    <dimen name="dialog_loading_min_width">250dp</dimen>
+    <dimen name="dialog_loading_text_area_minHeight">102dp</dimen>
+    <dimen name="dialog_loading_close_button_image_size">96dp</dimen>
+    <dimen name="dialog_loading_text_size">25sp</dimen>
+    <dimen name="preference_title_text_size">16sp</dimen>
+    <dimen name="preference_category_text_size">14sp</dimen>
+
+    <dimen name="main_menu_page_progress_margin">10dp</dimen>
+    <dimen name="alert_dialog_text_size">18sp</dimen>
+
+    <!--dimens value to override appcompat text appearance large/medium/small text size-->
+
+    <dimen name="abc_text_size_medium_material" tools:override="true">24sp</dimen>
+
+    <dimen name="abc_text_size_body_1_material" tools:override="true">@dimen/abc_text_size_medium_material</dimen>
+</resources>
