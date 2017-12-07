@@ -358,8 +358,6 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshFragmentEvent(RefreshFragmentEvent event) {
         switchCurrentFragment(lastPageId);
-        BaseFragment baseFragment = getPageView(currentPageID);
-        baseFragment.refresh();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -427,7 +425,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
     public void onBackPressEvent(OnBackPressEvent event) {
         switch (event.childViewId) {
             case ChildViewID.FRAGMENT_STUDY_REPORT:
-                onBackToHomeworkFragmentEvent(null);
+                onHomeworkReportEvent(null);
                 break;
             case ChildViewID.FRAGMENT_USER_CENTER:
                 onToMainFragmentEvent(null);

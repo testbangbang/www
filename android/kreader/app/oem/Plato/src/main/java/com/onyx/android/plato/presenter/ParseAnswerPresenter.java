@@ -125,6 +125,7 @@ public class ParseAnswerPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetAnalysisBean resultBean = rq.getResultBean();
                 if (resultBean == null) {
+                    EventBus.getDefault().post(new EmptyEvent());
                     return;
                 }
                 parseAnswerView.setAnalysis(resultBean.data);

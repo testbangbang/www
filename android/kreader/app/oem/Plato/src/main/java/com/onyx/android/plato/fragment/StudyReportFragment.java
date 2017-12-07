@@ -37,19 +37,22 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     @Override
     protected void loadData() {
-        if (homeworkPresenter == null) {
-            homeworkPresenter = new HomeworkPresenter(this);
-        }
-        homeworkPresenter.getStudyReportDetail(id);
+
     }
 
     private void setSpiderWebViewScoresData(List<StudyReportDetailBean.CompetenceBean> competenceDatas) {
+        if (competenceDatas == null || competenceDatas.size() == 0) {
+            return;
+        }
         float[] scoresClass = new float[competenceDatas.size()];
         float[] scoresOwn = new float[competenceDatas.size()];
+        if (studyReportBinding.circularLayout.getChildCount() > 0) {
+            studyReportBinding.circularLayout.removeAllViews();
+        }
 
         for (int i = 0; i < competenceDatas.size(); i++) {
             StudyReportDetailBean.CompetenceBean competenceBean = competenceDatas.get(i);
-            scoresClass[i] = competenceBean.points.classX;
+            scoresClass[i] = competenceBean.points.Class;
             scoresOwn[i] = competenceBean.points.own;
 
             TextView nameTextView = new TextView(getActivity());
@@ -57,26 +60,29 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
             studyReportBinding.circularLayout.addView(nameTextView);
         }
 
-        studyReportBinding.spiderWebScoreView.setScores(10f,scoresOwn,scoresClass);
+        studyReportBinding.spiderWebScoreView.setScores(100f, scoresOwn, scoresClass);
 
     }
 
     private void setTableData(List<StudyReportDetailBean.DataBean> dataList, String[] heads) {
+        if (dataList == null || dataList.size() == 0) {
+            return;
+        }
         ArrayList<Integer> rowTypes = new ArrayList();
         TableView tableView = studyReportBinding.tableView.clearTableContents().setHeader(heads);
 
         for (int i = 0; i < dataList.size(); i++) {
             StudyReportDetailBean.DataBean dataBean = dataList.get(i);
-            List<StudyReportDetailBean.DataBean.MapBean> map = dataBean.map;
+            List<StudyReportDetailBean.DataBean.MapBean> titleList = dataBean.titleList;
 
-            for (int j = 0; j < map.size(); j++) {
-                if (j>0){
+            for (int j = 0; j < titleList.size(); j++) {
+                if (j > 0) {
                     rowTypes.add(0);
-                }else {
-                    rowTypes.add(map.size());
+                } else {
+                    rowTypes.add(titleList.size());
                 }
-                StudyReportDetailBean.DataBean.MapBean mapBean = map.get(j);
-                tableView.addContent(dataBean.KN,mapBean.NO,String.valueOf(mapBean.points),String.valueOf(mapBean.score),String.valueOf(mapBean.avg),dataBean.process * 100 +getString(R.string.study_progress));
+                StudyReportDetailBean.DataBean.MapBean mapBean = titleList.get(j);
+                tableView.addContent(dataBean.KN, mapBean.NO, String.valueOf(mapBean.points), String.valueOf(mapBean.score), String.valueOf(mapBean.avg), dataBean.process * 100 + getString(R.string.study_progress));
             }
         }
 
@@ -146,9 +152,9 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     @Override
     public void setStudyReportDetail(StudyReportDetailBean data) {
-        if (data != null){
+        if (data != null) {
             setSpiderWebViewScoresData(data.competence);
-            setTableData(data.data,heads);
+            setTableData(data.data, heads);
             studyReportBinding.setStudyReportDetail(data);
         }
     }
@@ -168,11 +174,12 @@ public class StudyReportFragment extends BaseFragment implements HomeworkView, V
 
     }
 
-    public void setPracticeId(int id,String title) {
+    public void setPracticeId(int id, String title) {
         this.title = title;
         this.id = id;
-        if (homeworkPresenter != null){
-            homeworkPresenter.getStudyReportDetail(id);
+        if (homeworkPresenter == null) {
+            homeworkPresenter = new HomeworkPresenter(this);
         }
+        homeworkPresenter.getStudyReportDetail(id);
     }
 }

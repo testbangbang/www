@@ -33,4 +33,6 @@
     <integer name="web_view_font_size">20</integer>
     <integer name="mistake_adapter_col">5</integer>
     <integer name="mistake_adapter_row">1</integer>
+    <integer name="rank_adapter_col">1</integer>
+    <integer name="rank_adapter_row">8</integer>
 </resources>

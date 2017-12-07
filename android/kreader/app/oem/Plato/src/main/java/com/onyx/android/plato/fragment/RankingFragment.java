@@ -4,8 +4,12 @@ import android.databinding.ViewDataBinding;
 import android.view.View;
 
 import com.onyx.android.plato.R;
+import com.onyx.android.plato.SunApplication;
+import com.onyx.android.plato.adapter.RankingAdapter;
 import com.onyx.android.plato.databinding.RankingBinding;
 import com.onyx.android.plato.event.ToMainFragmentEvent;
+import com.onyx.android.plato.view.DisableScrollGridManager;
+import com.onyx.android.plato.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -16,6 +20,7 @@ import org.greenrobot.eventbus.EventBus;
 public class RankingFragment extends BaseFragment implements View.OnClickListener {
 
     private RankingBinding rankingBinding;
+    private RankingAdapter adapter;
 
     @Override
     protected void loadData() {
@@ -27,6 +32,12 @@ public class RankingFragment extends BaseFragment implements View.OnClickListene
         rankingBinding.rankingTitleBar.titleBarRecord.setVisibility(View.GONE);
         rankingBinding.rankingTitleBar.titleBarSubmit.setVisibility(View.GONE);
         rankingBinding.rankingTitleBar.setTitle(getString(R.string.total_score_ranking));
+        rankingBinding.rankingRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
+        DividerItemDecoration decoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
+        decoration.setDrawLine(true);
+        rankingBinding.rankingRecycler.addItemDecoration(decoration);
+        adapter = new RankingAdapter();
+        rankingBinding.rankingRecycler.setAdapter(adapter);
     }
 
     @Override
