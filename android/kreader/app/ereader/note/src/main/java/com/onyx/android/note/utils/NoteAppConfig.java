@@ -35,6 +35,7 @@ public class NoteAppConfig {
     //once use edu config.hide import/export function.give extra shape and less note background.
     public static final String USE_EDU_CONFIG = "use_edu_config";
     public static final String DISABLE_IMPORT = "disable_import";
+    public static final String CUSTOM_DEFAULT_WIDTH = "custom_default_width";
     static public final boolean useDebugConfig = false;
 
     static public NoteAppConfig sharedInstance(Context context) {
@@ -193,5 +194,13 @@ public class NoteAppConfig {
          return false;
      }
      return backend.getBoolean(DISABLE_IMPORT,false);
+    }
+
+    public boolean isCustomDefaultWidth() {
+        return backend.hasKey(CUSTOM_DEFAULT_WIDTH);
+    }
+
+    public float getCustomDefaultWidth() {
+        return backend.getFloat(CUSTOM_DEFAULT_WIDTH);
     }
 }
