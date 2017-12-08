@@ -158,8 +158,7 @@ public class NoteDataProvider {
     public static boolean checkHasNote(final Context context, final String uniqueId, final String parentUniqueId) {
         Select select = new Select();
         Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId)).and(NoteModel_Table.parentUniqueId.eq(parentUniqueId));
-        final NoteModel model = (NoteModel) where.querySingle();
-        return model != null;
+        return where.count() > 0;
     }
 
     public static NoteModel createLibrary(final Context context, final String uniqueId, final String parentUniqueId, final String title) {
