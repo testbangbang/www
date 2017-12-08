@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">JDRead</string>
+    <string name="library">书架</string>
+    <string name="book_total" translatable="false">共%s本书</string>
+</resources>

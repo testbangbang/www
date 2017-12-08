@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ModelItemBinding">
+
+        <import type="android.view.View" />
+
+        <variable
+            name="model"
+            type="com.onyx.android.sdk.data.model.DataModel" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/imagebtn_bg"
+        android:onClick="@{()->model.itemClicked()}"
+        android:onLongClick="@{()->model.itemLongClick()}"
+        android:padding="2dp">
+
+        <LinearLayout
+            android:id="@+id/cover_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_cover"
+                thumbnail="@{model.coverBitmap}"
+                android:layout_width="@dimen/model_item_cover_width"
+                android:layout_height="@dimen/model_item_cover_height"
+                android:background="@drawable/rectangle_stroke"
+                android:padding="@dimen/rectangle_stroke_width"
+                android:scaleType="fitXY"
+                android:src="@{model.coverDefault}" />
+
+            <TextView
+                android:id="@+id/textView_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="2"
+                android:maxLines="2"
+                android:text="@{model.title}"
+                android:textSize="19sp" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.AppCompatCheckBox
+            android:id="@+id/multi_select_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="0dp"
+            android:button="@null"
+            android:checked="@={model.checked}"
+            android:clickable="false"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:minHeight="@dimen/button_minHeight"
+            android:visibility="@{model.enableSelection?View.VISIBLE:View.GONE}" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+</layout>

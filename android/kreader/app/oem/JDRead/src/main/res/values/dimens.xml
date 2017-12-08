@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="model_item_cover_width">140dp</dimen>
+    <dimen name="model_item_cover_height">193dp</dimen>
+    <dimen name="page_indicator_layout_margin">10dp</dimen>
+    <dimen name="rectangle_stroke_width">1dp</dimen>
+</resources>
