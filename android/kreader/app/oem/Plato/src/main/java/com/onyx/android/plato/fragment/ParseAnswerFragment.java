@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.databinding.ViewDataBinding;
 import android.os.Environment;
 import android.text.Html;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -48,6 +49,7 @@ import java.util.List;
  */
 
 public class ParseAnswerFragment extends BaseFragment implements View.OnClickListener, ParseAnswerView, View.OnTouchListener {
+    private static final String TAG = ParseAnswerFragment.class.getSimpleName();
     private ParseAnswerBinding parseAnswerBinding;
     private String title;
     private ParseAnswerPresenter parseAnswerPresenter;
@@ -346,13 +348,20 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     public void setAnalysis(AnalysisBean analysisBean) {
         List<SubjectBean> systemErrors = analysisBean.systemErrors;
         if (systemErrors != null && systemErrors.size() > 0) {
+            parseAnswerBinding.parseMistakeLayout.mistakeRecycler.setVisibility(View.VISIBLE);
             mistakeAdapter.setData(systemErrors);
+        } else {
+            mistakeAdapter.clear();
+            parseAnswerBinding.parseMistakeLayout.mistakeRecycler.setVisibility(View.GONE);
         }
 
         List<SubjectBean> errors = analysisBean.errors;
         if (errors != null && errors.size() > 0) {
             mistakeCustomAdapter.setData(errors);
             parseAnswerBinding.parseMistakeLayout.mistakeCustom.setVisibility(View.GONE);
+        } else {
+            mistakeCustomAdapter.clear();
+            parseAnswerBinding.parseMistakeLayout.mistakeCustom.setVisibility(answerBean.value == answerBean.score ? View.GONE : View.VISIBLE);
         }
 
         radio = analysisBean.radio;
@@ -364,6 +373,8 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             }
             duration = mediaManager.getDurationInSecond(radio);
             parseAnswerBinding.setRecorderTime(duration + "s");
+        } else {
+            setItemVisible(answerBean.value != answerBean.score ? R.id.parse_mistake_input_text : R.id.parse_sound_input);
         }
     }
 
@@ -406,10 +417,12 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                setSelectedImage(R.drawable.ic_sound_selected);
                 parseAnswerPresenter.startRecord(mediaManager, getOutputFile().getAbsolutePath());
                 startTime = System.currentTimeMillis();
                 break;
             case MotionEvent.ACTION_UP:
+                setSelectedImage(R.drawable.ic_sound);
                 endTime = System.currentTimeMillis();
                 duration = ((endTime - startTime) / 1000);
                 if (duration <= 1) {
@@ -423,6 +436,15 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
                 break;
         }
         return true;
+    }
+
+    private void setSelectedImage(int resourceId) {
+        if (View.VISIBLE == parseAnswerBinding.parseAddSoundLayout.parseAddSoundWhole.getVisibility()) {
+            parseAnswerBinding.parseAddSoundLayout.parseAddImage.setImageResource(resourceId);
+        }
+        if (View.VISIBLE == parseAnswerBinding.parseMistakeLayout.parseMistakeWhole.getVisibility()) {
+            parseAnswerBinding.parseMistakeLayout.parseMistakeInputImage.setImageResource(resourceId);
+        }
     }
 
     public void setItemVisible(int itemId) {

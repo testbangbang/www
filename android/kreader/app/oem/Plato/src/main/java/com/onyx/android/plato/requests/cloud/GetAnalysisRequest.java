@@ -7,6 +7,7 @@ import com.onyx.android.plato.common.CloudApiContext;
 import com.onyx.android.plato.requests.requestTool.BaseCloudRequest;
 import com.onyx.android.plato.requests.requestTool.SunRequestManager;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Response;
 
@@ -17,9 +18,14 @@ import retrofit2.Response;
 public class GetAnalysisRequest extends BaseCloudRequest {
     private PracticeParseRequestBean requestBean;
     private GetAnalysisBean resultBean;
+    private String errorBody;
 
     public GetAnalysisRequest(PracticeParseRequestBean requestBean) {
         this.requestBean = requestBean;
+    }
+
+    public String getErrorBody() {
+        return errorBody;
     }
 
     public GetAnalysisBean getResultBean() {
@@ -33,6 +39,8 @@ public class GetAnalysisRequest extends BaseCloudRequest {
         Response<GetAnalysisBean> response = call.execute();
         if (response.isSuccessful()) {
             resultBean = response.body();
+        } else {
+            errorBody = response.errorBody().string();
         }
     }
 

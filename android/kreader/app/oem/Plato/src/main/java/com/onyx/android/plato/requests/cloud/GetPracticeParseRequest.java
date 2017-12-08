@@ -17,6 +17,7 @@ import retrofit2.Response;
 public class GetPracticeParseRequest extends BaseCloudRequest {
     private PracticeParseRequestBean requestBean;
     private PracticeParseResultBean resultBean;
+    private String errorBody;
 
     public GetPracticeParseRequest(PracticeParseRequestBean requestBean) {
         this.requestBean = requestBean;
@@ -26,6 +27,10 @@ public class GetPracticeParseRequest extends BaseCloudRequest {
         return resultBean;
     }
 
+    public String getErrorBody() {
+        return errorBody;
+    }
+
     @Override
     public void execute(SunRequestManager helper) throws Exception {
         ContentService service = CloudApiContext.getService(CloudApiContext.BASE_URL);
@@ -33,6 +38,8 @@ public class GetPracticeParseRequest extends BaseCloudRequest {
         Response<PracticeParseResultBean> response = call.execute();
         if (response.isSuccessful()) {
             resultBean = response.body();
+        } else {
+            errorBody = response.errorBody().string();
         }
     }
 

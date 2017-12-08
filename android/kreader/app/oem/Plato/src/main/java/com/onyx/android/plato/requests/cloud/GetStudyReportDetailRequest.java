@@ -19,9 +19,14 @@ public class GetStudyReportDetailRequest extends BaseCloudRequest {
     private final static String TAG = GetStudyReportDetailRequest.class.getSimpleName();
     private int id;
     private GetStudyReportDetailResultBean studyReportDetailResultBean;
+    private String errorBody;
 
     public GetStudyReportDetailRequest(int id) {
         this.id = id;
+    }
+
+    public String getErrorBody() {
+        return errorBody;
     }
 
     public GetStudyReportDetailResultBean getStudyReportDetailResultBean() {
@@ -36,6 +41,8 @@ public class GetStudyReportDetailRequest extends BaseCloudRequest {
             Response<GetStudyReportDetailResultBean> response = call.execute();
             if (response.isSuccessful()) {
                 studyReportDetailResultBean = response.body();
+            } else {
+                errorBody = response.errorBody().string();
             }
         } catch (Exception e) {
             Log.i(TAG, e.toString());
