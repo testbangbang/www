@@ -500,4 +500,10 @@ public class BaseDevice {
     public boolean shouldVerifyUpdateModel() {
         return true;
     }
+
+    public void enableCapacitanceTp(boolean enable) {
+    }
+
+    public void enableElectromagneticTp(boolean enable) {
+    }
 }
