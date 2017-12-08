@@ -50,6 +50,9 @@ public interface ContentService {
     Call<ProductResult<CloudMetadata>> loadBookList(@Path(Constant.ID_TAG) final String libraryId,
                                                     @Query(Constant.WHERE_TAG) final String param);
 
+    @GET("librarys/getMySource")
+    Call<ResponseBody> getMySource(@Query(Constant.WHERE_TAG) final String param);
+
     @GET("books/{id}")
     Call<CloudMetadata> loadBook(@Path(Constant.ID_TAG) final String idString);
 }

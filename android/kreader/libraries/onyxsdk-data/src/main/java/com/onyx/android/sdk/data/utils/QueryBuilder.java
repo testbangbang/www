@@ -339,7 +339,7 @@ public class QueryBuilder {
         return args;
     }
 
-    private static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
+    public static OrderBy ascDescOrder(OrderBy orderBy, boolean asc) {
         if (asc) {
             orderBy.ascending();
         } else {
