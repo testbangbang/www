@@ -63,7 +63,6 @@ public class LibraryFragment extends BaseFragment {
         return libraryBinding.getRoot();
     }
 
-
     @Override
     public void onResume() {
         super.onResume();

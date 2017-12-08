@@ -95,7 +95,6 @@ public class JDReadApplication extends MultiDexApplication {
         actionChain.execute(getDataBundle(), null);
     }
 
-
     public static JDReadApplication getInstance() {
         return instance;
     }
