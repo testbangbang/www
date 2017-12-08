@@ -9,7 +9,6 @@ import java.util.List;
  */
 
 public class StudyReportDetailBean {
-
     public int score;
     public int classRank;
     public int classNum;
@@ -25,32 +24,28 @@ public class StudyReportDetailBean {
     public List<DataBean> data;
 
     public static class CompetenceBean {
-
         public String name;
         public PointsBean points;
 
         public static class PointsBean {
-
-            @SerializedName("Class")
-            public float classX;
+            public float Class;
             public float own;
         }
     }
 
     public static class DataBean {
-
         public String KNId;
         public String KN;
         public double process;
-        public List<MapBean> map;
+        public List<MapBean> titleList;
 
         public static class MapBean {
-
             public String id;
             public String NO;
             public int points;
             public int score;
             public double avg;
+            public String no;
         }
     }
 }

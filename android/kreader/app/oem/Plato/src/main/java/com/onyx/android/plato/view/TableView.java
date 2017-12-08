@@ -180,7 +180,6 @@ public class TableView extends View {
                     }
                 }
             }
-
             canvas.drawRect(left, i * (rowHeight + dividerWidth), right, i * (rowHeight + dividerWidth) + dividerWidth, paint);
             left = 0;
             right = getWidth();
@@ -327,6 +326,9 @@ public class TableView extends View {
 
     private void initTableSize() {
         rowCount = tableContents.size();
+        unitColumnWidth = 0;
+        mMarginLeft = 0;
+        mMarginRight = 0;
         if (rowCount > 0) {
             columnCount = tableContents.get(0).length;
         }

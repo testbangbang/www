@@ -256,7 +256,7 @@ public class HomeworkPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetStudyReportDetailResultBean resultBean = rq.getStudyReportDetailResultBean();
                 if (resultBean == null) {
-                    EventBus.getDefault().post(new EmptyEvent());
+                    CommonNotices.show(rq.getErrorBody());
                     return;
                 }
 

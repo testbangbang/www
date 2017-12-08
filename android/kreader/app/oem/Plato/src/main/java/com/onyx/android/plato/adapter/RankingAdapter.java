@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.android.plato.R;
+import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.databinding.ItemRankingAdapterBinding;
 import com.onyx.android.plato.view.PageRecyclerView;
 
@@ -16,12 +17,12 @@ import com.onyx.android.plato.view.PageRecyclerView;
 public class RankingAdapter extends PageRecyclerView.PageAdapter<RankingAdapter.ViewHolder> {
     @Override
     public int getRowCount() {
-        return 0;
+        return SunApplication.getInstance().getResources().getInteger(R.integer.rank_adapter_row);
     }
 
     @Override
     public int getColumnCount() {
-        return 0;
+        return SunApplication.getInstance().getResources().getInteger(R.integer.rank_adapter_col);
     }
 
     @Override
@@ -31,8 +32,8 @@ public class RankingAdapter extends PageRecyclerView.PageAdapter<RankingAdapter.
 
     @Override
     public ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        View.inflate(parent.getContext(), R.layout.item_ranking_adapter, null);
-        return null;
+        View view = View.inflate(parent.getContext(), R.layout.item_ranking_adapter, null);
+        return new ViewHolder(view);
     }
 
     @Override
@@ -46,8 +47,7 @@ public class RankingAdapter extends PageRecyclerView.PageAdapter<RankingAdapter.
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-
-        private final ItemRankingAdapterBinding bind;
+        private ItemRankingAdapterBinding bind;
 
         public ViewHolder(View view) {
             super(view);

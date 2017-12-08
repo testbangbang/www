@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.databinding.ViewDataBinding;
 import android.os.Environment;
 import android.text.Html;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
@@ -48,8 +49,8 @@ import java.util.List;
  */
 
 public class ParseAnswerFragment extends BaseFragment implements View.OnClickListener, ParseAnswerView, View.OnTouchListener {
+    private static final String TAG = ParseAnswerFragment.class.getSimpleName();
     private ParseAnswerBinding parseAnswerBinding;
-    private QuestionViewBean questionData;
     private String title;
     private ParseAnswerPresenter parseAnswerPresenter;
     private MediaManager mediaManager;
@@ -63,19 +64,17 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     private String voiceUrl;
     private AnswerBean answerBean;
     private String radio = getOutputFile().getAbsolutePath();
+    private QuestionViewBean questionViewBean;
 
     @Override
     protected void loadData() {
-        if (parseAnswerPresenter == null) {
-            parseAnswerPresenter = new ParseAnswerPresenter(this);
-        }
-        parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId());
+
     }
 
     @Override
     protected void initView(ViewDataBinding binding) {
         parseAnswerBinding = (ParseAnswerBinding) binding;
-        parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
+        parseAnswerBinding.parseQuestionView.setQuestionData(questionViewBean, title);
         parseAnswerBinding.parseQuestionView.setFinished(true);
         parseAnswerBinding.parseQuestionView.setParse(true);
         parseAnswerBinding.parseTitleBar.setTitle(SunApplication.getInstance().getString(R.string.parse_of_answer));
@@ -147,20 +146,29 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     }
 
     public void setQuestionData(QuestionViewBean questionData, String title) {
-        this.questionData = questionData;
-        questionData.setShow(false);
-        questionData.setScene(Constants.APK_NAME);
-        questionData.setShowReaderComprehension(false);
+        questionViewBean = new QuestionViewBean();
+        questionViewBean.setShow(false);
+        questionViewBean.setScene(Constants.APK_NAME);
+        questionViewBean.setShowReaderComprehension(false);
+        questionViewBean.setUserAnswer(questionData.getUserAnswer());
+        questionViewBean.setTaskId(questionData.getTaskId());
+        questionViewBean.setContent(questionData.getContent());
+        questionViewBean.setAccuracy(questionData.getAccuracy());
+        questionViewBean.setAllScore(questionData.getAllScore());
+        questionViewBean.setAnswer(questionData.getAnswer());
+        questionViewBean.setExeNumber(questionData.getExeNumber());
+        questionViewBean.setExerciseSelections(questionData.getExerciseSelections());
+        questionViewBean.setId(questionData.getId());
         this.title = title;
         if (parseAnswerBinding != null) {
-            parseAnswerBinding.parseQuestionView.setQuestionData(questionData, title);
+            parseAnswerBinding.parseQuestionView.setQuestionData(questionViewBean, title);
             parseAnswerBinding.parseQuestionView.setFinished(true);
             parseAnswerBinding.parseQuestionView.setParse(true);
         }
-
-        if (parseAnswerPresenter != null) {
-            parseAnswerPresenter.getExplanation(questionData.getTaskId(), questionData.getId());
+        if (parseAnswerPresenter == null) {
+            parseAnswerPresenter = new ParseAnswerPresenter(this);
         }
+        parseAnswerPresenter.getExplanation(questionViewBean.getTaskId(), questionViewBean.getId());
     }
 
     @Override
@@ -170,7 +178,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
                 EventBus.getDefault().post(new ToCorrectEvent(null));
                 break;
             case R.id.parse_add_sound:
-                parseAnswerPresenter.insertAnalysis(questionData.getTaskId(), questionData.getId(), null, voiceUrl, null);
+                parseAnswerPresenter.insertAnalysis(questionViewBean.getTaskId(), questionViewBean.getId(), null, voiceUrl, null);
                 break;
             case R.id.parse_delete_sound:
                 break;
@@ -225,7 +233,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             errors.add(bean);
         }
 
-        parseAnswerPresenter.insertAnalysis(questionData.getTaskId(), questionData.getId(), ids, voiceUrl, errors);
+        parseAnswerPresenter.insertAnalysis(questionViewBean.getTaskId(), questionViewBean.getId(), ids, voiceUrl, errors);
     }
 
     private void showCustomDialog() {
@@ -288,13 +296,13 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             return;
         }
         answerBean = myAnswer.get(0);
-        parseAnswerPresenter.getAnalysis(questionData.getTaskId(), questionData.getId());
+        parseAnswerPresenter.getAnalysis(questionViewBean.getTaskId(), questionViewBean.getId());
         String correct = insertPMark(parseBean.answer, "(" + answerBean.accuracy + "%" + ")");
         String userAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.user_answer), answerBean.answer);
         String correctAnswer = String.format(SunApplication.getInstance().getResources().getString(R.string.correct_answer), Html.fromHtml(correct));
         parseAnswerBinding.setCorrectAnswer(correctAnswer);
 
-        if (questionData.getExerciseSelections() != null && questionData.getExerciseSelections().size() > 0) {
+        if (questionViewBean.getExerciseSelections() != null && questionViewBean.getExerciseSelections().size() > 0) {
             parseAnswerBinding.setUserAnswer(userAnswer + "(" + (answerBean.isCorrect ?
                     SunApplication.getInstance().getResources().getString(R.string.correct) :
                     SunApplication.getInstance().getResources().getString(R.string.mistake)) + ")");
@@ -330,7 +338,7 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
         }
 
         duration = recordDuration;
-        if (questionData.isCorrect()) {
+        if (questionViewBean.isCorrect()) {
             setVisible(R.id.parse_modify_sound_layout);
             parseAnswerBinding.setRecorderTime(recordDuration + "s");
         }
@@ -340,13 +348,20 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     public void setAnalysis(AnalysisBean analysisBean) {
         List<SubjectBean> systemErrors = analysisBean.systemErrors;
         if (systemErrors != null && systemErrors.size() > 0) {
+            parseAnswerBinding.parseMistakeLayout.mistakeRecycler.setVisibility(View.VISIBLE);
             mistakeAdapter.setData(systemErrors);
+        } else {
+            mistakeAdapter.clear();
+            parseAnswerBinding.parseMistakeLayout.mistakeRecycler.setVisibility(View.GONE);
         }
 
         List<SubjectBean> errors = analysisBean.errors;
         if (errors != null && errors.size() > 0) {
             mistakeCustomAdapter.setData(errors);
             parseAnswerBinding.parseMistakeLayout.mistakeCustom.setVisibility(View.GONE);
+        } else {
+            mistakeCustomAdapter.clear();
+            parseAnswerBinding.parseMistakeLayout.mistakeCustom.setVisibility(answerBean.value == answerBean.score ? View.GONE : View.VISIBLE);
         }
 
         radio = analysisBean.radio;
@@ -358,6 +373,8 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
             }
             duration = mediaManager.getDurationInSecond(radio);
             parseAnswerBinding.setRecorderTime(duration + "s");
+        } else {
+            setItemVisible(answerBean.value != answerBean.score ? R.id.parse_mistake_input_text : R.id.parse_sound_input);
         }
     }
 
@@ -400,10 +417,12 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
     public boolean onTouch(View v, MotionEvent event) {
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                setSelectedImage(R.drawable.ic_sound_selected);
                 parseAnswerPresenter.startRecord(mediaManager, getOutputFile().getAbsolutePath());
                 startTime = System.currentTimeMillis();
                 break;
             case MotionEvent.ACTION_UP:
+                setSelectedImage(R.drawable.ic_sound);
                 endTime = System.currentTimeMillis();
                 duration = ((endTime - startTime) / 1000);
                 if (duration <= 1) {
@@ -417,6 +436,15 @@ public class ParseAnswerFragment extends BaseFragment implements View.OnClickLis
                 break;
         }
         return true;
+    }
+
+    private void setSelectedImage(int resourceId) {
+        if (View.VISIBLE == parseAnswerBinding.parseAddSoundLayout.parseAddSoundWhole.getVisibility()) {
+            parseAnswerBinding.parseAddSoundLayout.parseAddImage.setImageResource(resourceId);
+        }
+        if (View.VISIBLE == parseAnswerBinding.parseMistakeLayout.parseMistakeWhole.getVisibility()) {
+            parseAnswerBinding.parseMistakeLayout.parseMistakeInputImage.setImageResource(resourceId);
+        }
     }
 
     public void setItemVisible(int itemId) {

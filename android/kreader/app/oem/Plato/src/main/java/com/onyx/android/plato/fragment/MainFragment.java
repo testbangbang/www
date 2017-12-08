@@ -3,13 +3,11 @@ package com.onyx.android.plato.fragment;
 import android.databinding.ViewDataBinding;
 import android.view.View;
 
-import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.adapter.TodayTaskAdapter;
-import com.onyx.android.plato.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.plato.cloud.bean.ContentBean;
+import com.onyx.android.plato.cloud.bean.PersonalAbilityResultBean;
 import com.onyx.android.plato.databinding.MainBinding;
 import com.onyx.android.plato.event.ToHomeworkEvent;
 import com.onyx.android.plato.event.ToRankingEvent;
@@ -17,6 +15,8 @@ import com.onyx.android.plato.interfaces.MainFragmentView;
 import com.onyx.android.plato.presenter.MainFragmentPresenter;
 import com.onyx.android.plato.view.DisableScrollGridManager;
 import com.onyx.android.plato.view.DividerItemDecoration;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 
 import org.greenrobot.eventbus.EventBus;
 

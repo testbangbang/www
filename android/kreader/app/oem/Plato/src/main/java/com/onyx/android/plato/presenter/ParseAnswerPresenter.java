@@ -56,7 +56,7 @@ public class ParseAnswerPresenter {
             public void done(BaseRequest request, Throwable e) {
                 PracticeParseResultBean resultBean = rq.getResultBean();
                 if (resultBean == null) {
-                    EventBus.getDefault().post(new EmptyEvent());
+                    CommonNotices.show(rq.getErrorBody());
                     return;
                 }
 
@@ -125,6 +125,7 @@ public class ParseAnswerPresenter {
             public void done(BaseRequest request, Throwable e) {
                 GetAnalysisBean resultBean = rq.getResultBean();
                 if (resultBean == null) {
+                    CommonNotices.show(rq.getErrorBody());
                     return;
                 }
                 parseAnswerView.setAnalysis(resultBean.data);
