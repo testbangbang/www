@@ -1,6 +1,7 @@
 package com.onyx.jdread.common;
 
-import android.app.Fragment;
+
+import android.support.v4.app.Fragment;
 
 /**
  * Created by huxiaomao on 2017/12/7.
