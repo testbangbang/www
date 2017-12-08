@@ -1,4 +1,4 @@
-package com.onyx.jdread.main.activity;
+package com.onyx.jdread.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;

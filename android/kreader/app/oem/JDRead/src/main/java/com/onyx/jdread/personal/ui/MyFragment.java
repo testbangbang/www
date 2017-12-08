@@ -1,4 +1,4 @@
-package com.onyx.jdread.my.ui;
+package com.onyx.jdread.personal.ui;
 
 import com.onyx.jdread.common.BaseFragment;
 
