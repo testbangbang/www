@@ -112,4 +112,6 @@
     <string name="cloud_content_import_success">Import successful</string>
     <string name="cloud_content_import_failed">Import failed</string>
 
+    <string name="blank" translatable="false" />
+    <string name="app_no_installed">Homework-App is not installed</string>
 </resources>
