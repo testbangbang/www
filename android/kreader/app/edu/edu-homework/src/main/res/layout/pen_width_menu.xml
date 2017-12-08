@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.onyx.android.sdk.ui.data.MenuId"/>
+        <import type="com.onyx.android.sdk.ui.data.MenuItem"/>
+        <import type="android.util.SparseArray"/>
+        <import type="com.onyx.edu.homework.R"/>
+
+        <variable
+            name="item"
+            type="SparseArray&lt;MenuItem>"/>
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:background="@android:color/white"
+        android:paddingTop="@dimen/sub_menu_padding"
+        android:paddingBottom="@dimen/sub_menu_padding"
+        app:flexWrap="wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <include
+            bind:item="@{item[MenuId.THICKNESS_ULTRA_LIGHT].setMenuIcon(R.drawable.ic_width_1)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.THICKNESS_LIGHT].setMenuIcon(R.drawable.ic_width_2)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.THICKNESS_NORMAL].setMenuIcon(R.drawable.ic_width_3)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.THICKNESS_BOLD].setMenuIcon(R.drawable.ic_width_4)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.THICKNESS_ULTRA_BOLD].setMenuIcon(R.drawable.ic_width_5)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.THICKNESS_CUSTOM_BOLD].setMenuIcon(R.drawable.ic_width_6)}"
+            layout="@layout/sub_menu_item"/>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

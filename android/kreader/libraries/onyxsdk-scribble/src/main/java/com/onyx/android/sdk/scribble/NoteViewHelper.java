@@ -35,6 +35,8 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -115,6 +117,9 @@ public class NoteViewHelper {
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
     private boolean enableTouchEvent = true;
+    private Context context;
+    private EventBus eventBus;
+    private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
 
     private Rect customLimitRect = null;
 
@@ -133,6 +138,34 @@ public class NoteViewHelper {
         updateViewMatrix();
         updateLimitRect();
         pauseDrawing();
+        this.context = context.getApplicationContext();
+    }
+
+    public EventBus getEventBus() {
+        if (eventBus == null) {
+            eventBus = new EventBus();
+        }
+        return eventBus;
+    }
+
+    public ShapeDataInfo getShapeDataInfo() {
+        return shapeDataInfo;
+    }
+
+    public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
+        this.shapeDataInfo = shapeDataInfo;
+    }
+
+    public void register(Object subscriber) {
+        getEventBus().register(subscriber);
+    }
+
+    public void unregister(Object subscriber) {
+        getEventBus().unregister(subscriber);
+    }
+
+    public void post(Object event) {
+        getEventBus().post(event);
     }
 
     public SurfaceView getView() {
@@ -144,6 +177,10 @@ public class NoteViewHelper {
         removeLayoutListener();
         quitDrawing();
         setLineLayoutMode(false);
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public void flushTouchPointList() {
@@ -448,6 +485,15 @@ public class NoteViewHelper {
             return null;
         }
         return viewBitmapWrapper.getBitmap();
+    }
+
+    public void recycleBitmap() {
+        if (viewBitmapWrapper != null) {
+            viewBitmapWrapper.recycleBitmap();
+        }
+        if (renderBitmapWrapper != null) {
+            renderBitmapWrapper.recycleBitmap();
+        }
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {

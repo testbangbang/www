@@ -99,6 +99,10 @@ public class ServiceFactory {
         return getSpecifyService(OnyxBackupService.class, baseUrl);
     }
 
+    public static final OnyxHomeworkService getHomeworkService(final String baseUrl) {
+        return getSpecifyService(OnyxHomeworkService.class, baseUrl);
+    }
+
     public static final <T> T getSpecifyService(final Class<T> service, final String baseUrl) {
         return getRetrofit(baseUrl).create(service);
     }

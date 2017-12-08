@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Homework</string>
+    <string name="account_no_log_in">账号未登录</string>
+    <string name="loading">正在加载</string>
+    <string-array name="question_type_list">
+        <item>单选</item>
+        <item>多选</item>
+        <item>判断</item>
+        <item>填空</item>
+        <item>解答</item>
+    </string-array>
+    <string name="question_type_str" formatted="false">【%s题】</string>
+    <string name="saving">正在保存</string>
+    <string name="ask_for_delete_page">你确定要删除该页面吗？</string>
+</resources>

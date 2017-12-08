@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="onyx_scribble_bg_item_width">180dp</dimen>
+    <dimen name="onyx_scribble_bg_item_height">240dp</dimen>
+    <dimen name="onyx_main_note_menu_height">72dp</dimen>
+    <dimen name="homework_tool_height">60dp</dimen>
+    <dimen name="note_function_item_img_size">48dp</dimen>
+    <dimen name="note_function_item_img_top_margin">5dp</dimen>
+    <dimen name="sub_menu_padding">10dp</dimen>
+    <dimen name="main_menu_padding">6dp</dimen>
+    <dimen name="main_menu_margin">6dp</dimen>
+    <dimen name="menu_padding_left_right">8dp</dimen>
+    <dimen name="menu_padding_top_bottom">6dp</dimen>
+    <dimen name="onyx_sub_note_menu_height">72dp</dimen>
+    <dimen name="dialog_move_folder_item_height">40dp</dimen>
+    <dimen name="question_type_text_size">22sp</dimen>
+    <dimen name="question_content_text_size">26sp</dimen>
+    <dimen name="question_option_text_size">24sp</dimen>
+    <dimen name="homework_text_size">22sp</dimen>
+    <dimen name="homework_text_margin">10dp</dimen>
+</resources>

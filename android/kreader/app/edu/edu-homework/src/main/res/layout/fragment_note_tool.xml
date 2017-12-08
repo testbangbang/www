@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:id="@+id/main_menu_layout"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/onyx_main_note_menu_height"/>
+
+</layout>

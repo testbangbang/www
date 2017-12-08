@@ -72,4 +72,31 @@ public class MenuId {
     public static final int SAVE = 1004;
     public static final int SETTING = 1005;
     public static final int EXPORT = 1006;
+
+    private static final int SUB_MENU_RANGE = 99;
+    private static final int MAX_NOTE_SUB_MENU_ID = 999;
+
+    public static boolean isSubMenuId(int menuID) {
+        return menuID >= NORMAL_PEN_STYLE && menuID <= MAX_NOTE_SUB_MENU_ID;
+    }
+
+    public static boolean isThicknessGroup(int menuID) {
+        return menuID >= THICKNESS_ULTRA_LIGHT && menuID <= THICKNESS_ULTRA_LIGHT + SUB_MENU_RANGE;
+    }
+
+    public static boolean isPenStyleGroup(int menuID) {
+        return menuID >= NORMAL_PEN_STYLE && menuID <= NORMAL_PEN_STYLE + SUB_MENU_RANGE;
+    }
+
+    public static boolean isEraserGroup(int menuID) {
+        return menuID >= ERASE_PARTIALLY && menuID <= ERASE_PARTIALLY + SUB_MENU_RANGE;
+    }
+
+    public static boolean isBackgroundGroup(int menuID) {
+        return menuID >= BG_EMPTY && menuID <= BG_EMPTY + SUB_MENU_RANGE;
+    }
+
+    public static boolean isPenColorGroup(int menuID) {
+        return menuID >= PEN_COLOR_BLACK && menuID <= PEN_COLOR_BLACK + SUB_MENU_RANGE;
+    }
 }
