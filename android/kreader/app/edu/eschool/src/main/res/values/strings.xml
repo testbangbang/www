@@ -102,8 +102,8 @@
     <string name="refresh_fail">Failed to get new content</string>
     <string name="refresh_content_empty">The new content obtained is empty</string>
 
-    <string name="token_exception_contact_admin">Login error, please check the network to retry or contact the administrator</string>
-    <string name="hardware_error">Hardware error, please check the network to retry or contact the administrator</string>
+    <string name="token_exception_contact_admin">Login error, check network or contact the administrator</string>
+    <string name="hardware_error">Hardware error, check network or contact the administrator</string>
     <string name="title_activity_router_test">RouterTestActivity</string>
 
     <string name="account_un_login">Not logged in</string>

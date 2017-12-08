@@ -14,6 +14,7 @@ import com.onyx.android.sdk.data.manager.OssManager;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.compat.AppCompatImageViewCollection;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
+import com.onyx.android.settings.device.DeviceConfig;
 
 /**
  * Created by suicheng on 2017/4/28.
@@ -54,6 +55,7 @@ public class SettingsApplication extends MultiDexApplication {
     }
 
     private void initDeviceConfig() {
+        AppCompatUtils.setColorSupport(DeviceConfig.sharedInstance(this).isDeviceSupportColor());
         AppCompatImageViewCollection.setAlignView(AppCompatUtils.isColorDevice(this));
     }
 
