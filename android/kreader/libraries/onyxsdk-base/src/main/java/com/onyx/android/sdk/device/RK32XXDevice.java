@@ -184,6 +184,9 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodSetQRShowConfig;
     private static Method sMethodSetInfoShowConfig;
 
+    private static Method sMethodEnableCapacitanceTp;
+    private static Method sMethodEnableElectromagneticTp;
+
     private RK32XXDevice() {
     }
 
@@ -798,6 +801,8 @@ public class RK32XXDevice extends BaseDevice {
             sMethodReadSystemConfig = ReflectUtil.getMethodSafely(deviceControllerClass, "readSystemConfig", String.class);
             sMethodSaveSystemConfig = ReflectUtil.getMethodSafely(deviceControllerClass, "saveSystemConfig", String.class, String.class);
             sMethodUpdateMetadataDB = ReflectUtil.getMethodSafely(deviceControllerClass, "updateMetadataDB", String.class, String.class);
+            sMethodEnableCapacitanceTp = ReflectUtil.getMethodSafely(deviceControllerClass, "enableCapacitanceTp", boolean.class);
+            sMethodEnableElectromagneticTp = ReflectUtil.getMethodSafely(deviceControllerClass, "enableElectromagneticTp", boolean.class);
 
             // signature of "public void enableA2()"
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
@@ -1165,5 +1170,15 @@ public class RK32XXDevice extends BaseDevice {
     @Override
     public boolean shouldVerifyUpdateModel() {
         return false;
+    }
+
+    @Override
+    public void enableCapacitanceTp(boolean enable) {
+        invokeDeviceControllerMethod(null, sMethodEnableCapacitanceTp, enable);
+    }
+
+    @Override
+    public void enableElectromagneticTp(boolean enable) {
+        invokeDeviceControllerMethod(null, sMethodEnableElectromagneticTp, enable);
     }
 }
