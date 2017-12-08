@@ -112,7 +112,6 @@ public class BaseNoteRequest extends BaseRequest {
     public void beforeExecute(final NoteViewHelper helper) {
         helper.getRequestManager().acquireWakeLock(getContext(), getClass().getSimpleName());
         if (isPauseInputProcessor()) {
-            Debug.d(getClass(), "raw status pause");
             helper.pauseDrawing();
         }
         benchmarkStart();
@@ -157,7 +156,6 @@ public class BaseNoteRequest extends BaseRequest {
                     getCallback().done(BaseNoteRequest.this, getException());
                 }
                 if (isResumeInputProcessor()) {
-                    Debug.d(getClass(), "raw status resume");
                     helper.resumeDrawing();
                 }
                 helper.getRequestManager().releaseWakeLock();
