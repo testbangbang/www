@@ -26,6 +26,7 @@ import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.fragment.AccountFragment;
 import com.onyx.android.eschool.fragment.BookTextFragment;
+import com.onyx.android.eschool.fragment.HomeworkFragment;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
@@ -63,7 +64,7 @@ public class MainActivity extends BaseActivity {
     private BookTextFragment bookTextFragment;
     private BookTextFragment teachingAuxiliaryFragment;
     private BookTextFragment bookReadingFragment;
-    private BookTextFragment homeworkFragment;
+    private HomeworkFragment homeworkFragment;
     private AccountFragment studentInfoFragment;
 
     private Map<String, Library> libraryMap = new HashMap<>();
@@ -303,9 +304,9 @@ public class MainActivity extends BaseActivity {
         return bookReadingFragment;
     }
 
-    public BookTextFragment getHomeworkFragment(String libraryName, Library library) {
+    public Fragment getHomeworkFragment() {
         if (homeworkFragment == null) {
-            homeworkFragment = getCommonBookFragment(libraryName, library);
+            homeworkFragment = HomeworkFragment.newInstance();
         }
         return homeworkFragment;
     }
@@ -339,7 +340,7 @@ public class MainActivity extends BaseActivity {
                     f = getBookReadingFragment(title, library);
                     break;
                 case 3:
-                    f = getHomeworkFragment(title, library);
+                    f = getHomeworkFragment();
                     break;
                 case 4:
                     f = getStudentFragment();
