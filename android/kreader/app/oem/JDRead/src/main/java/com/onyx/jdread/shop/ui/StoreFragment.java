@@ -1,4 +1,4 @@
-package com.onyx.jdread.store.ui;
+package com.onyx.jdread.shop.ui;
 
 import com.onyx.jdread.common.BaseFragment;
 
