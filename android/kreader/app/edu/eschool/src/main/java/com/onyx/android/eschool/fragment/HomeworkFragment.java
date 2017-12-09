@@ -159,6 +159,17 @@ public class HomeworkFragment extends Fragment {
                 }
             }
         });
+        contentPageView.setOnLoadListener(new PageRecyclerView.OnLoadListener() {
+            @Override
+            public void onRefresh() {
+                prevPage();
+            }
+
+            @Override
+            public void onLoadMore() {
+                nextPage();
+            }
+        });
     }
 
     @Override
@@ -168,19 +179,19 @@ public class HomeworkFragment extends Fragment {
     }
 
     private void prevPage() {
-        if (!getPagination().prevPage()) {
+        if (getPagination().isFirstPage()) {
             postPrevTab();
             return;
         }
-        updatePageIndicator();
+        contentPageView.prevPage();
     }
 
     private void nextPage() {
-        if (!getPagination().nextPage()) {
+        if (getPagination().isLastPage()) {
             postNextTab();
             return;
         }
-        updatePageIndicator();
+        contentPageView.nextPage();
     }
 
     private void postNextTab() {
