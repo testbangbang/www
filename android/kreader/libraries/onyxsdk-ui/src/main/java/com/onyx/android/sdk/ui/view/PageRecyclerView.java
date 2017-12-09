@@ -34,6 +34,7 @@ public class PageRecyclerView extends RecyclerView {
     private int columns = 1;
     private float lastX, lastY;
     private OnChangeFocusListener onChangeFocusListener;
+    private OnLoadListener onLoadListener;
     private Map<Integer, String> keyBindingMap = new Hashtable<>();
     private int originPaddingBottom;
     private int itemDecorationHeight = 0;
@@ -41,6 +42,11 @@ public class PageRecyclerView extends RecyclerView {
 
     public interface OnPagingListener {
         void onPageChange(int position,int itemCount,int pageSize);
+    }
+
+    public interface OnLoadListener {
+        void onRefresh();
+        void onLoadMore();
     }
 
     public interface OnChangeFocusListener {
@@ -312,7 +318,9 @@ public class PageRecyclerView extends RecyclerView {
 
         if (pageTurningCycled && paginator.pages() > 1 && paginator.isFirstPage()) {
             gotoPage(paginator.lastPage());
+            return;
         }
+        onRefresh();
     }
 
     public void nextPage() {
@@ -323,7 +331,9 @@ public class PageRecyclerView extends RecyclerView {
 
         if (pageTurningCycled && paginator.pages() > 1 && paginator.isLastPage()) {
             gotoPage(0);
+            return;
         }
+        onLoadMore();
     }
 
     public void gotoPage(int page) {
@@ -385,6 +395,22 @@ public class PageRecyclerView extends RecyclerView {
                 return (rect.bottom - rect.top) < view.getHeight();
         }
         return false;
+    }
+
+    private void onLoadMore() {
+        if (onLoadListener != null) {
+            onLoadListener.onLoadMore();
+        }
+    }
+
+    private void onRefresh() {
+        if (onLoadListener != null) {
+            onLoadListener.onRefresh();
+        }
+    }
+
+    public void setOnLoadListener(OnLoadListener listener) {
+        this.onLoadListener = listener;
     }
 
     public static abstract class PageAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
