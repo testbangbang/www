@@ -17,7 +17,6 @@ import java.util.Collections;
  * Created by solskjaer49 on 2017/5/17 17:56.
  */
 public class NoteAppConfig {
-    static private String TAG = NoteAppConfig.class.getSimpleName();
     static private final boolean useDebugConfig = false;
 
     private static NoteAppConfig globalInstance;
