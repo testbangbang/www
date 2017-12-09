@@ -6,12 +6,17 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
+        <LinearLayout
+            android:id="@+id/place_holder_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:orientation="horizontal" />
+
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/content_pageView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:padding="20dp" />
+            android:layout_weight="1" />
 
         <View
             android:layout_width="match_parent"
