@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="functionBarModel"
+            type="com.onyx.jdread.model.FunctionBarModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="@{functionBarModel.isShow?View.VISIBLE:View.GONE}">
+
+        <TextView
+            style="@style/FunctionBarItemStyle"
+            android:drawableTop="@mipmap/library"
+            android:onClickListener="@{functionBarModel.libraryClickListener}"
+            android:text="@string/library_name" />
+
+        <TextView
+            style="@style/FunctionBarItemStyle"
+            android:drawableTop="@mipmap/shop"
+            android:onClickListener="@{functionBarModel.shoppingClickListener}"
+            android:text="@string/shop_name" />
+
+        <TextView
+            style="@style/FunctionBarItemStyle"
+            android:drawableTop="@mipmap/back"
+            android:onClickListener="@{functionBarModel.backClickListener}"
+            android:text="@string/back_name" />
+
+        <TextView
+            style="@style/FunctionBarItemStyle"
+            android:drawableTop="@mipmap/setting"
+            android:onClickListener="@{functionBarModel.settingClickListener}"
+            android:text="@string/setting_name" />
+
+        <TextView
+            style="@style/FunctionBarItemStyle"
+            android:drawableTop="@mipmap/personal"
+            android:onClickListener="@{functionBarModel.personalClickListener}"
+            android:text="@string/personal_name" />
+    </LinearLayout>
+</layout>

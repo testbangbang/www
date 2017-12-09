@@ -3,14 +3,16 @@
     package="com.onyx.jdread">
 
     <application
+        android:name=".JDReadApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:name=".JDReadApplication"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.MainActivity">
+        <activity
+            android:name=".activity.MainActivity"
+            android:theme="@style/ActivityFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
