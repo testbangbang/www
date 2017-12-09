@@ -81,11 +81,7 @@ public class MainActivity extends AppCompatActivity {
         notifyChildViewChangeWindow();
         BaseFragment baseFragment = getPageView(childViewName);
 
-//        if (transaction.isEmpty()) {
-//            transaction.add(R.id.main_content_view, baseFragment);
-//        } else {
-            transaction.replace(R.id.main_content_view, baseFragment);
-//        }
+        transaction.replace(R.id.main_content_view, baseFragment);
         transaction.commitAllowingStateLoss();
         saveChildViewInfo(childViewName, baseFragment);
     }
