@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">JDRead</string>
+    <string name="library_name">Library</string>
+    <string name="shop_name">Shopping</string>
+    <string name="back_name">Back</string>
+    <string name="setting_name">Setting</string>
+    <string name="personal_name">Personal</string>
 </resources>

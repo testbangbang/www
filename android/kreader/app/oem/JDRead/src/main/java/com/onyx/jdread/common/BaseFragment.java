@@ -8,15 +8,23 @@ import android.support.v4.app.Fragment;
  */
 
 public class BaseFragment extends Fragment {
-    public boolean onKeyBack(){
-        return false;
+    private ChildViewEventCallBack viewEventCallBack = null;
+
+    public interface ChildViewEventCallBack {
+        void gotoView(String childClassName);
+
+        void viewBack();
+
+        void hideOrShowSystemBar(boolean flags);
+
+        void hideOrShowFunctionBar(boolean flags);
     }
 
-    public boolean onKeyPageUp(){
-        return false;
+    public void setViewEventCallBack(ChildViewEventCallBack viewEventCallBack) {
+        this.viewEventCallBack = viewEventCallBack;
     }
 
-    public boolean onKeyPageDown(){
-        return false;
+    public void hideWindow() {
+
     }
 }
