@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.onyx.android.sample.activity.BrushActivity;
 import com.onyx.android.sample.activity.CalligraphyActivity;
 import com.onyx.android.sample.activity.EnvironmentDemoActivity;
 import com.onyx.android.sample.activity.EpdDemoActivity;
@@ -28,6 +29,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    @Bind(R.id.button_brush)
+    Button buttonBrush;
+
 
     @Bind(R.id.button_calligraphy)
     Button buttonCalligraphy;
@@ -62,6 +67,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        buttonBrush.setOnClickListener(this);
         buttonCalligraphy.setOnClickListener(this);
         buttonEnvironment.setOnClickListener(this);
         buttonEpd.setOnClickListener(this);
@@ -79,7 +85,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.equals(buttonCalligraphy)) {
+        if (v.equals(buttonBrush)) {
+            startActivity(new Intent(this, BrushActivity.class));
+            return;
+        } else if (v.equals(buttonCalligraphy)) {
             startActivity(new Intent(this, CalligraphyActivity.class));
             return;
         } else if (v.equals(buttonEnvironment)) {

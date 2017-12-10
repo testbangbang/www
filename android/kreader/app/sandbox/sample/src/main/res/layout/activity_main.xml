@@ -18,6 +18,13 @@
         android:layout_alignParentTop="true">
 
         <Button
+            android:id="@+id/button_brush"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Brush"/>
+
+
+        <Button
             android:id="@+id/button_calligraphy"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

@@ -42,7 +42,8 @@
             android:name=".activity.ImageDiffActivity"
             android:exported="true" />
         <activity android:name=".activity.RefreshTestActivity" />
-        <activity android:name=".activity.CalligraphyActivity"></activity>
+        <activity android:name=".activity.CalligraphyActivity" />
+        <activity android:name=".activity.BrushActivity"></activity>
     </application>
 
 </manifest>
