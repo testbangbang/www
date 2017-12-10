@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.onyx.android.sdk.ui.data.MenuId"/>
+        <import type="com.onyx.android.sdk.ui.data.MenuItem"/>
+        <import type="android.util.SparseArray"/>
+        <import type="com.onyx.edu.homework.R"/>
+
+        <variable
+            name="item"
+            type="SparseArray&lt;MenuItem>"/>
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:background="@android:color/white"
+        android:paddingTop="@dimen/sub_menu_padding"
+        android:paddingBottom="@dimen/sub_menu_padding"
+        app:flexWrap="wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <include
+            bind:item="@{item[MenuId.NORMAL_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_pencil)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BRUSH_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_brush)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.LINE_STYLE].setMenuIcon(R.drawable.ic_shape_line)}"
+            layout="@layout/sub_menu_item"/>
+
+
+        <include
+            bind:item="@{item[MenuId.TRIANGLE_STYLE].setMenuIcon(R.drawable.ic_shape_triangle)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.CIRCLE_STYLE].setMenuIcon(R.drawable.ic_shape_circle)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.RECT_STYLE].setMenuIcon(R.drawable.ic_shape_square)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.TRIANGLE_45_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_45)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.TRIANGLE_60_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_60)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.TRIANGLE_90_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_90)}"
+            layout="@layout/sub_menu_item"/>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

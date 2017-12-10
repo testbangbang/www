@@ -23,6 +23,7 @@ import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
