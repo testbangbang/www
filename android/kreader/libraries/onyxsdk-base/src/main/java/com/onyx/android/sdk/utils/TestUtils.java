@@ -101,7 +101,7 @@ public class TestUtils {
 
     public static String randomType() {
         List<String> list = new ArrayList<String>();
-        list.addAll(defaultContentTypes());
+        list.addAll(MimeTypeUtils.getDocumentExtension());
         int index = TestUtils.randInt(0, list.size() - 1);
         return list.get(index);
     }

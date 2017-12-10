@@ -721,4 +721,18 @@ public class FileUtils {
         }
         return false;
     }
+
+    public static boolean haveBookInDirectory(File directory) {
+        File[] files = directory.listFiles();
+        for (File file1 : files) {
+            if (file1.isDirectory()) {
+                haveBookInDirectory(file1);
+            } else {
+                if (MimeTypeUtils.getDocumentExtension().contains(FileUtils.getFileExtension(file1))) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
 }
