@@ -212,6 +212,7 @@ public class SchoolApp extends MultiDexApplication {
     private void initSystemInBackground() {
         enableWifiDetect();
         turnOffLed();
+        turnOnFrontLight();
     }
 
     private void initDeviceConfig() {
@@ -297,6 +298,10 @@ public class SchoolApp extends MultiDexApplication {
 
     public void turnOffLed() {
         Device.currentDevice().led(this, false);
+    }
+
+    public void turnOnFrontLight() {
+        Device.currentDevice().setFrontLightDeviceValue(this, 100);
     }
 
     private void initLeanCloud() {
