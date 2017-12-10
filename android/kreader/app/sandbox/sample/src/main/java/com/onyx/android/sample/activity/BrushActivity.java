@@ -106,7 +106,7 @@ public class BrushActivity extends AppCompatActivity {
 
         Path path = new Path();
         Paint paint = new Paint();
-        paint.setStrokeWidth(2.0f);
+        paint.setStrokeWidth(1.0f);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.BLACK);
 
@@ -158,7 +158,7 @@ public class BrushActivity extends AppCompatActivity {
     private void drawPerp(final Canvas canvas, final TouchPoint p1, final TouchPoint p2) {
 
         Paint paint = new Paint();
-        paint.setStrokeWidth(3.0f);
+        paint.setStrokeWidth(1.0f);
         paint.setStyle(Paint.Style.STROKE);
         paint.setColor(Color.RED);
 
@@ -168,7 +168,9 @@ public class BrushActivity extends AppCompatActivity {
         float vel = velocity(p1, p2);
         Log.e("###########", "velc " + vel);
         float width = nextWidth(vel);
-        Line.perp(l1, l2, l3, width);
+        if (!Line.perp(l1, l2, l3, 6.0f)) {
+            return;
+        }
         lastWidth = width;
         lastVelocity = vel;
 
@@ -214,9 +216,12 @@ public class BrushActivity extends AppCompatActivity {
             second.set(p2);
         }
 
-        public static void perp(final Line line, final Line line1, final Line line2, float dist) {
+        public static boolean perp(final Line line, final Line line1, final Line line2, float dist) {
             float dx = line.second.getX() - line.first.getX();
             float dy = line.second.getY() - line.first.getY();
+            if (Float.compare(dx, 0) == 0 && Float.compare(dy, 0) == 0) {
+                return false;
+            }
 
             if (Float.compare(dx, 0) == 0) {
                 TouchPoint p3 = new TouchPoint(line.first.getX() - dist, line.first.getY(), 0, 0, 0);
@@ -226,7 +231,6 @@ public class BrushActivity extends AppCompatActivity {
                 p3 = new TouchPoint(line.second.getX() - dist, line.second.getY(), 0, 0, 0);
                 p4 = new TouchPoint(line.second.getX() + dist, line.second.getY(), 0, 0, 0);
                 line2.set(p3, p4);
-                return;
             } else if (Float.compare(dy, 0) == 0) {
                 TouchPoint p3 = new TouchPoint(line.first.getX(), line.first.getY() - dist, 0, 0, 0);
                 TouchPoint p4 = new TouchPoint(line.first.getX(), line.first.getY() + dist, 0, 0, 0);
@@ -235,19 +239,20 @@ public class BrushActivity extends AppCompatActivity {
                 p3 = new TouchPoint(line.second.getX(), line.second.getY() - dist, 0, 0, 0);
                 p4 = new TouchPoint(line.second.getX(), line.second.getY() + dist, 0, 0, 0);
                 line2.set(p3, p4);
-                return;
+            } else {
+
+                double theta = Math.atan(-dx / dy);
+                float xdist = (float) (dist * Math.cos(theta));
+                float ydist = (float) (dist * Math.sin(theta));
+                TouchPoint p3 = new TouchPoint(line.first.getX() - xdist, line.first.getY() - ydist, 0, 0, 0);
+                TouchPoint p4 = new TouchPoint(line.first.getX() + xdist, line.first.getY() + ydist, 0, 0, 0);
+                line1.set(p3, p4);
+
+                p3 = new TouchPoint(line.second.getX() - xdist, line.second.getY() - ydist, 0, 0, 0);
+                p4 = new TouchPoint(line.second.getX() + xdist, line.second.getY() + ydist, 0, 0, 0);
+                line2.set(p3, p4);
             }
-
-            double theta = Math.atan(-dx / dy);
-            float xdist = (float) (dist * Math.cos(theta));
-            float ydist = (float) (dist * Math.sin(theta));
-            TouchPoint p3 = new TouchPoint(line.first.getX() - xdist, line.first.getY() - ydist, 0, 0, 0);
-            TouchPoint p4 = new TouchPoint(line.first.getX() + xdist, line.first.getY() + ydist, 0, 0, 0);
-            line1.set(p3, p4);
-
-            p3 = new TouchPoint(line.second.getX() - xdist, line.second.getY() - ydist, 0, 0, 0);
-            p4 = new TouchPoint(line.second.getX() + xdist, line.second.getY() + ydist, 0, 0, 0);
-            line2.set(p3, p4);
+            return true;
         }
 
 
