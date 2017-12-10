@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="6dp"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:textSize="@dimen/question_type_text_size"
+            android:textColor="@android:color/black"
+            android:id="@+id/question_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginLeft="6dp"
+            android:textSize="@dimen/question_content_text_size"
+            android:textColor="@android:color/black"
+            android:id="@+id/content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+
+    <RadioGroup
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:id="@+id/option"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <Button
+        android:textSize="22sp"
+        android:layout_marginTop="40dp"
+        android:background="@drawable/round_bg"
+        android:text="答题"
+        android:id="@+id/answer"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content" />
+
+
+    <ImageView
+        android:scaleType="fitXY"
+        android:padding="2dp"
+        android:background="@drawable/round_bg"
+        android:layout_margin="20dp"
+        android:id="@+id/scribble_image"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp" />
+    <View
+        android:visibility="gone"
+        android:background="@android:color/black"
+        android:id="@+id/divider_line"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"/>
+</LinearLayout>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+        <import type="com.onyx.android.sdk.ui.data.MenuId"/>
+        <import type="com.onyx.android.sdk.ui.data.MenuItem"/>
+        <import type="android.util.SparseArray"/>
+        <import type="com.onyx.edu.homework.R"/>
+
+        <variable
+            name="item"
+            type="SparseArray&lt;MenuItem>"/>
+    </data>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:background="@android:color/white"
+        android:paddingTop="@dimen/sub_menu_padding"
+        android:paddingBottom="@dimen/sub_menu_padding"
+        app:flexWrap="wrap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_EMPTY].setMenuIcon(R.drawable.ic_template_white)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_LINE].setMenuIcon(R.drawable.ic_template_line)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_LEFT_GRID].setMenuIcon(R.drawable.ic_template_left_grid)}"
+            layout="@layout/sub_menu_item"/>
+
+
+        <include
+            bind:item="@{item[MenuId.BG_GRID_5_5].setMenuIcon(R.drawable.ic_template_grid_5_5)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_GRID].setMenuIcon(R.drawable.ic_template_grid)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_MATS].setMenuIcon(R.drawable.ic_template_mats)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_MUSIC].setMenuIcon(R.drawable.ic_template_music)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_ENGLISH].setMenuIcon(R.drawable.ic_template_english)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_LINE_1_6].setMenuIcon(R.drawable.ic_template_line_1_6)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_LINE_2_0].setMenuIcon(R.drawable.ic_template_line_2_0)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_LINE_COLUMN].setMenuIcon(R.drawable.ic_template_line_column)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_TABLE_GRID].setMenuIcon(R.drawable.ic_template_table_grid)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_CALENDAR].setMenuIcon(R.drawable.ic_template_line_calendar)}"
+            layout="@layout/sub_menu_item"/>
+
+        <include
+            bind:item="@{item[MenuId.BG_GRID_POINT].setMenuIcon(R.drawable.ic_template_grid_point)}"
+            layout="@layout/sub_menu_item"/>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+</layout>

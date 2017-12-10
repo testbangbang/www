@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:appCompat="http://schemas.android.com/tools">
+
+    <data>
+
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:padding="14dp"
+            android:id="@+id/list"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"/>
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
+
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:paddingLeft="@dimen/homework_text_margin"
+            android:paddingRight="@dimen/homework_text_margin"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/total"
+                android:text="总数："
+                style="@style/homework_text" />
+
+            <TextView
+                android:id="@+id/has_answer"
+                android:text="已答："
+                style="@style/homework_text" />
+
+            <TextView
+                android:id="@+id/not_answer"
+                android:text="未答："
+                style="@style/homework_text" />
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"/>
+
+            <TextView
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/answer_record"
+                android:text="答题记录"
+                style="@style/homework_text" />
+
+            <TextView
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/submit"
+                android:text="提交"
+                style="@style/homework_text" />
+
+            <ImageView
+                android:layout_margin="@dimen/homework_text_margin"
+                android:src="@drawable/ic_note_prev_page_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:gravity="center"
+                android:minWidth="80dp"
+                android:id="@+id/page"
+                style="@style/homework_text" />
+
+            <ImageView
+                android:layout_margin="@dimen/homework_text_margin"
+                android:src="@drawable/ic_note_next_page_black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+    </LinearLayout>
+</layout>
