@@ -19,6 +19,7 @@ public class DocumentCheckRequest extends BaseNoteRequest {
         this.parentUniqueId = parentUniqueId;
         setPauseInputProcessor(false);
         setResumeInputProcessor(false);
+        setRender(false);
     }
 
     @Override

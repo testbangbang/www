@@ -25,7 +25,7 @@ public class NoteStrokeWidthChangeAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), penWidthChangeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(penWidthChangeRequest, e, true));
+                post(RequestFinishedEvent.create(penWidthChangeRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

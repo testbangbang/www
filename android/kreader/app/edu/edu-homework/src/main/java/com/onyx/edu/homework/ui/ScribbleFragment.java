@@ -1,6 +1,5 @@
 package com.onyx.edu.homework.ui;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
@@ -31,7 +30,7 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.DocumentCheckAction;
 import com.onyx.edu.homework.action.note.DocumentFlushAction;
@@ -41,6 +40,7 @@ import com.onyx.edu.homework.action.note.RemoveByPointListAction;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentScribbleBinding;
+import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.RequestFinishedEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
 import com.onyx.edu.homework.receiver.DeviceReceiver;
@@ -61,17 +61,15 @@ public class ScribbleFragment extends BaseFragment {
     private static final String TAG = "ScribbleFragment";
 
     private FragmentScribbleBinding binding;
-    private NoteViewHelper noteViewHelper;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private boolean fullUpdate = false;
     private TouchPoint erasePoint = null;
     private SurfaceHolder.Callback surfaceCallback;
     private Question question;
 
-    public static ScribbleFragment create(NoteViewHelper noteViewHelper, Question question) {
+    public static ScribbleFragment newInstance(Question question) {
         ScribbleFragment fragment = new ScribbleFragment();
         fragment.setQuestion(question);
-        fragment.setNoteViewHelper(noteViewHelper);
         return fragment;
     }
 
@@ -91,7 +89,7 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        noteViewHelper.register(this);
+        DataBundle.getInstance().register(this);
     }
 
     @Override
@@ -109,9 +107,8 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
-        noteViewHelper.unregister(this);
+        DataBundle.getInstance().unregister(this);
         unregisterDeviceReceiver();
-        flushDocument(false, false, null);
         super.onDestroy();
     }
 
@@ -122,7 +119,7 @@ public class ScribbleFragment extends BaseFragment {
                 public void surfaceCreated(SurfaceHolder holder) {
                     clearSurfaceView();
                     getNoteViewHelper().setView(getActivity(), getScribbleView(), inputCallback());
-                    checkDocument(question._id, Global.getInstance().getHomeworkId());
+                    checkDocument(question._id, DataBundle.getInstance().getHomeworkId());
                 }
 
                 @Override
@@ -141,7 +138,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void checkDocument(final String uniqueId, final String parentUniqueId) {
-        new DocumentCheckAction(uniqueId, parentUniqueId).execute(noteViewHelper, new BaseCallback() {
+        new DocumentCheckAction(uniqueId, parentUniqueId).execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentCheckRequest checkRequest = (DocumentCheckRequest) request;
@@ -151,19 +148,15 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void openDocument(final String uniqueId, final String parentUniqueId, boolean create) {
-        new DocumentOpenAction(uniqueId, parentUniqueId, create).execute(noteViewHelper, null);
+        new DocumentOpenAction(uniqueId, parentUniqueId, create).execute(getNoteViewHelper(), null);
     }
 
     public void setQuestion(Question question) {
         this.question = question;
     }
 
-    public void setNoteViewHelper(NoteViewHelper noteViewHelper) {
-        this.noteViewHelper = noteViewHelper;
-    }
-
     public NoteViewHelper getNoteViewHelper() {
-        return noteViewHelper;
+        return DataBundle.getInstance().getNoteViewHelper();
     }
 
     private NoteViewHelper.InputCallback inputCallback() {
@@ -248,7 +241,7 @@ public class ScribbleFragment extends BaseFragment {
         int currentVisualPageIndex = getShapeDataInfo().getCurrentPageIndex() + 1;
         //TODO:avoid change shapedatainfo structure,simple detect here.
         int totalPageCount = getShapeDataInfo().getPageCount() == 0 ? 1 : getShapeDataInfo().getPageCount();
-        getNoteViewHelper().post(new UpdatePagePositionEvent(currentVisualPageIndex + File.separator + totalPageCount));
+        DataBundle.getInstance().post(new UpdatePagePositionEvent(currentVisualPageIndex + File.separator + totalPageCount));
     }
 
     public void drawPage() {
@@ -350,7 +343,8 @@ public class ScribbleFragment extends BaseFragment {
 
     protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
-        RemoveByPointListAction removeByPointListAction = new RemoveByPointListAction(pointList);
+        final List<Shape> stash = getNoteViewHelper().detachStash();
+        RemoveByPointListAction removeByPointListAction = new RemoveByPointListAction(pointList, stash, binding.scribbleView);
         removeByPointListAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -435,7 +429,12 @@ public class ScribbleFragment extends BaseFragment {
         }
         final DocumentSaveAction saveAction = new
                 DocumentSaveAction(getActivity(), documentUniqueId, Constant.NOTE_TITLE, finishAfterSave, resumeDrawing);
-        saveAction.execute(getNoteViewHelper(), null);
+        saveAction.execute(getNoteViewHelper(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                DataBundle.getInstance().post(new DoneAnswerEvent(question));
+            }
+        });
     }
 
     public ShapeDataInfo getShapeDataInfo() {

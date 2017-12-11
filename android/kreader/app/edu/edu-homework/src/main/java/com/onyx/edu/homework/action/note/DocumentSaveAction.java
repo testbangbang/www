@@ -43,7 +43,7 @@ public class DocumentSaveAction extends BaseNoteAction {
                 hideLoadingDialog();
                 if (close) {
                     noteViewHelper.quit();
-                    noteViewHelper.post(new CloseScribbleEvent());
+                    post(new CloseScribbleEvent());
                 }
                 BaseCallback.invoke(baseCallback, saveRequest, e);
             }

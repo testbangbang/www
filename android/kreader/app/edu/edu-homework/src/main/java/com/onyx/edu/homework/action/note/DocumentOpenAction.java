@@ -29,7 +29,7 @@ public class DocumentOpenAction extends BaseNoteAction {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (!create) {
-                    noteViewHelper.post(RequestFinishedEvent.create(openRequest, e, true));
+                    post(RequestFinishedEvent.create(openRequest, e, true));
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }

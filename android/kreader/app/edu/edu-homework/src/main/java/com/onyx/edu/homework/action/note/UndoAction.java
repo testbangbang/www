@@ -12,13 +12,19 @@ import com.onyx.edu.homework.event.RequestFinishedEvent;
  */
 public class UndoAction extends BaseNoteAction {
 
+    private boolean resumeDrawing;
+
+    public UndoAction(boolean resumeDrawing) {
+        this.resumeDrawing = resumeDrawing;
+    }
+
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        final UndoRequest undoRequest = new UndoRequest();
+        final UndoRequest undoRequest = new UndoRequest(resumeDrawing);
         noteViewHelper.submit(getAppContext(), undoRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(undoRequest, e, true));
+                post(RequestFinishedEvent.create(undoRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

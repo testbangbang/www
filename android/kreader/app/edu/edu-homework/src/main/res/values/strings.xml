@@ -12,4 +12,11 @@
     <string name="question_type_str" formatted="false">【%s题】</string>
     <string name="saving">正在保存</string>
     <string name="ask_for_delete_page">你确定要删除该页面吗？</string>
+    <string name="total" formatted="false">总数：%d</string>
+    <string name="has_answer" formatted="false">已答：%d</string>
+    <string name="not_answer" formatted="false">未答：%d</string>
+    <string name="submit_tips">提交后不可修改，是否确认提交？</string>
+    <string name="continue_answer">继续答题</string>
+    <string name="submit">提交</string>
+    <string name="submit_success">提交成功</string>
 </resources>
