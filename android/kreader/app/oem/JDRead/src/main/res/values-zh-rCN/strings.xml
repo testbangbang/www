@@ -1,4 +1,6 @@
 <resources>
+    <string name="library">书架</string>
+    <string name="book_total" translatable="false">共%s本书</string>
     <string name="app_name">京东阅读</string>
     <string name="library_name">书架</string>
     <string name="shop_name">书店</string>
