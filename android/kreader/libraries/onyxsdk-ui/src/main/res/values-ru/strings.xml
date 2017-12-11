@@ -50,6 +50,8 @@
     <string name="every_5_pages">Каждые 5 страниц</string>
     <string name="every_7_pages">Каждые 7 страниц</string>
     <string name="every_9_pages">Каждые 9 страниц</string>
+    <string name="every_20_pages">Каждые 20 страниц</string>
+    <string name="every_50_pages">Каждые 50 страниц</string>
     <string name="never">Никогда</string>
     <string name="ok">Да</string>
     <string name="cancel">Отмена</string>

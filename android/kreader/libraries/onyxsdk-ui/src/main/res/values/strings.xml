@@ -52,6 +52,8 @@
     <string name="every_5_pages">Every 5 pages</string>
     <string name="every_7_pages">Every 7 pages</string>
     <string name="every_9_pages">Every 9 pages</string>
+    <string name="every_20_pages">Every 20 pages</string>
+    <string name="every_50_pages">Every 50 pages</string>
     <string name="never">Never</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
