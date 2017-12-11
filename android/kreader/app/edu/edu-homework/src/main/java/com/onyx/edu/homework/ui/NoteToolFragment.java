@@ -5,7 +5,6 @@ import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +15,9 @@ import android.widget.RelativeLayout;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.data.ScribbleMode;
-import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
-import com.onyx.android.sdk.ui.data.Menu;
 import com.onyx.android.sdk.ui.data.MenuClickEvent;
 import com.onyx.android.sdk.ui.data.MenuId;
 import com.onyx.android.sdk.ui.data.MenuItem;
@@ -31,7 +26,7 @@ import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.BR;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.ClearAllFreeShapesAction;
 import com.onyx.edu.homework.action.note.DocumentAddNewPageAction;
@@ -80,14 +75,14 @@ public class NoteToolFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_note_tool, container, false);
-        Global.getInstance().register(this);
+        DataBundle.getInstance().register(this);
         return binding.getRoot();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Global.getInstance().unregister(this);
+        DataBundle.getInstance().unregister(this);
     }
 
     @Override
@@ -291,7 +286,7 @@ public class NoteToolFragment extends BaseFragment {
     private void initMenu() {
         menuManager = new MenuManager();
         menuManager.addMainMenu(binding.mainMenuLayout,
-                Global.getInstance().getEventBus(),
+                DataBundle.getInstance().getEventBus(),
                 R.layout.scribble_main_menu,
                 BR.item,
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
@@ -353,7 +348,7 @@ public class NoteToolFragment extends BaseFragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         menuManager.addSubMenu(subMenuLayout,
-                Global.getInstance().getEventBus(),
+                DataBundle.getInstance().getEventBus(),
                 getSubLayoutId(parentId),
                 BR.item,
                 lp,

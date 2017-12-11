@@ -14,7 +14,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
@@ -44,7 +44,7 @@ public class HomeworkListActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_homework_list);
-        Global.getInstance().register(this);
+        DataBundle.getInstance().register(this);
         initView();
         handleIntent();
         homeworkRequest();
@@ -53,7 +53,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Global.getInstance().unregister(this);
+        DataBundle.getInstance().unregister(this);
     }
 
     private void initView() {
@@ -99,7 +99,7 @@ public class HomeworkListActivity extends BaseActivity {
             return;
         }
         String libraryId = homework.child._id;
-        Global.getInstance().setHomeworkId(libraryId);
+        DataBundle.getInstance().setHomeworkId(libraryId);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override

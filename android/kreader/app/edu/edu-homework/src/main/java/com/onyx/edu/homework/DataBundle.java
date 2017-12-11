@@ -13,15 +13,15 @@ import org.greenrobot.eventbus.EventBus;
  * Created by lxm on 2017/12/5.
  */
 
-public class Global {
+public class DataBundle {
 
-    private static final Global ourInstance = new Global();
+    private static final DataBundle ourInstance = new DataBundle();
 
-    public static Global getInstance() {
+    public static DataBundle getInstance() {
         return ourInstance;
     }
 
-    private Global() {
+    private DataBundle() {
         initCloudManager();
     }
 

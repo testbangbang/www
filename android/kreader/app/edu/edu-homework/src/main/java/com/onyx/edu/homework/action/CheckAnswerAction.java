@@ -5,10 +5,7 @@ import android.content.Context;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.edu.homework.Global;
 import com.onyx.edu.homework.base.BaseAction;
-import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.CheckAnswerRequest;
 
 import java.util.List;

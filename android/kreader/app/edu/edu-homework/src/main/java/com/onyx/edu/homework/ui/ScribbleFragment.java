@@ -1,6 +1,5 @@
 package com.onyx.edu.homework.ui;
 
-import android.app.Fragment;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
@@ -31,7 +30,7 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.DocumentCheckAction;
 import com.onyx.edu.homework.action.note.DocumentFlushAction;
@@ -92,7 +91,7 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Global.getInstance().register(this);
+        DataBundle.getInstance().register(this);
     }
 
     @Override
@@ -110,7 +109,7 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
-        Global.getInstance().unregister(this);
+        DataBundle.getInstance().unregister(this);
         unregisterDeviceReceiver();
         flushDocument(false, false, null);
         super.onDestroy();
@@ -123,7 +122,7 @@ public class ScribbleFragment extends BaseFragment {
                 public void surfaceCreated(SurfaceHolder holder) {
                     clearSurfaceView();
                     getNoteViewHelper().setView(getActivity(), getScribbleView(), inputCallback());
-                    checkDocument(question._id, Global.getInstance().getHomeworkId());
+                    checkDocument(question._id, DataBundle.getInstance().getHomeworkId());
                 }
 
                 @Override
@@ -249,7 +248,7 @@ public class ScribbleFragment extends BaseFragment {
         int currentVisualPageIndex = getShapeDataInfo().getCurrentPageIndex() + 1;
         //TODO:avoid change shapedatainfo structure,simple detect here.
         int totalPageCount = getShapeDataInfo().getPageCount() == 0 ? 1 : getShapeDataInfo().getPageCount();
-        Global.getInstance().post(new UpdatePagePositionEvent(currentVisualPageIndex + File.separator + totalPageCount));
+        DataBundle.getInstance().post(new UpdatePagePositionEvent(currentVisualPageIndex + File.separator + totalPageCount));
     }
 
     public void drawPage() {
@@ -440,7 +439,7 @@ public class ScribbleFragment extends BaseFragment {
         saveAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                Global.getInstance().post(new DoneAnswerEvent(question));
+                DataBundle.getInstance().post(new DoneAnswerEvent(question));
             }
         });
     }

@@ -6,7 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Constant;
@@ -46,7 +46,7 @@ public class AnswerActivity extends BaseActivity {
         toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, getNoteViewHelper());
         getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
-        Global.getInstance().register(this);
+        DataBundle.getInstance().register(this);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class AnswerActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Global.getInstance().unregister(this);
+        DataBundle.getInstance().unregister(this);
     }
 
     public NoteViewHelper getNoteViewHelper() {

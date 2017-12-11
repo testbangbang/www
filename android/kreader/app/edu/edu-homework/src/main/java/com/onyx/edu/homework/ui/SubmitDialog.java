@@ -12,7 +12,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.Question;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.HomeworkSubmitAction;
 import com.onyx.edu.homework.action.note.HomeworkPagesAnswerBase64ActionChain;
@@ -84,7 +84,7 @@ public class SubmitDialog extends BaseDialog {
         int width = (int) getContext().getResources().getDimension(R.dimen.scribble_view_width);
         int height = (int) getContext().getResources().getDimension(R.dimen.scribble_view_height);
         Rect size = new Rect(0, 0, width, height);
-        new HomeworkPagesAnswerBase64ActionChain(fillAnswers, size).execute(Global.getInstance().getNoteViewHelper(), new BaseCallback() {
+        new HomeworkPagesAnswerBase64ActionChain(fillAnswers, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
@@ -98,7 +98,7 @@ public class SubmitDialog extends BaseDialog {
     }
 
     private void submitImpl(List<HomeworkSubmitAnswer> totalAnswers) {
-        new HomeworkSubmitAction(Global.getInstance().getHomeworkId(), totalAnswers).execute(getContext(), new BaseCallback() {
+        new HomeworkSubmitAction(DataBundle.getInstance().getHomeworkId(), totalAnswers).execute(getContext(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {

@@ -22,7 +22,7 @@ import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.utils.Debug;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.HomeworkPagesRenderActionChain;
 import com.onyx.edu.homework.base.BaseFragment;
@@ -32,7 +32,6 @@ import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.utils.TextUtils;
 import com.onyx.edu.homework.view.Base64ImageParser;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -128,7 +127,7 @@ public class QuestionFragment extends BaseFragment {
                 }
                 if (isChecked) {
                     question.setDoneAnswer(true);
-                    Global.getInstance().post(new DoneAnswerEvent(question));
+                    DataBundle.getInstance().post(new DoneAnswerEvent(question));
                 }
                 option.setChecked(isChecked);
             }
