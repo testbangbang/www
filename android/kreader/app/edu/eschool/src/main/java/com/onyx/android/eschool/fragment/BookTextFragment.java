@@ -45,6 +45,7 @@ import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
+import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudContentListRequest;
 import com.onyx.android.sdk.data.request.cloud.v2.CloudThumbnailLoadRequest;
@@ -730,7 +731,7 @@ public class BookTextFragment extends Fragment {
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onLibraryEvent(BookLibraryEvent event) {
-        if (event.library != null) {
+        if (Library.isValid(event.library)) {
             if (event.library.getName().equals(fragmentName)) {
                 resetArgumentsBundle(getArguments(), fragmentName, event.library.getIdString());
                 loadData();

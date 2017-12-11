@@ -122,7 +122,8 @@ public class MainActivity extends BaseActivity {
 
     private void notifyDataChanged(List<Library> list) {
         for (Library library : list) {
-            if (library == null || StringUtils.isNullOrEmpty(library.getIdString())) {
+            if (!Library.isValid(library)) {
+                Log.e(getClass().getSimpleName(), "detected the invalid library");
                 continue;
             }
             addToLibraryMap(library);
