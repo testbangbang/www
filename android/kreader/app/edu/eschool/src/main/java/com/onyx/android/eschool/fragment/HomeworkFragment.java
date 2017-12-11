@@ -175,7 +175,7 @@ public class HomeworkFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadData(queryLimit, 0);
+        loadData(getQueryArgs(queryLimit, 0), true, null);
     }
 
     private void prevPage() {
@@ -235,25 +235,11 @@ public class HomeworkFragment extends Fragment {
     }
 
     private void refreshData() {
-        QueryBase args = getQueryArgs(queryLimit, 0);
+        final QueryBase args = getQueryArgs(queryLimit, 0);
         args.fetchPolicy = FetchPolicy.CLOUD_ONLY;
-        loadData(args, new BaseCallback() {
+        loadData(args, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                HomeworkListLoadRequest loadRequest = (HomeworkListLoadRequest) request;
-                notificationDataChanged(loadRequest.getQueryResult(), true);
-                gotoPage(0);
-            }
-        });
-    }
-
-    private void loadData(int limit, int offset) {
-        QueryBase args = getQueryArgs(limit, offset);
-        loadData(args, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                HomeworkListLoadRequest loadRequest = (HomeworkListLoadRequest) request;
-                notificationDataChanged(loadRequest.getQueryResult(), true);
                 gotoPage(0);
             }
         });
@@ -261,17 +247,11 @@ public class HomeworkFragment extends Fragment {
 
     private void loadMoreData() {
         QueryBase args = getQueryArgs(queryLimit, CollectionUtils.getSize(homeworkDataList));
-        loadData(args, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                HomeworkListLoadRequest loadRequest = (HomeworkListLoadRequest) request;
-                notificationDataChanged(loadRequest.getQueryResult(), false);
-            }
-        });
+        loadData(args, false, null);
     }
 
-    private void loadData(final QueryBase args, final BaseCallback callback) {
-        final HomeworkListLoadRequest loadRequest = new HomeworkListLoadRequest(args);
+    private void loadData(final QueryBase args, final boolean clearLocal, final BaseCallback callback) {
+        final HomeworkListLoadRequest loadRequest = new HomeworkListLoadRequest(args, clearLocal);
         getCloudManager().submitRequest(getContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -285,6 +265,7 @@ public class HomeworkFragment extends Fragment {
                     showTipsMessage(R.string.no_more_items);
                     return;
                 }
+                notificationDataChanged(loadRequest.getQueryResult(), clearLocal);
                 BaseCallback.invoke(callback, loadRequest, null);
             }
         });
