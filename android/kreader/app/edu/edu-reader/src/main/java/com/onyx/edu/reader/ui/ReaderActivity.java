@@ -1001,7 +1001,12 @@ public class ReaderActivity extends OnyxBaseActivity {
         if (value <= 0) {
             value = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT;
         }
-        ReaderDeviceManager.prepareInitialUpdate(LegacySdkDataUtils.getScreenUpdateGCInterval(this, value));
+        int settingValue = LegacySdkDataUtils.getScreenUpdateGCInterval(this, value);
+        if (settingValue < DialogScreenRefresh.DEFAULT_INTERVAL_COUNT) {
+            settingValue = value;
+            LegacySdkDataUtils.setScreenUpdateGCInterval(getApplicationContext(), settingValue);
+        }
+        ReaderDeviceManager.prepareInitialUpdate(settingValue);
     }
 
     private void prepareFrontLight() {
