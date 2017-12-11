@@ -24,6 +24,7 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
+import com.onyx.edu.homework.action.DoAnswerAction;
 import com.onyx.edu.homework.action.note.HomeworkPagesRenderActionChain;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
@@ -111,7 +112,7 @@ public class QuestionFragment extends BaseFragment {
 
     private CompoundButton createCompoundButton(final Question question, final QuestionOption option) {
         final boolean single = question.isSingleChoiceQuestion();
-        CompoundButton button = single ? new RadioButton(getActivity()) : new CheckBox(getActivity());
+        final CompoundButton button = single ? new RadioButton(getActivity()) : new CheckBox(getActivity());
         button.setText(Html.fromHtml(option.value, new Base64ImageParser(getActivity()), null));
         button.setTextSize(getResources().getDimension(R.dimen.question_option_text_size));
         button.setChecked(option.checked);
@@ -121,11 +122,15 @@ public class QuestionFragment extends BaseFragment {
                 if (single && isChecked) {
                     unCheckOption(question);
                 }
-                if (isChecked) {
-                    question.setDoneAnswer(true);
-                    DataBundle.getInstance().post(new DoneAnswerEvent(question));
-                }
                 option.setChecked(isChecked);
+                if (buttonView.isPressed()) {
+                    new DoAnswerAction(question, DataBundle.getInstance().getHomeworkId()).execute(getActivity(), new BaseCallback() {
+                        @Override
+                        public void done(BaseRequest request, Throwable e) {
+                            DataBundle.getInstance().post(new DoneAnswerEvent(question));
+                        }
+                    });
+                }
             }
         });
         return button;
