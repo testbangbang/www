@@ -34,7 +34,9 @@ public class GetPageUniqueIdsRequest extends BaseNoteRequest {
         pageUniqueMap = new HashMap<>();
         for (String docId : docIds) {
             NoteModel noteModel = NoteDataProvider.load(docId);
-            pageUniqueMap.put(docId, noteModel.getPageNameList().getPageNameList());
+            if (noteModel != null && noteModel.getPageNameList() != null) {
+                pageUniqueMap.put(docId, noteModel.getPageNameList().getPageNameList());
+            }
         }
     }
 

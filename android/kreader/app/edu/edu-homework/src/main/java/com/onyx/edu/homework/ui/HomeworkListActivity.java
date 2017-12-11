@@ -108,7 +108,7 @@ public class HomeworkListActivity extends BaseActivity {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                questions = actionChain.getHomeworkRequestModel().questions;
+                questions = actionChain.getQuestions();
                 initListView(questions);
             }
 
@@ -154,12 +154,7 @@ public class HomeworkListActivity extends BaseActivity {
         });
         updatePage(0);
         updateShowInfo();
-        new CheckAnswerAction(questions).execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                updateAnswerInfo();
-            }
-        });
+        checkAnswer();
     }
 
     private void updateShowInfo() {
@@ -168,11 +163,11 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Subscribe
     public void onDoneAnswerEvent(DoneAnswerEvent event) {
-        if (event.question.isChoiceQuestion()) {
-            updateAnswerInfo();
-            return;
-        }
-        new CheckAnswerAction(questions).execute(this, new BaseCallback() {
+        checkAnswer();
+    }
+
+    private void checkAnswer() {
+        new CheckAnswerAction(questions, DataBundle.getInstance().getHomeworkId()).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 updateAnswerInfo();

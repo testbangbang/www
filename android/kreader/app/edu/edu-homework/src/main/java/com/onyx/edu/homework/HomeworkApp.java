@@ -11,6 +11,7 @@ import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.raizlabs.android.dbflow.config.FlowConfig;
 import com.raizlabs.android.dbflow.config.FlowManager;
+import com.raizlabs.android.dbflow.config.HomeworkGeneratedDatabaseHolder;
 import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
 /**
@@ -43,6 +44,7 @@ public class HomeworkApp extends MultiDexApplication {
     public void initDataProvider() {
         FlowConfig.Builder builder = new FlowConfig.Builder(this);
         builder.addDatabaseHolder(ShapeGeneratedDatabaseHolder.class);
+        builder.addDatabaseHolder(HomeworkGeneratedDatabaseHolder.class);
         FlowManager.init(builder.build());
     }
 

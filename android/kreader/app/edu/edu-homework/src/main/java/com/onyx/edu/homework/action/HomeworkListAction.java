@@ -5,8 +5,12 @@ import android.content.Context;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkRequestModel;
+import com.onyx.android.sdk.data.model.Question;
 import com.onyx.edu.homework.base.BaseAction;
 import com.onyx.edu.homework.request.HomeworkListRequest;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by lxm on 2017/12/5.
@@ -15,7 +19,7 @@ import com.onyx.edu.homework.request.HomeworkListRequest;
 public class HomeworkListAction extends BaseAction {
 
     private String libraryId;
-    private HomeworkRequestModel homeworkRequestModel;
+    private List<Question> questions = new ArrayList<>();
 
     public HomeworkListAction(String libraryId) {
         this.libraryId = libraryId;
@@ -27,13 +31,16 @@ public class HomeworkListAction extends BaseAction {
         getCloudManager().submitRequest(context, listRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                homeworkRequestModel = listRequest.getHomeworkRequestModel();
+                HomeworkRequestModel homeworkRequestModel = listRequest.getHomeworkRequestModel();
+                if (homeworkRequestModel != null) {
+                    questions.addAll(homeworkRequestModel.questions);
+                }
                 baseCallback.done(request, e);
             }
         });
     }
 
-    public HomeworkRequestModel getHomeworkRequestModel() {
-        return homeworkRequestModel;
+    public List<Question> getQuestions() {
+        return questions;
     }
 }
