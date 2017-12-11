@@ -30,6 +30,7 @@ public class HomeworkPagesAnswerBase64ActionChain extends BaseNoteAction {
 
     @Override
     public void execute(NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
+        noteViewHelper.reset();
         if (answers == null || answers.isEmpty()) {
             return;
         }

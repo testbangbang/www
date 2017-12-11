@@ -41,7 +41,6 @@ import java.util.List;
 public class QuestionFragment extends BaseFragment {
 
     private FragmentQuestionBinding binding;
-    private NoteViewHelper noteViewHelper;
     private Question question;
 
     public static QuestionFragment newInstance(Question question) {
@@ -90,10 +89,7 @@ public class QuestionFragment extends BaseFragment {
     }
 
     public NoteViewHelper getNoteViewHelper() {
-        if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
-        }
-        return noteViewHelper;
+        return DataBundle.getInstance().getNoteViewHelper();
     }
 
     private void bindQuestionOption(RadioGroup group, Question question) {
@@ -162,7 +158,6 @@ public class QuestionFragment extends BaseFragment {
         int width = (int) getResources().getDimension(R.dimen.scribble_view_width);
         int height = (int) getResources().getDimension(R.dimen.scribble_view_height);
         Rect size = new Rect(0, 0, width, height);
-        Debug.d(getClass(), "loadScribbleImage: ");
         final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question._id, size);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override

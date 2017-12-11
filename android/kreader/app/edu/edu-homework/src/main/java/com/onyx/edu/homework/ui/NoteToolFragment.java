@@ -59,14 +59,12 @@ import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
 public class NoteToolFragment extends BaseFragment {
 
     private RelativeLayout subMenuLayout;
-    private NoteViewHelper noteViewHelper;
 
     private MenuManager menuManager;
     private FragmentNoteToolBinding binding;
 
-    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout, NoteViewHelper noteViewHelper) {
+    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout) {
         NoteToolFragment fragment = new NoteToolFragment();
-        fragment.setNoteViewHelper(noteViewHelper);
         fragment.setSubMenuLayout(subMenuLayout);
         return fragment;
     }
@@ -463,11 +461,7 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     public NoteViewHelper getNoteViewHelper() {
-        return noteViewHelper;
-    }
-
-    public void setNoteViewHelper(NoteViewHelper noteViewHelper) {
-        this.noteViewHelper = noteViewHelper;
+        return DataBundle.getInstance().getNoteViewHelper();
     }
 
     public void flushDocument(boolean render,

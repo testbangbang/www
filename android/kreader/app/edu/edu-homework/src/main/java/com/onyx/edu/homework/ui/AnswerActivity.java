@@ -27,7 +27,6 @@ public class AnswerActivity extends BaseActivity {
     private Question question;
     private ScribbleFragment scribbleFragment;
     private NoteToolFragment toolFragment;
-    private NoteViewHelper noteViewHelper = new NoteViewHelper();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,8 +41,9 @@ public class AnswerActivity extends BaseActivity {
         String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
         binding.questionType.setText(getString(R.string.question_type_str, questionType));
         binding.content.setText(TextUtils.fromHtml(question.content, new Base64ImageParser(this), null));
-        scribbleFragment = ScribbleFragment.newInstance(getNoteViewHelper(), question);
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, getNoteViewHelper());
+        DataBundle.getInstance().resetNoteViewHelper();
+        scribbleFragment = ScribbleFragment.newInstance(question);
+        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout);
         getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
         DataBundle.getInstance().register(this);
@@ -60,9 +60,6 @@ public class AnswerActivity extends BaseActivity {
         DataBundle.getInstance().unregister(this);
     }
 
-    public NoteViewHelper getNoteViewHelper() {
-        return noteViewHelper;
-    }
 
     @Override
     public void onBackPressed() {

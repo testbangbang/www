@@ -87,4 +87,8 @@ public class DataBundle {
         }
         return noteViewHelper;
     }
+
+    public void resetNoteViewHelper() {
+        getNoteViewHelper().reset();
+    }
 }

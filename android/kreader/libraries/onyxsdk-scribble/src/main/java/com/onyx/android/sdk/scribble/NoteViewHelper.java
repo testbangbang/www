@@ -480,6 +480,7 @@ public class NoteViewHelper {
         getNoteDocument().close(getContext());
         quit();
         recycleBitmap();
+        shapeDataInfo = null;
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {

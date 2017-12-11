@@ -61,17 +61,15 @@ public class ScribbleFragment extends BaseFragment {
     private static final String TAG = "ScribbleFragment";
 
     private FragmentScribbleBinding binding;
-    private NoteViewHelper noteViewHelper;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private boolean fullUpdate = false;
     private TouchPoint erasePoint = null;
     private SurfaceHolder.Callback surfaceCallback;
     private Question question;
 
-    public static ScribbleFragment newInstance(NoteViewHelper noteViewHelper, Question question) {
+    public static ScribbleFragment newInstance(Question question) {
         ScribbleFragment fragment = new ScribbleFragment();
         fragment.setQuestion(question);
-        fragment.setNoteViewHelper(noteViewHelper);
         return fragment;
     }
 
@@ -111,7 +109,6 @@ public class ScribbleFragment extends BaseFragment {
         Log.d(TAG, "onDestroy: ");
         DataBundle.getInstance().unregister(this);
         unregisterDeviceReceiver();
-        flushDocument(false, false, null);
         super.onDestroy();
     }
 
@@ -141,7 +138,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void checkDocument(final String uniqueId, final String parentUniqueId) {
-        new DocumentCheckAction(uniqueId, parentUniqueId).execute(noteViewHelper, new BaseCallback() {
+        new DocumentCheckAction(uniqueId, parentUniqueId).execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentCheckRequest checkRequest = (DocumentCheckRequest) request;
@@ -151,19 +148,15 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void openDocument(final String uniqueId, final String parentUniqueId, boolean create) {
-        new DocumentOpenAction(uniqueId, parentUniqueId, create).execute(noteViewHelper, null);
+        new DocumentOpenAction(uniqueId, parentUniqueId, create).execute(getNoteViewHelper(), null);
     }
 
     public void setQuestion(Question question) {
         this.question = question;
     }
 
-    public void setNoteViewHelper(NoteViewHelper noteViewHelper) {
-        this.noteViewHelper = noteViewHelper;
-    }
-
     public NoteViewHelper getNoteViewHelper() {
-        return noteViewHelper;
+        return DataBundle.getInstance().getNoteViewHelper();
     }
 
     private NoteViewHelper.InputCallback inputCallback() {
