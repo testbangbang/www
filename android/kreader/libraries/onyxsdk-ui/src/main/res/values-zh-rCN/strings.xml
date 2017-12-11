@@ -49,6 +49,8 @@
     <string name="every_5_pages">每5页</string>
     <string name="every_7_pages">每7页</string>
     <string name="every_9_pages">每9页</string>
+    <string name="every_20_pages">每20页</string>
+    <string name="every_50_pages">每50页</string>
     <string name="never">不全刷</string>
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
