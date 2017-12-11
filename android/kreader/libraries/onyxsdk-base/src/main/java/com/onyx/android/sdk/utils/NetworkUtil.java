@@ -145,4 +145,12 @@ public class NetworkUtil {
         return result;
     }
 
+    public static boolean enableWifiOpenAndDetect(Context context) {
+        if (!NetworkUtil.isWiFiConnected(context)) {
+            Device.currentDevice().enableWifiDetect(context);
+            NetworkUtil.enableWiFi(context, true);
+            return true;
+        }
+        return false;
+    }
 }

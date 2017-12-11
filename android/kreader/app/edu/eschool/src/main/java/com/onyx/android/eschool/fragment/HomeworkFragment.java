@@ -16,6 +16,7 @@ import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.databinding.FragmentHomeworkBinding;
 import com.onyx.android.eschool.databinding.ItemHomeworkBinding;
+import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -41,6 +42,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
 
@@ -235,6 +237,10 @@ public class HomeworkFragment extends Fragment {
     }
 
     private void refreshData() {
+        if (NetworkUtil.enableWifiOpenAndDetect(getContext().getApplicationContext())) {
+            ToastUtils.showToast(getContext(), R.string.open_wifi);
+            return;
+        }
         final QueryBase args = getQueryArgs(queryLimit, 0);
         args.fetchPolicy = FetchPolicy.CLOUD_ONLY;
         loadData(args, true, new BaseCallback() {
@@ -317,6 +323,23 @@ public class HomeworkFragment extends Fragment {
     private void gotoPage(int selectPage) {
         contentPageView.gotoPage(selectPage);
         updatePageIndicator();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDataRefreshEvent(DataRefreshEvent event) {
+        refreshData();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     private void processItemClick(int position) {
