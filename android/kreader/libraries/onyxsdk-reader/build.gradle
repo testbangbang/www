@@ -25,6 +25,8 @@ android {
         versionCode 1
         versionName artifact.version
 
+        multiDexEnabled true
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         sourceSets.main {
