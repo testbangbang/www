@@ -459,6 +459,11 @@ public class ReaderDataHolder {
         beforeSubmitRequest();
         reader.submitRequest(context, request, new BaseCallback() {
             @Override
+            public void beforeDone(BaseRequest request, Throwable e) {
+                BaseCallback.invokeBeforeDone(callback, request, e);
+            }
+
+            @Override
             public void done(BaseRequest request, Throwable e) {
                 callback.invoke(callback, request, e);
             }

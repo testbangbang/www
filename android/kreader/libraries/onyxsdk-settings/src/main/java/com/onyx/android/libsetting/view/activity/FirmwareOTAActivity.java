@@ -33,7 +33,6 @@ import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.DialogInformation;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
-import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.wifi.NetworkHelper;
 import com.onyx.android.sdk.utils.DeviceReceiver;
@@ -186,7 +185,23 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
         this.otaCheckingGuard = otaCheckingGuard;
     }
 
+    private boolean checkLocalUpdaterValid() {
+        String path = OTAManager.getLocalUpdatePagePath();
+        if (StringUtils.isNullOrEmpty(path)) {
+            return false;
+        }
+        cleanup();
+        showLocalUpdateDialog(path);
+        return true;
+    }
+
     private void checkUpdateFromLocalStorage(final BaseCallback callback) {
+        if (!Device.currentDevice.shouldVerifyUpdateModel()) {
+            if (!checkLocalUpdaterValid()) {
+                BaseCallback.invoke(callback, null, null);
+            }
+            return;
+        }
         final FirmwareLocalCheckLegalityRequest localRequest = OTAManager.localFirmwareCheckRequest(this);
         OTAManager.sharedInstance().submitRequest(this, localRequest, new BaseCallback() {
             @Override

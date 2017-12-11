@@ -181,6 +181,12 @@ public class RK32XXDevice extends BaseDevice {
     private static Method sMethodStartTpd;
     private static Method sMethodEnableTpd;
 
+    private static Method sMethodSetQRShowConfig;
+    private static Method sMethodSetInfoShowConfig;
+
+    private static Method sMethodEnableCapacitanceTp;
+    private static Method sMethodEnableElectromagneticTp;
+
     private RK32XXDevice() {
     }
 
@@ -786,6 +792,8 @@ public class RK32XXDevice extends BaseDevice {
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
             sMethodSetUpdListSize = ReflectUtil.getMethodSafely(cls, "setUpdListSize", int.class);
             sMethodInSystemFastMode = ReflectUtil.getMethodSafely(cls, "inSystemFastMode");
+            sMethodSetQRShowConfig = ReflectUtil.getMethodSafely(cls,"setQRShowConfig",int.class,int.class,int.class);
+            sMethodSetInfoShowConfig = ReflectUtil.getMethodSafely(cls,"setInfoShowConfig",int.class,int.class,int.class);
 
             sMethodSetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "setVCom", Context.class, int.class, String.class);
             sMethodGetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "getVCom", String.class);
@@ -793,6 +801,8 @@ public class RK32XXDevice extends BaseDevice {
             sMethodReadSystemConfig = ReflectUtil.getMethodSafely(deviceControllerClass, "readSystemConfig", String.class);
             sMethodSaveSystemConfig = ReflectUtil.getMethodSafely(deviceControllerClass, "saveSystemConfig", String.class, String.class);
             sMethodUpdateMetadataDB = ReflectUtil.getMethodSafely(deviceControllerClass, "updateMetadataDB", String.class, String.class);
+            sMethodEnableCapacitanceTp = ReflectUtil.getMethodSafely(deviceControllerClass, "enableCapacitanceTp", boolean.class);
+            sMethodEnableElectromagneticTp = ReflectUtil.getMethodSafely(deviceControllerClass, "enableElectromagneticTp", boolean.class);
 
             // signature of "public void enableA2()"
             sMethodEnableA2 = ReflectUtil.getMethodSafely(cls, "enableA2");
@@ -1140,5 +1150,35 @@ public class RK32XXDevice extends BaseDevice {
             return false;
         }
         return value.booleanValue();
+    }
+
+    @Override
+    public void setQRShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetQRShowConfig, null, orientation, startX, startY);
+    }
+
+    @Override
+    public void setInfoShowConfig(int orientation, int startX, int startY) {
+        ReflectUtil.invokeMethodSafely(sMethodSetInfoShowConfig, null, orientation, startX, startY);
+    }
+
+    @Override
+    public String getUpgradePackageName() {
+        return "update.upx";
+    }
+
+    @Override
+    public boolean shouldVerifyUpdateModel() {
+        return false;
+    }
+
+    @Override
+    public void enableCapacitanceTp(boolean enable) {
+        invokeDeviceControllerMethod(null, sMethodEnableCapacitanceTp, enable);
+    }
+
+    @Override
+    public void enableElectromagneticTp(boolean enable) {
+        invokeDeviceControllerMethod(null, sMethodEnableElectromagneticTp, enable);
     }
 }

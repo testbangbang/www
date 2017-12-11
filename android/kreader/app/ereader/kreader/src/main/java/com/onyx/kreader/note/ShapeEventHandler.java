@@ -155,6 +155,10 @@ public class ShapeEventHandler {
     }
 
     public void onDrawingTouchDown(MotionEvent motionEvent) {
+        if (noteManager.isInSelection()) {
+            return;
+        }
+
         final TouchPoint touchPoint = new TouchPoint(motionEvent);
         lastPageInfo = hitTest(touchPoint.getX(), touchPoint.getY());
         if (lastPageInfo == null) {
@@ -261,6 +265,7 @@ public class ShapeEventHandler {
                 }
                 break;
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
                 if (noteManager.isEraser()) {
                     onErasingTouchUp(e.getMotionEvent());
                 } else {

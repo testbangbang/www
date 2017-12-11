@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
+
+
+    <LinearLayout
+        android:id="@+id/layout_sub_menu"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:background="@android:color/white"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingLeft="5dp" />
+
+    <View
+        android:id="@+id/subMenuTopBoundary"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@id/layout_sub_menu"
+        android:background="@android:color/black" />
+
+    <View
+        android:id="@+id/dismiss_zone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_below="@id/subMenuTopBoundary"
+        android:background="@android:color/transparent" />
+</merge>

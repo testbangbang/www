@@ -517,7 +517,7 @@ public abstract class AlFormat {
     }
 
     public void removeCover() {
-        if (size > 0 && par0.size() > 2 && par0.get(0).length == 3 && par0.get(0).ptext[1] == LEVEL2_COVERTOTEXT) {
+        if (size > 0 && par0.size() >= 2 && par0.get(0).length == 3 && par0.get(0).ptext[1] == LEVEL2_COVERTOTEXT) {
             par0.get(1).start = 0;
 
             char tmp[] = new char[par0.get(1).length + 3];

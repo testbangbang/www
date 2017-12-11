@@ -9,6 +9,7 @@ import com.google.zxing.WriterException;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.IMX6Device;
 import com.onyx.android.sdk.device.RK3026Device;
+import com.onyx.android.sdk.device.RK32XXDevice;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 
@@ -49,6 +50,8 @@ public class EduDeviceInfoUtil {
             return "/sys/devices/platform/onyx_misc.0/vcom_value";
         } else if (Device.currentDevice() instanceof IMX6Device) {
             return "/sys/class/hwmon/hwmon0/device/vcom_value";
+        } else if (Device.currentDevice() instanceof RK32XXDevice) {
+            return "/sys/class/hwmon/hwmon1/device/vcom_value";
         }
         return null;
     }

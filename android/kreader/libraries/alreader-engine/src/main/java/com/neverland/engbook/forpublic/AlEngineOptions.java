@@ -2,9 +2,7 @@ package com.neverland.engbook.forpublic;
 
 import android.content.Context;
 
-
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_HYPH_LANG;
-import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_DPI;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_PAGES_COUNT;
 
 /**

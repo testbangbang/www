@@ -177,7 +177,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<SpanScribbleActivity> action = new RedoAction<>();
+                final RedoAction<SpanScribbleActivity> action = new RedoAction<>(shouldResume());
                 action.execute(SpanScribbleActivity.this);
             }
         });
@@ -187,7 +187,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<SpanScribbleActivity> action = new UndoAction<>();
+                final UndoAction<SpanScribbleActivity> action = new UndoAction<>(shouldResume());
                 action.execute(SpanScribbleActivity.this);
             }
         });

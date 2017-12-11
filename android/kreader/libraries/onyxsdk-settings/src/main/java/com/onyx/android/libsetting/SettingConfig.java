@@ -169,11 +169,7 @@ public class SettingConfig {
             currentDeviceType = DeviceType.RK;
             return;
         }
-        if (CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.M)) {
-            currentDeviceType = DeviceType.IMX7;
-        } else {
-            currentDeviceType = DeviceType.IMX6;
-        }
+        currentDeviceType = DeviceType.IMX6;
     }
 
     @Nullable
@@ -196,7 +192,8 @@ public class SettingConfig {
                         Constant.IMX6_ICS_BASED_CONFIG_NAME;
                 break;
             case DeviceType.RK:
-                name = Constant.RK3026_BASED_CONFIG_NAME;
+                name = CompatibilityUtil.apiLevelCheck(Build.VERSION_CODES.M) ? Constant.RK32XX_BASED_CONFIG_NAME :
+                        Constant.RK3026_BASED_CONFIG_NAME;
                 break;
         }
         return objectFromRawResource(context, buildJsonConfigName(name));

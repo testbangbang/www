@@ -61,6 +61,7 @@ import com.onyx.kreader.note.actions.RemoveShapesByTouchPointListAction;
 import com.onyx.kreader.note.actions.RenderStashShapesInBackgroundAction;
 import com.onyx.kreader.note.actions.ResumeDrawingAction;
 import com.onyx.kreader.note.actions.StopNoteActionChain;
+import com.onyx.kreader.note.actions.UpdateHostViewAction;
 import com.onyx.kreader.note.data.ReaderNoteDataInfo;
 import com.onyx.kreader.note.request.ReaderNoteRenderRequest;
 import com.onyx.kreader.ui.actions.BackwardAction;
@@ -678,6 +679,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShowTabWidget(final ShowTabWidgetEvent event) {
+        if (!ReaderTabManager.supportMultipleTabs()) {
+            return;
+        }
         buttonShowTabWidget.setVisibility(View.GONE);
         getReaderDataHolder().setButtonShowTabWidgetVisible(false);
         ReaderTabHostBroadcastReceiver.sendShowTabWidgetEvent(this);
@@ -685,6 +689,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onHideTabWidget(final HideTabWidgetEvent event) {
+        if (!ReaderTabManager.supportMultipleTabs()) {
+            return;
+        }
         buttonShowTabWidget.setVisibility(View.VISIBLE);
         getReaderDataHolder().setButtonShowTabWidgetVisible(true);
         ReaderTabHostBroadcastReceiver.sendHideTabWidgetEvent(this);
@@ -913,7 +920,9 @@ public class ReaderActivity extends OnyxBaseActivity {
         final Rect visibleDrawRect = new Rect();
         surfaceView.getLocalVisibleRect(visibleDrawRect);
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, visibleDrawRect, new ArrayList<RectF>(), rotation);
+
+        UpdateHostViewAction action = new UpdateHostViewAction(surfaceView, visibleDrawRect, new ArrayList<RectF>(), rotation);
+        action.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe
@@ -971,7 +980,8 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         int rotation =  getWindowManager().getDefaultDisplay().getRotation();
-        getReaderDataHolder().getNoteManager().updateHostView(this, surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
+        UpdateHostViewAction action = new UpdateHostViewAction(surfaceView, rect, getExcludeRect(event.getExcludeRects()), rotation);
+        action.execute(getReaderDataHolder(), null);
     }
 
     private List<RectF> getExcludeRect(final List<RectF> scribbleMenuExcludeRect) {
@@ -1059,7 +1069,9 @@ public class ReaderActivity extends OnyxBaseActivity {
 
         final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
                 getReaderDataHolder().getVisiblePages(),
-                event.getTouchPointList());
+                event.getTouchPointList(),
+                getReaderDataHolder().getNoteManager().detachShapeStash(),
+                surfaceView);
         action.execute(getReaderDataHolder(), null);
     }
 

@@ -58,4 +58,6 @@
     <dimen name="message_notification_layout_text_margin_left_right">8dp</dimen>
     <dimen name="message_notification_layout_order_text_size">26sp</dimen>
 
+    <dimen name="application_item_image_size">120dp</dimen>
+    <dimen name="application_item_text_size">24sp</dimen>
 </resources>

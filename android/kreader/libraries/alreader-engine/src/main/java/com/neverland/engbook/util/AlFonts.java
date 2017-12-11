@@ -64,6 +64,17 @@ public class AlFonts {
 		multiplexer = opt.multiplexer;
 	}
 
+	public boolean isLoaded(String fontName) {
+		return allfontsMaps.get(fontName) != null;
+	}
+
+	public void addNewFont(TTFInfo ttfInfo, File file) {
+		addToCollection(ttfInfo, file);
+		allfontsMaps.clear();
+		for (int i = 0; i < allfonts.size(); i++)
+			allfontsMaps.put(allfonts.get(i).aName, i);
+	}
+
 	public void	modifyPaint(long				old_style,
 		    long				new_style, 
 			AlProfileOptions	profile,
@@ -152,7 +163,7 @@ public class AlFonts {
 				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
 
 				if (calc.mainWidth[EM_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
-					calc.mainWidth[EM_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
+					calc.mainWidth[EM_SPECIAL_CHAR] = (char) text_size;//(char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
 				fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR];
 			} else {
 				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);

@@ -21,3 +21,5 @@
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
 -keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$* { *; }
 -keep class com.onyx.android.sdk.scribble.api.** { public *; }
+
+-keep class com.onyx.android.sdk.scribble.shape.** { public *; }

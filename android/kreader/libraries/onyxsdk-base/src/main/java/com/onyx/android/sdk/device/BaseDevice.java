@@ -493,4 +493,17 @@ public class BaseDevice {
         return false;
     }
 
+    public String getUpgradePackageName() {
+        return "update.zip";
+    }
+
+    public boolean shouldVerifyUpdateModel() {
+        return true;
+    }
+
+    public void enableCapacitanceTp(boolean enable) {
+    }
+
+    public void enableElectromagneticTp(boolean enable) {
+    }
 }

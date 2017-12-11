@@ -29,6 +29,7 @@ import com.onyx.android.note.NoteApplication;
 import com.onyx.android.note.R;
 import com.onyx.android.note.actions.common.CheckNoteNameLegalityAction;
 import com.onyx.android.note.actions.scribble.ClearAllFreeShapesAction;
+import com.onyx.android.note.actions.scribble.DocumentCreateAction;
 import com.onyx.android.note.actions.scribble.DocumentDiscardAction;
 import com.onyx.android.note.actions.scribble.DocumentFlushAction;
 import com.onyx.android.note.actions.scribble.DocumentSaveAction;
@@ -642,7 +643,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<ScribbleActivity> action = new RedoAction<>();
+                final RedoAction<ScribbleActivity> action = new RedoAction<>(shouldResume());
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -658,7 +659,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<ScribbleActivity> action = new UndoAction<>();
+                final UndoAction<ScribbleActivity> action = new UndoAction<>(shouldResume());
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
@@ -932,8 +933,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
         setBackgroundType(type);
         final NoteBackgroundChangeAction<ScribbleActivity> changeBGAction =
-                new NoteBackgroundChangeAction<>(getBackgroundType(), !getNoteViewHelper().inUserErasing() &&
-                        ShapeFactory.createShape(shapeDataInfo.getCurrentShapeType()).supportDFB());
+                new NoteBackgroundChangeAction<>(getBackgroundType(), shouldResume());
         changeBGAction.execute(ScribbleActivity.this, null);
     }
 
@@ -978,6 +978,26 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
         if (isPictureEditMode){
             onBackgroundChanged(NoteBackgroundType.FILE);
+        }
+    }
+
+    @Override
+    protected void handleDocumentCreate(final String uniqueId, final String parentId) {
+        final DocumentCreateAction<BaseScribbleActivity> action = new DocumentCreateAction<>(uniqueId, parentId);
+        action.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                action.dismissLoadingDialog();
+                onRequestFinished((BaseNoteRequest) request, true);
+                checkCustomDefaultWidth();
+            }
+        });
+    }
+
+    private void checkCustomDefaultWidth() {
+        NoteAppConfig config = NoteAppConfig.sharedInstance(this);
+        if (config.isCustomDefaultWidth()) {
+            onStrokeWidthChanged(config.getCustomDefaultWidth(), null);
         }
     }
 

@@ -5,7 +5,7 @@ ext.gitBranch = { ->
 ext.gitVersionCode = { path ->
     String s = ('bash +x ./version_code_from_git.sh ' + path).execute().text.trim();
     if (s.isInteger()) {
-        int code = 3000 + s.toInteger();
+        int code = 6000 + s.toInteger();
         println('./version_code_from_git.sh ' + path + ' -> ' + code)
         return code
     }

@@ -12,6 +12,12 @@ import com.onyx.android.sdk.scribble.request.shape.RedoRequest;
 public class RedoAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
     private RedoRequest redoRequest;
 
+    public RedoAction(boolean resumeDrawing) {
+        this.resumeDrawing = resumeDrawing;
+    }
+
+    private boolean resumeDrawing;
+
     public void execute(final T activity) {
         execute(activity, new BaseCallback() {
             @Override
@@ -23,7 +29,7 @@ public class RedoAction<T extends BaseScribbleActivity> extends BaseNoteAction<T
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        redoRequest = new RedoRequest();
+        redoRequest = new RedoRequest(resumeDrawing);
         activity.submitRequest(redoRequest, callback);
     }
 

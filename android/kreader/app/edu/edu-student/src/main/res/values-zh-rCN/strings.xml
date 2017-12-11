@@ -44,4 +44,8 @@
 
     <string name="text_recommend_person">推荐人:</string>
 
+    <string name="application_list">应用列表</string>
+    <string name="menu_app_npi_clear">清除测试应用</string>
+    <string name="settings">设置</string>
+
 </resources>
