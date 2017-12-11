@@ -3,8 +3,6 @@ package com.onyx.edu.reader.ui.handler;
 
 import android.content.DialogInterface;
 
-import com.onyx.android.sdk.api.device.epd.EpdController;
-import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
@@ -38,26 +36,22 @@ public class ReadingHandler extends BaseHandler {
         if (deviceConfig.isAskForClose()) {
             readerDataHolder.postDialogUiChangedEvent(true);
             postConfirmDialogOpenEvent(readerDataHolder, true);
-            EpdController.waitForUpdateFinished();
             OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(), readerDataHolder.getContext().getString(R.string.sure_exit),
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EpdController.waitForUpdateFinished();
                             postQuitEvent(readerDataHolder);
                         }
                     },
                     new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            EpdController.waitForUpdateFinished();
                             postConfirmDialogOpenEvent(readerDataHolder, false);
                         }
                     })
                     .setOnCloseListener(new DialogInterface.OnDismissListener() {
                         @Override
                         public void onDismiss(DialogInterface dialog) {
-                            EpdController.waitForUpdateFinished();
                             if (readerDataHolder.inNoteWritingProvider()) {
                                 readerDataHolder.postDialogUiChangedEvent(false);
                             }
