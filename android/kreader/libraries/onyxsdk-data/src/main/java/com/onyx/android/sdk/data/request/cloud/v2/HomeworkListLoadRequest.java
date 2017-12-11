@@ -34,13 +34,14 @@ import retrofit2.Response;
  * Created by suicheng on 2017/11/2.
  */
 public class HomeworkListLoadRequest extends BaseCloudRequest {
-    private static final String TAG = "HomeworkListLoadRequest";
 
     private QueryBase queryArgs;
     private QueryResult<Homework> queryResult = new QueryResult<>();
+    private boolean clearLocal = false;
 
-    public HomeworkListLoadRequest(QueryBase queryArgs) {
+    public HomeworkListLoadRequest(QueryBase queryArgs, boolean clearLocal) {
         this.queryArgs = queryArgs;
+        this.clearLocal = clearLocal;
     }
 
     public QueryResult<Homework> getQueryResult() {
@@ -121,7 +122,9 @@ public class HomeworkListLoadRequest extends BaseCloudRequest {
 
     private void saveToLocal(QueryResult<Homework> result) {
         if (QueryResult.isValidQueryResult(result) && result.isFetchFromCloud()) {
-            clearTable();
+            if (clearLocal) {
+                clearTable();
+            }
             saveToLocal(result.list);
         }
     }
@@ -140,7 +143,7 @@ public class HomeworkListLoadRequest extends BaseCloudRequest {
         try {
             StoreUtils.saveToLocal(ContentDatabase.class, cloudList);
         } catch (Exception e) {
-            Log.e(TAG, "saveToLocal", e);
+            Log.e(getClass().getSimpleName(), "saveToLocal", e);
         }
     }
 }

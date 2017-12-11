@@ -41,4 +41,13 @@ public class Homework extends BaseData {
 
     public Date beginTime;
     public Date endTime;
+
+    @Override
+    public void beforeSave() {
+        if (getCreatedAt() == null) {
+            Date now = new Date();
+            setCreatedAt(now);
+            setUpdatedAt(now);
+        }
+    }
 }
