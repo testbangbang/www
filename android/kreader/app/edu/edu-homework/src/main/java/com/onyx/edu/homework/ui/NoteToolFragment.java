@@ -274,7 +274,7 @@ public class NoteToolFragment extends BaseFragment {
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new UndoAction().execute(getNoteViewHelper(), null);
+                new UndoAction(shouldResume()).execute(getNoteViewHelper(), null);
             }
         });
     }
@@ -283,7 +283,7 @@ public class NoteToolFragment extends BaseFragment {
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new RedoAction().execute(getNoteViewHelper(), null);
+                new RedoAction(shouldResume()).execute(getNoteViewHelper(), null);
             }
         });
     }

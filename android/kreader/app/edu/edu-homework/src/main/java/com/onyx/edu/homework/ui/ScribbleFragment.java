@@ -351,7 +351,8 @@ public class ScribbleFragment extends BaseFragment {
 
     protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
-        RemoveByPointListAction removeByPointListAction = new RemoveByPointListAction(pointList);
+        final List<Shape> stash = getNoteViewHelper().detachStash();
+        RemoveByPointListAction removeByPointListAction = new RemoveByPointListAction(pointList, stash, binding.scribbleView);
         removeByPointListAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
