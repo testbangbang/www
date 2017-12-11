@@ -4,4 +4,9 @@
     <dimen name="model_item_cover_height">193dp</dimen>
     <dimen name="page_indicator_layout_margin">10dp</dimen>
     <dimen name="rectangle_stroke_width">1dp</dimen>
+    <dimen name="function_bar_text_size">18sp</dimen>
+    <dimen name="level_one_heading_font">22sp</dimen>
+    <dimen name="level_two_heading_font">18sp</dimen>
+    <dimen name="level_three_heading_font">16sp</dimen>
+    <dimen name="line_width">1dp</dimen>
 </resources>

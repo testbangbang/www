@@ -243,14 +243,6 @@ public class LibraryFragment extends BaseFragment {
         return libraryBinding.contentPageView;
     }
 
-    @Override
-    public boolean onKeyBack() {
-        if (processBackRequest()) {
-            return true;
-        }
-        return super.onKeyBack();
-    }
-
     private boolean processBackRequest() {
         if (isMultiSelectionMode()) {
             quitMultiSelectionMode();
