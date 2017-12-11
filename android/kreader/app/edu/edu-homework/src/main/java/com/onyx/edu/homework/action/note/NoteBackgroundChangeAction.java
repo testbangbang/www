@@ -28,7 +28,7 @@ public class NoteBackgroundChangeAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), bgChangeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(bgChangeRequest, e, true));
+                post(RequestFinishedEvent.create(bgChangeRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

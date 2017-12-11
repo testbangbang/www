@@ -118,7 +118,6 @@ public class NoteViewHelper {
     private volatile boolean isDrawing = false;
     private boolean enableTouchEvent = true;
     private Context context;
-    private EventBus eventBus;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
 
     private Rect customLimitRect = null;
@@ -141,31 +140,12 @@ public class NoteViewHelper {
         this.context = context.getApplicationContext();
     }
 
-    public EventBus getEventBus() {
-        if (eventBus == null) {
-            eventBus = new EventBus();
-        }
-        return eventBus;
-    }
-
     public ShapeDataInfo getShapeDataInfo() {
         return shapeDataInfo;
     }
 
     public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
-    }
-
-    public void register(Object subscriber) {
-        getEventBus().register(subscriber);
-    }
-
-    public void unregister(Object subscriber) {
-        getEventBus().unregister(subscriber);
-    }
-
-    public void post(Object event) {
-        getEventBus().post(event);
     }
 
     public SurfaceView getView() {
@@ -494,6 +474,12 @@ public class NoteViewHelper {
         if (renderBitmapWrapper != null) {
             renderBitmapWrapper.recycleBitmap();
         }
+    }
+
+    public void reset() {
+        getNoteDocument().close(getContext());
+        quit();
+        recycleBitmap();
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {

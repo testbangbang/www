@@ -18,7 +18,7 @@ public class RedoAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), redoRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(redoRequest, e, true));
+                post(RequestFinishedEvent.create(redoRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

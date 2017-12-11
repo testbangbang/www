@@ -42,4 +42,8 @@ public abstract class BaseNoteAction {
     public static Context getAppContext() {
         return context;
     }
+
+    public static void post(Object event) {
+        Global.getInstance().post(event);
+    }
 }

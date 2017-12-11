@@ -41,6 +41,7 @@ import com.onyx.edu.homework.action.note.RemoveByPointListAction;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentScribbleBinding;
+import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.RequestFinishedEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
 import com.onyx.edu.homework.receiver.DeviceReceiver;
@@ -68,7 +69,7 @@ public class ScribbleFragment extends BaseFragment {
     private SurfaceHolder.Callback surfaceCallback;
     private Question question;
 
-    public static ScribbleFragment create(NoteViewHelper noteViewHelper, Question question) {
+    public static ScribbleFragment newInstance(NoteViewHelper noteViewHelper, Question question) {
         ScribbleFragment fragment = new ScribbleFragment();
         fragment.setQuestion(question);
         fragment.setNoteViewHelper(noteViewHelper);
@@ -91,7 +92,7 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        noteViewHelper.register(this);
+        Global.getInstance().register(this);
     }
 
     @Override
@@ -109,7 +110,7 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onDestroy() {
         Log.d(TAG, "onDestroy: ");
-        noteViewHelper.unregister(this);
+        Global.getInstance().unregister(this);
         unregisterDeviceReceiver();
         flushDocument(false, false, null);
         super.onDestroy();
@@ -248,7 +249,7 @@ public class ScribbleFragment extends BaseFragment {
         int currentVisualPageIndex = getShapeDataInfo().getCurrentPageIndex() + 1;
         //TODO:avoid change shapedatainfo structure,simple detect here.
         int totalPageCount = getShapeDataInfo().getPageCount() == 0 ? 1 : getShapeDataInfo().getPageCount();
-        getNoteViewHelper().post(new UpdatePagePositionEvent(currentVisualPageIndex + File.separator + totalPageCount));
+        Global.getInstance().post(new UpdatePagePositionEvent(currentVisualPageIndex + File.separator + totalPageCount));
     }
 
     public void drawPage() {
@@ -435,7 +436,12 @@ public class ScribbleFragment extends BaseFragment {
         }
         final DocumentSaveAction saveAction = new
                 DocumentSaveAction(getActivity(), documentUniqueId, Constant.NOTE_TITLE, finishAfterSave, resumeDrawing);
-        saveAction.execute(getNoteViewHelper(), null);
+        saveAction.execute(getNoteViewHelper(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                Global.getInstance().post(new DoneAnswerEvent(question));
+            }
+        });
     }
 
     public ShapeDataInfo getShapeDataInfo() {

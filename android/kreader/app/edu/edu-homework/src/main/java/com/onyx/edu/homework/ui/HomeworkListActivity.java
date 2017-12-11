@@ -1,48 +1,32 @@
 package com.onyx.edu.homework.ui;
 
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.RecyclerView;
-import android.text.Html;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.ui.view.CommonViewHolder;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.Global;
 import com.onyx.edu.homework.R;
+import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
-import com.onyx.edu.homework.action.note.PageListRenderActionChain;
 import com.onyx.edu.homework.base.BaseActivity;
-import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
-import com.onyx.edu.homework.utils.TextUtils;
-import com.onyx.edu.homework.view.Base64ImageParser;
+import com.onyx.edu.homework.event.DoneAnswerEvent;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -54,14 +38,51 @@ public class HomeworkListActivity extends BaseActivity {
     private ActivityHomeworkListBinding binding;
     private List<Question> questions;
     private Homework homework;
-    private NoteViewHelper noteViewHelper;
+    private List<QuestionFragment> fragments = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_homework_list);
+        Global.getInstance().register(this);
+        initView();
         handleIntent();
         homeworkRequest();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Global.getInstance().unregister(this);
+    }
+
+    private void initView() {
+        binding.prevPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int prev = binding.list.getCurrentItem() - 1;
+                prev = Math.max(0, prev);
+                binding.list.setCurrentItem(prev,false);
+            }
+        });
+        binding.nextPage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int next = binding.list.getCurrentItem() + 1;
+                next = Math.min(fragments.size() - 1, next);
+                binding.list.setCurrentItem(next,false);
+            }
+        });
+        binding.total.setText(getString(R.string.total, 0));
+        binding.hasAnswer.setText(getString(R.string.has_answer, 0));
+        binding.notAnswer.setText(getString(R.string.not_answer, 0));
+        binding.submit.setText(R.string.submit);
+        binding.submit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SubmitDialog(HomeworkListActivity.this, questions).show();
+            }
+        });
     }
 
     private void handleIntent() {
@@ -72,18 +93,12 @@ public class HomeworkListActivity extends BaseActivity {
         homework = JSON.parseObject(extraData, Homework.class);
     }
 
-    public NoteViewHelper getNoteViewHelper() {
-        if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
-        }
-        return noteViewHelper;
-    }
-
     private void homeworkRequest() {
-        String libraryId = "5a276546299dfa4f05a6e85f";
-        if (homework != null) {
-            libraryId = homework.child._id;
+        if (homework == null || homework.child == null) {
+            System.exit(0);
+            return;
         }
+        String libraryId = homework.child._id;
         Global.getInstance().setHomeworkId(libraryId);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
@@ -104,68 +119,88 @@ public class HomeworkListActivity extends BaseActivity {
         if (questions == null) {
             return;
         }
-        binding.list.setAdapter(new PageRecyclerView.PageAdapter() {
+        for (Question question : questions) {
+            fragments.add(QuestionFragment.newInstance(question));
+        }
+        binding.list.setPagingEnabled(false);
+        binding.list.setUseKeyPage(true);
+        binding.list.setUseGesturesPage(true);
+        binding.list.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
-            public int getRowCount() {
-                return 1;
+            public QuestionFragment getItem(int position) {
+                return fragments.get(position);
             }
 
             @Override
-            public int getColumnCount() {
-                return 1;
-            }
-
-            @Override
-            public int getDataCount() {
-                return questions == null ? 0 : questions.size();
-            }
-
-            @Override
-            public RecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-                return new CommonViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.question_item, null));
-            }
-
-            @Override
-            public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-                final Question question = questions.get(position);
-                final CommonViewHolder viewHolder = (CommonViewHolder) holder;
-                int questionIndex = Math.max(question.QuesType - 1, 0);
-                String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
-                viewHolder.setText(R.id.question_type, getString(R.string.question_type_str, questionType));
-                TextView content = viewHolder.getView(R.id.content);
-                content.setText(TextUtils.fromHtml(question.content, new Base64ImageParser(HomeworkListActivity.this), null));
-                RadioGroup group = viewHolder.getView(R.id.option);
-                viewHolder.setVisibility(R.id.answer, question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
-                bindQuestionOption(group, question);
-                viewHolder.getView(R.id.answer).setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        resetNoteViewHelper();
-                        gotoAnswerActivity(question);
-                    }
-                });
-            }
-
-            @Override
-            public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
-                final Question question = questions.get(holder.getAdapterPosition());
-                final CommonViewHolder viewHolder = (CommonViewHolder) holder;
-                final ImageView imageView = viewHolder.getView(R.id.scribble_image);
-                loadScribbleImage(question, imageView);
+            public int getCount() {
+                return fragments.size();
             }
         });
-        binding.list.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
+        binding.list.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
-            public void onPageChange(int position, int itemCount, int pageSize) {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
                 updatePage(position);
-                Question question = questions.get(position);
-                if (question.isChoiceQuestion()) {
-                    return;
-                }
-                resetNoteViewHelper();
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
             }
         });
         updatePage(0);
+        updateShowInfo();
+        new CheckAnswerAction(questions).execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                updateAnswerInfo();
+            }
+        });
+    }
+
+    private void updateShowInfo() {
+        binding.total.setText(getString(R.string.total, questions.size()));
+    }
+
+    @Subscribe
+    public void onDoneAnswerEvent(DoneAnswerEvent event) {
+        if (event.question.isChoiceQuestion()) {
+            updateAnswerInfo();
+            return;
+        }
+        new CheckAnswerAction(questions).execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                updateAnswerInfo();
+            }
+        });
+    }
+
+    private void updateAnswerInfo() {
+        if (questions == null) {
+            return;
+        }
+        int hasAnswerCount = 0;
+        for (Question question : questions) {
+            if (question.doneAnswer) {
+                hasAnswerCount++;
+            }
+        }
+        int notAnswerCount = questions.size() - hasAnswerCount;
+        binding.hasAnswer.setText(getString(R.string.has_answer, hasAnswerCount));
+        binding.notAnswer.setText(getString(R.string.not_answer, notAnswerCount));
+    }
+
+    private void updateCurrentQuestion() {
+        int current = binding.list.getCurrentItem();
+        if (fragments.size() <= current) {
+            return;
+        }
+        fragments.get(current).updateScribbleImage();
     }
 
     private void updatePage(int position) {
@@ -174,75 +209,15 @@ public class HomeworkListActivity extends BaseActivity {
         binding.page.setText(current + File.separator + total);
     }
 
-    private void resetNoteViewHelper() {
-        getNoteViewHelper().getNoteDocument().close(HomeworkListActivity.this);
-        getNoteViewHelper().quit();
-        getNoteViewHelper().recycleBitmap();
-    }
-
-    private void loadScribbleImage(final Question question, final ImageView imageView) {
-        if (question.isChoiceQuestion()) {
-            return;
-        }
-        Rect size = new Rect(0, 0, 800, 1000);
-        Debug.d(getClass(), "loadScribbleImage: ");
-        final PageListRenderActionChain pageAction = new PageListRenderActionChain(question._id, size);
-        pageAction.execute(getNoteViewHelper(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                List<Bitmap> bitmaps = pageAction.getBitmaps();
-                if (bitmaps != null && bitmaps.size() > 0) {
-                    imageView.setImageBitmap(bitmaps.get(0));
-                }else {
-                    imageView.setImageResource(android.R.color.white);
-                }
-            }
-        });
-    }
-
     @Override
     protected void onResume() {
         super.onResume();
-        resetNoteViewHelper();
-        binding.list.notifyDataSetChanged();
+        updateCurrentQuestion();
     }
 
     @Override
     public boolean isFullScreen() {
         return true;
-    }
-
-    private void bindQuestionOption(RadioGroup group, Question question) {
-        group.removeAllViews();
-        if (!question.isChoiceQuestion()) {
-            group.setVisibility(View.GONE);
-            return;
-        }
-        group.setVisibility(View.VISIBLE);
-        List<QuestionOption> options = question.options;
-        for (QuestionOption option : options) {
-            group.addView(createCompoundButton(option, question.isSingleChoiceQuestion()));
-        }
-    }
-
-    private CompoundButton createCompoundButton(final QuestionOption option, final boolean single) {
-        CompoundButton button = single ? new RadioButton(this) : new CheckBox(this);
-        button.setText(Html.fromHtml(option.value, new Base64ImageParser(HomeworkListActivity.this), null));
-        button.setChecked(option.checked);
-        button.setTextSize(getResources().getDimension(R.dimen.question_option_text_size));
-        button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                option.setChecked(isChecked);
-            }
-        });
-        return button;
-    }
-
-    private void gotoAnswerActivity(final Question question) {
-        Intent intent = new Intent(HomeworkListActivity.this, AnswerActivity.class);
-        intent.putExtra(Constant.TAG_QUESTION, question);
-        startActivity(intent);
     }
 
 }

@@ -18,7 +18,7 @@ public class DocumentDeletePageAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), pageRemoveRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(pageRemoveRequest, e, true));
+                post(RequestFinishedEvent.create(pageRemoveRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

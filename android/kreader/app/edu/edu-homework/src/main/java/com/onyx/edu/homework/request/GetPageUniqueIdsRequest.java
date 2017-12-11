@@ -5,7 +5,9 @@ import com.onyx.android.sdk.scribble.data.NoteDataProvider;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lxm on 2017/12/6.
@@ -13,23 +15,30 @@ import java.util.List;
 
 public class GetPageUniqueIdsRequest extends BaseNoteRequest {
 
-    private volatile String uniqueId;
-    private List<String> pageUniqueIds;
+    private volatile List<String> docIds;
+    private Map<String, List<String>> pageUniqueMap;
 
-    public GetPageUniqueIdsRequest(String uniqueId) {
-        this.uniqueId = uniqueId;
+    public GetPageUniqueIdsRequest(List<String> docIds) {
+        this.docIds = docIds;
         setPauseInputProcessor(false);
         setResumeInputProcessor(false);
+        setRender(false);
     }
 
     @Override
     public void execute(NoteViewHelper helper) throws Exception {
         super.execute(helper);
-        NoteModel noteModel = NoteDataProvider.load(uniqueId);
-        pageUniqueIds = noteModel.getPageNameList().getPageNameList();
+        if (docIds == null) {
+            return;
+        }
+        pageUniqueMap = new HashMap<>();
+        for (String docId : docIds) {
+            NoteModel noteModel = NoteDataProvider.load(docId);
+            pageUniqueMap.put(docId, noteModel.getPageNameList().getPageNameList());
+        }
     }
 
-    public List<String> getPageUniqueIds() {
-        return pageUniqueIds;
+    public Map<String, List<String>> getPageUniqueMap() {
+        return pageUniqueMap;
     }
 }

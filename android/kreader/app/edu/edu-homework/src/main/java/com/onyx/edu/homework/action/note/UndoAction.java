@@ -18,7 +18,7 @@ public class UndoAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), undoRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(undoRequest, e, true));
+                post(RequestFinishedEvent.create(undoRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

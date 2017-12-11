@@ -3,7 +3,11 @@ package com.onyx.edu.homework;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by lxm on 2017/12/5.
@@ -35,6 +39,15 @@ public class Global {
         return cloudManager;
     }
 
+    private DataManager dataManager;
+
+    public DataManager getDataManager() {
+        if (dataManager == null) {
+            dataManager = new DataManager();
+        }
+        return dataManager;
+    }
+
     private String homeworkId;
 
     public String getHomeworkId() {
@@ -43,5 +56,35 @@ public class Global {
 
     public void setHomeworkId(String homeworkId) {
         this.homeworkId = homeworkId;
+    }
+
+    private EventBus eventBus;
+
+    private NoteViewHelper noteViewHelper;
+
+    public EventBus getEventBus() {
+        if (eventBus == null) {
+            eventBus = new EventBus();
+        }
+        return eventBus;
+    }
+
+    public void register(Object subscriber) {
+        getEventBus().register(subscriber);
+    }
+
+    public void unregister(Object subscriber) {
+        getEventBus().unregister(subscriber);
+    }
+
+    public void post(Object event) {
+        getEventBus().post(event);
+    }
+
+    public NoteViewHelper getNoteViewHelper() {
+        if (noteViewHelper == null) {
+            noteViewHelper = new NoteViewHelper();
+        }
+        return noteViewHelper;
     }
 }

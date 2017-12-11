@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+    </data>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_margin="20dp"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/total"
+                style="@style/homework_text" />
+
+            <TextView
+                android:id="@+id/has_answer"
+                style="@style/homework_text" />
+
+            <TextView
+                android:id="@+id/not_answer"
+                style="@style/homework_text" />
+
+        </LinearLayout>
+
+        <TextView
+            android:gravity="center"
+            android:textSize="26sp"
+            android:id="@+id/message"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+        <LinearLayout
+            android:layout_margin="20dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:background="@drawable/round_bg"
+                android:id="@+id/action0"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/button_text_size"
+                android:gravity="center"
+                android:text="继续答题"
+                android:minHeight="@dimen/button_minHeight"
+                android:minWidth="@dimen/button_min_width"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:background="@drawable/round_bg"
+                android:id="@+id/action1"
+                android:layout_marginLeft="60dp"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/button_text_size"
+                android:gravity="center"
+                android:text="提交"
+                android:minHeight="@dimen/button_minHeight"
+                android:minWidth="@dimen/button_min_width"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+    </LinearLayout>
+</layout>

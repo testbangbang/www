@@ -31,6 +31,7 @@ import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.BR;
+import com.onyx.edu.homework.Global;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.ClearAllFreeShapesAction;
 import com.onyx.edu.homework.action.note.DocumentAddNewPageAction;
@@ -68,7 +69,7 @@ public class NoteToolFragment extends BaseFragment {
     private MenuManager menuManager;
     private FragmentNoteToolBinding binding;
 
-    public static NoteToolFragment create(RelativeLayout subMenuLayout, NoteViewHelper noteViewHelper) {
+    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout, NoteViewHelper noteViewHelper) {
         NoteToolFragment fragment = new NoteToolFragment();
         fragment.setNoteViewHelper(noteViewHelper);
         fragment.setSubMenuLayout(subMenuLayout);
@@ -79,14 +80,14 @@ public class NoteToolFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_note_tool, container, false);
-        getNoteViewHelper().register(this);
+        Global.getInstance().register(this);
         return binding.getRoot();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        getNoteViewHelper().unregister(this);
+        Global.getInstance().unregister(this);
     }
 
     @Override
@@ -290,7 +291,7 @@ public class NoteToolFragment extends BaseFragment {
     private void initMenu() {
         menuManager = new MenuManager();
         menuManager.addMainMenu(binding.mainMenuLayout,
-                getNoteViewHelper().getEventBus(),
+                Global.getInstance().getEventBus(),
                 R.layout.scribble_main_menu,
                 BR.item,
                 new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT),
@@ -301,6 +302,8 @@ public class NoteToolFragment extends BaseFragment {
                 prepareHideSubMenu();
             }
         });
+        subMenuLayout.setVisibility(View.GONE);
+        menuManager.getMainMenu().setText(MenuId.PAGE, "1/1");
     }
 
     private void prepareHideSubMenu() {
@@ -350,7 +353,7 @@ public class NoteToolFragment extends BaseFragment {
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         menuManager.addSubMenu(subMenuLayout,
-                getNoteViewHelper().getEventBus(),
+                Global.getInstance().getEventBus(),
                 getSubLayoutId(parentId),
                 BR.item,
                 lp,
@@ -409,7 +412,6 @@ public class NoteToolFragment extends BaseFragment {
     private List<Integer> buildSubMenuPenStyleIDList() {
         List<Integer> resultList = new ArrayList<>();
         resultList.add(MenuId.NORMAL_PEN_STYLE);
-        resultList.add(MenuId.BRUSH_PEN_STYLE);
         resultList.add(MenuId.LINE_STYLE);
         resultList.add(MenuId.TRIANGLE_STYLE);
         resultList.add(MenuId.CIRCLE_STYLE);

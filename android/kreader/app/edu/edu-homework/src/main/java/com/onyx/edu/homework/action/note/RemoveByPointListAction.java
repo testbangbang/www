@@ -29,7 +29,7 @@ public class RemoveByPointListAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), changeRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(changeRequest, e, true));
+                post(RequestFinishedEvent.create(changeRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
