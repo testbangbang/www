@@ -8,7 +8,9 @@ import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.GetPageUniqueIdsRequest;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lxm on 2017/12/8.
@@ -16,26 +18,26 @@ import java.util.List;
 
 public class GetPageUniqueIdsAction extends BaseNoteAction {
 
-    private volatile String uniqueId;
-    private List<String> pageUniqueIds = new ArrayList<>();
+    private volatile List<String> docIds;
+    private Map<String, List<String>> pageUniqueMap = new HashMap<>();
 
-    public GetPageUniqueIdsAction(String uniqueId) {
-        this.uniqueId = uniqueId;
+    public GetPageUniqueIdsAction(List<String> docIds) {
+        this.docIds = docIds;
     }
 
     @Override
     public void execute(NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        final GetPageUniqueIdsRequest pageUniqueIdsRequest = new GetPageUniqueIdsRequest(uniqueId);
+        final GetPageUniqueIdsRequest pageUniqueIdsRequest = new GetPageUniqueIdsRequest(docIds);
         noteViewHelper.submit(getAppContext(), pageUniqueIdsRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                pageUniqueIds.addAll(pageUniqueIdsRequest.getPageUniqueIds());
+                pageUniqueMap.putAll(pageUniqueIdsRequest.getPageUniqueMap());
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
     }
 
-    public List<String> getPageUniqueIds() {
-        return pageUniqueIds;
+    public Map<String, List<String>> getPageUniqueMap() {
+        return pageUniqueMap;
     }
 }

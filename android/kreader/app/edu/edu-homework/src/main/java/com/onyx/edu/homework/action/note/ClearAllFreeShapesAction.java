@@ -25,7 +25,7 @@ public class ClearAllFreeShapesAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), clearAllFreeShapesRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(clearAllFreeShapesRequest, e, true));
+                post(RequestFinishedEvent.create(clearAllFreeShapesRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

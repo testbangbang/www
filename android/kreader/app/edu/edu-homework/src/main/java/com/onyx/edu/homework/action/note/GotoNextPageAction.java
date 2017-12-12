@@ -18,7 +18,7 @@ public class GotoNextPageAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), nextRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(nextRequest, e, true));
+                post(RequestFinishedEvent.create(nextRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

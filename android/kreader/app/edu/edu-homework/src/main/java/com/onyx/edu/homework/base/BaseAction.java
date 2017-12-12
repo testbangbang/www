@@ -5,8 +5,9 @@ import android.content.Context;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 
 public abstract class BaseAction {
 
@@ -34,6 +35,10 @@ public abstract class BaseAction {
     }
 
     public CloudManager getCloudManager() {
-        return Global.getInstance().getCloudManager();
+        return DataBundle.getInstance().getCloudManager();
+    }
+
+    public DataManager getDataManager() {
+        return DataBundle.getInstance().getDataManager();
     }
 }

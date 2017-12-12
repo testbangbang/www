@@ -37,7 +37,7 @@ public class DocumentFlushAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), flushRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(flushRequest, e, true));
+                post(RequestFinishedEvent.create(flushRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

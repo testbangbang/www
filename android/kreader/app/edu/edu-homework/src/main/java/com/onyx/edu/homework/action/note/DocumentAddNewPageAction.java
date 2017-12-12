@@ -24,7 +24,7 @@ public class DocumentAddNewPageAction extends BaseNoteAction {
         noteViewHelper.submit(getAppContext(), pageAddRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(pageAddRequest, e, true));
+                post(RequestFinishedEvent.create(pageAddRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });

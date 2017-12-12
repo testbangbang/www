@@ -4,10 +4,9 @@ package com.onyx.edu.homework.base;
 import android.content.Context;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.dialog.DialogLoading;
-import com.onyx.edu.homework.Global;
+import com.onyx.edu.homework.DataBundle;
 
 public abstract class BaseNoteAction {
 
@@ -41,5 +40,9 @@ public abstract class BaseNoteAction {
 
     public static Context getAppContext() {
         return context;
+    }
+
+    public static void post(Object event) {
+        DataBundle.getInstance().post(event);
     }
 }

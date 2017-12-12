@@ -8,6 +8,7 @@
   "regalEnable": true,
   "supportMultipleTabs": true,
   "supportSideNote": true,
+  "defaultRefreshInterval": 2147483647,
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

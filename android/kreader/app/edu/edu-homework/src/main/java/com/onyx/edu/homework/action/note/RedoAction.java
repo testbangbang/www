@@ -12,13 +12,19 @@ import com.onyx.edu.homework.event.RequestFinishedEvent;
  */
 public class RedoAction extends BaseNoteAction {
 
+    private boolean resumeDrawing;
+
+    public RedoAction(boolean resumeDrawing) {
+        this.resumeDrawing = resumeDrawing;
+    }
+
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        final RedoRequest redoRequest = new RedoRequest();
+        final RedoRequest redoRequest = new RedoRequest(resumeDrawing);
         noteViewHelper.submit(getAppContext(), redoRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                noteViewHelper.post(RequestFinishedEvent.create(redoRequest, e, true));
+                post(RequestFinishedEvent.create(redoRequest, e, true));
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
