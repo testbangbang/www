@@ -6,4 +6,7 @@
     <string name="back_name">返回</string>
     <string name="setting_name">设置</string>
     <string name="personal_name">我的</string>
+    <string name="select_all">全选</string>
+    <string name="move_to">移动到</string>
+    <string name="manage_book">图书管理</string>
 </resources>

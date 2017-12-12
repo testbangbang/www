@@ -222,7 +222,6 @@ public class LibraryFragment extends BaseFragment {
         preloadPrev();
     }
 
-
     private void preloadPrev() {
         int preLoadPage = pagination.getCurrentPage() - 1;
         if (preLoadPage < 0) {

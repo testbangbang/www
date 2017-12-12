@@ -8,4 +8,7 @@
     <string name="setting_name">Setting</string>
     <string name="personal_name">Personal</string>
     <string name="show_back_tab_key">show_back_tab_key</string>
+    <string name="select_all">All</string>
+    <string name="move_to">Move</string>
+    <string name="manage_book">Manage book</string>
 </resources>

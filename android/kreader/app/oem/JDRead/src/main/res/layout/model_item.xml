@@ -55,7 +55,6 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:layout_margin="0dp"
-            android:button="@null"
             android:checked="@={model.checked}"
             android:clickable="false"
             android:focusable="false"
