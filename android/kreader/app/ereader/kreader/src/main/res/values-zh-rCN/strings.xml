@@ -339,4 +339,7 @@
   <string name="setting_keycode_page_up_title" >向前翻页键</string>
 
   <string name="ask_for_delete_page">你确定要删除该页面吗？</string>
+    <string name="reader_layer_menu_font_style_indentation">缩　进</string>
+    <string name="reader_layer_menu_font_style_indent">缩进</string>
+    <string name="reader_layer_menu_font_style_not_indent">不缩进</string>
 </resources>

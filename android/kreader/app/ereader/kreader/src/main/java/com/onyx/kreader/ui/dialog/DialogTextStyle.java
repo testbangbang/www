@@ -654,6 +654,7 @@ public class DialogTextStyle extends DialogBase {
             });
         }
 
+        updateIndentationView(fontSpacingViewHolder, getReaderStyle());
 
         return view;
     }
@@ -791,6 +792,35 @@ public class DialogTextStyle extends DialogBase {
                 }
             });
         }
+    }
+
+    private void updateIndentationView(final CommonViewHolder viewHolder, final ReaderTextStyle readerStyle) {
+        final RadioButton buttonEnableIndent = viewHolder.getView(R.id.button_enable_indent);
+        final RadioButton buttonDisableIndent = viewHolder.getView(R.id.button_disable_indent);
+
+        if (originalStyle.getIndent().getIndent() > 0) {
+            buttonEnableIndent.setChecked(true);
+        } else {
+            buttonDisableIndent.setChecked(true);
+        }
+
+        buttonEnableIndent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerStyle.getIndent().setIndent(ReaderTextStyle.DEFAULT_CHARACTER_INDENT.getIndent());
+                updateReaderStyle(readerStyle);
+                buttonEnableIndent.setChecked(true);
+            }
+        });
+
+        buttonDisableIndent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readerStyle.getIndent().setIndent(0);
+                updateReaderStyle(readerStyle);
+                buttonDisableIndent.setChecked(true);
+            }
+        });
     }
 
     private static boolean isSelectCurrentMargin(ReaderTextStyle readerTextStyle, FontLevel level) {

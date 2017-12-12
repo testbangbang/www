@@ -101,6 +101,61 @@
                        android:src="@drawable/ic_dialog_reader_menu_font_margin_expand"/>
         </LinearLayout>
 
+
+    <TextView
+        android:id="@+id/text_view_indentation"
+        android:textSize="@dimen/dialog_common_text_size"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dialog_text_style_margin_left"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/layout_indentation"
+        android:layout_alignBottom="@+id/layout_indentation"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:text="@string/reader_layer_menu_font_style_indentation"/>
+
+    <RadioGroup
+        android:id="@+id/layout_indentation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_below="@id/layout_page_margin"
+        android:layout_alignLeft="@id/layout_page_margin"
+        android:layout_alignRight="@id/layout_page_margin"
+        android:orientation="horizontal"
+        android:focusable="false">
+
+        <RadioButton
+            android:id="@+id/button_enable_indent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:focusable="true"
+            android:gravity="center"
+            android:background="@drawable/all_line_check_bg"
+            android:textColor="@drawable/checkbox_as_button_text_selector"
+            android:textSize="@dimen/dialog_text_style_chinese_convert_font_size"
+            android:text="@string/reader_layer_menu_font_style_indent" />
+
+        <RadioButton
+            android:id="@+id/button_disable_indent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:button="@null"
+            android:focusable="true"
+            android:gravity="center"
+            android:background="@drawable/checkbox_as_button_bg"
+            android:textColor="@drawable/checkbox_as_button_text_selector"
+            android:textSize="@dimen/dialog_text_style_chinese_convert_font_size"
+            android:text="@string/reader_layer_menu_font_style_not_indent"/>
+
+    </RadioGroup>
+
     <TextView
         android:id="@+id/text_view_chinese_convert"
         android:textSize="@dimen/dialog_common_text_size"
@@ -122,7 +177,7 @@
         android:layout_marginTop="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_below="@id/layout_page_margin"
+        android:layout_below="@id/layout_indentation"
         android:layout_alignLeft="@id/layout_page_margin"
         android:layout_alignRight="@id/layout_page_margin"
         android:orientation="horizontal"
