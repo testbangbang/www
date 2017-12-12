@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/tools">
+
+    <data class="DialogLoadingBinding">
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="150dp"
+        android:minWidth="180dp"
+        android:orientation="vertical"
+        android:layout_margin="5dp"
+        android:layout_gravity="center"
+        android:background="@drawable/border_with_background"
+        android:gravity="center">
+
+        <com.onyx.android.sdk.ui.view.EllipsizingTextView
+            android:id="@+id/dialog_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text="@string/loading"
+            android:ellipsize="end"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:textSize="@dimen/dialog_loading_text_size"/>
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/loading_3"
+            android:background="@drawable/imagebtn_bg"
+            android:id="@+id/image_loading"/>
+
+    </LinearLayout>
+
+</layout>
