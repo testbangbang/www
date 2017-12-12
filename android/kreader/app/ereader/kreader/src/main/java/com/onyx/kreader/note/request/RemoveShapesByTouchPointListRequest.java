@@ -87,7 +87,7 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
     }
 
     private void renderToScreen(final NoteManager noteManager) {
-        EpdController.resetEpdPost();
+        EpdController.enablePost(surfaceView, 1);
         if (surfaceView == null) {
             return;
         }
