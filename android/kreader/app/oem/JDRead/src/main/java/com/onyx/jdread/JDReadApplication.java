@@ -1,23 +1,13 @@
 package com.onyx.jdread;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.DeviceReceiver;
-import com.onyx.android.sdk.utils.RxBroadcastReceiver;
-import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.common.ActionChain;
-import com.onyx.jdread.library.action.RxFileSystemScanAction;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.library.model.DataBundle;
-
-import org.greenrobot.eventbus.EventBus;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by hehai on 17-12-6.
@@ -43,56 +33,13 @@ public class JDReadApplication extends MultiDexApplication {
 
     private void initConfig() {
         instance = this;
-        DataManager.init(instance,null);
+        DataManager.init(instance, null);
+        PreferenceManager.init(instance);
         initEventListener();
     }
 
     private void initEventListener() {
-        deviceReceiver.setMediaStateListener(new DeviceReceiver.MediaStateListener() {
 
-            @Override
-            public void onMediaScanStarted(Intent intent) {
-               processRemovableSDCardScan();
-            }
-
-            @Override
-            public void onMediaMounted(Intent intent) {
-                processRemovableSDCardScan();
-            }
-
-            @Override
-            public void onMediaUnmounted(Intent intent) {
-                if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
-                }
-            }
-
-            @Override
-            public void onMediaBadRemoval(Intent intent) {
-                if (EnvironmentUtil.isRemovableSDDirectory(getApplicationContext(), intent)) {
-                }
-            }
-
-            @Override
-            public void onMediaRemoved(Intent intent) {
-            }
-        });
-        deviceReceiver.setWifiStateListener(new DeviceReceiver.WifiStateListener() {
-            @Override
-            public void onWifiConnected(Intent intent) {
-
-            }
-        });
-        deviceReceiver.enable(getApplicationContext(), true);
-    }
-
-    private void processRemovableSDCardScan() {
-        ActionChain actionChain = new ActionChain();
-        actionChain.addAction(new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true));
-        String sdcardCid = EnvironmentUtil.getRemovableSDCardCid();
-        if (StringUtils.isNotBlank(sdcardCid)) {
-            actionChain.addAction(new RxFileSystemScanAction(sdcardCid, false));
-        }
-        actionChain.execute(getDataBundle(), null);
     }
 
     public static JDReadApplication getInstance() {

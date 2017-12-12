@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">JDRead</string>
-    <string name="library">Library</string>
     <string name="page_count" translatable="false">%1$d/%2$d</string>
     <string name="book_total" translatable="false">total %s book</string>
     <string name="library_name">Library</string>

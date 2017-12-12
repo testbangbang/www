@@ -6,10 +6,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
 
+import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.action.InitFunctionBarAction;
+import com.onyx.jdread.adapter.FunctionBarAdapter;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.common.ViewConfig;
 import com.onyx.jdread.databinding.ActivityMainBinding;
@@ -17,6 +23,7 @@ import com.onyx.jdread.event.ChangeChildViewEvent;
 import com.onyx.jdread.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.event.PushChildViewToStackEvent;
 import com.onyx.jdread.model.FunctionBarModel;
+import com.onyx.jdread.model.FunctionBarTabModel;
 import com.onyx.jdread.model.MainViewModel;
 import com.onyx.jdread.model.SystemBarModel;
 
@@ -35,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
     private String currentChildViewName;
     private Map<String, BaseFragment> childViewList = new HashMap<>();
     private ActivityMainBinding binding;
+    private FunctionBarModel functionBarModel;
+    private FunctionBarAdapter functionBarAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,8 +72,48 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initFunctionBar() {
-        FunctionBarModel functionBarModel = new FunctionBarModel();
+        functionBarModel = new FunctionBarModel();
         binding.mainFunctionBar.setFunctionBarModel(functionBarModel);
+        PageRecyclerView functionBarRecycler = getFunctionBarRecycler();
+        functionBarRecycler.setLayoutManager(new DisableScrollGridManager(getApplicationContext()));
+        functionBarAdapter = new FunctionBarAdapter();
+        setFunctionAdapter(functionBarRecycler);
+    }
+
+    private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
+        boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, true);
+        PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
+        int col = getResources().getInteger(R.integer.function_bar_col);
+        functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), show ? col : col - 1);
+        functionBarRecycler.setAdapter(functionBarAdapter);
+        updateFunctionBar();
+    }
+
+    private void updateFunctionBar() {
+        InitFunctionBarAction initFunctionBarAction = new InitFunctionBarAction(functionBarModel);
+        initFunctionBarAction.execute(JDReadApplication.getDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                updateFunctionBarView();
+            }
+        });
+    }
+
+    private void isShowBackTab(boolean show) {
+        PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
+        setFunctionAdapter(getFunctionBarRecycler());
+    }
+
+    private void updateFunctionBarView() {
+        PageRecyclerView barRecycler = getFunctionBarRecycler();
+        if (barRecycler == null) {
+            return;
+        }
+        barRecycler.getAdapter().notifyDataSetChanged();
+    }
+
+    private PageRecyclerView getFunctionBarRecycler() {
+        return binding.mainFunctionBar.functionBarRecycler;
     }
 
     @Override
@@ -166,5 +215,10 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeChildViewEvent(ChangeChildViewEvent event) {
         switchCurrentFragment(event.childViewName);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFunctionBarTabModel(FunctionBarTabModel event) {
+        functionBarModel.changeTabSelection(event);
     }
 }
