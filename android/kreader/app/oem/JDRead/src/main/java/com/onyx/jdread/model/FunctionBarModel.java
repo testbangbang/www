@@ -13,7 +13,7 @@ import java.util.Observable;
 public class FunctionBarModel extends Observable {
     private static final String TAG = FunctionBarModel.class.getSimpleName();
     private ObservableBoolean isShow = new ObservableBoolean(true);
-    public ObservableList<FunctionBarTabModel> itemModels = new ObservableArrayList<>();
+    public ObservableList<FunctionBarItem> itemModels = new ObservableArrayList<>();
 
     public FunctionBarModel() {
 
@@ -28,7 +28,7 @@ public class FunctionBarModel extends Observable {
     }
 
     public void changeTabSelection(String selectedTab) {
-        for (FunctionBarTabModel itemModel : itemModels) {
+        for (FunctionBarItem itemModel : itemModels) {
             itemModel.setSelected(selectedTab.equals(itemModel.fragmentName.get()));
         }
     }

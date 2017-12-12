@@ -23,8 +23,8 @@ import com.onyx.jdread.event.ChangeChildViewEvent;
 import com.onyx.jdread.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.event.PushChildViewToStackEvent;
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.model.FunctionBarItem;
 import com.onyx.jdread.model.FunctionBarModel;
-import com.onyx.jdread.model.FunctionBarTabModel;
 import com.onyx.jdread.model.MainViewModel;
 import com.onyx.jdread.model.SystemBarModel;
 
@@ -221,7 +221,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onFunctionBarTabModel(FunctionBarTabModel event) {
+    public void onFunctionBarTabModel(FunctionBarItem event) {
         functionBarModel.changeTabSelection(event.fragmentName.get());
     }
 }

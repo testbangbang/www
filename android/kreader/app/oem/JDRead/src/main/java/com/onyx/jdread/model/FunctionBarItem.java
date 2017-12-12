@@ -15,7 +15,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by hehai on 17-12-11.
  */
 
-public class FunctionBarTabModel extends BaseObservable {
+public class FunctionBarItem extends BaseObservable {
     private StackList stackList;
     private ObservableBoolean isShow = new ObservableBoolean(true);
     public final ObservableInt drawableTop = new ObservableInt();
@@ -23,7 +23,7 @@ public class FunctionBarTabModel extends BaseObservable {
     public final ObservableField<String> itemName = new ObservableField<>();
     public final ObservableBoolean isSelected = new ObservableBoolean(false);
 
-    public FunctionBarTabModel(String fragmentName, String itemName, int drawableRes) {
+    public FunctionBarItem(String fragmentName, String itemName, int drawableRes) {
         this.fragmentName.set(fragmentName);
         this.itemName.set(itemName);
         drawableTop.set(drawableRes);

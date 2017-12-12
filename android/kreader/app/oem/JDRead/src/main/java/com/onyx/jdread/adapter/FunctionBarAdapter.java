@@ -11,7 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FunctionBarItemBinding;
 import com.onyx.jdread.library.adapter.PageAdapter;
-import com.onyx.jdread.model.FunctionBarTabModel;
+import com.onyx.jdread.model.FunctionBarItem;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * Created by hehai on 17-12-11.
  */
 
-public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolder, FunctionBarTabModel, FunctionBarTabModel> {
+public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolder, FunctionBarItem, FunctionBarItem> {
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.function_bar_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.function_bar_col);
 
@@ -55,7 +55,7 @@ public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolde
     }
 
     @Override
-    public void setRawData(List<FunctionBarTabModel> rawData, Context context) {
+    public void setRawData(List<FunctionBarItem> rawData, Context context) {
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
@@ -74,8 +74,8 @@ public class FunctionBarAdapter extends PageAdapter<FunctionBarAdapter.ViewHolde
             return bind;
         }
 
-        public void bindTo(FunctionBarTabModel model) {
-            bind.setFunctionBarTabModel(model);
+        public void bindTo(FunctionBarItem model) {
+            bind.setFunctionBarItem(model);
             bind.executePendingBindings();
         }
     }
