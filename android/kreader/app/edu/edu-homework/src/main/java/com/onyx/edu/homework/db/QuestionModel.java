@@ -23,8 +23,14 @@ public class QuestionModel extends BaseModel {
     @Column
     private String homeworkId;
 
+    @Column
+    private String questionId;
+
     @Column(typeConverter = ConverterListString.class)
     private List values;
+
+    @Column(typeConverter = ConverterListString.class)
+    private List answer;
 
     public String getUniqueId() {
         return uniqueId;
@@ -48,5 +54,29 @@ public class QuestionModel extends BaseModel {
 
     public void setValues(List<String> values) {
         this.values = values;
+    }
+
+    public String getQuestionId() {
+        return questionId;
+    }
+
+    public void setQuestionId(String questionId) {
+        this.questionId = questionId;
+    }
+
+    public List getAnswer() {
+        return answer;
+    }
+
+    public void setAnswer(List answer) {
+        this.answer = answer;
+    }
+
+    public static QuestionModel create(String uniqueId, String questionId, String homeworkId) {
+        QuestionModel model = new QuestionModel();
+        model.setQuestionId(questionId);
+        model.setUniqueId(uniqueId);
+        model.setHomeworkId(homeworkId);
+        return model;
     }
 }

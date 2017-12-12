@@ -36,7 +36,6 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
         updateShapeDataInfo(parent);
         loadShapeData(parent);
         renderVisiblePages(parent);
-//        updateShapeDataInfo(parent);
         if (base64Bitmap) {
             base64 = BitmapUtils.bitmapToBase64(parent.getRenderBitmap());
         }else {

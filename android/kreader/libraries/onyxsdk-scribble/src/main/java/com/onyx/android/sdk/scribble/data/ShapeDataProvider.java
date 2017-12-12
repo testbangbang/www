@@ -37,10 +37,21 @@ public class ShapeDataProvider {
                                                  final String documentUniqueId,
                                                  final String pageUniqueId,
                                                  final String subPageName) {
+        return loadShapeList(context, documentUniqueId, pageUniqueId, subPageName, null);
+    }
+
+    public static List<ShapeModel> loadShapeList(final Context context,
+                                                 final String documentUniqueId,
+                                                 final String pageUniqueId,
+                                                 final String subPageName,
+                                                 final String groupId) {
         Select select = new Select();
         Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId)).and(ShapeModel_Table.pageUniqueId.eq(pageUniqueId));
         if (StringUtils.isNotBlank(subPageName)) {
             where = where.and(ShapeModel_Table.subPageName.eq(subPageName));
+        }
+        if (!StringUtils.isNullOrEmpty(groupId)) {
+            where = where.and(ShapeModel_Table.groupId.eq(groupId));
         }
 
         List<ShapeModel> list = where.queryList();

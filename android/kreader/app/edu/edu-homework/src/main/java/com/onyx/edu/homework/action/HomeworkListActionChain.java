@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -30,16 +29,17 @@ public class HomeworkListActionChain extends BaseAction {
     public void execute(Context context, final BaseCallback baseCallback) {
         showLoadingDialog(context, R.string.loading);
         final HomeworkListAction homeworkListAction = new HomeworkListAction(libraryId);
-        final GetLocalAnswersAction localAnswersAction = new GetLocalAnswersAction(homeworkListAction.getQuestions(), libraryId);
+        final CheckLocalDataAction checkLocalDataAction = new CheckLocalDataAction(homeworkListAction.getQuestions(), libraryId);
         ActionChain chain = new ActionChain(true);
         chain.addAction(new GetTokenFromLocalAction());
         chain.addAction(new CloudIndexServiceAction());
         chain.addAction(homeworkListAction);
-        chain.addAction(localAnswersAction);
+        chain.addAction(checkLocalDataAction);
         chain.execute(context, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                questions = localAnswersAction.getQuestions();
+                DataBundle.getInstance().setState(checkLocalDataAction.getCurrentState());
+                questions = checkLocalDataAction.getQuestions();
                 hideLoadingDialog();
                 baseCallback.done(request, e);
             }

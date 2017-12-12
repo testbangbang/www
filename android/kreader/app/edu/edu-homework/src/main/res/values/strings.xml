@@ -19,4 +19,8 @@
     <string name="continue_answer">继续答题</string>
     <string name="submit">提交</string>
     <string name="submit_success">提交成功</string>
+    <string name="submited">已提交</string>
+    <string name="submitting">正在提交...</string>
+    <string name="exit">退出</string>
+    <string name="submit_fail">提交失败</string>
 </resources>

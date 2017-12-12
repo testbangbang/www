@@ -8,6 +8,14 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="NoTitleDialog" parent="@android:style/Theme.Dialog">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:windowBackground">@drawable/round_bg</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
     <style name="homework_text">
         <item name="android:textSize">@dimen/homework_text_size</item>
         <item name="android:layout_width">wrap_content</item>

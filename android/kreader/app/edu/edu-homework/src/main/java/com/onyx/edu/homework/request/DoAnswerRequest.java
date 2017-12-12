@@ -14,22 +14,25 @@ import java.util.List;
 public class DoAnswerRequest extends BaseDataRequest {
 
     private List<String> values;
+    private String questionUniqueId;
     private String questionId;
     private String homeworkId;
 
-    public DoAnswerRequest(List<String> values, String questionId, String homeworkId) {
+    public DoAnswerRequest(List<String> values, String questionUniqueId, String questionId, String homeworkId) {
         this.values = values;
-        this.questionId = questionId;
+        this.questionUniqueId = questionUniqueId;
         this.homeworkId = homeworkId;
+        this.questionId = questionId;
     }
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        QuestionModel question = DBDataProvider.loadQuestion(homeworkId, questionId);
+        QuestionModel question = DBDataProvider.loadQuestion(questionUniqueId);
         if (question == null) {
             question = new QuestionModel();
-            question.setUniqueId(questionId);
+            question.setUniqueId(questionUniqueId);
             question.setHomeworkId(homeworkId);
+            question.setQuestionId(questionId);
         }
         question.setValues(values);
         DBDataProvider.saveQuestion(question);

@@ -21,12 +21,10 @@ public class CheckAnswerRequest extends BaseDataRequest {
 
     private volatile List<Question> questions;
     private Context context;
-    private String homeworkId;
 
-    public CheckAnswerRequest(List<Question> questions, Context context, String homeworkId) {
+    public CheckAnswerRequest(List<Question> questions, Context context) {
         this.questions = questions;
         this.context = context;
-        this.homeworkId = homeworkId;
     }
 
     @Override
@@ -37,10 +35,10 @@ public class CheckAnswerRequest extends BaseDataRequest {
         }
         for (Question question : questions) {
             if (question.isChoiceQuestion()) {
-                QuestionModel model = DBDataProvider.loadQuestion(homeworkId, question._id);
+                QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
                 question.setDoneAnswer(model != null && model.getValues() != null && model.getValues().size() > 0);
             }else {
-                question.setDoneAnswer(NoteDataProvider.checkHasShape(context.getApplicationContext(), question._id));
+                question.setDoneAnswer(NoteDataProvider.checkHasShape(context.getApplicationContext(), question.getUniqueId()));
             }
         }
     }

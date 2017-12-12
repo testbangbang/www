@@ -22,6 +22,7 @@ import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
+import com.onyx.edu.homework.event.SubmitEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -108,6 +109,7 @@ public class HomeworkListActivity extends BaseActivity {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
+                updateState();
                 questions = actionChain.getQuestions();
                 initListView(questions);
             }
@@ -167,7 +169,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void checkAnswer() {
-        new CheckAnswerAction(questions, DataBundle.getInstance().getHomeworkId()).execute(this, new BaseCallback() {
+        new CheckAnswerAction(questions).execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 updateAnswerInfo();
@@ -195,13 +197,14 @@ public class HomeworkListActivity extends BaseActivity {
         if (fragments.size() <= current) {
             return;
         }
-        fragments.get(current).updateScribbleImage();
+        fragments.get(current).update();
     }
 
     private void updatePage(int position) {
         int current = position + 1;
         int total = questions.size();
         binding.page.setText(current + File.separator + total);
+        fragments.get(position).updateState();
     }
 
     @Override
@@ -213,6 +216,23 @@ public class HomeworkListActivity extends BaseActivity {
     @Override
     public boolean isFullScreen() {
         return true;
+    }
+
+    @Subscribe
+    public void onSubmitEvent(SubmitEvent event) {
+        updateState();
+    }
+
+    public DataBundle getDataBundle() {
+        return DataBundle.getInstance();
+    }
+
+    private void updateState() {
+        binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
+        binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
+        binding.result.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
+        binding.submit.setEnabled(getDataBundle().isDoing());
     }
 
 }

@@ -14,17 +14,21 @@ public class DocumentOpenAction extends BaseNoteAction {
 
     private volatile String uniqueId;
     private volatile String parentUniqueId;
+    private volatile String groupId;
     private boolean create = false;
+    private boolean resume;
 
-    public DocumentOpenAction(final String id, final String parent, boolean create) {
+    public DocumentOpenAction(final String id, final String parent, final String groupId, boolean create, boolean r) {
         uniqueId = id;
         parentUniqueId = parent;
         this.create = create;
+        this.groupId = groupId;
+        resume = r;
     }
 
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, create);
+        final NoteDocumentOpenRequest openRequest = new NoteDocumentOpenRequest(uniqueId, parentUniqueId, create, resume, groupId);
         noteViewHelper.submit(getAppContext(), openRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

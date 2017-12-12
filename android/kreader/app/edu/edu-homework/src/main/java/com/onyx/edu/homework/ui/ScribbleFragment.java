@@ -29,6 +29,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -119,7 +120,9 @@ public class ScribbleFragment extends BaseFragment {
                 public void surfaceCreated(SurfaceHolder holder) {
                     clearSurfaceView();
                     getNoteViewHelper().setView(getActivity(), getScribbleView(), inputCallback());
-                    checkDocument(question._id, DataBundle.getInstance().getHomeworkId());
+                    getNoteViewHelper().setEnableTouchEvent(getDataBundle().isDoing());
+                    String homeworkId = DataBundle.getInstance().getHomeworkId();
+                    checkDocument(question.getUniqueId(), homeworkId, question.getQuestionId());
                 }
 
                 @Override
@@ -137,18 +140,18 @@ public class ScribbleFragment extends BaseFragment {
         binding.scribbleView.getHolder().addCallback(surfaceCallback);
     }
 
-    private void checkDocument(final String uniqueId, final String parentUniqueId) {
+    private void checkDocument(final String uniqueId, final String parentUniqueId, final String groupId) {
         new DocumentCheckAction(uniqueId, parentUniqueId).execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DocumentCheckRequest checkRequest = (DocumentCheckRequest) request;
-                openDocument(uniqueId, parentUniqueId, !checkRequest.isHasNote());
+                openDocument(uniqueId, parentUniqueId, groupId, !checkRequest.isHasNote());
             }
         });
     }
 
-    private void openDocument(final String uniqueId, final String parentUniqueId, boolean create) {
-        new DocumentOpenAction(uniqueId, parentUniqueId, create).execute(getNoteViewHelper(), null);
+    private void openDocument(final String uniqueId, final String parentUniqueId, final String groupId, boolean create) {
+        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, shouldResume(), create).execute(getNoteViewHelper(), null);
     }
 
     public void setQuestion(Question question) {
@@ -408,7 +411,7 @@ public class ScribbleFragment extends BaseFragment {
 
     protected void onSystemUIClosed() {
         if (isActivityRunning()) {
-            flushDocument(true, !getShapeDataInfo().isInUserErasing(), null);
+            flushDocument(true, shouldResume(), null);
         }
     }
 
@@ -439,5 +442,15 @@ public class ScribbleFragment extends BaseFragment {
 
     public ShapeDataInfo getShapeDataInfo() {
         return getNoteViewHelper().getShapeDataInfo();
+    }
+
+    public DataBundle getDataBundle() {
+        return DataBundle.getInstance();
+    }
+
+    public boolean shouldResume() {
+        return !getNoteViewHelper().inUserErasing()
+                && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
+                && getDataBundle().isDoing();
     }
 }

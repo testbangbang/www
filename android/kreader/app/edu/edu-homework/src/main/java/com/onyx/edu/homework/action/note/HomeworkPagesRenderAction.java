@@ -31,7 +31,9 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     private Map<String, List<String>> pageBase64s = new HashMap<>();
     private List<String> documentIds = new ArrayList<>();
 
-    public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap, Rect size, boolean base64Bitmap) {
+    public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
+                                     Rect size,
+                                     boolean base64Bitmap) {
         this.pageUniqueMap = pageUniqueMap;
         this.size = size;
         this.base64Bitmap = base64Bitmap;

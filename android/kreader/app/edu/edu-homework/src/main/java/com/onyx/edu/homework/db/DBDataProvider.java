@@ -21,9 +21,9 @@ public class DBDataProvider {
         model.save();
     }
 
-    public static QuestionModel loadQuestion(String homeworkId, String id) {
+    public static QuestionModel loadQuestion(String uniqueId) {
         Select select = new Select();
-        Where<QuestionModel> where = select.from(QuestionModel.class).where(QuestionModel_Table.uniqueId.eq(id));
+        Where<QuestionModel> where = select.from(QuestionModel.class).where(QuestionModel_Table.uniqueId.eq(uniqueId));
         return where.querySingle();
     }
 

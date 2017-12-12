@@ -21,7 +21,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.utils.Debug;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
@@ -43,6 +42,7 @@ public class QuestionFragment extends BaseFragment {
 
     private FragmentQuestionBinding binding;
     private Question question;
+    private NoteViewHelper noteViewHelper;
 
     public static QuestionFragment newInstance(Question question) {
         QuestionFragment fragment = new QuestionFragment();
@@ -90,7 +90,10 @@ public class QuestionFragment extends BaseFragment {
     }
 
     public NoteViewHelper getNoteViewHelper() {
-        return DataBundle.getInstance().getNoteViewHelper();
+        if (noteViewHelper == null) {
+            noteViewHelper = new NoteViewHelper();
+        }
+        return noteViewHelper;
     }
 
     private void bindQuestionOption(RadioGroup group, Question question) {
@@ -112,10 +115,12 @@ public class QuestionFragment extends BaseFragment {
 
     private CompoundButton createCompoundButton(final Question question, final QuestionOption option) {
         final boolean single = question.isSingleChoiceQuestion();
+        final boolean enable = getDataBundle().isDoing();
         final CompoundButton button = single ? new RadioButton(getActivity()) : new CheckBox(getActivity());
         button.setText(Html.fromHtml(option.value, new Base64ImageParser(getActivity()), null));
         button.setTextSize(getResources().getDimension(R.dimen.question_option_text_size));
         button.setChecked(option.checked);
+        button.setEnabled(enable);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -152,6 +157,11 @@ public class QuestionFragment extends BaseFragment {
         startActivity(intent);
     }
 
+    public void update() {
+        updateState();
+        updateScribbleImage();
+    }
+
     public void updateScribbleImage() {
         loadScribbleImage(question, binding.scribbleImage);
     }
@@ -163,11 +173,11 @@ public class QuestionFragment extends BaseFragment {
         int width = (int) getResources().getDimension(R.dimen.scribble_view_width);
         int height = (int) getResources().getDimension(R.dimen.scribble_view_height);
         Rect size = new Rect(0, 0, width, height);
-        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question._id, size);
+        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), size);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                List<Bitmap> bitmaps = pageAction.getPageMap().get(question._id);
+                List<Bitmap> bitmaps = pageAction.getPageMap().get(question.getUniqueId());
                 if (bitmaps != null && bitmaps.size() > 0) {
                     imageView.setImageBitmap(bitmaps.get(0));
                 }else {
@@ -175,5 +185,19 @@ public class QuestionFragment extends BaseFragment {
                 }
             }
         });
+    }
+
+    public DataBundle getDataBundle() {
+        return DataBundle.getInstance();
+    }
+
+    public void updateState() {
+        boolean enable = getDataBundle().isDoing();
+        int size = binding.option.getChildCount();
+        for (int i = 0; i < size; i++) {
+            View view = binding.option.getChildAt(i);
+            view.setEnabled(enable);
+        }
+        binding.option.setClickable(enable);
     }
 }

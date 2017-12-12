@@ -6,37 +6,79 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
+import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.db.DBDataProvider;
+import com.onyx.edu.homework.db.HomeworkModel;
 import com.onyx.edu.homework.db.QuestionModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by lxm on 2017/12/11.
  */
 
-public class GetLocalAnswersRequest extends BaseDataRequest {
+public class CheckLocalDataRequest extends BaseDataRequest {
 
     private volatile List<Question> questions;
     private String homeworkId;
+    private HomeworkState currentState;
 
-    public GetLocalAnswersRequest(List<Question> questions, String homeworkId) {
+    public CheckLocalDataRequest(List<Question> questions, String homeworkId) {
         this.questions = questions;
         this.homeworkId = homeworkId;
     }
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
+        getLocalAnswer();
+        checkHomeworkState();
+    }
+
+    private void getLocalAnswer() {
         if (questions == null) {
             return;
         }
         for (Question question : questions) {
             if (question.isChoiceQuestion()) {
+                QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
+                if (model == null) {
+                    model = QuestionModel.create(question.getUniqueId(),
+                            question.getQuestionId(),
+                            homeworkId);
+                }
+                // 1. get right answer
+                // 2. un check option
+                // 3. set option answer
+                setRightAnswer(question, model);
                 unCheckOption(question.options);
-                QuestionModel model = DBDataProvider.loadQuestion(homeworkId, question._id);
                 setOptionAnswer(question, model);
+                DBDataProvider.saveQuestion(model);
             }
         }
+    }
+
+    private void checkHomeworkState() {
+        HomeworkModel homeworkModel = DBDataProvider.loadHomework(homeworkId);
+        if (homeworkModel == null) {
+            homeworkModel = HomeworkModel.create(homeworkId);
+        }
+        int state = homeworkModel.getState();
+        currentState = HomeworkState.getHomeworkState(state);
+    }
+
+    private void setRightAnswer(Question question, QuestionModel model) {
+        List<QuestionOption> options = question.options;
+        if (options == null) {
+            return;
+        }
+        List<String> answer = new ArrayList<>();
+        for (QuestionOption option : options) {
+            if (option.checked) {
+                answer.add(option._id);
+            }
+        }
+        model.setAnswer(answer);
     }
 
     private void unCheckOption(List<QuestionOption> options) {
@@ -49,9 +91,6 @@ public class GetLocalAnswersRequest extends BaseDataRequest {
     }
 
     private void setOptionAnswer(Question question, QuestionModel model) {
-        if (model == null) {
-            return;
-        }
         List<String> values = model.getValues();
         if (values == null) {
             return;
@@ -75,5 +114,9 @@ public class GetLocalAnswersRequest extends BaseDataRequest {
             }
         }
         return null;
+    }
+
+    public HomeworkState getCurrentState() {
+        return currentState;
     }
 }

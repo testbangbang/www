@@ -11,6 +11,7 @@ import java.util.List;
 public class Question implements Serializable {
 
     public String _id;
+    public String uniqueId;
     public String content;
     public String answers;
     public int QuesType;
@@ -18,6 +19,14 @@ public class Question implements Serializable {
     public List<QuestionOption> options;
 
     public boolean doneAnswer;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public String getQuestionId() {
+        return _id;
+    }
 
     public QuestionType getType() {
         int index= QuesType - 1;
@@ -58,7 +67,7 @@ public class Question implements Serializable {
         for (QuestionOption option : options) {
             if (option.checked) {
                 HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-                answer.setQuestion(_id);
+                answer.setQuestion(getQuestionId());
                 answer.setValue(option._id);
                 answers.add(answer);
             }
@@ -72,7 +81,7 @@ public class Question implements Serializable {
         for (QuestionOption option : options) {
             if (option.checked) {
                 HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-                answer.setQuestion(_id);
+                answer.setQuestion(getQuestionId());
                 answer.setValue(option._id);
                 answers.add(index, answer);
                 index++;
@@ -84,7 +93,7 @@ public class Question implements Serializable {
     public List<HomeworkSubmitAnswer> createFillAnswer() {
         List<HomeworkSubmitAnswer> answers = new ArrayList<>();
         HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-        answer.setQuestion(_id);
+        answer.setQuestion(getQuestionId());
         answers.add(answer);
         return answers;
     }

@@ -173,12 +173,20 @@ public class NoteViewHelper {
     }
 
     public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        getNoteDocument().open(context, documentUniqueId, parentUniqueId);
+        openDocument(context, documentUniqueId, parentUniqueId);
+    }
+
+    public void openDocument(final Context context, final String documentUniqueId, final String parentUniqueId, final String groupId) {
+        getNoteDocument().open(context, documentUniqueId, parentUniqueId, groupId);
         onDocumentOpened();
     }
 
     public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        getNoteDocument().create(context, documentUniqueId, parentUniqueId);
+        createDocument(context, documentUniqueId, parentUniqueId, null);
+    }
+
+    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId, final String groupId) {
+        getNoteDocument().create(context, documentUniqueId, parentUniqueId, groupId);
         onDocumentOpened();
     }
 
@@ -480,7 +488,6 @@ public class NoteViewHelper {
         getNoteDocument().close(getContext());
         quit();
         recycleBitmap();
-        shapeDataInfo = null;
     }
 
     private final Runnable generateRunnable(final BaseNoteRequest request) {
@@ -566,6 +573,7 @@ public class NoteViewHelper {
         Shape shape = ShapeFactory.createShape(type);
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
+        shape.setGroupId(getNoteDocument().getGroupId());
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }
@@ -752,9 +760,10 @@ public class NoteViewHelper {
            3.if not finger touch, detect target shape, if non dfb shape, forward drawing.
          */
         if (useRawInput()) {
-            if (isFingerTouch(toolType)) {
-                return true;
-            }
+            // TODO: 2017/12/12 for pl107 cannot draw shape
+//            if (isFingerTouch(toolType)) {
+//                return true;
+//            }
             if (renderByFramework()) {
                 return true;
             } else {

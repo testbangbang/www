@@ -7,6 +7,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.base.NoteActionChain;
 
@@ -40,7 +41,9 @@ public class HomeworkPagesAnswerBase64ActionChain extends BaseNoteAction {
         }
         NoteActionChain chain = new NoteActionChain(true);
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
-        final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(), size, true);
+        final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
+                size,
+                true);
         chain.addAction(pageUniqueIdsAction);
         chain.addAction(listRenderAction);
         chain.execute(noteViewHelper, new BaseCallback() {

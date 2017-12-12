@@ -49,6 +49,13 @@
                 android:layout_height="1dp"/>
 
             <TextView
+                android:visibility="gone"
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/result"
+                style="@style/homework_text" />
+
+            <TextView
                 android:padding="@dimen/homework_text_margin"
                 android:background="@drawable/round_bg"
                 android:id="@+id/answer_record"

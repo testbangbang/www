@@ -94,6 +94,7 @@ public class ScribbleSubMenuMap {
             bgSparseArray.put(MenuId.BG_LINE_1_6,  NoteBackgroundType.LINE_1_6);
             bgSparseArray.put(MenuId.BG_LINE_2_0,  NoteBackgroundType.LINE_2_0);
             bgSparseArray.put(MenuId.BG_CALENDAR,  NoteBackgroundType.CALENDAR);
+            bgSparseArray.put(MenuId.BG_GRID_5_5,  NoteBackgroundType.GRID_5_5);
         }
         return bgSparseArray;
     }
