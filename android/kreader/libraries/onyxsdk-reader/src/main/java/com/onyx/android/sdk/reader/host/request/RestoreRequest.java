@@ -136,6 +136,7 @@ public class RestoreRequest extends BaseReaderRequest {
         ReaderTextStyle style = ReaderTextStyle.create(baseOptions.getFontFace(),
                 ReaderTextStyle.SPUnit.create(baseOptions.getFontSize()),
                 ReaderTextStyle.Percentage.create(baseOptions.getLineSpacing()),
+                ReaderTextStyle.CharacterIndent.create((int)baseOptions.getParagraphIndent()),
                 ReaderTextStyle.Percentage.create(baseOptions.getLeftMargin()),
                 ReaderTextStyle.Percentage.create(baseOptions.getTopMargin()),
                 ReaderTextStyle.Percentage.create(baseOptions.getRightMargin()),

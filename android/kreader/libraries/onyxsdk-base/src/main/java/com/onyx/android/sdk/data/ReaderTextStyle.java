@@ -305,12 +305,14 @@ public class ReaderTextStyle {
     }
 
     public static ReaderTextStyle create(String fontface, SPUnit fontSize, Percentage lineSpacing,
+                                         CharacterIndent indent,
                                          Percentage leftMargin, Percentage topMargin,
                                          Percentage rightMargin, Percentage bottomMargin) {
         ReaderTextStyle style = new ReaderTextStyle();
         style.fontFace = fontface;
         style.fontSize = fontSize;
         style.lineSpacing = lineSpacing;
+        style.indent = indent;
         style.pageMargin.setLeftMargin(leftMargin);
         style.pageMargin.setTopMargin(topMargin);
         style.pageMargin.setRightMargin(rightMargin);
