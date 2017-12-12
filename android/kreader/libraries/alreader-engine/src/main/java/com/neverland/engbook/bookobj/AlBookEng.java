@@ -457,6 +457,8 @@ public class AlBookEng{
             prof.interline = 50;
         profiles.font_interline[0] = prof.interline;
 
+        profiles.indentParagraph = prof.indentParagraph;
+
         prof.marginLeft = prof.validateMargin(prof.marginLeft);
         prof.marginRight = prof.validateMargin(prof.marginRight);
         prof.marginTop = prof.validateMargin(prof.marginTop);
@@ -3192,7 +3194,7 @@ public class AlBookEng{
 	private void initOneItem(AlOneItem oi, AlOneItem poi, long style,
 							 int pos, int width, boolean addEmptyLine, TAL_CALC_MODE calcMode, AlOnePage page) {
 
-		long vP, vE;
+		long vP = 0, vE = 0;
 
         if (profiles.specialModeRoll)
             addEmptyLine = true;
@@ -3270,18 +3272,20 @@ public class AlBookEng{
 		if ((style & AlStyles.SL_PAR) != 0) {	
 			oi.isStart = true;
 
-			if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
-				vE = 8 * 2;
-				vP = 0;
-			} else {
-				if ((oi.prop & AlParProperty.SL2_INDENT_EM) != 0L) {
-					vE = (oi.prop & (AlParProperty.SL2_INDENT_MASK - AlParProperty.SL2_INDENT_EM)) >> AlParProperty.SL2_INDENT_SHIFT;
-					if (preferences.chinezeFormatting)
-						vE *= 2;
+			if (profiles.indentParagraph) {
+				if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
+					vE = 8 * 2;
 					vP = 0;
 				} else {
-					vP = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
-					vE = 0;
+					if ((oi.prop & AlParProperty.SL2_INDENT_EM) != 0L) {
+						vE = (oi.prop & (AlParProperty.SL2_INDENT_MASK - AlParProperty.SL2_INDENT_EM)) >> AlParProperty.SL2_INDENT_SHIFT;
+						if (preferences.chinezeFormatting)
+							vE *= 2;
+						vP = 0;
+					} else {
+						vP = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
+						vE = 0;
+					}
 				}
 			}
 
