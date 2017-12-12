@@ -160,6 +160,7 @@ public class AlReaderWrapper {
         updateFontFace(style.getFontFace());
         updateFontSize(style.getFontSize().getValue());
         updateLineSpacing(style.getLineSpacing());
+        updateIndentation(style.getIndent());
         updatePageMargins(style.getPageMargin().getLeftMargin(),
                 style.getPageMargin().getTopMargin(),
                 style.getPageMargin().getRightMargin(),
@@ -255,6 +256,10 @@ public class AlReaderWrapper {
 
     public void updateLineSpacing(final ReaderTextStyle.Percentage lineSpacing) {
         profile.interline = (int)(100 * (lineSpacing.getPercent() - 100) / (float)100);
+    }
+
+    public void updateIndentation(final ReaderTextStyle.CharacterIndent indent) {
+        profile.indentParagraph = indent.getIndent() > 0;
     }
 
     public void updatePageMargins(final ReaderTextStyle.Percentage left,
