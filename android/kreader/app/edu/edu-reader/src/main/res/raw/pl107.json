@@ -8,7 +8,7 @@
   "defaultTextGamma": 150,
   "fixedGamma": 100,
   "frontLight" : 100,
-  "regalEnable" : true,
+  "regalEnable" : false,
   "defaultUseSystemStatusBar" : false,
   "supportBrushPen": true,
   "gcInterval" : 9,
