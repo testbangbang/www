@@ -3,6 +3,9 @@ package com.onyx.jdread.library.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -25,8 +28,12 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
+import com.onyx.jdread.event.ShowFunctionBarEvent;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
+import com.onyx.jdread.library.event.LibraryBackEvent;
+import com.onyx.jdread.library.event.LibraryManageEvent;
+import com.onyx.jdread.library.event.LibraryMenuEvent;
 import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 
@@ -34,6 +41,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+
+import retrofit2.http.PUT;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -264,6 +273,27 @@ public class LibraryFragment extends BaseFragment {
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
         dataBundle.getLibraryViewDataModel().clearItemSelectedList();
+        dataBundle.getLibraryViewDataModel().setShowManage(true);
+        EventBus.getDefault().post(new ShowFunctionBarEvent(true));
+    }
+
+    @Subscribe
+    public void onLibraryBackEvent(LibraryBackEvent event) {
+        processBackRequest();
+    }
+
+    @Subscribe
+    public void onLibraryManageEvent(LibraryManageEvent event) {
+        dataBundle.getLibraryViewDataModel().title.set(getString(R.string.manage_book));
+        modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
+        getIntoMultiSelectMode();
+        dataBundle.getLibraryViewDataModel().setShowManage(false);
+        EventBus.getDefault().post(new ShowFunctionBarEvent(false));
+    }
+
+    @Subscribe
+    public void onLibraryMenuEvent(LibraryMenuEvent event) {
+
     }
 
     @Subscribe
@@ -296,6 +326,8 @@ public class LibraryFragment extends BaseFragment {
 
     private void addLibraryToParentRefList(DataModel model) {
         dataBundle.getLibraryViewDataModel().libraryPathList.add(model);
+        dataBundle.getLibraryViewDataModel().title.set(model.title.get());
+        dataBundle.getLibraryViewDataModel().setShowManage(false);
     }
 
     private void processBookItemOpen(DataModel dataModel) {
@@ -332,6 +364,6 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private boolean isMultiSelectionMode() {
-        return false;
+        return modelAdapter.isMultiSelectionMode();
     }
 }

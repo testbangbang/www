@@ -1,6 +1,7 @@
 package com.onyx.jdread.library.model;
 
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.databinding.ObservableInt;
 import android.databinding.ObservableList;
@@ -15,6 +16,9 @@ import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.jdread.library.event.LibraryBackEvent;
+import com.onyx.jdread.library.event.LibraryManageEvent;
+import com.onyx.jdread.library.event.LibraryMenuEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,6 +38,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableField<String> searchKey = new ObservableField<>("");
     public final ObservableInt count = new ObservableInt();
     public final ObservableInt libraryCount = new ObservableInt(0);
+    public final ObservableBoolean showManage = new ObservableBoolean(true);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private int queryLimit = 9;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
@@ -232,13 +237,28 @@ public class LibraryViewDataModel extends Observable {
         return libraryPathList.get(libraryPathList.size() - 1).idString.get();
     }
 
-    public void searchBook() {
-        queryArgs = QueryBuilder.librarySearchQuery(this.queryArgs.libraryUniqueId, searchKey.get(), this.queryArgs.sortBy, this.queryArgs.order);
-        queryArgs.limit = queryLimit;
+    public void onSearchClick() {
+
     }
 
     public void updateFilterBy(BookFilter bookFilter, SortOrder sortOrder) {
         queryArgs.filter = bookFilter;
         queryArgs.order = sortOrder;
+    }
+
+    public void onManageClick() {
+        eventBus.post(new LibraryManageEvent());
+    }
+
+    public void onMenuClick() {
+        eventBus.post(new LibraryMenuEvent());
+    }
+
+    public void onBackClick() {
+        eventBus.post(new LibraryBackEvent());
+    }
+
+    public void setShowManage(boolean isShowManage){
+        showManage.set(isShowManage);
     }
 }

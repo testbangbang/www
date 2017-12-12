@@ -17,7 +17,6 @@ public class JDReadApplication extends MultiDexApplication {
     private static final String TAG = JDReadApplication.class.getSimpleName();
     private static JDReadApplication instance = null;
     private static DataBundle dataBundle;
-    private DeviceReceiver deviceReceiver = new DeviceReceiver();
 
     @Override
     protected void attachBaseContext(Context context) {

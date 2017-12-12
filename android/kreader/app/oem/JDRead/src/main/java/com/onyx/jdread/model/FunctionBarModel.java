@@ -24,7 +24,7 @@ public class FunctionBarModel extends Observable {
     }
 
     public void setIsShow(boolean isShow) {
-
+        this.isShow.set(isShow);
     }
 
     public void changeTabSelection(String selectedTab) {
