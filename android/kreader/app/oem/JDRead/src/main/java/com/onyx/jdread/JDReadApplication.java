@@ -4,20 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.DeviceReceiver;
-import com.onyx.android.sdk.utils.RxBroadcastReceiver;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.common.ActionChain;
+import com.onyx.jdread.common.AppBaseInfo;
 import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.library.model.DataBundle;
-
-import org.greenrobot.eventbus.EventBus;
-
-import io.reactivex.functions.Consumer;
 
 /**
  * Created by hehai on 17-12-6.
@@ -28,6 +23,7 @@ public class JDReadApplication extends MultiDexApplication {
     private static JDReadApplication instance = null;
     private static DataBundle dataBundle;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
+    private AppBaseInfo appBaseInfo;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -43,8 +39,9 @@ public class JDReadApplication extends MultiDexApplication {
 
     private void initConfig() {
         instance = this;
-        DataManager.init(instance,null);
+        DataManager.init(instance, null);
         initEventListener();
+        initAppBaseInfo();
     }
 
     private void initEventListener() {
@@ -52,7 +49,7 @@ public class JDReadApplication extends MultiDexApplication {
 
             @Override
             public void onMediaScanStarted(Intent intent) {
-               processRemovableSDCardScan();
+                processRemovableSDCardScan();
             }
 
             @Override
@@ -104,5 +101,16 @@ public class JDReadApplication extends MultiDexApplication {
             dataBundle = new DataBundle(instance);
         }
         return dataBundle;
+    }
+
+    private void initAppBaseInfo() {
+        appBaseInfo = new AppBaseInfo();
+    }
+
+    public AppBaseInfo getAppBaseInfo() {
+        if (appBaseInfo == null) {
+            appBaseInfo = new AppBaseInfo();
+        }
+        return appBaseInfo;
     }
 }
