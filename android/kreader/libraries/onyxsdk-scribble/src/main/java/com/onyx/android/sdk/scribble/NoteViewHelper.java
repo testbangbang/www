@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -676,7 +677,12 @@ public class NoteViewHelper {
     }
 
     private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return toolType == MotionEvent.TOOL_TYPE_FINGER ||
+                    toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
+        } else {
+            return toolType == MotionEvent.TOOL_TYPE_FINGER;
+        }
     }
 
     public boolean isEnableTouchEvent() {
