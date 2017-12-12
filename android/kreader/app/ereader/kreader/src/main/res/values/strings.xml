@@ -442,4 +442,7 @@
     <string name="dialog_tab_host_menu_open_doc">Open the doc</string>
     <string name="settings_show_side_note_indicator_title">Show side note indicator</string>
     <string name="ask_for_delete_page">Are you sure you want to delete the page？</string>
+    <string name="reader_layer_menu_font_style_indentation">Indentation</string>
+    <string name="reader_layer_menu_font_style_indent">Indent</string>
+    <string name="reader_layer_menu_font_style_not_indent">Not indent</string>
 </resources>
