@@ -8,4 +8,5 @@
     <string name="back_name">Back</string>
     <string name="setting_name">Setting</string>
     <string name="personal_name">Personal</string>
+    <string name="show_back_tab_key">show_back_tab_key</string>
 </resources>

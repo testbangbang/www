@@ -13,37 +13,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="@{functionBarModel.isShow?View.VISIBLE:View.GONE}">
+        android:orientation="vertical">
 
-        <TextView
-            style="@style/FunctionBarItemStyle"
-            android:drawableTop="@mipmap/library"
-            android:onClickListener="@{functionBarModel.libraryClickListener}"
-            android:text="@string/library_name" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/normal_black" />
 
-        <TextView
-            style="@style/FunctionBarItemStyle"
-            android:drawableTop="@mipmap/shop"
-            android:onClickListener="@{functionBarModel.shoppingClickListener}"
-            android:text="@string/shop_name" />
-
-        <TextView
-            style="@style/FunctionBarItemStyle"
-            android:drawableTop="@mipmap/back"
-            android:onClickListener="@{functionBarModel.backClickListener}"
-            android:text="@string/back_name" />
-
-        <TextView
-            style="@style/FunctionBarItemStyle"
-            android:drawableTop="@mipmap/setting"
-            android:onClickListener="@{functionBarModel.settingClickListener}"
-            android:text="@string/setting_name" />
-
-        <TextView
-            style="@style/FunctionBarItemStyle"
-            android:drawableTop="@mipmap/personal"
-            android:onClickListener="@{functionBarModel.personalClickListener}"
-            android:text="@string/personal_name" />
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/function_bar_recycler"
+            items="@{functionBarModel.itemModels}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/function_bar_height"
+            android:orientation="horizontal"
+            android:visibility="@{functionBarModel.isShow?View.VISIBLE:View.GONE}" />
     </LinearLayout>
 </layout>
