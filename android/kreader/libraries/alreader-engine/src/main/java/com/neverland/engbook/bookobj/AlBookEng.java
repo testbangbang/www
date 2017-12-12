@@ -457,6 +457,8 @@ public class AlBookEng{
             prof.interline = 50;
         profiles.font_interline[0] = prof.interline;
 
+        profiles.indentParagraph = prof.indentParagraph;
+
         prof.marginLeft = prof.validateMargin(prof.marginLeft);
         prof.marginRight = prof.validateMargin(prof.marginRight);
         prof.marginTop = prof.validateMargin(prof.marginTop);
@@ -3192,7 +3194,7 @@ public class AlBookEng{
 	private void initOneItem(AlOneItem oi, AlOneItem poi, long style,
 							 int pos, int width, boolean addEmptyLine, TAL_CALC_MODE calcMode, AlOnePage page) {
 
-		long v;
+		long v = 0;
 
         if (profiles.specialModeRoll)
             addEmptyLine = true;
@@ -3270,12 +3272,14 @@ public class AlBookEng{
 		if ((style & AlStyles.SL_PAR) != 0) {	
 			oi.isStart = true;
 
-			if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
-				v = 8 * 3;
-			} else {
-				v = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
-				if (preferences.chinezeFormatting) {
-					v *= 2;
+			if (profiles.indentParagraph) {
+				if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
+					v = 8 * 3;
+				} else {
+					v = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
+					if (preferences.chinezeFormatting) {
+						v *= 2;
+					}
 				}
 			}
 
