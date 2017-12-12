@@ -4,10 +4,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.onyx.android.sample.activity.BrushActivity">
+    tools:context="com.onyx.android.sample.activity.WacomActivity">
 
     <SurfaceView
-        android:id="@+id/brush_surfaceview"
+        android:id="@+id/wacom_surfaceview"
         android:layout_width="368dp"
         android:layout_height="495dp"
         tools:layout_editor_absoluteY="8dp"

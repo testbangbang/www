@@ -43,7 +43,8 @@
             android:exported="true" />
         <activity android:name=".activity.RefreshTestActivity" />
         <activity android:name=".activity.CalligraphyActivity" />
-        <activity android:name=".activity.BrushActivity"></activity>
+        <activity android:name=".activity.BrushActivity" />
+        <activity android:name=".activity.WacomActivity"></activity>
     </application>
 
 </manifest>

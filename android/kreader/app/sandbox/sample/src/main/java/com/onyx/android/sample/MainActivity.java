@@ -10,6 +10,7 @@ import com.onyx.android.sample.activity.BrushActivity;
 import com.onyx.android.sample.activity.CalligraphyActivity;
 import com.onyx.android.sample.activity.EnvironmentDemoActivity;
 import com.onyx.android.sample.activity.EpdDemoActivity;
+import com.onyx.android.sample.activity.WacomActivity;
 import com.onyx.android.sample.fragment.RectangleUpdateFragment;
 import com.onyx.android.sample.activity.RefreshTestActivity;
 import com.onyx.android.sample.activity.FrontLightDemoActivity;
@@ -29,6 +30,10 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+
+    @Bind(R.id.button_wacom)
+    Button buttonWacom;
+
 
     @Bind(R.id.button_brush)
     Button buttonBrush;
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        buttonWacom.setOnClickListener(this);
         buttonBrush.setOnClickListener(this);
         buttonCalligraphy.setOnClickListener(this);
         buttonEnvironment.setOnClickListener(this);
@@ -85,7 +91,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
-        if (v.equals(buttonBrush)) {
+        if (v.equals(buttonWacom)) {
+            startActivity(new Intent(this, WacomActivity.class));
+            return;
+        } else if (v.equals(buttonBrush)) {
             startActivity(new Intent(this, BrushActivity.class));
             return;
         } else if (v.equals(buttonCalligraphy)) {
