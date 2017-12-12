@@ -22,6 +22,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.event.ChangeChildViewEvent;
 import com.onyx.jdread.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.event.PushChildViewToStackEvent;
+import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.model.FunctionBarModel;
 import com.onyx.jdread.model.FunctionBarTabModel;
 import com.onyx.jdread.model.MainViewModel;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         binding.setMainViewModel(new MainViewModel());
         initSystemBar();
         initFunctionBar();
+        switchCurrentFragment(LibraryFragment.class.getName());
     }
 
     private void initSystemBar() {
@@ -132,6 +134,7 @@ public class MainActivity extends AppCompatActivity {
 
         transaction.replace(R.id.main_content_view, baseFragment);
         transaction.commitAllowingStateLoss();
+        functionBarModel.changeTabSelection(childViewName);
         saveChildViewInfo(childViewName, baseFragment);
     }
 
@@ -219,6 +222,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFunctionBarTabModel(FunctionBarTabModel event) {
-        functionBarModel.changeTabSelection(event);
+        functionBarModel.changeTabSelection(event.fragmentName.get());
     }
 }

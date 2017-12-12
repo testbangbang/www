@@ -27,9 +27,9 @@ public class FunctionBarModel extends Observable {
 
     }
 
-    public void changeTabSelection(FunctionBarTabModel selectedTab) {
+    public void changeTabSelection(String selectedTab) {
         for (FunctionBarTabModel itemModel : itemModels) {
-            itemModel.setSelected(selectedTab == itemModel);
+            itemModel.setSelected(selectedTab.equals(itemModel.fragmentName.get()));
         }
     }
 }

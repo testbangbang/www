@@ -235,7 +235,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void initDataBundle() {
         dataBundle = JDReadApplication.getDataBundle();
-        dataBundle.getLibraryViewDataModel().title.set(getString(R.string.library));
+        dataBundle.getLibraryViewDataModel().title.set(getString(R.string.library_name));
         libraryBinding.setLibraryModel(dataBundle.getLibraryViewDataModel());
     }
 

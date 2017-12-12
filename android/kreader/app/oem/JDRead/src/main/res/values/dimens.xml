@@ -10,4 +10,7 @@
     <dimen name="level_three_heading_font">16sp</dimen>
     <dimen name="line_width">1dp</dimen>
     <dimen name="function_bar_height">80dp</dimen>
+    <dimen name="function_bar_item_indicator_height">5dp</dimen>
+    <dimen name="function_bar_item_image_margin">10dp</dimen>
+    <dimen name="function_bar_item_name_margin">5dp</dimen>
 </resources>

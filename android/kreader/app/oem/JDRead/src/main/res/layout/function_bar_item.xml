@@ -14,25 +14,27 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/imagebtn_bg"
-        android:gravity="center"
         android:onClick="@{()->functionBarTabModel.tabClicked()}"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="5dp"
+            android:layout_height="@dimen/function_bar_item_indicator_height"
             android:background="@color/normal_black"
             android:visibility="@{functionBarTabModel.isSelected?View.VISIBLE:View.INVISIBLE}" />
 
         <ImageView
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/function_bar_item_image_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@{functionBarTabModel.drawableTop}" />
 
         <TextView
+            android:layout_marginTop="@dimen/function_bar_item_name_margin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textSize="@dimen/level_one_heading_font"
             android:text="@{functionBarTabModel.itemName}" />
     </LinearLayout>
 </layout>

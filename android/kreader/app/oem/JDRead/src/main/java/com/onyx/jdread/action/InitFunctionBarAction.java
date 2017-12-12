@@ -30,7 +30,7 @@ public class InitFunctionBarAction extends BaseAction<DataBundle> {
         functionBarModel.itemModels.add(new FunctionBarTabModel(LibraryFragment.class.getName(), dataBundle.getAppContext().getString(R.string.library_name), R.mipmap.ic_shelf));
         functionBarModel.itemModels.add(new FunctionBarTabModel(StoreFragment.class.getName(), dataBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_shop));
         if (PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, true)) {
-            functionBarModel.itemModels.add(new FunctionBarTabModel("back", dataBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_undo));
+            functionBarModel.itemModels.add(new FunctionBarTabModel("back", dataBundle.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo));
         }
         functionBarModel.itemModels.add(new FunctionBarTabModel(SettingFragment.class.getName(), dataBundle.getAppContext().getString(R.string.setting_name), R.mipmap.ic_setting));
         functionBarModel.itemModels.add(new FunctionBarTabModel(MyFragment.class.getName(), dataBundle.getAppContext().getString(R.string.personal_name), R.mipmap.ic_me));
