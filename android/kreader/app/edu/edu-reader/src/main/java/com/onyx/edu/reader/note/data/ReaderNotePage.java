@@ -179,6 +179,10 @@ public class ReaderNotePage {
         return shapeList;
     }
 
+    public final List<Shape> getReviewShapeList() {
+        return reviewShapeList;
+    }
+
     public boolean renderNoteShapes(final RenderContext renderContext, final RenderCallback callback) {
         if (shapeList == null || shapeList.size() == 0) {
             return false;
