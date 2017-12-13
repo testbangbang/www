@@ -457,8 +457,6 @@ public class AlBookEng{
             prof.interline = 50;
         profiles.font_interline[0] = prof.interline;
 
-        profiles.indentParagraph = prof.indentParagraph;
-
         prof.marginLeft = prof.validateMargin(prof.marginLeft);
         prof.marginRight = prof.validateMargin(prof.marginRight);
         prof.marginTop = prof.validateMargin(prof.marginTop);
