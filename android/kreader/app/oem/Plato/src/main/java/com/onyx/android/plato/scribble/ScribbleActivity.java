@@ -2,25 +2,13 @@ package com.onyx.android.plato.scribble;
 
 import android.content.Intent;
 import android.databinding.ViewDataBinding;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.SurfaceHolder;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
-import com.onyx.android.sdk.common.request.BaseCallback;
-import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.scribble.api.event.DrawingTouchEvent;
-import com.onyx.android.sdk.scribble.api.event.ErasingTouchEvent;
-import com.onyx.android.sdk.scribble.api.event.RawTouchPointListReceivedEvent;
-import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
-import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageGoToTargetIndexRequest;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.activity.BaseActivity;
-import com.onyx.android.plato.adapter.ScribbleToolPopupAdapter;
 import com.onyx.android.plato.adapter.ShapePageAdapter;
 import com.onyx.android.plato.bean.ScribbleToolBean;
 import com.onyx.android.plato.common.Constants;
@@ -29,7 +17,15 @@ import com.onyx.android.plato.event.ShapePageItemEvent;
 import com.onyx.android.plato.event.SubjectiveResultEvent;
 import com.onyx.android.plato.view.DisableScrollGridManager;
 import com.onyx.android.plato.view.DividerItemDecoration;
-import com.onyx.android.plato.view.PageRecyclerView;
+import com.onyx.android.plato.view.ScribbleToolPopupWindow;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.scribble.api.event.DrawingTouchEvent;
+import com.onyx.android.sdk.scribble.api.event.ErasingTouchEvent;
+import com.onyx.android.sdk.scribble.api.event.RawTouchPointListReceivedEvent;
+import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageGoToTargetIndexRequest;
+import com.onyx.android.sdk.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -52,8 +48,8 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     private String questionID;
     private String questionTitle;
     private String question;
-    private PopupWindow toolPopupWindow;
-    private ScribbleToolPopupAdapter adapter;
+    private ScribbleToolPopupWindow toolPopupWindow;
+    private boolean isShow;
 
     @Override
     protected void initData() {
@@ -63,6 +59,7 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void initView(ViewDataBinding binding) {
         scribbleBinding = (ActivityScribbleBinding) binding;
+        toolPopupWindow = new ScribbleToolPopupWindow(this);
         noteManager = SunApplication.getInstance().getNoteManager();
         mViewModel = new ScribbleViewModel(this);
         scribbleHandler = new ScribbleHandler(noteManager);
@@ -84,6 +81,15 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     protected void initListener() {
         scribbleBinding.setListener(this);
         scribbleBinding.titleBar.titleBarTitle.setOnClickListener(this);
+        scribbleBinding.titleBar.titleBarImageOne.setOnClickListener(this);
+        scribbleBinding.titleBar.titleBarImageTwo.setOnClickListener(this);
+
+        toolPopupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                noteManager.sync(true, true);
+            }
+        });
     }
 
     @Override
@@ -108,7 +114,7 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onPause() {
         super.onPause();
-        noteManager.sync(false, false);
+        noteManager.sync(true, false);
         DeviceUtils.setFullScreenOnResume(this, false);
         removeSurfaceViewCallback();
     }
@@ -117,6 +123,7 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     protected void onStop() {
         deviceReceiver.unregisterReceiver(this);
         noteManager.unregisterEventBus(this);
+        noteManager.sync(false, false);
         noteManager.quit();
         super.onStop();
     }
@@ -124,6 +131,9 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     @Override
     protected void onDestroy() {
         mViewModel.onActivityDestroyed();
+        if (toolPopupWindow != null) {
+            toolPopupWindow = null;
+        }
         super.onDestroy();
     }
 
@@ -275,6 +285,12 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        EventBus.getDefault().post(new SubjectiveResultEvent(questionID));
+        super.onBackPressed();
+    }
+
     private void showShapeToolMenu() {
         List<ScribbleToolBean> list = new ArrayList<>();
         list.add(new ScribbleToolBean(ScribbleSubMenuID.PenStyle.NORMAL_PEN_STYLE, R.drawable.ic_shape_pencil));
@@ -300,25 +316,12 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
         scribbleHandler.deletePage();
     }
 
-    public void showToolMenuPop(List<ScribbleToolBean> tools) {
-        if (toolPopupWindow == null) {
-            LinearLayout inflate = (LinearLayout) View.inflate(this, R.layout.scribble_popup_window_layout, null);
-            toolPopupWindow = new PopupWindow();
-            PageRecyclerView toolRecycler = (PageRecyclerView) inflate.findViewById(R.id.scribble_tool_recycle);
-            toolRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
-            DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
-            dividerItemDecoration.setDrawLine(false);
-            toolRecycler.addItemDecoration(dividerItemDecoration);
-            adapter = new ScribbleToolPopupAdapter();
-            toolRecycler.setAdapter(adapter);
-            toolPopupWindow.setContentView(inflate);
-            toolPopupWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
-            toolPopupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        }
-        adapter.setTools(tools);
-        toolPopupWindow.setFocusable(true);
-        toolPopupWindow.setOutsideTouchable(true);
-        toolPopupWindow.setBackgroundDrawable(new BitmapDrawable());
-        toolPopupWindow.showAsDropDown(scribbleBinding.titleBar.titleBarImageOne, 0, getResources().getInteger(R.integer.scribble_tool_menu_offset_y));
+    public void showToolMenuPop(final List<ScribbleToolBean> tools) {
+        noteManager.syncWithCallback(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                toolPopupWindow.show(scribbleBinding.titleBar.titleBarImageOne, tools);
+            }
+        });
     }
 }

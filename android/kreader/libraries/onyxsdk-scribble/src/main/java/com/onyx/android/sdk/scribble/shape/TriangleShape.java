@@ -2,7 +2,6 @@ package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.Matrix;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.graphics.RectF;
 
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
@@ -26,7 +25,7 @@ public class TriangleShape extends NonEPDShape {
         final float[] renderPoints = updatePoints(null);
         Matrix transformMatrix = new Matrix();
         if (Float.compare(getOrientation(), 0f) != 0) {
-            transformMatrix.setRotate(getOrientation(), getBoundingRect().centerX(), getBoundingRect().centerY());
+            transformMatrix.setRotate(getOrientation(), getRotationPointXCoordinate(), getRotationPointYCoordinate());
             transformMatrix.mapPoints(renderPoints);
         }
         return ShapeUtils.hitTestLine(renderPoints[0], renderPoints[1], renderPoints[2], renderPoints[3], x, y, radius) ||
@@ -40,8 +39,7 @@ public class TriangleShape extends NonEPDShape {
         Matrix transformMatrix = new Matrix();
         updateOriginalDisplayPath(renderPoints);
         if (Float.compare(getOrientation(), 0f) != 0) {
-            PointF centerPoint = new PointF(getBoundingRect().centerX(), getBoundingRect().centerY());
-            transformMatrix.setRotate(getOrientation(), centerPoint.x, centerPoint.y);
+            transformMatrix.setRotate(getOrientation(), getRotationPointXCoordinate(), getRotationPointYCoordinate());
             originDisplayPath.transform(transformMatrix);
         }
         renderContext.canvas.drawPath(originDisplayPath, renderContext.paint);

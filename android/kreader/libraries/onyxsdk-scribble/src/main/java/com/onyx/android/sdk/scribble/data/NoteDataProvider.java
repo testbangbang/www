@@ -155,6 +155,20 @@ public class NoteDataProvider {
         return noteModel;
     }
 
+    public static boolean checkHasNote(final Context context, final String uniqueId, final String parentUniqueId) {
+        Select select = new Select();
+        Where where = select.from(NoteModel.class).where(NoteModel_Table.uniqueId.eq(uniqueId)).and(NoteModel_Table.parentUniqueId.eq(parentUniqueId));
+        NoteModel noteModel = (NoteModel) where.querySingle();
+        return noteModel != null;
+    }
+
+    public static boolean checkHasShape(final Context context, final String uniqueId) {
+        Select select = new Select();
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(uniqueId));
+        ShapeModel shapeModel = (ShapeModel) where.querySingle();
+        return shapeModel != null;
+    }
+
     public static NoteModel createLibrary(final Context context, final String uniqueId, final String parentUniqueId, final String title) {
         NoteModel noteModel = NoteModel.createLibrary(uniqueId, parentUniqueId, title);
         saveNote(context, noteModel);

@@ -171,4 +171,16 @@ public interface Shape {
     void setRevision(int revision);
 
     boolean canModified(int documentReviewRevision);
+
+    float getSelectRectOrientation();
+
+    void setSelectRectOrientation(float selectRectOrientation);
+
+    float getRotationPointXCoordinate();
+
+    void setRotationPointXCoordinate(float xCoordinate);
+
+    float getRotationPointYCoordinate();
+
+    void setRotationPointYCoordinate(float yCoordinate);
 }

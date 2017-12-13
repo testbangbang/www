@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.asyncrequest;
 
 import android.graphics.Rect;
+import android.os.Build;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -132,7 +133,12 @@ public class TouchReader {
     }
 
     private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return toolType == MotionEvent.TOOL_TYPE_FINGER ||
+                    toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
+        } else {
+            return toolType == MotionEvent.TOOL_TYPE_FINGER;
+        }
     }
 
     private boolean isSingleTouch() {

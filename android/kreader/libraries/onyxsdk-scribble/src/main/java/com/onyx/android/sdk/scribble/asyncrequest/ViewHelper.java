@@ -6,6 +6,8 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewTreeObserver;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+
 import org.greenrobot.eventbus.EventBus;
 
 /**
@@ -17,13 +19,15 @@ public class ViewHelper {
     private SurfaceView hostView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
     private EventBus eventBus;
+    private NoteManager noteManager;
 
     public ViewHelper(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
-    public void setHostView(SurfaceView hostView) {
+    public void setHostView(NoteManager noteManager, SurfaceView hostView) {
         this.hostView = hostView;
+        this.noteManager = noteManager;
         initView(hostView);
     }
 
@@ -40,10 +44,16 @@ public class ViewHelper {
             globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
+                    updateLimitRect();
                 }
             };
         }
         return globalLayoutListener;
+    }
+
+    private void updateLimitRect() {
+        noteManager.getTouchHelper().setup(hostView);
+        EpdController.setScreenHandWritingRegionLimit(hostView);
     }
 
     public Rect getViewportSize() {

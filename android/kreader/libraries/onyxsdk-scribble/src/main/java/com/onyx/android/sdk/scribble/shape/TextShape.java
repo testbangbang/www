@@ -43,7 +43,14 @@ public class TextShape extends BaseShape  {
         Paint.Style beforeStyle = renderContext.paint.getStyle();
         renderContext.paint.setStyle(Paint.Style.FILL_AND_STROKE);
         renderContext.paint.setStrokeWidth(getStrokeWidth());
-        renderContext.canvas.drawText(shapeExtraAttributes.getTextContent(), rect.left, rect.bottom, renderContext.paint);
+        float baseline;
+        if (StringUtils.isChinese(content)) {
+            Paint.FontMetricsInt fontMetrics = renderContext.paint.getFontMetricsInt();
+            baseline = (rect.bottom + rect.top - fontMetrics.bottom - fontMetrics.top) / 2;
+        }else {
+            baseline = rect.bottom;
+        }
+        renderContext.canvas.drawText(content, rect.left, baseline, renderContext.paint);
         renderContext.paint.setStyle(beforeStyle);
     }
 

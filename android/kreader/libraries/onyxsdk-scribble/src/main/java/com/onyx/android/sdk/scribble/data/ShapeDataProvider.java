@@ -47,6 +47,20 @@ public class ShapeDataProvider {
         return list;
     }
 
+    public static List<ShapeModel> loadSubPageShapes(final Context context,
+                                                 final String documentUniqueId,
+                                                 final String pageUniqueId,
+                                                 final String subPageName) {
+        Select select = new Select();
+        Where where = select.from(ShapeModel.class).where(ShapeModel_Table.documentUniqueId.eq(documentUniqueId));
+        if (StringUtils.isNotBlank(subPageName)) {
+            where = where.and(ShapeModel_Table.subPageName.eq(subPageName));
+        }
+
+        List<ShapeModel> list = where.queryList();
+        return list;
+    }
+
     public static List<ShapeModel> loadShapeList(final Context context) {
         return new Select().from(ShapeModel.class).queryList();
     }

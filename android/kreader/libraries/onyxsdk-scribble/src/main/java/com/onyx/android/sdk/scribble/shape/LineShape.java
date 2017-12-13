@@ -2,10 +2,8 @@ package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.Matrix;
 import android.graphics.Path;
-import android.graphics.PointF;
 
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
-import com.onyx.android.sdk.utils.MathUtils;
 
 /**
  * Created by zhuzeng on 7/12/16.
@@ -28,7 +26,7 @@ public class LineShape extends NonEPDShape {
         renderPoints[3] = getCurrentPoint().y;
         Matrix transformMatrix = new Matrix();
         if (Float.compare(getOrientation(), 0f) != 0) {
-            transformMatrix.setRotate(getOrientation(), getBoundingRect().centerX(), getBoundingRect().centerY());
+            transformMatrix.setRotate(getOrientation(), getRotationPointXCoordinate(), getRotationPointYCoordinate());
             transformMatrix.mapPoints(renderPoints);
         }
         return ShapeUtils.hitTestLine(renderPoints[0], renderPoints[1], renderPoints[2], renderPoints[3], x, y, radius);
@@ -48,8 +46,7 @@ public class LineShape extends NonEPDShape {
         path.moveTo(points[0], points[1]);
         path.lineTo(points[2], points[3]);
         if (Float.compare(getOrientation(), 0f) != 0) {
-            PointF centerPoint = MathUtils.calculateMiddlePointFromTwoPoint(points[0], points[1], points[2], points[3]);
-            transformMatrix.setRotate(getOrientation(), centerPoint.x,centerPoint.y);
+            transformMatrix.setRotate(getOrientation(), getRotationPointXCoordinate(), getRotationPointYCoordinate());
             path.transform(transformMatrix);
         }
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));

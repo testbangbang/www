@@ -4,6 +4,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.scribble.asyncrequest.AsyncBaseNoteRequest;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
+import com.onyx.android.sdk.scribble.data.SelectedRectF;
 import com.onyx.android.sdk.scribble.shape.Shape;
 
 import java.util.ArrayList;
@@ -20,11 +21,11 @@ public class GetSelectedShapeListRequest extends AsyncBaseNoteRequest {
 
     private volatile List<Shape> selectedShapeList = new ArrayList<>();
 
-    public RectF getSelectedRectF() {
+    public SelectedRectF getSelectedRectF() {
         return selectedRectF;
     }
 
-    private volatile RectF selectedRectF = new RectF();
+    private volatile SelectedRectF selectedRectF = new SelectedRectF(new RectF());
 
     public GetSelectedShapeListRequest() {
         setPauseInputProcessor(true);
@@ -33,7 +34,7 @@ public class GetSelectedShapeListRequest extends AsyncBaseNoteRequest {
     @Override
     public void execute(final NoteManager parent) throws Exception {
         selectedShapeList = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedShapeList();
-        selectedRectF = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect().getRectF();
+        selectedRectF = parent.getNoteDocument().getCurrentPage(getContext()).getSelectedRect();
     }
 
 }

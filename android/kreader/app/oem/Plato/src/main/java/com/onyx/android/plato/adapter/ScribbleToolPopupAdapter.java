@@ -54,6 +54,7 @@ public class ScribbleToolPopupAdapter extends PageRecyclerView.PageAdapter<Scrib
         holder.getBind().itemScribbleTool.setImageResource(tools.get(position).getImageResource());
         holder.getBind().itemScribbleTool.setTag(position);
         holder.getBind().itemScribbleTool.setOnClickListener(this);
+        holder.getBind().executePendingBindings();
     }
 
     @Override
