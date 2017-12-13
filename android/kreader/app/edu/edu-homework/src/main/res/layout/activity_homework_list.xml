@@ -56,10 +56,16 @@
                 style="@style/homework_text" />
 
             <TextView
+                android:visibility="gone"
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/get_result"
+                style="@style/homework_text" />
+
+            <TextView
                 android:padding="@dimen/homework_text_margin"
                 android:background="@drawable/round_bg"
                 android:id="@+id/answer_record"
-                android:text="答题记录"
                 style="@style/homework_text" />
 
             <TextView

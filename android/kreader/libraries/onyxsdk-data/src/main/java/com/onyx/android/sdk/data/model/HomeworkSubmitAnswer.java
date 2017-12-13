@@ -12,10 +12,14 @@ import java.util.List;
 public class HomeworkSubmitAnswer {
 
     public String question;
+    public String uniqueId;
     public String value;
     public List<String> attachment;
     public String drawData;
     public List<Bitmap> bitmaps;
+    public boolean correct;
+    public String comment;
+    public float score;
 
     public void setAttachment(List<String> attachment) {
         this.attachment = attachment;
@@ -29,4 +33,7 @@ public class HomeworkSubmitAnswer {
         this.value = value;
     }
 
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 }

@@ -23,4 +23,14 @@
     <string name="submitting">正在提交...</string>
     <string name="exit">退出</string>
     <string name="submit_fail">提交失败</string>
+    <string name="answer_record">答题记录</string>
+    <string name="get_result">批改结果</string>
+    <string name="waiting_review">作业还在等待老师批改</string>
+    <string name="right_answer" formatted="false">正确答案：%s</string>
+    <string name="exit_tips">确定要退出吗？</string>
+    <string name="analysis">题目解析</string>
+    <string name="score" formatted="false">%.1f分</string>
+    <string name="no_find_homework">没找到作业</string>
+    <string name="fetching_review">正在获取批改</string>
+    <string name="not_review">还没批改</string>
 </resources>

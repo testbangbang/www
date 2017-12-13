@@ -14,9 +14,11 @@ public class Question implements Serializable {
     public String uniqueId;
     public String content;
     public String answers;
+    public String analysis;
     public int QuesType;
     public int difficulty;
     public List<QuestionOption> options;
+    public QuestionReview review;
 
     public boolean doneAnswer;
 
@@ -26,6 +28,14 @@ public class Question implements Serializable {
 
     public String getQuestionId() {
         return _id;
+    }
+
+    public void setReview(QuestionReview review) {
+        this.review = review;
+    }
+
+    public QuestionReview getReview() {
+        return review;
     }
 
     public QuestionType getType() {
@@ -69,6 +79,7 @@ public class Question implements Serializable {
                 HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
                 answer.setQuestion(getQuestionId());
                 answer.setValue(option._id);
+                answer.setUniqueId(getUniqueId());
                 answers.add(answer);
             }
         }
@@ -83,6 +94,7 @@ public class Question implements Serializable {
                 HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
                 answer.setQuestion(getQuestionId());
                 answer.setValue(option._id);
+                answer.setUniqueId(getUniqueId());
                 answers.add(index, answer);
                 index++;
             }
@@ -94,6 +106,7 @@ public class Question implements Serializable {
         List<HomeworkSubmitAnswer> answers = new ArrayList<>();
         HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
         answer.setQuestion(getQuestionId());
+        answer.setUniqueId(getUniqueId());
         answers.add(answer);
         return answers;
     }

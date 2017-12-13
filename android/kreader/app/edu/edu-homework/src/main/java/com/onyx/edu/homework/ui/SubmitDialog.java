@@ -122,14 +122,14 @@ public class SubmitDialog extends OnyxBaseDialog {
 
     private void onStartSubmit() {
         binding.message.setText(R.string.submitting);
-        binding.action1.setEnabled(false);
-        binding.action0.setEnabled(false);
+        binding.action1.setVisibility(View.INVISIBLE);
+        binding.action0.setVisibility(View.INVISIBLE);
     }
 
     private void onFailSubmit() {
         binding.message.setText(R.string.submit_fail);
-        binding.action1.setEnabled(true);
-        binding.action0.setEnabled(true);
+        binding.action1.setVisibility(View.VISIBLE);
+        binding.action0.setVisibility(View.VISIBLE);
     }
 
     private void onSuccessSubmit() {

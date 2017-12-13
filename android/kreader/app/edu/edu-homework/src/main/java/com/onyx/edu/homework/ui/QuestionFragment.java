@@ -7,6 +7,7 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
+import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,12 +16,15 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
@@ -86,7 +90,24 @@ public class QuestionFragment extends BaseFragment {
                 gotoAnswerActivity(question);
             }
         });
+        binding.analysis.setText(R.string.analysis);
+        binding.analysis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAnalysisDialog(question);
+            }
+        });
+        binding.scribbleImage.setVisibility(question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
         updateScribbleImage();
+        updateReviewInfo();
+    }
+
+    private void showAnalysisDialog(Question question) {
+        if (question == null || StringUtils.isNullOrEmpty(question.analysis)) {
+            return;
+        }
+        Spanned analysis = TextUtils.fromHtml(question.analysis, new Base64ImageParser(getActivity()), null);
+        OnyxCustomDialog.getMessageDialog(getActivity(), analysis).show();
     }
 
     public NoteViewHelper getNoteViewHelper() {
@@ -199,5 +220,23 @@ public class QuestionFragment extends BaseFragment {
             view.setEnabled(enable);
         }
         binding.option.setClickable(enable);
+        binding.answer.setVisibility(enable && !question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
+        binding.reviewLayout.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
     }
+
+    private void updateReviewInfo() {
+        if (!getDataBundle().isReview()) {
+            return;
+        }
+        if (question.answers != null) {
+            Spanned answers = TextUtils.fromHtml(question.answers, new Base64ImageParser(getActivity()), null);
+            binding.rightAnswer.setText(getString(R.string.right_answer, answers));
+        }
+        if (question.review != null) {
+            binding.score.setText(getString(R.string.score, question.review.getScore()));
+            binding.rightWrongIcon.setImageResource(question.review.correct ? R.drawable.ic_right : R.drawable.ic_wrong);
+        }
+        binding.analysis.setVisibility(StringUtils.isNullOrEmpty(question.analysis) ? View.GONE : View.VISIBLE);
+    }
+
 }

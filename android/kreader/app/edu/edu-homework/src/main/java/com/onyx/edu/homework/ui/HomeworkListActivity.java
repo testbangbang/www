@@ -1,5 +1,6 @@
 package com.onyx.edu.homework.ui;
 
+import android.content.DialogInterface;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,11 +13,14 @@ import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.CheckAnswerAction;
+import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Homework;
@@ -78,10 +82,45 @@ public class HomeworkListActivity extends BaseActivity {
         binding.hasAnswer.setText(getString(R.string.has_answer, 0));
         binding.notAnswer.setText(getString(R.string.not_answer, 0));
         binding.submit.setText(R.string.submit);
+        binding.answerRecord.setText(R.string.answer_record);
+        binding.getResult.setText(R.string.get_result);
+        binding.getResult.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getHomeworkReview();
+            }
+        });
         binding.submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SubmitDialog(HomeworkListActivity.this, questions).show();
+                showSubmitDialog();
+            }
+        });
+    }
+
+    private void showSubmitDialog() {
+        SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                showWaitingDialog();
+            }
+        });
+        dialog.show();
+    }
+
+    private void getHomeworkReview() {
+        GetHomeworkReviewsAction reviewsAction = new GetHomeworkReviewsAction(getDataBundle().getHomeworkId(), questions, true);
+        reviewsAction.execute(this, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                if (!getDataBundle().isReview()) {
+                    Toast.makeText(HomeworkListActivity.this, R.string.not_review, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                updateCurrentQuestion();
+                updateState();
+                showTotalScore();
             }
         });
     }
@@ -96,25 +135,50 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void homeworkRequest() {
         if (homework == null || homework.child == null) {
-            System.exit(0);
+            showNoFindHomework();
             return;
         }
         String libraryId = homework.child._id;
+        if (StringUtils.isNullOrEmpty(libraryId)) {
+            showNoFindHomework();
+            return;
+        }
         DataBundle.getInstance().setHomeworkId(libraryId);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
+                questions = actionChain.getQuestions();
+                if (e != null && questions == null) {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
+                showWaitingDialog();
                 updateState();
-                questions = actionChain.getQuestions();
+                showTotalScore();
                 initListView(questions);
             }
 
         });
+    }
+
+    private void showNoFindHomework() {
+        Toast.makeText(this, R.string.no_find_homework, Toast.LENGTH_SHORT).show();
+    }
+
+    private void showTotalScore() {
+        if (!getDataBundle().isReview() || questions == null) {
+            return;
+        }
+        float score = 0f;
+        for (Question question : questions) {
+            QuestionReview review = question.review;
+            if (review == null) {
+                continue;
+            }
+            score += review.score;
+        }
+        binding.result.setText(getString(R.string.score, score));
     }
 
     private void initListView(final List<Question> questions) {
@@ -163,6 +227,13 @@ public class HomeworkListActivity extends BaseActivity {
         binding.total.setText(getString(R.string.total, questions.size()));
     }
 
+    private void showWaitingDialog() {
+        if (!getDataBundle().isDone()) {
+            return;
+        }
+        OnyxCustomDialog.getMessageDialog(this, getString(R.string.waiting_review)).show();
+    }
+
     @Subscribe
     public void onDoneAnswerEvent(DoneAnswerEvent event) {
         checkAnswer();
@@ -203,6 +274,9 @@ public class HomeworkListActivity extends BaseActivity {
     private void updatePage(int position) {
         int current = position + 1;
         int total = questions.size();
+        if (position >= total) {
+            return;
+        }
         binding.page.setText(current + File.separator + total);
         fragments.get(position).updateState();
     }
@@ -221,6 +295,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
         updateState();
+        updateCurrentQuestion();
     }
 
     public DataBundle getDataBundle() {
@@ -231,8 +306,22 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.getResult.setVisibility(getDataBundle().isDone() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());
     }
 
+    @Override
+    public void onBackPressed() {
+        showExitDialog();
+    }
+
+    private void showExitDialog() {
+        OnyxCustomDialog.getConfirmDialog(this, getString(R.string.exit_tips), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                System.exit(0);
+            }
+        }, null).show();
+    }
 }

@@ -1,5 +1,6 @@
 package com.onyx.edu.homework.db;
 
+import com.onyx.android.sdk.data.model.QuestionReview;
 import com.raizlabs.android.dbflow.annotation.Column;
 import com.raizlabs.android.dbflow.annotation.PrimaryKey;
 import com.raizlabs.android.dbflow.annotation.Table;
@@ -31,6 +32,9 @@ public class QuestionModel extends BaseModel {
 
     @Column(typeConverter = ConverterListString.class)
     private List answer;
+
+    @Column(typeConverter = ConverterQuestionReview.class)
+    private QuestionReview review;
 
     public String getUniqueId() {
         return uniqueId;
@@ -70,6 +74,14 @@ public class QuestionModel extends BaseModel {
 
     public void setAnswer(List answer) {
         this.answer = answer;
+    }
+
+    public QuestionReview getReview() {
+        return review;
+    }
+
+    public void setReview(QuestionReview review) {
+        this.review = review;
     }
 
     public static QuestionModel create(String uniqueId, String questionId, String homeworkId) {

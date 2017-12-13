@@ -33,11 +33,12 @@ public class HomeworkPagesAnswerBase64ActionChain extends BaseNoteAction {
     public void execute(NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
         noteViewHelper.reset();
         if (answers == null || answers.isEmpty()) {
+            BaseCallback.invoke(baseCallback, null, null);
             return;
         }
         List<String> docIds = new ArrayList<>();
         for (HomeworkSubmitAnswer answer : answers) {
-            docIds.add(answer.question);
+            docIds.add(answer.uniqueId);
         }
         NoteActionChain chain = new NoteActionChain(true);
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
@@ -51,14 +52,10 @@ public class HomeworkPagesAnswerBase64ActionChain extends BaseNoteAction {
             public void done(BaseRequest request, Throwable e) {
                 Map<String, List<String>> pageBase64s = listRenderAction.getPageBase64s();
                 for (HomeworkSubmitAnswer answer : answers) {
-                    answer.setAttachment(pageBase64s.get(answer.question));
+                    answer.setAttachment(pageBase64s.get(answer.uniqueId));
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    public List<HomeworkSubmitAnswer> getAnswers() {
-        return answers;
     }
 }

@@ -18,22 +18,24 @@ import java.util.List;
 
 public class HomeworkListActionChain extends BaseAction {
 
-    private String libraryId;
+    private String homeworkId;
     private List<Question> questions;
 
-    public HomeworkListActionChain(String libraryId) {
-        this.libraryId = libraryId;
+    public HomeworkListActionChain(String homeworkId) {
+        this.homeworkId = homeworkId;
     }
 
     @Override
     public void execute(Context context, final BaseCallback baseCallback) {
         showLoadingDialog(context, R.string.loading);
-        final HomeworkListAction homeworkListAction = new HomeworkListAction(libraryId);
-        final CheckLocalDataAction checkLocalDataAction = new CheckLocalDataAction(homeworkListAction.getQuestions(), libraryId);
-        ActionChain chain = new ActionChain(true);
-        chain.addAction(new GetTokenFromLocalAction());
+        final HomeworkListAction homeworkListAction = new HomeworkListAction(homeworkId);
+        final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false);
+        final CheckLocalDataAction checkLocalDataAction = new CheckLocalDataAction(homeworkListAction.getQuestions(), homeworkId);
+        final ActionChain chain = new ActionChain(true);
         chain.addAction(new CloudIndexServiceAction());
+        chain.addAction(new GetTokenFromLocalAction());
         chain.addAction(homeworkListAction);
+        chain.addAction(answersAction);
         chain.addAction(checkLocalDataAction);
         chain.execute(context, new BaseCallback() {
             @Override
