@@ -10,15 +10,11 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.request.data.db.BaseDBRequest;
+import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.dataprovider.R;
-import com.onyx.android.sdk.utils.Benchmark;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.Debug;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -26,11 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by suicheng on 2016/9/5.
@@ -39,6 +32,7 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
     private boolean loadFromCache = true;
     private boolean loadMetadata = true;
+    private boolean selectAll = false;
     private QueryArgs queryArgs;
     private Map<String, CloseableReference<Bitmap>> thumbnailMap = new HashMap<>();
 
@@ -54,12 +48,13 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
         this.queryArgs = queryArgs;
     }
 
-    public RxLibraryLoadRequest(DataManager dataManager, QueryArgs queryArgs, List<DataModel> selectedList, EventBus eventBus, boolean loadMetadata) {
+    public RxLibraryLoadRequest(DataManager dataManager, QueryArgs queryArgs, List<DataModel> selectedList, boolean selectAll, EventBus eventBus, boolean loadMetadata) {
         super(dataManager);
         this.eventBus = eventBus;
         this.queryArgs = queryArgs;
         this.loadMetadata = loadMetadata;
         this.selectedList = selectedList;
+        this.selectAll = selectAll;
     }
 
     @Override
@@ -89,8 +84,34 @@ public class RxLibraryLoadRequest extends RxBaseDBRequest {
 
         models.clear();
         DataModelUtil.libraryToDataModel(eventBus, models, libraryList, R.drawable.library_default_cover);
-        DataModelUtil.metadataToDataModel(eventBus, models, bookList, selectedList, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
+        DataModelUtil.metadataToDataModel(eventBus, models, bookList, thumbnailMap, ThumbnailUtils.defaultThumbnailMapping());
+        setChecked(models);
         return this;
+    }
+
+    private void setChecked(List<DataModel> models) {
+        for (DataModel model : models) {
+            if (model.type.get() == ModelType.TYPE_METADATA) {
+                model.checked.set(isChecked(model));
+            }
+        }
+    }
+
+    private boolean isChecked(DataModel model) {
+        if (selectAll) {
+            return !selectedListContains(model);
+        } else {
+            return selectedListContains(model);
+        }
+    }
+
+    private boolean selectedListContains(DataModel model) {
+        for (DataModel dataModel : selectedList) {
+            if (dataModel.idString.get().equals(model.idString.get())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void loadBitmaps(Context context, DataManager dataManager) {

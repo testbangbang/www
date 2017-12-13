@@ -3,9 +3,6 @@ package com.onyx.jdread.library.ui;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -41,8 +38,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-
-import retrofit2.http.PUT;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -272,8 +267,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
-        dataBundle.getLibraryViewDataModel().clearItemSelectedList();
-        dataBundle.getLibraryViewDataModel().setShowManage(true);
+        dataBundle.getLibraryViewDataModel().quitManageMode();
         EventBus.getDefault().post(new ShowFunctionBarEvent(true));
     }
 
@@ -349,11 +343,7 @@ public class LibraryFragment extends BaseFragment {
             return;
         }
         dataModel.checked.set(!dataModel.checked.get());
-        if (dataModel.checked.get()) {
-            dataBundle.getLibraryViewDataModel().addItemSelected(dataModel, false);
-        } else {
-            dataBundle.getLibraryViewDataModel().removeFromSelected(dataModel);
-        }
+        dataBundle.getLibraryViewDataModel().clickItem(dataModel);
         updateContentView();
     }
 

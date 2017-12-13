@@ -12,10 +12,11 @@ import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
-import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
@@ -35,10 +36,11 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableList<DataModel> items = new ObservableArrayList<>();
     public final ObservableList<DataModel> visibleItems = new ObservableArrayList<>();
     public final ObservableField<String> title = new ObservableField<>();
-    public final ObservableField<String> searchKey = new ObservableField<>("");
+    public final ObservableField<String> selectAllBtnText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.select_all));
     public final ObservableInt count = new ObservableInt();
     public final ObservableInt libraryCount = new ObservableInt(0);
     public final ObservableBoolean showManage = new ObservableBoolean(true);
+    public final ObservableBoolean selectAllFlag = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private int queryLimit = 9;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
@@ -192,15 +194,6 @@ public class LibraryViewDataModel extends Observable {
         }
     }
 
-    private static boolean isSelected(List<DataModel> selectedList, Metadata metadata) {
-        for (DataModel dataModel : selectedList) {
-            if (dataModel.idString.get().equals(metadata.getIdString())) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     public List<DataModel> getListSelected() {
         return listSelected;
     }
@@ -220,7 +213,7 @@ public class LibraryViewDataModel extends Observable {
         Iterator<DataModel> iterator = getListSelected().iterator();
         while (iterator.hasNext()) {
             DataModel next = iterator.next();
-            if (next.id.equals(itemModel.id)) {
+            if (next.idString.get().equals(itemModel.idString.get())) {
                 iterator.remove();
             }
         }
@@ -258,7 +251,56 @@ public class LibraryViewDataModel extends Observable {
         eventBus.post(new LibraryBackEvent());
     }
 
-    public void setShowManage(boolean isShowManage){
+    public void setShowManage(boolean isShowManage) {
         showManage.set(isShowManage);
+    }
+
+    public void selectAll() {
+        if (isSelectAll()) {
+            this.selectAllFlag.set(false);
+            checkedOrCancelAll(false);
+        } else {
+            checkedOrCancelAll(true);
+        }
+        getListSelected().clear();
+        setSelectAllBtnText();
+    }
+
+    private void checkedOrCancelAll(boolean checked) {
+        for (DataModel item : items) {
+            item.checked.set(checked);
+        }
+    }
+
+    public void clickItem(DataModel dataModel) {
+        if (selectAllFlag.get()) {
+            if (dataModel.checked.get()) {
+                removeFromSelected(dataModel);
+            } else {
+                addItemSelected(dataModel, false);
+            }
+        } else {
+            if (dataModel.checked.get()) {
+                addItemSelected(dataModel, false);
+            } else {
+                removeFromSelected(dataModel);
+            }
+        }
+        setSelectAllBtnText();
+    }
+
+    private void setSelectAllBtnText() {
+        selectAllBtnText.set(isSelectAll() ? JDReadApplication.getInstance().getString(R.string.cancel) : JDReadApplication.getInstance().getString(R.string.select_all));
+    }
+
+    public boolean isSelectAll() {
+        return (selectAllFlag.get() && getListSelected().size() == 0) || (!selectAllFlag.get() && getListSelected().size() == count.get());
+    }
+
+    public void quitManageMode() {
+        selectAllFlag.set(false);
+        clearItemSelectedList();
+        setShowManage(true);
+        checkedOrCancelAll(false);
     }
 }

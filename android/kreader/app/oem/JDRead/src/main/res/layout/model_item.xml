@@ -60,6 +60,7 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:minHeight="@dimen/button_minHeight"
+            android:onClick="@{()->model.itemClicked()}"
             android:visibility="@{model.enableSelection?View.VISIBLE:View.GONE}" />
 
     </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>

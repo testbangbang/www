@@ -87,44 +87,45 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:visibility="@{libraryModel.showManage?View.GONE:View.VISIBLE}"
-            android:background="@color/normal_black" />
+            android:background="@color/normal_black"
+            android:visibility="@{libraryModel.showManage?View.GONE:View.VISIBLE}" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/function_bar_height"
-            android:orientation="horizontal"
             android:gravity="center"
+            android:orientation="horizontal"
             android:visibility="@{libraryModel.showManage?View.GONE:View.VISIBLE}">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:drawableTop="@mipmap/ic_undo"
                 android:layout_marginTop="@dimen/function_bar_item_image_margin"
                 android:drawablePadding="@dimen/function_bar_item_name_margin"
-                android:textSize="@dimen/level_one_heading_font"
-                android:text="@string/select_all" />
+                android:drawableTop="@mipmap/ic_undo"
+                android:onClick="@{()->libraryModel.selectAll()}"
+                android:text="@{libraryModel.selectAllBtnText}"
+                android:textSize="@dimen/level_one_heading_font" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:drawableTop="@mipmap/ic_undo"
-                android:layout_marginTop="@dimen/function_bar_item_image_margin"
-                android:drawablePadding="@dimen/function_bar_item_name_margin"
-                android:textSize="@dimen/level_one_heading_font"
-                android:layout_marginRight="@dimen/library_manage_btn_margin"
                 android:layout_marginLeft="@dimen/library_manage_btn_margin"
-                android:text="@string/delete" />
+                android:layout_marginRight="@dimen/library_manage_btn_margin"
+                android:layout_marginTop="@dimen/function_bar_item_image_margin"
+                android:drawablePadding="@dimen/function_bar_item_name_margin"
+                android:drawableTop="@mipmap/ic_undo"
+                android:text="@string/delete"
+                android:textSize="@dimen/level_one_heading_font" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:drawableTop="@mipmap/ic_undo"
                 android:layout_marginTop="@dimen/function_bar_item_image_margin"
                 android:drawablePadding="@dimen/function_bar_item_name_margin"
-                android:textSize="@dimen/level_one_heading_font"
-                android:text="@string/move_to" />
+                android:drawableTop="@mipmap/ic_undo"
+                android:text="@string/move_to"
+                android:textSize="@dimen/level_one_heading_font" />
         </LinearLayout>
     </LinearLayout>
 </layout>
