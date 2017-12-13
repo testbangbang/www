@@ -33,24 +33,24 @@ public class ChangeSelectedShapeRotationRequest extends AsyncBaseNoteRequest {
     private volatile boolean isAddToHistory = false;
 
     @Override
-    public void execute(NoteManager helper) throws Exception {
-        setResumeInputProcessor(helper.useDFBForCurrentState());
+    public void execute(NoteManager manager) throws Exception {
+        setResumeInputProcessor(manager.useDFBForCurrentState());
         benchmarkStart();
-        helper.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
-        RectF selectedRect = helper.getNoteDocument().getCurrentPage(
+        manager.getNoteDocument().getCurrentPage(getContext()).saveCurrentSelectShape();
+        RectF selectedRect = manager.getNoteDocument().getCurrentPage(
                 getContext()).getSelectedRect().getRectF();
         float centerX = selectedRect.centerX();
         float centerY = selectedRect.centerY();
-        PointF extendedPoint = helper.getNoteDocument().getCurrentPage(
+        PointF extendedPoint = manager.getNoteDocument().getCurrentPage(
                 getContext()).getRotateExtendPoint();
         if ((Float.compare(targetRotationAngle, Float.MIN_VALUE) == 0 && touchPoint != null)) {
             targetRotationAngle = MathUtils.calculateAngle(new PointF(centerX, centerY),
                     new PointF(extendedPoint.x, extendedPoint.y), new PointF(touchPoint.x, touchPoint.y));
         }
-        helper.getNoteDocument().getCurrentPage(getContext()).
+        manager.getNoteDocument().getCurrentPage(getContext()).
                 setRotationAngleToSelectShapeList(targetRotationAngle, new PointF(centerX, centerY), isAddToHistory);
-        renderCurrentPageInBitmap(helper);
-        updateShapeDataInfo(helper);
+        renderCurrentPageInBitmap(manager);
+        updateShapeDataInfo(manager);
     }
 
 

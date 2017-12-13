@@ -94,7 +94,8 @@ public class ShapeFactory {
     }
 
     public static boolean isDFBShape(int shape) {
-        return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE || shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
+        return shape == SHAPE_PENCIL_SCRIBBLE || shape == SHAPE_BRUSH_SCRIBBLE ||
+                shape == SHAPE_OILY_PEN_SCRIBBLE || shape == SHAPE_FOUNTAIN_PEN_SCRIBBLE;
     }
 
     public static final ShapeModel modelFromShape(final Shape shape) {
@@ -111,6 +112,8 @@ public class ShapeFactory {
         shapeModel.setLayoutType(shape.getLayoutType());
         shapeModel.setExtraAttributesBean(shape.getShapeExtraAttributes());
         shapeModel.setOrientation(shape.getOrientation());
+        shapeModel.setRotationPointXCoordinate(shape.getRotationPointXCoordinate());
+        shapeModel.setRotationPointYCoordinate(shape.getRotationPointYCoordinate());
         return shapeModel;
     }
 
@@ -126,6 +129,8 @@ public class ShapeFactory {
         shape.setLayoutType(model.getLayoutType());
         shape.setShapeExtraAttributes(model.getExtraAttributesBean());
         shape.setOrientation(model.getOrientation());
+        shape.setRotationPointXCoordinate(model.getRotationPointXCoordinate());
+        shape.setRotationPointYCoordinate(model.getRotationPointYCoordinate());
     }
 
     public static Map<String, List<Shape>> getSubPageSpanShapeList(List<Shape> subPageShapes) {
@@ -137,10 +142,10 @@ public class ShapeFactory {
             String groupId = subPageShape.getGroupId();
             if (subPageSpanShapeMap.containsKey(groupId)) {
                 subPageSpanShapeMap.get(groupId).add(subPageShape);
-            }else {
+            } else {
                 List<Shape> spanShapes = new ArrayList<>();
                 spanShapes.add(subPageShape);
-                subPageSpanShapeMap.put(groupId,spanShapes);
+                subPageSpanShapeMap.put(groupId, spanShapes);
             }
         }
         return subPageSpanShapeMap;

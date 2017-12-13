@@ -86,7 +86,6 @@
                 android:id="@+id/title_bar_image_one"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{listener::onClick}"
                 android:src="@drawable/ic_eraser"
                 android:visibility="gone" />
 
@@ -94,7 +93,6 @@
                 android:id="@+id/title_bar_image_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:onClick="@{listener::onClick}"
                 android:src="@drawable/ic_shape"
                 android:visibility="gone" />
         </LinearLayout>

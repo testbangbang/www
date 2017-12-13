@@ -15,6 +15,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
@@ -25,6 +26,7 @@ import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -32,6 +34,8 @@ import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -112,6 +116,9 @@ public class NoteViewHelper {
     private boolean supportBigPen = false;
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
+    private boolean enableTouchEvent = true;
+    private Context context;
+    private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
 
     private Rect customLimitRect = null;
 
@@ -130,6 +137,15 @@ public class NoteViewHelper {
         updateViewMatrix();
         updateLimitRect();
         pauseDrawing();
+        this.context = context.getApplicationContext();
+    }
+
+    public ShapeDataInfo getShapeDataInfo() {
+        return shapeDataInfo;
+    }
+
+    public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
+        this.shapeDataInfo = shapeDataInfo;
     }
 
     public SurfaceView getView() {
@@ -141,6 +157,10 @@ public class NoteViewHelper {
         removeLayoutListener();
         quitDrawing();
         setLineLayoutMode(false);
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     public void flushTouchPointList() {
@@ -195,8 +215,10 @@ public class NoteViewHelper {
     }
 
     private void initRawResource(final Context context) {
-        deviceConfig = DeviceConfig.sharedInstance(context, "note");
-        mappingConfig = MappingConfig.sharedInstance(context, "note");
+        ConfigManager.init(context.getApplicationContext());
+        deviceConfig = ConfigManager.getInstance().getDeviceConfig();
+        mappingConfig = ConfigManager.getInstance().getMappingConfig();
+        BaseShape.setUseRawInput(deviceConfig.useRawInput());
     }
 
     private void initBigPenState(final Context context) {
@@ -445,6 +467,22 @@ public class NoteViewHelper {
         return viewBitmapWrapper.getBitmap();
     }
 
+    public void recycleBitmap() {
+        if (viewBitmapWrapper != null) {
+            viewBitmapWrapper.recycleBitmap();
+        }
+        if (renderBitmapWrapper != null) {
+            renderBitmapWrapper.recycleBitmap();
+        }
+    }
+
+    public void reset() {
+        getNoteDocument().close(getContext());
+        quit();
+        recycleBitmap();
+        shapeDataInfo = null;
+    }
+
     private final Runnable generateRunnable(final BaseNoteRequest request) {
         Runnable runnable = new Runnable() {
             @Override
@@ -671,10 +709,21 @@ public class NoteViewHelper {
     }
 
     private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER;
+        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
+    }
+
+    public boolean isEnableTouchEvent() {
+        return enableTouchEvent;
+    }
+
+    public void setEnableTouchEvent(boolean enableTouchEvent) {
+        this.enableTouchEvent = enableTouchEvent;
     }
 
     private boolean processTouchEvent(final MotionEvent motionEvent) {
+        if (!isEnableTouchEvent()) {
+            return true;
+        }
         if (motionEvent.getPointerCount() > 1) {
             return true;
         }
@@ -695,10 +744,25 @@ public class NoteViewHelper {
         if (inShapeSelecting()){
             return forwardShapeSelecting(motionEvent);
         }
-        if (!(useRawInput() && renderByFramework())) {
+
+        /*
+           touch event logic:
+           1.detect raw input, if false,always forward drawing.
+           2.if true, filter all finger touch.
+           3.if not finger touch, detect target shape, if non dfb shape, forward drawing.
+         */
+        if (useRawInput()) {
+            if (isFingerTouch(toolType)) {
+                return true;
+            }
+            if (renderByFramework()) {
+                return true;
+            } else {
+                return forwardDrawing(motionEvent);
+            }
+        } else {
             return forwardDrawing(motionEvent);
         }
-        return true;
     }
 
     private boolean forwardDrawing(final MotionEvent motionEvent) {
@@ -706,7 +770,8 @@ public class NoteViewHelper {
             onDrawingTouchDown(motionEvent);
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onDrawingTouchMove(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onDrawingTouchUp(motionEvent);
         }
         return true;
@@ -717,7 +782,8 @@ public class NoteViewHelper {
             onBeginShapeSelecting();
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onShapeSelecting(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onFinishShapeSelecting();
         }
         return true;
@@ -728,7 +794,8 @@ public class NoteViewHelper {
             onBeginErasing();
         } else if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
             onErasing(motionEvent);
-        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP) {
+        } else if (motionEvent.getAction() == MotionEvent.ACTION_UP ||
+                motionEvent.getAction() == MotionEvent.ACTION_CANCEL) {
             onFinishErasing();
         }
         return true;

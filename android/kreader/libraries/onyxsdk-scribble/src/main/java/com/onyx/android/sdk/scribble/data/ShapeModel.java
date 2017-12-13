@@ -83,6 +83,12 @@ public class ShapeModel extends BaseModel {
     @Column
     float orientation = 0f;
 
+    @Column
+    float rotationPointXCoordinate = 0f;
+
+    @Column
+    float rotationPointYCoordinate = 0f;
+
     public ShapeModel() {
     }
 
@@ -275,5 +281,21 @@ public class ShapeModel extends BaseModel {
 
     public void setOrientation(float orientation) {
         this.orientation = orientation;
+    }
+
+    public float getRotationPointXCoordinate() {
+        return rotationPointXCoordinate;
+    }
+
+    public void setRotationPointXCoordinate(float rotationPointXCoordinate) {
+        this.rotationPointXCoordinate = rotationPointXCoordinate;
+    }
+
+    public float getRotationPointYCoordinate() {
+        return rotationPointYCoordinate;
+    }
+
+    public void setRotationPointYCoordinate(float rotationPointYCoordinate) {
+        this.rotationPointYCoordinate = rotationPointYCoordinate;
     }
 }

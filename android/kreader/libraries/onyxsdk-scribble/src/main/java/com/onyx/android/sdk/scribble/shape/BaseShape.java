@@ -50,8 +50,12 @@ public class BaseShape implements Shape {
 
     private boolean selected = false;
     private float scale = 1.0f;
-    private float orientation;
+    private float orientation = 0f;
+    private float selectRectOrientation = 0f;
 
+    private PointF rotationCenterPoint = new PointF();
+
+    private static boolean useRawInput;
     /**
      * rectangle, circle, etc.
      * @return
@@ -246,6 +250,7 @@ public class BaseShape implements Shape {
     @Override
     public void onRotate(final float angle, PointF pointF) {
         normalizedPoints.rotateAllPoints(angle, pointF);
+        setSelectRectOrientation((getSelectRectOrientation() + angle) % 360);
         updatePoints();
     }
 
@@ -504,5 +509,43 @@ public class BaseShape implements Shape {
     @Override
     public boolean canModified(int documentReviewRevision) {
         return revision >= documentReviewRevision;
+    }
+
+    @Override
+    public float getSelectRectOrientation() {
+        return selectRectOrientation;
+    }
+
+    @Override
+    public void setSelectRectOrientation(float selectRectOrientation) {
+        this.selectRectOrientation = selectRectOrientation;
+    }
+
+    @Override
+    public float getRotationPointXCoordinate() {
+        return rotationCenterPoint.x;
+    }
+
+    @Override
+    public void setRotationPointXCoordinate(float xCoordinate) {
+        rotationCenterPoint.x = xCoordinate;
+    }
+
+    @Override
+    public float getRotationPointYCoordinate() {
+        return rotationCenterPoint.y;
+    }
+
+    @Override
+    public void setRotationPointYCoordinate(float yCoordinate) {
+        rotationCenterPoint.y = yCoordinate;
+    }
+
+    public static boolean useRawInput() {
+        return useRawInput;
+    }
+
+    public static void setUseRawInput(boolean useRawInput) {
+        BaseShape.useRawInput = useRawInput;
     }
 }
