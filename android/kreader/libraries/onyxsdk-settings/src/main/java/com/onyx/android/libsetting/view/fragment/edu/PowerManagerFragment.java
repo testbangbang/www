@@ -7,7 +7,6 @@ import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
 import android.os.BatteryManager;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,7 @@ import com.onyx.android.libsetting.util.PowerUtil;
 import com.onyx.android.libsetting.view.BindingViewHolder;
 import com.onyx.android.libsetting.view.PageRecyclerViewItemClickListener;
 import com.onyx.android.libsetting.view.SettingPageAdapter;
-import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
+import com.onyx.android.sdk.ui.view.DisableScrollLinearManager;
 import com.onyx.android.sdk.utils.DeviceUtils;
 
 import java.util.ArrayList;
@@ -84,8 +83,8 @@ public class PowerManagerFragment extends Fragment {
     private void initView() {
         binding.autoSleepRecyclerView.setHasFixedSize(true);
         binding.autoPowerOffRecyclerView.setHasFixedSize(true);
-        binding.autoSleepRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext()));
-        binding.autoPowerOffRecyclerView.setLayoutManager(new DisableScrollGridManager(getContext()));
+        binding.autoSleepRecyclerView.setLayoutManager(new DisableScrollLinearManager(getContext()));
+        binding.autoPowerOffRecyclerView.setLayoutManager(new DisableScrollLinearManager(getContext()));
         buildAdapter(PowerSettingTimeoutCategory.SCREEN_TIMEOUT);
         buildAdapter(PowerSettingTimeoutCategory.POWER_OFF_TIMEOUT);
         buildDataList(autoSleepAdapter, PowerSettingTimeoutCategory.SCREEN_TIMEOUT);
@@ -96,10 +95,8 @@ public class PowerManagerFragment extends Fragment {
 
     private void updateBatteryStatus(){
         binding.batteryLevel.setText(BatteryUtil.getVisualBatteryLevel(getActivity(), level));
-        binding.batteryStatus.setText(BatteryUtil.getBatteryStatusByStatusCode(getActivity(),status));
+        binding.batteryStatus.setText(BatteryUtil.getBatteryStatusByStatusCode(getActivity(), status));
         binding.devicePowerOnTime.setText(BatteryUtil.getVisualDevicePowerOnTime(getActivity()));
-        binding.batteryTotalTime.setText(BatteryUtil.getVisualBatteryTotalTime(getActivity()));
-        binding.batteryRemainTime.setText(BatteryUtil.getVisualBatteryRemainTime(getActivity()));
     }
 
     private void buildDataList(SettingPageAdapter<TimeoutItemViewHolder, TimeoutItem> adapter, @PowerSettingTimeoutCategory.PowerSettingTimeoutCategoryDef int category) {
