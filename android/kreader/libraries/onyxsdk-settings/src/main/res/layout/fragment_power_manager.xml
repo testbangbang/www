@@ -18,7 +18,7 @@
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/auto_sleep_recycler_view"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="120dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -38,7 +38,7 @@
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/auto_power_off_recycler_view"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="120dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -60,7 +60,7 @@
             android:id="@+id/power_status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="80dp"
+            android:layout_marginLeft="120dp"
             android:orientation="vertical">
 
             <TextView
@@ -78,21 +78,7 @@
                 android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/battery_total_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
-                android:textStyle="bold" />
-
-            <TextView
                 android:id="@+id/device_power_on_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/battery_remain_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textAppearance="@style/OnyxAppCompat.TextAppearance.Light.Medium"
