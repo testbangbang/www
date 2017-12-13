@@ -359,7 +359,7 @@ public class AlBookEng{
 
 		threadData.book_object = this;
 		//threadData.owner_window = (WeakReference<EngBookListener>) notifyUI.hWND;
-        threadData.owner_window = notifyUI.hWND;
+        threadData.setOwner(notifyUI.hWND);
 		
 		return TAL_RESULT.OK;
 	}
@@ -486,6 +486,11 @@ public class AlBookEng{
 		profiles.margin2Style = prof.margin2Style;
 		profiles.margin3Style = prof.margin3Style;*/
 
+		profiles.textIndentOverrideFromCSS = prof.textIndentOverrideFromCSS;
+		profiles.textIndentDefaultEm = 2;
+		if (prof.textIndentDefaultEm >= 0 && prof.textIndentDefaultEm < 16)
+			profiles.textIndentDefaultEm = prof.textIndentDefaultEm;
+
 		adaptProfileParameters();
 		
 		if (openState.getState() == AlBookState.OPEN)		
@@ -500,7 +505,7 @@ public class AlBookEng{
 			profiles.font_bold[i] = profiles.font_bold[0];
 			profiles.font_italic[i] = profiles.font_italic[0];
 
-			if (i == InternalConst.TAL_PROFILE_FONTTYPE_CODE)
+			if (i == InternalConst.TAL_PROFILE_FONTTYPE_NOTE)
 				profiles.font_names[i] = profiles.font_names[0];
 
 			profiles.font_sizes[i] = profiles.font_sizes[0];
@@ -748,7 +753,7 @@ public class AlBookEng{
 		if (preferences.chinezeFormatting)
 			screen_parameters.redLine *= 2;*/
 		
-		screen_parameters.redList = (fontParam.space_width_standart * (preferences.chinezeFormatting ? 4 : 3));
+		//screen_parameters.redList = (fontParam.space_width_standart * (preferences.chinezeFormatting ? 4 : 3));
 
 		/*screen_parameters.redStyle1 = profiles.margin1Style;//DEF_STYLE1_VALUE;
 		if (screen_parameters.redStyle1 >= 200) {
@@ -1615,7 +1620,7 @@ public class AlBookEng{
 				}
 			} else
 			if (oi.justify == AlParProperty.SL2_JUST_LEFT) {
-
+				if ((oi.prop & AlParProperty.SL2_UL_MASK) == 0L)
 					switch (Character.getType(oi.text[0])) {
 					case Character.START_PUNCTUATION:
 					case Character.INITIAL_QUOTE_PUNCTUATION:
@@ -2189,8 +2194,8 @@ public class AlBookEng{
 				
 				if (oi.count > 0) {
 					
-					if (oi.isStart && ((oi.justify & AlParProperty.SL2_JUST_RIGHT) == 0) && ((oi.style[0] & AlParProperty.SL2_UL_BASE) != 0)) {
-						int ul = (int) ((oi.style[0] & AlParProperty.SL2_UL_MASK) >> AlParProperty.SL2_UL_SHIFT);
+					if (oi.isStart && ((oi.justify & AlParProperty.SL2_JUST_RIGHT) == 0) && ((oi.prop & AlParProperty.SL2_UL_BASE) != 0)) {
+						int ul = (int) ((oi.prop & AlParProperty.SL2_UL_MASK) >> AlParProperty.SL2_UL_SHIFT);
 						long stl = oi.style[0] & (~((long)AlStyles.STYLE_MASK));
 						fonts.modifyPaint(old_style, stl, profiles, true);
 						old_style = stl;
@@ -2202,7 +2207,7 @@ public class AlBookEng{
 						case 0x03: case 0x06: case 0x09: case 0x0c: case 0x0f: ch = (char)0x25AA; break;
 						}
 						
-						calc.drawText(x - screen_parameters.redList, y, ch);
+						calc.drawText(x - oi.listIndent/*screen_parameters.redList*/, y, ch);
 					}
 					
 					for (i = 0; i < oi.count; i++) {
@@ -3171,7 +3176,7 @@ public class AlBookEng{
 		oi.justify = oi.prop & AlParProperty.SL2_JUST_MASK;
 		oi.isArabic = false;
         oi.yDrawPosition = -1;
-
+		oi.listIndent = 0;
 
         oi.base_line_down = 2;//screen_parameters.cFontLineDown[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)];
 		oi.base_line_up = 2;//screen_parameters.cFontLineUp[(int) ((style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT)];
@@ -3219,7 +3224,7 @@ public class AlBookEng{
 		if ((style & AlStyles.SL_PAR) != 0) {	
 			oi.isStart = true;
 
-			if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
+			/*if (preferences.chinezeFormatting && oi.justify == AlParProperty.SL2_JUST_NONE) {
 				vE = 8 * 2;
 				vP = 0;
 			} else {
@@ -3232,9 +3237,25 @@ public class AlBookEng{
 					vP = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
 					vE = 0;
 				}
+			}*/
+
+			if ((profiles.textIndentOverrideFromCSS && oi.justify == AlParProperty.SL2_JUST_NONE)) {
+				vE = profiles.textIndentDefaultEm * 2;
+				vP = 0;
+			} else
+			if ((oi.prop & AlParProperty.SL2_INDENT_MASK) == AlParProperty.SL2_INDENT_DEFAULT) {
+				vE = profiles.textIndentDefaultEm * 2;
+				vP = 0;
+			} else
+			if ((oi.prop & AlParProperty.SL2_INDENT_EM) != 0L) {
+				vE = (oi.prop & (AlParProperty.SL2_INDENT_MASK - AlParProperty.SL2_INDENT_EM)) >> AlParProperty.SL2_INDENT_SHIFT;
+				vP = 0;
+			} else {
+				vP = (oi.prop & (AlParProperty.SL2_INDENT_MASK)) >> AlParProperty.SL2_INDENT_SHIFT;
+				vE = 0;
 			}
 
-			if ((vE > 0 || vP > 0) && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)) {
+			if ((vE > 0 || vP > 0)/* && ((oi.prop & AlParProperty.SL2_UL_BASE) == 0)*/) {
 				if (!profiles.classicFirstLetter || (style & AlStyles.SL_MARKFIRTSTLETTER0) == 0) {
 					oi.isRed = (int)(fontParam.em_width * vE / 2) + (int)(((double)width) * vP / 100.0);
 					if (oi.isRed > oi.allWidth * 0.8)
@@ -3248,7 +3269,7 @@ public class AlBookEng{
 				vP = (oi.prop & (AlParProperty.SL2_MARGT_MASK/* - AlParProperty::SL2_MARGT_MASK_EM*/)) >> AlParProperty.SL2_MARGT_SHIFT;
 				if (vP != 0) {
 					//v = (int32_t)(((double)page->pageHeight) * v / 100) * profiles.multiplexer;
-					vP = (int)(((double)width) * vP / 100.0);
+					vP = (int)(fontParam.em_width * vP / 1);//(int)(((double)width) * vP / 100.0);
 					if (vP > (page.pageHeight >> 1))
 						vP = page.pageHeight >> 1;
 					oi.height += vP;
@@ -3382,9 +3403,16 @@ public class AlBookEng{
 		if (((oi.justify & AlParProperty.SL2_JUST_RIGHT) == 0) && ((oi.prop & AlParProperty.SL2_UL_BASE) != 0)) {
 			int ul = (int) ((oi.prop & AlParProperty.SL2_UL_MASK) >> AlParProperty.SL2_UL_SHIFT);
 			if (ul > 0) {
-				ul *= screen_parameters.redList; 
+				oi.listIndent = Math.max(oi.isRed, 2 * fontParam.em_width)/*screen_parameters.redList*/;
+				ul *= oi.listIndent;
+
+				oi.allWidth -= oi.isRed;
+				oi.isRed = 0;
+
+				//ul *= screen_parameters.redList;
+
 				while (ul > (oi.allWidth / 2)) 
-					ul -= screen_parameters.redList;
+					ul -= oi.listIndent/*screen_parameters.redList*/;
 				
 				oi.isLeft += ul;
 				oi.allWidth -= ul;

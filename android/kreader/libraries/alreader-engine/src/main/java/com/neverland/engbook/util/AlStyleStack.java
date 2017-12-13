@@ -112,7 +112,7 @@ public class AlStyleStack {
 
         int top = top = lastMarginBottom, mlPercent, mrPercent, mlEm = 0, mrEm = 0;
         float width = 100.0f, leftPercent = 0, rightPercent = 0;
-        for (int i = 1; i <= position; i++) {
+        for (int i = 0; i <= position; i++) {
             top += (buffer[i].prop & AlParProperty.SL2_MARGT_MASK) >> AlParProperty.SL2_MARGT_SHIFT;
 
             mlPercent = (int)(buffer[i].prop & AlParProperty.SL2_MARGL_PERCENT_MASK) >> AlParProperty.SL2_MARGL_PERCENT_SHIFT;

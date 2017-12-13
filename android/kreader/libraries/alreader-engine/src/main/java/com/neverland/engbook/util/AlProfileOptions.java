@@ -35,6 +35,9 @@ public class AlProfileOptions {
 	public boolean					specialModeRoll;
 	public boolean					specialModeMadRoll = false;
 
+	public int						textIndentDefaultEm;
+	public boolean					textIndentOverrideFromCSS;
+
 	/*public int		       			margin1Style;
 	public int		        		margin2Style;
 	public int		        		margin3Style;*/

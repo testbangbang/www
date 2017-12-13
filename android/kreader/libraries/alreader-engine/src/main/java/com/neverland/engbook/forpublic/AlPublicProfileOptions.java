@@ -109,9 +109,15 @@ public class AlPublicProfileOptions {
 	 * 100..199 - количество пробелов стандартного шрифта - 100
 	 * 200..255 - значение - 200 в процентах от ширины страницы
 	 */
-	public int		       		margin1Style = 210;
+	/*public int		       		margin1Style = 210;
 	public int		        	margin2Style = 225;
-	public int		        	margin3Style = 240;
+	public int		        	margin3Style = 240;*/
+
+	/*
+	support [0..15] Em
+	*/
+	public int					textIndentDefaultEm = 2;
+	public boolean				textIndentOverrideFromCSS = false;
 
 	/**
 	 * метод задает значение левого отсупа на странице
