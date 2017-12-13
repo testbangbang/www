@@ -101,6 +101,8 @@ public class AlFormatDOC extends AlFormat {
             if (allState.state_special_flag && addSpecial)
                 specialBuff.add(ch);
         } else {
+            if (allState.state_code_flag && addSpecial)
+                appendTitle(ch);
 
             if (parText.length > 0) {
                 if (ch == 0xad) {
@@ -211,7 +213,7 @@ public class AlFormatDOC extends AlFormat {
                     case STATE_LINK14:
                         break;
                     default:
-                        allState.incSkipped();
+                        allState.decSkipped();
                         allState.state_special_flag = false;
 
                         String slink = getHyperLink(specialBuff.buff.toString());
@@ -449,17 +451,25 @@ public class AlFormatDOC extends AlFormat {
 
                         clearParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
                         clearPropStyle(AlParProperty.SL2_JUST_MASK);
+                        clearPropStyle(AlParProperty.SL2_INDENT_MASK);
+                        clearPropStyle(AlParProperty.SL2_MARGL_EM_MASK);
+                        clearPropStyle(AlParProperty.SL2_MARGR_EM_MASK);
+
                         switch (aDoc.format.level()) {
                             case 1:
                             case 2:
                                 newEmptyTextParagraph();
                                 setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
                                 setPropStyle(AlParProperty.SL2_JUST_CENTER);
+                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGL_EM_SHIFT);
+                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGR_EM_SHIFT);
                                 break;
                             case 3:
                                 newEmptyTextParagraph();
                                 setParagraphStyle(AlStyles.SL_SPECIAL_PARAGRAPGH);
                                 setPropStyle(AlParProperty.SL2_JUST_CENTER);
+                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGL_EM_SHIFT);
+                                setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGR_EM_SHIFT);
                                 break;
                             default:
                                 if ((old_paragraph & AlStyles.SL_SPECIAL_PARAGRAPGH) != 0)
@@ -468,22 +478,23 @@ public class AlFormatDOC extends AlFormat {
                                 switch (aDoc.format.align()) {
                                     case AlFileDoc.Format.LEFT:
                                         setPropStyle(AlParProperty.SL2_JUST_LEFT);
+                                        setPropStyle(AlParProperty.SL2_INDENT_DEFAULT);
                                         break;
                                     case AlFileDoc.Format.RIGHT:
                                         setPropStyle(AlParProperty.SL2_JUST_RIGHT);
+                                        setPropStyle(AlParProperty.SL2_INDENT_DEFAULT);
                                         break;
                                     case AlFileDoc.Format.CENTER:
                                         setPropStyle(AlParProperty.SL2_JUST_CENTER);
+                                        setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGL_EM_SHIFT);
+                                        setPropStyle(AlParProperty.SL2_MARGLR_DEFAULT << AlParProperty.SL2_MARGR_EM_SHIFT);
                                         break;
                                     default:
-                                        //if (fdoc.format.level() != 0)
-                                        //	setParagraphStyle(AlStyles.PAR_NATIVEJUST);
+                                        setPropStyle(AlParProperty.SL2_INDENT_DEFAULT);
+                                        break;
                                 }
                         }
-
-
                     }
-
 
                     is_hidden = (real_format & AlFileDoc.Format.STYLE_HIDDEN) != 0;
 
@@ -491,19 +502,16 @@ public class AlFormatDOC extends AlFormat {
                     clearTextStyle((~new_setstyle) & DOCSTYLEMASK);
                     setTextStyle(new_setstyle);
 
+                    int old_section_count = section_count;
+                    section_count = aDoc.format.level();
 
-                    //if (allState.isOpened) {
-                        int old_section_count = section_count;
-                        section_count = aDoc.format.level();
-
-                        if (allState.state_code_flag && old_section_count != section_count && old_section_count > 0)
-                            insertTitle(old_section_count);
-                        if (section_count != 0 && old_section_count != section_count) {
-                            allState.state_code_flag = true;
-                            allState.start_position_par = size;
-                            titles.setLength(0);
-                        }
-                   // }
+                    if (allState.state_code_flag && old_section_count != section_count && old_section_count > 0)
+                        insertTitle(old_section_count);
+                    if (section_count != 0 && old_section_count != section_count) {
+                        allState.state_code_flag = true;
+                        allState.start_position_par = size;
+                        titles.setLength(0);
+                    }
 
                     if (prev_special != real_special) {
                         switch (prev_special) {

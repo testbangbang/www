@@ -1,9 +1,6 @@
 package com.neverland.engbook.level2;
 
-import android.util.Log;
-
 import com.neverland.engbook.allstyles.AlCSSHtml;
-import com.neverland.engbook.allstyles.AlOneCSS;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;

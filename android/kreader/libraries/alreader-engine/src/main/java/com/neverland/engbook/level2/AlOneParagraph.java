@@ -1,7 +1,6 @@
 package com.neverland.engbook.level2;
 
 import com.neverland.engbook.util.AlParProperty;
-import com.neverland.engbook.util.AlStyles;
 
 public class AlOneParagraph {
 	public int				positionS;
