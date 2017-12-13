@@ -8,7 +8,7 @@ public class AlScreenParameters {
 	//public int		redLine;
 	public int		vikluchL;
 	public int		vikluchR;
-	public int		redList;
+	//public int		redList;
 	public int		redLineV;
 	/*public int		redStyle1;
 	public int		redStyle2;

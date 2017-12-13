@@ -18,6 +18,7 @@ public class AlParProperty {
 
 	public static final long			SL2_MARGL_EM_MASK =			0x00000007f0000000L;
 	public static final long			SL2_MARGL_EM_SHIFT =		28L;
+	public static final long			SL2_MARGLR_DEFAULT =		4L;
 
 	public static final long			SL2_MARGR_EM_MASK =			0x000003f800000000L;
 	public static final long			SL2_MARGR_EM_SHIFT =		35L;
@@ -27,7 +28,7 @@ public class AlParProperty {
 	public static final long			SL2_INDENT_MASK =			0x0003fc0000000000L;
 	public static final long			SL2_INDENT_SHIFT =			42L;
 	public static final long			SL2_INDENT_EM =				0x0002000000000000L;
-	public static final long			SL2_INDENT_DEFAULT =		SL2_INDENT_EM | 0x0000200000000000L;
+	public static final long			SL2_INDENT_DEFAULT =		SL2_INDENT_MASK;
 
 	public static final long 			SL2_JUST_NONE =				0x0000000000000000L;
 	public static final long			SL2_JUST_LEFT =				0x0004000000000000L;
