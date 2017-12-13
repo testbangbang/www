@@ -1,10 +1,12 @@
 package com.onyx.android.sdk.data.model.v2;
 
+import java.io.Serializable;
+
 /**
  * Created by suicheng on 2017/10/24.
  */
 
-public class ResourceQuery {
+public class ResourceQuery implements Serializable {
     private int code;
     private String ref;
 
