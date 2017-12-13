@@ -86,8 +86,6 @@ public class AlPublicProfileOptions {
 	 */
 	public int					interline = 0;
 
-	public boolean				indentParagraph = true;
-
 	/**
 	 * режим свитка. Работает только в случае, если AlEngineOptions.useScreenPages == TAL_SCREEN_PAGES_COUNT.SIZE
 	 */
