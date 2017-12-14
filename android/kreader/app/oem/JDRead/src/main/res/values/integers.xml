@@ -4,4 +4,7 @@
     <integer name="library_view_type_thumbnail_col">3</integer>
     <integer name="book_store_subject_row">1</integer>
     <integer name="book_store_subject_col">4</integer>
+    <integer name="toast_view_shadow_radius">0</integer>
+    <integer name="toast_view_shadow_dx">0</integer>
+    <integer name="toast_view_shadow_dy">0</integer>
 </resources>

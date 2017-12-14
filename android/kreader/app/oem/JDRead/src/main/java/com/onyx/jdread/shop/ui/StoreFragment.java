@@ -14,6 +14,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.common.LoadingDialog;
+import com.onyx.jdread.common.ToastUtil;
 import com.onyx.jdread.databinding.FragmentBookStoreBinding;
 import com.onyx.jdread.databinding.FragmentBookStoreOneBinding;
 import com.onyx.jdread.databinding.FragmentBookStoreThreeBinding;
@@ -21,6 +23,7 @@ import com.onyx.jdread.databinding.FragmentBookStoreTwoBinding;
 import com.onyx.jdread.shop.action.StoreFreeJournalAction;
 import com.onyx.jdread.shop.action.StoreNewBookAction;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
+import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnStoreBakcTopClick;
 import com.onyx.jdread.shop.model.BookStoreViewModel;
 
@@ -199,6 +202,11 @@ public class StoreFragment extends BaseFragment {
     @Subscribe
     public void onStoreBakcTopClick(OnStoreBakcTopClick event) {
         setCurrent(R.id.book_store_one, SCROLL_ONE);
+    }
+
+    @Subscribe
+    public void onRankViewClick(OnRankViewClick event) {
+
     }
 
 }

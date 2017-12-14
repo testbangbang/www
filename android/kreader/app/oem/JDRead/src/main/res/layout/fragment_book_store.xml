@@ -45,6 +45,7 @@
         </LinearLayout>
 
         <com.onyx.jdread.shop.view.CustomScrollBar
+            android:layout_margin="@dimen/store_custom_scroll_bar_margin"
             android:id="@+id/scroll_bar"
             android:layout_width="@dimen/bookstore_scroll_bar_width"
             android:layout_height="match_parent" />

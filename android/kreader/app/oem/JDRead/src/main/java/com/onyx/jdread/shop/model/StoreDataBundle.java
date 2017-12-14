@@ -1,7 +1,5 @@
 package com.onyx.jdread.shop.model;
 
-import android.content.Context;
-
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManager;
 
@@ -12,14 +10,13 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class StoreDataBundle {
-    private Context appContext;
     private EventBus eventBus = new EventBus();
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
     private BookStoreViewModel storeViewModel = new BookStoreViewModel(getEventBus());
 
-    public StoreDataBundle(Context appContext) {
-        this.appContext = appContext;
+    public StoreDataBundle() {
+
     }
 
     public DataManager getDataManager() {
@@ -36,10 +33,6 @@ public class StoreDataBundle {
 
     public EventBus getEventBus() {
         return eventBus;
-    }
-
-    public Context getAppContext() {
-        return appContext;
     }
 
     public void setStoreViewModel(BookStoreViewModel storeViewModel){

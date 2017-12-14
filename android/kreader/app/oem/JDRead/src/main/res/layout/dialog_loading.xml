@@ -8,12 +8,12 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:minHeight="150dp"
-        android:minWidth="180dp"
+        android:minHeight="@dimen/loading_dialog_min_height"
+        android:minWidth="@dimen/loading_dialog_min_width"
         android:orientation="vertical"
-        android:layout_margin="5dp"
+        android:layout_margin="@dimen/loading_dialog_margin"
         android:layout_gravity="center"
-        android:background="@drawable/border_with_background"
+        android:background="@drawable/rectangle_stroke"
         android:gravity="center">
 
         <com.onyx.android.sdk.ui.view.EllipsizingTextView
@@ -23,16 +23,16 @@
             android:maxLines="2"
             android:text="@string/loading"
             android:ellipsize="end"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
+            android:paddingLeft="@dimen/loading_dialog_text_padding_left_and_right"
+            android:paddingRight="@dimen/loading_dialog_text_padding_left_and_right"
             android:textColor="@android:color/black"
             android:gravity="center"
-            android:textSize="@dimen/dialog_loading_text_size"/>
+            android:textSize="@dimen/level_two_heading_font"/>
 
         <ImageView
-            android:layout_marginTop="10dp"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_marginTop="@dimen/loading_dialog_image_margin_top"
+            android:layout_width="@dimen/loading_dialog_image_width_and_height"
+            android:layout_height="@dimen/loading_dialog_image_width_and_height"
             android:src="@drawable/loading_3"
             android:background="@drawable/imagebtn_bg"
             android:id="@+id/image_loading"/>

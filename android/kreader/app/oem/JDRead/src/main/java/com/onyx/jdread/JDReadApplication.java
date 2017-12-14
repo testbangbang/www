@@ -107,7 +107,7 @@ public class JDReadApplication extends MultiDexApplication {
 
     public static StoreDataBundle getStoreDataBundle() {
         if (storeDataBundle == null) {
-            storeDataBundle = new StoreDataBundle(instance);
+            storeDataBundle = new StoreDataBundle();
         }
         return storeDataBundle;
     }
@@ -117,9 +117,6 @@ public class JDReadApplication extends MultiDexApplication {
     }
 
     public AppBaseInfo getAppBaseInfo() {
-        if (appBaseInfo == null) {
-            appBaseInfo = new AppBaseInfo();
-        }
         return appBaseInfo;
     }
 }

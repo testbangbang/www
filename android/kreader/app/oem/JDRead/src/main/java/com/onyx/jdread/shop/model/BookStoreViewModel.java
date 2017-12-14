@@ -1,5 +1,6 @@
 package com.onyx.jdread.shop.model;
 
+import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnStoreBakcTopClick;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,7 +66,7 @@ public class BookStoreViewModel {
     }
 
     public void onRankViewClick() {
-
+        getEventBus().post(new OnRankViewClick());
     }
 
     public void onEnjoyReadViewClick() {
