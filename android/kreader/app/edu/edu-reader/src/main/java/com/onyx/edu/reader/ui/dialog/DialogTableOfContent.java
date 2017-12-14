@@ -742,7 +742,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 public void done(BaseRequest request, Throwable e) {
                     pageInfoMap.remove(page);
                     scribblePreviewMap.remove(page);
-                    updateTotalAndPageText(currentTab);
+                    updatePageInfo(currentTab);
                     getPageAdapter(currentTab).notifyItemRemoved(position);
                 }
             });
@@ -785,13 +785,13 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
         }
     }
 
-    private void updateTotalAndPageText(DirectoryTab currentTab) {
+    private void updatePageInfo(DirectoryTab currentTab) {
         updateTotalText(currentTab);
         updatePageIndicator(currentTab);
     }
 
     private void onPageChanged() {
-        updateTotalAndPageText(currentTab);
+        updatePageInfo(currentTab);
         if (viewList.size() == 0) {
             return;
         }
