@@ -1,5 +1,6 @@
 package com.onyx.android.sdk.ui.view;
 
+import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.util.SparseArray;
@@ -41,7 +42,7 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
         return this;
     }
 
-    public CommonViewHolder setText(int viewId, String text) {
+    public CommonViewHolder setText(int viewId, CharSequence text) {
         TextView textView = getView(viewId);
         textView.setText(text);
         return this;
@@ -56,6 +57,12 @@ public class CommonViewHolder extends RecyclerView.ViewHolder{
     public CommonViewHolder setImageResource(int viewId, int resId) {
         ImageView view = getView(viewId);
         view.setImageResource(resId);
+        return this;
+    }
+
+    public CommonViewHolder setImageBitmap(int viewId, Bitmap bm) {
+        ImageView view = getView(viewId);
+        view.setImageBitmap(bm);
         return this;
     }
 

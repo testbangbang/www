@@ -24,17 +24,19 @@ public class HomeworkPagesRenderActionChain extends BaseNoteAction {
     private List<String> docIds;
     private Rect size;
     private Map<String, List<Bitmap>> pageMap;
+    private int pageCount = -1;
 
-    public HomeworkPagesRenderActionChain(String docId, Rect size) {
+    public HomeworkPagesRenderActionChain(String docId, Rect size, int pageCount) {
         this.docIds = new ArrayList<>();
         docIds.add(docId);
         this.size = size;
+        this.pageCount = pageCount;
     }
 
-    public HomeworkPagesRenderActionChain(List<String> docIds, Rect size) {
-        this.docIds = docIds;
-        this.size = size;
+    public HomeworkPagesRenderActionChain(String docId, Rect size) {
+        this(docId, size, -1);
     }
+
 
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
@@ -43,6 +45,7 @@ public class HomeworkPagesRenderActionChain extends BaseNoteAction {
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
         final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
                 size,
+                pageCount,
                 false);
         chain.addAction(pageUniqueIdsAction);
         chain.addAction(listRenderAction);

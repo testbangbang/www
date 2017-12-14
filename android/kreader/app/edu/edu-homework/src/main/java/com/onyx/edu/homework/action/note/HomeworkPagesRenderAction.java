@@ -8,7 +8,6 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.request.navigation.PageListRenderRequest;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.HomeworkPagesRenderRequest;
 
@@ -16,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by lxm on 2017/12/8.
@@ -30,13 +28,23 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     private Map<String, List<Bitmap>> pageBitmaps = new HashMap<>();
     private Map<String, List<String>> pageBase64s = new HashMap<>();
     private List<String> documentIds = new ArrayList<>();
+    private int pageCount = -1;
+    private int documentRenderCount = 0;
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
                                      Rect size,
+                                     int pageCount,
                                      boolean base64Bitmap) {
         this.pageUniqueMap = pageUniqueMap;
         this.size = size;
         this.base64Bitmap = base64Bitmap;
+        this.pageCount = pageCount;
+    }
+
+    public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
+                                     Rect size,
+                                     boolean base64Bitmap) {
+        this(pageUniqueMap, size, -1, base64Bitmap);
     }
 
     @Override
@@ -68,6 +76,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
                     BaseCallback.invoke(baseCallback, request, e);
                     return;
                 }
+                documentRenderCount++;
                 if (base64Bitmap) {
                     addBase64Bitmap(docId, renderRequest.getBase64());
                 }else {
@@ -84,8 +93,9 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         }
         String documentId = documentIds.get(0);
         List<String> pageUniqueIds = pageUniqueMap.get(documentId);
-        if (pageUniqueIds == null || pageUniqueIds.size() == 0) {
+        if (pageUniqueIds == null || pageUniqueIds.size() == 0 || documentRenderCount == pageCount) {
             documentIds.remove(0);
+            documentRenderCount = 0;
             noteViewHelper.reset();
         }
         return (documentIds == null || documentIds.size() == 0);

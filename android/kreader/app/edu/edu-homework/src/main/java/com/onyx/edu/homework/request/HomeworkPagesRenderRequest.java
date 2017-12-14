@@ -41,7 +41,7 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
         }else {
             renderBitmap = Bitmap.createBitmap(parent.getRenderBitmap());
         }
-        parent.recycleBitmap();
+        parent.reset();
     }
 
     private void loadShapeData(final NoteViewHelper parent) {

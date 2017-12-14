@@ -111,10 +111,7 @@ public class QuestionFragment extends BaseFragment {
     }
 
     public NoteViewHelper getNoteViewHelper() {
-        if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
-        }
-        return noteViewHelper;
+        return getDataBundle().getNoteViewHelper();
     }
 
     private void bindQuestionOption(RadioGroup group, Question question) {
@@ -194,7 +191,7 @@ public class QuestionFragment extends BaseFragment {
         int width = (int) getResources().getDimension(R.dimen.scribble_view_width);
         int height = (int) getResources().getDimension(R.dimen.scribble_view_height);
         Rect size = new Rect(0, 0, width, height);
-        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), size);
+        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), size, 1);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

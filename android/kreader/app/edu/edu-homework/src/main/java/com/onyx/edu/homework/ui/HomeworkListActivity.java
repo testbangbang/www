@@ -26,6 +26,7 @@ import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
+import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -43,6 +44,7 @@ public class HomeworkListActivity extends BaseActivity {
     private ActivityHomeworkListBinding binding;
     private List<Question> questions;
     private Homework homework;
+    private RecordFragment recordFragment;
     private List<QuestionFragment> fragments = new ArrayList<>();
 
     @Override
@@ -84,6 +86,12 @@ public class HomeworkListActivity extends BaseActivity {
         binding.submit.setText(R.string.submit);
         binding.answerRecord.setText(R.string.answer_record);
         binding.getResult.setText(R.string.get_result);
+        binding.answerRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toggleRecordFragment();
+            }
+        });
         binding.getResult.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -298,6 +306,14 @@ public class HomeworkListActivity extends BaseActivity {
         updateCurrentQuestion();
     }
 
+    @Subscribe
+    public void onGotoQuestionPageEvent(GotoQuestionPageEvent event) {
+        if (event.hideRecord) {
+            hideRecordFragment();
+        }
+        binding.list.setCurrentItem(event.page, false);
+    }
+
     public DataBundle getDataBundle() {
         return DataBundle.getInstance();
     }
@@ -323,5 +339,28 @@ public class HomeworkListActivity extends BaseActivity {
                 System.exit(0);
             }
         }, null).show();
+    }
+
+    private void toggleRecordFragment() {
+        if (recordFragment == null) {
+            showRecordFragment();
+        }else {
+            hideRecordFragment();
+        }
+    }
+
+    private void showRecordFragment() {
+        recordFragment = RecordFragment.newInstance(questions);
+        getSupportFragmentManager().beginTransaction().replace(R.id.record_layout, recordFragment).commit();
+        binding.answerRecord.setText(R.string.return_answer);
+    }
+
+    private void hideRecordFragment() {
+        if (recordFragment == null) {
+            return;
+        }
+        binding.answerRecord.setText(R.string.answer_record);
+        getSupportFragmentManager().beginTransaction().remove(recordFragment).commit();
+        recordFragment = null;
     }
 }

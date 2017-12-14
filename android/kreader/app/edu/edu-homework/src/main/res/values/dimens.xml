@@ -24,4 +24,5 @@
     <dimen name="scribble_view_width">960dp</dimen>
     <dimen name="scribble_view_height">960dp</dimen>
     <dimen name="right_answer_min_width">300dp</dimen>
+    <dimen name="divider_line_size">2dp</dimen>
 </resources>
