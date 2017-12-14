@@ -73,7 +73,7 @@
     <string name="setting_power">电源管理</string>
     <string name="wake_up_summary">系统唤醒时打开前照光</string>
     <string name="wake_up_title">唤醒</string>
-    <string name="auto_sleep">休眠</string>
+    <string name="auto_sleep">休眠时间</string>
     <string name="power_off_timeout">关机延迟</string>
     <string name="wifi_sleep_timeout">网络闲置超时</string>
     <plurals name="minute">
@@ -159,8 +159,8 @@
     <string name="battery_info_status_not_charging">"未在充电"</string>
     <string name="battery_info_status_full">"电量充足"</string>
     <string name="battery_percentage">当前电量: %1$d %%</string>
-    <string name="battery_status">当前电池状态: %1$s</string>
-    <string name="battery_stats_on_battery">"开机时间：<xliff:g id="TIME">%1$s</xliff:g>"</string>
+    <string name="battery_status">电池状态: %1$s</string>
+    <string name="battery_stats_on_battery">"开机时间:<xliff:g id="TIME">%1$s</xliff:g>"</string>
     <string name="battery_total_on_battery">总待机时间:<xliff:g id="time">%1$s</xliff:g></string>
     <string name="battery_remain_on_battery">预计剩余待机时间:<xliff:g id="time">%1$s</xliff:g></string>
     <string name="battery_info">电池状态</string>
