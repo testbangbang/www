@@ -104,6 +104,12 @@ public class HomeworkListActivity extends BaseActivity {
                 showSubmitDialog();
             }
         });
+        binding.toolbar.backLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showExitDialog();
+            }
+        });
     }
 
     private void showSubmitDialog() {
@@ -151,7 +157,8 @@ public class HomeworkListActivity extends BaseActivity {
             showNoFindHomework();
             return;
         }
-        DataBundle.getInstance().setHomeworkId(libraryId);
+        binding.toolbar.title.setText(homework.child.title);
+        DataBundle.getInstance().setHomeworkId(homework.child);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override
