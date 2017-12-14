@@ -19,6 +19,22 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public class RectUtils {
 
+    static public String toString(final List<Rect> list) {
+        if (list == null || list.isEmpty()) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        boolean first = true;
+        for (Rect r : list) {
+            if (!first) {
+                sb.append(", ");
+            }
+            sb.append(r.toString());
+            first = false;
+        }
+        return sb.toString();
+    }
+
     static public Rect toRect(final RectF source) {
         return new Rect((int)source.left, (int)source.top, (int)source.right, (int)source.bottom);
     }
