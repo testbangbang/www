@@ -236,7 +236,7 @@ public class NoteToolFragment extends BaseFragment {
         if (!getDataBundle().isDoing()) {
             return;
         }
-        flushDocument(false, shouldResume(), new BaseCallback() {
+        flushDocument(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 deletePageImpl();

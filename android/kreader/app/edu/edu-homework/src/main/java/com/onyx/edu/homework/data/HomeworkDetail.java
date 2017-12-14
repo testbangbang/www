@@ -7,5 +7,5 @@ package com.onyx.edu.homework.data;
 public class HomeworkDetail {
 
     public String _id;
-
+    public String title;
 }
