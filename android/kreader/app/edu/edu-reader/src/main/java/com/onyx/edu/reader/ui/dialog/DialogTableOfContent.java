@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.model.Annotation;
 import com.onyx.android.sdk.data.model.Bookmark;
@@ -741,6 +742,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 public void done(BaseRequest request, Throwable e) {
                     pageInfoMap.remove(page);
                     scribblePreviewMap.remove(page);
+                    updatePageInfo(currentTab);
                     getPageAdapter(currentTab).notifyItemRemoved(position);
                 }
             });
@@ -783,22 +785,16 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
         }
     }
 
-    private void onPageChanged() {
+    private void updatePageInfo(DirectoryTab currentTab) {
         updateTotalText(currentTab);
+        updatePageIndicator(currentTab);
+    }
+
+    private void onPageChanged() {
+        updatePageInfo(currentTab);
         if (viewList.size() == 0) {
             return;
         }
-        PageRecyclerView pageView = viewList.get(getTabIndex(currentTab));
-        int currentPage = Math.max(pageView.getPaginator().getCurrentPage() + 1, 1);
-        int pages = Math.max(pageView.getPaginator().pages(), 1);
-        final String show = String.format("%d/%d", currentPage, pages);
-        // post to force relayout of page indicator, a work around for 4.0 and 4.2 devices
-        pageView.post(new Runnable() {
-            @Override
-            public void run() {
-                pageIndicator.setText(show);
-            }
-        });
 
         if (currentTab == DirectoryTab.Scribble && scribblePageView != null) {
             requestScribblePreview(scribblePageView);
@@ -829,6 +825,33 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                 totalText.setText(String.format(getContext().getString(R.string.total_page), scribblePreviewMap.size()));
                 totalText.setVisibility(View.VISIBLE);
                 break;
+        }
+    }
+
+    private void updatePageIndicator(DirectoryTab currentTab) {
+        if (viewList.size() <= 0) {
+            return;
+        }
+        PageRecyclerView pageView = viewList.get(getTabIndex(currentTab));
+        GPaginator gPaginator = pageView.getPaginator();
+        resetPaginator(gPaginator, gPaginator.getRows(), gPaginator.getColumns(), pageView.getPageAdapter().getDataCount());
+        int currentPage = Math.max(gPaginator.getCurrentPage() + 1, 1);
+        int pages = Math.max(gPaginator.pages(), 1);
+        final String show = String.format("%d/%d", currentPage, pages);
+        // post to force relayout of page indicator, a work around for 4.0 and 4.2 devices
+        pageView.post(new Runnable() {
+            @Override
+            public void run() {
+                pageIndicator.setText(show);
+            }
+        });
+    }
+
+    private void resetPaginator(GPaginator gPaginator, int row, int col, int count) {
+        gPaginator.resize(row, col, count);
+        int currentPage = gPaginator.getCurrentPage();
+        if (currentPage >= gPaginator.pages()) {
+            gPaginator.setCurrentPage(currentPage - 1);
         }
     }
 
