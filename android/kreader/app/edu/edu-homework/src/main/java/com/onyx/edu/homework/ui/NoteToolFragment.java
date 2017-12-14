@@ -413,12 +413,6 @@ public class NoteToolFragment extends BaseFragment {
         resultList.add(MenuId.BG_MATS);
         resultList.add(MenuId.BG_MUSIC);
         resultList.add(MenuId.BG_ENGLISH);
-        resultList.add(MenuId.BG_LINE_1_6);
-        resultList.add(MenuId.BG_LINE_2_0);
-        resultList.add(MenuId.BG_LINE_COLUMN);
-        resultList.add(MenuId.BG_TABLE_GRID);
-        resultList.add(MenuId.BG_CALENDAR);
-        resultList.add(MenuId.BG_GRID_POINT);
         return resultList;
     }
 

@@ -38,6 +38,7 @@ public class SubmitDialog extends OnyxBaseDialog {
         super(context, R.style.NoTitleDialog);
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_submit, null, false);
         setContentView(binding.getRoot());
+        setCanceledOnTouchOutside(false);
         this.questions = questions;
         initView();
     }
@@ -135,7 +136,7 @@ public class SubmitDialog extends OnyxBaseDialog {
     private void onSuccessSubmit() {
         binding.message.setText(R.string.submit_success);
         binding.action1.setVisibility(View.GONE);
-        binding.action0.setText(R.string.exit);
+        binding.action0.setText(R.string.close);
         binding.action0.setVisibility(View.VISIBLE);
         DataBundle.getInstance().setState(HomeworkState.DONE);
         DataBundle.getInstance().post(new SubmitEvent());
