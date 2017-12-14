@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.onyx.jdread.shop.ui.StoreFragment" />
+
+        <variable
+            name="model"
+            type="com.onyx.jdread.shop.model.BookStoreViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/search_view"
+                layout="@layout/layout_search_view" />
+
+            <include
+                android:id="@+id/book_store_one"
+                layout="@layout/fragment_book_store_one" />
+
+            <include
+                android:id="@+id/book_store_two"
+                layout="@layout/fragment_book_store_two" />
+
+            <include
+                android:id="@+id/book_store_three"
+                layout="@layout/fragment_book_store_three" />
+
+        </LinearLayout>
+
+        <com.onyx.jdread.shop.view.CustomScrollBar
+            android:id="@+id/scroll_bar"
+            android:layout_width="@dimen/bookstore_scroll_bar_width"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</layout>

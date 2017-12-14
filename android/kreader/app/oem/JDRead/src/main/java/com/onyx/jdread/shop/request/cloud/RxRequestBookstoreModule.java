@@ -5,7 +5,7 @@ import com.onyx.jdread.data.database.BookDetailEntity;
 import com.onyx.jdread.shop.cloud.api.GetBookstoreModuleService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModuleResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModelResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 
@@ -23,11 +23,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RxRequestBookstoreModule extends RxBaseCloudRequest {
 
     private BaseRequestBean baseRequestBean;
-    private BookstoreModuleResultBean bookstoreModuleResultBean;
+    private BookstoreModelResultBean bookstoreModelResultBean;
     private ArrayList<BookDetailEntity> books;
 
-    public BookstoreModuleResultBean getBookstoreModuleResultBean() {
-        return bookstoreModuleResultBean;
+    public BookstoreModelResultBean getBookstoreModelResultBean() {
+        return bookstoreModelResultBean;
     }
 
     public List<BookDetailEntity> getBooks() {
@@ -46,15 +46,15 @@ public class RxRequestBookstoreModule extends RxBaseCloudRequest {
 
     private void executeCloudRequest() {
         GetBookstoreModuleService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
-        Call<BookstoreModuleResultBean> call = getCall(getCommonService);
-        bookstoreModuleResultBean = done(call);
+        Call<BookstoreModelResultBean> call = getCall(getCommonService);
+        bookstoreModelResultBean = done(call);
         checkQuestResult();
     }
 
     private void checkQuestResult() {
-        if (bookstoreModuleResultBean != null && bookstoreModuleResultBean.resultList != null) {
+        if (bookstoreModelResultBean != null && bookstoreModelResultBean.resultList != null) {
             books = new ArrayList<>();
-            for (ResultBookBean resultListBean : bookstoreModuleResultBean.resultList) {
+            for (ResultBookBean resultListBean : bookstoreModelResultBean.resultList) {
                 BookDetailEntity entity = new BookDetailEntity();
                 entity.bookName = resultListBean.name;
                 entity.imageUrl = resultListBean.imageUrl;
@@ -69,12 +69,12 @@ public class RxRequestBookstoreModule extends RxBaseCloudRequest {
         }
     }
 
-    private BookstoreModuleResultBean done(Call<BookstoreModuleResultBean> call) {
-        EnhancedCall<BookstoreModuleResultBean> enhancedCall = new EnhancedCall<>(call);
-        return enhancedCall.execute(call, BookstoreModuleResultBean.class);
+    private BookstoreModelResultBean done(Call<BookstoreModelResultBean> call) {
+        EnhancedCall<BookstoreModelResultBean> enhancedCall = new EnhancedCall<>(call);
+        return enhancedCall.execute(call, BookstoreModelResultBean.class);
     }
 
-    private Call<BookstoreModuleResultBean> getCall(GetBookstoreModuleService getCommonService) {
+    private Call<BookstoreModelResultBean> getCall(GetBookstoreModuleService getCommonService) {
         return getCommonService.getBookstoreModule(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
                 CloudApiContext.BookstoreModule.MODULE_CHILD_INFO, baseRequestBean.getBody());
     }

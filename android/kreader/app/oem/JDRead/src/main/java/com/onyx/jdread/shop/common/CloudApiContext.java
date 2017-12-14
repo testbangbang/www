@@ -45,6 +45,10 @@ public class CloudApiContext {
         public static final String MODULE_CHILD_INFO = "getModuleChildInfo";
         public static final int TODAY_SPECIAL_ID = 226;
         public static final int TODAY_SPECIAL_MODULE_TYPE = 10;
+        public static final int NEW_BOOK_DELIVERY_ID = 68;
+        public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 5;
+        public static final int FREE_JOURNALS_ID = 181;
+        public static final int FREE_JOURNALS_MODULE_TYPE = 6;
     }
 
     public static class CategoryList {

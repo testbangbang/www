@@ -1,10 +1,12 @@
 package com.onyx.jdread.shop.cloud.entity.jdbean;
 
+import android.databinding.BaseObservable;
+
 /**
  * Created by hehai on 17-3-31.
  */
 
-public class ResultBookBean {
+public class ResultBookBean extends BaseObservable{
     public String borrowEndTime;
     public int ebookId;
     public boolean isBuy;
@@ -53,4 +55,8 @@ public class ResultBookBean {
     public boolean isFree;
     public boolean isUserFluentReadAddToCard;
     public String newImageUrl;
+
+    public void itemClicked(){
+
+    }
 }

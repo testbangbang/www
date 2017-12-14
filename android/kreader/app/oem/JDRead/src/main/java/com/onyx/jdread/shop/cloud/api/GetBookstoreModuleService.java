@@ -1,7 +1,7 @@
 package com.onyx.jdread.shop.cloud.api;
 
 import com.onyx.jdread.common.AppBaseInfo;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModuleResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModelResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 
 import java.util.Map;
@@ -17,7 +17,7 @@ import retrofit2.http.QueryMap;
 
 public interface GetBookstoreModuleService {
     @POST("client.action")
-    Call<BookstoreModuleResultBean> getBookstoreModule(@QueryMap Map<String, String> map,
-                                                       @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
-                                                       @Query(AppBaseInfo.BODY_KEY) String body);
+    Call<BookstoreModelResultBean> getBookstoreModule(@QueryMap Map<String, String> map,
+                                                      @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
+                                                      @Query(AppBaseInfo.BODY_KEY) String body);
 }

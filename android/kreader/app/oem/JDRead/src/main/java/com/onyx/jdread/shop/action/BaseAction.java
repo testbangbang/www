@@ -3,9 +3,9 @@ package com.onyx.jdread.shop.action;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.shop.event.HideAllDialogEvent;
 import com.onyx.jdread.shop.event.LoadingDialogEvent;
-import com.onyx.jdread.shop.model.DataBundle;
+import com.onyx.jdread.shop.model.StoreDataBundle;
 
-public abstract class BaseAction<T extends DataBundle> {
+public abstract class BaseAction<T extends StoreDataBundle> {
 
     public abstract void execute(T dataBundle, RxCallback baseCallback);
 

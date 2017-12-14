@@ -8,4 +8,10 @@
     <string name="setting_name">设置</string>
     <string name="personal_name">我的</string>
     <string name="view_all">查看全部</string>
+    <string name="ranking">排行</string>
+    <string name="enjoy_read">畅读</string>
+    <string name="sale">特价</string>
+    <string name="new_book">新书</string>
+    <string name="category">分类</string>
+    <string name="back_to_top">返回顶部</string>
 </resources>

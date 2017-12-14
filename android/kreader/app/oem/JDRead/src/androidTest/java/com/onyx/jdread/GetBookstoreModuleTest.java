@@ -13,8 +13,6 @@ import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 
 import java.util.concurrent.CountDownLatch;
 
-import static com.kingsoft.iciba.sdk2.a.e;
-
 public class GetBookstoreModuleTest extends ApplicationTestCase<JDReadApplication> {
     private static final String TAG = GetBookstoreModuleTest.class.getSimpleName();
 
@@ -64,7 +62,7 @@ public class GetBookstoreModuleTest extends ApplicationTestCase<JDReadApplicatio
         rq.execute(new RxCallback<RxRequestBookstoreModule>() {
             @Override
             public void onNext(RxRequestBookstoreModule request) {
-                assertNotNull(request.getBookstoreModuleResultBean());
+                assertNotNull(request.getBookstoreModelResultBean());
                 countDownLatch.countDown();
             }
 
@@ -91,7 +89,7 @@ public class GetBookstoreModuleTest extends ApplicationTestCase<JDReadApplicatio
         rq.execute(new RxCallback<RxRequestBookstoreModule>() {
             @Override
             public void onNext(RxRequestBookstoreModule request) {
-                assertNotNull(request.getBookstoreModuleResultBean());
+                assertNotNull(request.getBookstoreModelResultBean());
                 countDownLatch.countDown();
             }
 
@@ -125,7 +123,7 @@ public class GetBookstoreModuleTest extends ApplicationTestCase<JDReadApplicatio
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
-                assertNull(e);
+                assertNull(throwable);
                 countDownLatch.countDown();
             }
         });

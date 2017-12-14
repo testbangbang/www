@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.onyx.jdread.shop.model.BookStoreViewModel"/>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:showIn="@layout/fragment_book_store_one">
+
+        <LinearLayout
+            android:background="@drawable/normal_selected_background"
+            android:onClick="@{()->model.onRankViewClick()}"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/ic_rank"
+                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:text="@string/ranking"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/normal_selected_background"
+            android:onClick="@{()->model.onEnjoyReadViewClick()}"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/ic_enjoy_read"
+                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:text="@string/enjoy_read"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/normal_selected_background"
+            android:onClick="@{()->model.onSaleViewClick()}"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/ic_sale"
+                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:text="@string/sale"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/normal_selected_background"
+            android:onClick="@{()->model.onNewBookViewClick()}"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/ic_new_book"
+                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:text="@string/new_book"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/normal_selected_background"
+            android:onClick="@{()->model.onCategoryViewClick()}"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:src="@mipmap/ic_category"
+                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+
+            <TextView
+                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:text="@string/category"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</layout>

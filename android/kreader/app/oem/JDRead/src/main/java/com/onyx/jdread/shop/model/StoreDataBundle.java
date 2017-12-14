@@ -11,13 +11,14 @@ import org.greenrobot.eventbus.EventBus;
  * Created by jackdeng on 2017/12/8.
  */
 
-public class DataBundle {
+public class StoreDataBundle {
     private Context appContext;
     private EventBus eventBus = new EventBus();
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
+    private BookStoreViewModel storeViewModel = new BookStoreViewModel(getEventBus());
 
-    public DataBundle(Context appContext) {
+    public StoreDataBundle(Context appContext) {
         this.appContext = appContext;
     }
 
@@ -39,5 +40,13 @@ public class DataBundle {
 
     public Context getAppContext() {
         return appContext;
+    }
+
+    public void setStoreViewModel(BookStoreViewModel storeViewModel){
+        this.storeViewModel = storeViewModel;
+    }
+
+    public BookStoreViewModel getStoreViewModel() {
+        return storeViewModel;
     }
 }

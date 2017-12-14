@@ -6,7 +6,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.View;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
@@ -19,6 +20,7 @@ import com.onyx.jdread.event.PushChildViewToStackEvent;
 import com.onyx.jdread.model.FunctionBarModel;
 import com.onyx.jdread.model.MainViewModel;
 import com.onyx.jdread.model.SystemBarModel;
+import com.onyx.jdread.shop.ui.StoreFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -152,6 +154,15 @@ public class MainActivity extends AppCompatActivity {
 
         }
     };
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (currentFragment instanceof StoreFragment) {
+            GestureDetector gestureDetector = ((StoreFragment) currentFragment).getGestureDetector();
+            gestureDetector.onTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {

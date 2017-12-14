@@ -2,4 +2,6 @@
 <resources>
     <integer name="library_view_type_thumbnail_row">2</integer>
     <integer name="library_view_type_thumbnail_col">3</integer>
+    <integer name="book_store_subject_row">1</integer>
+    <integer name="book_store_subject_col">4</integer>
 </resources>

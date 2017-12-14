@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.onyx.jdread.shop.model.BookStoreViewModel"/>
+
+    </data>
+
+    <RelativeLayout
+        android:paddingLeft="@dimen/book_store_padding_left_right"
+        android:paddingRight="@dimen/book_store_padding_left_right"
+        android:layout_marginTop="@dimen/book_store_padding_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:showIn="@layout/fragment_book_store_one">
+
+        <ImageView
+            android:padding="@dimen/shop_car_button_background_padding"
+            android:background="@drawable/normal_selected_background"
+            android:onClick="@{()->viewModel.onShoppingCartViewClick()}"
+            android:layout_marginLeft="@dimen/search_view_shop_car_icon_margin_left"
+            android:layout_centerVertical="true"
+            android:id="@+id/shop_car"
+            android:src="@mipmap/ic_cart"
+            android:layout_alignParentRight="true"
+            android:layout_width="@dimen/search_view_shop_car_icon_width_and_height"
+            android:layout_height="@dimen/search_view_shop_car_icon_width_and_height"/>
+
+        <LinearLayout
+            android:background="@drawable/rectangle_stroke_dark"
+            android:layout_toLeftOf="@id/shop_car"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_marginLeft="@dimen/search_view_search_icon_margin_left"
+                android:id="@+id/search"
+                android:src="@mipmap/ic_search"
+                android:layout_width="@dimen/search_view_search_icon_width_and_height"
+                android:layout_height="@dimen/search_view_search_icon_width_and_height"/>
+
+            <EditText
+                android:padding="@dimen/search_view_edit_text_padding"
+                android:maxLines="1"
+                android:background="@null"
+                android:text="@={viewModel.searchContent}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/search_view_edit_text_height"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

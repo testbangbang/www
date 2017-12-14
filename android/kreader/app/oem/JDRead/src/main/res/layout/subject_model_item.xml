@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data class="SubjectModelItemBinding">
+
+        <import type="android.view.View" />
+
+        <variable
+            name="bookBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:onClick="@{()->bookBean.itemClicked()}"
+        android:padding="@dimen/subject_model_item_padding">
+
+        <LinearLayout
+            android:id="@+id/cover_panel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/image_cover"
+                android:layout_width="@dimen/subject_model_item_width"
+                android:layout_height="@dimen/subject_model_item_height"
+                android:padding="@dimen/rectangle_stroke_width"
+                android:scaleType="fitXY"
+                bind:cover="@{bookBean.imageUrl}" />
+
+            <TextView
+                android:id="@+id/textView_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:lines="2"
+                android:text="@{bookBean.name}"
+                android:textSize="@dimen/level_four_heading_font" />
+
+        </LinearLayout>
+
+    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+</layout>
