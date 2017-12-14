@@ -92,10 +92,10 @@ bool TouchReader::inExcludeRegion(float x, float y) {
         float rightLimit = excludeArray[i + 2];
         float bottomLimit = excludeArray[i + 3];
 
-        if (leftLimit <= (x - detectStrokeWidth) &&
-            (x + detectStrokeWidth) <= rightLimit &&
-            topLimit <= (y - detectStrokeWidth) &&
-            (y + detectStrokeWidth) <= bottomLimit) {
+        if (leftLimit <= (x + detectStrokeWidth) &&
+            (x - detectStrokeWidth) <= rightLimit &&
+            topLimit <= (y + detectStrokeWidth) &&
+            (y - detectStrokeWidth) <= bottomLimit) {
             return true;
         }
     }
