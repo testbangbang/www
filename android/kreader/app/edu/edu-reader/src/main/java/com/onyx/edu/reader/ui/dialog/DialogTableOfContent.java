@@ -739,6 +739,8 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
             new ClearPageAction(pageInfo).execute(readerDataHolder, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
+                    pageInfoMap.remove(page);
+                    scribblePreviewMap.remove(page);
                     getPageAdapter(currentTab).notifyItemRemoved(position);
                 }
             });
