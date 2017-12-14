@@ -96,7 +96,6 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         if (pageUniqueIds == null || pageUniqueIds.size() == 0 || documentRenderCount == pageCount) {
             documentIds.remove(0);
             documentRenderCount = 0;
-            noteViewHelper.reset();
         }
         return (documentIds == null || documentIds.size() == 0);
     }

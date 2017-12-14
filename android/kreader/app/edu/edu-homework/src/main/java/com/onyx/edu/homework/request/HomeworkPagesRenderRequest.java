@@ -32,6 +32,7 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
+        parent.reset();
         ensureDocumentOpened(parent);
         updateShapeDataInfo(parent);
         loadShapeData(parent);

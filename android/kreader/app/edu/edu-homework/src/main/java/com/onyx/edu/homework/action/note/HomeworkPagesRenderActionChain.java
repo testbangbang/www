@@ -40,7 +40,6 @@ public class HomeworkPagesRenderActionChain extends BaseNoteAction {
 
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        noteViewHelper.reset();
         NoteActionChain chain = new NoteActionChain(true);
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
         final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
