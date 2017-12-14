@@ -43,6 +43,7 @@ import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentScribbleBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.RequestFinishedEvent;
+import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
 import com.onyx.edu.homework.receiver.DeviceReceiver;
 import com.onyx.edu.homework.request.DocumentCheckRequest;
@@ -413,6 +414,11 @@ public class ScribbleFragment extends BaseFragment {
         if (isActivityRunning()) {
             flushDocument(true, shouldResume(), null);
         }
+    }
+
+    @Subscribe
+    public void onSaveNoteEvent(SaveNoteEvent event) {
+        save(event.finishAfterSave, shouldResume());
     }
 
     public void save(final boolean finishAfterSave,final  boolean resumeDrawing) {

@@ -43,6 +43,7 @@ import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentNoteToolBinding;
 import com.onyx.edu.homework.event.PageChangeEvent;
+import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
 import com.onyx.edu.homework.note.ScribbleSubMenuMap;
 
@@ -125,7 +126,7 @@ public class NoteToolFragment extends BaseFragment {
                 redo();
                 break;
             case MenuId.SAVE:
-                saveDocument(false, shouldResume());
+                saveDocument();
                 break;
         }
         if (getDataBundle().isDoing() && MenuId.isSubMenuId(event.getMenuId()) && handleSubMenuEvent(event.getMenuId())) {
@@ -148,17 +149,8 @@ public class NoteToolFragment extends BaseFragment {
         return true;
     }
 
-    private void saveDocument(final boolean finishAfterSave, final boolean resumeDrawing) {
-        if (!getDataBundle().isDoing()) {
-            return;
-        }
-        String documentUniqueId = getShapeDataInfo().getDocumentUniqueId();
-        if (StringUtils.isNullOrEmpty(documentUniqueId)) {
-            return;
-        }
-        final DocumentSaveAction saveAction = new
-                DocumentSaveAction(getActivity(), documentUniqueId, Constant.NOTE_TITLE, finishAfterSave, resumeDrawing);
-        saveAction.execute(getNoteViewHelper(), null);
+    private void saveDocument() {
+        getDataBundle().post(new SaveNoteEvent(false));
     }
 
     private boolean onBackgroundChanged(int subMenuID) {
