@@ -25,7 +25,6 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
-import com.onyx.jdread.event.ShowFunctionBarEvent;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
 import com.onyx.jdread.library.event.LibraryBackEvent;
@@ -268,7 +267,7 @@ public class LibraryFragment extends BaseFragment {
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
         dataBundle.getLibraryViewDataModel().quitManageMode();
-        EventBus.getDefault().post(new ShowFunctionBarEvent(true));
+        viewEventCallBack.hideOrShowFunctionBar(true);
     }
 
     @Subscribe
@@ -282,7 +281,7 @@ public class LibraryFragment extends BaseFragment {
         modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
         getIntoMultiSelectMode();
         dataBundle.getLibraryViewDataModel().setShowManage(false);
-        EventBus.getDefault().post(new ShowFunctionBarEvent(false));
+        viewEventCallBack.hideOrShowFunctionBar(false);
     }
 
     @Subscribe
