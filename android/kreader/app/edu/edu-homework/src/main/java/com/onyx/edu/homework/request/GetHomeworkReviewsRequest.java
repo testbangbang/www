@@ -24,7 +24,6 @@ import retrofit2.Response;
 
 public class GetHomeworkReviewsRequest extends BaseCloudRequest {
 
-    private List<HomeworkSubmitAnswer> reviews;
     private List<Question> questions;
     private String homeworkId;
     private HomeworkState currentState;
@@ -40,10 +39,6 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         if (model == null) {
             return;
         }
-        int state = model.getState();
-        if (HomeworkState.getHomeworkState(state) != HomeworkState.DONE) {
-            return;
-        }
         Response<HomeworkReviewResult> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getAnwsers(homeworkId));
         if (response.isSuccessful()) {
             HomeworkReviewResult result = response.body();
@@ -52,12 +47,11 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
             }
 
         }
-        state = model.getState();
+        int state = model.getState();
         currentState = HomeworkState.getHomeworkState(state);
     }
 
     private void onReviewed(List<HomeworkSubmitAnswer> reviews, @NonNull HomeworkModel model) {
-        this.reviews = reviews;
         saveQuestionReview(questions, reviews);
         model.setState(HomeworkState.REVIEW.ordinal());
         DBDataProvider.saveHomework(model);
@@ -68,20 +62,18 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
             return;
         }
         for (Question question : questions) {
-            if (question.isChoiceQuestion()) {
-                QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
-                if (model == null) {
-                    model = QuestionModel.create(question.getUniqueId(),
-                            question.getQuestionId(),
-                            homeworkId);
-                }
-                setQuestionReview(question, model);
-                DBDataProvider.saveQuestion(model);
+            QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
+            if (model == null) {
+                model = QuestionModel.create(question.getUniqueId(),
+                        question.getQuestionId(),
+                        homeworkId);
             }
+            setQuestionReview(question, model, reviews);
+            DBDataProvider.saveQuestion(model);
         }
     }
 
-    private void setQuestionReview(Question question, QuestionModel model) {
+    private void setQuestionReview(Question question, QuestionModel model, List<HomeworkSubmitAnswer> reviews) {
         if (reviews == null || reviews.isEmpty()) {
             return;
         }
@@ -99,10 +91,6 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         return null;
     }
 
-
-    public List<HomeworkSubmitAnswer> getReviews() {
-        return reviews;
-    }
 
     public HomeworkState getCurrentState() {
         return currentState;

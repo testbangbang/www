@@ -62,7 +62,7 @@ public class Question implements Serializable {
         this.doneAnswer = doneAnswer;
     }
 
-    public List<HomeworkSubmitAnswer> createAnswer() {
+    public HomeworkSubmitAnswer createAnswer() {
         if (isSingleChoiceQuestion()) {
             return createSingleAnswer();
         }
@@ -72,42 +72,34 @@ public class Question implements Serializable {
         return createFillAnswer();
     }
 
-    public List<HomeworkSubmitAnswer> createSingleAnswer() {
-        List<HomeworkSubmitAnswer> answers = new ArrayList<>();
+    public HomeworkSubmitAnswer createSingleAnswer() {
+        HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
         for (QuestionOption option : options) {
             if (option.checked) {
-                HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
                 answer.setQuestion(getQuestionId());
-                answer.setValue(option._id);
+                answer.addValue(option._id);
                 answer.setUniqueId(getUniqueId());
-                answers.add(answer);
             }
         }
-        return answers;
+        return answer;
     }
 
-    public List<HomeworkSubmitAnswer> createMultipleAnswers() {
-        List<HomeworkSubmitAnswer> answers = new ArrayList<>();
-        int index = 0;
+    public HomeworkSubmitAnswer createMultipleAnswers() {
+        HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
         for (QuestionOption option : options) {
             if (option.checked) {
-                HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
                 answer.setQuestion(getQuestionId());
-                answer.setValue(option._id);
+                answer.addValue(option._id);
                 answer.setUniqueId(getUniqueId());
-                answers.add(index, answer);
-                index++;
             }
         }
-        return answers;
+        return answer;
     }
 
-    public List<HomeworkSubmitAnswer> createFillAnswer() {
-        List<HomeworkSubmitAnswer> answers = new ArrayList<>();
+    public HomeworkSubmitAnswer createFillAnswer() {
         HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
         answer.setQuestion(getQuestionId());
         answer.setUniqueId(getUniqueId());
-        answers.add(answer);
-        return answers;
+        return answer;
     }
 }

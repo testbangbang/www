@@ -16,14 +16,16 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
+import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -46,7 +48,6 @@ public class QuestionFragment extends BaseFragment {
 
     private FragmentQuestionBinding binding;
     private Question question;
-    private NoteViewHelper noteViewHelper;
 
     public static QuestionFragment newInstance(Question question) {
         QuestionFragment fragment = new QuestionFragment();
@@ -230,8 +231,8 @@ public class QuestionFragment extends BaseFragment {
             binding.rightAnswer.setText(getString(R.string.right_answer, answers));
         }
         if (question.review != null) {
-            binding.score.setText(getString(R.string.score, question.review.getScore()));
-            binding.rightWrongIcon.setImageResource(question.review.correct ? R.drawable.ic_right : R.drawable.ic_wrong);
+            binding.score.setText(getString(R.string.score, question.review.score));
+            binding.rightWrongIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
         }
         binding.analysis.setVisibility(StringUtils.isNullOrEmpty(question.analysis) ? View.GONE : View.VISIBLE);
     }

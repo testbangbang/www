@@ -8,13 +8,20 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class PageNextRequest extends BaseNoteRequest {
 
+    private volatile boolean resume;
+
+
     public PageNextRequest() {
         setPauseInputProcessor(true);
     }
 
+    public PageNextRequest(boolean resume) {
+        this.resume = resume;
+    }
+
     // always render page.
     public void execute(final NoteViewHelper helper) throws Exception {
-        setResumeInputProcessor(helper.useDFBForCurrentState());
+        setResumeInputProcessor(helper.useDFBForCurrentState() && resume);
         helper.getNoteDocument().nextPage();
         renderCurrentPage(helper);
         updateShapeDataInfo(helper);

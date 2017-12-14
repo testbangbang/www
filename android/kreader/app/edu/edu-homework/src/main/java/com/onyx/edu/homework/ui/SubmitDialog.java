@@ -84,10 +84,10 @@ public class SubmitDialog extends OnyxBaseDialog {
         final List<HomeworkSubmitAnswer> totalAnswers = new ArrayList<>();
         final List<HomeworkSubmitAnswer> fillAnswers = new ArrayList<>();
         for (Question question : questions) {
-            List<HomeworkSubmitAnswer> answers = question.createAnswer();
-            totalAnswers.addAll(answers);
+            HomeworkSubmitAnswer answer = question.createAnswer();
+            totalAnswers.add(answer);
             if (!question.isChoiceQuestion()) {
-                fillAnswers.addAll(answers);
+                fillAnswers.add(answer);
             }
         }
         int width = (int) getContext().getResources().getDimension(R.dimen.scribble_view_width);

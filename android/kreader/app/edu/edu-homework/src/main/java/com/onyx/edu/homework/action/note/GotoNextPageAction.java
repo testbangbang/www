@@ -12,9 +12,15 @@ import com.onyx.edu.homework.event.RequestFinishedEvent;
  */
 public class GotoNextPageAction extends BaseNoteAction {
 
+    private boolean resume;
+
+    public GotoNextPageAction(boolean resume) {
+        this.resume = resume;
+    }
+
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        final PageNextRequest nextRequest = new PageNextRequest();
+        final PageNextRequest nextRequest = new PageNextRequest(resume);
         noteViewHelper.submit(getAppContext(), nextRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

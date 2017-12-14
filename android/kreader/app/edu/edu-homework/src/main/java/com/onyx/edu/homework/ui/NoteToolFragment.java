@@ -42,6 +42,7 @@ import com.onyx.edu.homework.action.note.UndoAction;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentNoteToolBinding;
+import com.onyx.edu.homework.event.PageChangeEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
 import com.onyx.edu.homework.note.ScribbleSubMenuMap;
 
@@ -59,13 +60,15 @@ import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
 public class NoteToolFragment extends BaseFragment {
 
     private RelativeLayout subMenuLayout;
+    private int initPageCount = 1;
 
     private MenuManager menuManager;
     private FragmentNoteToolBinding binding;
 
-    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout) {
+    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout, int initPageCount) {
         NoteToolFragment fragment = new NoteToolFragment();
         fragment.setSubMenuLayout(subMenuLayout);
+        fragment.setInitPageCount(initPageCount);
         return fragment;
     }
 
@@ -146,6 +149,9 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void saveDocument(final boolean finishAfterSave, final boolean resumeDrawing) {
+        if (!getDataBundle().isDoing()) {
+            return;
+        }
         String documentUniqueId = getShapeDataInfo().getDocumentUniqueId();
         if (StringUtils.isNullOrEmpty(documentUniqueId)) {
             return;
@@ -261,19 +267,27 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void prevPage() {
+        if (getDataBundle().isReview()) {
+            getDataBundle().post(new PageChangeEvent(false));
+            return;
+        }
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new GotoPrevPageAction().execute(getNoteViewHelper(), null);
+                new GotoPrevPageAction(shouldResume()).execute(getNoteViewHelper(), null);
             }
         });
     }
 
     private void nextPage() {
+        if (getDataBundle().isReview()) {
+            getDataBundle().post(new PageChangeEvent(true));
+            return;
+        }
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new GotoNextPageAction().execute(getNoteViewHelper(), null);
+                new GotoNextPageAction(shouldResume()).execute(getNoteViewHelper(), null);
             }
         });
     }
@@ -311,7 +325,7 @@ public class NoteToolFragment extends BaseFragment {
             }
         });
         subMenuLayout.setVisibility(View.GONE);
-        menuManager.getMainMenu().setText(MenuId.PAGE, "1/1");
+        menuManager.getMainMenu().setText(MenuId.PAGE, "1/" + initPageCount);
     }
 
     private void prepareHideSubMenu() {
@@ -330,14 +344,17 @@ public class NoteToolFragment extends BaseFragment {
 
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionMenuIds = new ArrayList<>();
-        functionMenuIds.add(MenuId.PEN_STYLE);
-        functionMenuIds.add(MenuId.BG);
-        functionMenuIds.add(MenuId.ERASER);
-        functionMenuIds.add(MenuId.PEN_WIDTH);
-        functionMenuIds.add(MenuId.SAVE);
+        if (getDataBundle().isDoing()) {
+            functionMenuIds.add(MenuId.PEN_STYLE);
+            functionMenuIds.add(MenuId.BG);
+            functionMenuIds.add(MenuId.ERASER);
+            functionMenuIds.add(MenuId.PEN_WIDTH);
+            functionMenuIds.add(MenuId.SAVE);
 
-        functionMenuIds.add(MenuId.ADD_PAGE);
-        functionMenuIds.add(MenuId.DELETE_PAGE);
+            functionMenuIds.add(MenuId.ADD_PAGE);
+            functionMenuIds.add(MenuId.DELETE_PAGE);
+        }
+
         functionMenuIds.add(MenuId.PREV_PAGE);
         functionMenuIds.add(MenuId.NEXT_PAGE);
         functionMenuIds.add(MenuId.PAGE);
@@ -476,6 +493,10 @@ public class NoteToolFragment extends BaseFragment {
 
     public void setSubMenuLayout(RelativeLayout subMenuLayout) {
         this.subMenuLayout = subMenuLayout;
+    }
+
+    public void setInitPageCount(int initPageCount) {
+        this.initPageCount = initPageCount;
     }
 
     public NoteViewHelper getNoteViewHelper() {
