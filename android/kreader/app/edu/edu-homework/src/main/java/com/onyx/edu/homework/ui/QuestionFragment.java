@@ -92,10 +92,17 @@ public class QuestionFragment extends BaseFragment {
             }
         });
         binding.analysis.setText(R.string.analysis);
+        binding.review.setText(R.string.look_review);
         binding.analysis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAnalysisDialog(question);
+            }
+        });
+        binding.review.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoAnswerActivity(question);
             }
         });
         binding.scribbleImage.setVisibility(question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
@@ -235,6 +242,7 @@ public class QuestionFragment extends BaseFragment {
             binding.rightWrongIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
         }
         binding.analysis.setVisibility(StringUtils.isNullOrEmpty(question.analysis) ? View.GONE : View.VISIBLE);
+        binding.review.setVisibility(View.VISIBLE);
     }
 
 }

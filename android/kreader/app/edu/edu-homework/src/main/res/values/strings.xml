@@ -39,6 +39,7 @@
     <string name="out_of_page_count">超出最大页面数</string>
     <string name="more">更多</string>
     <string name="wifi_unconnect">wifi未连接</string>
+    <string name="look_review">查看批改</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>
