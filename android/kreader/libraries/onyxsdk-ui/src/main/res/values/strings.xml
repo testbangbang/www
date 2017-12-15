@@ -55,6 +55,7 @@
     <string name="every_20_pages">Every 20 pages</string>
     <string name="every_50_pages">Every 50 pages</string>
     <string name="never">Never</string>
+    <string name="fast_update">Fast Update</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="gamma_correction">Contrast</string>
