@@ -103,6 +103,12 @@ public class NoteToolFragment extends BaseFragment {
     @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
         switch (event.getMenuId()) {
+            case MenuId.PEN_STYLE:
+            case MenuId.PEN_WIDTH:
+            case MenuId.ERASER:
+            case MenuId.BG:
+                prepareShowSubMenu(event.getMenuId());
+                return;
             case MenuId.ADD_PAGE:
                 addPage();
                 break;
@@ -115,12 +121,6 @@ public class NoteToolFragment extends BaseFragment {
             case MenuId.NEXT_PAGE:
                 nextPage();
                 break;
-            case MenuId.PEN_STYLE:
-            case MenuId.PEN_WIDTH:
-            case MenuId.ERASER:
-            case MenuId.BG:
-                prepareShowSubMenu(event.getMenuId());
-                break;
             case MenuId.UNDO:
                 undo();
                 break;
@@ -130,6 +130,10 @@ public class NoteToolFragment extends BaseFragment {
             case MenuId.SAVE:
                 saveDocument();
                 break;
+        }
+        if (!MenuId.isSubMenuId(event.getMenuId())) {
+            hideSubMenu();
+            return;
         }
         if (getDataBundle().isDoing() && MenuId.isSubMenuId(event.getMenuId()) && handleSubMenuEvent(event.getMenuId())) {
             prepareHideSubMenu();
