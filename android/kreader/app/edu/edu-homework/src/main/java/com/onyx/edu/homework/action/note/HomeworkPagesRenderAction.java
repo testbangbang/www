@@ -4,6 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
 
+import com.android.annotations.NonNull;
+import com.android.annotations.Nullable;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
@@ -124,11 +126,18 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         }
     }
 
+    @NonNull
     public Map<String, List<Bitmap>> getPageBitmaps() {
         return pageBitmaps;
     }
 
+    @NonNull
     public Map<String, List<String>> getPageBase64s() {
         return pageBase64s;
+    }
+
+    @Nullable
+    public Map<String, List<String>> getUnRenderPageUniqueMap() {
+        return pageUniqueMap;
     }
 }

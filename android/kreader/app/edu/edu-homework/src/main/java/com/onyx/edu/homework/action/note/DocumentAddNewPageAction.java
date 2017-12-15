@@ -13,14 +13,16 @@ import com.onyx.edu.homework.event.RequestFinishedEvent;
 public class DocumentAddNewPageAction extends BaseNoteAction {
 
     private int position;
+    private int maxPageCount = 0;
 
-    public DocumentAddNewPageAction(int pos) {
-        position = pos;
+    public DocumentAddNewPageAction(int position, int maxPageCount) {
+        this.position = position;
+        this.maxPageCount = maxPageCount;
     }
 
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        final PageAddRequest pageAddRequest = new PageAddRequest(position);
+        final PageAddRequest pageAddRequest = new PageAddRequest(position, maxPageCount);
         noteViewHelper.submit(getAppContext(), pageAddRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -29,4 +31,5 @@ public class DocumentAddNewPageAction extends BaseNoteAction {
             }
         });
     }
+
 }

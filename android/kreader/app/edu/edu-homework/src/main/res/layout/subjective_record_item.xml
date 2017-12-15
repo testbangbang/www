@@ -67,15 +67,32 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent" />
 
-                <ImageView
-                    android:scaleType="fitXY"
-                    android:padding="2dp"
-                    android:background="@drawable/round_bg"
-                    android:id="@+id/image2"
-                    android:layout_margin="10dp"
+                <FrameLayout
                     android:layout_weight="1"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:padding="10dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/round_bg"
+                        android:id="@+id/more"
+                        android:textSize="22sp"
+                        android:text="@string/more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
+
+                    <ImageView
+                        android:scaleType="fitXY"
+                        android:padding="2dp"
+                        android:background="@drawable/round_bg"
+                        android:id="@+id/image2"
+                        android:layout_margin="10dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                </FrameLayout>
+
             </LinearLayout>
         </FrameLayout>
 

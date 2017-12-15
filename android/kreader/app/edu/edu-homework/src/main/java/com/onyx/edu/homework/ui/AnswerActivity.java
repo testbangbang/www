@@ -3,6 +3,8 @@ package com.onyx.edu.homework.ui;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.KeyEvent;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
@@ -13,6 +15,8 @@ import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.ActivityAnswerBinding;
 import com.onyx.edu.homework.event.CloseScribbleEvent;
+import com.onyx.edu.homework.event.SaveNoteEvent;
+import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.utils.TextUtils;
 import com.onyx.edu.homework.view.Base64ImageParser;
 
@@ -51,8 +55,8 @@ public class AnswerActivity extends BaseActivity {
         DataBundle.getInstance().resetNoteViewHelper();
         int initPageCount = 1;
         if (DataBundle.getInstance().isReview()) {
-            if (question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachment)) {
-                initPageCount = question.review.attachment.size();
+            if (question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
+                initPageCount = question.review.attachmentUrl.size();
             }
             reviewFragment = ReviewFragment.newInstance(question);
             getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
@@ -75,6 +79,10 @@ public class AnswerActivity extends BaseActivity {
         DataBundle.getInstance().unregister(this);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     @Override
     public void onBackPressed() {
@@ -82,10 +90,7 @@ public class AnswerActivity extends BaseActivity {
             finish();
             return;
         }
-        if (scribbleFragment == null) {
-            return;
-        }
-        scribbleFragment.save(true, false);
+        DataBundle.getInstance().post(new StopNoteEvent(true));
     }
 
     @Subscribe

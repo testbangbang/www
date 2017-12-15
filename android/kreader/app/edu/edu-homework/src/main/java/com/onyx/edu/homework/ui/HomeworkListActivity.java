@@ -16,6 +16,7 @@ import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -23,6 +24,7 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.base.BaseActivity;
+import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -164,7 +166,7 @@ public class HomeworkListActivity extends BaseActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 questions = actionChain.getQuestions();
-                if (e != null && questions == null) {
+                if (e != null && CollectionUtils.isNullOrEmpty(questions)) {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }

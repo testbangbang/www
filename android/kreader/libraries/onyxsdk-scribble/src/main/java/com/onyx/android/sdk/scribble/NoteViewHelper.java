@@ -249,6 +249,9 @@ public class NoteViewHelper {
             globalLayoutListener = new ViewTreeObserver.OnGlobalLayoutListener() {
                 @Override
                 public void onGlobalLayout() {
+                    if (surfaceView == null) {
+                        return;
+                    }
                     updateViewMatrix();
                     updateLimitRect();
                 }
@@ -717,7 +720,9 @@ public class NoteViewHelper {
     }
 
     private boolean isFingerTouch(int toolType) {
-        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
+        // TODO: 2017/12/15 pen touch and eraser type is TOOL_TYPE_UNKNOWN for pl107 edu-release-1.0
+        return toolType == MotionEvent.TOOL_TYPE_FINGER;
+//        return toolType == MotionEvent.TOOL_TYPE_FINGER || toolType == MotionEvent.TOOL_TYPE_UNKNOWN;
     }
 
     public boolean isEnableTouchEvent() {
@@ -760,10 +765,9 @@ public class NoteViewHelper {
            3.if not finger touch, detect target shape, if non dfb shape, forward drawing.
          */
         if (useRawInput()) {
-            // TODO: 2017/12/12 for pl107 cannot draw shape
-//            if (isFingerTouch(toolType)) {
-//                return true;
-//            }
+            if (isFingerTouch(toolType)) {
+                return true;
+            }
             if (renderByFramework()) {
                 return true;
             } else {

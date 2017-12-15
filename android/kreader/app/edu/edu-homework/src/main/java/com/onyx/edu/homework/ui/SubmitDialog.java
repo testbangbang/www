@@ -101,7 +101,7 @@ public class SubmitDialog extends OnyxBaseDialog {
                 if (e == null) {
                     submitImpl(totalAnswers);
                 }else {
-                    onFailSubmit();
+                    onFailSubmit(e);
                 }
 
             }
@@ -115,7 +115,7 @@ public class SubmitDialog extends OnyxBaseDialog {
                 if (e == null) {
                     onSuccessSubmit();
                 }else {
-                    onFailSubmit();
+                    onFailSubmit(e);
                 }
             }
         });
@@ -127,10 +127,11 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.action0.setVisibility(View.INVISIBLE);
     }
 
-    private void onFailSubmit() {
+    private void onFailSubmit(Throwable e) {
         binding.message.setText(R.string.submit_fail);
         binding.action1.setVisibility(View.VISIBLE);
         binding.action0.setVisibility(View.VISIBLE);
+        Toast.makeText(getContext(), e.getCause().getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     private void onSuccessSubmit() {

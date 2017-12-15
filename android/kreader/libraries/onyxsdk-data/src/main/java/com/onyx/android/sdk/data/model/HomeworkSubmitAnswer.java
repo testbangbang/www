@@ -15,6 +15,7 @@ public class HomeworkSubmitAnswer {
     public String uniqueId;
     public List<String> value;
     public List<String> attachment;
+    public List<String> attachmentUrl;
     public String drawData;
     public List<Bitmap> bitmaps;
     public int correct;

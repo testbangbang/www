@@ -44,6 +44,7 @@ import com.onyx.edu.homework.databinding.FragmentScribbleBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.RequestFinishedEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
+import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
 import com.onyx.edu.homework.receiver.DeviceReceiver;
 import com.onyx.edu.homework.request.DocumentCheckRequest;
@@ -68,6 +69,7 @@ public class ScribbleFragment extends BaseFragment {
     private TouchPoint erasePoint = null;
     private SurfaceHolder.Callback surfaceCallback;
     private Question question;
+    private boolean isRunning = false;
 
     public static ScribbleFragment newInstance(Question question) {
         ScribbleFragment fragment = new ScribbleFragment();
@@ -96,14 +98,16 @@ public class ScribbleFragment extends BaseFragment {
 
     @Override
     public void onResume() {
+        isRunning = true;
         super.onResume();
         initSurfaceView();
     }
 
     @Override
     public void onPause() {
+        DataBundle.getInstance().post(new StopNoteEvent(false));
+        isRunning = false;
         super.onPause();
-        flushDocument(true, false, null);
     }
 
     @Override
@@ -400,18 +404,18 @@ public class ScribbleFragment extends BaseFragment {
         deviceReceiver.unregisterReceiver(getActivity());
     }
 
-    public boolean isActivityRunning() {
-        return true;
+    public boolean isRunning() {
+        return isRunning;
     }
 
     protected void onSystemUIOpened() {
-        if (isActivityRunning()) {
+        if (isRunning()) {
             flushDocument(true, false, null);
         }
     }
 
     protected void onSystemUIClosed() {
-        if (isActivityRunning()) {
+        if (isRunning()) {
             flushDocument(true, shouldResume(), null);
         }
     }
@@ -419,6 +423,11 @@ public class ScribbleFragment extends BaseFragment {
     @Subscribe
     public void onSaveNoteEvent(SaveNoteEvent event) {
         save(event.finishAfterSave, shouldResume());
+    }
+
+    @Subscribe
+    public void onStopNoteEvent(StopNoteEvent event) {
+        save(event.finishAfterSave, false);
     }
 
     public void save(final boolean finishAfterSave,final  boolean resumeDrawing) {

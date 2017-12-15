@@ -24,7 +24,7 @@ public class CheckLocalDataRequest extends BaseDataRequest {
 
     private volatile List<Question> questions;
     private String homeworkId;
-    private HomeworkState currentState;
+    private HomeworkState currentState = HomeworkState.DOING;
 
     public CheckLocalDataRequest(List<Question> questions, String homeworkId) {
         this.questions = questions;
@@ -33,14 +33,14 @@ public class CheckLocalDataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
+        if (questions == null) {
+            return;
+        }
         getLocalAnswer();
         checkHomeworkState();
     }
 
     private void getLocalAnswer() {
-        if (questions == null) {
-            return;
-        }
         for (Question question : questions) {
             if (question.isChoiceQuestion()) {
                 QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());

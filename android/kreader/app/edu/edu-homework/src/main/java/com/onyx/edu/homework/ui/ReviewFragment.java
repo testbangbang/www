@@ -72,7 +72,7 @@ public class ReviewFragment extends BaseFragment {
         if (question.review == null) {
             return;
         }
-        reviewUrls = question.review.attachment;
+        reviewUrls = question.review.attachmentUrl;
         if (reviewUrls == null) {
             return;
         }
