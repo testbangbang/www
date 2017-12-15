@@ -29,6 +29,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
+import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.Debug;
@@ -40,7 +41,9 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.device.DeviceConfig;
+import com.onyx.edu.reader.device.ReaderDeviceManager;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
+import com.onyx.edu.reader.ui.dialog.DialogScreenRefresh;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -125,6 +128,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     protected void onDestroy() {
         deviceReceiver.enable(this, false);
         saveReaderTabState();
+        clearUpdateMode();
         super.onDestroy();
         releaseStartupWakeLock();
     }
@@ -310,6 +314,15 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
             @Override
             public void onDisableDebugLog() {
                 enableDebugLog(false);
+            }
+
+            @Override
+            public void onAnimationApply(boolean apply) {
+                if (apply) {
+                    ReaderDeviceManager.enterAnimationUpdate(false);
+                } else {
+                    ReaderDeviceManager.exitAnimationUpdate(true);
+                }
             }
         });
 
@@ -560,6 +573,20 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+    private void clearUpdateMode() {
+        if (DialogScreenRefresh.isInFastUpdateMode(LegacySdkDataUtils.getScreenUpdateGCInterval(
+                getApplicationContext(), DialogScreenRefresh.DEFAULT_INTERVAL_COUNT))) {
+            ReaderDeviceManager.forceExitAnimationUpdate(true);
+        }
+    }
+
+    private void enableUpdateMode() {
+        if (DialogScreenRefresh.isInFastUpdateMode(LegacySdkDataUtils.getScreenUpdateGCInterval(
+                getApplicationContext(), DialogScreenRefresh.DEFAULT_INTERVAL_COUNT))) {
+            ReaderDeviceManager.enterAnimationUpdate(false);
+        }
+    }
+
     private void handleViewActionIntent() {
         acquireStartupWakeLock();
 
@@ -579,6 +606,7 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                     if (e != null) {
                         return;
                     }
+                    enableUpdateMode();
                     BaseOptions baseOptions = loadDocumentOptionsRequest.getDocumentOptions();
                     DeviceConfig.adjustOptionsWithDeviceConfig(baseOptions, ReaderTabHostActivity.this);
                     if (waitScreenOrientationChanging(baseOptions)) {
@@ -591,7 +619,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
                 }
             }
         });
-
     }
 
     private boolean waitScreenOrientationChanging(final BaseOptions options) {

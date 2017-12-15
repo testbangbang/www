@@ -52,6 +52,7 @@
     <string name="every_20_pages">每20页</string>
     <string name="every_50_pages">每50页</string>
     <string name="never">不全刷</string>
+    <string name="fast_update">快速刷新</string>
     <string name="ok">确认</string>
     <string name="cancel">取消</string>
     <string name="gamma_correction">对比度</string>
