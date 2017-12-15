@@ -15,8 +15,10 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -150,6 +152,9 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void homeworkRequest() {
+        if (!checkWifi()) {
+            return;
+        }
         if (homework == null || homework.child == null) {
             showNoFindHomework();
             return;
@@ -177,6 +182,22 @@ public class HomeworkListActivity extends BaseActivity {
             }
 
         });
+    }
+
+    private boolean checkWifi() {
+        if (Device.currentDevice().hasWifi(this) && !NetworkUtil.isWiFiConnected(this)) {
+            OnyxCustomDialog.getConfirmDialog(this,
+                    getString(R.string.wifi_unconnect),
+                    false,
+                    new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    System.exit(0);
+                }
+            }, null).show();
+            return false;
+        }
+        return true;
     }
 
     private void showNoFindHomework() {
