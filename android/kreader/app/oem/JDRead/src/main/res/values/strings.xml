@@ -15,4 +15,5 @@
     <string name="new_book">New Book</string>
     <string name="category">Category</string>
     <string name="back_to_top">Back to top</string>
+    <string name="view_all_books">View all the %1$s million books</string>
 </resources>

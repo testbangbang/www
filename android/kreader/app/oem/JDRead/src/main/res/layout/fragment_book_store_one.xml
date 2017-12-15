@@ -27,7 +27,7 @@
             bind:viewModel="@{viewModel}" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
-            subjectItems="@{viewModel.bannerSubjectIems.modelBean.resultList}"
+            bannerSubjectItems="@{viewModel.bannerSubjectIems.modelBean.resultList}"
             android:id="@+id/recycler_view_banner"
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/book_store_banner_recycler_margin_top_and_bottom"

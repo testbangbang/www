@@ -14,4 +14,5 @@
     <string name="new_book">新书</string>
     <string name="category">分类</string>
     <string name="back_to_top">返回顶部</string>
+    <string name="view_all_books">查看全部%1$s万册图书</string>
 </resources>

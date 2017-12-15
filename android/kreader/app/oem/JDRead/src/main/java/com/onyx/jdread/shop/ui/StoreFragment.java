@@ -20,10 +20,12 @@ import com.onyx.jdread.databinding.FragmentBookStoreThreeBinding;
 import com.onyx.jdread.databinding.FragmentBookStoreTwoBinding;
 import com.onyx.jdread.shop.action.StoreFreeJournalAction;
 import com.onyx.jdread.shop.action.StoreNewBookAction;
+import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnStoreBakcTopClick;
 import com.onyx.jdread.shop.model.BookStoreViewModel;
+import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -44,6 +46,8 @@ public class StoreFragment extends BaseFragment {
     private FragmentBookStoreOneBinding storeOneBinding;
     private FragmentBookStoreTwoBinding storeTwoBinding;
     private FragmentBookStoreThreeBinding storeThreeBinding;
+    private int bannerSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_banner_recycle_view_space);
+    private DividerItemDecoration itemDecoration;
 
     @Nullable
     @Override
@@ -66,10 +70,18 @@ public class StoreFragment extends BaseFragment {
         storeTwoBinding = bookStoreBinding.bookStoreTwo;
         storeThreeBinding = bookStoreBinding.bookStoreThree;
         bookStoreBinding.setViewModel(getBookStoreViewModel());
+        initDividerItemDecoration();
+        setRecyclerViewBanner();
         setRecyclerViewOne();
         setRecyclerViewTwo();
         setRecyclerViewOneBackup();
         setRecyclerViewTwoBackup();
+    }
+
+    private void initDividerItemDecoration() {
+        itemDecoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.HORIZONTAL_LIST);
+        itemDecoration.setDrawLine(false);
+        itemDecoration.setSpace(bannerSpace);
     }
 
     @Override
@@ -135,10 +147,19 @@ public class StoreFragment extends BaseFragment {
         storeThreeBinding.getRoot().setVisibility(id == R.id.book_store_three ? View.VISIBLE : View.GONE);
     }
 
+    private void setRecyclerViewBanner() {
+        BannerSubjectAdapter adapter = new BannerSubjectAdapter();
+        PageRecyclerView recyclerView = storeOneBinding.recyclerViewBanner;
+        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setAdapter(adapter);
+    }
+
     private void setRecyclerViewOne() {
         SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter();
         PageRecyclerView recyclerViewOne = storeOneBinding.recyclerViewOne;
         recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerViewOne.addItemDecoration(itemDecoration);
         recyclerViewOne.setAdapter(recyclerViewOneAdapter);
     }
 
@@ -146,6 +167,7 @@ public class StoreFragment extends BaseFragment {
         SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter();
         PageRecyclerView recyclerViewTwo = storeOneBinding.recyclerViewTwo;
         recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerViewTwo.addItemDecoration(itemDecoration);
         recyclerViewTwo.setAdapter(recyclerViewTwoAdapter);
     }
 
@@ -153,6 +175,7 @@ public class StoreFragment extends BaseFragment {
         SubjectAdapter adapter = new SubjectAdapter();
         PageRecyclerView recyclerView = storeThreeBinding.recyclerViewOneBackup;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
     }
 
@@ -160,6 +183,7 @@ public class StoreFragment extends BaseFragment {
         SubjectAdapter adapter = new SubjectAdapter();
         PageRecyclerView recyclerView = storeTwoBinding.recyclerViewTwoBackup;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
     }
 

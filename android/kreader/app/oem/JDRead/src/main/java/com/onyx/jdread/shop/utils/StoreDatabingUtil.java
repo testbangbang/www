@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
+import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
 
@@ -26,6 +27,14 @@ public class StoreDatabingUtil {
     @BindingAdapter({"subjectItems"})
     public static void setItems(PageRecyclerView recyclerView, List items) {
         SubjectAdapter adapter = (SubjectAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"bannerSubjectItems"})
+    public static void setBannerItems(PageRecyclerView recyclerView, List items) {
+        BannerSubjectAdapter adapter = (BannerSubjectAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

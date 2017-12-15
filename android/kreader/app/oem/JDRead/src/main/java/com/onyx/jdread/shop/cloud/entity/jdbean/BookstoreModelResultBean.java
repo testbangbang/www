@@ -10,6 +10,7 @@ public class BookstoreModelResultBean {
 
     public String code;
     public String message;
+    public int amount;
     public ModelBookChildBean moduleBookChild;
     public List<ResultBookBean> resultList;
 

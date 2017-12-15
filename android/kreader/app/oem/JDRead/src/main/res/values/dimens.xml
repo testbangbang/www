@@ -12,12 +12,12 @@
     <dimen name="line_width">1dp</dimen>
     <dimen name="book_store_padding_left_right">20dp</dimen>
     <dimen name="book_store_padding_top">15dp</dimen>
-    <dimen name="book_store_contain_recycler_margin_top">10dp</dimen>
+    <dimen name="book_store_contain_recycler_margin_top">15dp</dimen>
     <dimen name="text_no_stoke_background_radius">4dp</dimen>
     <dimen name="bookstore_recycler_view_margin">10dp</dimen>
     <dimen name="bookstore_title_padding">10dp</dimen>
     <dimen name="book_store_recycler_height">190dp</dimen>
-    <dimen name="book_store_banner_recycler_height">100dp</dimen>
+    <dimen name="book_store_banner_recycler_height">90dp</dimen>
     <dimen name="book_store_banner_recycler_margin_top_and_bottom">25dp</dimen>
     <dimen name="view_all_drawable_padding">3dp</dimen>
     <dimen name="search_view_shop_car_icon_margin_left">10dp</dimen>
@@ -31,9 +31,9 @@
     <dimen name="shop_car_button_background_padding">4dp</dimen>
     <dimen name="search_view_edit_text_padding">5dp</dimen>
     <dimen name="subject_model_item_padding">2dp</dimen>
-    <dimen name="subject_model_item_width">130dp</dimen>
+    <dimen name="subject_model_item_width">105dp</dimen>
     <dimen name="subject_model_item_height">140dp</dimen>
-    <dimen name="back_top_margin_top">250dp</dimen>
+    <dimen name="store_back_top_button_margin_bottom">10dp</dimen>
     <dimen name="loading_dialog_min_height">120dp</dimen>
     <dimen name="loading_dialog_min_width">140dp</dimen>
     <dimen name="loading_dialog_margin">5dp</dimen>
@@ -43,4 +43,8 @@
     <dimen name="store_custom_scroll_bar_margin">2dp</dimen>
     <dimen name="toast_view_padding_left_and_right">10px</dimen>
     <dimen name="toast_view_padding_top_and_bottom">5px</dimen>
+    <dimen name="banner_subject_model_item_padding">0dp</dimen>
+    <dimen name="banner_subject_model_item_width">215dp</dimen>
+    <dimen name="banner_subject_model_item_height">80dp</dimen>
+    <dimen name="store_back_top_button_padding">8dp</dimen>
 </resources>
