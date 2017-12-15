@@ -37,4 +37,10 @@ public class HomeworkModel extends BaseModel {
     public void setState(int state) {
         this.state = state;
     }
+
+    public static HomeworkModel create(String uniqueId) {
+        HomeworkModel model = new HomeworkModel();
+        model.setUniqueId(uniqueId);
+        return model;
+    }
 }

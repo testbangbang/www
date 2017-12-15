@@ -32,17 +32,17 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
+        parent.reset();
         ensureDocumentOpened(parent);
         updateShapeDataInfo(parent);
         loadShapeData(parent);
         renderVisiblePages(parent);
-//        updateShapeDataInfo(parent);
         if (base64Bitmap) {
             base64 = BitmapUtils.bitmapToBase64(parent.getRenderBitmap());
         }else {
             renderBitmap = Bitmap.createBitmap(parent.getRenderBitmap());
         }
-        parent.recycleBitmap();
+        parent.reset();
     }
 
     private void loadShapeData(final NoteViewHelper parent) {

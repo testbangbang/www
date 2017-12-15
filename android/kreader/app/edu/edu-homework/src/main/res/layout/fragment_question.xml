@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:appCompat="http://schemas.android.com/tools">
 
     <data>
 
@@ -40,7 +40,7 @@
             android:padding="10dp"
             android:id="@+id/option"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
 
         <Button
             android:textSize="22sp"
@@ -53,6 +53,51 @@
             android:layout_width="140dp"
             android:layout_height="wrap_content" />
 
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+            appCompat:alwaysLayoutImageView="true"
+            android:padding="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:id="@+id/review_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:id="@+id/right_answer"
+                android:minWidth="@dimen/right_answer_min_width"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:id="@+id/right_wrong_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:textColor="@android:color/black"
+                android:layout_marginLeft="4dp"
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <View
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="1dp"/>
+
+            <TextView
+                android:layout_gravity="center_vertical"
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:textColor="@android:color/black"
+                android:id="@+id/analysis"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
         <ImageView
             android:scaleType="fitXY"

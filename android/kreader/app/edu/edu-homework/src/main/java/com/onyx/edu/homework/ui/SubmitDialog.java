@@ -12,12 +12,15 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.HomeworkSubmitAction;
 import com.onyx.edu.homework.action.note.HomeworkPagesAnswerBase64ActionChain;
 import com.onyx.edu.homework.base.BaseDialog;
+import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.databinding.DialogSubmitBinding;
+import com.onyx.edu.homework.event.SubmitEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +29,16 @@ import java.util.List;
  * Created by lxm on 2017/12/8.
  */
 
-public class SubmitDialog extends BaseDialog {
+public class SubmitDialog extends OnyxBaseDialog {
 
     private DialogSubmitBinding binding;
     private List<Question> questions;
 
     public SubmitDialog(@NonNull Context context, List<Question> questions) {
-        super(context);
+        super(context, R.style.NoTitleDialog);
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.dialog_submit, null, false);
         setContentView(binding.getRoot());
+        setCanceledOnTouchOutside(false);
         this.questions = questions;
         initView();
     }
@@ -43,6 +47,12 @@ public class SubmitDialog extends BaseDialog {
         initQuestionInfo();
         binding.message.setText(R.string.submit_tips);
         binding.action0.setText(R.string.continue_answer);
+        binding.action0.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
         binding.action1.setText(R.string.submit);
         binding.action1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -75,22 +85,23 @@ public class SubmitDialog extends BaseDialog {
         final List<HomeworkSubmitAnswer> totalAnswers = new ArrayList<>();
         final List<HomeworkSubmitAnswer> fillAnswers = new ArrayList<>();
         for (Question question : questions) {
-            List<HomeworkSubmitAnswer> answers = question.createAnswer();
-            totalAnswers.addAll(answers);
+            HomeworkSubmitAnswer answer = question.createAnswer();
+            totalAnswers.add(answer);
             if (!question.isChoiceQuestion()) {
-                fillAnswers.addAll(answers);
+                fillAnswers.add(answer);
             }
         }
         int width = (int) getContext().getResources().getDimension(R.dimen.scribble_view_width);
         int height = (int) getContext().getResources().getDimension(R.dimen.scribble_view_height);
         Rect size = new Rect(0, 0, width, height);
+        onStartSubmit();
         new HomeworkPagesAnswerBase64ActionChain(fillAnswers, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
                     submitImpl(totalAnswers);
                 }else {
-                    Toast.makeText(getContext(), e.getCause().getMessage(), Toast.LENGTH_SHORT).show();
+                    onFailSubmit();
                 }
 
             }
@@ -102,11 +113,32 @@ public class SubmitDialog extends BaseDialog {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
-                    Toast.makeText(getContext(), R.string.submit_success, Toast.LENGTH_SHORT).show();
+                    onSuccessSubmit();
                 }else {
-                    Toast.makeText(getContext(), e.getCause().getMessage(), Toast.LENGTH_SHORT).show();
+                    onFailSubmit();
                 }
             }
         });
+    }
+
+    private void onStartSubmit() {
+        binding.message.setText(R.string.submitting);
+        binding.action1.setVisibility(View.INVISIBLE);
+        binding.action0.setVisibility(View.INVISIBLE);
+    }
+
+    private void onFailSubmit() {
+        binding.message.setText(R.string.submit_fail);
+        binding.action1.setVisibility(View.VISIBLE);
+        binding.action0.setVisibility(View.VISIBLE);
+    }
+
+    private void onSuccessSubmit() {
+        binding.message.setText(R.string.submit_success);
+        binding.action1.setVisibility(View.GONE);
+        binding.action0.setText(R.string.close);
+        binding.action0.setVisibility(View.VISIBLE);
+        DataBundle.getInstance().setState(HomeworkState.DONE);
+        DataBundle.getInstance().post(new SubmitEvent());
     }
 }

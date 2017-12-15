@@ -34,6 +34,7 @@ public class NotePage {
 
     private String documentUniqueId;
     private String pageUniqueId;
+    private String groupId;
     private String subPageName;
 
     private List<Shape> shapeList = new ArrayList<>();
@@ -85,10 +86,11 @@ public class NotePage {
     public NotePage() {
     }
 
-    public NotePage(final String docId, final String pageId, final String spn) {
+    public NotePage(final String docId, final String pageId, final String spn, final String gId) {
         documentUniqueId = docId;
         pageUniqueId = pageId;
         subPageName = spn;
+        groupId = gId;
     }
 
     public final String getDocumentUniqueId() {
@@ -101,6 +103,10 @@ public class NotePage {
 
     public final String getSubPageName() {
         return subPageName;
+    }
+
+    public String getGroupId() {
+        return groupId;
     }
 
     public void clearFreeShapes(boolean addToHistory) {
@@ -463,9 +469,10 @@ public class NotePage {
      * @return
      */
     public static final NotePage loadPage(final Context context, final String docUniqueId,
-                                          final String pageName, final String subPageName) {
+                                          final String pageName, final String subPageName,
+                                          final String groupId) {
         final List<ShapeModel> list = ShapeDataProvider.loadShapeList(context, docUniqueId, pageName, subPageName);
-        final NotePage notePage = createPage(context, docUniqueId, pageName, subPageName);
+        final NotePage notePage = createPage(context, docUniqueId, pageName, subPageName, groupId);
         for(ShapeModel model : list) {
             final Shape shape = ShapeFactory.shapeFromModel(model);
             notePage.addShapeFromModel(shape);
@@ -477,7 +484,7 @@ public class NotePage {
         newAddedShapeList.clear();
         removedShapeList.clear();
         final List<ShapeModel> modelList = ShapeDataProvider.loadShapeList(context,
-                getDocumentUniqueId(), getPageUniqueId(), getSubPageName());
+                getDocumentUniqueId(), getPageUniqueId(), getSubPageName(), getGroupId());
         for(ShapeModel model : modelList) {
             addShapeFromModel(ShapeFactory.shapeFromModel(model));
         }
@@ -485,8 +492,9 @@ public class NotePage {
     }
 
     public static final NotePage createPage(final Context context, final String docUniqueId,
-                                            final String pageName, final String subPageName) {
-        return new NotePage(docUniqueId, pageName, subPageName);
+                                            final String pageName, final String subPageName,
+                                            final String groupId) {
+        return new NotePage(docUniqueId, pageName, subPageName, groupId);
     }
 
     public List<ShapeModel> getNewAddedShapeModeList() {

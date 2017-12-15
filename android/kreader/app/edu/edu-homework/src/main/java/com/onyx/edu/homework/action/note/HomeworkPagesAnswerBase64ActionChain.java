@@ -7,6 +7,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.base.NoteActionChain;
 
@@ -30,17 +31,19 @@ public class HomeworkPagesAnswerBase64ActionChain extends BaseNoteAction {
 
     @Override
     public void execute(NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        noteViewHelper.reset();
         if (answers == null || answers.isEmpty()) {
+            BaseCallback.invoke(baseCallback, null, null);
             return;
         }
         List<String> docIds = new ArrayList<>();
         for (HomeworkSubmitAnswer answer : answers) {
-            docIds.add(answer.question);
+            docIds.add(answer.uniqueId);
         }
         NoteActionChain chain = new NoteActionChain(true);
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
-        final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(), size, true);
+        final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
+                size,
+                true);
         chain.addAction(pageUniqueIdsAction);
         chain.addAction(listRenderAction);
         chain.execute(noteViewHelper, new BaseCallback() {
@@ -48,14 +51,10 @@ public class HomeworkPagesAnswerBase64ActionChain extends BaseNoteAction {
             public void done(BaseRequest request, Throwable e) {
                 Map<String, List<String>> pageBase64s = listRenderAction.getPageBase64s();
                 for (HomeworkSubmitAnswer answer : answers) {
-                    answer.setAttachment(pageBase64s.get(answer.question));
+                    answer.setAttachment(pageBase64s.get(answer.uniqueId));
                 }
                 BaseCallback.invoke(baseCallback, request, e);
             }
         });
-    }
-
-    public List<HomeworkSubmitAnswer> getAnswers() {
-        return answers;
     }
 }

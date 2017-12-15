@@ -39,6 +39,7 @@ public class BaseNoteRequest extends BaseRequest {
     private volatile ShapeDataInfo shapeDataInfo;
     private String docUniqueId;
     private String parentLibraryId;
+    private String groupId;
     private Rect viewportSize;
     private List<PageInfo> visiblePages = new ArrayList<PageInfo>();
     private boolean debugPathBenchmark = false;
@@ -91,6 +92,14 @@ public class BaseNoteRequest extends BaseRequest {
 
     public void setParentLibraryId(String parentLibraryId) {
         this.parentLibraryId = parentLibraryId;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
     }
 
     public void setViewportSize(final Rect size) {
@@ -351,7 +360,8 @@ public class BaseNoteRequest extends BaseRequest {
         if (!parent.getNoteDocument().isOpen()) {
             parent.getNoteDocument().open(getContext(),
                     getDocUniqueId(),
-                    getParentLibraryId());
+                    getParentLibraryId(),
+                    getGroupId());
         }
     }
 

@@ -7,6 +7,7 @@ import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.text.Editable;
+import android.text.Spanned;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
@@ -33,6 +34,16 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
     private View dividerLine;
     private LinearLayout btnLayout;
     private boolean dismissOnBackPressed = false;
+
+    public static OnyxCustomDialog getMessageDialog(Context context, CharSequence message) {
+        OnyxCustomDialog dialog = new OnyxCustomDialog(context);
+        dialog.setTitle(message);
+        dialog.btnLayout.setVisibility(View.GONE);
+        dialog.dividerLine.setVisibility(View.GONE);
+        dialog.title.setGravity(Gravity.CENTER);
+        dialog.setCloseOnTouchOutside(true);
+        return dialog;
+    }
 
     public static OnyxCustomDialog getLoadingDialog(Context context, String message) {
         OnyxCustomDialog dialog = new OnyxCustomDialog(context);

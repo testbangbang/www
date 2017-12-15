@@ -6,6 +6,7 @@ import android.graphics.Rect;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.base.NoteActionChain;
 
@@ -23,24 +24,28 @@ public class HomeworkPagesRenderActionChain extends BaseNoteAction {
     private List<String> docIds;
     private Rect size;
     private Map<String, List<Bitmap>> pageMap;
+    private int pageCount = -1;
 
-    public HomeworkPagesRenderActionChain(String docId, Rect size) {
+    public HomeworkPagesRenderActionChain(String docId, Rect size, int pageCount) {
         this.docIds = new ArrayList<>();
         docIds.add(docId);
         this.size = size;
+        this.pageCount = pageCount;
     }
 
-    public HomeworkPagesRenderActionChain(List<String> docIds, Rect size) {
-        this.docIds = docIds;
-        this.size = size;
+    public HomeworkPagesRenderActionChain(String docId, Rect size) {
+        this(docId, size, -1);
     }
+
 
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        noteViewHelper.reset();
         NoteActionChain chain = new NoteActionChain(true);
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
-        final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(), size, false);
+        final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
+                size,
+                pageCount,
+                false);
         chain.addAction(pageUniqueIdsAction);
         chain.addAction(listRenderAction);
         chain.execute(noteViewHelper, new BaseCallback() {

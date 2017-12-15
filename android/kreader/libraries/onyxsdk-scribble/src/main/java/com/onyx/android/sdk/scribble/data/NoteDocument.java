@@ -21,6 +21,7 @@ public class NoteDocument {
 
     private String documentUniqueId;
     private String parentUniqueId;
+    private String groupId;
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
     private boolean isOpen = false;
@@ -29,7 +30,15 @@ public class NoteDocument {
     public void open(final Context context,
                      final String uniqueId,
                      final String parentLibraryUniqueId) {
+        open(context, uniqueId, parentLibraryUniqueId, null);
+    }
+
+    public void open(final Context context,
+                     final String uniqueId,
+                     final String parentLibraryUniqueId,
+                     final String groupId) {
         close(context);
+        setGroupId(groupId);
         setDocumentUniqueId(uniqueId);
         setParentUniqueId(parentLibraryUniqueId);
         setup(context);
@@ -40,7 +49,15 @@ public class NoteDocument {
     public void create(final Context context,
                        final String uniqueId,
                        final String parentLibraryUniqueId) {
+        create(context, uniqueId, parentLibraryUniqueId, null);
+    }
+
+    public void create(final Context context,
+                       final String uniqueId,
+                       final String parentLibraryUniqueId,
+                       final String groupId) {
         close(context);
+        setGroupId(groupId);
         setDocumentUniqueId(uniqueId);
         setParentUniqueId(parentLibraryUniqueId);
         ensureDocumentNotBlank(context);
@@ -101,6 +118,14 @@ public class NoteDocument {
 
     public String getDocumentUniqueId() {
         return documentUniqueId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public String getGroupId() {
+        return groupId;
     }
 
     public String getParentUniqueId() {
@@ -231,7 +256,7 @@ public class NoteDocument {
     }
 
     private NotePage createPage(final int index, final String pageUniqueId) {
-        NotePage notePage = new NotePage(getDocumentUniqueId(), pageUniqueId, null);
+        NotePage notePage = new NotePage(getDocumentUniqueId(), pageUniqueId, null, getGroupId());
         pageDataMap.put(index, pageUniqueId, notePage);
         return notePage;
     }
@@ -351,7 +376,7 @@ public class NoteDocument {
         if (pageDataMap.containsKey(pageUniqueName)) {
             notePage = pageDataMap.get(pageUniqueName);
         } else {
-            notePage = NotePage.createPage(context, getDocumentUniqueId(), pageUniqueName, null);
+            notePage = NotePage.createPage(context, getDocumentUniqueId(), pageUniqueName, null, getGroupId());
             pageDataMap.put(pageUniqueName, notePage);
         }
         if (notePage != null && notePage.isLoaded()) {

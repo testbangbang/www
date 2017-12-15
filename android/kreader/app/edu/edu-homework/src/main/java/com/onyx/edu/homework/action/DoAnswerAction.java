@@ -34,7 +34,7 @@ public class DoAnswerAction extends BaseAction {
                 values.add(option._id);
             }
         }
-        DoAnswerRequest answerRequest = new DoAnswerRequest(values, question._id, homeworkId);
+        DoAnswerRequest answerRequest = new DoAnswerRequest(values, question.getUniqueId(), question.getQuestionId(), homeworkId);
         getDataManager().submit(context, answerRequest, baseCallback);
     }
 }

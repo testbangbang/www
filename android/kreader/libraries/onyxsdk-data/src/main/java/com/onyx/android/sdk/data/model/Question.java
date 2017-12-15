@@ -11,13 +11,32 @@ import java.util.List;
 public class Question implements Serializable {
 
     public String _id;
+    public String uniqueId;
     public String content;
     public String answers;
+    public String analysis;
     public int QuesType;
     public int difficulty;
     public List<QuestionOption> options;
+    public QuestionReview review;
 
     public boolean doneAnswer;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public String getQuestionId() {
+        return _id;
+    }
+
+    public void setReview(QuestionReview review) {
+        this.review = review;
+    }
+
+    public QuestionReview getReview() {
+        return review;
+    }
 
     public QuestionType getType() {
         int index= QuesType - 1;
@@ -43,7 +62,7 @@ public class Question implements Serializable {
         this.doneAnswer = doneAnswer;
     }
 
-    public List<HomeworkSubmitAnswer> createAnswer() {
+    public HomeworkSubmitAnswer createAnswer() {
         if (isSingleChoiceQuestion()) {
             return createSingleAnswer();
         }
@@ -53,39 +72,34 @@ public class Question implements Serializable {
         return createFillAnswer();
     }
 
-    public List<HomeworkSubmitAnswer> createSingleAnswer() {
-        List<HomeworkSubmitAnswer> answers = new ArrayList<>();
-        for (QuestionOption option : options) {
-            if (option.checked) {
-                HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-                answer.setQuestion(_id);
-                answer.setValue(option._id);
-                answers.add(answer);
-            }
-        }
-        return answers;
-    }
-
-    public List<HomeworkSubmitAnswer> createMultipleAnswers() {
-        List<HomeworkSubmitAnswer> answers = new ArrayList<>();
-        int index = 0;
-        for (QuestionOption option : options) {
-            if (option.checked) {
-                HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-                answer.setQuestion(_id);
-                answer.setValue(option._id);
-                answers.add(index, answer);
-                index++;
-            }
-        }
-        return answers;
-    }
-
-    public List<HomeworkSubmitAnswer> createFillAnswer() {
-        List<HomeworkSubmitAnswer> answers = new ArrayList<>();
+    public HomeworkSubmitAnswer createSingleAnswer() {
         HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
-        answer.setQuestion(_id);
-        answers.add(answer);
-        return answers;
+        for (QuestionOption option : options) {
+            if (option.checked) {
+                answer.setQuestion(getQuestionId());
+                answer.addValue(option._id);
+                answer.setUniqueId(getUniqueId());
+            }
+        }
+        return answer;
+    }
+
+    public HomeworkSubmitAnswer createMultipleAnswers() {
+        HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
+        for (QuestionOption option : options) {
+            if (option.checked) {
+                answer.setQuestion(getQuestionId());
+                answer.addValue(option._id);
+                answer.setUniqueId(getUniqueId());
+            }
+        }
+        return answer;
+    }
+
+    public HomeworkSubmitAnswer createFillAnswer() {
+        HomeworkSubmitAnswer answer = new HomeworkSubmitAnswer();
+        answer.setQuestion(getQuestionId());
+        answer.setUniqueId(getUniqueId());
+        return answer;
     }
 }

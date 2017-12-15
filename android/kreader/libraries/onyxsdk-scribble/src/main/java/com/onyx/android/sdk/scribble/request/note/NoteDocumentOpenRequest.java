@@ -12,6 +12,7 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
 
     private volatile String documentUniqueId;
     private volatile boolean newCreate;
+    private boolean resume;
 
     public NoteModel getNoteModel() {
         return noteModel;
@@ -19,24 +20,29 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
 
     private NoteModel noteModel;
 
-    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create) {
+    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create, boolean r) {
+        this(id, parentUniqueId, create, r, null);
+    }
+
+    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create, boolean r, String groupId) {
         newCreate = create;
         setParentLibraryId(parentUniqueId);
+        setGroupId(groupId);
         documentUniqueId = id;
+        resume = r;
         setPauseInputProcessor(true);
-        setResumeInputProcessor(true);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
         benchmarkStart();
         if (newCreate) {
-            parent.createDocument(getContext(), documentUniqueId, getParentLibraryId());
+            parent.createDocument(getContext(), documentUniqueId, getParentLibraryId(), getGroupId());
         } else {
-            parent.openDocument(getContext(), documentUniqueId, getParentLibraryId());
+            parent.openDocument(getContext(), documentUniqueId, getParentLibraryId(), getGroupId());
         }
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
-        setResumeInputProcessor(parent.useDFBForCurrentState());
+        setResumeInputProcessor(parent.useDFBForCurrentState() && resume);
         noteModel = NoteDataProvider.load(documentUniqueId);
     }
 

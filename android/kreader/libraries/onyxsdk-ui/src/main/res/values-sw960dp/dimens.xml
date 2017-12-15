@@ -58,4 +58,6 @@
     <dimen name="preference_title_text_size">25sp</dimen>
     <dimen name="preference_category_text_size">@dimen/abc_text_size_small_material</dimen>
     <dimen name="alert_dialog_text_size">24sp</dimen>
+
+    <dimen name="bessel_curve_view_height">80dp</dimen>
 </resources>

@@ -32,10 +32,6 @@
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.BRUSH_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_brush)}"
-            layout="@layout/sub_menu_item"/>
-
-        <include
             bind:item="@{item[MenuId.LINE_STYLE].setMenuIcon(R.drawable.ic_shape_line)}"
             layout="@layout/sub_menu_item"/>
 

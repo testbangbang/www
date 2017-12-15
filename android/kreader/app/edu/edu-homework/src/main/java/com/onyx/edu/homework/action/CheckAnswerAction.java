@@ -17,16 +17,14 @@ import java.util.List;
 public class CheckAnswerAction extends BaseAction {
 
     private List<Question> questions;
-    private String homeworkId;
 
-    public CheckAnswerAction(List<Question> questions, String homeworkId) {
+    public CheckAnswerAction(List<Question> questions) {
         this.questions = questions;
-        this.homeworkId = homeworkId;
     }
 
     @Override
     public void execute(final Context context, final BaseCallback baseCallback) {
-        final CheckAnswerRequest answerRequest = new CheckAnswerRequest(questions, context, homeworkId);
+        final CheckAnswerRequest answerRequest = new CheckAnswerRequest(questions, context);
         getDataManager().submit(context, answerRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -42,6 +42,8 @@ import com.onyx.edu.homework.action.note.UndoAction;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentNoteToolBinding;
+import com.onyx.edu.homework.event.PageChangeEvent;
+import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
 import com.onyx.edu.homework.note.ScribbleSubMenuMap;
 
@@ -59,13 +61,15 @@ import static com.onyx.android.sdk.scribble.shape.ShapeFactory.SHAPE_ERASER;
 public class NoteToolFragment extends BaseFragment {
 
     private RelativeLayout subMenuLayout;
+    private int initPageCount = 1;
 
     private MenuManager menuManager;
     private FragmentNoteToolBinding binding;
 
-    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout) {
+    public static NoteToolFragment newInstance(RelativeLayout subMenuLayout, int initPageCount) {
         NoteToolFragment fragment = new NoteToolFragment();
         fragment.setSubMenuLayout(subMenuLayout);
+        fragment.setInitPageCount(initPageCount);
         return fragment;
     }
 
@@ -122,52 +126,48 @@ public class NoteToolFragment extends BaseFragment {
                 redo();
                 break;
             case MenuId.SAVE:
-                saveDocument(false, shouldResume());
+                saveDocument();
                 break;
         }
-        if (MenuId.isSubMenuId(event.getMenuId())) {
-            handleSubMenuEvent(event.getMenuId());
+        if (getDataBundle().isDoing() && MenuId.isSubMenuId(event.getMenuId()) && handleSubMenuEvent(event.getMenuId())) {
             prepareHideSubMenu();
         }
     }
 
-    private void handleSubMenuEvent(int subMenuID) {
+    private boolean handleSubMenuEvent(int subMenuID) {
         if (MenuId.isThicknessGroup(subMenuID)) {
-            onStrokeWidthChanged(subMenuID);
+            return onStrokeWidthChanged(subMenuID);
         } else if (MenuId.isBackgroundGroup(subMenuID)) {
-            onBackgroundChanged(subMenuID);
+            return onBackgroundChanged(subMenuID);
         } else if (MenuId.isEraserGroup(subMenuID)) {
-            onEraserChanged(subMenuID);
+            return onEraserChanged(subMenuID);
         } else if (MenuId.isPenStyleGroup(subMenuID)) {
-            onShapeChanged(subMenuID);
+            return onShapeChanged(subMenuID);
         } else if (MenuId.isPenColorGroup(subMenuID)) {
 
         }
+        return true;
     }
 
-    private void saveDocument(final boolean finishAfterSave, final boolean resumeDrawing) {
-        String documentUniqueId = getShapeDataInfo().getDocumentUniqueId();
-        if (StringUtils.isNullOrEmpty(documentUniqueId)) {
-            return;
-        }
-        final DocumentSaveAction saveAction = new
-                DocumentSaveAction(getActivity(), documentUniqueId, Constant.NOTE_TITLE, finishAfterSave, resumeDrawing);
-        saveAction.execute(getNoteViewHelper(), null);
+    private void saveDocument() {
+        getDataBundle().post(new SaveNoteEvent(false));
     }
 
-    private void onBackgroundChanged(int subMenuID) {
+    private boolean onBackgroundChanged(int subMenuID) {
         int bgType = ScribbleSubMenuMap.bgFromMenuID(subMenuID);
-        NoteBackgroundChangeAction changeBGAction = new NoteBackgroundChangeAction(bgType, shouldResume());
-        changeBGAction.execute(getNoteViewHelper(), null);
+        getShapeDataInfo().setBackground(bgType);
+        flushDocument(true, shouldResume(), null);
+        return true;
     }
 
-    private void onShapeChanged(int subMenuID) {
+    private boolean onShapeChanged(int subMenuID) {
         int shapeType = ScribbleSubMenuMap.shapeTypeFromMenuID(subMenuID);
         getShapeDataInfo().setCurrentShapeType(shapeType);
         flushDocument(true, shouldResume(), null);
+        return true;
     }
 
-    private void onEraserChanged(int subMenuID) {
+    private boolean onEraserChanged(int subMenuID) {
         switch (subMenuID) {
             case MenuId.ERASE_PARTIALLY:
                 getShapeDataInfo().setCurrentShapeType(SHAPE_ERASER);
@@ -177,14 +177,21 @@ public class NoteToolFragment extends BaseFragment {
                 new ClearAllFreeShapesAction(shouldResume()).execute(getNoteViewHelper(), null);
                 break;
         }
+        return true;
     }
 
-    private void onStrokeWidthChanged(int subMenuID) {
+    private boolean onStrokeWidthChanged(int subMenuID) {
         if (subMenuID == MenuId.THICKNESS_CUSTOM_BOLD) {
-            showCustomLineWidthDialog();
+            flushDocument(true, false, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    showCustomLineWidthDialog();
+                }
+            });
+            return false;
         }else {
             updateStrokeWidth(ScribbleSubMenuMap.strokeWidthFromMenuId(subMenuID), null);
-            new NoteStrokeWidthChangeAction(ScribbleSubMenuMap.strokeWidthFromMenuId(subMenuID)).execute(getNoteViewHelper(), null);
+            return true;
         }
     }
 
@@ -206,12 +213,15 @@ public class NoteToolFragment extends BaseFragment {
         customLineWidth.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                flushDocument(true, shouldResume(), null);
+                flushDocument(true, false, null);
             }
         });
     }
 
     private void addPage() {
+        if (!getDataBundle().isDoing()) {
+            return;
+        }
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -221,7 +231,10 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void deletePage() {
-        flushDocument(false, shouldResume(), new BaseCallback() {
+        if (!getDataBundle().isDoing()) {
+            return;
+        }
+        flushDocument(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 deletePageImpl();
@@ -246,19 +259,27 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void prevPage() {
+        if (getDataBundle().isReview()) {
+            getDataBundle().post(new PageChangeEvent(false));
+            return;
+        }
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new GotoPrevPageAction().execute(getNoteViewHelper(), null);
+                new GotoPrevPageAction(shouldResume()).execute(getNoteViewHelper(), null);
             }
         });
     }
 
     private void nextPage() {
+        if (getDataBundle().isReview()) {
+            getDataBundle().post(new PageChangeEvent(true));
+            return;
+        }
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new GotoNextPageAction().execute(getNoteViewHelper(), null);
+                new GotoNextPageAction(shouldResume()).execute(getNoteViewHelper(), null);
             }
         });
     }
@@ -296,7 +317,7 @@ public class NoteToolFragment extends BaseFragment {
             }
         });
         subMenuLayout.setVisibility(View.GONE);
-        menuManager.getMainMenu().setText(MenuId.PAGE, "1/1");
+        menuManager.getMainMenu().setText(MenuId.PAGE, "1/" + initPageCount);
     }
 
     private void prepareHideSubMenu() {
@@ -315,14 +336,17 @@ public class NoteToolFragment extends BaseFragment {
 
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionMenuIds = new ArrayList<>();
-        functionMenuIds.add(MenuId.PEN_STYLE);
-        functionMenuIds.add(MenuId.BG);
-        functionMenuIds.add(MenuId.ERASER);
-        functionMenuIds.add(MenuId.PEN_WIDTH);
-        functionMenuIds.add(MenuId.SAVE);
+        if (getDataBundle().isDoing()) {
+            functionMenuIds.add(MenuId.PEN_STYLE);
+            functionMenuIds.add(MenuId.BG);
+            functionMenuIds.add(MenuId.ERASER);
+            functionMenuIds.add(MenuId.PEN_WIDTH);
+            functionMenuIds.add(MenuId.SAVE);
 
-        functionMenuIds.add(MenuId.ADD_PAGE);
-        functionMenuIds.add(MenuId.DELETE_PAGE);
+            functionMenuIds.add(MenuId.ADD_PAGE);
+            functionMenuIds.add(MenuId.DELETE_PAGE);
+        }
+
         functionMenuIds.add(MenuId.PREV_PAGE);
         functionMenuIds.add(MenuId.NEXT_PAGE);
         functionMenuIds.add(MenuId.PAGE);
@@ -331,6 +355,9 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void prepareShowSubMenu(final int parentId) {
+        if (!getDataBundle().isDoing()) {
+            return;
+        }
         flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -386,12 +413,6 @@ public class NoteToolFragment extends BaseFragment {
         resultList.add(MenuId.BG_MATS);
         resultList.add(MenuId.BG_MUSIC);
         resultList.add(MenuId.BG_ENGLISH);
-        resultList.add(MenuId.BG_LINE_1_6);
-        resultList.add(MenuId.BG_LINE_2_0);
-        resultList.add(MenuId.BG_LINE_COLUMN);
-        resultList.add(MenuId.BG_TABLE_GRID);
-        resultList.add(MenuId.BG_CALENDAR);
-        resultList.add(MenuId.BG_GRID_POINT);
         return resultList;
     }
 
@@ -460,6 +481,10 @@ public class NoteToolFragment extends BaseFragment {
         this.subMenuLayout = subMenuLayout;
     }
 
+    public void setInitPageCount(int initPageCount) {
+        this.initPageCount = initPageCount;
+    }
+
     public NoteViewHelper getNoteViewHelper() {
         return DataBundle.getInstance().getNoteViewHelper();
     }
@@ -475,7 +500,13 @@ public class NoteToolFragment extends BaseFragment {
         action.execute(getNoteViewHelper(), callback);
     }
 
+    public DataBundle getDataBundle() {
+        return DataBundle.getInstance();
+    }
+
     public boolean shouldResume() {
-        return !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType());
+        return !getNoteViewHelper().inUserErasing()
+                && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
+                && getDataBundle().isDoing();
     }
 }

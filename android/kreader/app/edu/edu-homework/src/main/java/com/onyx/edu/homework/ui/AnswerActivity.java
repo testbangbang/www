@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseActivity;
@@ -27,6 +28,7 @@ public class AnswerActivity extends BaseActivity {
     private Question question;
     private ScribbleFragment scribbleFragment;
     private NoteToolFragment toolFragment;
+    private ReviewFragment reviewFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -41,12 +43,25 @@ public class AnswerActivity extends BaseActivity {
         String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
         binding.questionType.setText(getString(R.string.question_type_str, questionType));
         binding.content.setText(TextUtils.fromHtml(question.content, new Base64ImageParser(this), null));
-        DataBundle.getInstance().resetNoteViewHelper();
-        scribbleFragment = ScribbleFragment.newInstance(question);
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout);
-        getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
+        initFragment();
         DataBundle.getInstance().register(this);
+    }
+
+    private void initFragment() {
+        DataBundle.getInstance().resetNoteViewHelper();
+        int initPageCount = 1;
+        if (DataBundle.getInstance().isReview()) {
+            if (question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachment)) {
+                initPageCount = question.review.attachment.size();
+            }
+            reviewFragment = ReviewFragment.newInstance(question);
+            getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
+        }else {
+            scribbleFragment = ScribbleFragment.newInstance(question);
+            getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
+        }
+        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
+        getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 
     @Override
@@ -63,6 +78,13 @@ public class AnswerActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
+        if (!DataBundle.getInstance().isDoing()) {
+            finish();
+            return;
+        }
+        if (scribbleFragment == null) {
+            return;
+        }
         scribbleFragment.save(true, false);
     }
 

@@ -1,11 +1,15 @@
 package com.onyx.edu.homework;
 
+import com.android.annotations.Nullable;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.CloudStore;
 import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.edu.homework.data.Homework;
+import com.onyx.edu.homework.data.HomeworkDetail;
+import com.onyx.edu.homework.data.HomeworkState;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,12 +38,15 @@ public class DataBundle {
     }
 
     private CloudManager cloudManager;
+    private DataManager dataManager;
+    private HomeworkDetail homework;
+    private EventBus eventBus;
+    private NoteViewHelper noteViewHelper;
+    private HomeworkState state = HomeworkState.DOING;
 
     public CloudManager getCloudManager() {
         return cloudManager;
     }
-
-    private DataManager dataManager;
 
     public DataManager getDataManager() {
         if (dataManager == null) {
@@ -48,19 +55,14 @@ public class DataBundle {
         return dataManager;
     }
 
-    private String homeworkId;
-
+    @Nullable
     public String getHomeworkId() {
-        return homeworkId;
+        return homework == null ? null : homework._id;
     }
 
-    public void setHomeworkId(String homeworkId) {
-        this.homeworkId = homeworkId;
+    public void setHomeworkId(HomeworkDetail detail) {
+        this.homework = detail;
     }
-
-    private EventBus eventBus;
-
-    private NoteViewHelper noteViewHelper;
 
     public EventBus getEventBus() {
         if (eventBus == null) {
@@ -91,4 +93,25 @@ public class DataBundle {
     public void resetNoteViewHelper() {
         getNoteViewHelper().reset();
     }
+
+    public HomeworkState getState() {
+        return state;
+    }
+
+    public void setState(HomeworkState state) {
+        this.state = state;
+    }
+
+    public boolean isDone() {
+        return state == HomeworkState.DONE;
+    }
+
+    public boolean isDoing() {
+        return state == HomeworkState.DOING;
+    }
+
+    public boolean isReview() {
+        return state == HomeworkState.REVIEW;
+    }
+
 }
