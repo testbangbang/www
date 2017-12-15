@@ -27,6 +27,7 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
     }
 
     public static final int DEFAULT_INTERVAL_COUNT = 5;
+    public static final int FAST_UPDATE_MODE_VALUE = 0xFFFF;
 
     private GAdapter mAdapter = null;
     int interval = DEFAULT_INTERVAL_COUNT;
@@ -93,6 +94,7 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
             mAdapter.addObject(createScreenRefreshItem(R.string.every_20_pages, 20));
             mAdapter.addObject(createScreenRefreshItem(R.string.every_50_pages, 50));
             mAdapter.addObject(createScreenRefreshItem(R.string.never, Integer.MAX_VALUE));
+            mAdapter.addObject(createScreenRefreshItem(R.string.fast_update, FAST_UPDATE_MODE_VALUE));
         }
         return mAdapter;
     }
@@ -105,5 +107,9 @@ public class DialogScreenRefresh extends OnyxAlertDialog {
             object.putBoolean(GAdapterUtil.TAG_SELECTABLE, true);
         }
         return object;
+    }
+
+    public static boolean isInFastUpdateMode(int value) {
+        return FAST_UPDATE_MODE_VALUE == value;
     }
 }

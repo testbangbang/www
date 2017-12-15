@@ -19,9 +19,11 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
     public static final String ACTION_QUIT_FULL_SCREEN = "com.onyx.kreader.action.QUIT_FULL_SCREEN";
     public static final String ACTION_SHOW_TAB_WIDGET = "com.onyx.kreader.action.SHOW_TAB_WIDGET";
     public static final String ACTION_OPEN_DOCUMENT_FAILED = "com.onyx.kreader.action.OPEN_DOCUMENT_FAILED";
+    public static final String ACTION_APPLY_ANIMATION_MODE = "com.onyx.kreader.action.APPLY_ANIMATION_MODE";
 
     public static final String TAG_SCREEN_ORIENTATION = "com.onyx.kreader.action.SCREEN_ORIENTATION";
     public static final String TAG_DOCUMENT_PATH = "com.onyx.kreader.action.DOCUMENT_PATH";
+    public static final String TAG_APPLY_ANIMATION = "com.onyx.kreader.APPLY_ANIMATION";
 
     public static abstract class Callback {
         public abstract void onTabBackPressed();
@@ -32,6 +34,7 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         public abstract void onOpenDocumentFailed(String path);
         public abstract void onEnableDebugLog();
         public abstract void onDisableDebugLog();
+        public abstract void onAnimationApply(boolean apply);
     }
 
     private static Callback callback;
@@ -78,6 +81,13 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
         context.sendBroadcast(intent);
     }
 
+    public static void sendAnimationApplyEvent(Context context, boolean apply) {
+        Intent intent = new Intent(context, ReaderTabHostBroadcastReceiver.class);
+        intent.setAction(ACTION_APPLY_ANIMATION_MODE);
+        intent.putExtra(TAG_APPLY_ANIMATION, apply);
+        context.sendBroadcast(intent);
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
         Debug.d(getClass(), "onReceive: " + intent);
@@ -116,6 +126,10 @@ public class ReaderTabHostBroadcastReceiver extends BroadcastReceiver {
             ReaderTabHostActivity.setEnableDebugLog(false);
             if (callback != null) {
                 callback.onDisableDebugLog();
+            }
+        } else if (intent.getAction().equals(ACTION_APPLY_ANIMATION_MODE)) {
+            if (callback != null) {
+                callback.onAnimationApply(intent.getBooleanExtra(TAG_APPLY_ANIMATION, false));
             }
         }
     }

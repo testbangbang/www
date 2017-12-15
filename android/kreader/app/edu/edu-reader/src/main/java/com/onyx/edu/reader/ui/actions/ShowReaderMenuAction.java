@@ -59,6 +59,7 @@ import com.onyx.edu.reader.note.actions.ResumeDrawingAction;
 import com.onyx.edu.reader.note.actions.UndoAction;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.ui.ReaderActivity;
+import com.onyx.edu.reader.ui.ReaderTabHostBroadcastReceiver;
 import com.onyx.edu.reader.ui.data.ReaderCropArgs;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
 import com.onyx.edu.reader.ui.data.SingletonSharedPreference;
@@ -615,6 +616,8 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onRefreshIntervalChanged(int oldValue, int newValue) {
                 LegacySdkDataUtils.setScreenUpdateGCInterval(readerDataHolder.getContext(), newValue);
                 ReaderDeviceManager.setGcInterval(newValue);
+                ReaderTabHostBroadcastReceiver.sendAnimationApplyEvent(readerDataHolder.getContext(),
+                        DialogScreenRefresh.isInFastUpdateMode(newValue));
             }
         });
         dlg.show(readerActivity.getFragmentManager());
