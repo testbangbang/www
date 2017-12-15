@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.support.annotation.Nullable;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -17,6 +18,7 @@ import com.onyx.android.sdk.reader.api.ReaderFormField;
 import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
+import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
@@ -481,15 +483,25 @@ public class NoteManager {
         return shapeStash.size() > 0;
     }
 
+    @Nullable
+    public ReaderNotePage getReaderNotePage(final Context context, final String pageName, int subPageIndex) {
+        return getNoteDocument().loadPage(context, pageName, subPageIndex);
+    }
+
+    @Nullable
+    public ReaderNotePage getReaderNotePage(final Context context, final String pageName) {
+        return getReaderNotePage(context, pageName, 0);
+    }
+
     public void undo(final Context context, final String pageName) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+        final ReaderNotePage readerNotePage = getReaderNotePage(context, pageName);
         if (readerNotePage != null) {
             readerNotePage.undo();
         }
     }
 
     public void redo(final Context context, final String pageName) {
-        final ReaderNotePage readerNotePage = getNoteDocument().loadPage(context, pageName, 0);
+        final ReaderNotePage readerNotePage = getReaderNotePage(context, pageName);
         if (readerNotePage != null) {
             readerNotePage.redo();
         }

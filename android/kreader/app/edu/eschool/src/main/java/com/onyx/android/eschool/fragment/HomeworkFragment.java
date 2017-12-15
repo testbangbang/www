@@ -70,7 +70,6 @@ public class HomeworkFragment extends Fragment {
     private int pageRow = 2;
     private int queryLimit = 20;
 
-    private CloudManager tempCloudManager;
     private boolean isVisibleToUser;
 
     private List<Homework> homeworkDataList = new ArrayList<>();
@@ -364,21 +363,9 @@ public class HomeworkFragment extends Fragment {
         return CloudConf.create(host, api, Constant.DEFAULT_CLOUD_STORAGE);
     }
 
-    private CloudManager getTempCloudManager() {
-        if (tempCloudManager != null) {
-            return tempCloudManager;
-        }
-        tempCloudManager = new CloudManager();
-        CloudConf conf = getCloudConf("http://120.78.79.5/", "http://120.78.79.5/api/");
-        String token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI1OWVkOWIyYTA3Njk3ZDRiNGYzOGYzMzYiLCJyb2xlIjoidGVhY2hlciIsImlhdCI6MTUxMjcwNjY3MiwiZXhwIjoxNTE1Mjk4NjcyfQ.H6rMKBwFD3UHsAiPYSTryO-_DAo2ad3OEjoHQmpsL_c";
-        tempCloudManager.setAllCloudConf(conf);
-        tempCloudManager.setToken(token);
-        updateTokenHeader(tempCloudManager);
-        return tempCloudManager;
-    }
 
     private CloudManager getCloudManager() {
-        return getTempCloudManager();
+        return getDataHolder().getCloudManager();
     }
 
     private LibraryDataHolder getDataHolder() {

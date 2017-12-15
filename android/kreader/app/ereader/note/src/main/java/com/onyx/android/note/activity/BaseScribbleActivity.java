@@ -71,6 +71,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected int totalPageCount;
     protected boolean isLineLayoutMode = false;
     protected boolean fullUpdate = false;
+    private boolean syncOnErasing = false;
     protected boolean drawPageDuringErasing = false;
 
     private enum ActivityState {CREATE, RESUME, PAUSE, DESTROY}
@@ -387,6 +388,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onBeginErasing() {
+        if (!syncOnErasing) {
+            return;
+        }
         syncWithCallback(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -408,14 +412,10 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     protected void onFinishErasing(TouchPointList pointList) {
         erasePoint = null;
+        final List<Shape> stash = getNoteViewHelper().detachStash();
         RemoveByPointListAction<BaseScribbleActivity> removeByPointListAction = new
-                RemoveByPointListAction<>(pointList);
-        removeByPointListAction.execute(this, new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                drawPage();
-            }
-        });
+                RemoveByPointListAction<>(pointList, stash, surfaceView);
+        removeByPointListAction.execute(this, null);
     }
 
     private void drawContent(final Canvas canvas, final Paint paint) {

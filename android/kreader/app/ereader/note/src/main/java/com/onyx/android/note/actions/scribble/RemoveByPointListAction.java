@@ -1,28 +1,38 @@
 package com.onyx.android.note.actions.scribble;
 
+import android.view.SurfaceView;
+
 import com.onyx.android.note.actions.BaseNoteAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.shape.ShapeRemoveByPointListRequest;
+import com.onyx.android.sdk.scribble.shape.Shape;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by zhuzeng on 7/3/16.
  */
 public class RemoveByPointListAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
-    private ShapeRemoveByPointListRequest changeRequest;
+    private ShapeRemoveByPointListRequest removeRequest;
     private volatile TouchPointList touchPointList;
+    private volatile List<Shape> stash = new ArrayList<>();
+    private volatile SurfaceView surfaceView;
 
-    public RemoveByPointListAction(final TouchPointList list) {
+    public RemoveByPointListAction(final TouchPointList list, final List<Shape> s, final SurfaceView view) {
         touchPointList = list;
+        stash.addAll(s);
+        surfaceView = view;
     }
 
     public void execute(final T activity) {
         execute(activity, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                activity.onRequestFinished(changeRequest, true);
+                activity.onRequestFinished(removeRequest, true);
             }
         });
     }
@@ -32,8 +42,8 @@ public class RemoveByPointListAction<T extends BaseScribbleActivity> extends Bas
         if (touchPointList == null) {
             return;
         }
-        changeRequest = new ShapeRemoveByPointListRequest(touchPointList);
-        activity.submitRequest(changeRequest, callback);
+        removeRequest = new ShapeRemoveByPointListRequest(touchPointList, stash, surfaceView);
+        activity.submitRequest(removeRequest, callback);
     }
 
 }
