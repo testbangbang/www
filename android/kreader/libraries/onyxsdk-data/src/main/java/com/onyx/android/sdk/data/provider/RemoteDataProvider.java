@@ -437,4 +437,23 @@ public class RemoteDataProvider implements DataProviderBase {
                 group,
                 null);
     }
+
+    @Override
+    public Library findLibraryByName(Context appContext, String name) {
+        Library library = null;
+        try {
+            library = ContentUtils.querySingle(OnyxLibraryProvider.CONTENT_URI,
+                    Library.class, ConditionGroup.clause().and(Library_Table.name.eq(name)), null);
+        } catch (Exception e) {
+        } finally {
+            return library != null ? library : new Library();
+        }
+    }
+
+    @Override
+    public long libraryMetadataCount(Library library) {
+        List<MetadataCollection> metadataCollections = ContentUtils.queryList(OnyxMetadataCollectionProvider.CONTENT_URI, MetadataCollection.class,
+                ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(library.getIdString())), null);
+        return metadataCollections == null ? 0 : metadataCollections.size();
+    }
 }

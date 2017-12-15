@@ -25,12 +25,14 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
+import com.onyx.jdread.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
 import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -237,6 +239,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void initDataBundle() {
         dataBundle = JDReadApplication.getDataBundle();
+        dataBundle.setLibraryViewDataModel(LibraryViewDataModel.create(dataBundle.getEventBus(), row, col));
         dataBundle.getLibraryViewDataModel().title.set(getString(R.string.library_name));
         libraryBinding.setLibraryModel(dataBundle.getLibraryViewDataModel());
     }
@@ -302,6 +305,12 @@ public class LibraryFragment extends BaseFragment {
         } else {
             processNormalModeItemClick(event.getModel());
         }
+    }
+
+    @Subscribe
+    public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
+        pagination.setCurrentPage(0);
+        loadData();
     }
 
     private void processNormalModeItemClick(DataModel model) {

@@ -29,6 +29,7 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxModifyLibraryRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -323,7 +324,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
 
     public void testRxLibraryGotoRequest() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
-        DataManager dataManager = getDataManager();
+        final DataManager dataManager = getDataManager();
         final Library parentLibrary = generateLibrary();
         final int layers = TestUtils.randInt(1, 10);
         final int childCount = TestUtils.randInt(1, 10);
@@ -348,9 +349,9 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
                 List<DataModel> subDataModel = new ArrayList<>();
                 List<DataModel> childDataModel = new ArrayList<>();
                 List<DataModel> parentDataModel = new ArrayList<>();
-                DataModelUtil.libraryToDataModel(EventBus.getDefault(), subDataModel, subLibraryList, R.drawable.library_default_cover);
-                DataModelUtil.libraryToDataModel(EventBus.getDefault(), childDataModel, childList, R.drawable.library_default_cover);
-                DataModelUtil.libraryToDataModel(EventBus.getDefault(), parentDataModel, parentList, R.drawable.library_default_cover);
+                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), subDataModel, subLibraryList, R.drawable.library_default_cover);
+                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), childDataModel, childList, R.drawable.library_default_cover);
+                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), parentDataModel, parentList, R.drawable.library_default_cover);
                 assertListEqual(subDataModel, childDataModel);
                 List<DataModel> parentLibraryList = rxLibraryGotoRequest.getParentLibraryList();
                 assertFalse(CollectionUtils.isNullOrEmpty(parentLibraryList));
@@ -435,7 +436,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             int to = getRandomInt(list.size() - 1, from);
             final List<Metadata> metadataList = generateMetadata(dataManager, getContext(), total, tag, title, author, series);
             List<DataModel> dataModels = new ArrayList<>();
-            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null, null, R.drawable.book_default_cover);
+            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null,ThumbnailUtils.defaultThumbnailMapping());
             final RxLibraryMoveToRequest request = new RxLibraryMoveToRequest(dataManager, list.get(from), list.get(to), dataModels);
 
             request.execute(new RxCallback<RxLibraryMoveToRequest>() {

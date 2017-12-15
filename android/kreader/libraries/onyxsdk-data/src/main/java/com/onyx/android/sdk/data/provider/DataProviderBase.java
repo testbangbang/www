@@ -106,4 +106,8 @@ public interface DataProviderBase {
     List<MetadataCollection> loadMetadataCollection(Context context, String libraryUniqueId);
 
     MetadataCollection findMetadataCollection(Context context, String associationId);
+
+    Library findLibraryByName(Context appContext, String name);
+
+    long libraryMetadataCount(Library library);
 }

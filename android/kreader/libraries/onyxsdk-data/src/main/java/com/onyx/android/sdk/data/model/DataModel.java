@@ -36,6 +36,7 @@ public class DataModel extends BaseObservable {
     public final ObservableBoolean enableSelection = new ObservableBoolean(false);
     public final ObservableField<FileModel> fileModel = new ObservableField<>();
     public final ObservableBoolean isDocument = new ObservableBoolean(false);
+    public final ObservableLong childCount = new ObservableLong();
     private EventBus eventBus;
 
     public DataModel(EventBus eventBus) {

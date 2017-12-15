@@ -3,11 +3,13 @@ package com.onyx.android.sdk.data.utils;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
+import com.liulishuo.filedownloader.i.IFileDownloadIPCCallback;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.FileModel;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ModelType;
+import com.onyx.android.sdk.data.provider.DataProviderBase;
 import com.onyx.android.sdk.dataprovider.R;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
@@ -24,7 +26,7 @@ import java.util.Map;
  */
 
 public class DataModelUtil {
-    public static void libraryToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Library> libraryList, int defaultCoverRes) {
+    public static void libraryToDataModel(DataProviderBase dataProvider, EventBus eventBus, List<DataModel> dataModels, List<Library> libraryList, int defaultCoverRes) {
         if (CollectionUtils.isNullOrEmpty(libraryList)) {
             return;
         }
@@ -38,11 +40,14 @@ public class DataModelUtil {
             model.desc.set(library.getDescription());
             model.checked.set(false);
             model.coverDefault.set(defaultCoverRes);
-            dataModels.add(model);
+            model.childCount.set(dataProvider.libraryMetadataCount(library));
+            if (model.childCount.get() != 0) {
+                dataModels.add(model);
+            }
         }
     }
 
-    public static void metadataToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Metadata> metadataList, Map<String, CloseableReference<Bitmap>>thumbnailMap, Map<String, Integer> defaultCoverResMap) {
+    public static void metadataToDataModel(EventBus eventBus, List<DataModel> dataModels, List<Metadata> metadataList, Map<String, CloseableReference<Bitmap>> thumbnailMap, Map<String, Integer> defaultCoverResMap) {
         if (CollectionUtils.isNullOrEmpty(metadataList)) {
             return;
         }

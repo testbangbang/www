@@ -22,6 +22,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.event.ChangeChildViewEvent;
 import com.onyx.jdread.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.event.PushChildViewToStackEvent;
+import com.onyx.jdread.event.UsbDisconnectedEvent;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.model.FunctionBarItem;
 import com.onyx.jdread.model.FunctionBarModel;
@@ -224,5 +225,10 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFunctionBarTabModel(FunctionBarItem event) {
         functionBarModel.changeTabSelection(event.fragmentName.get());
+    }
+
+    @Subscribe
+    public void onUsbDisconnectedEvent(UsbDisconnectedEvent event){
+        JDReadApplication.getInstance().dealWithMptBuffer();
     }
 }

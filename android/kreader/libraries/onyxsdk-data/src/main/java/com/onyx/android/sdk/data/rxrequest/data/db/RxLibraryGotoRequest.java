@@ -4,7 +4,6 @@ import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
-import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.dataprovider.R;
 
@@ -44,7 +43,7 @@ public class RxLibraryGotoRequest extends RxBaseDBRequest {
             gotoLibrary.setIdString(gotoDataModel.idString.get());
             gotoLibrary.setParentUniqueId(gotoDataModel.parentId.get());
             List<Library> libraries = DataManagerHelper.loadParentLibraryList(getAppContext(), getDataManager(), gotoLibrary);
-            DataModelUtil.libraryToDataModel(gotoDataModel.getEventBus(), parentLibraryList, libraries, R.drawable.library_default_cover);
+            DataModelUtil.libraryToDataModel(getDataProvider(), gotoDataModel.getEventBus(), parentLibraryList, libraries, R.drawable.library_default_cover);
         }
         return this;
     }

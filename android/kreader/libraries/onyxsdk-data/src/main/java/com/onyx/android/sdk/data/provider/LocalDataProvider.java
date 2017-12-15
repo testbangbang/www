@@ -340,4 +340,14 @@ public class LocalDataProvider implements DataProviderBase {
         return new Select().from(MetadataCollection.class)
                 .where(MetadataCollection_Table.documentUniqueId.eq(associationId)).querySingle();
     }
+
+    @Override
+    public Library findLibraryByName(Context appContext, String name) {
+        return null;
+    }
+
+    @Override
+    public long libraryMetadataCount(Library library) {
+        return 0;
+    }
 }
