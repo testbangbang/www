@@ -14,8 +14,6 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
-import com.onyx.jdread.common.LoadingDialog;
-import com.onyx.jdread.common.ToastUtil;
 import com.onyx.jdread.databinding.FragmentBookStoreBinding;
 import com.onyx.jdread.databinding.FragmentBookStoreOneBinding;
 import com.onyx.jdread.databinding.FragmentBookStoreThreeBinding;
@@ -67,6 +65,7 @@ public class StoreFragment extends BaseFragment {
         storeOneBinding = bookStoreBinding.bookStoreOne;
         storeTwoBinding = bookStoreBinding.bookStoreTwo;
         storeThreeBinding = bookStoreBinding.bookStoreThree;
+        bookStoreBinding.setViewModel(getBookStoreViewModel());
         setRecyclerViewOne();
         setRecyclerViewTwo();
         setRecyclerViewOneBackup();
@@ -169,11 +168,7 @@ public class StoreFragment extends BaseFragment {
         storeNewBookAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
-                storeOneBinding.setViewModel(getBookStoreViewModel());
-                storeTwoBinding.setViewModel(getBookStoreViewModel());
-                storeThreeBinding.setViewModel(getBookStoreViewModel());
-                storeOneBinding.storeTopFunction.setModel(getBookStoreViewModel());
-                bookStoreBinding.searchView.setViewModel(getBookStoreViewModel());
+
             }
 
             @Override

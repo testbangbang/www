@@ -1,5 +1,7 @@
 package com.onyx.jdread.shop.model;
 
+import android.databinding.BaseObservable;
+
 import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnStoreBakcTopClick;
 
@@ -9,7 +11,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by jackdeng on 2017/12/8.
  */
 
-public class BookStoreViewModel {
+public class BookStoreViewModel extends BaseObservable{
     public SubjectViewModel bannerSubjectIems;
     public SubjectViewModel coverSubjectIems;
     public SubjectViewModel titleSubjectIems;
@@ -21,16 +23,17 @@ public class BookStoreViewModel {
         this.eventBus = eventBus;
     }
 
-    public SubjectViewModel getBannerSubjectIems() {
-        return bannerSubjectIems;
-    }
-
     public EventBus getEventBus() {
         return eventBus;
     }
 
+    public SubjectViewModel getBannerSubjectIems() {
+        return bannerSubjectIems;
+    }
+
     public void setBannerSubjectIems(SubjectViewModel bannerSubjectIems) {
         this.bannerSubjectIems = bannerSubjectIems;
+        notifyChange();
     }
 
     public SubjectViewModel getCoverSubjectIems() {
@@ -39,6 +42,7 @@ public class BookStoreViewModel {
 
     public void setCoverSubjectIems(SubjectViewModel coverSubjectIems) {
         this.coverSubjectIems = coverSubjectIems;
+        notifyChange();
     }
 
     public SubjectViewModel getTitleSubjectIems() {
@@ -47,6 +51,7 @@ public class BookStoreViewModel {
 
     public void setTitleSubjectIems(SubjectViewModel titleSubjectIems) {
         this.titleSubjectIems = titleSubjectIems;
+        notifyChange();
     }
 
     public String getSearchContent() {
@@ -63,6 +68,7 @@ public class BookStoreViewModel {
 
     public void setSpecialTodaySubjectIems(SubjectViewModel specialTodaySubjectIems) {
         this.specialTodaySubjectIems = specialTodaySubjectIems;
+        notifyChange();
     }
 
     public void onRankViewClick() {

@@ -23,7 +23,8 @@
 
         <include
             android:id="@+id/store_top_function"
-            layout="@layout/layout_book_store_top_function"/>
+            layout="@layout/layout_book_store_top_function"
+            bind:viewModel="@{viewModel}" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             subjectItems="@{viewModel.bannerSubjectIems.modelBean.resultList}"

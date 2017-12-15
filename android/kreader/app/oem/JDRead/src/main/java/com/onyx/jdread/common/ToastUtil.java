@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -33,6 +34,9 @@ public class ToastUtil {
     private static float textSize = JDReadApplication.getInstance().getResources().getDimension(R.dimen.level_three_heading_font);
 
     public static void showToast(Context appContext, String message) {
+        if (TextUtils.isEmpty(message)) {
+            return;
+        }
         if (toast == null) {
             toast = Toast.makeText(appContext.getApplicationContext(), message, Toast.LENGTH_SHORT);
             View view = toast.getView();

@@ -10,7 +10,7 @@
             type="com.onyx.jdread.shop.ui.StoreFragment" />
 
         <variable
-            name="model"
+            name="viewModel"
             type="com.onyx.jdread.shop.model.BookStoreViewModel" />
 
     </data>
@@ -28,19 +28,23 @@
 
             <include
                 android:id="@+id/search_view"
-                layout="@layout/layout_search_view" />
+                layout="@layout/layout_search_view"
+                bind:viewModel="@{viewModel}" />
 
             <include
                 android:id="@+id/book_store_one"
-                layout="@layout/fragment_book_store_one" />
+                layout="@layout/fragment_book_store_one"
+                bind:viewModel="@{viewModel}" />
 
             <include
                 android:id="@+id/book_store_two"
-                layout="@layout/fragment_book_store_two" />
+                layout="@layout/fragment_book_store_two"
+                bind:viewModel="@{viewModel}" />
 
             <include
                 android:id="@+id/book_store_three"
-                layout="@layout/fragment_book_store_three" />
+                layout="@layout/fragment_book_store_three"
+                bind:viewModel="@{viewModel}" />
 
         </LinearLayout>
 

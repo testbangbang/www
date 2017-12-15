@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="model"
+            name="viewModel"
             type="com.onyx.jdread.shop.model.BookStoreViewModel"/>
 
     </data>
@@ -18,7 +18,7 @@
 
         <LinearLayout
             android:background="@drawable/normal_selected_background"
-            android:onClick="@{()->model.onRankViewClick()}"
+            android:onClick="@{()->viewModel.onRankViewClick()}"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:layout_width="0dp"
@@ -42,7 +42,7 @@
 
         <LinearLayout
             android:background="@drawable/normal_selected_background"
-            android:onClick="@{()->model.onEnjoyReadViewClick()}"
+            android:onClick="@{()->viewModel.onEnjoyReadViewClick()}"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:layout_width="0dp"
@@ -66,7 +66,7 @@
 
         <LinearLayout
             android:background="@drawable/normal_selected_background"
-            android:onClick="@{()->model.onSaleViewClick()}"
+            android:onClick="@{()->viewModel.onSaleViewClick()}"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:layout_width="0dp"
@@ -90,7 +90,7 @@
 
         <LinearLayout
             android:background="@drawable/normal_selected_background"
-            android:onClick="@{()->model.onNewBookViewClick()}"
+            android:onClick="@{()->viewModel.onNewBookViewClick()}"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:layout_width="0dp"
@@ -114,7 +114,7 @@
 
         <LinearLayout
             android:background="@drawable/normal_selected_background"
-            android:onClick="@{()->model.onCategoryViewClick()}"
+            android:onClick="@{()->viewModel.onCategoryViewClick()}"
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:layout_width="0dp"
