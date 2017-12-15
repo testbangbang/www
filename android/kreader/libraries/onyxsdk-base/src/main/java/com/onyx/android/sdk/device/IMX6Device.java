@@ -34,6 +34,7 @@ public class IMX6Device extends BaseDevice {
     private static int sModeDW = 0;
     private static int sModeGU = 0;
     private static int sModeGC = 0;
+    private static int sModeGCClear = 0;
     private static int sModeAnimation = 0;
     private static int sModeAnimationQuality = 0;
     private static int sModeGC4 = 0;
@@ -555,6 +556,7 @@ public class IMX6Device extends BaseDevice {
             int value_mode_waveform_animation = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_ANIM");
             int value_mode_waveform_gc4 = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_GC4");
             int value_mode_waveform_gc16 = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_GC16");
+            int value_mode_waveform_gc_clear = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_GC_CLEAR");
             int value_mode_waveform_regal = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_WAVEFORM_MODE_REAGL");
             int value_mode_waveform_regalD = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_REAGL_MODE_REAGLD");
             int value_mode_update_partial = ReflectUtil.getStaticIntFieldSafely(cls, "EINK_UPDATE_MODE_PARTIAL");
@@ -566,6 +568,7 @@ public class IMX6Device extends BaseDevice {
             sModeDW = value_mode_regional | value_mode_nowait | value_mode_waveform_du | value_mode_update_partial;
             sModeGU = value_mode_regional | value_mode_nowait | value_mode_waveform_gc16 | value_mode_update_partial;
             sModeGC = value_mode_regional | value_mode_wait | value_mode_waveform_gc16 | value_mode_update_full;
+            sModeGCClear = value_mode_regional | value_mode_wait | value_mode_waveform_gc_clear | value_mode_update_full;
             sModeAnimation = value_mode_regional | value_mode_nowait | value_mode_waveform_animation | value_mode_update_partial;
             sModeAnimationQuality = ReflectUtil.getStaticIntFieldSafely(cls, "UI_A2_QUALITY_MODE");
             sModeGC4 = value_mode_regional | value_mode_nowait | value_mode_waveform_gc4 | value_mode_update_partial;
@@ -900,6 +903,9 @@ public class IMX6Device extends BaseDevice {
             case GC:
                 dst_mode = sModeGC;
                 break;
+            case GC_CLEAR:
+                dst_mode = sModeGCClear;
+                break;
             case ANIMATION:
                 dst_mode = sModeAnimation;
                 break;
@@ -949,6 +955,8 @@ public class IMX6Device extends BaseDevice {
             return UpdateMode.GU;
         } else if (value == sModeGC) {
             return UpdateMode.GC;
+        } else if (value == sModeGCClear) {
+            return UpdateMode.GC_CLEAR;
         }
         return UpdateMode.GC;
     }
