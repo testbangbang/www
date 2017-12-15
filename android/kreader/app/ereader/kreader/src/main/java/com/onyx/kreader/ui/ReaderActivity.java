@@ -199,6 +199,8 @@ public class ReaderActivity extends OnyxBaseActivity {
     protected void onPause() {
         if (getReaderDataHolder().isDocumentInitRendered() &&
                 getReaderDataHolder().isNoteWritingProvider()) {
+            stopRawEventProcessor();
+
             final List<PageInfo> list = getReaderDataHolder().getVisiblePages();
             FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, true, false);
             flushNoteAction.setPauseNote(true);
@@ -497,6 +499,7 @@ public class ReaderActivity extends OnyxBaseActivity {
             return;
         }
         if (getReaderDataHolder().isNoteWritingProvider()) {
+            getReaderDataHolder().getNoteManager().startRawEventProcessor();
             getReaderDataHolder().resumeRawEventProcessor();
             return;
         }
@@ -721,7 +724,6 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         disablePenShortcut();
-        stopRawEventProcessor();
         getReaderDataHolder().getHandlerManager().resetToDefaultProvider();
         if (!getReaderDataHolder().isDocumentOpened()) {
             return;
