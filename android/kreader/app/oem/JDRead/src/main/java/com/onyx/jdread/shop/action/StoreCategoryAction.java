@@ -6,23 +6,22 @@ import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModelResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.BookStoreViewModel;
 import com.onyx.jdread.shop.model.StoreDataBundle;
-import com.onyx.jdread.shop.model.SubjectViewModel;
-import com.onyx.jdread.shop.request.cloud.RxRequestBookstoreModule;
+import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 
 /**
- * Created by jackdeng on 2017/12/13.
+ * Created by jackdeng on 2017/12/15.
  */
 
-public class StoreNewBookAction extends BaseAction<StoreDataBundle> {
+public class StoreCategoryAction extends BaseAction<StoreDataBundle> {
 
     private Context context;
     private BookStoreViewModel storeViewModel;
 
-    public StoreNewBookAction(Context context) {
+    public StoreCategoryAction(Context context) {
         this.context = context;
     }
 
@@ -32,20 +31,15 @@ public class StoreNewBookAction extends BaseAction<StoreDataBundle> {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookstoreModule.ID, CloudApiContext.BookstoreModule.NEW_BOOK_DELIVERY_ID);
-        body.put(CloudApiContext.BookstoreModule.MODULE_TYPE, CloudApiContext.BookstoreModule.NEW_BOOK_DELIVERY_MODULE_TYPE);
+        body.put(CloudApiContext.CategoryList.CLIENT_PLATFORM, CloudApiContext.CategoryList.CLIENT_PLATFORM_VALUE);
         baseRequestBean.setBody(body.toJSONString());
-        RxRequestBookstoreModule request = new RxRequestBookstoreModule();
+        final RxRequestCategoryList request = new RxRequestCategoryList();
         request.setBaseRequestBean(baseRequestBean);
-        request.execute(new RxCallback<RxRequestBookstoreModule>() {
+        request.execute(new RxCallback<RxRequestCategoryList>() {
             @Override
-            public void onNext(RxRequestBookstoreModule request) {
-                BookstoreModelResultBean bookstoreModelResultBean = request.getBookstoreModelResultBean();
-                SubjectViewModel subjectViewModel = new SubjectViewModel();
-                subjectViewModel.setModelBean(bookstoreModelResultBean);
-                storeViewModel.setCoverSubjectIems(subjectViewModel);
-                storeViewModel.setBannerSubjectIems(subjectViewModel);
-                storeViewModel.setCoverSubjectFourItems(subjectViewModel);
+            public void onNext(RxRequestCategoryList request) {
+                CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
+                storeViewModel.setCategorySubjectItems(categoryListResultBean.catList);
                 if (rxCallback != null) {
                     rxCallback.onNext(request);
                     rxCallback.onComplete();

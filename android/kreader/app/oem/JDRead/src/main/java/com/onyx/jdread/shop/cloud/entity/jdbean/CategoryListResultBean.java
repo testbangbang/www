@@ -1,5 +1,7 @@
 package com.onyx.jdread.shop.cloud.entity.jdbean;
 
+import android.databinding.BaseObservable;
+
 import java.util.List;
 
 /**
@@ -10,7 +12,7 @@ public class CategoryListResultBean {
     public String code;
     public List<CatListBean> catList;
 
-    public static class CatListBean {
+    public static class CatListBean extends BaseObservable{
 
         public int amount;
         public int catId;
@@ -27,6 +29,10 @@ public class CategoryListResultBean {
             public String catName;
             public int catType;
             public int isLeaf;
+        }
+
+        public void onItemClicked() {
+
         }
     }
 }

@@ -16,4 +16,5 @@
     <string name="category">Category</string>
     <string name="back_to_top">Back to top</string>
     <string name="view_all_books">View all the %1$s million books</string>
+    <string name="search_view_hint">Please input what you want to search</string>
 </resources>

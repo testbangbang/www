@@ -2,10 +2,13 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
 
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnStoreBakcTopClick;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by jackdeng on 2017/12/8.
@@ -14,8 +17,10 @@ import org.greenrobot.eventbus.EventBus;
 public class BookStoreViewModel extends BaseObservable{
     public SubjectViewModel bannerSubjectIems;
     public SubjectViewModel coverSubjectIems;
+    public SubjectViewModel coverSubjectFourItems;
     public SubjectViewModel titleSubjectIems;
     public SubjectViewModel specialTodaySubjectIems;
+    public List<CategoryListResultBean.CatListBean> categorySubjectItems;
     public String searchContent;
     public EventBus eventBus;
 
@@ -71,6 +76,23 @@ public class BookStoreViewModel extends BaseObservable{
         notifyChange();
     }
 
+    public List<CategoryListResultBean.CatListBean> getCategorySubjectItems() {
+        return categorySubjectItems;
+    }
+
+    public void setCategorySubjectItems(List<CategoryListResultBean.CatListBean> categorySubjectItems) {
+        this.categorySubjectItems = categorySubjectItems;
+        notifyChange();
+    }
+
+    public SubjectViewModel getCoverSubjectFourItems() {
+        return coverSubjectFourItems;
+    }
+
+    public void setCoverSubjectFourItems(SubjectViewModel coverSubjectFourItems) {
+        this.coverSubjectFourItems = coverSubjectFourItems;
+    }
+
     public void onRankViewClick() {
         getEventBus().post(new OnRankViewClick());
     }
@@ -100,6 +122,10 @@ public class BookStoreViewModel extends BaseObservable{
     }
 
     public void onShoppingCartViewClick() {
+
+    }
+
+    public void onSearchViewClick() {
 
     }
 }
