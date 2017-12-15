@@ -44,7 +44,7 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
                 metadata.setHashTag(file.getAbsolutePath());
                 getDataProvider().saveMetadata(getAppContext(), metadata);
             }
-            String parent = file.getParent();
+            String parent = file.getParentFile().getName();
             Library library = getDataProvider().findLibraryByName(getAppContext(), parent);
             if (library == null || !library.hasValidId()) {
                 library = new Library();
@@ -58,7 +58,7 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
             if (metadata != null && metadata.hasValidId()) {
                 getDataProvider().removeMetadata(getAppContext(), metadata);
-                Library library = getDataProvider().findLibraryByName(getAppContext(), file.getParent());
+                Library library = getDataProvider().findLibraryByName(getAppContext(), file.getParentFile().getName());
                 if (library != null && library.hasValidId()) {
                     getDataProvider().deleteMetadataCollection(getAppContext(), library.getIdString(), metadata.getNativeAbsolutePath());
                 }
