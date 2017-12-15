@@ -6,7 +6,6 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -16,8 +15,7 @@ import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.HomeworkSubmitAction;
-import com.onyx.edu.homework.action.note.HomeworkPagesAnswerBase64ActionChain;
-import com.onyx.edu.homework.base.BaseDialog;
+import com.onyx.edu.homework.action.note.MakeHomeworkPagesAnswerActionChain;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.databinding.DialogSubmitBinding;
 import com.onyx.edu.homework.event.SubmitEvent;
@@ -95,7 +93,7 @@ public class SubmitDialog extends OnyxBaseDialog {
         int height = (int) getContext().getResources().getDimension(R.dimen.scribble_view_height);
         Rect size = new Rect(0, 0, width, height);
         onStartSubmit();
-        new HomeworkPagesAnswerBase64ActionChain(fillAnswers, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
+        new MakeHomeworkPagesAnswerActionChain(fillAnswers, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
@@ -131,7 +129,6 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.message.setText(R.string.submit_fail);
         binding.action1.setVisibility(View.VISIBLE);
         binding.action0.setVisibility(View.VISIBLE);
-        Toast.makeText(getContext(), e.getCause().getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     private void onSuccessSubmit() {

@@ -26,9 +26,9 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
 
     private Map<String, List<String>> pageUniqueMap;
     private Rect size;
-    private boolean base64Bitmap;
+    private boolean saveAsFile;
     private Map<String, List<Bitmap>> pageBitmaps = new HashMap<>();
-    private Map<String, List<String>> pageBase64s = new HashMap<>();
+    private Map<String, List<String>> pageFilePaths = new HashMap<>();
     private List<String> documentIds = new ArrayList<>();
     private int pageCount = -1;
     private int documentRenderCount = 0;
@@ -36,17 +36,17 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
                                      Rect size,
                                      int pageCount,
-                                     boolean base64Bitmap) {
+                                     boolean saveAsFile) {
         this.pageUniqueMap = pageUniqueMap;
         this.size = size;
-        this.base64Bitmap = base64Bitmap;
+        this.saveAsFile = saveAsFile;
         this.pageCount = pageCount;
     }
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
                                      Rect size,
-                                     boolean base64Bitmap) {
-        this(pageUniqueMap, size, -1, base64Bitmap);
+                                     boolean saveAsFile) {
+        this(pageUniqueMap, size, -1, saveAsFile);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
-        final HomeworkPagesRenderRequest renderRequest = new HomeworkPagesRenderRequest(docId, pageInfoList, size, base64Bitmap);
+        final HomeworkPagesRenderRequest renderRequest = new HomeworkPagesRenderRequest(docId, pageInfoList, size, saveAsFile);
         noteViewHelper.submit(getAppContext(), renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -79,8 +79,8 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
                     return;
                 }
                 documentRenderCount++;
-                if (base64Bitmap) {
-                    addBase64Bitmap(docId, renderRequest.getBase64());
+                if (saveAsFile) {
+                    addFile(docId, renderRequest.getFilePath());
                 }else {
                     addBitmap(docId, renderRequest.getRenderBitmap());
                 }
@@ -114,15 +114,15 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         }
     }
 
-    private void addBase64Bitmap(String docId, String base64) {
+    private void addFile(String docId, String base64) {
         List<String> base64s;
-        if (pageBase64s.containsKey(docId)) {
-            base64s = pageBase64s.get(docId);
+        if (pageFilePaths.containsKey(docId)) {
+            base64s = pageFilePaths.get(docId);
             base64s.add(base64);
         }else {
             base64s = new ArrayList<>();
             base64s.add(base64);
-            pageBase64s.put(docId, base64s);
+            pageFilePaths.put(docId, base64s);
         }
     }
 
@@ -132,8 +132,8 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     }
 
     @NonNull
-    public Map<String, List<String>> getPageBase64s() {
-        return pageBase64s;
+    public Map<String, List<String>> getPageFilePaths() {
+        return pageFilePaths;
     }
 
     @Nullable
