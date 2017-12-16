@@ -18,7 +18,6 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
-import com.onyx.android.sdk.utils.ShellUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -74,9 +73,8 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
                 BitmapUtils.saveBitmap(QRCodeUtil.stringToImageEncode(context, JSONObjectParseUtils.toJson(deviceBind),
                         QRCodeUtil.DEFAULT_SIZE, true, QRCodeUtil.WHITE_MARGIN_SIZE,
                         context.getResources().getColor(android.R.color.black))
-                        , cacheFile.getPath());
+                        , cacheFile.getPath(),true);
                 updateQrCodePosition(context);
-                ShellUtils.execCommand("busybox chmod 644 " + cacheFile.getPath(), false);
             } catch (WriterException e) {
                 e.printStackTrace();
             } catch (IOException e) {
