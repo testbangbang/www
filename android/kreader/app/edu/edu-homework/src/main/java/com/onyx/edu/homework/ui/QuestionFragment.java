@@ -242,7 +242,7 @@ public class QuestionFragment extends BaseFragment {
             binding.rightWrongIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
         }
         binding.analysis.setVisibility(StringUtils.isNullOrEmpty(question.analysis) ? View.GONE : View.VISIBLE);
-        binding.review.setVisibility(View.VISIBLE);
+        binding.review.setVisibility(question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
     }
 
 }
