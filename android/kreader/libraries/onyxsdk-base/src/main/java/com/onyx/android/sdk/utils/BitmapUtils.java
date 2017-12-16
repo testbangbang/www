@@ -52,7 +52,9 @@ public class BitmapUtils {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
             out.close();
             if (overrideFilePermission) {
-                ShellUtils.execCommand("busybox chmod 644 " + path, false);
+                File bitmapFile = new File(path);
+                bitmapFile.setReadable(true,false);
+                bitmapFile.setWritable(true,false);
             }
         } catch (Exception e) {
             e.printStackTrace();
