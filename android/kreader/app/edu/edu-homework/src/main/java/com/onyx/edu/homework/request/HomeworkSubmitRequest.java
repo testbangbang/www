@@ -1,7 +1,6 @@
 package com.onyx.edu.homework.request;
 
 import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.model.HomeworkRequestModel;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.HomeworkSubmitBody;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
@@ -9,7 +8,6 @@ import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.homework.data.Constant;
-import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.db.DBDataProvider;
 import com.onyx.edu.homework.db.HomeworkModel;
@@ -59,12 +57,11 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
     }
 
     private Map<String, RequestBody> getFilePathMap() {
-        Map<String, RequestBody> requestBodyMap = null;
         List<HomeworkSubmitAnswer> anwsers = body.anwsers;
         if (CollectionUtils.isNullOrEmpty(anwsers)) {
-            return requestBodyMap;
+            return null;
         }
-        requestBodyMap = new HashMap<>();
+        Map<String, RequestBody> requestBodyMap = new HashMap<>();
         for (HomeworkSubmitAnswer anwser : anwsers) {
             List<String> paths = anwser.filePaths;
             if (CollectionUtils.isNullOrEmpty(paths)) {
@@ -74,10 +71,11 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
             List<String> attachment = new ArrayList<>();
             for (int i = 0; i < size; i++) {
                 String path = paths.get(i);
-                String key = FileUtils.getRealFileName(path);
+                String fileName = FileUtils.getRealFileName(path);
+                String key = "files\"; filename=\""+ fileName;
                 requestBodyMap.put(key,
                         RequestBody.create(MediaType.parse("image/png"), new File(path)));
-                attachment.add(key);
+                attachment.add(fileName);
             }
             anwser.setAttachment(attachment);
             paths.clear();
