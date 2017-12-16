@@ -93,7 +93,7 @@ public class AnswerActivity extends BaseActivity {
             finish();
             return;
         }
-        DataBundle.getInstance().post(new StopNoteEvent(true));
+        DataBundle.getInstance().post(new SaveNoteEvent(true));
     }
 
     @Subscribe
