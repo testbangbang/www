@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
+import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
 
 import java.io.IOException;
@@ -35,24 +36,48 @@ public class AuthenticatorImpl implements Authenticator {
     @Override
     public Request authenticate(Route route, Response response) throws IOException {
         Log.e(getClass().getSimpleName(), "execute Authenticator");
+
+        resetAuthenticator(cloudManager);
+        boolean success = reLogin(appContext, cloudManager);
+        if (!success) {
+            return null;
+        }
+        restoreAuthenticator(cloudManager);
+
         Request.Builder builder = response.request().newBuilder();
+        addHeader(builder, Constant.HEADER_AUTHORIZATION,
+                ContentService.CONTENT_AUTH_PREFIX + cloudManager.getToken());
+        return builder.build();
+    }
+
+    private boolean reLogin(Context context, CloudManager cloudManager) {
         final LoginByHardwareInfoRequest accountLoadRequest = new LoginByHardwareInfoRequest<>(EduAccountProvider.CONTENT_URI,
                 EduAccount.class);
         accountLoadRequest.setLoadOnlyFromCloud(true);
-        accountLoadRequest.setContext(appContext);
+        accountLoadRequest.setContext(context);
         try {
             accountLoadRequest.execute(cloudManager);
             NeoAccountBase account = accountLoadRequest.getAccount();
             if (!NeoAccountBase.isValid(account) || accountLoadRequest.getException() != null) {
-                return null;
+                return false;
             }
-            builder.removeHeader(Constant.HEADER_AUTHORIZATION);
-            builder.addHeader(Constant.HEADER_AUTHORIZATION,
-                    ContentService.CONTENT_AUTH_PREFIX + cloudManager.getToken());
         } catch (Exception e) {
             Log.e(getClass().getSimpleName(), "exec Authenticator", e);
-            return null;
+            return false;
         }
-        return builder.build();
+        return true;
+    }
+
+    private void resetAuthenticator(CloudManager cloudManager) {
+        ServiceFactory.removeClient(cloudManager.getCloudConf().getApiBase());
+    }
+
+    private void restoreAuthenticator(CloudManager cloudManager) {
+        ServiceFactory.addAuthenticator(cloudManager.getCloudConf().getApiBase(), this);
+    }
+
+    private void addHeader(Request.Builder builder, String headerKey, String headerValue) {
+        builder.removeHeader(headerKey);
+        builder.addHeader(headerKey, headerValue);
     }
 }
