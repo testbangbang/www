@@ -1070,6 +1070,7 @@ public class ReaderActivity extends OnyxBaseActivity {
         }
 
         final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
+                getReaderDataHolder().getReader().getViewportBitmap().getBitmap(),
                 getReaderDataHolder().getVisiblePages(),
                 event.getTouchPointList(),
                 getReaderDataHolder().getNoteManager().detachShapeStash(),

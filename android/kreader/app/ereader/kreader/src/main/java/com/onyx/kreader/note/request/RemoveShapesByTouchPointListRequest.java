@@ -9,6 +9,7 @@ import android.view.SurfaceView;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -24,11 +25,13 @@ import java.util.List;
 
 public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
 
+    private volatile ReaderBitmapReferenceImpl docBitmap;
     private volatile TouchPointList touchPointList;
     private volatile List<Shape> stash = new ArrayList<>();
     private volatile SurfaceView surfaceView;
 
-    public RemoveShapesByTouchPointListRequest(final List<PageInfo> pageInfoList, final TouchPointList pointList, List<Shape> s, SurfaceView view) {
+    public RemoveShapesByTouchPointListRequest(ReaderBitmapReferenceImpl bitmap, final List<PageInfo> pageInfoList, final TouchPointList pointList, List<Shape> s, SurfaceView view) {
+        docBitmap = bitmap;
         setVisiblePages(pageInfoList);
         touchPointList = pointList;
         stash.addAll(s);
@@ -100,6 +103,7 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
         paint.setStyle(Paint.Style.FILL);
         paint.setColor(Color.WHITE);
         canvas.drawRect(rect, paint);
+        canvas.drawBitmap(docBitmap.getBitmap(), 0, 0, paint);
         Bitmap bitmap = noteManager.getRenderBitmap();
         if (bitmap != null) {
             canvas.drawBitmap(bitmap, 0, 0, paint);
