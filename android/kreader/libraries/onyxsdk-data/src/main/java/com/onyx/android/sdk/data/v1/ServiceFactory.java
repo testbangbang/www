@@ -179,4 +179,9 @@ public class ServiceFactory {
         builder.authenticator(auth);
         clientMap.put(baseUrl, builder.build());
     }
+
+    public static synchronized void removeClient(final String baseUrl) {
+        clientMap.remove(baseUrl);
+        retrofitMap.remove(baseUrl);
+    }
 }
