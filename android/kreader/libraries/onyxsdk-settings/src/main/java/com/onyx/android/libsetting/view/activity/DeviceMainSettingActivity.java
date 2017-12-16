@@ -232,6 +232,18 @@ public class DeviceMainSettingActivity extends OnyxAppCompatActivity {
     }
 
     private boolean verifyTestAppsRecord() {
+        boolean verify = isTestAppRecordExist();
+        if (verify) {
+            return true;
+        }
+        if (!config.showTestsApp()) {
+            clearAllTestApps();
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isTestAppRecordExist() {
         List<String> testApps = config.getTestApps();
         for (String testApp : testApps) {
             if (!ApplicationUtil.testAppRecordExist(this, testApp)) {
