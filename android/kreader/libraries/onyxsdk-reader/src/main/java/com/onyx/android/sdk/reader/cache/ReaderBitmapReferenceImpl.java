@@ -1,7 +1,9 @@
 package com.onyx.android.sdk.reader.cache;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.facebook.common.memory.PooledByteBuffer;
 import com.facebook.common.references.CloseableReference;
@@ -26,6 +28,8 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
 
     public static Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
 
+    private final static Paint paint = new Paint();
+
     private String key;
     private CloseableReference<Bitmap> bitmap;
     private float gammaCorrection = BaseOptions.getNoGamma();
@@ -35,6 +39,13 @@ public class ReaderBitmapReferenceImpl implements ReaderBitmap, Closeable {
     public static ReaderBitmapReferenceImpl create(int width, int height, Bitmap.Config config) {
         ReaderBitmapReferenceImpl readerBitmap = new ReaderBitmapReferenceImpl(width, height, config);
         return readerBitmap;
+    }
+
+    public static ReaderBitmapReferenceImpl create(Bitmap bitmap) {
+        ReaderBitmapReferenceImpl bmp = new ReaderBitmapReferenceImpl(bitmap.getWidth(), bitmap.getHeight(), DEFAULT_CONFIG);
+        Canvas canvas = new Canvas(bmp.getBitmap());
+        canvas.drawBitmap(bitmap, 0, 0, paint);
+        return bmp;
     }
 
     public static ReaderBitmapReferenceImpl decodeStream(InputStream inputStream, Bitmap.Config config) throws IOException {
