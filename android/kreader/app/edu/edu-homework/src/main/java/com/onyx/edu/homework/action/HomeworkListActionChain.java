@@ -27,7 +27,6 @@ public class HomeworkListActionChain extends BaseAction {
 
     @Override
     public void execute(Context context, final BaseCallback baseCallback) {
-        showLoadingDialog(context, R.string.loading);
         final HomeworkListAction homeworkListAction = new HomeworkListAction(homeworkId);
         final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false);
         final CheckLocalDataAction checkLocalDataAction = new CheckLocalDataAction(homeworkListAction.getQuestions(), homeworkId);
@@ -42,7 +41,6 @@ public class HomeworkListActionChain extends BaseAction {
             public void done(BaseRequest request, Throwable e) {
                 DataBundle.getInstance().setState(checkLocalDataAction.getCurrentState());
                 questions = checkLocalDataAction.getQuestions();
-                hideLoadingDialog();
                 baseCallback.done(request, e);
             }
         });
