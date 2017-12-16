@@ -7,14 +7,14 @@ import android.util.Log;
 import com.alibaba.fastjson.JSON;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.Constant;
-import com.onyx.android.sdk.data.common.ContentException;
 import com.onyx.android.sdk.data.model.v2.AuthToken;
 import com.onyx.android.sdk.data.model.v2.BaseAuthAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.data.v2.ContentService;
+import com.onyx.android.sdk.data.v2.MacHeaderInterceptor;
+import com.onyx.android.sdk.data.v2.TokenHeaderInterceptor;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -23,6 +23,7 @@ import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 import com.raizlabs.android.dbflow.structure.provider.ContentUtils;
 
+import okhttp3.Interceptor;
 import okhttp3.ResponseBody;
 import retrofit2.Response;
 
@@ -103,7 +104,7 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
     }
 
     private void resetToken(CloudManager parent) {
-        updateTokenHeader(parent, null);
+        parent.setToken(null);
     }
 
     private void deleteAllAccount() {
@@ -130,7 +131,8 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
             return null;
         }
         NeoAccountBase.parseName(account);
-        updateTokenHeader(parent, account.token);
+        parent.setToken(account.token);
+        updateHeadersInterceptor(parent);
         return account;
     }
 
@@ -191,7 +193,8 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
                 .getAccountToken(authAccount));
         if (response.isSuccessful()) {
             authToken = response.body();
-            updateTokenHeader(parent, authToken.token);
+            parent.setToken(authToken.token);
+            updateHeadersInterceptor(parent);
         }
         return authToken;
     }
@@ -220,13 +223,11 @@ public class LoginByHardwareInfoRequest<T extends NeoAccountBase> extends BaseCl
                 FileUtils.computeMD5(macAddress + PASSWORD_SECRET));
     }
 
-    private void updateTokenHeader(final CloudManager cloudManager, String token) {
-        cloudManager.setToken(token);
-        if (StringUtils.isNotBlank(token)) {
-            ServiceFactory.addRetrofitTokenHeader(cloudManager.getCloudConf().getApiBase(),
-                    Constant.HEADER_AUTHORIZATION,
-                    ContentService.CONTENT_AUTH_PREFIX + cloudManager.getToken());
-        }
+    private void updateHeadersInterceptor(final CloudManager cloudManager) {
+        Interceptor[] interceptors = new Interceptor[2];
+        interceptors[0] = new TokenHeaderInterceptor(Constant.HEADER_AUTHORIZATION, ContentService.CONTENT_AUTH_PREFIX + cloudManager.getToken());
+        interceptors[1] = new MacHeaderInterceptor(Constant.MAC_TAG, NetworkUtil.getMacAddress(getContext()));
+        ServiceFactory.addRetrofitInterceptor(cloudManager.getCloudConf().getApiBase(), interceptors);
     }
 
     public void setLoadOnlyFromCloud(boolean loadOnlyFromCloud) {

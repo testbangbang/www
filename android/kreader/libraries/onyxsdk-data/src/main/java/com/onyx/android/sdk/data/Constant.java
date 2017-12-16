@@ -42,6 +42,7 @@ public class Constant {
     static public final String FILE_TAG = "file";
     static public final String MD5_TAG = "md5";
     static public final String DOCID_TAG = "docId";
+    static public final String MAC_TAG = "mac";
     static public final String READER_DATA_FOLDER = "OnyxReader";
 
     public static final String COVER_TYPE_SMALL = "small";
