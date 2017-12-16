@@ -70,6 +70,12 @@ public class MainActivity extends BaseActivity {
 
     private Map<String, Library> libraryMap = new HashMap<>();
 
+    public static final int BOOK_TEXT_TAB = 0;
+    public static final int HOMEWORK_TAB = 1;
+    public static final int TEACHING_AUXILIARY_TAB = 2;
+    public static final int BOOK_READING_TAB = 3;
+    public static final int STUDENT_INFO_TAB = 4;
+
     @Override
     protected Integer getLayoutId() {
         return R.layout.activity_main;
@@ -335,19 +341,19 @@ public class MainActivity extends BaseActivity {
             Library library = libraryMap.get(title);
             Fragment f = getBookTextFragment(title, library);
             switch (position) {
-                case 0:
+                case BOOK_TEXT_TAB:
                     f = getBookTextFragment(title, library);
                     break;
-                case 1:
+                case HOMEWORK_TAB:
                     f = getHomeworkFragment();
                     break;
-                case 2:
+                case TEACHING_AUXILIARY_TAB:
                     f = getTeachingAuxiliaryFragment(title, library);
                     break;
-                case 3:
+                case BOOK_READING_TAB:
                     f = getBookReadingFragment(title, library);
                     break;
-                case 4:
+                case STUDENT_INFO_TAB:
                     f = getStudentFragment();
                     break;
             }
