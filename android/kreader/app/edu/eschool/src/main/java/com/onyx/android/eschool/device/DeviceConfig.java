@@ -5,13 +5,11 @@ import android.os.Build;
 import android.util.Log;
 
 import com.onyx.android.eschool.BuildConfig;
-import com.onyx.android.eschool.R;
 import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.data.model.common.DeviceInfoShowConfig;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.RawResourceUtil;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,6 +63,9 @@ public class DeviceConfig {
     static public final String MUSIC_DIR = "music_dir";
 
     static public final String DEVICE_SUPPORT_COLOR = "support_color";
+    static public final String MERGE_UPDATE_TIMEOUT = "merge_update_timeout";
+
+    static public final int DEFAULT_MERGE_UPDATE_TIMEOUT = 240;
 
     static public DeviceConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -288,5 +289,9 @@ public class DeviceConfig {
 
     public boolean isDeviceSupportColor() {
         return backend.getBoolean(DEVICE_SUPPORT_COLOR, false);
+    }
+
+    public int getMergeUpdateTimeout() {
+        return backend.getInt(MERGE_UPDATE_TIMEOUT, DEFAULT_MERGE_UPDATE_TIMEOUT);
     }
 }
