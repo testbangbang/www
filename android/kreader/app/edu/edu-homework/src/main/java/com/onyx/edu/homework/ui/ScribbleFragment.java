@@ -422,31 +422,39 @@ public class ScribbleFragment extends BaseFragment {
 
     @Subscribe
     public void onSaveNoteEvent(SaveNoteEvent event) {
-        save(event.finishAfterSave, shouldResume());
+        save(event.finishAfterSave, shouldResume(), true);
     }
 
     @Subscribe
     public void onStopNoteEvent(StopNoteEvent event) {
-        save(event.finishAfterSave, false);
+        save(event.finishAfterSave, false, false);
     }
 
-    public void save(final boolean finishAfterSave,final  boolean resumeDrawing) {
+    public void save(final boolean finishAfterSave, final  boolean resumeDrawing, final boolean showLoading) {
+        if (!getDataBundle().isDoing()) {
+            return;
+        }
         getNoteViewHelper().flushTouchPointList();
         flushDocument(true, resumeDrawing, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                saveDocument(finishAfterSave, resumeDrawing);
+                saveDocument(finishAfterSave, resumeDrawing, showLoading);
             }
         });
     }
 
-    private void saveDocument(final boolean finishAfterSave, final boolean resumeDrawing) {
+    private void saveDocument(final boolean finishAfterSave, final boolean resumeDrawing, boolean showLoading) {
         String documentUniqueId = getShapeDataInfo().getDocumentUniqueId();
         if (StringUtils.isNullOrEmpty(documentUniqueId)) {
             return;
         }
         final DocumentSaveAction saveAction = new
-                DocumentSaveAction(getActivity(), documentUniqueId, Constant.NOTE_TITLE, finishAfterSave, resumeDrawing);
+                DocumentSaveAction(getActivity(),
+                documentUniqueId,
+                Constant.NOTE_TITLE,
+                finishAfterSave,
+                resumeDrawing,
+                showLoading);
         saveAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

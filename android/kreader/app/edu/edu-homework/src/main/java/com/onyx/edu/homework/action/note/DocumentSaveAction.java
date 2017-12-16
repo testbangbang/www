@@ -20,22 +20,27 @@ public class DocumentSaveAction extends BaseNoteAction {
     private volatile boolean close;
     private volatile boolean resume = true;
     private Context context;
+    private boolean showLoading;
 
-    public DocumentSaveAction(final Context context, final String uniqueId, final String t, boolean c) {
-        this(context, uniqueId, t, c, true);
-    }
-
-    public DocumentSaveAction(final Context context, final String uniqueId, final String t, boolean c, boolean r) {
+    public DocumentSaveAction(final Context context,
+                              final String uniqueId,
+                              final String t,
+                              boolean c,
+                              boolean r,
+                              boolean loading) {
         title = t;
         documentUniqueId = uniqueId;
         close = c;
         resume = r;
         this.context = context;
+        showLoading = loading;
     }
 
     @Override
     public void execute(final NoteViewHelper noteViewHelper, final BaseCallback baseCallback) {
-        showLoadingDialog(context, R.string.saving);
+        if (showLoading) {
+            showLoadingDialog(context, R.string.saving);
+        }
         final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close, resume);
         noteViewHelper.submit(getAppContext(), saveRequest, new BaseCallback() {
             @Override
