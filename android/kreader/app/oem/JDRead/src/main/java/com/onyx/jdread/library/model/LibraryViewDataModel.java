@@ -17,6 +17,7 @@ import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
@@ -301,6 +302,11 @@ public class LibraryViewDataModel extends Observable {
         selectAllFlag.set(false);
         clearItemSelectedList();
         setShowManage(true);
+        title.set(libraryPathList.size() > 0 ? libraryPathList.get(libraryPathList.size() - 1).title.get() : "");
         checkedOrCancelAll(false);
+    }
+
+    public void delete(){
+        eventBus.post(new DeleteBookEvent());
     }
 }

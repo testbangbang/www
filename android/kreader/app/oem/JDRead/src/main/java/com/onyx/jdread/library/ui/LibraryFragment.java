@@ -28,6 +28,7 @@ import com.onyx.jdread.databinding.FragmentLibraryBinding;
 import com.onyx.jdread.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
+import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
@@ -240,7 +241,6 @@ public class LibraryFragment extends BaseFragment {
     private void initDataBundle() {
         dataBundle = JDReadApplication.getDataBundle();
         dataBundle.setLibraryViewDataModel(LibraryViewDataModel.create(dataBundle.getEventBus(), row, col));
-        dataBundle.getLibraryViewDataModel().title.set(getString(R.string.library_name));
         libraryBinding.setLibraryModel(dataBundle.getLibraryViewDataModel());
     }
 
@@ -264,6 +264,8 @@ public class LibraryFragment extends BaseFragment {
 
     private void removeLastParentLibrary() {
         dataBundle.getLibraryViewDataModel().libraryPathList.remove(dataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
+        int size = dataBundle.getLibraryViewDataModel().libraryPathList.size();
+        dataBundle.getLibraryViewDataModel().title.set(size > 0 ? dataBundle.getLibraryViewDataModel().libraryPathList.get(size - 1).title.get() : "");
         loadData();
     }
 
@@ -313,6 +315,11 @@ public class LibraryFragment extends BaseFragment {
         loadData();
     }
 
+    @Subscribe
+    public void onDeleteBookEvent(DeleteBookEvent event) {
+
+    }
+
     private void processNormalModeItemClick(DataModel model) {
         if (model.type.get() == ModelType.TYPE_LIBRARY) {
             processLibraryItem(model);
@@ -329,7 +336,7 @@ public class LibraryFragment extends BaseFragment {
     private void addLibraryToParentRefList(DataModel model) {
         dataBundle.getLibraryViewDataModel().libraryPathList.add(model);
         dataBundle.getLibraryViewDataModel().title.set(model.title.get());
-        dataBundle.getLibraryViewDataModel().setShowManage(false);
+        dataBundle.getLibraryViewDataModel().setShowManage(true);
     }
 
     private void processBookItemOpen(DataModel dataModel) {

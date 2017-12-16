@@ -7,6 +7,8 @@
 
         <import type="android.view.View" />
 
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
         <variable
             name="view"
             type="com.onyx.jdread.library.ui.LibraryFragment" />
@@ -39,7 +41,7 @@
                 android:gravity="center_vertical"
                 android:onClick="@{()->libraryModel.onBackClick()}"
                 android:text="@{libraryModel.title}"
-                android:visibility="@{libraryModel.showManage?View.INVISIBLE:View.VISIBLE}" />
+                android:visibility="@{StringUtils.isNullOrEmpty(libraryModel.title)?View.INVISIBLE:View.VISIBLE}" />
 
             <ImageView
                 android:id="@+id/image_menu"
@@ -116,6 +118,7 @@
                 android:drawablePadding="@dimen/function_bar_item_name_margin"
                 android:drawableTop="@mipmap/ic_undo"
                 android:text="@string/delete"
+                android:onClick="@{()->libraryModel.delete()}"
                 android:textSize="@dimen/level_one_heading_font" />
 
             <TextView

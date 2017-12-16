@@ -1,7 +1,5 @@
 package com.onyx.android.sdk.data.rxrequest.data.db;
 
-import android.util.Log;
-
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.Metadata;
