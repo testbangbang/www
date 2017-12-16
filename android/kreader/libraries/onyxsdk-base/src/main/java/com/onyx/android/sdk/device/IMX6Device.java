@@ -163,6 +163,7 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodEnableScreenUpdate = null;
     private static Method sMethodSetDisplayScheme = null;
     private static Method sMethodWaitForUpdateFinished = null;
+    private static Method sMethodMergeDisplayUpdate = null;
 
 
     private static Method sMethodOpenFrontLight;
@@ -825,6 +826,7 @@ public class IMX6Device extends BaseDevice {
             sMethodEnableScreenUpdate = ReflectUtil.getMethodSafely(cls, "enableScreenUpdate", boolean.class);
             sMethodSetDisplayScheme = ReflectUtil.getMethodSafely(cls, "setDisplayScheme", int.class);
             sMethodWaitForUpdateFinished = ReflectUtil.getMethodSafely(cls, "waitForUpdateFinished");
+            sMethodMergeDisplayUpdate = ReflectUtil.getMethodSafely(cls, "mergeDisplayUpdate", int.class, int.class);
 
             sMethodSetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "setVCom", Context.class, int.class, String.class);
             sMethodGetVCom = ReflectUtil.getMethodSafely(deviceControllerClass, "getVCom", String.class);
@@ -1209,4 +1211,7 @@ public class IMX6Device extends BaseDevice {
         return value.booleanValue();
     }
 
+    public void mergeDisplayUpdate(int timeout, UpdateMode mode) {
+        ReflectUtil.invokeMethodSafely(sMethodMergeDisplayUpdate, null, timeout, getUpdateMode(mode));
+    }
 }
