@@ -55,6 +55,7 @@ import com.onyx.android.note.utils.NoteAppConfig;
 import com.onyx.android.note.utils.Utils;
 import com.onyx.android.note.view.LinedEditText;
 import com.onyx.android.note.view.ScribbleSubMenu;
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -157,7 +158,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         ImageView redoBtn = (ImageView) findViewById(R.id.button_redo);
         ImageView saveBtn = (ImageView) findViewById(R.id.button_save);
         ImageView exportBtn = (ImageView) findViewById(R.id.button_export);
-        ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
+        ImageView screenRefreshBtn = (ImageView) findViewById(R.id.button_screen_refresh);
+        final ImageView settingBtn = (ImageView) findViewById(R.id.button_setting);
         workView = (FrameLayout) findViewById(R.id.work_view);
         rootView = (RelativeLayout) findViewById(R.id.onyx_activity_scribble);
         spanTextView = (LinedEditText) findViewById(R.id.span_text_view);
@@ -226,6 +228,22 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 onSave(false);
             }
         });
+        screenRefreshBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                syncWithCallback(true, shouldResume(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        surfaceView.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                gcRefreshOnce();
+                            }
+                        });
+                    }
+                });
+            }
+        });
         exportBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -281,6 +299,10 @@ public class ScribbleActivity extends BaseScribbleActivity {
             settingBtn.setVisibility(View.GONE);
             saveBtn.setVisibility(View.GONE);
         }
+    }
+
+    private void gcRefreshOnce() {
+        EpdController.refreshScreen(getWindow().getDecorView(), UpdateMode.GC);
     }
 
     private void initSpanTextView() {
