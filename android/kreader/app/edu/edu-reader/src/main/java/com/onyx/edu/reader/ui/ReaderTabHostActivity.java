@@ -24,10 +24,12 @@ import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.host.request.LoadDocumentOptionsRequest;
@@ -574,10 +576,14 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
     }
 
     private void clearUpdateMode() {
-        if (DialogScreenRefresh.isInFastUpdateMode(LegacySdkDataUtils.getScreenUpdateGCInterval(
-                getApplicationContext(), DialogScreenRefresh.DEFAULT_INTERVAL_COUNT))) {
+        boolean isInFastUpdateMode = DialogScreenRefresh.isInFastUpdateMode(LegacySdkDataUtils.getScreenUpdateGCInterval(
+                getApplicationContext(), DialogScreenRefresh.DEFAULT_INTERVAL_COUNT));
+        if (isInFastUpdateMode) {
             ReaderDeviceManager.forceExitAnimationUpdate(true);
         }
+        Device.currentDevice().mergeDisplayUpdate(
+                DeviceConfig.sharedInstance(getApplicationContext()).getMergeUpdateTimeout(isInFastUpdateMode),
+                UpdateMode.GC_CLEAR);
     }
 
     private void enableUpdateMode() {
