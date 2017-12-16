@@ -672,13 +672,13 @@ public class AlCSSHtml extends AlCSSStyles {
                 internalCSSValue.v1 |= ((long)(a.dval * 3 + 0.5f)) << maskShift;
                 break;
             case AlOneCSSNumberValue.CSS_NUM_PX:
+            case AlOneCSSNumberValue.CSS_NUM_SIMPLE: // treat CSS_NUM_SIMPLE as CSS_NUM_PX
                 a.dval /= 16;
                 if (a.dval > AlOneCSS.MARG_MAX_VALUE)
                     a.dval = AlOneCSS.MARG_MAX_VALUE;
                 internalCSSValue.m1 |= maskAll;
                 internalCSSValue.v1 |= (((long)(a.dval * 3 + 0.5f)) << maskShift);
                 break;
-            case AlOneCSSNumberValue.CSS_NUM_SIMPLE:
             case AlOneCSSNumberValue.CSS_NUM_EM:
                 if (a.dval > AlOneCSS.MARG_MAX_VALUE)
                     a.dval = AlOneCSS.MARG_MAX_VALUE;
