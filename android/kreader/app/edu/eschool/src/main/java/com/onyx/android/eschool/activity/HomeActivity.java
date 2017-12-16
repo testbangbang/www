@@ -99,7 +99,7 @@ public class HomeActivity extends BaseActivity {
 
     private void mergeDisplayUpdate() {
         Device.currentDevice().mergeDisplayUpdate(
-                DeviceConfig.sharedInstance(getApplicationContext()).getMergeUpdateTimeout(), UpdateMode.GC);
+                DeviceConfig.sharedInstance(getApplicationContext()).getMergeUpdateTimeout(), UpdateMode.GC_CLEAR);
     }
 
     @Override
