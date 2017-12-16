@@ -30,7 +30,7 @@ public class HomeworkListActionChain extends BaseAction {
         final HomeworkListAction homeworkListAction = new HomeworkListAction(homeworkId);
         final GetHomeworkReviewsAction answersAction = new GetHomeworkReviewsAction(homeworkId, homeworkListAction.getQuestions(), false);
         final CheckLocalDataAction checkLocalDataAction = new CheckLocalDataAction(homeworkListAction.getQuestions(), homeworkId);
-        final ActionChain chain = new ActionChain(true);
+        final ActionChain chain = new ActionChain(false);
         chain.addAction(new CloudIndexServiceAction());
         chain.addAction(new GetTokenFromLocalAction());
         chain.addAction(homeworkListAction);
