@@ -234,12 +234,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                 syncWithCallback(true, shouldResume(), new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
-                        surfaceView.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                gcRefreshOnce();
-                            }
-                        });
+                        gcInvalidate();
                     }
                 });
             }
@@ -301,8 +296,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         }
     }
 
-    private void gcRefreshOnce() {
-        EpdController.refreshScreen(getWindow().getDecorView(), UpdateMode.GC);
+    private void gcInvalidate() {
+        EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
     }
 
     private void initSpanTextView() {
