@@ -98,6 +98,11 @@ public class ReviewFragment extends BaseFragment {
                 container.addView(imageView);
                 return imageView;
             }
+
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
+                container.removeView((View) object);
+            }
         });
         binding.list.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
