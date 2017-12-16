@@ -31,7 +31,6 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.base.BaseActivity;
-import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -273,7 +272,7 @@ public class HomeworkListActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                updatePage(position);
+                updateOnPageSelected(position);
             }
 
             @Override
@@ -281,7 +280,7 @@ public class HomeworkListActivity extends BaseActivity {
 
             }
         });
-        updatePage(0);
+        updateOnPageSelected(0);
         updateShowInfo();
         checkAnswer();
     }
@@ -331,10 +330,10 @@ public class HomeworkListActivity extends BaseActivity {
         if (fragments.size() <= current) {
             return;
         }
-        fragments.get(current).update();
+        fragments.get(current).updateQuestion();
     }
 
-    private void updatePage(int position) {
+    private void updateOnPageSelected(int position) {
         int current = position + 1;
         int total = questions.size();
         if (position >= total) {

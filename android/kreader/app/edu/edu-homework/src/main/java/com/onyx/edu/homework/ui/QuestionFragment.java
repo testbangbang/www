@@ -16,6 +16,7 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -183,7 +184,7 @@ public class QuestionFragment extends BaseFragment {
         startActivity(intent);
     }
 
-    public void update() {
+    public void updateQuestion() {
         updateState();
         updateScribbleImage();
     }
@@ -227,6 +228,7 @@ public class QuestionFragment extends BaseFragment {
         binding.option.setClickable(enable);
         binding.answer.setVisibility(enable && !question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
         binding.reviewLayout.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        updateReviewInfo();
     }
 
     private void updateReviewInfo() {
