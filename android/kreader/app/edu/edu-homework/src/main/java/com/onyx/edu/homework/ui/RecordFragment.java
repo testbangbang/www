@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -20,16 +19,17 @@ import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.note.HomeworkPagesRenderActionChain;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.databinding.FragmentRecordBinding;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
-import com.onyx.edu.homework.utils.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lxm on 2017/12/13.
@@ -230,15 +230,28 @@ public class RecordFragment extends BaseFragment {
                 setImageView(bitmaps, (ImageView) viewHolder.getView(R.id.image2), 2);
                 viewHolder.setVisibility(R.id.no_answer, bitmaps == null ? View.VISIBLE : View.GONE);
                 viewHolder.setVisibility(R.id.image_layout, bitmaps == null ? View.GONE : View.VISIBLE);
+                showMore(question, pageAction.getUnRenderPageUniqueMap(), viewHolder);
             }
         });
+    }
+
+    private void showMore(Question question, Map<String, List<String>> unRenderPageUniqueMap, CommonViewHolder viewHolder) {
+        boolean more = false;
+        if (!CollectionUtils.isNullOrEmpty(unRenderPageUniqueMap)) {
+            List<String> unRenderPageUniques = unRenderPageUniqueMap.get(question.getUniqueId());
+            more = !CollectionUtils.isNullOrEmpty(unRenderPageUniques);
+        }
+        viewHolder.setVisibility(R.id.more, more ? View.VISIBLE : View.GONE);
+        viewHolder.setVisibility(R.id.image2, more ? View.GONE : View.VISIBLE);
     }
 
     private void setImageView(List<Bitmap> bitmaps, ImageView imageView, int index) {
         if (bitmaps != null && bitmaps.size() > index) {
             imageView.setImageBitmap(bitmaps.get(index));
+            imageView.setBackgroundResource(R.drawable.round_bg);
         }else {
             imageView.setImageResource(android.R.color.white);
+            imageView.setBackgroundResource(android.R.color.white);
         }
     }
 }

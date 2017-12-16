@@ -15,6 +15,8 @@ public class HomeworkSubmitAnswer {
     public String uniqueId;
     public List<String> value;
     public List<String> attachment;
+    public List<String> attachmentUrl;
+    public List<String> filePaths;
     public String drawData;
     public List<Bitmap> bitmaps;
     public int correct;
@@ -34,6 +36,10 @@ public class HomeworkSubmitAnswer {
             value = new ArrayList<>();
         }
         value.add(v);
+    }
+
+    public void setFilePaths(List<String> filePaths) {
+        this.filePaths = filePaths;
     }
 
     public void setUniqueId(String uniqueId) {

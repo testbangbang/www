@@ -19,7 +19,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        DeviceUtils.setFullScreenOnCreate(this, isFullScreen());
+        if (isFullScreen()) {
+            DeviceUtils.setFullScreenOnCreate(this, isFullScreen());
+        }
     }
 
     public abstract boolean isFullScreen();
@@ -27,6 +29,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        DeviceUtils.setFullScreenOnResume(this, isFullScreen());
+        if (isFullScreen()) {
+            DeviceUtils.setFullScreenOnResume(this, isFullScreen());
+        }
     }
 }

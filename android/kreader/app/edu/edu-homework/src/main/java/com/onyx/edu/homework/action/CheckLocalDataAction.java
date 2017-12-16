@@ -20,7 +20,7 @@ public class CheckLocalDataAction extends BaseAction {
 
     private volatile List<Question> questions;
     private String homeworkId;
-    private HomeworkState currentState;
+    private HomeworkState currentState = HomeworkState.DOING;
 
     public CheckLocalDataAction(List<Question> questions, String homeworkId) {
         this.questions = questions;

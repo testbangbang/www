@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.db.DBDataProvider;
 import com.onyx.edu.homework.db.HomeworkModel;
@@ -24,7 +25,7 @@ public class CheckLocalDataRequest extends BaseDataRequest {
 
     private volatile List<Question> questions;
     private String homeworkId;
-    private HomeworkState currentState;
+    private HomeworkState currentState = HomeworkState.DOING;
 
     public CheckLocalDataRequest(List<Question> questions, String homeworkId) {
         this.questions = questions;
@@ -33,14 +34,14 @@ public class CheckLocalDataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
         getLocalAnswer();
         checkHomeworkState();
     }
 
     private void getLocalAnswer() {
-        if (questions == null) {
-            return;
-        }
         for (Question question : questions) {
             if (question.isChoiceQuestion()) {
                 QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());

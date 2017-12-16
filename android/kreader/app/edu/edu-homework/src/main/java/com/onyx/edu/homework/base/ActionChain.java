@@ -1,9 +1,11 @@
 package com.onyx.edu.homework.base;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.utils.Debug;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +35,7 @@ public class ActionChain {
         executeAction(context, action, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                Debug.d("ActionChain execute:" + action.getClass().getSimpleName());
                 if (isFinished(callback, request, e)) {
                     return;
                 }

@@ -3,6 +3,8 @@
           package="com.onyx.edu.homework">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <user-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
         android:name=".HomeworkApp"

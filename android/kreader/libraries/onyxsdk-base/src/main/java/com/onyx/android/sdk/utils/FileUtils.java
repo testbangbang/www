@@ -173,6 +173,16 @@ public class FileUtils {
         return fileName.substring(0, idx);
     }
 
+    public static String getRealFileName(final String path) {
+        String fileName = getFileName(path);
+        int idx = fileName.lastIndexOf(File.separator);
+        if (idx < 0) {
+            return fileName;
+        }
+
+        return fileName.substring(idx + 1, fileName.length());
+    }
+
     public static void closeQuietly(Cursor cursor) {
         try {
             if (cursor != null)

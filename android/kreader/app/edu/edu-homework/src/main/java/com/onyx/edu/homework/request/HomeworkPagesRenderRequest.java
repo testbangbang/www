@@ -7,8 +7,12 @@ import android.graphics.Rect;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.utils.BitmapUtils;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -18,17 +22,17 @@ import java.util.List;
 public class HomeworkPagesRenderRequest extends BaseNoteRequest {
 
     private Bitmap renderBitmap;
-    private boolean base64Bitmap;
-    private String base64;
+    private boolean saveAsFile;
+    private String filePath;
 
-    public HomeworkPagesRenderRequest(final String id, final List<PageInfo> pages, final Rect size, final boolean base64Bitmap) {
+    public HomeworkPagesRenderRequest(final String id, final List<PageInfo> pages, final Rect size, final boolean saveAsFile) {
         setDocUniqueId(id);
         setAbortPendingTasks(false);
         setViewportSize(size);
         setVisiblePages(pages);
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
-        this.base64Bitmap = base64Bitmap;
+        this.saveAsFile = saveAsFile;
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
@@ -37,12 +41,22 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
         updateShapeDataInfo(parent);
         loadShapeData(parent);
         renderVisiblePages(parent);
-        if (base64Bitmap) {
-            base64 = BitmapUtils.bitmapToBase64(parent.getRenderBitmap());
+        if (saveAsFile) {
+            filePath = saveToFile(parent.getRenderBitmap(), getDocUniqueId(), getVisiblePages().get(0).getName());
         }else {
             renderBitmap = Bitmap.createBitmap(parent.getRenderBitmap());
         }
         parent.reset();
+    }
+
+    private String saveToFile(Bitmap bitmap, String documentId, String fileName) throws Exception {
+        File file = new File(Constant.getRenderPagePath(documentId, fileName));
+        if (!file.exists()){
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+        }
+        FileUtils.saveBitmapToFile(bitmap, file, Bitmap.CompressFormat.PNG, 100);
+        return file.getAbsolutePath();
     }
 
     private void loadShapeData(final NoteViewHelper parent) {
@@ -57,7 +71,7 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
         return renderBitmap;
     }
 
-    public String getBase64() {
-        return base64;
+    public String getFilePath() {
+        return filePath;
     }
 }

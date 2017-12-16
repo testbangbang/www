@@ -1,14 +1,10 @@
-package com.onyx.kreader.ui.receiver;
+package com.onyx.android.sdk.common.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.wifi.WifiManager;
-import android.util.Log;
-
-import com.onyx.kreader.ui.data.ReaderDataHolder;
 
 /**
  * Created by ming on 2017/2/8.
@@ -17,9 +13,9 @@ import com.onyx.kreader.ui.data.ReaderDataHolder;
 public class NetworkConnectChangedReceiver extends BroadcastReceiver {
 
     private static final String TAG = "NetworkConnectChangedRe";
-    public interface NetworkChangedListener {
-        void onNetworkChanged(boolean connected, int networkType);
-        void onNoNetwork();
+    public static abstract class NetworkChangedListener {
+        public abstract void onNetworkChanged(boolean connected, int networkType);
+        public void onNoNetwork() {}
     }
 
     private NetworkChangedListener networkChangedListener;

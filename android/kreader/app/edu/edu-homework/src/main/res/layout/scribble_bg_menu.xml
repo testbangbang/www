@@ -36,7 +36,7 @@
             layout="@layout/sub_menu_item"/>
 
         <include
-            bind:item="@{item[MenuId.BG_LEFT_GRID].setMenuIcon(R.drawable.ic_template_left_grid)}"
+            bind:item="@{item[MenuId.BG_LEFT_GRID].setMenuIcon(R.drawable.ic_template_math)}"
             layout="@layout/sub_menu_item"/>
 
 

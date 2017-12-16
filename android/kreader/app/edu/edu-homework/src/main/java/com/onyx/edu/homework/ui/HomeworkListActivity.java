@@ -1,7 +1,9 @@
 package com.onyx.edu.homework.ui;
 
 import android.content.DialogInterface;
+import android.content.IntentFilter;
 import android.databinding.DataBindingUtil;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -10,12 +12,18 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
+import com.onyx.android.sdk.common.receiver.NetworkConnectChangedReceiver;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -23,6 +31,7 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.base.BaseActivity;
+import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -42,6 +51,7 @@ import java.util.List;
 public class HomeworkListActivity extends BaseActivity {
 
     private ActivityHomeworkListBinding binding;
+    private NetworkConnectChangedReceiver networkConnectChangedReceiver;
     private List<Question> questions;
     private Homework homework;
     private RecordFragment recordFragment;
@@ -60,6 +70,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        unregisterReceiver();
         DataBundle.getInstance().unregister(this);
     }
 
@@ -113,6 +124,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showSubmitDialog() {
+        checkWifi();
         SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -148,6 +160,9 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void homeworkRequest() {
+        if (!checkWifi()) {
+            return;
+        }
         if (homework == null || homework.child == null) {
             showNoFindHomework();
             return;
@@ -164,7 +179,7 @@ public class HomeworkListActivity extends BaseActivity {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 questions = actionChain.getQuestions();
-                if (e != null && questions == null) {
+                if (e != null && CollectionUtils.isNullOrEmpty(questions)) {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -175,6 +190,39 @@ public class HomeworkListActivity extends BaseActivity {
             }
 
         });
+    }
+
+    private boolean checkWifi() {
+        if (Device.currentDevice().hasWifi(this) && !NetworkUtil.isWiFiConnected(this)) {
+            Toast.makeText(this, R.string.opening_wifi, Toast.LENGTH_SHORT).show();
+            registerReceiver();
+            NetworkUtil.enableWiFi(this, true);
+            return false;
+        }
+        return true;
+    }
+
+    private void registerReceiver() {
+        if (networkConnectChangedReceiver != null) {
+            return;
+        }
+        networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
+            @Override
+            public void onNetworkChanged(boolean connected, int networkType) {
+                if (connected && CollectionUtils.isNullOrEmpty(questions)) {
+                    homeworkRequest();
+                }
+            }
+        });
+        IntentFilter filter = new IntentFilter();
+        filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+        registerReceiver(networkConnectChangedReceiver, filter);
+    }
+
+    private void unregisterReceiver() {
+        if (networkConnectChangedReceiver != null) {
+            unregisterReceiver(networkConnectChangedReceiver);
+        }
     }
 
     private void showNoFindHomework() {
@@ -299,6 +347,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
         updateCurrentQuestion();
     }
 

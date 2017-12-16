@@ -36,6 +36,11 @@
     <string name="return_answer">返回答题</string>
     <string name="no_answer">未答</string>
     <string name="close">关闭</string>
+    <string name="out_of_page_count">超出最大页面数</string>
+    <string name="more">更多</string>
+    <string name="wifi_unconnect">wifi未连接</string>
+    <string name="look_review">查看批改</string>
+    <string name="opening_wifi">wifi没有连接，正在打开wifi...</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>

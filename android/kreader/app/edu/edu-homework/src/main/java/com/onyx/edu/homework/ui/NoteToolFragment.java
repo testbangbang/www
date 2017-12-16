@@ -11,11 +11,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.request.navigation.PageAddRequest;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.ui.data.MenuClickEvent;
@@ -101,6 +103,12 @@ public class NoteToolFragment extends BaseFragment {
     @Subscribe
     public void onMenuClickEvent(MenuClickEvent event) {
         switch (event.getMenuId()) {
+            case MenuId.PEN_STYLE:
+            case MenuId.PEN_WIDTH:
+            case MenuId.ERASER:
+            case MenuId.BG:
+                prepareShowSubMenu(event.getMenuId());
+                return;
             case MenuId.ADD_PAGE:
                 addPage();
                 break;
@@ -113,12 +121,6 @@ public class NoteToolFragment extends BaseFragment {
             case MenuId.NEXT_PAGE:
                 nextPage();
                 break;
-            case MenuId.PEN_STYLE:
-            case MenuId.PEN_WIDTH:
-            case MenuId.ERASER:
-            case MenuId.BG:
-                prepareShowSubMenu(event.getMenuId());
-                break;
             case MenuId.UNDO:
                 undo();
                 break;
@@ -128,6 +130,10 @@ public class NoteToolFragment extends BaseFragment {
             case MenuId.SAVE:
                 saveDocument();
                 break;
+        }
+        if (!MenuId.isSubMenuId(event.getMenuId())) {
+            hideSubMenu();
+            return;
         }
         if (getDataBundle().isDoing() && MenuId.isSubMenuId(event.getMenuId()) && handleSubMenuEvent(event.getMenuId())) {
             prepareHideSubMenu();
@@ -225,7 +231,15 @@ public class NoteToolFragment extends BaseFragment {
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new DocumentAddNewPageAction(-1).execute(getNoteViewHelper(), null);
+                new DocumentAddNewPageAction(-1, Constant.MAX_SUB_NOTE_PAGE_COUNT).execute(getNoteViewHelper(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        PageAddRequest addRequest = (PageAddRequest) request;
+                        if (addRequest.isOutOfMaxPageCount()) {
+                            Toast.makeText(getActivity(), R.string.out_of_page_count, Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
             }
         });
     }

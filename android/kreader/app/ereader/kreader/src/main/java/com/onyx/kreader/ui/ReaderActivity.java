@@ -124,7 +124,6 @@ import com.onyx.kreader.ui.gesture.MyScaleGestureListener;
 import com.onyx.kreader.ui.handler.BaseHandler;
 import com.onyx.kreader.ui.handler.HandlerManager;
 import com.onyx.kreader.ui.handler.SlideshowHandler;
-import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 import com.onyx.kreader.ui.settings.MainSettingsActivity;
 import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
