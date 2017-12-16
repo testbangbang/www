@@ -6,6 +6,8 @@ import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
+import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -37,6 +39,7 @@ public class AnswerActivity extends BaseActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_answer);
         question = (Question) getIntent().getSerializableExtra(Constant.TAG_QUESTION);
         initView(question);

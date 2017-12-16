@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.onyx.android.sdk.common.receiver.NetworkConnectChangedReceiver;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.CloudStore;
@@ -24,12 +25,10 @@ import com.onyx.android.sdk.data.request.cloud.PushStatisticsRequest;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.OnyxCustomViewPager;
-import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.kreader.R;
 import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.ui.dialog.DialogLoading;
-import com.onyx.kreader.ui.receiver.NetworkConnectChangedReceiver;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

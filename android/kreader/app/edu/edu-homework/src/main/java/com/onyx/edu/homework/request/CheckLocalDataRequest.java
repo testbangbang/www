@@ -8,6 +8,7 @@ import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.db.DBDataProvider;
 import com.onyx.edu.homework.db.HomeworkModel;
@@ -33,7 +34,7 @@ public class CheckLocalDataRequest extends BaseDataRequest {
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
-        if (questions == null) {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
             return;
         }
         getLocalAnswer();

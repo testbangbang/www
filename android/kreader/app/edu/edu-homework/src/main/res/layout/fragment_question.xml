@@ -43,6 +43,7 @@
             android:layout_height="wrap_content"/>
 
         <Button
+            android:focusable="false"
             android:textSize="22sp"
             android:layout_marginTop="40dp"
             android:background="@drawable/round_bg"

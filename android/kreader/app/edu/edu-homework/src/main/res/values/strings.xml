@@ -40,6 +40,7 @@
     <string name="more">更多</string>
     <string name="wifi_unconnect">wifi未连接</string>
     <string name="look_review">查看批改</string>
+    <string name="opening_wifi">wifi没有连接，正在打开wifi...</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>
