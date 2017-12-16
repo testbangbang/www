@@ -720,7 +720,8 @@ public class AlCSSHtml extends AlCSSStyles {
         if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
 
         } else
-        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PX) {
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PX || a.tp == AlOneCSSNumberValue.CSS_NUM_SIMPLE) {
+            // treat CSS_NUM_SIMPLE value as CSS_NUM_PX
             a.dval /= 8;
         } else {
             a.dval *= 2;
