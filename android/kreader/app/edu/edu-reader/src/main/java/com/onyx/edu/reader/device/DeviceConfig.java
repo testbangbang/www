@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Build;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.KeyBinding;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.data.TouchBinding;
@@ -83,6 +84,9 @@ public class DeviceConfig {
     private int slideshowMinimumPages = 1;
     private int slideshowMaximumPages = 20000;
     private int defaultSlideshowPages = 2000;
+
+    private int mergeUpdateTimeout = 300;
+    private int mergeFastUpdateTimeout = 900;
 
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";
     private String statisticsUrl = "http://oa.o-in.me:9058/api/";
@@ -623,6 +627,27 @@ public class DeviceConfig {
 
     public void setTtsEngine(String ttsEngine) {
         this.ttsEngine = ttsEngine;
+    }
+
+    public void setMergeUpdateTimeout(int timeout) {
+        this.mergeUpdateTimeout = timeout;
+    }
+
+    public int getMergeUpdateTimeout() {
+        return mergeUpdateTimeout;
+    }
+
+    public int getMergeFastUpdateTimeout() {
+        return mergeFastUpdateTimeout;
+    }
+
+    public void setMergeFastUpdateTimeout(int timeout) {
+        this.mergeFastUpdateTimeout = timeout;
+    }
+
+    @JSONField(deserialize = false, serialize = false)
+    public int getMergeUpdateTimeout(boolean isFastUpdateMode) {
+        return isFastUpdateMode ? mergeFastUpdateTimeout : mergeUpdateTimeout;
     }
 
     public static void adjustOptionsWithDeviceConfig(final BaseOptions baseOptions, final Context context) {
