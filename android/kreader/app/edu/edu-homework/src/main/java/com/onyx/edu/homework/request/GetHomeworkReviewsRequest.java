@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.db.DBDataProvider;
 import com.onyx.edu.homework.db.HomeworkModel;
@@ -37,7 +38,7 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         HomeworkModel model = DBDataProvider.loadHomework(homeworkId);
         if (model == null) {
-            return;
+            model = HomeworkModel.create(homeworkId);
         }
         Response<HomeworkReviewResult> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getAnwsers(homeworkId));
         if (response.isSuccessful()) {
