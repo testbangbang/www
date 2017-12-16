@@ -23,3 +23,16 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+-dontshrink
+
+-keepnames class com.onyx.edu.homework.data.Homework { *; }
+-keepnames class com.onyx.edu.homework.data.HomeworkDetail { *; }
+
+-keepnames class com.onyx.android.sdk.scribble.data.PageNameList { *; }
+-keepnames class com.onyx.android.sdk.scribble.data.ShapeExtraAttributes { *; }
+-keepattributes Exceptions,InnerClasses,...
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.MappingConfig$* { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig { *; }
+-keepnames class com.onyx.android.sdk.scribble.utils.DeviceConfig$* { *; }
+
