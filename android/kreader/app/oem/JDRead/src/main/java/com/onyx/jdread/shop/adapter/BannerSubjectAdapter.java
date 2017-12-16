@@ -49,7 +49,7 @@ public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolde
 
     @Override
     public PageRecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.banner_subject_model_item, null));
+        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_banner_subject_model, null));
     }
 
     @Override

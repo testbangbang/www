@@ -49,7 +49,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
 
     @Override
     public PageRecyclerView.ViewHolder onPageCreateViewHolder(ViewGroup parent, int viewType) {
-        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.category_subject_model_item, null));
+        return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_subject_model, null));
     }
 
     @Override

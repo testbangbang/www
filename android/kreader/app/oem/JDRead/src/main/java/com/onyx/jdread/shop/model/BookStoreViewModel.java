@@ -14,10 +14,14 @@ import java.util.List;
  * Created by jackdeng on 2017/12/8.
  */
 
-public class BookStoreViewModel extends BaseObservable{
+public class BookStoreViewModel extends BaseObservable {
     public SubjectViewModel bannerSubjectIems;
-    public SubjectViewModel coverSubjectIems;
+    public SubjectViewModel coverSubjectOneItems;
+    public SubjectViewModel coverSubjectTwoItems;
+    public SubjectViewModel coverSubjectThreeItems;
     public SubjectViewModel coverSubjectFourItems;
+    public SubjectViewModel coverSubjectFiveItems;
+    public SubjectViewModel coverSubjectSixItems;
     public SubjectViewModel titleSubjectIems;
     public SubjectViewModel specialTodaySubjectIems;
     public List<CategoryListResultBean.CatListBean> categorySubjectItems;
@@ -41,12 +45,12 @@ public class BookStoreViewModel extends BaseObservable{
         notifyChange();
     }
 
-    public SubjectViewModel getCoverSubjectIems() {
-        return coverSubjectIems;
+    public SubjectViewModel getCoverSubjectOneItems() {
+        return coverSubjectOneItems;
     }
 
-    public void setCoverSubjectIems(SubjectViewModel coverSubjectIems) {
-        this.coverSubjectIems = coverSubjectIems;
+    public void setCoverSubjectOneItems(SubjectViewModel coverSubjectOneItems) {
+        this.coverSubjectOneItems = coverSubjectOneItems;
         notifyChange();
     }
 
@@ -91,6 +95,42 @@ public class BookStoreViewModel extends BaseObservable{
 
     public void setCoverSubjectFourItems(SubjectViewModel coverSubjectFourItems) {
         this.coverSubjectFourItems = coverSubjectFourItems;
+    }
+
+    public SubjectViewModel getCoverSubjectTwoItems() {
+        return coverSubjectTwoItems;
+    }
+
+    public void setCoverSubjectTwoItems(SubjectViewModel coverSubjectTwoItems) {
+        this.coverSubjectTwoItems = coverSubjectTwoItems;
+        notifyChange();
+    }
+
+    public SubjectViewModel getCoverSubjectThreeItems() {
+        return coverSubjectThreeItems;
+    }
+
+    public void setCoverSubjectThreeItems(SubjectViewModel coverSubjectThreeItems) {
+        this.coverSubjectThreeItems = coverSubjectThreeItems;
+        notifyChange();
+    }
+
+    public SubjectViewModel getCoverSubjectFiveItems() {
+        return coverSubjectFiveItems;
+    }
+
+    public void setCoverSubjectFiveItems(SubjectViewModel coverSubjectFiveItems) {
+        this.coverSubjectFiveItems = coverSubjectFiveItems;
+        notifyChange();
+    }
+
+    public SubjectViewModel getCoverSubjectSixItems() {
+        return coverSubjectSixItems;
+    }
+
+    public void setCoverSubjectSixItems(SubjectViewModel coverSubjectSixItems) {
+        this.coverSubjectSixItems = coverSubjectSixItems;
+        notifyChange();
     }
 
     public void onRankViewClick() {

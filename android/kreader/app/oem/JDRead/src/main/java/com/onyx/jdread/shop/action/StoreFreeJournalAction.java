@@ -43,7 +43,7 @@ public class StoreFreeJournalAction extends BaseAction<StoreDataBundle> {
                 BookstoreModelResultBean bookstoreModelResultBean = request.getBookstoreModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
                 subjectViewModel.setModelBean(bookstoreModelResultBean);
-                storeViewModel.setTitleSubjectIems(subjectViewModel);
+                storeViewModel.setCoverSubjectTwoItems(subjectViewModel);
                 if (rxCallback != null) {
                     rxCallback.onNext(request);
                     rxCallback.onComplete();

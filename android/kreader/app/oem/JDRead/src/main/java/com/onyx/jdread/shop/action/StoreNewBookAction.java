@@ -43,7 +43,7 @@ public class StoreNewBookAction extends BaseAction<StoreDataBundle> {
                 BookstoreModelResultBean bookstoreModelResultBean = request.getBookstoreModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
                 subjectViewModel.setModelBean(bookstoreModelResultBean);
-                storeViewModel.setCoverSubjectIems(subjectViewModel);
+                storeViewModel.setCoverSubjectOneItems(subjectViewModel);
                 storeViewModel.setBannerSubjectIems(subjectViewModel);
                 storeViewModel.setCoverSubjectFourItems(subjectViewModel);
                 if (rxCallback != null) {

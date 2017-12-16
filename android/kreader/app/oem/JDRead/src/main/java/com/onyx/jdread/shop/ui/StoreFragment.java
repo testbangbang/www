@@ -61,8 +61,8 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void initData() {
-        getRecyclerViewOneData();
-        getRecyclerViewTwoData();
+        getRecyclerViewSubjectOneData();
+        getRecyclerViewSubjectTwoData();
         getRecyclerViewCategoryData();
     }
 
@@ -75,11 +75,11 @@ public class StoreFragment extends BaseFragment {
         bookStoreBinding.setViewModel(getBookStoreViewModel());
         initDividerItemDecoration();
         setRecyclerViewBanner();
-        setRecyclerViewOne();
-        setRecyclerViewTwo();
-        setRecyclerViewOneBackup();
-        setRecyclerViewTwoBackup();
+        setRecyclerViewCoverSubjectOne();
+        setRecyclerViewCoverSubjectTwoBackUp();
+        setRecyclerViewCoverSubjectTwo();
         setRecyclerViewCoverSubjectFourBackup();
+        setRecyclerViewCoverSubjectFour();
         setRecyclerViewCategory();
     }
 
@@ -152,6 +152,38 @@ public class StoreFragment extends BaseFragment {
         storeThreeBinding.getRoot().setVisibility(id == R.id.book_store_three ? View.VISIBLE : View.GONE);
     }
 
+    private void setRecyclerViewBanner() {
+        BannerSubjectAdapter adapter = new BannerSubjectAdapter();
+        PageRecyclerView recyclerView = storeOneBinding.recyclerViewBanner;
+        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setAdapter(adapter);
+    }
+
+    private void setRecyclerViewCoverSubjectOne() {
+        SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter();
+        PageRecyclerView recyclerViewOne = storeOneBinding.recyclerViewCoverSubjectOne;
+        recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerViewOne.addItemDecoration(itemDecoration);
+        recyclerViewOne.setAdapter(recyclerViewOneAdapter);
+    }
+
+    private void setRecyclerViewCoverSubjectTwoBackUp() {
+        SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter();
+        PageRecyclerView recyclerViewTwo = storeOneBinding.recyclerViewCoverSubjectTwoBackUp;
+        recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerViewTwo.addItemDecoration(itemDecoration);
+        recyclerViewTwo.setAdapter(recyclerViewTwoAdapter);
+    }
+
+    private void setRecyclerViewCoverSubjectTwo() {
+        SubjectAdapter adapter = new SubjectAdapter();
+        PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCoverSubjectTwo;
+        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerView.addItemDecoration(itemDecoration);
+        recyclerView.setAdapter(adapter);
+    }
+
     private void setRecyclerViewCategory() {
         CategorySubjectAdapter adapter = new CategorySubjectAdapter();
         PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCategorySubject;
@@ -166,47 +198,15 @@ public class StoreFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
     }
 
-    private void setRecyclerViewBanner() {
-        BannerSubjectAdapter adapter = new BannerSubjectAdapter();
-        PageRecyclerView recyclerView = storeOneBinding.recyclerViewBanner;
-        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void setRecyclerViewOne() {
-        SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter();
-        PageRecyclerView recyclerViewOne = storeOneBinding.recyclerViewOne;
-        recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewOne.addItemDecoration(itemDecoration);
-        recyclerViewOne.setAdapter(recyclerViewOneAdapter);
-    }
-
-    private void setRecyclerViewTwo() {
-        SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter();
-        PageRecyclerView recyclerViewTwo = storeOneBinding.recyclerViewTwo;
-        recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerViewTwo.addItemDecoration(itemDecoration);
-        recyclerViewTwo.setAdapter(recyclerViewTwoAdapter);
-    }
-
-    private void setRecyclerViewOneBackup() {
+    private void setRecyclerViewCoverSubjectFour() {
         SubjectAdapter adapter = new SubjectAdapter();
-        PageRecyclerView recyclerView = storeThreeBinding.recyclerViewOneBackup;
+        PageRecyclerView recyclerView = storeThreeBinding.recyclerViewCoverSubjectFour;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
     }
 
-    private void setRecyclerViewTwoBackup() {
-        SubjectAdapter adapter = new SubjectAdapter();
-        PageRecyclerView recyclerView = storeTwoBinding.recyclerViewTwoBackup;
-        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerView.addItemDecoration(itemDecoration);
-        recyclerView.setAdapter(adapter);
-    }
-
-    private void getRecyclerViewOneData() {
+    private void getRecyclerViewSubjectOneData() {
         StoreNewBookAction storeNewBookAction = new StoreNewBookAction(JDReadApplication.getInstance());
         storeNewBookAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
             @Override
@@ -222,7 +222,7 @@ public class StoreFragment extends BaseFragment {
         });
     }
 
-    public void getRecyclerViewTwoData() {
+    public void getRecyclerViewSubjectTwoData() {
         StoreFreeJournalAction storeNewBookAction = new StoreFreeJournalAction(JDReadApplication.getInstance());
         storeNewBookAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
             @Override
