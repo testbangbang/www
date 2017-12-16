@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
@@ -31,7 +32,6 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.base.BaseActivity;
-import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -121,10 +121,11 @@ public class HomeworkListActivity extends BaseActivity {
                 showExitDialog();
             }
         });
+        hideMessage();
     }
 
     private void showSubmitDialog() {
-        checkWifi();
+        checkWifi(false);
         SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -160,20 +161,21 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void homeworkRequest() {
-        if (!checkWifi()) {
+        if (!checkWifi(true)) {
             return;
         }
         if (homework == null || homework.child == null) {
-            showNoFindHomework();
+            showMessage(R.string.no_find_homework);
             return;
         }
         String libraryId = homework.child._id;
         if (StringUtils.isNullOrEmpty(libraryId)) {
-            showNoFindHomework();
+            showMessage(R.string.no_find_homework);
             return;
         }
         binding.toolbar.title.setText(homework.child.title);
         DataBundle.getInstance().setHomeworkId(homework.child);
+        showMessage(R.string.loading_questions);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override
@@ -183,6 +185,7 @@ public class HomeworkListActivity extends BaseActivity {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
+                hideMessage();
                 showWaitingDialog();
                 updateState();
                 showTotalScore();
@@ -192,9 +195,11 @@ public class HomeworkListActivity extends BaseActivity {
         });
     }
 
-    private boolean checkWifi() {
+    private boolean checkWifi(boolean showMessage) {
         if (Device.currentDevice().hasWifi(this) && !NetworkUtil.isWiFiConnected(this)) {
-            Toast.makeText(this, R.string.opening_wifi, Toast.LENGTH_SHORT).show();
+            if (showMessage) {
+                showMessage(R.string.opening_wifi);
+            }
             registerReceiver();
             NetworkUtil.enableWiFi(this, true);
             return false;
@@ -209,6 +214,7 @@ public class HomeworkListActivity extends BaseActivity {
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
             public void onNetworkChanged(boolean connected, int networkType) {
+                hideMessage();
                 if (connected && CollectionUtils.isNullOrEmpty(questions)) {
                     homeworkRequest();
                 }
@@ -225,8 +231,13 @@ public class HomeworkListActivity extends BaseActivity {
         }
     }
 
-    private void showNoFindHomework() {
-        Toast.makeText(this, R.string.no_find_homework, Toast.LENGTH_SHORT).show();
+    private void showMessage(@StringRes int messageId) {
+        binding.message.setVisibility(View.VISIBLE);
+        binding.message.setText(messageId);
+    }
+
+    private void hideMessage() {
+        binding.message.setVisibility(View.GONE);
     }
 
     private void showTotalScore() {
@@ -273,7 +284,7 @@ public class HomeworkListActivity extends BaseActivity {
 
             @Override
             public void onPageSelected(int position) {
-                updatePage(position);
+                updateOnPageSelected(position);
             }
 
             @Override
@@ -281,7 +292,7 @@ public class HomeworkListActivity extends BaseActivity {
 
             }
         });
-        updatePage(0);
+        updateOnPageSelected(0);
         updateShowInfo();
         checkAnswer();
     }
@@ -331,10 +342,10 @@ public class HomeworkListActivity extends BaseActivity {
         if (fragments.size() <= current) {
             return;
         }
-        fragments.get(current).update();
+        fragments.get(current).updateQuestion();
     }
 
-    private void updatePage(int position) {
+    private void updateOnPageSelected(int position) {
         int current = position + 1;
         int total = questions.size();
         if (position >= total) {
