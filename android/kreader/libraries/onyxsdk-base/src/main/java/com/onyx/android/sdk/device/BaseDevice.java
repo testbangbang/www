@@ -386,7 +386,9 @@ public class BaseDevice {
         return true;
     }
 
-    public void setQRShowConfig(int orientation, int startX, int startY) {};
+    public void setQRShowConfig(int orientation, int startX, int startY) {}
 
     public void setInfoShowConfig(int orientation, int startX, int startY) {}
+
+    public void mergeDisplayUpdate(int timeout, UpdateMode mode) {}
 }
