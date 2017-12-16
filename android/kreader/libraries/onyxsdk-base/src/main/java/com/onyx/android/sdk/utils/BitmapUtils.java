@@ -29,6 +29,7 @@ import java.io.InputStream;
  */
 public class BitmapUtils {
     private static final String TAG = BitmapUtils.class.getSimpleName();
+    private static final boolean DEBUG = true;
 
     private static Paint paint = new Paint();
 
@@ -53,8 +54,13 @@ public class BitmapUtils {
             out.close();
             if (overrideFilePermission) {
                 File bitmapFile = new File(path);
-                bitmapFile.setReadable(true,false);
-                bitmapFile.setWritable(true,false);
+                boolean setReadeAble = bitmapFile.setReadable(true, false);
+                boolean setWriteAble = bitmapFile.setWritable(true, false);
+                if (DEBUG) {
+                    Log.v(TAG, "bitmapFile path: " + bitmapFile.getAbsolutePath());
+                    Log.v(TAG, "bitmapFile.setReadable succeed: " + setReadeAble);
+                    Log.v(TAG, "bitmapFile.setWritable succeed: " + setWriteAble);
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();

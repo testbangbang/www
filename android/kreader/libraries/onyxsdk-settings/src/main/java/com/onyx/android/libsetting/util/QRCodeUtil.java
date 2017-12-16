@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.BinaryBitmap;
@@ -33,7 +34,7 @@ import java.util.Hashtable;
 public class QRCodeUtil {
     public static final String CFA_QR_CODE_FILE_PATH = "data/local/assets/device_qr_code.png";
     private static final String TAG = QRCodeUtil.class.getSimpleName();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
     public static final int DEFAULT_SIZE = 280;
     public static final int DEFAULT_CFA_SIZE = 120;
     public static final int WHITE_MARGIN_SIZE = 20;
@@ -58,6 +59,11 @@ public class QRCodeUtil {
         if (cacheFile.exists() && cacheFile.canRead()) {
             return BitmapFactory.decodeFile(cacheFile.getPath());
         }else {
+            if (DEBUG){
+                Log.v(TAG, "getQRCodeCFABitmap failed");
+                Log.v(TAG, "cacheFile.exists():" + cacheFile.exists());
+                Log.v(TAG, "cacheFile.canRead():" + cacheFile.canRead());
+            }
             return null;
         }
     }
