@@ -205,9 +205,9 @@ public class MainActivity extends BaseActivity {
 
     private void initTableView() {
         titleList.add("课本");
+        titleList.add("作业");
         titleList.add("辅导");
         titleList.add("阅读");
-        titleList.add("作业");
         titleList.add("个人信息");
         contentTabLayout.setTabMode(TabLayout.MODE_FIXED);
         contentTabLayout.setSelectedTabIndicatorHeight(0);
@@ -339,13 +339,13 @@ public class MainActivity extends BaseActivity {
                     f = getBookTextFragment(title, library);
                     break;
                 case 1:
-                    f = getTeachingAuxiliaryFragment(title, library);
+                    f = getHomeworkFragment();
                     break;
                 case 2:
-                    f = getBookReadingFragment(title, library);
+                    f = getTeachingAuxiliaryFragment(title, library);
                     break;
                 case 3:
-                    f = getHomeworkFragment();
+                    f = getBookReadingFragment(title, library);
                     break;
                 case 4:
                     f = getStudentFragment();
