@@ -3297,10 +3297,16 @@ public class AlBookEng{
 				}
 			}*/
 
-			if ((profiles.textIndentOverrideFromCSS && oi.justify == AlParProperty.SL2_JUST_NONE)) {
-				vE = profiles.textIndentDefaultEm * 2;
-				vP = 0;
-			} else
+			if (oi.justify == AlParProperty.SL2_JUST_NONE) {
+			    if (profiles.textIndentOverrideFromCSS) {
+					vE = profiles.textIndentDefaultEm * 2;
+					vP = 0;
+				} else
+				if (preferences.chinezeFormatting) {
+					vE = 8 * 2;
+					vP = 0;
+				}
+            } else
 			if ((oi.prop & AlParProperty.SL2_INDENT_MASK) == AlParProperty.SL2_INDENT_DEFAULT) {
 				vE = profiles.textIndentDefaultEm * 2;
 				vP = 0;
