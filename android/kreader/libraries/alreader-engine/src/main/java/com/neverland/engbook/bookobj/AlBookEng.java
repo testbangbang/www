@@ -3197,7 +3197,7 @@ public class AlBookEng{
 	private void initOneItem(AlOneItem oi, AlOneItem poi, long style,
 							 int pos, int width, boolean addEmptyLine, TAL_CALC_MODE calcMode, AlOnePage page) {
 
-		long vP, vE;
+		long vP = 0, vE = 0;
 
         if (profiles.specialModeRoll)
             addEmptyLine = true;
