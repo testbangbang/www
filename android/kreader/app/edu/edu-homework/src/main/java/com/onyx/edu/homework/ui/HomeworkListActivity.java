@@ -32,6 +32,7 @@ import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
 import com.onyx.edu.homework.base.BaseActivity;
+import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -241,6 +242,9 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showTotalScore() {
+        if (!Config.getInstance().isShowScore()) {
+            return;
+        }
         if (!getDataBundle().isReview() || questions == null) {
             return;
         }
@@ -388,7 +392,7 @@ public class HomeworkListActivity extends BaseActivity {
     private void updateState() {
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
-        binding.result.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
         binding.getResult.setVisibility(getDataBundle().isDone() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());

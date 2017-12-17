@@ -32,6 +32,7 @@ import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
 import com.onyx.edu.homework.action.note.HomeworkPagesRenderActionChain;
 import com.onyx.edu.homework.base.BaseFragment;
+import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentQuestionBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -227,6 +228,7 @@ public class QuestionFragment extends BaseFragment {
         binding.option.setClickable(enable);
         binding.answer.setVisibility(enable && !question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
         binding.reviewLayout.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.score.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
         updateReviewInfo();
     }
 
