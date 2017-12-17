@@ -25,4 +25,5 @@
     <dimen name="scribble_view_height">960dp</dimen>
     <dimen name="right_answer_mx_width">500dp</dimen>
     <dimen name="divider_line_size">2dp</dimen>
+    <dimen name="question_option_margin">10dp</dimen>
 </resources>
