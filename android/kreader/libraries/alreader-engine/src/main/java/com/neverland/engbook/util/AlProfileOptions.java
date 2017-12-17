@@ -36,6 +36,8 @@ public class AlProfileOptions {
 	public boolean					specialModeMadRoll = false;
 
 	public boolean					indentParagraph = true;
+	public int						textIndentDefaultEm;
+	public boolean					textIndentOverrideFromCSS;
 
 	/*public int		       			margin1Style;
 	public int		        		margin2Style;

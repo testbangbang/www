@@ -1,15 +1,14 @@
 package com.neverland.engbook.bookobj;
 
 
-import com.neverland.engbook.forpublic.EngBookListener;
+import android.app.Activity;
 
 import com.neverland.engbook.forpublic.AlBookOptions;
+import com.neverland.engbook.forpublic.EngBookListener;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_ID;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_THREAD_TASK;
 import com.neverland.engbook.level1.AlFiles;
-
-import android.app.Activity;
 
 
 class AlThreadData {
@@ -19,8 +18,8 @@ class AlThreadData {
 
 	public TAL_THREAD_TASK						task;
 	public volatile AlBookEng					book_object;
-	//public volatile WeakReference<EngBookListener> owner_window;
-	public volatile EngBookListener				owner_window;
+
+
 	private volatile boolean					is_work0 = false;
 	private volatile boolean					is_work1 = false;
 
@@ -33,12 +32,12 @@ class AlThreadData {
 	
 	public void clearAll() {
 		synchronized (lock) { 
-		clearWork0();
-		clearWork1();
-		param_char1 = null;
-		param_void1 = null;
-		id = null;		
-		owner_window = null;
+			clearWork0();
+			clearWork1();
+			param_char1 = null;
+			param_void1 = null;
+			id = null;
+			owner_window = null;
 		}
 	}
 
@@ -95,27 +94,34 @@ class AlThreadData {
 			return is_work1;
 		}
 	}
-	
+
+	private volatile EngBookListener			owner_window = null;
+
 	public void sendNotifyForUIThread(final TAL_NOTIFY_ID id, final TAL_NOTIFY_RESULT result) {
 		synchronized (lock) {
 			if (owner_window == null)
 				return;
 
-			if (owner_window instanceof Activity) {
-				((Activity) owner_window).runOnUiThread(new Runnable() {
-					public void run() {
-						owner_window.engBookGetMessage(id, result);
-					}
-				});
-			} else {
-				owner_window.engBookGetMessage(id, result);
+			try {
+				if (owner_window instanceof Activity) {
+					((Activity) owner_window).runOnUiThread(new Runnable() {
+						public void run() {
+							synchronized (lock) {
+								if (owner_window != null) {
+									try {
+										owner_window.engBookGetMessage(id, result);
+									} catch (Exception e) {
 
-                /*owner_window.handler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        owner_window.engBookGetMessage(id, result);
-                    }
-                });*/
+									}
+								}
+							}
+						}
+					});
+				} else {
+					owner_window.engBookGetMessage(id, result);
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 			}
 		}
 	}
@@ -123,6 +129,12 @@ class AlThreadData {
 	public void freeOwner() {
 		synchronized (lock) { 
 			owner_window = null;
+		}
+	}
+
+	public void setOwner(EngBookListener own) {
+		synchronized (lock) {
+			owner_window = own;
 		}
 	}
 
@@ -239,19 +251,25 @@ class AlThreadData {
 
 				this.clearWork0();
 			} else
-			if (this.task == TAL_THREAD_TASK.OPENBOOK && res == TAL_NOTIFY_RESULT.OK) {
-				if (this.book_object != null &&
-						this.book_object.format.isTextFormat &&
-						this.book_object.format.multiFiles.modePart) {
+			if (this.task == TAL_THREAD_TASK.OPENBOOK) {
+				if (res == TAL_NOTIFY_RESULT.OK) {
+					if (this.book_object != null &&
+							this.book_object.format.isTextFormat &&
+							this.book_object.format.multiFiles.modePart) {
 
-					this.book_object.openState.incState();
-					this.book_object.openState.incState();
+						this.book_object.openState.incState();
+						this.book_object.openState.incState();
 
-					synchronized (this.book_object) {
+						synchronized (this.book_object) {
+							this.clearWork0();
+							startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, true);
+						}
+
+					} else {
 						this.clearWork0();
-						startThread(param, TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL, true);
+						this.param_void1.clearBlocked();
+						this.clearObjOpen();
 					}
-
 				} else {
 					this.clearWork0();
 					this.param_void1.clearBlocked();
