@@ -34,7 +34,7 @@ import java.util.Hashtable;
 public class QRCodeUtil {
     public static final String CFA_QR_CODE_FILE_PATH = "data/local/assets/device_qr_code.png";
     private static final String TAG = QRCodeUtil.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
     public static final int DEFAULT_SIZE = 280;
     public static final int DEFAULT_CFA_SIZE = 120;
     public static final int WHITE_MARGIN_SIZE = 20;
