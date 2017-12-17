@@ -85,7 +85,7 @@ public class DeviceConfig {
     private int slideshowMaximumPages = 20000;
     private int defaultSlideshowPages = 2000;
 
-    private int mergeUpdateTimeout = 300;
+    private int mergeUpdateTimeout = 500;
     private int mergeFastUpdateTimeout = 900;
 
     private String defaultFontFileForChinese = "/system/fonts/OnyxCustomFont-Regular.ttf";

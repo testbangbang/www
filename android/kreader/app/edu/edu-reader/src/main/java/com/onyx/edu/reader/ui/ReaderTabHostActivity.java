@@ -581,9 +581,6 @@ public class ReaderTabHostActivity extends OnyxBaseActivity {
         if (isInFastUpdateMode) {
             ReaderDeviceManager.forceExitAnimationUpdate(true);
         }
-        Device.currentDevice().mergeDisplayUpdate(
-                DeviceConfig.sharedInstance(getApplicationContext()).getMergeUpdateTimeout(isInFastUpdateMode),
-                UpdateMode.GC_CLEAR);
     }
 
     private void enableUpdateMode() {
