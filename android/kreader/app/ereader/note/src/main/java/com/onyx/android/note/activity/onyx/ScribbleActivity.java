@@ -297,7 +297,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void gcInvalidate() {
-        EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
+        EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC_CLEAR);
     }
 
     private void initSpanTextView() {
