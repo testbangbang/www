@@ -17,7 +17,7 @@ import java.util.List;
 public class NeoAccountBase extends BaseData {
 
     public static final String DELIMITER = ",";
-
+    public String _id;
     public String name;
     public String orgName;
     @Column(typeConverter = ListStringConverter.class)
