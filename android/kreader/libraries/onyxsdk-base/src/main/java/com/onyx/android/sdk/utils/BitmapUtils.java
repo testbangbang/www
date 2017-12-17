@@ -29,7 +29,7 @@ import java.io.InputStream;
  */
 public class BitmapUtils {
     private static final String TAG = BitmapUtils.class.getSimpleName();
-    private static final boolean DEBUG = true;
+    private static final boolean DEBUG = false;
 
     private static Paint paint = new Paint();
 
