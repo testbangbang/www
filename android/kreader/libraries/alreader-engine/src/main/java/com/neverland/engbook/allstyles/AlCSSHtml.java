@@ -660,30 +660,170 @@ public class AlCSSHtml extends AlCSSStyles {
         return control.css_value;
     }
 
-    protected void setMarginToInternal(AlOneCSSNumberValue a, long maskAll, long maskShift) {
-        if (a.dval < 0)
-            return;
+    protected void setMarginTToInternal(AlOneCSSNumberValue a) {
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
 
+        } else
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PX) {
+            a.dval /= 16;
+        } else {
+            //a.dval *= 2;
+        }
+
+        if (a.dval < 0) {
+            if (a.dval > AlOneCSS.MARG_MIN_VALUE)
+                a.dval = AlOneCSS.MARG_MIN_VALUE;
+            a.dval = AlOneCSS.MARG_MAX_VALUE - a.dval;
+
+            return;
+        } else
+        if (a.dval > 0) {
+            if (a.dval > AlOneCSS.MARG_MAX_VALUE)
+                a.dval = AlOneCSS.MARG_MAX_VALUE;
+        }
+
+        long v = (long)(a.dval + 0.5f);
+
+        internalCSSValue.m1 |= AlOneCSS.MARGTOP_MASK;
+        internalCSSValue.v1 |= (v << AlOneCSS.MARGTOP_SHIFT);
+    }
+
+    protected void setMarginBToInternal(AlOneCSSNumberValue a) {
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
+
+        } else
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PX) {
+            a.dval /= 16;
+        } else {
+            //a.dval *= 2;
+        }
+
+        if (a.dval < 0) {
+            if (a.dval > AlOneCSS.MARG_MIN_VALUE)
+                a.dval = AlOneCSS.MARG_MIN_VALUE;
+            a.dval = AlOneCSS.MARG_MAX_VALUE - a.dval;
+
+            return;
+        } else
+        if (a.dval > 0) {
+            if (a.dval > AlOneCSS.MARG_MAX_VALUE)
+                a.dval = AlOneCSS.MARG_MAX_VALUE;
+        }
+
+        long v = (long)(a.dval + 0.5f);
+
+        internalCSSValue.m1 |= AlOneCSS.MARGBOTTOM_MASK;
+        internalCSSValue.v1 |= (v << AlOneCSS.MARGBOTTOM_SHIFT);
+    }
+
+    protected void setMarginLToInternal(AlOneCSSNumberValue a) {
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
+
+        } else
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PX || a.tp == AlOneCSSNumberValue.CSS_NUM_SIMPLE) {
+            // treat CSS_NUM_SIMPLE value as CSS_NUM_PX
+            a.dval /= 8;
+        } else {
+            a.dval *= 2;
+        }
+
+        if (a.dval < 0) {
+            if (a.dval > AlOneCSS.MARG_MIN_VALUE)
+                a.dval = AlOneCSS.MARG_MIN_VALUE;
+            a.dval = AlOneCSS.MARG_MAX_VALUE - a.dval;
+
+            return;
+        } else
+        if (a.dval > 0) {
+            if (a.dval > AlOneCSS.MARG_MAX_VALUE)
+                a.dval = AlOneCSS.MARG_MAX_VALUE;
+        }
+
+        long v = (long)(a.dval + 0.5f);
         switch (a.tp) {
             case AlOneCSSNumberValue.CSS_NUM_PERCENT:
-                if (a.dval > AlOneCSS.MARG_MAX_VALUE)
-                    a.dval = AlOneCSS.MARG_MAX_VALUE;
-                internalCSSValue.m1 |= maskAll;
-                internalCSSValue.v1 |= ((long)(a.dval * 3 + 0.5f)) << maskShift;
+                internalCSSValue.m1 |= AlOneCSS.MARGLEFT_PERCENT_MASK;
+                internalCSSValue.v1 |= (v << AlOneCSS.MARGLEFT_PERCENT_SHIFT);
                 break;
             case AlOneCSSNumberValue.CSS_NUM_PX:
-            case AlOneCSSNumberValue.CSS_NUM_SIMPLE: // treat CSS_NUM_SIMPLE as CSS_NUM_PX
-                a.dval /= 16;
-                if (a.dval > AlOneCSS.MARG_MAX_VALUE)
-                    a.dval = AlOneCSS.MARG_MAX_VALUE;
-                internalCSSValue.m1 |= maskAll;
-                internalCSSValue.v1 |= (((long)(a.dval * 3 + 0.5f)) << maskShift);
-                break;
+            case AlOneCSSNumberValue.CSS_NUM_SIMPLE:
             case AlOneCSSNumberValue.CSS_NUM_EM:
-                if (a.dval > AlOneCSS.MARG_MAX_VALUE)
-                    a.dval = AlOneCSS.MARG_MAX_VALUE;
-                internalCSSValue.m1 |= maskAll;
-                internalCSSValue.v1 |= (((long)(a.dval * 3 + 0.5f)) << maskShift);
+                internalCSSValue.m1 |= AlOneCSS.MARGLEFT_EM_MASK;
+                internalCSSValue.v1 |= (v << AlOneCSS.MARGLEFT_EM_SHIFT);
+                break;
+        }
+    }
+
+    protected void setMarginRToInternal(AlOneCSSNumberValue a) {
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
+
+        } else
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PX) {
+            a.dval /= 8;
+        } else {
+            a.dval *= 2;
+        }
+
+        if (a.dval < 0) {
+            if (a.dval > AlOneCSS.MARG_MIN_VALUE)
+                a.dval = AlOneCSS.MARG_MIN_VALUE;
+            a.dval = AlOneCSS.MARG_MAX_VALUE - a.dval;
+
+            return;
+        } else
+        if (a.dval > 0) {
+            if (a.dval > AlOneCSS.MARG_MAX_VALUE)
+                a.dval = AlOneCSS.MARG_MAX_VALUE;
+        }
+
+        long v = (long)(a.dval + 0.5f);
+        switch (a.tp) {
+            case AlOneCSSNumberValue.CSS_NUM_PERCENT:
+                internalCSSValue.m1 |= AlOneCSS.MARGRIGHT_PERCENT_MASK;
+                internalCSSValue.v1 |= (v << AlOneCSS.MARGRIGHT_PERCENT_SHIFT);
+                break;
+            case AlOneCSSNumberValue.CSS_NUM_PX:
+            case AlOneCSSNumberValue.CSS_NUM_SIMPLE:
+            case AlOneCSSNumberValue.CSS_NUM_EM:
+                internalCSSValue.m1 |= AlOneCSS.MARGRIGHT_EM_MASK;
+                internalCSSValue.v1 |= (v << AlOneCSS.MARGRIGHT_EM_SHIFT);
+                break;
+        }
+    }
+
+    protected void setMarginIToInternal(AlOneCSSNumberValue a) {
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PERCENT) {
+
+        } else
+        if (a.tp == AlOneCSSNumberValue.CSS_NUM_PX) {
+            a.dval /= 8;
+        } else {
+            a.dval *= 2;
+        }
+
+        if (a.dval < 0) {
+            if (a.dval > AlOneCSS.MARG_MIN_VALUE)
+                a.dval = AlOneCSS.MARG_MIN_VALUE;
+            a.dval = AlOneCSS.MARG_MAX_VALUE - a.dval;
+
+            return;
+        } else
+        if (a.dval > 0) {
+            if (a.dval > AlOneCSS.MARG_MAX_VALUE)
+                a.dval = AlOneCSS.MARG_MAX_VALUE;
+        }
+
+        long v = (long)(a.dval + 0.5f);
+        switch (a.tp) {
+            case AlOneCSSNumberValue.CSS_NUM_PERCENT:
+                internalCSSValue.m1 |= AlOneCSS.INDENT_MASK;
+                internalCSSValue.v1 |= (v << AlOneCSS.INDENT_SHIFT);
+                break;
+            case AlOneCSSNumberValue.CSS_NUM_PX:
+            case AlOneCSSNumberValue.CSS_NUM_SIMPLE:
+            case AlOneCSSNumberValue.CSS_NUM_EM:
+                internalCSSValue.m1 |= AlOneCSS.INDENT_MASK;
+                internalCSSValue.v1 |= (v << AlOneCSS.INDENT_SHIFT) | AlOneCSS.INDENT_VALUE_EM;
                 break;
         }
     }
@@ -791,28 +931,28 @@ public class AlCSSHtml extends AlCSSStyles {
 
                 switch (i) {
                     case 1:
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGLEFT_MASK, /*AlOneCSS.MARGLEFT_MASK_EM, */AlOneCSS.MARGLEFT_SHIFT);
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGRIGHT_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGRIGHT_SHIFT);
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGTOP_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGTOP_SHIFT);
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGBOTTOM_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGBOTTOM_SHIFT);
+                        setMarginLToInternal(adouble[0]);
+                        setMarginRToInternal(adouble[0]);
+                        setMarginTToInternal(adouble[0]);
+                        setMarginBToInternal(adouble[0]);
                         break;
                     case 2:
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGTOP_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGTOP_SHIFT);
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGBOTTOM_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGBOTTOM_SHIFT);
-                        setMarginToInternal(adouble[1], AlOneCSS.MARGLEFT_MASK, /*AlOneCSS.MARGLEFT_MASK_EM, */AlOneCSS.MARGLEFT_SHIFT);
-                        setMarginToInternal(adouble[1], AlOneCSS.MARGRIGHT_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGRIGHT_SHIFT);
+                        setMarginTToInternal(adouble[0]);
+                        setMarginBToInternal(adouble[0]);
+                        setMarginLToInternal(adouble[1]);
+                        setMarginRToInternal(adouble[1]);
                         break;
                     case 3:
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGTOP_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGTOP_SHIFT);
-                        setMarginToInternal(adouble[1], AlOneCSS.MARGLEFT_MASK, /*AlOneCSS.MARGLEFT_MASK_EM, */AlOneCSS.MARGLEFT_SHIFT);
-                        setMarginToInternal(adouble[1], AlOneCSS.MARGRIGHT_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGRIGHT_SHIFT);
-                        setMarginToInternal(adouble[2], AlOneCSS.MARGBOTTOM_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGBOTTOM_SHIFT);
+                        setMarginTToInternal(adouble[0]);
+                        setMarginLToInternal(adouble[1]);
+                        setMarginRToInternal(adouble[1]);
+                        setMarginBToInternal(adouble[2]);
                         break;
                     case 4:
-                        setMarginToInternal(adouble[0], AlOneCSS.MARGTOP_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGTOP_SHIFT);
-                        setMarginToInternal(adouble[1], AlOneCSS.MARGRIGHT_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGRIGHT_SHIFT);
-                        setMarginToInternal(adouble[2], AlOneCSS.MARGBOTTOM_MASK, /*AlOneCSS.MARGRIGHT_MASK_EM, */AlOneCSS.MARGBOTTOM_SHIFT);
-                        setMarginToInternal(adouble[3], AlOneCSS.MARGLEFT_MASK, /*AlOneCSS.MARGLEFT_MASK_EM, */AlOneCSS.MARGLEFT_SHIFT);
+                        setMarginTToInternal(adouble[0]);
+                        setMarginRToInternal(adouble[1]);
+                        setMarginBToInternal(adouble[2]);
+                        setMarginLToInternal(adouble[3]);
                         break;
                 }
                 break;
@@ -820,25 +960,25 @@ public class AlCSSHtml extends AlCSSStyles {
                 vv.setLength(0);
                 vv.append(valS.toString().trim());
                 AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginToInternal(adouble[0], AlOneCSS.MARGLEFT_MASK, AlOneCSS.MARGLEFT_SHIFT);
+                setMarginLToInternal(adouble[0]);
                 break;
             case TAG_MARGIN_RIGHT:
                 vv.setLength(0);
                 vv.append(valS.toString().trim());
                 AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginToInternal(adouble[0], AlOneCSS.MARGRIGHT_MASK, AlOneCSS.MARGRIGHT_SHIFT);
+                setMarginRToInternal(adouble[0]);
                 break;
             case TAG_MARGIN_TOP:
                 vv.setLength(0);
                 vv.append(valS.toString().trim());
                 AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginToInternal(adouble[0], AlOneCSS.MARGTOP_MASK, AlOneCSS.MARGTOP_SHIFT);
+                setMarginTToInternal(adouble[0]);
                 break;
             case TAG_MARGIN_BOTTOM:
                 vv.setLength(0);
                 vv.append(valS.toString().trim());
                 AlOneCSSNumberValue.scan(adouble[0], vv);
-                setMarginToInternal(adouble[0], AlOneCSS.MARGBOTTOM_MASK, AlOneCSS.MARGBOTTOM_SHIFT);
+                setMarginBToInternal(adouble[0]);
                 break;
             case TAG_LETTER_SPACING:
                 if ("inherit".contentEquals(valS)) {
@@ -860,30 +1000,8 @@ public class AlCSSHtml extends AlCSSStyles {
                 vv.setLength(0);
                 vv.append(valS.toString().trim());
                 AlOneCSSNumberValue.scan(adouble[0], vv);
-                if (adouble[0].ival >= 0) {
-                    switch (adouble[0].tp) {
-                        case AlOneCSSNumberValue.CSS_NUM_PERCENT:
-                            if (adouble[0].dval > AlOneCSS.INDENT_MAX_VALUE)
-                                adouble[0].dval = AlOneCSS.INDENT_MAX_VALUE;
-                            internalCSSValue.m1 |= AlOneCSS.INDENT_MASK;
-                            internalCSSValue.v1 |= ((long)(adouble[0].dval * 3 + 0.5f)) << AlOneCSS.INDENT_SHIFT;
-                            break;
-                        case AlOneCSSNumberValue.CSS_NUM_PX:
-                            adouble[0].dval = (int)(adouble[0].dval / 16 + 0.5f);
-                            if (adouble[0].dval > AlOneCSS.INDENT_MAX_VALUE)
-                                adouble[0].dval = AlOneCSS.INDENT_MAX_VALUE;
-                            internalCSSValue.m1 |= AlOneCSS.INDENT_MASK;
-                            internalCSSValue.v1 |= ((long)(adouble[0].dval * 3 + 0.5f)) << AlOneCSS.INDENT_SHIFT;
-                            break;
-                        case AlOneCSSNumberValue.CSS_NUM_SIMPLE:
-                        case AlOneCSSNumberValue.CSS_NUM_EM:
-                            if (adouble[0].dval > AlOneCSS.INDENT_MAX_VALUE)
-                                adouble[0].dval = AlOneCSS.INDENT_MAX_VALUE;
-                            internalCSSValue.m1 |= AlOneCSS.INDENT_MASK;
-                            internalCSSValue.v1 |= ((long)(adouble[0].dval * 3 + 0.5f)) << AlOneCSS.INDENT_SHIFT;
-                            break;
-                    }
-                }
+                if (adouble[0].ival >= 0)
+                    setMarginIToInternal(adouble[0]);
                 break;
 
 

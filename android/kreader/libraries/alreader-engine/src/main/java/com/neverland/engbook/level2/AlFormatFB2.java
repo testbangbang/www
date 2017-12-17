@@ -1,11 +1,9 @@
 package com.neverland.engbook.level2;
 
 import com.neverland.engbook.allstyles.AlCSSHtml;
-import com.neverland.engbook.allstyles.AlCSSStyles;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
 import com.neverland.engbook.level1.AlFiles;
-import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlParProperty;
 import com.neverland.engbook.util.AlPreferenceOptions;
@@ -447,6 +445,7 @@ public class AlFormatFB2 extends AlFormatBaseHTML {
 					setPropStyle(AlParProperty.SL2_BREAK_BEFORE);
 				} else
 				if (!tag.ended) {
+					allState.isNoteSection = false;
 					switch (verifyBody()) {
 						case FB2_BODY_NOTES:
 							allState.content_start = size;

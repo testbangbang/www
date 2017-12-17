@@ -32,24 +32,6 @@ public class AlFonts {
 	private final static char EM_SPECIAL_CHAR = 'M';
 
 	private final static float FONT_STEP_MULTIPLE = 0.7f;
-	/*public final static float FONT_STEP_MULTIPLE_P1 = FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_P2 = FONT_STEP_MULTIPLE_P1 * FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_P3 = FONT_STEP_MULTIPLE_P2 * FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_P4 = FONT_STEP_MULTIPLE_P3 * FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_P5 = FONT_STEP_MULTIPLE_P4 * FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_P6 = FONT_STEP_MULTIPLE_P5 * FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_P7 = FONT_STEP_MULTIPLE_P6 * FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_P8 = FONT_STEP_MULTIPLE_P7 * FONT_STEP_MULTIPLE;
-
-	public final static float FONT_STEP_MULTIPLE_M1 = 1 / FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_M2 = FONT_STEP_MULTIPLE_M1 / FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_M3 = FONT_STEP_MULTIPLE_M2 / FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_M4 = FONT_STEP_MULTIPLE_M3 / FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_M5 = FONT_STEP_MULTIPLE_M4 / FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_M6 = FONT_STEP_MULTIPLE_M5 / FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_M7 = FONT_STEP_MULTIPLE_M6 / FONT_STEP_MULTIPLE;
-	public final static float FONT_STEP_MULTIPLE_M8 = FONT_STEP_MULTIPLE_M7 / FONT_STEP_MULTIPLE;*/
-
 
 	private AssetManager assetManager;
 
@@ -81,6 +63,11 @@ public class AlFonts {
 			boolean needDraw) {
 		
 		boolean modify = false;
+
+		if ((new_style & AlStyles.STYLE_CODE) != 0) {
+			new_style &= ~AlStyles.SL_FONT_MASK;
+			new_style |= AlStyles.SL_FONT_CODE;
+		}
 
 		int fnt_num = (int) ((new_style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT);
 		int text_size = (int) (profile.font_sizes[fnt_num] * profile.multiplexer);
@@ -153,9 +140,9 @@ public class AlFonts {
 
 			calc.fontPaint.getFontMetricsInt(font_metrics);
 			
-			if (fparam.style == 0) {
-				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
-					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) (calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR));
+			if (fparam.style == AlStyles.SL_SIZE_NORMAL/*0*/) {
+				if (calc.mainWidth[SPACE_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH) 
+					calc.mainWidth[SPACE_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
 				fparam.space_width_current = calc.mainWidth[SPACE_SPECIAL_CHAR];
 
 				if (calc.mainWidth[HYPH_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
@@ -163,7 +150,7 @@ public class AlFonts {
 				fparam.hyph_width_current = calc.mainWidth[HYPH_SPECIAL_CHAR];
 
 				if (calc.mainWidth[EM_SPECIAL_CHAR] == AlCalc.UNKNOWNWIDTH)
-					calc.mainWidth[EM_SPECIAL_CHAR] = (char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
+					calc.mainWidth[EM_SPECIAL_CHAR] = (char) text_size;//(char) calc.fontPaint.measureText(EM_SPECIAL_STRCHAR);
 				fparam.em_width_current = calc.mainWidth[EM_SPECIAL_CHAR];
 			} else {
 				fparam.space_width_current = (int) calc.fontPaint.measureText(SPACE_SPECIAL_STRCHAR);
@@ -179,48 +166,24 @@ public class AlFonts {
 					fparam.space_width_current = 2;
 			}
 
-			
 			if (new_style == AlStyles.SL_SIZE_NORMAL) {
-				/*if (PrefManager.font_height_asc) {
-					param.height = (int)(font_metrics.descent - font_metrics.ascent + font_metrics.leading + 0.5f);
-					param.def_line_down = (int) font_metrics.descent;
-				} else {*/
-					fparam.height = (int) (font_metrics.bottom - font_metrics.top + font_metrics.leading + 0.5f);
-					fparam.def_line_down = font_metrics.bottom;
-				//}
-				
+				fparam.height = (int) (font_metrics.bottom - font_metrics.top + font_metrics.leading + 0.5f);
+				fparam.def_line_down = font_metrics.bottom;
+
 				fparam.space_width = fparam.space_width_current;
 				fparam.hyph_width = fparam.hyph_width_current;
 				fparam.em_width = fparam.em_width_current;
 				fparam.def_reserv = 0;
 			}
 			
-			/*if (PrefManager.font_height_asc) {
-				param.base_line_up = (int)(font_metrics.leading - font_metrics.ascent + 0.5f);
-				param.base_line_down = (int)(font_metrics.descent + 0.5f);
-			} else {*/
-				fparam.base_line_up = (int) (font_metrics.leading - font_metrics.top + 0.5f);
-				fparam.base_line_down = (int) (font_metrics.bottom + 0.5f);
-			//}
+			fparam.base_line_up = (int) (font_metrics.leading - font_metrics.top + 0.5f);
+			fparam.base_line_down = (int) (font_metrics.bottom + 0.5f);
 			
 			fparam.base_ascent = (int) (-font_metrics.ascent + 0.5f);
 			
 			fparam.correct_italic = 0;
 			if (needCorrectItalic)
 				 fparam.correct_italic = fparam.height / 7;
-			
-			/*if (fparam.height < text_size && (tns & AlStyles.SL_MARKFIRTSTLETTER) == 0) {
-				float m = (float)text_size / fparam.height;
-				
-				if (new_style == 0) {
-					fparam.height *= m;
-					fparam.def_line_down *= m;
-				}
-				
-				fparam.base_line_up *= m;
-				fparam.base_line_down *=m;				
-				fparam.base_ascent *= m;
-			}*/
 
 		}
 
@@ -230,21 +193,16 @@ public class AlFonts {
 		calc.fontPaint.setStrikeThruText((new_style & AlStyles.STYLE_STRIKE) != 0);
 			
 		if (needDraw) {
-			/*if ((new_style & AlStyles.SL_SHADOW) != 0) {	
-				fparam.fontPaint.setShadowLayer(1.5f * profile.DPIMultiplex, profile.DPIMultiplex, profile.DPIMultiplex,
-						profile.colors[InternalConst.TAL_PROFILE_COLOR_SHADOW] | 0xff000000);
-			} else {*/
-				switch (profile.font_weigths[fnt_num]) {
-				case 1:  calc.fontPaint.setShadowLayer(0.03f * multiplexer, 0, 0, fparam.color); break;
-				case 2:  calc.fontPaint.setShadowLayer(0.07f * multiplexer, 0, 0, fparam.color); break;
-				case 3:  calc.fontPaint.setShadowLayer(0.11f * multiplexer, 0, 0, fparam.color); break;
-				case 4:  calc.fontPaint.setShadowLayer(0.17f * multiplexer, 0, 0, fparam.color); break;
-				case 5:	 calc.fontPaint.setShadowLayer(0.25f * multiplexer, 0, 0, fparam.color); break;
-				case 6:  calc.fontPaint.setShadowLayer(0.40f * multiplexer, 0, 0, fparam.color); break;
-				case 7:  calc.fontPaint.setShadowLayer(0.65f * multiplexer, 0, 0, fparam.color); break;
-				default: calc.fontPaint.clearShadowLayer();
-				}
-			//}
+			switch (profile.font_weigths[fnt_num]) {
+			case 1:  calc.fontPaint.setShadowLayer(0.03f * multiplexer, 0, 0, fparam.color); break;
+			case 2:  calc.fontPaint.setShadowLayer(0.07f * multiplexer, 0, 0, fparam.color); break;
+			case 3:  calc.fontPaint.setShadowLayer(0.11f * multiplexer, 0, 0, fparam.color); break;
+			case 4:  calc.fontPaint.setShadowLayer(0.17f * multiplexer, 0, 0, fparam.color); break;
+			case 5:	 calc.fontPaint.setShadowLayer(0.25f * multiplexer, 0, 0, fparam.color); break;
+			case 6:  calc.fontPaint.setShadowLayer(0.40f * multiplexer, 0, 0, fparam.color); break;
+			case 7:  calc.fontPaint.setShadowLayer(0.65f * multiplexer, 0, 0, fparam.color); break;
+			default: calc.fontPaint.clearShadowLayer();
+			}
 		}
 	}
 	
@@ -261,7 +219,6 @@ public class AlFonts {
 			st0 ^= st1;
 		}
 		
-		//String s = profile.font_names[(int) tmp].toLowerCase();
 		String s = profile.font_names[(int) tmp];
 
 		AlTypefaces typeface = null;
@@ -299,20 +256,47 @@ public class AlFonts {
 				switch ((int) st0) {
 				case 0:
 					f = fi.res.aFile[0];
-					break;
+
+                    if (f == null) {
+                        if (fi.res.aFile[1] != null) {
+                            f = fi.res.aFile[1];
+                        } else
+                        if (fi.res.aFile[2] != null) {
+                            f = fi.res.aFile[2];
+                        } else {
+                            f = fi.res.aFile[3];
+                        }
+                    }
+                    break;
 				case 1:
 					f = fi.res.aFile[1];
-					if (f == null) {
-						f = fi.res.aFile[0];
-						ebold = true;
-					}
-					break;
+                    if (f == null) {
+                        if (fi.res.aFile[0] != null) {
+                            f = fi.res.aFile[0];
+                            ebold = true;
+                        } else
+                        if (fi.res.aFile[3] != null) {
+                            f = fi.res.aFile[3];
+                        } else {
+                            f = fi.res.aFile[2];
+                            ebold = true;
+                        }
+                    }
+                    break;
 				case 2:
 					f = fi.res.aFile[2];
-					if (f == null) {
-						f = fi.res.aFile[0];
-						eitalic = true;
-					}
+                    if (f == null) {
+                        if (fi.res.aFile[0] != null) {
+                            f = fi.res.aFile[0];
+                            eitalic = true;
+                        } else
+                        if (fi.res.aFile[3] != null) {
+                            f = fi.res.aFile[3];
+                        } else {
+                            f = fi.res.aFile[1];
+                            eitalic = true;
+                        }
+                    }
 					break;
 				case 3:
 					f = fi.res.aFile[3];
@@ -356,20 +340,47 @@ public class AlFonts {
 				switch ((int) st0) {
 				case 0:
 					f = fi.aFile[0];
-					break;
+
+                    if (f == null) {
+                        if (fi.aFile[1] != null) {
+                            f = fi.aFile[1];
+                        } else
+                        if (fi.aFile[2] != null) {
+                            f = fi.aFile[2];
+                        } else {
+                            f = fi.aFile[3];
+                        }
+                    }
+                    break;
 				case 1:
 					f = fi.aFile[1];
-					if (f == null) {
-						f = fi.aFile[0];
-						ebold = true;
-					}
-					break;
+                    if (f == null) {
+                        if (fi.aFile[0] != null) {
+                            f = fi.aFile[0];
+                            ebold = true;
+                        } else
+                        if (fi.aFile[3] != null) {
+                            f = fi.aFile[3];
+                        } else {
+                            f = fi.aFile[2];
+                            ebold = true;
+                        }
+                    }
+                    break;
 				case 2:
 					f = fi.aFile[2];
-					if (f == null) {
-						f = fi.aFile[0];
-						eitalic = true;
-					}
+                    if (f == null) {
+                        if (fi.aFile[0] != null) {
+                            f = fi.aFile[0];
+                            eitalic = true;
+                        } else
+                        if (fi.aFile[3] != null) {
+                            f = fi.aFile[3];
+                        } else {
+                            f = fi.aFile[1];
+                            eitalic = true;
+                        }
+                    }
 					break;
 				case 3:
 					f = fi.aFile[3];
@@ -415,178 +426,6 @@ public class AlFonts {
 		return typeface;
 	}
 
-
-	/*private AlTypefaces addTPF(long style, AlProfileOptions	profile) {
-		long st0 = style & (Typeface.BOLD_ITALIC);
-		long tmp = (style & AlStyles.SL_FONT_MASK) >> AlStyles.SL_FONT_SHIFT;
-
-		long st1 = (profile.font_bold[(int) tmp] ? Typeface.BOLD : 0) |
-				  (profile.font_italic[(int) tmp] ? Typeface.ITALIC : 0);
-
-		if (profile.style_summ) {
-			st0 |= st1;
-		} else {
-			st0 ^= st1;
-		}
-
-		String s = profile.font_names[(int) tmp].toLowerCase();
-
-		AlTypefaces typeface = null;
-		if (s.contentEquals("serif")) {
-			typeface = new AlTypefaces();
-			typeface.tpf = Typeface.create(s, (int) st0);
-		} else
-		if (s.contentEquals("sans-serif")) {
-			typeface = new AlTypefaces();
-			typeface.tpf = Typeface.create(s, (int) (st0 & 0x01));
-			if ((st0 & 0x02) != 0)
-				typeface.emul_italic = true;
-		} else
-		if (s.contentEquals("monospace")) {
-			typeface = new AlTypefaces();
-			typeface.tpf = Typeface.create(s, 0);
-			if ((st0 & 0x02) != 0)
-				typeface.emul_italic = true;
-			if ((st0 & 0x01) != 0)
-				typeface.emul_bold = true;
-		} else {
-			int i, j;
-			boolean ebold = false;
-			boolean eitalic = false;
-
-			AlOneFont fi;
-			for (i = 3; i < allfonts.size(); i++) {
-				fi = allfonts.get(i);
-				if (fi.aName.equalsIgnoreCase(s)) {
-
-                    if (fi.res != null) {
-                        String f = null;
-                        switch ((int) st0) {
-                            case 0:
-                                f = fi.res.aFile[0];
-                                break;
-                            case 1:
-                                f = fi.res.aFile[1];
-                                if (f == null) {
-                                    f = fi.res.aFile[0];
-                                    ebold = true;
-                                }
-                                break;
-                            case 2:
-                                f = fi.res.aFile[2];
-                                if (f == null) {
-                                    f = fi.res.aFile[0];
-                                    eitalic = true;
-                                }
-                                break;
-                            case 3:
-                                f = fi.res.aFile[3];
-                                if (f == null) {
-                                    if (fi.res.aFile[2] != null) {
-                                        f = fi.res.aFile[2];
-                                        ebold = true;
-                                    } else if (fi.res.aFile[1] != null) {
-                                        f = fi.res.aFile[1];
-                                        eitalic = true;
-                                    } else {
-                                        f = fi.res.aFile[0];
-                                        eitalic = true;
-                                        ebold = true;
-                                    }
-                                }
-                                break;
-                        }
-
-                        if (f == null) {
-                            for (j = 0; j < 4; j++)
-                                if (fi.res.aFile[j] != null)
-                                    f = fi.res.aFile[j];
-                        }
-
-                        try {
-                            if (f != null) {
-                                typeface = new AlTypefaces();
-                                typeface.tpf = Typeface.createFromAsset(assetManager, f);
-                                typeface.emul_bold = ebold;
-                                typeface.emul_italic = eitalic;
-                                if (typeface.tpf != null) {
-                                    return typeface;
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        File f = null;
-                        switch ((int) st0) {
-                            case 0:
-                                f = fi.aFile[0];
-                                break;
-                            case 1:
-                                f = fi.aFile[1];
-                                if (f == null) {
-                                    f = fi.aFile[0];
-                                    ebold = true;
-                                }
-                                break;
-                            case 2:
-                                f = fi.aFile[2];
-                                if (f == null) {
-                                    f = fi.aFile[0];
-                                    eitalic = true;
-                                }
-                                break;
-                            case 3:
-                                f = fi.aFile[3];
-                                if (f == null) {
-                                    if (fi.aFile[2] != null) {
-                                        f = fi.aFile[2];
-                                        ebold = true;
-                                    } else if (fi.aFile[1] != null) {
-                                        f = fi.aFile[1];
-                                        eitalic = true;
-                                    } else {
-                                        f = fi.aFile[0];
-                                        eitalic = true;
-                                        ebold = true;
-                                    }
-                                }
-                                break;
-                        }
-
-                        if (f == null) {
-                            for (j = 0; j < 4; j++)
-                                if (fi.aFile[j] != null)
-                                    f = fi.aFile[j];
-                        }
-
-                        try {
-                            if (f != null) {
-                                typeface = new AlTypefaces();
-                                typeface.tpf = Typeface.createFromFile(f);
-                                typeface.emul_bold = ebold;
-                                typeface.emul_italic = eitalic;
-                                if (typeface.tpf != null) {
-                                    return typeface;
-                                }
-                            }
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-					break;
-				}
-			}
-			typeface = new AlTypefaces();
-			typeface.tpf = Typeface.create("serif", (int) st0);
-		}
-
-		return typeface;
-	}*/
-
-
-
-	
 	private AlTypefaces getTPF(long style, AlProfileOptions profile) {
 		AlTypefaces tf = collTPF.get(style & (AlStyles.SL_FONT_MASK | AlStyles.STYLE_BOLD | AlStyles.STYLE_ITALIC));
 		if (tf == null) {
@@ -599,14 +438,25 @@ public class AlFonts {
 	public final void clearFontCache() {
 		collTPF.clear();
 	}
-	
-	private void addToCollection(TTFInfo ttfi, File f) {
+
+    private void addToCollectionAddonName(TTFInfo ttfi, File f, AlOneFont parent) {
+		for (String ss : ttfi.AddonName) {
+			TTFInfo newfont = new TTFInfo();
+			newfont.Name = ttfi.Name + "#" + ss;
+			newfont.Type = ttfi.Type;
+			newfont.parent = parent;
+			addToCollection(newfont, f);
+		}
+    }
+
+
+    private void addToCollection(TTFInfo ttfi, File f) {
 		if (ttfi == null || ttfi.Name == null)
 			return;
 		
 		if (ttfi.Name.equalsIgnoreCase("droid sans") ||
-				ttfi.Name.equalsIgnoreCase("droid serif") ||
-				ttfi.Name.equalsIgnoreCase("droid sans mono"))
+            ttfi.Name.equalsIgnoreCase("droid serif") ||
+            ttfi.Name.equalsIgnoreCase("droid sans mono"))
 			return;
 		
 		AlOneFont fi = null;
@@ -615,11 +465,17 @@ public class AlFonts {
 			fi = allfonts.get(i);
 			if (fi.aName.equalsIgnoreCase(ttfi.Name)) {
 				AlOneFont.addFontInfo(fi, ttfi.Type, f);
-				return;
+                if (ttfi.AddonName != null)
+                    addToCollectionAddonName(ttfi, f, fi);
+                return;
 			}
 		}
-		allfonts.add(new AlOneFont(ttfi.Name, ttfi.Type, f));
-	}
+        fi = new AlOneFont(ttfi.Name, ttfi.Type, f, ttfi.parent);
+        allfonts.add(fi);
+        if (ttfi.AddonName != null)
+            addToCollectionAddonName(ttfi, f, fi);
+
+    }
 
 	private void reinitExtPath(String path, final boolean notUseDroid) {
 		try {
@@ -670,8 +526,11 @@ public class AlFonts {
 								flagInsert = false;
 							}
 					}
-					if (flagInsert)
-						addToCollection(TTFScan.getTTFInfo(fileList[i], false), fileList[i]);					
+					if (flagInsert) {
+						TTFInfo tf = TTFScan.getTTFInfo(fileList[i], false);
+						if (tf != null)
+							addToCollection(tf, fileList[i]);
+					}
 				}
 			}
 		}
@@ -686,9 +545,9 @@ public class AlFonts {
 		if (internalFontCount != 0)
 			return;
 		
-		allfonts.add(new AlOneFont("Sans-Serif", 0, null));
-		allfonts.add(new AlOneFont("Serif", 0, null));
-		allfonts.add(new AlOneFont("Monospace", 0, null));
+		allfonts.add(new AlOneFont("Sans-Serif", 0, null, null));
+		allfonts.add(new AlOneFont("Serif", 0, null, null));
+		allfonts.add(new AlOneFont("Monospace", 0, null, null));
 
 		if (resFont != null) {
             for (int i = 0; i < resFont.length; i++)
@@ -705,7 +564,45 @@ public class AlFonts {
 				reinitExtPath(item, false);
 			}
 
-		for (int i = 0; i < allfonts.size(); i++)
+
+		int i, k, cnt;
+		AlOneFont fi;
+
+		for (i = 3; i < allfonts.size(); i++) {
+			fi = allfonts.get(i);
+
+			for (k = 0; k < 4; k++) {
+				if (fi.aFile[k] == null && fi.aFile[k + 4] != null)
+					fi.aFile[k] = fi.aFile[k + 4];
+				fi.aFile[k + 4] = null;
+			}
+
+			if (fi.parent != null) {
+				for (k = 0; k < 4; k++) {
+					if (fi.aFile[k] == null && fi.parent.aFile[k] != null)
+						fi.aFile[k] = fi.parent.aFile[k];
+				}
+
+				cnt = 0;
+				for (k = 0; k < 4; k++) {
+					if (fi.aFile[k] == null) {
+						if (fi.parent.aFile[k] != null)
+							break;
+						cnt++;
+					} else {
+						if (fi.parent.aFile[k] == null || !fi.parent.aFile[k].getName().contentEquals(fi.aFile[k].getName()))
+							break;
+						cnt++;
+					}
+				}
+				if (cnt == 4) {
+					allfonts.remove(i);
+					i--;
+				}
+			}
+		}
+
+		for (i = 0; i < allfonts.size(); i++)
 			allfontsMaps.put(allfonts.get(i).aName, i);
 	}
 	

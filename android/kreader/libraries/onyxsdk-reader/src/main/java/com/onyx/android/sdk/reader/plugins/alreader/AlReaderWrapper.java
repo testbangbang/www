@@ -259,7 +259,13 @@ public class AlReaderWrapper {
     }
 
     public void updateIndentation(final ReaderTextStyle.CharacterIndent indent) {
-        profile.indentParagraph = indent.getIndent() > 0;
+        boolean canIndent = indent.getIndent() > 0;
+        if (canIndent) {
+            profile.textIndentOverrideFromCSS = false;
+        } else {
+            profile.textIndentOverrideFromCSS = true;
+            profile.textIndentDefaultEm = 0;
+        }
     }
 
     public void updatePageMargins(final ReaderTextStyle.Percentage left,
