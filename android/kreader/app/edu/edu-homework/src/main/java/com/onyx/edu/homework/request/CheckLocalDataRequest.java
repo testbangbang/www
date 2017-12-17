@@ -1,12 +1,11 @@
 package com.onyx.edu.homework.request;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
-import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.data.HomeworkState;
@@ -14,7 +13,6 @@ import com.onyx.edu.homework.db.DBDataProvider;
 import com.onyx.edu.homework.db.HomeworkModel;
 import com.onyx.edu.homework.db.QuestionModel;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,11 +35,11 @@ public class CheckLocalDataRequest extends BaseDataRequest {
         if (CollectionUtils.isNullOrEmpty(questions)) {
             return;
         }
-        getLocalAnswer();
+        loadAndSaveQuestions();
         checkHomeworkState();
     }
 
-    private void getLocalAnswer() {
+    private void loadAndSaveQuestions() {
         for (Question question : questions) {
             if (question.isChoiceQuestion()) {
                 QuestionModel model = DBDataProvider.loadQuestion(question.getUniqueId());
@@ -50,12 +48,13 @@ public class CheckLocalDataRequest extends BaseDataRequest {
                             question.getQuestionId(),
                             homeworkId);
                 }
-                // 1. get right answer
+
+                // 1. set right answer
                 // 2. un check option
-                // 3. set option answer
-                setRightAnswer(question, model);
+                // 3. load local option
+                model.setAnswer(question.correctOptions);
                 unCheckOption(question.options);
-                setOptionAnswer(question, model);
+                loadLocalOption(question, model);
                 DBDataProvider.saveQuestion(model);
             }
         }
@@ -70,20 +69,6 @@ public class CheckLocalDataRequest extends BaseDataRequest {
         currentState = HomeworkState.getHomeworkState(state);
     }
 
-    private void setRightAnswer(Question question, QuestionModel model) {
-        List<QuestionOption> options = question.options;
-        if (options == null) {
-            return;
-        }
-        List<String> answer = new ArrayList<>();
-        for (QuestionOption option : options) {
-            if (option.checked) {
-                answer.add(option._id);
-            }
-        }
-        model.setAnswer(answer);
-    }
-
     private void unCheckOption(List<QuestionOption> options) {
         if (options == null) {
             return;
@@ -93,7 +78,7 @@ public class CheckLocalDataRequest extends BaseDataRequest {
         }
     }
 
-    private void setOptionAnswer(Question question, QuestionModel model) {
+    private void loadLocalOption(Question question, QuestionModel model) {
         List<String> values = model.getValues();
         if (values == null) {
             return;
