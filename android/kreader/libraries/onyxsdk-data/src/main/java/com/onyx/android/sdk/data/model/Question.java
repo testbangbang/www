@@ -15,6 +15,7 @@ public class Question implements Serializable {
     public String content;
     public String answers;
     public String analysis;
+    public List<String> correctOptions;
     public int QuesType;
     public int difficulty;
     public List<QuestionOption> options;
@@ -32,6 +33,10 @@ public class Question implements Serializable {
 
     public void setReview(QuestionReview review) {
         this.review = review;
+    }
+
+    public void setCorrectOptions(List<String> correctOptions) {
+        this.correctOptions = correctOptions;
     }
 
     public QuestionReview getReview() {
