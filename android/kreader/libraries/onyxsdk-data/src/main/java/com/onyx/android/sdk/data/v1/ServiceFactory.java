@@ -1,9 +1,12 @@
 package com.onyx.android.sdk.data.v1;
 
+import android.support.annotation.NonNull;
+
 import com.onyx.android.sdk.data.v2.ContentService;
 import com.onyx.android.sdk.data.v2.TokenHeaderInterceptor;
 import com.onyx.android.sdk.utils.CollectionUtils;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -117,12 +120,16 @@ public class ServiceFactory {
         }
     }
 
-    private static void removeInterceptors(OkHttpClient.Builder builder, Class clazz) {
+    private static void removeInterceptors(OkHttpClient.Builder builder, Class[] clazzs) {
         if (!CollectionUtils.isNullOrEmpty(builder.interceptors())) {
-            for (Interceptor interceptor : builder.interceptors()) {
-                if (clazz.isInstance(interceptor)) {
-                    builder.interceptors().remove(interceptor);
-                    removeInterceptors(builder, clazz);
+            Iterator<Interceptor> iterator = builder.interceptors().iterator();
+            while (iterator.hasNext()) {
+                Interceptor interceptor = iterator.next();
+                for (Class clazz : clazzs) {
+                    if (clazz.isInstance(interceptor)) {
+                        iterator.remove();
+                        break;
+                    }
                 }
             }
         }
@@ -138,13 +145,27 @@ public class ServiceFactory {
     }
 
     public static Retrofit addRetrofitTokenHeader(final String baseUrl, final String tokenKey, final String token) {
+        return addRetrofitInterceptor(baseUrl, new TokenHeaderInterceptor(tokenKey, token));
+    }
+
+    public static Retrofit addRetrofitInterceptor(final String baseUrl, @NonNull final Interceptor interceptor) {
+        return addRetrofitInterceptor(baseUrl, new Interceptor[]{interceptor});
+    }
+
+    public static Retrofit addRetrofitInterceptor(final String baseUrl, @NonNull final Interceptor[] interceptors) {
         OkHttpClient okHttpClient = clientMap.get(baseUrl);
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         if (okHttpClient != null) {
             restoreBuilderFromClient(okHttpClient, builder);
-            removeInterceptors(builder, TokenHeaderInterceptor.class);
+            Class[] clazzs = new Class[interceptors.length];
+            for (int i = 0; i < clazzs.length; i++) {
+                clazzs[i] = interceptors[i].getClass();
+            }
+            removeInterceptors(builder, clazzs);
         }
-        builder.addInterceptor(new TokenHeaderInterceptor(tokenKey, token));
+        for (Interceptor interceptor : interceptors) {
+            builder.addInterceptor(interceptor);
+        }
         okHttpClient = builder.build();
         Retrofit retrofit = getBaseRetrofitBuilder(baseUrl).client(okHttpClient).build();
         retrofitMap.put(baseUrl, retrofit);
@@ -157,5 +178,10 @@ public class ServiceFactory {
         restoreBuilderFromClient(clientMap.get(baseUrl), builder);
         builder.authenticator(auth);
         clientMap.put(baseUrl, builder.build());
+    }
+
+    public static synchronized void removeClient(final String baseUrl) {
+        clientMap.remove(baseUrl);
+        retrofitMap.remove(baseUrl);
     }
 }

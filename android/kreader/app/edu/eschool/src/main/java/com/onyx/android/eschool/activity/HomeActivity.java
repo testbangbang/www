@@ -24,6 +24,7 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -83,6 +84,7 @@ public class HomeActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mergeDisplayUpdate();
         final View view = findViewById(android.R.id.content);
         loadAuthToken(new BaseCallback() {
             @Override
@@ -92,6 +94,11 @@ public class HomeActivity extends BaseActivity {
                 }
             }
         });
+    }
+
+    private void mergeDisplayUpdate() {
+        Device.currentDevice().mergeDisplayUpdate(
+                DeviceConfig.sharedInstance(getApplicationContext()).getMergeUpdateTimeout(), UpdateMode.GC_CLEAR);
     }
 
     @Override

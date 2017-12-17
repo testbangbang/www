@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -42,6 +41,7 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.ShapeUtils;
 import com.onyx.android.sdk.ui.activity.OnyxAppCompatActivity;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
@@ -640,5 +640,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     public void resetFullUpdate() {
         this.fullUpdate = false;
+    }
+
+    public boolean shouldResume() {
+        return !getNoteViewHelper().inUserErasing() && ShapeFactory.isDFBShape(shapeDataInfo.getCurrentShapeType());
     }
 }
