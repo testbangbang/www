@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -151,6 +152,7 @@ public class QuestionFragment extends BaseFragment {
         button.setTextSize(getResources().getDimension(R.dimen.question_option_text_size));
         button.setChecked(option.checked);
         button.setEnabled(enable);
+        button.setGravity(Gravity.TOP);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
