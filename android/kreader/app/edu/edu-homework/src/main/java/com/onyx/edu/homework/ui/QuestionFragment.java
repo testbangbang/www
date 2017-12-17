@@ -133,7 +133,10 @@ public class QuestionFragment extends BaseFragment {
         List<QuestionOption> options = question.options;
         for (QuestionOption option : options) {
             CompoundButton button = createCompoundButton(question, option);
-            group.addView(button);
+            RadioGroup.LayoutParams lp = new RadioGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            int margin = (int) getResources().getDimension(R.dimen.question_option_margin);
+            lp.setMargins(0, margin, 0, margin);
+            group.addView(button, lp);
             if (option.checked) {
                 group.check(button.getId());
             }
