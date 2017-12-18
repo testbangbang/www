@@ -148,7 +148,7 @@ public class QuestionFragment extends BaseFragment {
         final boolean single = question.isSingleChoiceQuestion();
         final boolean enable = getDataBundle().isDoing();
         final CompoundButton button = single ? new RadioButton(getActivity()) : new CheckBox(getActivity());
-        button.setText(Html.fromHtml(option.value, new Base64ImageParser(getActivity()), null));
+        button.setText(Html.fromHtml(StringUtils.filterHtmlWrapChar(option.value), new Base64ImageParser(getActivity()), null));
         button.setTextSize(getResources().getDimension(R.dimen.question_option_text_size));
         button.setChecked(option.checked);
         button.setEnabled(enable);
@@ -242,7 +242,7 @@ public class QuestionFragment extends BaseFragment {
             return;
         }
         if (question.answers != null) {
-            Spanned answers = TextUtils.fromHtml(question.answers, new Base64ImageParser(getActivity()), null);
+            Spanned answers = TextUtils.fromHtml(StringUtils.filterHtmlWrapChar(question.answers), new Base64ImageParser(getActivity()), null);
             binding.rightAnswer.setText(getString(R.string.right_answer, answers));
         }
         if (question.review != null) {
