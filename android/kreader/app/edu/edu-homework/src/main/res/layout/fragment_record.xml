@@ -12,6 +12,7 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:textColor="@color/text_color"
             android:layout_margin="10dp"
             android:text="【客观题】"
             android:textSize="24sp"
@@ -26,6 +27,7 @@
             android:layout_height="0dp"/>
 
         <TextView
+            android:textColor="@color/text_color"
             android:layout_margin="10dp"
             android:text="【主观题】"
             android:textSize="24sp"

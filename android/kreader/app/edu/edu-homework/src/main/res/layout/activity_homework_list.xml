@@ -33,6 +33,7 @@
                 android:layout_height="match_parent"/>
 
             <TextView
+                android:textColor="@color/text_color"
                 android:id="@+id/message"
                 android:gravity="center"
                 android:textSize="@dimen/homework_text_size"
