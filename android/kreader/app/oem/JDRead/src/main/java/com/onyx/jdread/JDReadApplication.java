@@ -8,6 +8,7 @@ import android.support.multidex.MultiDexApplication;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.DeviceReceiver;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.common.ActionChain;
 import com.onyx.jdread.common.AppBaseInfo;
@@ -42,6 +43,7 @@ public class JDReadApplication extends MultiDexApplication {
     private void initConfig() {
         instance = this;
         DataManager.init(instance, null);
+        PreferenceManager.init(this);
         initEventListener();
         initAppBaseInfo();
     }

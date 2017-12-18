@@ -19,4 +19,9 @@ public class CommonUtils {
         }
         return false;
     }
+
+    public static float calculateDiscount(float oldPrice, float newPrice) {
+        float i = newPrice/oldPrice;
+        return i * 10;
+    }
 }

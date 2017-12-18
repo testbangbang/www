@@ -14,6 +14,7 @@ public class StoreDataBundle {
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
     private BookStoreViewModel storeViewModel = new BookStoreViewModel(getEventBus());
+    private BookDetailViewModel bookDetailViewModel = new BookDetailViewModel(getEventBus());
 
     public StoreDataBundle() {
 
@@ -41,5 +42,9 @@ public class StoreDataBundle {
 
     public BookStoreViewModel getStoreViewModel() {
         return storeViewModel;
+    }
+
+    public BookDetailViewModel getBookDetailViewModel() {
+        return bookDetailViewModel;
     }
 }

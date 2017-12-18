@@ -16,4 +16,16 @@
     <string name="back_to_top">返回顶部</string>
     <string name="view_all_books">查看全部%1$s万册图书</string>
     <string name="search_view_hint">请输入搜索内容</string>
+    <string name="book_detail_yuedou_price">%.0f阅豆</string>
+    <string name="book_detail_button_try_read">立即阅读</string>
+    <string name="book_detail_button_download_book">全本下载</string>
+    <string name="cart">购物车</string>
+    <string name="book_detail_text_view_content_introduce">内容简介</string>
+    <string name="book_detail_view_directory">查看目录</string>
+    <string name="book_detail_view_comments">查看评论</string>
+    <string name="book_detail_view_copyright">版权信息</string>
+    <string name="book_detail_text_view_recommend_title">选择此书的人还喜欢</string>
+    <string name="book_detail_yuedou_discount">%.1f折</string>
+    <string name="book_detail_star">%.1f</string>
+    <string name="title_bar_title">图书详情</string>
 </resources>

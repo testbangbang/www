@@ -4,8 +4,6 @@
 
     <data class="SubjectModelItemBinding">
 
-        <import type="android.view.View" />
-
         <variable
             name="bookBean"
             type="com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean" />
@@ -14,7 +12,6 @@
     <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:onClick="@{()->bookBean.itemClicked()}"
         android:padding="@dimen/subject_model_item_padding">
 
         <LinearLayout

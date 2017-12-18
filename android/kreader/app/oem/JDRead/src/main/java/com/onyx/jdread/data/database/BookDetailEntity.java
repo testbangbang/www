@@ -32,7 +32,7 @@ public class BookDetailEntity extends BaseModel {
     @Column
     public String info;
     @Column
-    public int star;
+    public float star;
     @Column
     public String author;
     @Column

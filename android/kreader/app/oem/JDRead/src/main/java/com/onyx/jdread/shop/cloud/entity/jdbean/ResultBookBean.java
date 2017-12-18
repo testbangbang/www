@@ -55,8 +55,4 @@ public class ResultBookBean extends BaseObservable{
     public boolean isFree;
     public boolean isUserFluentReadAddToCard;
     public String newImageUrl;
-
-    public void itemClicked(){
-
-    }
 }

@@ -17,4 +17,16 @@
     <string name="back_to_top">Back to top</string>
     <string name="view_all_books">View all the %1$s million books</string>
     <string name="search_view_hint">Please input what you want to search</string>
+    <string name="book_detail_yuedou_price">%.0f Read Bean</string>
+    <string name="book_detail_button_try_read">Now Read</string>
+    <string name="book_detail_button_download_book">Download Book</string>
+    <string name="cart">Cart</string>
+    <string name="book_detail_text_view_content_introduce">Introduce</string>
+    <string name="book_detail_view_directory">Directory</string>
+    <string name="book_detail_view_comments">Comments</string>
+    <string name="book_detail_view_copyright">CopyRight</string>
+    <string name="book_detail_text_view_recommend_title">Book Recommend</string>
+    <string name="book_detail_yuedou_discount">%.1f Discount</string>
+    <string name="book_detail_star">%.1f</string>
+    <string name="title_bar_title">Book Detail</string>
 </resources>

@@ -11,6 +11,9 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.SubjectModelItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.event.OnBookItemClickEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -20,11 +23,12 @@ import java.util.List;
 
 public class SubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, ResultBookBean, ResultBookBean> {
 
+    private EventBus eventBus;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_subject_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_subject_col);
 
-    public SubjectAdapter() {
-
+    public SubjectAdapter(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public void setRowAndCol(int row, int col) {
@@ -56,6 +60,8 @@ public class SubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, Res
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
         final ResultBookBean bookBean = getItemVMList().get(position);
         ModelViewHolder viewHolder = (ModelViewHolder) holder;
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
         viewHolder.bindTo(bookBean);
     }
 
@@ -64,6 +70,18 @@ public class SubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, Res
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object tag = v.getTag();
+        if (tag == null) {
+            return;
+        }
+        int position = (int) tag;
+        if (eventBus != null && getItemVMList() != null) {
+            eventBus.post(new OnBookItemClickEvent(getItemVMList().get(position)));
+        }
     }
 
     static class ModelViewHolder extends PageRecyclerView.ViewHolder {

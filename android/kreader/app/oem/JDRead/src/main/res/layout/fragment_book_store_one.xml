@@ -56,6 +56,7 @@
                     android:background="@drawable/text_no_stoke_background"
                     android:drawablePadding="@dimen/view_all_drawable_padding"
                     android:drawableRight="@mipmap/ic_go_view_all"
+                    android:gravity="center"
                     android:onClick="@{()->viewModel.coverSubjectOneItems.onViewAllClick()}"
                     android:text="@string/view_all"
                     android:textSize="@dimen/level_three_heading_font" />
@@ -97,6 +98,7 @@
                     android:background="@drawable/text_no_stoke_background"
                     android:drawablePadding="@dimen/view_all_drawable_padding"
                     android:drawableRight="@mipmap/ic_go_view_all"
+                    android:gravity="center"
                     android:onClick="@{()->viewModel.coverSubjectTwoItems.onViewAllClick()}"
                     android:text="@string/view_all"
                     android:textSize="@dimen/level_three_heading_font" />

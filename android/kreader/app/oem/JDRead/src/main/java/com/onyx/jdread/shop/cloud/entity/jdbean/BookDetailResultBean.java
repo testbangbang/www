@@ -105,7 +105,7 @@ public class BookDetailResultBean {
         private boolean isFluentRead;
         private boolean isAlreadyBorrow;
         private boolean isEBook;
-        private int star;
+        private float star;
         private boolean isBorrow;
         private boolean isBuyBorrow;
         private boolean isFree;
@@ -387,7 +387,7 @@ public class BookDetailResultBean {
             this.bookName = bookName;
         }
 
-        public int getStar() {
+        public float getStar() {
             return star;
         }
 

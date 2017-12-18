@@ -57,6 +57,14 @@ public class CloudApiContext {
         public static final String CATEGORY_LIST = "CategoryList";
     }
 
+    public static class RecommendList {
+        public static final String BOOK_ID = "bookId";
+        public static final String BOOK_DETAIL_RECOMMEND_LIST_V2 = "bookDetailRecommendListV2";
+        public static final String BOOK_TYPE = "ebook";
+        public static final String BOOK_TYPE_ID = "eBookId";
+        public static final String PAGE_BOOK_ID = "paperBookId";
+    }
+
     public static String getJDBooxBaseUrl() {
         return JD_BOOK_STORE_URL;
     }

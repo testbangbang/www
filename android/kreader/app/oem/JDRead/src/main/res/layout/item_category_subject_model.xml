@@ -4,11 +4,10 @@
 
     <data class="CategorySubjectModelItemBinding">
 
-        <import type="android.view.View" />
-
         <variable
             name="categoryListBean"
             type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean" />
+
     </data>
 
     <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
@@ -16,7 +15,6 @@
         android:layout_height="match_parent"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:onClick="@{()->categoryListBean.onItemClicked()}"
         android:padding="@dimen/banner_subject_model_item_padding">
 
         <TextView

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="bookDetailViewModel"
+            type="com.onyx.jdread.shop.model.BookDetailViewModel" />
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/layout_title_bar_height"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/title_bar_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:onClick="@{()->bookDetailViewModel.onTopBackClick()}"
+            android:orientation="horizontal"
+            android:visibility="visible">
+
+            <ImageView
+                android:id="@+id/title_bar_image_view_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_title_back" />
+
+            <TextView
+                android:id="@+id/title_bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_bar_title"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</layout>

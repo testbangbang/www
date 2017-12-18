@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="bookDetailViewModel"
+            type="com.onyx.jdread.shop.model.BookDetailViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:layout_marginLeft="@dimen/fragment_book_detail_info_margin_right_and_left"
+        android:layout_marginRight="@dimen/fragment_book_detail_info_margin_right_and_left"
+        android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/book_details_back_layout"
+            layout="@layout/layout_title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:bookDetailViewModel="@{bookDetailViewModel}" />
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <include
+                android:id="@+id/book_detail_info"
+                layout="@layout/layout_book_detail_info"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="visible"
+                bind:bookDetailViewModel="@{bookDetailViewModel}" />
+
+            <include
+                android:id="@+id/book_detail_directory"
+                layout="@layout/layout_book_detail_directory"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                bind:bookDetailViewModel="@{bookDetailViewModel}" />
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+</layout>

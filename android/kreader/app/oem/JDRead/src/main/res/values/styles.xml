@@ -23,4 +23,10 @@
         <item name="android:background">@drawable/selected_background</item>
     </style>
 
+    <style name="RatingBarStyle" parent="Widget.AppCompat.RatingBar">
+        <item name="android:progressDrawable">@drawable/book_detail_ratingbar</item>
+        <item name="android:minHeight">@dimen/rating_bar_style_min_height</item>
+        <item name="android:maxHeight">@dimen/rating_bar_style_max_height</item>
+    </style>
+
 </resources>

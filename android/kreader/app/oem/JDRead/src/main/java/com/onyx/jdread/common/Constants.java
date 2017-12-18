@@ -12,4 +12,6 @@ public class Constants {
     public static boolean isUseCache = true;
     public static final String POST = "POST";
     public static final String MD_5 = "MD5";
+
+    public static final String SP_KEY_BOOK_ID = "book_id";
 }

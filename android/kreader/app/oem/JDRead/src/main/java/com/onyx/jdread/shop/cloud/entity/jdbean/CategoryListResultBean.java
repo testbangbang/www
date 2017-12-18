@@ -30,9 +30,5 @@ public class CategoryListResultBean {
             public int catType;
             public int isLeaf;
         }
-
-        public void onItemClicked() {
-
-        }
     }
 }

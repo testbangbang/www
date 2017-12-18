@@ -11,6 +11,9 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.CategorySubjectModelItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean;
+import com.onyx.jdread.shop.event.OnCategoryItemClickEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -20,11 +23,12 @@ import java.util.List;
 
 public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CatListBean, CatListBean> {
 
+    private EventBus eventBus;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_category_recycle_view_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_category_recycle_view_col);
 
-    public CategorySubjectAdapter() {
-
+    public CategorySubjectAdapter(EventBus eventBus) {
+        this.eventBus = eventBus;
     }
 
     public void setRowAndCol(int row, int col) {
@@ -56,6 +60,8 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
     public void onPageBindViewHolder(PageRecyclerView.ViewHolder holder, int position) {
         final CatListBean catListBean = getItemVMList().get(position);
         ModelViewHolder viewHolder = (ModelViewHolder) holder;
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
         viewHolder.bindTo(catListBean);
     }
 
@@ -64,6 +70,18 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
         super.setRawData(rawData, context);
         setItemVMList(rawData);
         notifyDataSetChanged();
+    }
+
+    @Override
+    public void onClick(View v) {
+        Object tag = v.getTag();
+        if (tag == null) {
+            return;
+        }
+        int position = (int) tag;
+        if (eventBus != null && getItemVMList() != null) {
+            eventBus.post(new OnCategoryItemClickEvent(getItemVMList().get(position)));
+        }
     }
 
     static class ModelViewHolder extends PageRecyclerView.ViewHolder {

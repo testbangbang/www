@@ -4,6 +4,7 @@ import android.content.Context;
 import android.databinding.BaseObservable;
 import android.support.annotation.CallSuper;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 
@@ -16,7 +17,7 @@ import java.util.List;
  */
 
 public abstract class PageAdapter<VH extends RecyclerView.ViewHolder, T extends Object, VM extends BaseObservable>
-        extends PageRecyclerView.PageAdapter<VH> {
+        extends PageRecyclerView.PageAdapter<VH> implements View.OnClickListener {
 
     public List<VM> getItemVMList() {
         return itemVMList;

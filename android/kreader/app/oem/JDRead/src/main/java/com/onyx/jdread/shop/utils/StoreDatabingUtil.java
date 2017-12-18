@@ -7,6 +7,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
+import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
 
@@ -49,4 +50,11 @@ public class StoreDatabingUtil {
         }
     }
 
+    @BindingAdapter({"recommendItems"})
+    public static void setRecommendItems(PageRecyclerView recyclerView, List items) {
+        RecommendAdapter adapter = (RecommendAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
 }

@@ -31,6 +31,7 @@ import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -67,7 +68,6 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void initView() {
-        bookStoreBinding.setView(this);
         bookStoreBinding.scrollBar.setTotal(SCROLL_TOTAL);
         storeOneBinding = bookStoreBinding.bookStoreOne;
         storeTwoBinding = bookStoreBinding.bookStoreTwo;
@@ -153,7 +153,7 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void setRecyclerViewBanner() {
-        BannerSubjectAdapter adapter = new BannerSubjectAdapter();
+        BannerSubjectAdapter adapter = new BannerSubjectAdapter(getEventBus());
         PageRecyclerView recyclerView = storeOneBinding.recyclerViewBanner;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
@@ -161,7 +161,7 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void setRecyclerViewCoverSubjectOne() {
-        SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter();
+        SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter(getEventBus());
         PageRecyclerView recyclerViewOne = storeOneBinding.recyclerViewCoverSubjectOne;
         recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewOne.addItemDecoration(itemDecoration);
@@ -169,7 +169,7 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void setRecyclerViewCoverSubjectTwoBackUp() {
-        SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter();
+        SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter(getEventBus());
         PageRecyclerView recyclerViewTwo = storeOneBinding.recyclerViewCoverSubjectTwoBackUp;
         recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewTwo.addItemDecoration(itemDecoration);
@@ -177,7 +177,7 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void setRecyclerViewCoverSubjectTwo() {
-        SubjectAdapter adapter = new SubjectAdapter();
+        SubjectAdapter adapter = new SubjectAdapter(getEventBus());
         PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCoverSubjectTwo;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
@@ -185,21 +185,21 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void setRecyclerViewCategory() {
-        CategorySubjectAdapter adapter = new CategorySubjectAdapter();
+        CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus());
         PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCategorySubject;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
     }
 
     private void setRecyclerViewCoverSubjectFourBackup() {
-        SubjectAdapter adapter = new SubjectAdapter();
+        SubjectAdapter adapter = new SubjectAdapter(getEventBus());
         PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCoverSubjectFourBackup;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
     }
 
     private void setRecyclerViewCoverSubjectFour() {
-        SubjectAdapter adapter = new SubjectAdapter();
+        SubjectAdapter adapter = new SubjectAdapter(getEventBus());
         PageRecyclerView recyclerView = storeThreeBinding.recyclerViewCoverSubjectFour;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
@@ -252,12 +252,12 @@ public class StoreFragment extends BaseFragment {
         });
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onStoreBakcTopClick(OnStoreBakcTopClick event) {
         setCurrent(R.id.book_store_one, SCROLL_ONE);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(OnRankViewClick event) {
 
     }

@@ -9,9 +9,12 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.common.ViewConfig;
 import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.event.ChangeChildViewEvent;
@@ -20,6 +23,8 @@ import com.onyx.jdread.event.PushChildViewToStackEvent;
 import com.onyx.jdread.model.FunctionBarModel;
 import com.onyx.jdread.model.MainViewModel;
 import com.onyx.jdread.model.SystemBarModel;
+import com.onyx.jdread.shop.event.OnBookItemClickEvent;
+import com.onyx.jdread.shop.ui.BookDetailFragment;
 import com.onyx.jdread.shop.ui.StoreFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -51,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLibrary() {
+        JDReadApplication.getStoreDataBundle().getEventBus().register(this);
         EventBus.getDefault().register(this);
     }
 
@@ -72,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
+        JDReadApplication.getStoreDataBundle().getEventBus().unregister(this);
         super.onDestroy();
     }
 
@@ -177,5 +184,11 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeChildViewEvent(ChangeChildViewEvent event) {
         switchCurrentFragment(event.childViewName);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookItemClickEvent(OnBookItemClickEvent event) {
+        PreferenceManager.setIntValue(JDReadApplication.getInstance() , Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
+        switchCurrentFragment(BookDetailFragment.class.getName());
     }
 }
