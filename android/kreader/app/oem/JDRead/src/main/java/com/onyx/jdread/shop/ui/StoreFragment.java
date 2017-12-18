@@ -49,7 +49,7 @@ public class StoreFragment extends BaseFragment {
     private FragmentBookStoreOneBinding storeOneBinding;
     private FragmentBookStoreTwoBinding storeTwoBinding;
     private FragmentBookStoreThreeBinding storeThreeBinding;
-    private int bannerSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_banner_recycle_view_space);
+    private int bannerSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_recycle_view_space);
     private DividerItemDecoration itemDecoration;
 
     @Nullable

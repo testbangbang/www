@@ -9,7 +9,8 @@
     <integer name="toast_view_shadow_dy">0</integer>
     <integer name="store_banner_recycle_view_row">1</integer>
     <integer name="store_banner_recycle_view_col">2</integer>
-    <integer name="store_banner_recycle_view_space">8</integer>
+    <integer name="book_store_recycle_view_space">8</integer>
     <integer name="store_category_recycle_view_row">2</integer>
     <integer name="store_category_recycle_view_col">2</integer>
+    <integer name="book_detail_recycle_view_space">10</integer>
 </resources>

@@ -21,6 +21,7 @@ import com.onyx.jdread.shop.action.StoreBookRecommendListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
+import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
@@ -35,9 +36,10 @@ import org.greenrobot.eventbus.ThreadMode;
 public class BookDetailFragment extends BaseFragment {
 
     private FragmentBookDetailBinding bookDetailBinding;
-    private int bannerSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_banner_recycle_view_space);
+    private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
     private DividerItemDecoration itemDecoration;
     private int ebookId;
+    private PageRecyclerView recyclerViewRecommend;
 
     @Nullable
     @Override
@@ -70,15 +72,16 @@ public class BookDetailFragment extends BaseFragment {
 
     private void setRecommendRecycleView() {
         RecommendAdapter adapter = new RecommendAdapter(getEventBus());
-        PageRecyclerView recyclerView = bookDetailBinding.bookDetailInfo.recyclerViewRecommend;
-        recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        recyclerView.setAdapter(adapter);
+        recyclerViewRecommend = bookDetailBinding.bookDetailInfo.recyclerViewRecommend;
+        recyclerViewRecommend.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerViewRecommend.addItemDecoration(itemDecoration);
+        recyclerViewRecommend.setAdapter(adapter);
     }
 
     private void initDividerItemDecoration() {
         itemDecoration = new DividerItemDecoration(JDReadApplication.getInstance(), DividerItemDecoration.HORIZONTAL_LIST);
         itemDecoration.setDrawLine(false);
-        itemDecoration.setSpace(bannerSpace);
+        itemDecoration.setSpace(bookDetailSpace);
     }
 
     @Override
@@ -141,6 +144,11 @@ public class BookDetailFragment extends BaseFragment {
     public void onRecommendItemClickEvent(OnRecommendItemClickEvent event) {
         ResultBookBean bookBean = event.getBookBean();
         setBookId(bookBean.ebookId);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onRecommendNextPageEvent(OnRecommendNextPageEvent event) {
+        recyclerViewRecommend.nextPage();
     }
 
     public void setBookId(int ebookId) {

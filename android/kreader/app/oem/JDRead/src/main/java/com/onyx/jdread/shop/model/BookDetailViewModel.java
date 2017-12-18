@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -71,6 +72,10 @@ public class BookDetailViewModel extends BaseObservable {
 
     public void onCopyrightClick() {
 
+    }
+
+    public void onRecommendNextPageClick() {
+        getEventBus().post(new OnRecommendNextPageEvent());
     }
 
 }

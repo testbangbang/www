@@ -53,7 +53,7 @@
     <dimen name="auto_page_web_view_margin_left">10dp</dimen>
     <dimen name="fragment_book_detail_margin_top_and_bottom">10dp</dimen>
     <dimen name="fragment_book_detail_info_margin_right_and_left">15dp</dimen>
-    <dimen name="layout_book_detail_cover_width">120dp</dimen>
+    <dimen name="layout_book_detail_cover_width">115dp</dimen>
     <dimen name="layout_book_detail_cover_height">170dp</dimen>
     <dimen name="layout_book_detail_contain_book_info_margin_left">20dp</dimen>
     <dimen name="book_detail_author_margin_top">10dp</dimen>
@@ -65,7 +65,7 @@
     <dimen name="dashed_line_height">1dp</dimen>
     <dimen name="book_detail_margin">10dp</dimen>
     <dimen name="book_detail_recycler_view_recommend_height">120dp</dimen>
-    <dimen name="item_book_detail_recommend_width">90dp</dimen>
+    <dimen name="item_book_detail_recommend_width">85dp</dimen>
     <dimen name="item_book_detail_recommend_height">120dp</dimen>
     <dimen name="book_detail_sub_info_margin_left">8dp</dimen>
     <dimen name="book_detail_button_padding">10dp</dimen>
