@@ -144,7 +144,7 @@ public class RecordFragment extends BaseFragment {
                     viewHolder.setText(R.id.answer, getQuestionAnswer(question));
                 }
                 boolean showRightLine = ((position + 1) % column) == 0
-                        || (position < column && position == (getDataCount() - 1));
+                        || position == (getDataCount() - 1);
                 viewHolder.setVisibility(R.id.right_line, showRightLine ? View.VISIBLE : View.GONE);
             }
         });
