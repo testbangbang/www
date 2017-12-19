@@ -65,6 +65,7 @@ import com.onyx.android.plato.presenter.MainPresenter;
 import com.onyx.android.plato.presenter.UserCenterPresenter;
 import com.onyx.android.plato.utils.ApkUtils;
 import com.onyx.android.plato.utils.SystemUtils;
+import com.onyx.android.plato.utils.Utils;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
@@ -193,6 +194,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                 break;
         }
         setTitleAndIcon();
+        Utils.hideSoftWindow(this);
     }
 
     private void switchToOldFragment() {

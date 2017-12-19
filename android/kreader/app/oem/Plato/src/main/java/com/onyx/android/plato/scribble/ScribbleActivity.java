@@ -108,14 +108,12 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
     protected void onResume() {
         addSurfaceViewCallback();
         super.onResume();
-        DeviceUtils.setFullScreenOnResume(this, true);
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         noteManager.sync(true, false);
-        DeviceUtils.setFullScreenOnResume(this, false);
         removeSurfaceViewCallback();
     }
 

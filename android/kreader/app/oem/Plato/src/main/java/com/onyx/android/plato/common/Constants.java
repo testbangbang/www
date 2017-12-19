@@ -18,8 +18,9 @@ public class Constants {
     public static final String QUESTION_ID = "question_id";
     public static final String QUESTION_TITLE = "question_title";
     public static final String QUESTION_TAG = "question_tag";
-    public static final String APK_NAME = "Sun.apk";
+    public static final String APK_NAME = "Plato.apk";
     public static final String APK_DOWNLOAD_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + Constants.APK_NAME;
+    public static final String URL_PATH = Device.currentDevice.getExternalStorageDirectory() + File.separator + "plato_url.txt";
     public static final String UPDATE_URL = "update_url";
     public static final String UPDATE_ZIP = "update.zip";
     public static boolean isUseCache = true;
