@@ -204,15 +204,13 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnLongC
 
     private void changeNaturalLightProgress(Context context, String optionWarm, String optionCold) {
         if (OPTION_1_WARM_LIGHT.equals(optionWarm) && OPTION_1_COLD_LIGHT.equals(optionCold)) {
-            setNaturalLightProgress(context, optionWarm, optionCold, 0, 0);
+            setNaturalLightProgress(context, optionWarm, optionCold, 3, 0);
         }
         if (OPTION_2_WARM_LIGHT.equals(optionWarm) && OPTION_2_COLD_LIGHT.equals(optionCold)) {
-            setNaturalLightProgress(context, optionWarm, optionCold, mRatingBarWarmLightSettings.getMax()/2,
-                    mRatingBarColdLightSettings.getMax()/2);
+            setNaturalLightProgress(context, optionWarm, optionCold, 6, 12);
         }
         if (OPTION_3_WARM_LIGHT.equals(optionWarm) && OPTION_3_COLD_LIGHT.equals(optionCold)) {
-            setNaturalLightProgress(context, optionWarm, optionCold, mRatingBarWarmLightSettings.getMax(),
-                    mRatingBarColdLightSettings.getMax());
+            setNaturalLightProgress(context, optionWarm, optionCold, 15, 17);
         }
     }
 
@@ -229,9 +227,9 @@ public class DialogNaturalLightBrightness extends Dialog implements View.OnLongC
     }
 
     private void setLightRatingBarDefaultProgress() {
-        int coldValue = getSettingsSystemInt(getContext(), COLD_LIGHT_VALUE, 0);
+        int coldValue = FrontLightController.getColdLightDeviceValue(getContext());
         mRatingBarColdLightSettings.setProgress(getIndex(coldValue));
-        int warmValue = getSettingsSystemInt(getContext(), WARM_LIGHT_VALUE, 0);
+        int warmValue = FrontLightController.getWarmLightDeviceValue(getContext());
         mRatingBarWarmLightSettings.setProgress(getIndex(warmValue));
     }
 

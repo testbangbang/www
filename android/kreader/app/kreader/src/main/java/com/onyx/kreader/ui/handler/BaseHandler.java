@@ -59,7 +59,7 @@ public abstract class BaseHandler {
     private static final float IGNORE_PROPORTIONS_WIDTH = 0.95f;
     private static final float IGNORE_PROPORTIONS_HEIGHT_START = 0.50f;
     private static final float IGNORE_PROPORTIONS_HEIGHT_END = 0.60f;
-    private static final float MIN_SLIDE_DISTANCE = 4;
+    private static final float MIN_SLIDE_DISTANCE = 6;
 
     private Point startPoint = new Point();
     private HandlerManager parent;
@@ -341,18 +341,7 @@ public abstract class BaseHandler {
         if (DeviceConfig.sharedInstance(context).hasFrontLight()) {
             adjustFrontLight(context, distanceY, FrontLightController.FRONT_LIGHT_TYPE);
         } else if (DeviceConfig.sharedInstance(context).hasNaturalLight()) {
-            adjustNaturalLight(context, e1, e2, distanceY);
-        }
-    }
-
-    private void adjustNaturalLight(Context context, MotionEvent e1, MotionEvent e2, float distanceY) {
-        float e1Y = e1.getY();
-        float e2Y = e2.getY();
-        double halfHeight = getHeightPixels(context) * 0.5;
-        if (e1Y < halfHeight && e2Y < halfHeight) {
-            adjustFrontLight(context, distanceY, FrontLightController.WARN_LIGHT_TYPE);
-        } else if (e1Y > halfHeight && e2Y > halfHeight) {
-            adjustFrontLight(context, distanceY, FrontLightController.COLD_LIGHT_TYPE);
+            adjustFrontLight(context, distanceY, FrontLightController.NATURAL_LIGHT_TYPE);
         }
     }
 
