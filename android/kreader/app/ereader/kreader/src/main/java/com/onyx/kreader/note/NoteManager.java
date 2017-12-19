@@ -294,6 +294,8 @@ public class NoteManager {
 
     public void restoreCurrentShapeType() {
         getNoteDrawingArgs().restoreCurrentShapeType();
+        updateInUserErasingState();
+        updateRenderByFrameworkState();
     }
 
     public void setCurrentStrokeWidth(float w) {
