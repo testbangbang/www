@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -67,6 +68,10 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             context = contextWeakReference.get();
             DeviceBind deviceBind = null;
             try {
+                boolean success = detectMacAddress(context, 2);
+                if (!success) {
+                    return null;
+                }
                 cacheFile.getParentFile().mkdirs();
                 cacheFile.createNewFile();
                 deviceBind = createDeviceBind(context);
@@ -111,9 +116,19 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         return deviceBind;
     }
 
+    static public boolean detectMacAddress(Context context, int detectCount) {
+        String mac;
+        for (int i = 0; i < detectCount; i++) {
+            mac = NetworkUtil.getMacAddress(context);
+            if (StringUtils.isNotBlank(mac)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static boolean checkCacheQRFile() {
         return cacheFile.exists() && cacheFile.canRead();
     }
-
 }
 
