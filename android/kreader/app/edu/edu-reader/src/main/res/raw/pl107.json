@@ -5,7 +5,7 @@
   "askForClose" : true,
   "supportColor" : true,
   "defaultGamma": 100,
-  "defaultTextGamma": 150,
+  "defaultTextGamma": 100,
   "fixedGamma": 100,
   "frontLight" : 100,
   "regalEnable" : false,

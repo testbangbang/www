@@ -76,7 +76,8 @@ public class SettingConfig {
         static private final String CALIBRATION_PACKAGE_NAME_TAG = "calibration_package_name";
         static private final String CALIBRATION_CLASS_NAME_TAG = "calibration_class_name";
 
-        static  private  final String TEST_APPS_TAG = "test_apps";
+        static private final String TEST_APPS_TAG = "test_apps";
+        static private final String SHOW_TEST_APPS = "show_test_apps";
 
         static private final String ENABLE_AUTO_WIFI_RESCAN_TAG = "enable_auto_wifi_scan";
         static private final String CUSTOM_ROW_COUNT_TAG = "custom_row_count";
@@ -536,6 +537,14 @@ public class SettingConfig {
             return null;
         }
         return result;
+    }
+
+    public boolean showTestsApp() {
+        Boolean show = getData(Custom.SHOW_TEST_APPS, Boolean.class);
+        if (show == null) {
+            return true;
+        }
+        return show;
     }
 
     public boolean isEnableSystemSettings() {
