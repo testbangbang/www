@@ -7,19 +7,19 @@ import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
-import com.onyx.jdread.shop.model.StoreDataBundle;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestRecommendList;
 
 /**
  * Created by jackdeng on 2017/12/13.
  */
 
-public class StoreBookRecommendListAction extends BaseAction<StoreDataBundle> {
+public class BookRecommendListAction extends BaseAction<ShopDataBundle> {
 
     private long bookID;
     private RecommendListResultBean recommendListResultBean;
 
-    public StoreBookRecommendListAction(long bookID) {
+    public BookRecommendListAction(long bookID) {
         this.bookID = bookID;
     }
 
@@ -28,16 +28,13 @@ public class StoreBookRecommendListAction extends BaseAction<StoreDataBundle> {
     }
 
     @Override
-    public void execute(StoreDataBundle storeDataBundle, final RxCallback rxCallback) {
-        final BookDetailViewModel bookDetailViewModel = storeDataBundle.getBookDetailViewModel();
-
-
+    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         JSONObject body = new JSONObject();
         body.put(CloudApiContext.RecommendList.BOOK_ID, bookID);
         baseRequestBean.setBody(body.toJSONString());
-
         final RxRequestRecommendList rq = new RxRequestRecommendList();
         rq.setBaseRequestBean(baseRequestBean);
         rq.execute(new RxCallback<RxRequestRecommendList>() {
@@ -48,7 +45,7 @@ public class StoreBookRecommendListAction extends BaseAction<StoreDataBundle> {
                     bookDetailViewModel.setRecommendList(recommendListResultBean.recommend);
                 }
                 if (rxCallback != null) {
-                    rxCallback.onNext(StoreBookRecommendListAction.this);
+                    rxCallback.onNext(BookRecommendListAction.this);
                     rxCallback.onComplete();
                 }
             }

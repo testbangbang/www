@@ -8,17 +8,17 @@
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.BookStoreViewModel"/>
+            type="com.onyx.jdread.shop.model.BookShopViewModel"/>
 
     </data>
 
     <RelativeLayout
-        android:paddingLeft="@dimen/book_store_padding_left_right"
-        android:paddingRight="@dimen/book_store_padding_left_right"
-        android:layout_marginTop="@dimen/book_store_padding_top"
+        android:paddingLeft="@dimen/book_shop_padding_left_right"
+        android:paddingRight="@dimen/book_shop_padding_left_right"
+        android:layout_marginTop="@dimen/book_shop_padding_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:showIn="@layout/fragment_book_store_one">
+        tools:showIn="@layout/fragment_book_shop_one">
 
         <ImageView
             android:padding="@dimen/search_view_button_background_padding"

@@ -24,8 +24,8 @@ import java.util.List;
 public class BannerSubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, ResultBookBean, ResultBookBean> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_banner_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_banner_recycle_view_col);
+    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_banner_recycle_view_row);
+    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_banner_recycle_view_col);
 
     public BannerSubjectAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

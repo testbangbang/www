@@ -10,7 +10,7 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
-import com.onyx.jdread.shop.model.StoreDataBundle;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestGetBookCommentList;
 
 import java.util.List;
@@ -19,13 +19,13 @@ import java.util.List;
  * Created by jackdeng on 2017/12/13.
  */
 
-public class StoreBookCommentListAction extends BaseAction<StoreDataBundle> {
+public class BookCommentListAction extends BaseAction<ShopDataBundle> {
 
     private int currentPage;
     private long bookID;
     private BookCommentsResultBean bookCommentsResultBean;
 
-    public StoreBookCommentListAction(long bookID, int currentPage) {
+    public BookCommentListAction(long bookID, int currentPage) {
         this.bookID = bookID;
         this.currentPage = currentPage;
     }
@@ -35,8 +35,8 @@ public class StoreBookCommentListAction extends BaseAction<StoreDataBundle> {
     }
 
     @Override
-    public void execute(StoreDataBundle storeDataBundle, final RxCallback rxCallback) {
-        final BookDetailViewModel bookDetailViewModel = storeDataBundle.getBookDetailViewModel();
+    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
         bookCommentsRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         String bookCommentsJsonBody = getBookCommentsJsonBody(CloudApiContext.RecommendList.BOOK_TYPE, bookID, currentPage);
@@ -52,7 +52,7 @@ public class StoreBookCommentListAction extends BaseAction<StoreDataBundle> {
                     bookDetailViewModel.setCommentItems(commentItems);
                 }
                 if (rxCallback != null) {
-                    rxCallback.onNext(StoreBookCommentListAction.this);
+                    rxCallback.onNext(BookCommentListAction.this);
                     rxCallback.onComplete();
                 }
             }

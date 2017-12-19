@@ -7,14 +7,14 @@
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.BookStoreViewModel"/>
+            type="com.onyx.jdread.shop.model.BookShopViewModel"/>
 
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:showIn="@layout/fragment_book_store_one">
+        tools:showIn="@layout/fragment_book_shop_one">
 
         <LinearLayout
             android:background="@drawable/normal_selected_background"
@@ -27,11 +27,11 @@
 
             <ImageView
                 android:src="@mipmap/ic_rank"
-                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+                android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
 
             <TextView
-                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
                 android:text="@string/ranking"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -51,11 +51,11 @@
 
             <ImageView
                 android:src="@mipmap/ic_enjoy_read"
-                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+                android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
 
             <TextView
-                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
                 android:text="@string/enjoy_read"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -75,11 +75,11 @@
 
             <ImageView
                 android:src="@mipmap/ic_sale"
-                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+                android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
 
             <TextView
-                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
                 android:text="@string/sale"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -99,11 +99,11 @@
 
             <ImageView
                 android:src="@mipmap/ic_new_book"
-                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+                android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
 
             <TextView
-                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
                 android:text="@string/new_book"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -123,11 +123,11 @@
 
             <ImageView
                 android:src="@mipmap/ic_category"
-                android:layout_width="@dimen/layout_book_store_top_function_width_and_height"
-                android:layout_height="@dimen/layout_book_store_top_function_width_and_height"/>
+                android:layout_width="@dimen/layout_book_shop_top_function_width_and_height"
+                android:layout_height="@dimen/layout_book_shop_top_function_width_and_height"/>
 
             <TextView
-                android:layout_marginTop="@dimen/layout_book_store_top_function_title_margin_top"
+                android:layout_marginTop="@dimen/layout_book_shop_top_function_title_margin_top"
                 android:text="@string/category"
                 android:ellipsize="end"
                 android:maxLines="1"

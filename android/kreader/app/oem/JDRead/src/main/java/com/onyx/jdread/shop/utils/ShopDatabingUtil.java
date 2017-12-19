@@ -18,7 +18,7 @@ import java.util.List;
  * Created by jackdeng on 2017/12/12.
  */
 
-public class StoreDatabingUtil {
+public class ShopDatabingUtil {
 
     @BindingAdapter({"cover"})
     public static void setImageResource(ImageView imageView, String imageUrl) {

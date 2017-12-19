@@ -9,14 +9,14 @@ import org.greenrobot.eventbus.EventBus;
  * Created by jackdeng on 2017/12/8.
  */
 
-public class StoreDataBundle {
+public class ShopDataBundle {
     private EventBus eventBus = EventBus.getDefault();
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
-    private BookStoreViewModel storeViewModel = new BookStoreViewModel(getEventBus());
+    private BookShopViewModel shopViewModel = new BookShopViewModel(getEventBus());
     private BookDetailViewModel bookDetailViewModel = new BookDetailViewModel(getEventBus());
 
-    public StoreDataBundle() {
+    public ShopDataBundle() {
 
     }
 
@@ -28,20 +28,12 @@ public class StoreDataBundle {
         return cloudManager;
     }
 
-    public void setCloudManager(CloudManager cloudManager) {
-        this.cloudManager = cloudManager;
-    }
-
     public EventBus getEventBus() {
         return eventBus;
     }
 
-    public void setStoreViewModel(BookStoreViewModel storeViewModel){
-        this.storeViewModel = storeViewModel;
-    }
-
-    public BookStoreViewModel getStoreViewModel() {
-        return storeViewModel;
+    public BookShopViewModel getShopViewModel() {
+        return shopViewModel;
     }
 
     public BookDetailViewModel getBookDetailViewModel() {

@@ -6,17 +6,30 @@
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.BookStoreViewModel" />
+            type="com.onyx.jdread.shop.model.BookShopViewModel" />
 
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/book_store_padding_left_right"
-        android:paddingRight="@dimen/book_store_padding_left_right"
-        android:paddingTop="@dimen/book_store_padding_top">
+        android:paddingLeft="@dimen/book_shop_padding_left_right"
+        android:paddingRight="@dimen/book_shop_padding_left_right"
+        android:paddingTop="@dimen/book_shop_padding_top">
+
+        <include
+            android:id="@+id/shop_top_function"
+            layout="@layout/layout_book_shop_top_function"
+            bind:viewModel="@{viewModel}" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/recycler_view_banner"
+            bannerSubjectItems="@{viewModel.bannerSubjectIems.modelBean.resultList}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/book_shop_banner_recycler_height"
+            android:layout_marginBottom="@dimen/book_shop_banner_recycler_margin_top_and_bottom"
+            android:layout_marginTop="@dimen/book_shop_banner_recycler_margin_top_and_bottom" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -25,10 +38,52 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
+                android:layout_height="wrap_content">
 
                 <TextView
+                    android:id="@+id/title_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/text_no_stoke_background"
+                    android:text="@{viewModel.coverSubjectOneItems.modelBean.moduleBookChild.showName}"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <TextView
+                    android:id="@+id/view_all_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:background="@drawable/text_no_stoke_background"
+                    android:drawablePadding="@dimen/view_all_drawable_padding"
+                    android:drawableRight="@mipmap/ic_go_view_all"
+                    android:gravity="center"
+                    android:onClick="@{()->viewModel.coverSubjectOneItems.onViewAllClick()}"
+                    android:text="@string/view_all"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+            </RelativeLayout>
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/recycler_view_cover_subject_one"
+                subjectItems="@{viewModel.coverSubjectOneItems.modelBean.resultList}"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/book_shop_recycler_height"
+                android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/book_shop_contain_recycler_margin_top"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/title_two"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/text_no_stoke_background"
@@ -36,6 +91,7 @@
                     android:textSize="@dimen/level_two_heading_font" />
 
                 <TextView
+                    android:id="@+id/view_all_two"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
@@ -46,61 +102,15 @@
                     android:onClick="@{()->viewModel.coverSubjectTwoItems.onViewAllClick()}"
                     android:text="@string/view_all"
                     android:textSize="@dimen/level_three_heading_font" />
+
             </RelativeLayout>
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/recycler_view_cover_subject_two"
+                android:id="@+id/recycler_view_cover_subject_two_back_up"
                 subjectItems="@{viewModel.coverSubjectTwoItems.modelBean.resultList}"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/book_store_recycler_height"
-                android:layout_marginTop="@dimen/bookstore_recycler_view_margin" />
-
-        </LinearLayout>
-
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/recycler_view_category_subject"
-            categorySubjectItems="@{viewModel.categorySubjectItems}"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/book_store_banner_recycler_height"
-            android:layout_marginBottom="@dimen/book_store_banner_recycler_margin_top_and_bottom"
-            android:layout_marginTop="@dimen/book_store_banner_recycler_margin_top_and_bottom" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/text_no_stoke_background"
-                    android:text="@{viewModel.coverSubjectFourItems.modelBean.moduleBookChild.showName}"
-                    android:textSize="@dimen/level_two_heading_font" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:background="@drawable/text_no_stoke_background"
-                    android:drawablePadding="@dimen/view_all_drawable_padding"
-                    android:drawableRight="@mipmap/ic_go_view_all"
-                    android:gravity="center"
-                    android:onClick="@{()->viewModel.coverSubjectFourItems.onViewAllClick()}"
-                    android:text="@string/view_all"
-                    android:textSize="@dimen/level_three_heading_font" />
-            </RelativeLayout>
-
-            <com.onyx.android.sdk.ui.view.PageRecyclerView
-                android:id="@+id/recycler_view_cover_subject_four_backup"
-                subjectItems="@{viewModel.coverSubjectFourItems.modelBean.resultList}"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/book_store_recycler_height"
-                android:layout_marginTop="@dimen/bookstore_recycler_view_margin" />
+                android:layout_height="@dimen/book_shop_recycler_height"
+                android:layout_marginTop="@dimen/book_shop_recycler_view_margin" />
 
         </LinearLayout>
 

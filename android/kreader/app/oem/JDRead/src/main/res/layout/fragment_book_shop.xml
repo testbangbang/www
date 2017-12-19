@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.onyx.jdread.shop.model.BookStoreViewModel" />
+            type="com.onyx.jdread.shop.model.BookShopViewModel" />
 
     </data>
 
@@ -33,27 +33,27 @@
                 android:orientation="vertical">
 
                 <include
-                    android:id="@+id/book_store_one"
-                    layout="@layout/fragment_book_store_one"
+                    android:id="@+id/book_shop_one"
+                    layout="@layout/fragment_book_shop_one"
                     bind:viewModel="@{viewModel}" />
 
                 <include
-                    android:id="@+id/book_store_two"
-                    layout="@layout/fragment_book_store_two"
+                    android:id="@+id/book_shop_two"
+                    layout="@layout/fragment_book_shop_two"
                     bind:viewModel="@{viewModel}" />
 
                 <include
-                    android:id="@+id/book_store_three"
-                    layout="@layout/fragment_book_store_three"
+                    android:id="@+id/book_shop_three"
+                    layout="@layout/fragment_book_shop_three"
                     bind:viewModel="@{viewModel}" />
 
             </LinearLayout>
 
             <com.onyx.jdread.shop.view.CustomScrollBar
                 android:id="@+id/scroll_bar"
-                android:layout_width="@dimen/bookstore_scroll_bar_width"
+                android:layout_width="@dimen/book_shop_scroll_bar_width"
                 android:layout_height="match_parent"
-                android:layout_marginRight="@dimen/store_custom_scroll_bar_margin" />
+                android:layout_marginRight="@dimen/shop_custom_scroll_bar_margin" />
 
         </LinearLayout>
 

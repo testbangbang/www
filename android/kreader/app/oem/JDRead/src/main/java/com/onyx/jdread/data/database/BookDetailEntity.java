@@ -8,7 +8,7 @@ import com.raizlabs.android.dbflow.structure.BaseModel;
 /**
  * Created by hehai on 17-3-7.
  */
-@Table(database = JDReadStoreDatabase.class)
+@Table(database = JDReadShopDatabase.class)
 public class BookDetailEntity extends BaseModel {
     @Column
     @PrimaryKey(autoincrement = true)

@@ -29,7 +29,7 @@ import com.onyx.jdread.shop.event.OnBookItemClickEvent;
 import com.onyx.jdread.shop.event.OnViewCommentEvent;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
 import com.onyx.jdread.shop.ui.CommentFragment;
-import com.onyx.jdread.shop.ui.StoreFragment;
+import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -166,8 +166,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (currentFragment instanceof StoreFragment) {
-            GestureDetector gestureDetector = ((StoreFragment) currentFragment).getGestureDetector();
+        if (currentFragment instanceof ShopFragment) {
+            GestureDetector gestureDetector = ((ShopFragment) currentFragment).getGestureDetector();
             gestureDetector.onTouchEvent(ev);
         }
         return super.dispatchTouchEvent(ev);
@@ -206,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                 switchCurrentFragment(BookDetailFragment.class.getName());
                 break;
             case PageTagConstants.BOOK_DETAIL:
-                switchCurrentFragment(StoreFragment.class.getName());
+                switchCurrentFragment(ShopFragment.class.getName());
                 break;
         }
     }

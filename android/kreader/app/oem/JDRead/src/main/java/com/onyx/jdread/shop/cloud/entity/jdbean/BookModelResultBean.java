@@ -6,7 +6,7 @@ import java.util.List;
  * Created by hehai on 17-3-30.
  */
 
-public class BookstoreModelResultBean {
+public class BookModelResultBean {
 
     public String code;
     public String message;

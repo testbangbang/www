@@ -1,10 +1,10 @@
 package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
-import com.onyx.jdread.shop.cloud.api.GetBookstoreModuleListService;
+import com.onyx.jdread.shop.cloud.api.GetBookModuleListService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModuleListResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModuleListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ModulesBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 
@@ -19,13 +19,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by jackdeng on 2017/12/12.
  */
 
-public class RxRequestBookstoreModuleList extends RxBaseCloudRequest {
+public class RxRequestBookModuleList extends RxBaseCloudRequest {
     private BaseRequestBean baseRequestBean;
-    private BookstoreModuleListResultBean bookstoreModuleListResultBean;
+    private BookModuleListResultBean bookModuleListResultBean;
     private List<ModulesBean> list = new ArrayList<>();
 
-    public BookstoreModuleListResultBean getBookstoreModuleListResultBean() {
-        return bookstoreModuleListResultBean;
+    public BookModuleListResultBean getBookModuleListResultBean() {
+        return bookModuleListResultBean;
     }
 
     public void setBaseRequestBean(BaseRequestBean baseRequestBean) {
@@ -43,22 +43,22 @@ public class RxRequestBookstoreModuleList extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        GetBookstoreModuleListService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
-        Call<BookstoreModuleListResultBean> call = getCall(getCommonService);
-        bookstoreModuleListResultBean = done(call);
+        GetBookModuleListService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
+        Call<BookModuleListResultBean> call = getCall(getCommonService);
+        bookModuleListResultBean = done(call);
         checkQuestResult();
 
     }
 
-    private BookstoreModuleListResultBean done(Call<BookstoreModuleListResultBean> call) {
-        EnhancedCall<BookstoreModuleListResultBean> enhancedCall = new EnhancedCall<>(call);
-        return enhancedCall.execute(call, BookstoreModuleListResultBean.class);
+    private BookModuleListResultBean done(Call<BookModuleListResultBean> call) {
+        EnhancedCall<BookModuleListResultBean> enhancedCall = new EnhancedCall<>(call);
+        return enhancedCall.execute(call, BookModuleListResultBean.class);
     }
 
     private void checkQuestResult() {
         list.clear();
-        if (bookstoreModuleListResultBean != null && bookstoreModuleListResultBean.mainThemeList != null) {
-            for (BookstoreModuleListResultBean.MainThemeListBean mainThemeListBean : bookstoreModuleListResultBean.mainThemeList) {
+        if (bookModuleListResultBean != null && bookModuleListResultBean.mainThemeList != null) {
+            for (BookModuleListResultBean.MainThemeListBean mainThemeListBean : bookModuleListResultBean.mainThemeList) {
                 if (mainThemeListBean.modules != null) {
                     for (ModulesBean modulesBean : mainThemeListBean.modules) {
                         list.add(modulesBean);
@@ -68,19 +68,19 @@ public class RxRequestBookstoreModuleList extends RxBaseCloudRequest {
         }
     }
 
-    private Call<BookstoreModuleListResultBean> getCall(GetBookstoreModuleListService getCommonService) {
-        return getCommonService.getBookstoreModuleList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
-                CloudApiContext.BookstoreModuleList.API_GET_MAIN_THEME_INFO,
+    private Call<BookModuleListResultBean> getCall(GetBookModuleListService getCommonService) {
+        return getCommonService.getBookShopModuleList(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
+                CloudApiContext.BookShopModuleList.API_GET_MAIN_THEME_INFO,
                 baseRequestBean.getBody()
         );
     }
 
-    private GetBookstoreModuleListService init(String URL) {
+    private GetBookModuleListService init(String URL) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
                 .client(EnhancedCall.getClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit.create(GetBookstoreModuleListService.class);
+        return retrofit.create(GetBookModuleListService.class);
     }
 }

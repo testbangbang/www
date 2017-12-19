@@ -8,26 +8,26 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.model.BookStoreViewModel;
-import com.onyx.jdread.shop.model.StoreDataBundle;
+import com.onyx.jdread.shop.model.BookShopViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 
 /**
  * Created by jackdeng on 2017/12/15.
  */
 
-public class StoreCategoryAction extends BaseAction<StoreDataBundle> {
+public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
     private Context context;
-    private BookStoreViewModel storeViewModel;
+    private BookShopViewModel shopViewModel;
 
-    public StoreCategoryAction(Context context) {
+    public BookCategoryAction(Context context) {
         this.context = context;
     }
 
     @Override
-    public void execute(StoreDataBundle storeDataBundle, final RxCallback rxCallback) {
-        storeViewModel = storeDataBundle.getStoreViewModel();
+    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         JSONObject body = new JSONObject();
@@ -39,9 +39,9 @@ public class StoreCategoryAction extends BaseAction<StoreDataBundle> {
             @Override
             public void onNext(RxRequestCategoryList request) {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
-                storeViewModel.setCategorySubjectItems(categoryListResultBean.catList);
+                shopViewModel.setCategorySubjectItems(categoryListResultBean.catList);
                 if (rxCallback != null) {
-                    rxCallback.onNext(StoreCategoryAction.this);
+                    rxCallback.onNext(BookCategoryAction.this);
                     rxCallback.onComplete();
                 }
             }

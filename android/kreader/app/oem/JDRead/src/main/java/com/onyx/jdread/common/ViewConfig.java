@@ -4,7 +4,7 @@ import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.model.StackList;
 import com.onyx.jdread.personal.ui.MyFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
-import com.onyx.jdread.shop.ui.StoreFragment;
+import com.onyx.jdread.shop.ui.ShopFragment;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,7 +24,7 @@ public class ViewConfig {
         //library
         childViewInfo.put(LibraryFragment.class.getName(), FunctionModule.LIBRARY);
         //shop
-        childViewInfo.put(StoreFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(ShopFragment.class.getName(), FunctionModule.SHOP);
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);
         //personal
@@ -40,6 +40,6 @@ public class ViewConfig {
     }
 
     public static void initShoppingStack(StackList stackList){
-        stackList.push(StoreFragment.class.getName());
+        stackList.push(ShopFragment.class.getName());
     }
 }

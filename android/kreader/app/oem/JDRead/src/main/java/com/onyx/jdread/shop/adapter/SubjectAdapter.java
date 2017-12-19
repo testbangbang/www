@@ -24,8 +24,8 @@ import java.util.List;
 public class SubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, ResultBookBean, ResultBookBean> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_subject_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_subject_col);
+    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_subject_row);
+    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_subject_col);
 
     public SubjectAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

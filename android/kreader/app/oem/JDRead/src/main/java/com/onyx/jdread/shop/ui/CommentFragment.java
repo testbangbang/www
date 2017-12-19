@@ -16,7 +16,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.databinding.FragmentBookCommentBinding;
-import com.onyx.jdread.shop.action.StoreBookCommentListAction;
+import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
@@ -106,18 +106,18 @@ public class CommentFragment extends BaseFragment {
     }
 
     private BookDetailViewModel getBookDetailViewModel() {
-        return JDReadApplication.getStoreDataBundle().getBookDetailViewModel();
+        return JDReadApplication.getShopDataBundle().getBookDetailViewModel();
     }
 
     private EventBus getEventBus() {
-        return JDReadApplication.getStoreDataBundle().getEventBus();
+        return JDReadApplication.getShopDataBundle().getEventBus();
     }
 
     private void getCommentsData() {
-        StoreBookCommentListAction commnetListAction = new StoreBookCommentListAction(ebookId, currentPage);
-        commnetListAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback<StoreBookCommentListAction>() {
+        BookCommentListAction commnetListAction = new BookCommentListAction(ebookId, currentPage);
+        commnetListAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback<BookCommentListAction>() {
             @Override
-            public void onNext(StoreBookCommentListAction action) {
+            public void onNext(BookCommentListAction action) {
                 BookCommentsResultBean resultBean = action.getbookCommentsBean();
                 if (resultBean != null && resultBean.getReviews() != null && resultBean.getReviews().getList() != null) {
                     initPageIndicator(resultBean);

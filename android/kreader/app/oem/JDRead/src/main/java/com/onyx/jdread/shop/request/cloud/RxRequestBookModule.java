@@ -2,10 +2,10 @@ package com.onyx.jdread.shop.request.cloud;
 
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.jdread.data.database.BookDetailEntity;
-import com.onyx.jdread.shop.cloud.api.GetBookstoreModuleService;
+import com.onyx.jdread.shop.cloud.api.GetBookModuleService;
 import com.onyx.jdread.shop.cloud.cache.EnhancedCall;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModelResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 
@@ -20,14 +20,14 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by jackdeng on 2017/12/8.
  */
 
-public class RxRequestBookstoreModule extends RxBaseCloudRequest {
+public class RxRequestBookModule extends RxBaseCloudRequest {
 
     private BaseRequestBean baseRequestBean;
-    private BookstoreModelResultBean bookstoreModelResultBean;
+    private BookModelResultBean bookModelResultBean;
     private ArrayList<BookDetailEntity> books;
 
-    public BookstoreModelResultBean getBookstoreModelResultBean() {
-        return bookstoreModelResultBean;
+    public BookModelResultBean getBookModelResultBean() {
+        return bookModelResultBean;
     }
 
     public List<BookDetailEntity> getBooks() {
@@ -45,16 +45,16 @@ public class RxRequestBookstoreModule extends RxBaseCloudRequest {
     }
 
     private void executeCloudRequest() {
-        GetBookstoreModuleService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
-        Call<BookstoreModelResultBean> call = getCall(getCommonService);
-        bookstoreModelResultBean = done(call);
+        GetBookModuleService getCommonService = init(CloudApiContext.getJDBooxBaseUrl());
+        Call<BookModelResultBean> call = getCall(getCommonService);
+        bookModelResultBean = done(call);
         checkQuestResult();
     }
 
     private void checkQuestResult() {
-        if (bookstoreModelResultBean != null && bookstoreModelResultBean.resultList != null) {
+        if (bookModelResultBean != null && bookModelResultBean.resultList != null) {
             books = new ArrayList<>();
-            for (ResultBookBean resultListBean : bookstoreModelResultBean.resultList) {
+            for (ResultBookBean resultListBean : bookModelResultBean.resultList) {
                 BookDetailEntity entity = new BookDetailEntity();
                 entity.bookName = resultListBean.name;
                 entity.imageUrl = resultListBean.imageUrl;
@@ -69,22 +69,22 @@ public class RxRequestBookstoreModule extends RxBaseCloudRequest {
         }
     }
 
-    private BookstoreModelResultBean done(Call<BookstoreModelResultBean> call) {
-        EnhancedCall<BookstoreModelResultBean> enhancedCall = new EnhancedCall<>(call);
-        return enhancedCall.execute(call, BookstoreModelResultBean.class);
+    private BookModelResultBean done(Call<BookModelResultBean> call) {
+        EnhancedCall<BookModelResultBean> enhancedCall = new EnhancedCall<>(call);
+        return enhancedCall.execute(call, BookModelResultBean.class);
     }
 
-    private Call<BookstoreModelResultBean> getCall(GetBookstoreModuleService getCommonService) {
-        return getCommonService.getBookstoreModule(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
-                CloudApiContext.BookstoreModule.MODULE_CHILD_INFO, baseRequestBean.getBody());
+    private Call<BookModelResultBean> getCall(GetBookModuleService getCommonService) {
+        return getCommonService.getBookShopModule(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
+                CloudApiContext.BookShopModule.MODULE_CHILD_INFO, baseRequestBean.getBody());
     }
 
-    private GetBookstoreModuleService init(String URL) {
+    private GetBookModuleService init(String URL) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(URL)
                 .client(EnhancedCall.getClient())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
-        return retrofit.create(GetBookstoreModuleService.class);
+        return retrofit.create(GetBookModuleService.class);
     }
 }

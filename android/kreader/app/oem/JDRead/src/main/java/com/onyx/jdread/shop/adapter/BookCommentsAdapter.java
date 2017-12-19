@@ -23,8 +23,8 @@ import java.util.List;
 public class BookCommentsAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CommentEntity, CommentEntity> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_comment_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_comment_col);
+    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_comment_row);
+    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_comment_col);
 
     public BookCommentsAdapter(EventBus eventBus) {
         this.eventBus = eventBus;

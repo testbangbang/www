@@ -14,19 +14,19 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
-import com.onyx.jdread.databinding.FragmentBookStoreBinding;
-import com.onyx.jdread.databinding.FragmentBookStoreOneBinding;
-import com.onyx.jdread.databinding.FragmentBookStoreThreeBinding;
-import com.onyx.jdread.databinding.FragmentBookStoreTwoBinding;
-import com.onyx.jdread.shop.action.StoreCategoryAction;
-import com.onyx.jdread.shop.action.StoreFreeJournalAction;
-import com.onyx.jdread.shop.action.StoreNewBookAction;
+import com.onyx.jdread.databinding.FragmentBookShopBinding;
+import com.onyx.jdread.databinding.FragmentBookShopOneBinding;
+import com.onyx.jdread.databinding.FragmentBookShopThreeBinding;
+import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
+import com.onyx.jdread.shop.action.BookCategoryAction;
+import com.onyx.jdread.shop.action.BookFreeJournalAction;
+import com.onyx.jdread.shop.action.NewBookAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.event.OnRankViewClick;
-import com.onyx.jdread.shop.event.OnStoreBakcTopClick;
-import com.onyx.jdread.shop.model.BookStoreViewModel;
+import com.onyx.jdread.shop.event.OnShopBakcTopClick;
+import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -37,28 +37,28 @@ import org.greenrobot.eventbus.ThreadMode;
  * Created by huxiaomao on 2017/12/7.
  */
 
-public class StoreFragment extends BaseFragment {
+public class ShopFragment extends BaseFragment {
 
     private static final int SCROLL_TOTAL = 3;
     private static final int SCROLL_ONE = 0;
     private static final int SCROLL_TWO = 1;
     private static final int SCROLL_THREE = 2;
     private static final int FLING_MIN_DISTANCE = 30;
-    private FragmentBookStoreBinding bookStoreBinding;
+    private FragmentBookShopBinding bookShopBinding;
     private GestureDetector gestureDetector;
-    private FragmentBookStoreOneBinding storeOneBinding;
-    private FragmentBookStoreTwoBinding storeTwoBinding;
-    private FragmentBookStoreThreeBinding storeThreeBinding;
-    private int bannerSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_store_recycle_view_space);
+    private FragmentBookShopOneBinding shopOneBinding;
+    private FragmentBookShopTwoBinding shopTwoBinding;
+    private FragmentBookShopThreeBinding shopThreeBinding;
+    private int bannerSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_shop_recycle_view_space);
     private DividerItemDecoration itemDecoration;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        bookStoreBinding = FragmentBookStoreBinding.inflate(inflater, container, false);
+        bookShopBinding = FragmentBookShopBinding.inflate(inflater, container, false);
         initView();
         initData();
-        return bookStoreBinding.getRoot();
+        return bookShopBinding.getRoot();
     }
 
     private void initData() {
@@ -68,11 +68,11 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void initView() {
-        bookStoreBinding.scrollBar.setTotal(SCROLL_TOTAL);
-        storeOneBinding = bookStoreBinding.bookStoreOne;
-        storeTwoBinding = bookStoreBinding.bookStoreTwo;
-        storeThreeBinding = bookStoreBinding.bookStoreThree;
-        bookStoreBinding.setViewModel(getBookStoreViewModel());
+        bookShopBinding.scrollBar.setTotal(SCROLL_TOTAL);
+        shopOneBinding = bookShopBinding.bookShopOne;
+        shopTwoBinding = bookShopBinding.bookShopTwo;
+        shopThreeBinding = bookShopBinding.bookShopThree;
+        bookShopBinding.setViewModel(getBookShopViewModel());
         initDividerItemDecoration();
         setRecyclerViewBanner();
         setRecyclerViewCoverSubjectOne();
@@ -101,12 +101,12 @@ public class StoreFragment extends BaseFragment {
         getEventBus().unregister(this);
     }
 
-    private BookStoreViewModel getBookStoreViewModel() {
-        return JDReadApplication.getStoreDataBundle().getStoreViewModel();
+    private BookShopViewModel getBookShopViewModel() {
+        return JDReadApplication.getShopDataBundle().getShopViewModel();
     }
 
     private EventBus getEventBus() {
-        return JDReadApplication.getStoreDataBundle().getEventBus();
+        return JDReadApplication.getShopDataBundle().getEventBus();
     }
 
     public GestureDetector getGestureDetector() {
@@ -120,14 +120,14 @@ public class StoreFragment extends BaseFragment {
         @Override
         public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
             float y_axis = e1.getY() - e2.getY();
-            if (isCurrentViewVisible(storeOneBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_store_two, SCROLL_TWO);
-            } else if (isCurrentViewVisible(storeTwoBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_store_three, SCROLL_THREE);
-            } else if (isCurrentViewVisible(storeTwoBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_store_one, SCROLL_ONE);
-            } else if (isCurrentViewVisible(storeThreeBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
-                setCurrent(R.id.book_store_two, SCROLL_TWO);
+            if (isCurrentViewVisible(shopOneBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
+                setCurrent(R.id.book_shop_two, SCROLL_TWO);
+            } else if (isCurrentViewVisible(shopTwoBinding.getRoot()) && y_axis > FLING_MIN_DISTANCE) {
+                setCurrent(R.id.book_shop_three, SCROLL_THREE);
+            } else if (isCurrentViewVisible(shopTwoBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
+                setCurrent(R.id.book_shop_one, SCROLL_ONE);
+            } else if (isCurrentViewVisible(shopThreeBinding.getRoot()) && -(y_axis) > FLING_MIN_DISTANCE) {
+                setCurrent(R.id.book_shop_two, SCROLL_TWO);
             }
             return false;
         }
@@ -143,18 +143,18 @@ public class StoreFragment extends BaseFragment {
 
     private void setCurrent(int id, int position) {
         visible(id);
-        bookStoreBinding.scrollBar.setFocusPosition(position);
+        bookShopBinding.scrollBar.setFocusPosition(position);
     }
 
     private void visible(int id) {
-        storeOneBinding.getRoot().setVisibility(id == R.id.book_store_one ? View.VISIBLE : View.GONE);
-        storeTwoBinding.getRoot().setVisibility(id == R.id.book_store_two ? View.VISIBLE : View.GONE);
-        storeThreeBinding.getRoot().setVisibility(id == R.id.book_store_three ? View.VISIBLE : View.GONE);
+        shopOneBinding.getRoot().setVisibility(id == R.id.book_shop_one ? View.VISIBLE : View.GONE);
+        shopTwoBinding.getRoot().setVisibility(id == R.id.book_shop_two ? View.VISIBLE : View.GONE);
+        shopThreeBinding.getRoot().setVisibility(id == R.id.book_shop_three ? View.VISIBLE : View.GONE);
     }
 
     private void setRecyclerViewBanner() {
         BannerSubjectAdapter adapter = new BannerSubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = storeOneBinding.recyclerViewBanner;
+        PageRecyclerView recyclerView = shopOneBinding.recyclerViewBanner;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
@@ -162,7 +162,7 @@ public class StoreFragment extends BaseFragment {
 
     private void setRecyclerViewCoverSubjectOne() {
         SubjectAdapter recyclerViewOneAdapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewOne = storeOneBinding.recyclerViewCoverSubjectOne;
+        PageRecyclerView recyclerViewOne = shopOneBinding.recyclerViewCoverSubjectOne;
         recyclerViewOne.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewOne.addItemDecoration(itemDecoration);
         recyclerViewOne.setAdapter(recyclerViewOneAdapter);
@@ -170,7 +170,7 @@ public class StoreFragment extends BaseFragment {
 
     private void setRecyclerViewCoverSubjectTwoBackUp() {
         SubjectAdapter recyclerViewTwoAdapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerViewTwo = storeOneBinding.recyclerViewCoverSubjectTwoBackUp;
+        PageRecyclerView recyclerViewTwo = shopOneBinding.recyclerViewCoverSubjectTwoBackUp;
         recyclerViewTwo.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerViewTwo.addItemDecoration(itemDecoration);
         recyclerViewTwo.setAdapter(recyclerViewTwoAdapter);
@@ -178,7 +178,7 @@ public class StoreFragment extends BaseFragment {
 
     private void setRecyclerViewCoverSubjectTwo() {
         SubjectAdapter adapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCoverSubjectTwo;
+        PageRecyclerView recyclerView = shopTwoBinding.recyclerViewCoverSubjectTwo;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
@@ -186,29 +186,29 @@ public class StoreFragment extends BaseFragment {
 
     private void setRecyclerViewCategory() {
         CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCategorySubject;
+        PageRecyclerView recyclerView = shopTwoBinding.recyclerViewCategorySubject;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
     }
 
     private void setRecyclerViewCoverSubjectFourBackup() {
         SubjectAdapter adapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = storeTwoBinding.recyclerViewCoverSubjectFourBackup;
+        PageRecyclerView recyclerView = shopTwoBinding.recyclerViewCoverSubjectFourBackup;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
     }
 
     private void setRecyclerViewCoverSubjectFour() {
         SubjectAdapter adapter = new SubjectAdapter(getEventBus());
-        PageRecyclerView recyclerView = storeThreeBinding.recyclerViewCoverSubjectFour;
+        PageRecyclerView recyclerView = shopThreeBinding.recyclerViewCoverSubjectFour;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.addItemDecoration(itemDecoration);
         recyclerView.setAdapter(adapter);
     }
 
     private void getRecyclerViewSubjectOneData() {
-        StoreNewBookAction storeNewBookAction = new StoreNewBookAction(JDReadApplication.getInstance());
-        storeNewBookAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
+        NewBookAction newBookAction = new NewBookAction(JDReadApplication.getInstance());
+        newBookAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -223,8 +223,8 @@ public class StoreFragment extends BaseFragment {
     }
 
     public void getRecyclerViewSubjectTwoData() {
-        StoreFreeJournalAction storeNewBookAction = new StoreFreeJournalAction(JDReadApplication.getInstance());
-        storeNewBookAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
+        BookFreeJournalAction freeJournalBookAction = new BookFreeJournalAction(JDReadApplication.getInstance());
+        freeJournalBookAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -238,8 +238,8 @@ public class StoreFragment extends BaseFragment {
     }
 
     private void getRecyclerViewCategoryData() {
-        StoreCategoryAction storeCategoryAction = new StoreCategoryAction(JDReadApplication.getInstance());
-        storeCategoryAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
+        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance());
+        bookCategoryAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -253,8 +253,8 @@ public class StoreFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onStoreBakcTopClick(OnStoreBakcTopClick event) {
-        setCurrent(R.id.book_store_one, SCROLL_ONE);
+    public void onShopBakcTopClick(OnShopBakcTopClick event) {
+        setCurrent(R.id.book_shop_one, SCROLL_ONE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -7,16 +7,16 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
-import com.onyx.jdread.shop.request.cloud.RxRequestBookstoreModule;
-import com.onyx.jdread.shop.request.cloud.RxRequestBookstoreModuleList;
+import com.onyx.jdread.shop.request.cloud.RxRequestBookModule;
+import com.onyx.jdread.shop.request.cloud.RxRequestBookModuleList;
 import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 
 import java.util.concurrent.CountDownLatch;
 
-public class GetBookstoreModuleTest extends ApplicationTestCase<JDReadApplication> {
-    private static final String TAG = GetBookstoreModuleTest.class.getSimpleName();
+public class GetBookShopModuleTest extends ApplicationTestCase<JDReadApplication> {
+    private static final String TAG = GetBookShopModuleTest.class.getSimpleName();
 
-    public GetBookstoreModuleTest() {
+    public GetBookShopModuleTest() {
         super(JDReadApplication.class);
     }
 
@@ -54,15 +54,15 @@ public class GetBookstoreModuleTest extends ApplicationTestCase<JDReadApplicatio
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookstoreModule.ID, CloudApiContext.BookstoreModule.TODAY_SPECIAL_ID);
-        body.put(CloudApiContext.BookstoreModule.MODULE_TYPE, CloudApiContext.BookstoreModule.TODAY_SPECIAL_MODULE_TYPE);
+        body.put(CloudApiContext.BookShopModule.ID, CloudApiContext.BookShopModule.TODAY_SPECIAL_ID);
+        body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.TODAY_SPECIAL_MODULE_TYPE);
         baseRequestBean.setBody(body.toJSONString());
-        final RxRequestBookstoreModule rq = new RxRequestBookstoreModule();
+        final RxRequestBookModule rq = new RxRequestBookModule();
         rq.setBaseRequestBean(baseRequestBean);
-        rq.execute(new RxCallback<RxRequestBookstoreModule>() {
+        rq.execute(new RxCallback<RxRequestBookModule>() {
             @Override
-            public void onNext(RxRequestBookstoreModule request) {
-                assertNotNull(request.getBookstoreModelResultBean());
+            public void onNext(RxRequestBookModule request) {
+                assertNotNull(request.getBookModelResultBean());
                 countDownLatch.countDown();
             }
 
@@ -82,14 +82,14 @@ public class GetBookstoreModuleTest extends ApplicationTestCase<JDReadApplicatio
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookstoreModuleList.SYS_ID, "1");
+        body.put(CloudApiContext.BookShopModuleList.SYS_ID, "1");
         baseRequestBean.setBody(body.toJSONString());
-        final RxRequestBookstoreModuleList rq = new RxRequestBookstoreModuleList();
+        final RxRequestBookModuleList rq = new RxRequestBookModuleList();
         rq.setBaseRequestBean(baseRequestBean);
-        rq.execute(new RxCallback<RxRequestBookstoreModule>() {
+        rq.execute(new RxCallback<RxRequestBookModule>() {
             @Override
-            public void onNext(RxRequestBookstoreModule request) {
-                assertNotNull(request.getBookstoreModelResultBean());
+            public void onNext(RxRequestBookModule request) {
+                assertNotNull(request.getBookModelResultBean());
                 countDownLatch.countDown();
             }
 

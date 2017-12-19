@@ -16,8 +16,8 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
-import com.onyx.jdread.shop.action.StoreBookDetailAction;
-import com.onyx.jdread.shop.action.StoreBookRecommendListAction;
+import com.onyx.jdread.shop.action.BookDetailAction;
+import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
@@ -100,16 +100,16 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private BookDetailViewModel getBookDetailViewModel() {
-        return JDReadApplication.getStoreDataBundle().getBookDetailViewModel();
+        return JDReadApplication.getShopDataBundle().getBookDetailViewModel();
     }
 
     private EventBus getEventBus() {
-        return JDReadApplication.getStoreDataBundle().getEventBus();
+        return JDReadApplication.getShopDataBundle().getEventBus();
     }
 
     private void getBookDetailData() {
-        StoreBookDetailAction storeBookDetailAction = new StoreBookDetailAction(ebookId);
-        storeBookDetailAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
+        BookDetailAction bookDetailAction = new BookDetailAction(ebookId);
+        bookDetailAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -118,8 +118,8 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void getRecommendData() {
-        StoreBookRecommendListAction recommendListAction = new StoreBookRecommendListAction(ebookId);
-        recommendListAction.execute(JDReadApplication.getStoreDataBundle(), new RxCallback() {
+        BookRecommendListAction recommendListAction = new BookRecommendListAction(ebookId);
+        recommendListAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 

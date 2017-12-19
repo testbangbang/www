@@ -14,7 +14,7 @@ import com.onyx.jdread.common.ActionChain;
 import com.onyx.jdread.common.AppBaseInfo;
 import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.library.model.DataBundle;
-import com.onyx.jdread.shop.model.StoreDataBundle;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 
 /**
  * Created by hehai on 17-12-6.
@@ -24,7 +24,7 @@ public class JDReadApplication extends MultiDexApplication {
     private static final String TAG = JDReadApplication.class.getSimpleName();
     private static JDReadApplication instance = null;
     private static DataBundle dataBundle;
-    private static StoreDataBundle storeDataBundle;
+    private static ShopDataBundle shopDataBundle;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private AppBaseInfo appBaseInfo;
 
@@ -107,11 +107,11 @@ public class JDReadApplication extends MultiDexApplication {
         return dataBundle;
     }
 
-    public static StoreDataBundle getStoreDataBundle() {
-        if (storeDataBundle == null) {
-            storeDataBundle = new StoreDataBundle();
+    public static ShopDataBundle getShopDataBundle() {
+        if (shopDataBundle == null) {
+            shopDataBundle = new ShopDataBundle();
         }
-        return storeDataBundle;
+        return shopDataBundle;
     }
 
     private void initAppBaseInfo() {

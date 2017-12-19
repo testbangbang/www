@@ -6,7 +6,7 @@ import java.util.List;
  * Created by hehai on 17-3-30.
  */
 
-public class BookstoreModuleListResultBean {
+public class BookModuleListResultBean {
     public String code;
     public String message;
     public List<MainThemeListBean> mainThemeList;

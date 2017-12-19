@@ -1,19 +1,19 @@
 package com.onyx.jdread.shop.model;
 
-import com.onyx.jdread.shop.cloud.entity.jdbean.BookstoreModelResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
 
 /**
  * Created by jackdeng on 2017/12/11.
  */
 
 public class SubjectViewModel {
-    private BookstoreModelResultBean modelBean;
+    private BookModelResultBean modelBean;
 
-    public BookstoreModelResultBean getModelBean() {
+    public BookModelResultBean getModelBean() {
         return modelBean;
     }
 
-    public void setModelBean(BookstoreModelResultBean modelBean) {
+    public void setModelBean(BookModelResultBean modelBean) {
         this.modelBean = modelBean;
     }
 

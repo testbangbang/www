@@ -19,7 +19,7 @@ import okhttp3.OkHttpClient;
  */
 
 public class CloudApiContext {
-    public static final String JD_BOOK_STORE_URL = "http://gw.e.jd.com/";
+    public static final String JD_BOOK_SHOP_URL = "http://gw.e.jd.com/";
     public static final String JD_BASE_URL = "https://gw-e.jd.com/";
 
     public static class NewBookDetail {
@@ -34,13 +34,13 @@ public class CloudApiContext {
         public static final String ADD_BOOK_COMMENT = "addBookComment";
     }
 
-    public static class BookstoreModuleList {
+    public static class BookShopModuleList {
         public static final String SYS_ID = "sysId";
         public static final String RETURN_MESSAGE = "returnMessage";
         public static final String API_GET_MAIN_THEME_INFO = "getMainThemeInfo";
     }
 
-    public static class BookstoreModule {
+    public static class BookShopModule {
         public static final String ID = "id";
         public static final String MODULE_TYPE = "moduleType";
         public static final String RETURN_MESSAGE = "returnMessage";
@@ -80,7 +80,7 @@ public class CloudApiContext {
     }
 
     public static String getJDBooxBaseUrl() {
-        return JD_BOOK_STORE_URL;
+        return JD_BOOK_SHOP_URL;
     }
 
     public static String getJdBaseUrl() {

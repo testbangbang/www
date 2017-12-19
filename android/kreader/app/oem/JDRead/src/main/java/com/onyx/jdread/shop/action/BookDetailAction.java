@@ -7,19 +7,19 @@ import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
-import com.onyx.jdread.shop.model.StoreDataBundle;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookDetail;
 
 /**
  * Created by jackdeng on 2017/12/13.
  */
 
-public class StoreBookDetailAction extends BaseAction<StoreDataBundle> {
+public class BookDetailAction extends BaseAction<ShopDataBundle> {
 
     private long bookID;
     private BookDetailResultBean bookDetailResultBean;
 
-    public StoreBookDetailAction(long bookID) {
+    public BookDetailAction(long bookID) {
         this.bookID = bookID;
     }
 
@@ -28,8 +28,8 @@ public class StoreBookDetailAction extends BaseAction<StoreDataBundle> {
     }
 
     @Override
-    public void execute(StoreDataBundle storeDataBundle, final RxCallback rxCallback) {
-        final BookDetailViewModel bookDetailViewModel = storeDataBundle.getBookDetailViewModel();
+    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         JSONObject body = new JSONObject();
@@ -44,7 +44,7 @@ public class StoreBookDetailAction extends BaseAction<StoreDataBundle> {
                 bookDetailResultBean = request.getBookDetailResultBean();
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
                 if (rxCallback != null) {
-                    rxCallback.onNext(StoreBookDetailAction.this);
+                    rxCallback.onNext(BookDetailAction.this);
                     rxCallback.onComplete();
                 }
             }

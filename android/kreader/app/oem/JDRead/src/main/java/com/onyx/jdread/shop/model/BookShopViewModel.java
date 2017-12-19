@@ -4,7 +4,7 @@ import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.OnRankViewClick;
-import com.onyx.jdread.shop.event.OnStoreBakcTopClick;
+import com.onyx.jdread.shop.event.OnShopBakcTopClick;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -14,7 +14,7 @@ import java.util.List;
  * Created by jackdeng on 2017/12/8.
  */
 
-public class BookStoreViewModel extends BaseObservable {
+public class BookShopViewModel extends BaseObservable {
     public SubjectViewModel bannerSubjectIems;
     public SubjectViewModel coverSubjectOneItems;
     public SubjectViewModel coverSubjectTwoItems;
@@ -28,7 +28,7 @@ public class BookStoreViewModel extends BaseObservable {
     public String searchContent;
     public EventBus eventBus;
 
-    public BookStoreViewModel(EventBus eventBus) {
+    public BookShopViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
     }
 
@@ -158,7 +158,7 @@ public class BookStoreViewModel extends BaseObservable {
     }
 
     public void onBackTopViewClick() {
-        getEventBus().post(new OnStoreBakcTopClick());
+        getEventBus().post(new OnShopBakcTopClick());
     }
 
     public void onShoppingCartViewClick() {

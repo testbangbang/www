@@ -24,8 +24,8 @@ import java.util.List;
 public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CatListBean, CatListBean> {
 
     private EventBus eventBus;
-    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_category_recycle_view_row);
-    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.store_category_recycle_view_col);
+    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_category_recycle_view_row);
+    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_category_recycle_view_col);
 
     public CategorySubjectAdapter(EventBus eventBus) {
         this.eventBus = eventBus;
