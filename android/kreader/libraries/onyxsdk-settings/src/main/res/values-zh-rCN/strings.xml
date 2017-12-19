@@ -181,4 +181,6 @@
     <string name="digitizer_fw">电磁屏版本</string>
     <string name="add_network">添加网络</string>
     <string name="network_ssid">网络 SSID</string>
+
+    <string name="setting_calibration">校准</string>
 </resources>

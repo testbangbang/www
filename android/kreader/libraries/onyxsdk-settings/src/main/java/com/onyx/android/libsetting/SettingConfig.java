@@ -7,6 +7,7 @@ import android.preference.PreferenceActivity;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 import com.onyx.android.libsetting.data.SettingCategory;
@@ -26,6 +27,7 @@ import java.util.Map;
 
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_APPLICATION_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_BLUETOOTH_TAG;
+import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_CALIBRATION_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_DATE_TIME_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_ERROR_REPORT_TAG;
 import static com.onyx.android.libsetting.data.SettingCategory.SETTING_ITEM_FIRMWARE_UPDATE_TAG;
@@ -447,6 +449,7 @@ public class SettingConfig {
         settingIconsMap.put(SETTING_ITEM_BLUETOOTH_TAG, "ic_setting_bluetooth");
         settingIconsMap.put(SETTING_ITEM_FIRMWARE_UPDATE_TAG, "ic_setting_ota");
         settingIconsMap.put(SETTING_ITEM_PRODUCT_DETAIL_TAG, "ic_setting_product_detail");
+        settingIconsMap.put(SETTING_ITEM_CALIBRATION_TAG, "ic_setting_calibration");
     }
 
     private void buildDefaultSettingsTittleMap() {
@@ -465,6 +468,7 @@ public class SettingConfig {
         settingTittleMap.put(SETTING_ITEM_BLUETOOTH_TAG, "setting_bluetooth");
         settingTittleMap.put(SETTING_ITEM_FIRMWARE_UPDATE_TAG, "setting_ota");
         settingTittleMap.put(SETTING_ITEM_PRODUCT_DETAIL_TAG, "setting_product_detail");
+        settingTittleMap.put(SETTING_ITEM_CALIBRATION_TAG, "setting_calibration");
     }
 
     public List<SettingItem> getSettingItemList(Context context) {
@@ -472,6 +476,7 @@ public class SettingConfig {
         List<SettingItem> settingItemList = new ArrayList<>();
         settingItemStringList.addAll(getSettingItemTAGList());
         for (String tag : settingItemStringList) {
+            Log.e(TAG, "tag:" + tag);
             settingItemList.add(new SettingItem(SettingCategory.translate(tag),
                     RawResourceUtil.getDrawableIdByName(context, getSettingIconMaps().get(tag)),
                     context.getString(RawResourceUtil.getStringIdByName(context, getSettingTittleMap().get(tag)))));

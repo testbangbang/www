@@ -44,6 +44,8 @@ public class SettingCategory {
     public static final int FIRMWARE_UPDATE = 13;
     public static final int PRODUCT_DETAIL = 14;
     public static final int DEVICE_INFO = 15;
+    public static final int CALIBRATION = 16;
+
 
     static public final String SETTING_ITEM_NETWORK_TAG = "setting_item_network";
     static public final String SETTING_ITEM_USER_SETTING_TAG = "setting_item_user_setting";
@@ -60,6 +62,7 @@ public class SettingCategory {
     static public final String SETTING_ITEM_FIRMWARE_UPDATE_TAG = "setting_item_firmware_update";
     static public final String SETTING_ITEM_PRODUCT_DETAIL_TAG = "setting_item_product_detail";
     static public final String SETTING_ITEM_DEVICE_INFO_TAG = "setting_item_device_info";
+    static public final String SETTING_ITEM_CALIBRATION_TAG = "setting_item_calibration";
 
     // ... type definitions
     // Describes when the annotation will be discarded
@@ -67,7 +70,8 @@ public class SettingCategory {
     // Enumerate valid values for this interface
     @IntDef({UNKNOWN, NETWORK, USER_SETTING, SOUND, STORAGE,
             LANGUAGE_AND_INPUT, DATE_TIME_SETTING, APPLICATION_MANAGEMENT, POWER,
-            SECURITY, ERROR_REPORT, PRODUCTION_TEST, WIFI, BLUETOOTH, FIRMWARE_UPDATE, PRODUCT_DETAIL, DEVICE_INFO})
+            SECURITY, ERROR_REPORT, PRODUCTION_TEST, WIFI, BLUETOOTH, FIRMWARE_UPDATE,
+            PRODUCT_DETAIL, DEVICE_INFO, CALIBRATION})
     // Create an interface for validating int types
     public @interface SettingCategoryDef {
     }
@@ -112,6 +116,8 @@ public class SettingCategory {
                 return PRODUCT_DETAIL;
             case SETTING_ITEM_DEVICE_INFO_TAG:
                 return DEVICE_INFO;
+            case SETTING_ITEM_CALIBRATION_TAG:
+                return CALIBRATION;
         }
         return UNKNOWN;
     }
@@ -168,6 +174,12 @@ public class SettingCategory {
                 break;
             case SettingCategory.DEVICE_INFO:
                 intent = new Intent(context, DeviceInfoActivity.class);
+                break;
+            case SettingCategory.CALIBRATION:
+                intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setClassName("com.onyx.android.tscalibration",
+                        "com.onyx.android.tscalibration.MainActivity");
                 break;
             default:
                 Toast.makeText(context, "Under Construction", Toast.LENGTH_SHORT).show();

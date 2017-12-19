@@ -243,5 +243,7 @@
     <string name="digitizer_fw">Digitizer FW</string>
     <string name="add_network">Add Network</string>
     <string name="network_ssid">Network SSID</string>
+
+    <string name="setting_calibration">Calibration</string>
 </resources>
 
