@@ -56,22 +56,29 @@ public class AlOneCSS {
     public static final long		JUST_CENTER =				AlParProperty.SL2_JUST_CENTER;
 
     public static final long 		MARG_MAX_VALUE =			AlParProperty.SL2_MARG_MAX_VALUE;
+    public static final long 		MARG_MIN_VALUE =			AlParProperty.SL2_MARG_MIN_VALUE;
 
-    public static final long		MARGLEFT_MASK =				AlParProperty.SL2_MARGL_MASK;
-    public static final long		MARGLEFT_SHIFT =			AlParProperty.SL2_MARGL_SHIFT;
+    public static final long 		MARGLEFT_PERCENT_MASK =		AlParProperty.SL2_MARGL_PERCENT_MASK;
+    public static final long 		MARGLEFT_PERCENT_SHIFT =	AlParProperty.SL2_MARGL_PERCENT_SHIFT;
 
-    public static final long		MARGRIGHT_MASK =			AlParProperty.SL2_MARGR_MASK;
-    public static final long		MARGRIGHT_SHIFT =			AlParProperty.SL2_MARGR_SHIFT;
+    public static final long 		MARGLEFT_EM_MASK =			AlParProperty.SL2_MARGL_EM_MASK;
+    public static final long 		MARGLEFT_EM_SHIFT =			AlParProperty.SL2_MARGL_EM_SHIFT;
 
-    public static final long		MARGTOP_MASK =				AlParProperty.SL2_MARGT_MASK;
-    public static final long		MARGTOP_SHIFT =				AlParProperty.SL2_MARGT_SHIFT;
+    public static final long 		MARGRIGHT_PERCENT_MASK =	AlParProperty.SL2_MARGR_PERCENT_MASK;
+    public static final long 		MARGRIGHT_PERCENT_SHIFT =	AlParProperty.SL2_MARGR_PERCENT_SHIFT;
 
-    public static final long		MARGBOTTOM_MASK =			AlParProperty.SL2_MARGB_MASK;
-    public static final long		MARGBOTTOM_SHIFT =			AlParProperty.SL2_MARGB_SHIFT;
+    public static final long 		MARGRIGHT_EM_MASK =			AlParProperty.SL2_MARGR_EM_MASK;
+    public static final long 		MARGRIGHT_EM_SHIFT =		AlParProperty.SL2_MARGR_EM_SHIFT;
 
-    public static final long		INDENT_MASK =				AlParProperty.SL2_INDENT_MASK;
-    public static final long		INDENT_SHIFT =				AlParProperty.SL2_INDENT_SHIFT;
-    public static final long 		INDENT_MAX_VALUE =			AlParProperty.SL2_INDENT_MAX_VALUE;
+    public static final long 		MARGTOP_MASK =				AlParProperty.SL2_MARGT_MASK;
+    public static final long 		MARGTOP_SHIFT =				AlParProperty.SL2_MARGT_SHIFT;
+
+    public static final long 		MARGBOTTOM_MASK =			AlParProperty.SL2_MARGB_MASK;
+    public static final long 		MARGBOTTOM_SHIFT =			AlParProperty.SL2_MARGB_SHIFT;
+
+    public static final long 		INDENT_VALUE_EM =			AlParProperty.SL2_INDENT_EM;
+    public static final long 		INDENT_MASK =				AlParProperty.SL2_INDENT_MASK;
+    public static final long 		INDENT_SHIFT =				AlParProperty.SL2_INDENT_SHIFT;
 
     public static final long		PAGEBREAKBEFORE_MASK =		AlParProperty.SL2_BREAK_BEFORE;
     public static final long		PAGEBREAKAFTER_MASK =		AlParProperty.SL2_BREAK_AFTER;
@@ -85,7 +92,7 @@ public class AlOneCSS {
     public static final long		ENABLE_MASK1_ALL = 0xffffffffffffffffL;
     public static final long		ENABLE_MASK1_RESTRICTION = ENABLE_MASK1_ALL -
                                     JUST_MASK -
-                                    MARGLEFT_MASK - MARGRIGHT_MASK - MARGTOP_MASK - MARGBOTTOM_MASK -
+                                    MARGLEFT_PERCENT_MASK - MARGRIGHT_PERCENT_MASK - MARGLEFT_EM_MASK - MARGRIGHT_EM_MASK - MARGTOP_MASK - MARGBOTTOM_MASK -
                                     INDENT_MASK;
 
     public int				    tag = 0x00;

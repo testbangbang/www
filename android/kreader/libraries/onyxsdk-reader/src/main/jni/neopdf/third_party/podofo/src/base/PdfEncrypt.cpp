@@ -352,7 +352,12 @@ public:
 			}
 			if(status != 1)
 				PODOFO_RAISE_ERROR_INFO( ePdfError_InternalLogic, "Error initializing AES encryption engine" );
-			status = EVP_DecryptUpdate( aes, pBuffer, &lOutLen, pBuffer + AES_IV_LENGTH, lLen - AES_IV_LENGTH );
+            unsigned char* tempBuffer = new unsigned char[lLen];
+            // joy@onyx, we have to pass a temp buffer to EVP_DecryptUpdate to save out data, else it will fail
+            // status = EVP_DecryptUpdate( aes, pBuffer, &lOutLen, pBuffer + AES_IV_LENGTH, lLen - AES_IV_LENGTH );
+            status = EVP_DecryptUpdate( aes, tempBuffer, &lOutLen, pBuffer + AES_IV_LENGTH, lLen - AES_IV_LENGTH );
+            memcpy( pBuffer, tempBuffer, lOutLen );
+            delete[] tempBuffer;
 		} else if( !bOnlyFinalLeft ) {
 			// Quote openssl.org: "the decrypted data buffer out passed to EVP_DecryptUpdate() should have sufficient room
 			//  for (inl + cipher_block_size) bytes unless the cipher block size is 1 in which case inl bytes is sufficient."

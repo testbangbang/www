@@ -38,6 +38,7 @@ public class AlOneItem {
 		public int				table_start = -1;
 		public int				table_row = 0;
 
+		public int				listIndent = 0;
 
 
 	public int					blockHeight = 0;
@@ -101,6 +102,7 @@ public class AlOneItem {
 		base_line_down = a.base_line_down;
 		justify = a.justify;
 		count = a.count;
+		listIndent = a.listIndent;
 
 		num = a.num;
 		prop = a.prop;

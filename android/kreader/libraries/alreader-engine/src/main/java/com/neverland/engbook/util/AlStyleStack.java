@@ -1,7 +1,5 @@
 package com.neverland.engbook.util;
 
-import java.util.ArrayList;
-
 public class AlStyleStack {
     public static final int MLEFT = 0;
     public static final int MRIGHT = 1;
@@ -64,7 +62,8 @@ public class AlStyleStack {
         buffer[position].copyFrom(buffer[position - 1]);
         //System.arraycopy(buffer[position - 1], 0, buffer[position], 0, sizeOf(AlOneStyleStack));
         buffer[position].prop &= ~(AlParProperty.SL2_EMPTY_AFTER | AlParProperty.SL2_BREAK_AFTER |
-                AlParProperty.SL2_MARGB_MASK | AlParProperty.SL2_MARGT_MASK | AlParProperty.SL2_MARGL_MASK | AlParProperty.SL2_MARGR_MASK);
+                AlParProperty.SL2_MARGB_MASK | AlParProperty.SL2_MARGT_MASK
+                | AlParProperty.SL2_MARGL_PERCENT_MASK | AlParProperty.SL2_MARGR_PERCENT_MASK | AlParProperty.SL2_MARGL_EM_MASK | AlParProperty.SL2_MARGR_EM_MASK);
         buffer[position].tag = tag;
         buffer[position].inCounter = 0;
 
@@ -111,20 +110,23 @@ public class AlStyleStack {
 
         res &= ~(AlParProperty.SL2_MARGT_MASK | AlParProperty.SL2_MARG_MASK_WIDTH);
 
-        int top = lastMarginBottom, ml, mr;
-        float width = 300.0f, left = 0, right = 0;
-        for (int i = 1; i <= position; i++) {
+        int top = top = lastMarginBottom, mlPercent, mrPercent, mlEm = 0, mrEm = 0;
+        float width = 100.0f, leftPercent = 0, rightPercent = 0;
+        for (int i = 0; i <= position; i++) {
             top += (buffer[i].prop & AlParProperty.SL2_MARGT_MASK) >> AlParProperty.SL2_MARGT_SHIFT;
 
-            ml = (int) ((buffer[i].prop & AlParProperty.SL2_MARGL_MASK) >> AlParProperty.SL2_MARGL_SHIFT);
-            mr = (int) ((buffer[i].prop & AlParProperty.SL2_MARGR_MASK) >> AlParProperty.SL2_MARGR_SHIFT);
+            mlPercent = (int)(buffer[i].prop & AlParProperty.SL2_MARGL_PERCENT_MASK) >> AlParProperty.SL2_MARGL_PERCENT_SHIFT;
+            mrPercent = (int)(buffer[i].prop & AlParProperty.SL2_MARGR_PERCENT_MASK) >> AlParProperty.SL2_MARGR_PERCENT_SHIFT;
 
-            if (mr != 0 || ml != 0) {
+            mlEm += (buffer[i].prop & AlParProperty.SL2_MARGL_EM_MASK) >> AlParProperty.SL2_MARGL_EM_SHIFT;
+            mrEm += (buffer[i].prop & AlParProperty.SL2_MARGR_EM_MASK) >> AlParProperty.SL2_MARGR_EM_SHIFT;
 
-                left += (float)ml * width / 300;
-                right += (float)mr * width / 300;
+            if (mlPercent != 0 || mrPercent != 0) {
 
-                width = 300 - left - right;
+                leftPercent += (float)mlPercent * width / 100;
+                rightPercent += (float)mrPercent * width / 100;
+
+                width = 100 - leftPercent - rightPercent;
             }
         }
         lastMarginBottom = 0;
@@ -133,20 +135,33 @@ public class AlStyleStack {
             top = (int) AlParProperty.SL2_MARG_MAX_VALUE;
         res |= ((long)top << AlParProperty.SL2_MARGT_SHIFT);
 
-        if (left < 0)
-            left = 0;
-        if (right < 0)
-            right = 0;
+        if (leftPercent < 0)
+            leftPercent = 0;
+        if (rightPercent < 0)
+            rightPercent = 0;
 
-        ml = (int)(left + 0.5);
-        mr = (int)(right + 0.5);
-        while (ml + mr > 270) {
-            ml--;
-            mr--;
+        mlPercent = (int)(leftPercent + 0.5);
+        mrPercent = (int)(rightPercent + 0.5);
+        while (mlPercent + mrPercent > AlParProperty.SL2_MARG_MAX_VALUE) {
+            mlPercent--;
+            mrPercent--;
         }
 
-        res |= ((long)ml << AlParProperty.SL2_MARGL_SHIFT);
-        res |= ((long)mr << AlParProperty.SL2_MARGR_SHIFT);
+        if (mlEm < 0)
+            mlEm = 0;
+        if (mrEm < 0)
+            mrEm = 0;
+
+        while (mlEm + mrEm > AlParProperty.SL2_MARG_MAX_VALUE) {
+            mlPercent--;
+            mrPercent--;
+        }
+
+        res |= ((long)mlPercent << AlParProperty.SL2_MARGL_PERCENT_SHIFT);
+        res |= ((long)mrPercent << AlParProperty.SL2_MARGR_PERCENT_SHIFT);
+
+        res |= ((long)mlEm << AlParProperty.SL2_MARGL_EM_SHIFT);
+        res |= ((long)mrEm << AlParProperty.SL2_MARGR_EM_SHIFT);
 
         return res;
     }

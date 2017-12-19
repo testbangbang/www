@@ -2,12 +2,10 @@ package com.neverland.engbook.level2;
 
 import android.util.Log;
 
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-
 import com.neverland.engbook.bookobj.AlBookEng.PairTextStyle;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
+import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_NOTIFY_RESULT;
 import com.neverland.engbook.forpublic.TAL_CODE_PAGES;
@@ -15,7 +13,6 @@ import com.neverland.engbook.forpublic.TAL_RESULT;
 import com.neverland.engbook.level1.AlFiles;
 import com.neverland.engbook.level1.AlRandomAccessFile;
 import com.neverland.engbook.unicode.AlUnicode;
-import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.util.AlMultiFiles;
 import com.neverland.engbook.util.AlOneImage;
 import com.neverland.engbook.util.AlOneLink;
@@ -33,6 +30,9 @@ import com.neverland.engbook.util.InternalConst;
 import com.neverland.engbook.util.InternalFunc;
 
 import org.mozilla.universalchardet.UniversalDetector;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 
 public abstract class AlFormat {
 
@@ -517,7 +517,7 @@ public abstract class AlFormat {
     }
 
     public void removeCover() {
-        if (size > 0 && par0.size() > 2 && par0.get(0).length == 3 && par0.get(0).ptext[1] == LEVEL2_COVERTOTEXT) {
+        if (size > 0 && par0.size() >= 2 && par0.get(0).length == 3 && par0.get(0).ptext[1] == LEVEL2_COVERTOTEXT) {
             par0.get(1).start = 0;
 
             char tmp[] = new char[par0.get(1).length + 3];
@@ -1060,6 +1060,8 @@ public abstract class AlFormat {
         }*/
 
         if (preference.need_dialog == 2)
+            return;
+        if (((alp.paragraph & (AlStyles.SL_PRESERVE_SPACE)) != 0) || ((alp.prop & (AlParProperty.SL2_JUSTIFY_POEM)) != 0))
             return;
 
         boolean disable_linear = false;

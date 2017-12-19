@@ -2,9 +2,7 @@ package com.neverland.engbook.forpublic;
 
 import android.content.Context;
 
-
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_HYPH_LANG;
-import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_DPI;
 import com.neverland.engbook.forpublic.EngBookMyType.TAL_SCREEN_PAGES_COUNT;
 
 /**
@@ -48,7 +46,7 @@ public class AlEngineOptions {
 	/**
 	 * некоторые ньюансы форматирования текста на странице - устанавливать в TRUE только если локаль устройства - китайская
 	 */
-	public boolean								chinezeFormatting = true;
+	public boolean								chinezeFormatting = false;
 	/**
 	 * используемый размер странцы в случае если useScreenPages равно TAL_SCREEN_PAGES_COUNT_BY_SIZE
 	 pageSize4Use = AL_USEAUTO_PAGESIZE - вариант автоматического подсчета размера страницы
