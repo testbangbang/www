@@ -69,7 +69,7 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
             context = contextWeakReference.get();
             DeviceBind deviceBind = null;
             try {
-                boolean success = detectMacAddress(context, 2);
+                boolean success = detectMacAddress(context);
                 if (!success) {
                     return null;
                 }
@@ -118,15 +118,9 @@ public class BootBroadcastReceiver extends BroadcastReceiver {
         return deviceBind;
     }
 
-    static public boolean detectMacAddress(Context context, int detectCount) {
-        String mac;
-        for (int i = 0; i < detectCount; i++) {
-            mac = NetworkUtil.getMacAddress(context);
-            if (StringUtils.isNotBlank(mac)) {
-                return true;
-            }
-        }
-        return false;
+    static public boolean detectMacAddress(Context context) {
+        String mac = NetworkUtil.getMacAddress(context);
+        return StringUtils.isNotBlank(mac);
     }
 
     private static boolean checkCacheQRFile() {
