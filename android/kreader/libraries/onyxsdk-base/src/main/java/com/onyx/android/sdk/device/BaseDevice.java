@@ -401,4 +401,12 @@ public class BaseDevice {
     public boolean setColdLightDeviceValue(Context context, int value) {
         return false;
     }
+
+    public int getWarmLightDeviceValue(Context context){
+        return 0;
+    }
+
+    public int getColdLightDeviceValue(Context context){
+        return 0;
+    }
 }

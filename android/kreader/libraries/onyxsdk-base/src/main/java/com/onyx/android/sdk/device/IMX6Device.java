@@ -151,6 +151,8 @@ public class IMX6Device extends BaseDevice {
     private static Method sMethodSetFrontLightValue;
     private static Method sMethodSetWarmLightValue;
     private static Method sMethodSetColdLightValue;
+    private static Method sMethodGetColdLightDeviceValue;
+    private static Method sMethodGetWarmLightDeviceValue;
     private static Method sMethodSetNaturalLightValue;
     private static Method sMethodGetFrontLightConfigValue;
     private static Method sMethodGetWarmLightConfigValue;
@@ -578,6 +580,8 @@ public class IMX6Device extends BaseDevice {
             sMethodSetFrontLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setFrontLightValue", Context.class, int.class);
             sMethodSetWarmLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setWarmLightValue", Context.class, int.class);
             sMethodSetColdLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setColdLightValue", Context.class, int.class);
+            sMethodGetColdLightDeviceValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getColdLightValue", Context.class);
+            sMethodGetWarmLightDeviceValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getWarmLightValue", Context.class);
             sMethodSetNaturalLightValue = ReflectUtil.getMethodSafely(deviceControllerClass, "setNaturalLightValue", Context.class, int.class);
             sMethodGetFrontLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getFrontLightConfigValue", Context.class);
             sMethodGetWarmLightConfigValue = ReflectUtil.getMethodSafely(deviceControllerClass, "getWarmLightConfigValue", Context.class);
@@ -807,7 +811,7 @@ public class IMX6Device extends BaseDevice {
 
     @Override
     public List<Integer> getNaturalLightValueList(Context context) {
-        Integer intValues[] = {0,3,6,9,12,15,17,19,21,23,25,26,27,28,29,30,31};
+        Integer intValues[] = {0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31};
         return Arrays.asList(intValues);
     }
 
@@ -1022,4 +1026,23 @@ public class IMX6Device extends BaseDevice {
         Object res = this.invokeDeviceControllerMethod(context, sMethodSetColdLightValue, context, Integer.valueOf(value));
         return res != null;
     }
+
+    @Override
+    public int getWarmLightDeviceValue(Context context) {
+        Integer value = (Integer)this.invokeDeviceControllerMethod(context, sMethodGetWarmLightDeviceValue, context);
+        if (value == null) {
+            return 0;
+        }
+        return value;
+    }
+
+    @Override
+    public int getColdLightDeviceValue(Context context) {
+        Integer value = (Integer)this.invokeDeviceControllerMethod(context, sMethodGetColdLightDeviceValue, context);
+        if (value == null) {
+            return 0;
+        }
+        return value;
+    }
+
 }
