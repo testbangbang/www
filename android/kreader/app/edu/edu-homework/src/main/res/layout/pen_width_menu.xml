@@ -22,11 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <View
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
-
         <include
             bind:item="@{item[MenuId.THICKNESS_ULTRA_LIGHT].setMenuIcon(R.drawable.ic_width_1)}"
             layout="@layout/sub_menu_item"/>
@@ -50,6 +45,11 @@
         <include
             bind:item="@{item[MenuId.THICKNESS_CUSTOM_BOLD].setMenuIcon(R.drawable.ic_width_6)}"
             layout="@layout/sub_menu_item"/>
+
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
 
     </com.google.android.flexbox.FlexboxLayout>
 

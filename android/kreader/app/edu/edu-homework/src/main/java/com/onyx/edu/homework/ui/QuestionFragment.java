@@ -6,7 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.text.Editable;
 import android.text.Html;
 import android.text.Spanned;
 import android.view.Gravity;
@@ -23,14 +22,15 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
-import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
+import com.onyx.edu.homework.action.note.DocumentFlushAction;
 import com.onyx.edu.homework.action.note.HomeworkPagesRenderActionChain;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Config;
@@ -51,6 +51,10 @@ public class QuestionFragment extends BaseFragment {
     private FragmentQuestionBinding binding;
     private Question question;
 
+    private ScribbleFragment scribbleFragment;
+    private NoteToolFragment toolFragment;
+    private ReviewFragment reviewFragment;
+
     public static QuestionFragment newInstance(Question question) {
         QuestionFragment fragment = new QuestionFragment();
         fragment.setQuestion(question);
@@ -68,6 +72,7 @@ public class QuestionFragment extends BaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initView(question);
+        initFragment();
     }
 
     public void setQuestion(Question question) {
@@ -79,20 +84,7 @@ public class QuestionFragment extends BaseFragment {
         String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
         binding.questionType.setText(getString(R.string.question_type_str, questionType));
         binding.content.setText(TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null));
-        binding.answer.setVisibility(question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
         bindQuestionOption(binding.option, question);
-        binding.answer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoAnswerActivity(question);
-            }
-        });
-        binding.scribbleImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoAnswerActivity(question);
-            }
-        });
         binding.analysis.setText(R.string.analysis);
         binding.review.setText(R.string.look_review);
         binding.analysis.setOnClickListener(new View.OnClickListener() {
@@ -107,8 +99,6 @@ public class QuestionFragment extends BaseFragment {
                 gotoAnswerActivity(question);
             }
         });
-        binding.scribbleImage.setVisibility(question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
-        updateScribbleImage();
         updateReviewInfo();
     }
 
@@ -189,34 +179,51 @@ public class QuestionFragment extends BaseFragment {
         startActivity(intent);
     }
 
-    public void updateQuestion() {
-        updateState();
-        updateScribbleImage();
-    }
-
-    public void updateScribbleImage() {
-        loadScribbleImage(question, binding.scribbleImage);
-    }
-
-    private void loadScribbleImage(final Question question, final ImageView imageView) {
+    public void initFragment() {
         if (question.isChoiceQuestion()) {
             return;
         }
-        int width = (int) getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) getResources().getDimension(R.dimen.scribble_view_height);
-        Rect size = new Rect(0, 0, width, height);
-        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), size, 1);
-        pageAction.execute(getNoteViewHelper(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                List<Bitmap> bitmaps = pageAction.getPageMap().get(question.getUniqueId());
-                if (bitmaps != null && bitmaps.size() > 0) {
-                    imageView.setImageBitmap(bitmaps.get(0));
-                }else {
-                    imageView.setImageResource(android.R.color.white);
-                }
+        DataBundle.getInstance().resetNoteViewHelper();
+        binding.scribble.setVisibility(View.VISIBLE);
+        binding.scribbleLine.setVisibility(View.VISIBLE);
+        binding.toolLayout.setVisibility(View.VISIBLE);
+        binding.toolLayoutLine.setVisibility(View.VISIBLE);
+        int initPageCount = 1;
+        if (DataBundle.getInstance().isReview()) {
+            if (question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
+                initPageCount = question.review.attachmentUrl.size();
             }
-        });
+            reviewFragment = ReviewFragment.newInstance(question);
+            getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
+        }else {
+            scribbleFragment = ScribbleFragment.newInstance(question);
+            getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
+        }
+        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
+        getChildFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
+    }
+
+    private void removeFragment() {
+        if (reviewFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(reviewFragment).commit();
+            reviewFragment = null;
+        }
+        if (scribbleFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(scribbleFragment).commit();
+            scribbleFragment = null;
+        }
+        if (toolFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(toolFragment).commit();
+            toolFragment = null;
+        }
+    }
+
+    public void reloadQuestion(Question question) {
+        this.question = question;
+        removeFragment();
+        initView(question);
+        initFragment();
+        updateState();
     }
 
     public DataBundle getDataBundle() {
@@ -231,7 +238,6 @@ public class QuestionFragment extends BaseFragment {
             view.setEnabled(enable);
         }
         binding.option.setClickable(enable);
-        binding.answer.setVisibility(enable && !question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
         binding.reviewLayout.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
         binding.score.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
         updateReviewInfo();
@@ -253,4 +259,11 @@ public class QuestionFragment extends BaseFragment {
         binding.review.setVisibility(question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
     }
 
+    public void saveDocument(BaseCallback callback) {
+        if (question.isChoiceQuestion()) {
+            BaseCallback.invoke(callback, null, null);
+            return;
+        }
+        scribbleFragment.saveDocument(callback);
+    }
 }

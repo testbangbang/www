@@ -109,6 +109,7 @@ public class NoteViewHelper {
     private LineLayoutArgs lineLayoutArgs;
     private Shape currentShape = null;
     private Shape cursorShape = null;
+    private String drawText;
     private boolean shortcutErasing = false;
     private int viewPosition[] = {0, 0};
     private float src[] = {0, 0};
@@ -125,6 +126,13 @@ public class NoteViewHelper {
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
         EpdController.enablePost(view, 1);
+    }
+
+    public NoteViewHelper() {
+    }
+
+    public NoteViewHelper(Context context) {
+        this.context = context.getApplicationContext();
     }
 
     public void setView(final Context context, final SurfaceView view, final InputCallback c) {

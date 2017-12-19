@@ -7,8 +7,6 @@ import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,12 +35,13 @@ import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
+import com.onyx.edu.homework.event.ResumeNoteEvent;
+import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,7 +55,8 @@ public class HomeworkListActivity extends BaseActivity {
     private List<Question> questions;
     private Homework homework;
     private RecordFragment recordFragment;
-    private List<QuestionFragment> fragments = new ArrayList<>();
+    private QuestionFragment questionFragment;
+    private int currentPage = 0;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -79,17 +79,13 @@ public class HomeworkListActivity extends BaseActivity {
         binding.prevPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int prev = binding.list.getCurrentItem() - 1;
-                prev = Math.max(0, prev);
-                binding.list.setCurrentItem(prev,false);
+                prevPage();
             }
         });
         binding.nextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int next = binding.list.getCurrentItem() + 1;
-                next = Math.min(fragments.size() - 1, next);
-                binding.list.setCurrentItem(next,false);
+                nextPage();
             }
         });
         binding.total.setText(getString(R.string.total, 0));
@@ -125,13 +121,48 @@ public class HomeworkListActivity extends BaseActivity {
         hideMessage();
     }
 
+    private void nextPage() {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
+        final int next = currentPage + 1;
+        if (next >= questions.size() || getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveDocument(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                currentPage = next;
+                reloadQuestionFragment(currentPage);
+            }
+        });
+    }
+
+    private void prevPage() {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
+        final int prev = currentPage - 1;
+        if (prev < 0 || getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveDocument(new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                currentPage = prev;
+                reloadQuestionFragment(currentPage);
+            }
+        });
+    }
+
     private void showSubmitDialog() {
         checkWifi(false);
+        getDataBundle().post(new StopNoteEvent(false));
         SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                showWaitingDialog();
+                getDataBundle().post(new ResumeNoteEvent());
             }
         });
         dialog.show();
@@ -146,7 +177,6 @@ public class HomeworkListActivity extends BaseActivity {
                     Toast.makeText(HomeworkListActivity.this, R.string.not_review, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                updateCurrentQuestion();
                 updateState();
                 showTotalScore();
             }
@@ -190,7 +220,7 @@ public class HomeworkListActivity extends BaseActivity {
                 showWaitingDialog();
                 updateState();
                 showTotalScore();
-                initListView(questions);
+                initQuestions(questions);
             }
 
         });
@@ -259,46 +289,15 @@ public class HomeworkListActivity extends BaseActivity {
         binding.result.setText(getString(R.string.score, score));
     }
 
-    private void initListView(final List<Question> questions) {
+    private void initQuestions(final List<Question> questions) {
         if (questions == null) {
             return;
         }
-        for (Question question : questions) {
-            fragments.add(QuestionFragment.newInstance(question));
-        }
-        binding.list.setPagingEnabled(false);
-        binding.list.setUseKeyPage(true);
-        binding.list.setUseGesturesPage(true);
-        binding.list.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
-            @Override
-            public QuestionFragment getItem(int position) {
-                return fragments.get(position);
-            }
-
-            @Override
-            public int getCount() {
-                return fragments.size();
-            }
-        });
-        binding.list.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                updateOnPageSelected(position);
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
-        updateOnPageSelected(0);
+        questionFragment = QuestionFragment.newInstance(questions.get(0));
+        getSupportFragmentManager().beginTransaction().replace(R.id.question_layout, questionFragment).commit();
         updateShowInfo();
         checkAnswer();
+        updateOnPageChanged(0);
     }
 
     private void updateShowInfo() {
@@ -341,29 +340,24 @@ public class HomeworkListActivity extends BaseActivity {
         binding.notAnswer.setText(getString(R.string.not_answer, notAnswerCount));
     }
 
-    private void updateCurrentQuestion() {
-        int current = binding.list.getCurrentItem();
-        if (fragments.size() <= current) {
-            return;
-        }
-        fragments.get(current).updateQuestion();
+    @Nullable
+    private QuestionFragment getQuestionFragment() {
+        return questionFragment;
     }
 
-    private void updateOnPageSelected(int position) {
+    private void updateOnPageChanged(int position) {
         int current = position + 1;
         int total = questions.size();
         if (position >= total) {
             return;
         }
         binding.page.setText(current + File.separator + total);
-        fragments.get(position).updateState();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         EpdController.invalidate(getWindow().getDecorView(), UpdateMode.GC);
-        updateCurrentQuestion();
     }
 
     @Override
@@ -374,7 +368,6 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
         updateState();
-        updateCurrentQuestion();
     }
 
     @Subscribe
@@ -382,7 +375,15 @@ public class HomeworkListActivity extends BaseActivity {
         if (event.hideRecord) {
             hideRecordFragment();
         }
-        binding.list.setCurrentItem(event.page, false);
+        reloadQuestionFragment(event.page);
+    }
+
+    public void reloadQuestionFragment(int position) {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
+        questionFragment.reloadQuestion(questions.get(position));
+        updateOnPageChanged(position);
     }
 
     public DataBundle getDataBundle() {
@@ -404,12 +405,18 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showExitDialog() {
+        getDataBundle().post(new StopNoteEvent(false));
         OnyxCustomDialog.getConfirmDialog(this, getString(R.string.exit_tips), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 System.exit(0);
             }
-        }, null).show();
+        }, null).addOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                getDataBundle().post(new ResumeNoteEvent());
+            }
+        }).show();
     }
 
     private void toggleRecordFragment() {

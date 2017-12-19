@@ -385,7 +385,7 @@ public class NoteToolFragment extends BaseFragment {
         subMenuLayout.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         menuManager.addSubMenu(subMenuLayout,
                 DataBundle.getInstance().getEventBus(),
                 getSubLayoutId(parentId),
@@ -500,7 +500,7 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     public NoteViewHelper getNoteViewHelper() {
-        return DataBundle.getInstance().getNoteViewHelper();
+        return getDataBundle().getNoteViewHelper();
     }
 
     public void flushDocument(boolean render,
@@ -521,6 +521,7 @@ public class NoteToolFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && getDataBundle().isDoing();
+                && getDataBundle().isDoing()
+                && isRunning();
     }
 }

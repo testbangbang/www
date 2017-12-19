@@ -22,11 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <View
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
-
         <include
             bind:item="@{item[MenuId.NORMAL_PEN_STYLE].setMenuIcon(R.drawable.ic_shape_pencil)}"
             layout="@layout/sub_menu_item"/>
@@ -60,6 +55,10 @@
             bind:item="@{item[MenuId.TRIANGLE_90_STYLE].setMenuIcon(R.drawable.ic_shape_triangle_90)}"
             layout="@layout/sub_menu_item"/>
 
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
     </com.google.android.flexbox.FlexboxLayout>
 
 </layout>

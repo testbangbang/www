@@ -22,11 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <View
-            android:background="@android:color/black"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"/>
-
         <include
             bind:item="@{item[MenuId.ERASE_PARTIALLY].setMenuIcon(R.drawable.ic_eraser_part)}"
             layout="@layout/sub_menu_item"/>
@@ -35,6 +30,10 @@
             bind:item="@{item[MenuId.ERASE_TOTALLY].setMenuIcon(R.drawable.ic_eraser_all)}"
             layout="@layout/sub_menu_item"/>
 
+        <View
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
     </com.google.android.flexbox.FlexboxLayout>
 
 </layout>

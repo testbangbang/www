@@ -64,10 +64,10 @@ public class AnswerActivity extends BaseActivity {
             reviewFragment = ReviewFragment.newInstance(question);
             getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
         }else {
-            scribbleFragment = ScribbleFragment.newInstance(question);
+//            scribbleFragment = ScribbleFragment.newInstance(question);
             getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         }
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
+//        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
         getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 
