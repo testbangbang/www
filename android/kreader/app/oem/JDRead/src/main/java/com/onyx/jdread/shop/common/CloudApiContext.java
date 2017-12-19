@@ -30,6 +30,8 @@ public class CloudApiContext {
         public static final String TYPE = "type";
         public static final String BOOK_LIST = "bookList";
         public static final String BOOK_ID = "bookId";
+        public static final String NEW_BOOK_REVIEW = "newBookReview";
+        public static final String ADD_BOOK_COMMENT = "addBookComment";
     }
 
     public static class BookstoreModuleList {
@@ -63,6 +65,18 @@ public class CloudApiContext {
         public static final String BOOK_TYPE = "ebook";
         public static final String BOOK_TYPE_ID = "eBookId";
         public static final String PAGE_BOOK_ID = "paperBookId";
+    }
+
+    public static class SearchBook {
+        public static final String SORT_TYPE = "sortType";
+        public static final String SORT_SALE_DESC = "sort_sale_desc";
+        public static final String PAGE_SIZE = "pageSize";
+        public static final int PAGE_SIZE_COUNT = 20;
+        public static final String BOOK_TYPE = "bookType";
+        public static final String CURRENT_PAGE = "currentPage";
+        public static final String KEY_WORD = "keyword";
+        public static final String SEARCH_PAPER_BOOK = "searchPaperBook";
+        public static final String SEARCH_BOOK_V2 = "searchBookV2";
     }
 
     public static String getJDBooxBaseUrl() {

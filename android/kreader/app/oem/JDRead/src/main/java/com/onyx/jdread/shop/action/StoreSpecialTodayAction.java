@@ -45,7 +45,7 @@ public class StoreSpecialTodayAction extends BaseAction<StoreDataBundle> {
                 subjectViewModel.setModelBean(bookstoreModelResultBean);
                 storeViewModel.setTitleSubjectIems(subjectViewModel);
                 if (rxCallback != null) {
-                    rxCallback.onNext(request);
+                    rxCallback.onNext(StoreSpecialTodayAction.this);
                     rxCallback.onComplete();
                 }
             }

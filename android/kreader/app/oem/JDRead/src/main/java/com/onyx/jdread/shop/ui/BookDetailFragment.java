@@ -20,6 +20,7 @@ import com.onyx.jdread.shop.action.StoreBookDetailAction;
 import com.onyx.jdread.shop.action.StoreBookRecommendListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
 import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
@@ -38,7 +39,7 @@ public class BookDetailFragment extends BaseFragment {
     private FragmentBookDetailBinding bookDetailBinding;
     private int bookDetailSpace = JDReadApplication.getInstance().getResources().getInteger(R.integer.book_detail_recycle_view_space);
     private DividerItemDecoration itemDecoration;
-    private int ebookId;
+    private long ebookId;
     private PageRecyclerView recyclerViewRecommend;
 
     @Nullable
@@ -51,7 +52,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void initData() {
-        ebookId = PreferenceManager.getIntValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, 0);
+        ebookId = PreferenceManager.getLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, 0);
         getBookDetail();
     }
 
@@ -68,6 +69,8 @@ public class BookDetailFragment extends BaseFragment {
         bookDetailBinding.bookDetailInfo.bookDetailType2.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         initDividerItemDecoration();
         setRecommendRecycleView();
+        getBookDetailViewModel().setTitle(getString(R.string.title_bar_title_book_detail));
+        getBookDetailViewModel().setPageTag(PageTagConstants.BOOK_DETAIL);
     }
 
     private void setRecommendRecycleView() {
@@ -124,22 +127,6 @@ public class BookDetailFragment extends BaseFragment {
         });
     }
 
-    private boolean isCurrentViewVisible(View view) {
-        int visibility = view.getVisibility();
-        if (visibility == View.VISIBLE) {
-            return true;
-        }
-        return false;
-    }
-
-    private void setCurrent(int id, int position) {
-
-    }
-
-    private void visible(int id) {
-
-    }
-
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(OnRecommendItemClickEvent event) {
         ResultBookBean bookBean = event.getBookBean();
@@ -151,7 +138,7 @@ public class BookDetailFragment extends BaseFragment {
         recyclerViewRecommend.nextPage();
     }
 
-    public void setBookId(int ebookId) {
+    public void setBookId(long ebookId) {
         this.ebookId = ebookId;
         getBookDetail();
     }

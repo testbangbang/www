@@ -14,41 +14,48 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/search_view"
+            layout="@layout/layout_search_view"
+            bind:viewModel="@{viewModel}" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <include
-                android:id="@+id/search_view"
-                layout="@layout/layout_search_view"
-                bind:viewModel="@{viewModel}" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <include
-                android:id="@+id/book_store_one"
-                layout="@layout/fragment_book_store_one"
-                bind:viewModel="@{viewModel}" />
+                <include
+                    android:id="@+id/book_store_one"
+                    layout="@layout/fragment_book_store_one"
+                    bind:viewModel="@{viewModel}" />
 
-            <include
-                android:id="@+id/book_store_two"
-                layout="@layout/fragment_book_store_two"
-                bind:viewModel="@{viewModel}" />
+                <include
+                    android:id="@+id/book_store_two"
+                    layout="@layout/fragment_book_store_two"
+                    bind:viewModel="@{viewModel}" />
 
-            <include
-                android:id="@+id/book_store_three"
-                layout="@layout/fragment_book_store_three"
-                bind:viewModel="@{viewModel}" />
+                <include
+                    android:id="@+id/book_store_three"
+                    layout="@layout/fragment_book_store_three"
+                    bind:viewModel="@{viewModel}" />
+
+            </LinearLayout>
+
+            <com.onyx.jdread.shop.view.CustomScrollBar
+                android:id="@+id/scroll_bar"
+                android:layout_width="@dimen/bookstore_scroll_bar_width"
+                android:layout_height="match_parent"
+                android:layout_marginRight="@dimen/store_custom_scroll_bar_margin" />
 
         </LinearLayout>
-
-        <com.onyx.jdread.shop.view.CustomScrollBar
-            android:layout_marginRight="@dimen/store_custom_scroll_bar_margin"
-            android:id="@+id/scroll_bar"
-            android:layout_width="@dimen/bookstore_scroll_bar_width"
-            android:layout_height="match_parent" />
 
     </LinearLayout>
 

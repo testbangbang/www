@@ -41,7 +41,7 @@ public class StoreCategoryAction extends BaseAction<StoreDataBundle> {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
                 storeViewModel.setCategorySubjectItems(categoryListResultBean.catList);
                 if (rxCallback != null) {
-                    rxCallback.onNext(request);
+                    rxCallback.onNext(StoreCategoryAction.this);
                     rxCallback.onComplete();
                 }
             }

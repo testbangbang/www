@@ -23,8 +23,12 @@ import com.onyx.jdread.event.PushChildViewToStackEvent;
 import com.onyx.jdread.model.FunctionBarModel;
 import com.onyx.jdread.model.MainViewModel;
 import com.onyx.jdread.model.SystemBarModel;
+import com.onyx.jdread.shop.common.PageTagConstants;
+import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
 import com.onyx.jdread.shop.event.OnBookItemClickEvent;
+import com.onyx.jdread.shop.event.OnViewCommentEvent;
 import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.shop.ui.CommentFragment;
 import com.onyx.jdread.shop.ui.StoreFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -56,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initLibrary() {
-        JDReadApplication.getStoreDataBundle().getEventBus().register(this);
         EventBus.getDefault().register(this);
     }
 
@@ -78,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         EventBus.getDefault().unregister(this);
-        JDReadApplication.getStoreDataBundle().getEventBus().unregister(this);
         super.onDestroy();
     }
 
@@ -188,7 +190,24 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBookItemClickEvent(OnBookItemClickEvent event) {
-        PreferenceManager.setIntValue(JDReadApplication.getInstance() , Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
         switchCurrentFragment(BookDetailFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewCommentEvent(OnViewCommentEvent event) {
+        switchCurrentFragment(CommentFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailTopBackEvent(OnBookDetailTopBackEvent event) {
+        switch (event.getTag()) {
+            case PageTagConstants.BOOK_COMMENT:
+                switchCurrentFragment(BookDetailFragment.class.getName());
+                break;
+            case PageTagConstants.BOOK_DETAIL:
+                switchCurrentFragment(StoreFragment.class.getName());
+                break;
+        }
     }
 }

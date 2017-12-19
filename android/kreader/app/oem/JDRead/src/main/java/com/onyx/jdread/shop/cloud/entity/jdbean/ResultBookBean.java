@@ -8,7 +8,7 @@ import android.databinding.BaseObservable;
 
 public class ResultBookBean extends BaseObservable{
     public String borrowEndTime;
-    public int ebookId;
+    public long ebookId;
     public boolean isBuy;
     public String imageUrl;
     public boolean isAlreadyBorrow;

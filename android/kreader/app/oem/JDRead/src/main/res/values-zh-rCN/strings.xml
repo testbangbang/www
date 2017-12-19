@@ -27,5 +27,6 @@
     <string name="book_detail_text_view_recommend_title">选择此书的人还喜欢</string>
     <string name="book_detail_yuedou_discount">%.1f折</string>
     <string name="book_detail_star">%.1f</string>
-    <string name="title_bar_title">图书详情</string>
+    <string name="title_bar_title_book_detail">图书详情</string>
+    <string name="title_bar_title_book_comment">评论</string>
 </resources>

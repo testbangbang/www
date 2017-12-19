@@ -48,7 +48,7 @@ public class StoreBookRecommendListAction extends BaseAction<StoreDataBundle> {
                     bookDetailViewModel.setRecommendList(recommendListResultBean.recommend);
                 }
                 if (rxCallback != null) {
-                    rxCallback.onNext(request);
+                    rxCallback.onNext(StoreBookRecommendListAction.this);
                     rxCallback.onComplete();
                 }
             }

@@ -28,5 +28,7 @@
     <string name="book_detail_text_view_recommend_title">Book Recommend</string>
     <string name="book_detail_yuedou_discount">%.1f Discount</string>
     <string name="book_detail_star">%.1f</string>
-    <string name="title_bar_title">Book Detail</string>
+    <string name="title_bar_title_book_detail">Book Detail</string>
+    <string name="title_bar_title_book_comment">Comments</string>
+    <string name="book_comment_indicator_value">%1$s/%2$s</string>
 </resources>

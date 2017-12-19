@@ -14,4 +14,8 @@ public class Constants {
     public static final String MD_5 = "MD5";
 
     public static final String SP_KEY_BOOK_ID = "book_id";
+
+    public static final int BOOK_COMMENT_PAGE_SIZE = 20;
+    public static final int BOOK_CATEGORY_PAGE_SIZE = 20;
+    public static final int PAGE_STEP = 1;
 }

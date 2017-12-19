@@ -6,6 +6,7 @@ import android.widget.ImageView;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
+import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
@@ -53,6 +54,14 @@ public class StoreDatabingUtil {
     @BindingAdapter({"recommendItems"})
     public static void setRecommendItems(PageRecyclerView recyclerView, List items) {
         RecommendAdapter adapter = (RecommendAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"commentItems"})
+    public static void setCommentItems(PageRecyclerView recyclerView, List items) {
+        BookCommentsAdapter adapter = (BookCommentsAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

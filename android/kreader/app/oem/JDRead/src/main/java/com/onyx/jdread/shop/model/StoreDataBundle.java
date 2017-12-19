@@ -10,7 +10,7 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class StoreDataBundle {
-    private EventBus eventBus = new EventBus();
+    private EventBus eventBus = EventBus.getDefault();
     private DataManager dataManager = new DataManager();
     private CloudManager cloudManager = new CloudManager();
     private BookStoreViewModel storeViewModel = new BookStoreViewModel(getEventBus());

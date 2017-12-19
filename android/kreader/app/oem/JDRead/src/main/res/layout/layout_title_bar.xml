@@ -20,6 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:background="@drawable/normal_selected_background"
             android:gravity="center_vertical"
             android:onClick="@{()->bookDetailViewModel.onTopBackClick()}"
             android:orientation="horizontal"
@@ -35,7 +36,8 @@
                 android:id="@+id/title_bar_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/title_bar_title"
+                android:layout_marginRight="@dimen/book_detail_margin"
+                android:text="@{bookDetailViewModel.title}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 

@@ -13,4 +13,6 @@
     <integer name="store_category_recycle_view_row">2</integer>
     <integer name="store_category_recycle_view_col">2</integer>
     <integer name="book_detail_recycle_view_space">10</integer>
+    <integer name="book_store_comment_row">5</integer>
+    <integer name="book_store_comment_col">1</integer>
 </resources>

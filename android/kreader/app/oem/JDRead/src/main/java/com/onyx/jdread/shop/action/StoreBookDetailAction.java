@@ -44,7 +44,7 @@ public class StoreBookDetailAction extends BaseAction<StoreDataBundle> {
                 bookDetailResultBean = request.getBookDetailResultBean();
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
                 if (rxCallback != null) {
-                    rxCallback.onNext(request);
+                    rxCallback.onNext(StoreBookDetailAction.this);
                     rxCallback.onComplete();
                 }
             }
