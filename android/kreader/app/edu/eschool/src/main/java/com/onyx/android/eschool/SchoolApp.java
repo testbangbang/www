@@ -301,7 +301,7 @@ public class SchoolApp extends MultiDexApplication {
     }
 
     public void turnOnFrontLight() {
-        Device.currentDevice().setFrontLightDeviceValue(this, 100);
+        Device.currentDevice().openFrontLight(this);
     }
 
     private void initLeanCloud() {
