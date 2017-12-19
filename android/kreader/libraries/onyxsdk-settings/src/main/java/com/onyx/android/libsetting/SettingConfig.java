@@ -476,7 +476,6 @@ public class SettingConfig {
         List<SettingItem> settingItemList = new ArrayList<>();
         settingItemStringList.addAll(getSettingItemTAGList());
         for (String tag : settingItemStringList) {
-            Log.e(TAG, "tag:" + tag);
             settingItemList.add(new SettingItem(SettingCategory.translate(tag),
                     RawResourceUtil.getDrawableIdByName(context, getSettingIconMaps().get(tag)),
                     context.getString(RawResourceUtil.getStringIdByName(context, getSettingTittleMap().get(tag)))));
