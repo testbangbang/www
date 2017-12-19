@@ -30,11 +30,13 @@ public class MetadataDeleteAction extends BaseAction<DataBundle> {
 
     private void deleteBooksByList(DataBundle dataBundle, List<DataModel> listSelected, RxCallback baseCallback) {
         RxMetadataDeleteRequest deleteRequest = new RxMetadataDeleteRequest(dataBundle.getDataManager(), listSelected);
+        RxMetadataDeleteRequest.setAppContext(dataBundle.getAppContext());
         deleteRequest.execute(baseCallback);
     }
 
     private void deleteBooksByQueryArgs(DataBundle dataBundle, QueryArgs queryArgs, List<DataModel> listSelected, RxCallback baseCallback) {
         RxMetadataDeleteRequest deleteRequest = new RxMetadataDeleteRequest(dataBundle.getDataManager(), queryArgs, listSelected);
+        RxMetadataDeleteRequest.setAppContext(dataBundle.getAppContext());
         deleteRequest.execute(baseCallback);
     }
 }

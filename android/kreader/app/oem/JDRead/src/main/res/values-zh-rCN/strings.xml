@@ -9,4 +9,7 @@
     <string name="select_all">全选</string>
     <string name="move_to">移动到</string>
     <string name="manage_book">图书管理</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="delete_book_prompt">是否从本机中删除所选图书？</string>
 </resources>

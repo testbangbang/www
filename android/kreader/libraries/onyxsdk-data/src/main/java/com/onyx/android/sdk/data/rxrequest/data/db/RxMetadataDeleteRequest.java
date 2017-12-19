@@ -5,16 +5,14 @@ import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Metadata;
-import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.raizlabs.android.dbflow.config.FlowManager;
 import com.raizlabs.android.dbflow.structure.database.DatabaseWrapper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by hehai on 17-12-13.
@@ -22,12 +20,13 @@ import java.util.Set;
 
 public class RxMetadataDeleteRequest extends RxBaseDBRequest {
     private List<Metadata> list = new ArrayList<>();
+    private List<DataModel> deleteList;
     private List<DataModel> ignoreList;
     private QueryArgs queryArgs;
 
     public RxMetadataDeleteRequest(DataManager dm, List<DataModel> list) {
         super(dm);
-        this.list.addAll(DataModelUtil.dataModelToMetadata(list));
+        this.deleteList = list;
     }
 
     public RxMetadataDeleteRequest(DataManager dm, QueryArgs queryArgs, List<DataModel> ignoreList) {
@@ -38,6 +37,7 @@ public class RxMetadataDeleteRequest extends RxBaseDBRequest {
 
     @Override
     public RxMetadataDeleteRequest call() throws Exception {
+        list.clear();
         if (queryArgs != null) {
             list = getDataProvider().findMetadataByQueryArgs(getAppContext(), queryArgs);
             Iterator<Metadata> iterator = list.iterator();
@@ -47,6 +47,8 @@ public class RxMetadataDeleteRequest extends RxBaseDBRequest {
                     iterator.remove();
                 }
             }
+        } else {
+            addDeleteMetadata(this.list, deleteList);
         }
         deleteBookList();
         return this;
@@ -54,7 +56,7 @@ public class RxMetadataDeleteRequest extends RxBaseDBRequest {
 
     private boolean isIgnore(Metadata metadata) {
         for (DataModel dataModel : ignoreList) {
-            if (dataModel.idString.get().equals(metadata.getIdString())){
+            if (dataModel.idString.get().equals(metadata.getIdString())) {
                 return true;
             }
         }
@@ -69,6 +71,25 @@ public class RxMetadataDeleteRequest extends RxBaseDBRequest {
         database.beginTransaction();
         for (Metadata metadata : list) {
             getDataProvider().removeMetadata(getAppContext(), metadata);
+        }
+        database.setTransactionSuccessful();
+        database.endTransaction();
+
+        for (Metadata metadata : list) {
+            FileUtils.deleteFile(metadata.getNativeAbsolutePath());
+        }
+    }
+
+
+    private void addDeleteMetadata(List<Metadata> list, List<DataModel> modelList) {
+        if (CollectionUtils.isNullOrEmpty(modelList)) {
+            return;
+        }
+        DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
+        database.beginTransaction();
+        for (DataModel dataModel : modelList) {
+            Metadata metadata = getDataProvider().findMetadataByIdString(getAppContext(), dataModel.idString.get());
+            list.add(metadata);
         }
         database.setTransactionSuccessful();
         database.endTransaction();

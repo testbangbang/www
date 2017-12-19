@@ -44,6 +44,7 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableBoolean selectAllFlag = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private int queryLimit = 9;
+    private int deletePageCount = 0;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
     private QueryArgs queryArgs;
     private List<DataModel> listSelected = new ArrayList<>();
@@ -186,11 +187,15 @@ public class LibraryViewDataModel extends Observable {
         int itemsPerPage = queryPagination.itemsPerPage();
         if (currentPage > libraryCount.get() / itemsPerPage) {
             for (int i = libraryCount.get(); i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
-                visibleItems.add(items.get(i));
+                DataModel dataModel = items.get(i);
+                dataModel.id.set(currentPage * itemsPerPage + visibleItems.size());
+                visibleItems.add(dataModel);
             }
         } else {
             for (int i = currentPage * itemsPerPage; i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
-                visibleItems.add(items.get(i));
+                DataModel dataModel = items.get(i);
+                dataModel.id.set(currentPage * itemsPerPage + visibleItems.size());
+                visibleItems.add(dataModel);
             }
         }
     }
@@ -208,6 +213,19 @@ public class LibraryViewDataModel extends Observable {
             clearItemSelectedList();
         }
         getListSelected().add(itemModel);
+        updateDeletePage();
+    }
+
+    public void updateDeletePage() {
+        int prevDelete = 0;
+        int currentPage = queryPagination.getCurrentPage();
+        int itemsPerPage = queryPagination.itemsPerPage();
+        for (DataModel dataModel : getListSelected()) {
+            if (dataModel.id.get() > currentPage * itemsPerPage) {
+                prevDelete++;
+            }
+        }
+        deletePageCount = prevDelete / itemsPerPage;
     }
 
     public void removeFromSelected(DataModel itemModel) {
@@ -218,6 +236,7 @@ public class LibraryViewDataModel extends Observable {
                 iterator.remove();
             }
         }
+        updateDeletePage();
     }
 
     public QueryPagination getQueryPagination() {
@@ -306,7 +325,11 @@ public class LibraryViewDataModel extends Observable {
         checkedOrCancelAll(false);
     }
 
-    public void delete(){
+    public void delete() {
         eventBus.post(new DeleteBookEvent());
+    }
+
+    public int getDeletePageCount() {
+        return deletePageCount;
     }
 }

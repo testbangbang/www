@@ -26,6 +26,8 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
 import com.onyx.jdread.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.library.LibraryDeleteDialog;
+import com.onyx.jdread.library.action.MetadataDeleteAction;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
 import com.onyx.jdread.library.event.DeleteBookEvent;
@@ -124,6 +126,7 @@ public class LibraryFragment extends BaseFragment {
         pagination.resize(row, col, totalCount);
         pageIndicatorModel.updateCurrentPage(totalCount);
         pageIndicatorModel.updateTotal(totalCount);
+        dataBundle.getLibraryViewDataModel().updateDeletePage();
     }
 
     private int getTotalCount() {
@@ -311,13 +314,43 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
+        dataBundle.getLibraryViewDataModel().libraryPathList.clear();
         pagination.setCurrentPage(0);
         loadData();
     }
 
     @Subscribe
     public void onDeleteBookEvent(DeleteBookEvent event) {
+        LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
+        dialogModel.message.set(getString(R.string.delete_book_prompt));
+        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(getContext(), dialogModel);
+        final LibraryDeleteDialog libraryDeleteDialog = builder.create();
+        libraryDeleteDialog.show();
+        dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                deleteBook();
+                libraryDeleteDialog.dismiss();
+            }
+        });
+        dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                libraryDeleteDialog.dismiss();
+            }
+        });
+    }
 
+    private void deleteBook() {
+        MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction();
+        metadataDeleteAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
+                loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount));
+                quitMultiSelectionMode();
+            }
+        });
     }
 
     private void processNormalModeItemClick(DataModel model) {

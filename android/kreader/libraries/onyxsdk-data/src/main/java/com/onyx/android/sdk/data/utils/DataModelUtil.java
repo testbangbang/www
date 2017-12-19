@@ -18,6 +18,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,11 +27,18 @@ import java.util.Map;
  */
 
 public class DataModelUtil {
-    public static void libraryToDataModel(DataProviderBase dataProvider, EventBus eventBus, List<DataModel> dataModels, List<Library> libraryList, int defaultCoverRes) {
+    public static void libraryToDataModel(DataProviderBase dataProvider, EventBus eventBus, List<DataModel> dataModels, List<Library> libraryList, boolean loadEmpty, int defaultCoverRes) {
         if (CollectionUtils.isNullOrEmpty(libraryList)) {
             return;
         }
-        for (Library library : libraryList) {
+        Iterator<Library> iterator = libraryList.iterator();
+        while (iterator.hasNext()) {
+            Library library = iterator.next();
+            long metadataCount = dataProvider.libraryMetadataCount(library);
+            if (metadataCount == 0 && !loadEmpty) {
+                iterator.remove();
+                continue;
+            }
             DataModel model = new DataModel(eventBus);
             model.type.set(ModelType.TYPE_LIBRARY);
             model.parentId.set(library.getParentUniqueId());
@@ -40,10 +48,8 @@ public class DataModelUtil {
             model.desc.set(library.getDescription());
             model.checked.set(false);
             model.coverDefault.set(defaultCoverRes);
-            model.childCount.set(dataProvider.libraryMetadataCount(library));
-            if (model.childCount.get() != 0) {
-                dataModels.add(model);
-            }
+            model.childCount.set(metadataCount);
+            dataModels.add(model);
         }
     }
 

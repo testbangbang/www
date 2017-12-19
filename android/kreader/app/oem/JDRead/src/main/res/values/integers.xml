@@ -4,4 +4,6 @@
     <integer name="library_view_type_thumbnail_col">3</integer>
     <integer name="function_bar_row">1</integer>
     <integer name="function_bar_col">5</integer>
+    <integer name="library_delete_dialog_width">700</integer>
+    <integer name="library_delete_dialog_height">267</integer>
 </resources>

@@ -43,7 +43,7 @@ public class RxLibraryGotoRequest extends RxBaseDBRequest {
             gotoLibrary.setIdString(gotoDataModel.idString.get());
             gotoLibrary.setParentUniqueId(gotoDataModel.parentId.get());
             List<Library> libraries = DataManagerHelper.loadParentLibraryList(getAppContext(), getDataManager(), gotoLibrary);
-            DataModelUtil.libraryToDataModel(getDataProvider(), gotoDataModel.getEventBus(), parentLibraryList, libraries, R.drawable.library_default_cover);
+            DataModelUtil.libraryToDataModel(getDataProvider(), gotoDataModel.getEventBus(), parentLibraryList, libraries, false, R.drawable.library_default_cover);
         }
         return this;
     }
