@@ -11,9 +11,11 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.databinding.FragmentBookShopBinding;
 import com.onyx.jdread.databinding.FragmentBookShopOneBinding;
 import com.onyx.jdread.databinding.FragmentBookShopThreeBinding;
@@ -24,9 +26,11 @@ import com.onyx.jdread.shop.action.NewBookAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
+import com.onyx.jdread.shop.event.OnBookItemClickEvent;
 import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnShopBakcTopClick;
 import com.onyx.jdread.shop.model.BookShopViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -102,11 +106,11 @@ public class ShopFragment extends BaseFragment {
     }
 
     private BookShopViewModel getBookShopViewModel() {
-        return JDReadApplication.getShopDataBundle().getShopViewModel();
+        return getShopDataBundle().getShopViewModel();
     }
 
     private EventBus getEventBus() {
-        return JDReadApplication.getShopDataBundle().getEventBus();
+        return getShopDataBundle().getEventBus();
     }
 
     public GestureDetector getGestureDetector() {
@@ -208,7 +212,7 @@ public class ShopFragment extends BaseFragment {
 
     private void getRecyclerViewSubjectOneData() {
         NewBookAction newBookAction = new NewBookAction(JDReadApplication.getInstance());
-        newBookAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
+        newBookAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -224,7 +228,7 @@ public class ShopFragment extends BaseFragment {
 
     public void getRecyclerViewSubjectTwoData() {
         BookFreeJournalAction freeJournalBookAction = new BookFreeJournalAction(JDReadApplication.getInstance());
-        freeJournalBookAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
+        freeJournalBookAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -239,7 +243,7 @@ public class ShopFragment extends BaseFragment {
 
     private void getRecyclerViewCategoryData() {
         BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance());
-        bookCategoryAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
+        bookCategoryAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -260,6 +264,18 @@ public class ShopFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(OnRankViewClick event) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookItemClickEvent(OnBookItemClickEvent event) {
+        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
+        }
+    }
+
+    public ShopDataBundle getShopDataBundle() {
+        return ShopDataBundle.getInstance();
     }
 
 }

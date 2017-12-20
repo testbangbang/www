@@ -3,7 +3,6 @@ package com.onyx.jdread.shop.action;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
@@ -38,7 +37,7 @@ public class BookCommentListAction extends BaseAction<ShopDataBundle> {
     public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
-        bookCommentsRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
+        bookCommentsRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         String bookCommentsJsonBody = getBookCommentsJsonBody(CloudApiContext.RecommendList.BOOK_TYPE, bookID, currentPage);
         bookCommentsRequestBean.setBody(bookCommentsJsonBody);
         final RxRequestGetBookCommentList rq = new RxRequestGetBookCommentList();

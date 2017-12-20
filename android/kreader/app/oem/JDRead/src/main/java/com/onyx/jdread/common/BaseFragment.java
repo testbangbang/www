@@ -27,4 +27,8 @@ public class BaseFragment extends Fragment {
     public void hideWindow() {
 
     }
+
+    protected ChildViewEventCallBack getViewEventCallBack() {
+        return viewEventCallBack;
+    }
 }

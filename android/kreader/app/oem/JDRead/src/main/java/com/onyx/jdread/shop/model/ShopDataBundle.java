@@ -1,7 +1,6 @@
 package com.onyx.jdread.shop.model;
 
-import com.onyx.android.sdk.data.CloudManager;
-import com.onyx.android.sdk.data.DataManager;
+import com.onyx.jdread.common.AppBaseInfo;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -10,33 +9,64 @@ import org.greenrobot.eventbus.EventBus;
  */
 
 public class ShopDataBundle {
-    private EventBus eventBus = EventBus.getDefault();
-    private DataManager dataManager = new DataManager();
-    private CloudManager cloudManager = new CloudManager();
-    private BookShopViewModel shopViewModel = new BookShopViewModel(getEventBus());
-    private BookDetailViewModel bookDetailViewModel = new BookDetailViewModel(getEventBus());
+    private static ShopDataBundle shopDataBundle;
+    private EventBus eventBus;
+    private BookShopViewModel shopViewModel;
+    private BookDetailViewModel bookDetailViewModel;
+    private AppBaseInfo appBaseInfo;
 
-    public ShopDataBundle() {
+    private ShopDataBundle() {
 
     }
 
-    public DataManager getDataManager() {
-        return dataManager;
-    }
-
-    public CloudManager getCloudManager() {
-        return cloudManager;
+    public static ShopDataBundle getInstance() {
+        if (shopDataBundle == null) {
+            synchronized (BookDetailViewModel.class) {
+                if (shopDataBundle == null) {
+                    shopDataBundle = new ShopDataBundle();
+                }
+            }
+        }
+        return shopDataBundle;
     }
 
     public EventBus getEventBus() {
+        if (eventBus == null) {
+            eventBus = EventBus.getDefault();
+        }
         return eventBus;
     }
 
     public BookShopViewModel getShopViewModel() {
+        if (shopViewModel == null) {
+            synchronized (BookShopViewModel.class) {
+                if (shopViewModel == null) {
+                    shopViewModel = new BookShopViewModel(getEventBus());
+                }
+            }
+        }
         return shopViewModel;
     }
 
     public BookDetailViewModel getBookDetailViewModel() {
+        if (bookDetailViewModel == null) {
+            synchronized (BookDetailViewModel.class) {
+                if (bookDetailViewModel == null) {
+                    bookDetailViewModel = new BookDetailViewModel(getEventBus());
+                }
+            }
+        }
         return bookDetailViewModel;
+    }
+
+    public AppBaseInfo getAppBaseInfo() {
+        if (appBaseInfo == null) {
+            synchronized (AppBaseInfo.class) {
+                if (appBaseInfo == null) {
+                    appBaseInfo = new AppBaseInfo();
+                }
+            }
+        }
+        return appBaseInfo;
     }
 }

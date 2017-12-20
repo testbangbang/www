@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -29,7 +28,7 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
     public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
+        baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
         body.put(CloudApiContext.CategoryList.CLIENT_PLATFORM, CloudApiContext.CategoryList.CLIENT_PLATFORM_VALUE);
         baseRequestBean.setBody(body.toJSONString());

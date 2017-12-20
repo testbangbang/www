@@ -2,7 +2,6 @@ package com.onyx.jdread.shop.action;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.RecommendListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -31,7 +30,7 @@ public class BookRecommendListAction extends BaseAction<ShopDataBundle> {
     public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
+        baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
         body.put(CloudApiContext.RecommendList.BOOK_ID, bookID);
         baseRequestBean.setBody(body.toJSONString());

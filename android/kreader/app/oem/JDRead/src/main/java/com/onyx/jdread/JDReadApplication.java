@@ -11,10 +11,8 @@ import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.common.ActionChain;
-import com.onyx.jdread.common.AppBaseInfo;
 import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.library.model.DataBundle;
-import com.onyx.jdread.shop.model.ShopDataBundle;
 
 /**
  * Created by hehai on 17-12-6.
@@ -24,9 +22,7 @@ public class JDReadApplication extends MultiDexApplication {
     private static final String TAG = JDReadApplication.class.getSimpleName();
     private static JDReadApplication instance = null;
     private static DataBundle dataBundle;
-    private static ShopDataBundle shopDataBundle;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
-    private AppBaseInfo appBaseInfo;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -45,7 +41,6 @@ public class JDReadApplication extends MultiDexApplication {
         DataManager.init(instance, null);
         PreferenceManager.init(this);
         initEventListener();
-        initAppBaseInfo();
     }
 
     private void initEventListener() {
@@ -105,20 +100,5 @@ public class JDReadApplication extends MultiDexApplication {
             dataBundle = new DataBundle(instance);
         }
         return dataBundle;
-    }
-
-    public static ShopDataBundle getShopDataBundle() {
-        if (shopDataBundle == null) {
-            shopDataBundle = new ShopDataBundle();
-        }
-        return shopDataBundle;
-    }
-
-    private void initAppBaseInfo() {
-        appBaseInfo = new AppBaseInfo();
-    }
-
-    public AppBaseInfo getAppBaseInfo() {
-        return appBaseInfo;
     }
 }

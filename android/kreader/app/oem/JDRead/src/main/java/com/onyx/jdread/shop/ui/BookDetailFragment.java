@@ -21,9 +21,12 @@ import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
+import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
 import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
 import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
+import com.onyx.jdread.shop.event.OnViewCommentEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -100,16 +103,16 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private BookDetailViewModel getBookDetailViewModel() {
-        return JDReadApplication.getShopDataBundle().getBookDetailViewModel();
+        return getShopDataBundle().getBookDetailViewModel();
     }
 
     private EventBus getEventBus() {
-        return JDReadApplication.getShopDataBundle().getEventBus();
+        return getShopDataBundle().getEventBus();
     }
 
     private void getBookDetailData() {
         BookDetailAction bookDetailAction = new BookDetailAction(ebookId);
-        bookDetailAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
+        bookDetailAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -119,7 +122,7 @@ public class BookDetailFragment extends BaseFragment {
 
     private void getRecommendData() {
         BookRecommendListAction recommendListAction = new BookRecommendListAction(ebookId);
-        recommendListAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback() {
+        recommendListAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
@@ -138,8 +141,27 @@ public class BookDetailFragment extends BaseFragment {
         recyclerViewRecommend.nextPage();
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailTopBackEvent(OnBookDetailTopBackEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().viewBack();
+        }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onViewCommentEvent(OnViewCommentEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(CommentFragment.class.getName());
+        }
+    }
+
     public void setBookId(long ebookId) {
         this.ebookId = ebookId;
         getBookDetail();
+    }
+
+    public ShopDataBundle getShopDataBundle() {
+        return ShopDataBundle.getInstance();
     }
 }

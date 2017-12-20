@@ -20,10 +20,14 @@ import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
+import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import static com.onyx.jdread.common.Constants.PAGE_STEP;
 
@@ -98,24 +102,26 @@ public class CommentFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        getEventBus().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
+        getEventBus().unregister(this);
     }
 
     private BookDetailViewModel getBookDetailViewModel() {
-        return JDReadApplication.getShopDataBundle().getBookDetailViewModel();
+        return getShopDataBundle().getBookDetailViewModel();
     }
 
     private EventBus getEventBus() {
-        return JDReadApplication.getShopDataBundle().getEventBus();
+        return getShopDataBundle().getEventBus();
     }
 
     private void getCommentsData() {
         BookCommentListAction commnetListAction = new BookCommentListAction(ebookId, currentPage);
-        commnetListAction.execute(JDReadApplication.getShopDataBundle(), new RxCallback<BookCommentListAction>() {
+        commnetListAction.execute(getShopDataBundle(), new RxCallback<BookCommentListAction>() {
             @Override
             public void onNext(BookCommentListAction action) {
                 BookCommentsResultBean resultBean = action.getbookCommentsBean();
@@ -131,5 +137,16 @@ public class CommentFragment extends BaseFragment {
         recyclerViewComments.resize(recyclerViewComments.getPageAdapter().getRowCount(), recyclerViewComments.getPageAdapter().getColumnCount(), size);
         getBookDetailViewModel().setTotalPage(paginator.pages());
         setCurrentPage(paginator.getCurrentPage());
+    }
+
+    public ShopDataBundle getShopDataBundle() {
+        return ShopDataBundle.getInstance();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailTopBackEvent(OnBookDetailTopBackEvent event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().viewBack();
+        }
     }
 }

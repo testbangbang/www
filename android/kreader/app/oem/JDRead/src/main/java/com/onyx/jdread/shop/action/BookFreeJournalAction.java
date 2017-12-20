@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookModelResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -30,7 +29,7 @@ public class BookFreeJournalAction extends BaseAction<ShopDataBundle> {
     public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
+        baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
         body.put(CloudApiContext.BookShopModule.ID, CloudApiContext.BookShopModule.FREE_JOURNALS_ID);
         body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.FREE_JOURNALS_MODULE_TYPE);
