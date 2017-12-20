@@ -1,14 +1,14 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
-import android.util.Log;
 
-import com.onyx.android.sdk.scribble.shape.*;
+import com.onyx.android.sdk.scribble.shape.RenderContext;
+import com.onyx.android.sdk.scribble.shape.Shape;
+import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -167,7 +167,7 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            hitTestAndSelectShape(entry, touchPointList, radius);
+            hitTestAndRemoveShape(entry, touchPointList, radius);
         }
     }
 
