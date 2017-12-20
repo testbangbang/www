@@ -1,5 +1,6 @@
 package com.onyx.jdread.shop.ui;
 
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
+import com.onyx.jdread.shop.event.OnBookDetailTopRightEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -67,6 +69,9 @@ public class CommentFragment extends BaseFragment {
         bookCommentBinding.setBookDetailViewModel(getBookDetailViewModel());
         getBookDetailViewModel().setTitle(getString(R.string.title_bar_title_book_comment));
         getBookDetailViewModel().setPageTag(PageTagConstants.BOOK_COMMENT);
+        getBookDetailViewModel().setShowRightText(true);
+        getBookDetailViewModel().setRightText(getString(R.string.title_bar_title_book_write_comment));
+        bookCommentBinding.layoutTitleBar.titleBarRightTitle.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         initDividerItemDecoration();
         setCommentsRecycleView();
     }
@@ -148,5 +153,10 @@ public class CommentFragment extends BaseFragment {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailTopRightEvent(OnBookDetailTopRightEvent event) {
+
     }
 }

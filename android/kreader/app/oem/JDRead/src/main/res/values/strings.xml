@@ -30,5 +30,16 @@
     <string name="book_detail_star">%.1f</string>
     <string name="title_bar_title_book_detail">Book Detail</string>
     <string name="title_bar_title_book_comment">Comments</string>
+    <string name="title_bar_title_book_write_comment">Write Comments</string>
     <string name="book_comment_indicator_value">%1$s/%2$s</string>
+    <string name="copyright_book_word_count">Word count：</string>
+    <string name="copyright_book_author">Author：</string>
+    <string name="copyright_book_publish">Publisher：</string>
+    <string name="copyright_book_publish_time">Publication date：</string>
+    <string name="copyright_book_isbn">ISBN：</string>
+    <string name="copyright_book_edition">Edition：</string>
+    <string name="copyright_book_size">Book size：</string>
+    <string name="copyright_book_size_value">%.2fMB</string>
+    <string name="word_count_million_words">million words</string>
+    <string name="word_count_words">words</string>
 </resources>

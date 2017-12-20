@@ -20,7 +20,7 @@
         android:orientation="vertical">
 
         <include
-            android:id="@+id/book_details_back_layout"
+            android:id="@+id/layout_title_bar"
             layout="@layout/layout_title_bar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,6 +33,8 @@
             android:layout_height="0dp"
             android:layout_gravity="center_vertical"
             android:layout_marginTop="@dimen/book_detail_margin"
+            android:layout_marginLeft="@dimen/book_detail_margin"
+            android:layout_marginRight="@dimen/book_detail_margin"
             android:layout_weight="1" />
 
         <TextView

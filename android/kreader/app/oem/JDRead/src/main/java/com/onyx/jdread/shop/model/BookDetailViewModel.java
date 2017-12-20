@@ -6,6 +6,9 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
+import com.onyx.jdread.shop.event.OnBookDetailTopRightEvent;
+import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
+import com.onyx.jdread.shop.event.OnCopyrightEvent;
 import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
 import com.onyx.jdread.shop.event.OnViewCommentEvent;
 
@@ -25,8 +28,26 @@ public class BookDetailViewModel extends BaseObservable {
     private List<CommentEntity> commentItems;
     private int currentPage;
     private int totalPage;
-    private String title;
     private int pageTag;
+    private String title;
+    private String rightText;
+    private boolean isShowRightText;
+
+    public boolean isShowRightText() {
+        return isShowRightText;
+    }
+
+    public void setShowRightText(boolean showRightText) {
+        isShowRightText = showRightText;
+    }
+
+    public String getRightText() {
+        return rightText;
+    }
+
+    public void setRightText(String rightText) {
+        this.rightText = rightText;
+    }
 
     public List<CommentEntity> getCommentItems() {
         return commentItems;
@@ -101,6 +122,10 @@ public class BookDetailViewModel extends BaseObservable {
         getEventBus().post(new OnBookDetailTopBackEvent(pageTag));
     }
 
+    public void onTopRightClick() {
+        getEventBus().post(new OnBookDetailTopRightEvent(pageTag));
+    }
+
     public void onNowReadClick() {
 
     }
@@ -122,7 +147,11 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void onCopyrightClick() {
+        getEventBus().post(new OnCopyrightEvent());
+    }
 
+    public void onCopyrightCancelClick() {
+        getEventBus().post(new OnCopyrightCancelEvent());
     }
 
     public void onRecommendNextPageClick() {

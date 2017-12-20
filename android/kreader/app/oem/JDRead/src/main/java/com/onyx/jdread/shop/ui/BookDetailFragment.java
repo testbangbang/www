@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.ui;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,12 +17,15 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
+import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
 import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
+import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
+import com.onyx.jdread.shop.event.OnCopyrightEvent;
 import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
 import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
 import com.onyx.jdread.shop.event.OnViewCommentEvent;
@@ -44,6 +48,7 @@ public class BookDetailFragment extends BaseFragment {
     private DividerItemDecoration itemDecoration;
     private long ebookId;
     private PageRecyclerView recyclerViewRecommend;
+    private AlertDialog copyRightDialog;
 
     @Nullable
     @Override
@@ -68,12 +73,12 @@ public class BookDetailFragment extends BaseFragment {
         bookDetailBinding.setBookDetailViewModel(getBookDetailViewModel());
         bookDetailBinding.bookDetailInfo.bookDetailAuthor.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         bookDetailBinding.bookDetailInfo.bookDetailYuedouPriceOld.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
-        bookDetailBinding.bookDetailInfo.bookDetailType1.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
-        bookDetailBinding.bookDetailInfo.bookDetailType2.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
+        bookDetailBinding.bookDetailInfo.bookDetailCategoryPath.getPaint().setFlags(Paint.UNDERLINE_TEXT_FLAG);
         initDividerItemDecoration();
         setRecommendRecycleView();
         getBookDetailViewModel().setTitle(getString(R.string.title_bar_title_book_detail));
         getBookDetailViewModel().setPageTag(PageTagConstants.BOOK_DETAIL);
+        getBookDetailViewModel().setShowRightText(false);
     }
 
     private void setRecommendRecycleView() {
@@ -156,6 +161,36 @@ public class BookDetailFragment extends BaseFragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCopyrightEvent(OnCopyrightEvent event) {
+        showCopyRightDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCopyrightCancelEvent(OnCopyrightCancelEvent event) {
+        dismissCopyRightDialog();
+    }
+
+    private void showCopyRightDialog() {
+        if (copyRightDialog == null) {
+            AlertDialog.Builder copyRightDialogBuild = new AlertDialog.Builder(getActivity());
+            LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+            copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
+            copyRightDialogBuild.setView(copyrightBinding.getRoot());
+            copyRightDialogBuild.setCancelable(true);
+            copyRightDialog = copyRightDialogBuild.create();
+        }
+        if (copyRightDialog != null) {
+            copyRightDialog.show();
+        }
+    }
+
+    private void dismissCopyRightDialog() {
+        if (copyRightDialog != null && copyRightDialog.isShowing()) {
+            copyRightDialog.dismiss();
+        }
+    }
+
     public void setBookId(long ebookId) {
         this.ebookId = ebookId;
         getBookDetail();
@@ -163,5 +198,12 @@ public class BookDetailFragment extends BaseFragment {
 
     public ShopDataBundle getShopDataBundle() {
         return ShopDataBundle.getInstance();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        dismissCopyRightDialog();
+        copyRightDialog = null;
     }
 }

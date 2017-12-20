@@ -29,4 +29,14 @@
     <string name="book_detail_star">%.1f</string>
     <string name="title_bar_title_book_detail">图书详情</string>
     <string name="title_bar_title_book_comment">评论</string>
+    <string name="title_bar_title_book_write_comment">写评论</string>
+    <string name="copyright_book_word_count">字数：</string>
+    <string name="copyright_book_author">作者：</string>
+    <string name="copyright_book_publish">出版方：</string>
+    <string name="copyright_book_publish_time">出版时间：</string>
+    <string name="copyright_book_isbn">ISBN：</string>
+    <string name="copyright_book_edition">版次：</string>
+    <string name="copyright_book_size">文件大小：</string>
+    <string name="word_count_million_words">万字</string>
+    <string name="word_count_words">字</string>
 </resources>

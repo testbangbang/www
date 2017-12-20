@@ -138,21 +138,12 @@
                         android:orientation="horizontal">
 
                         <TextView
-                            android:id="@+id/book_detail_type1"
+                            android:id="@+id/book_detail_category_path"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:drawablePadding="@dimen/view_all_drawable_padding"
                             android:drawableRight="@mipmap/ic_go_view_all"
                             android:text="@{bookDetailViewModel.bookDetailResultBean.detail.getPublishTime()}" />
-
-                        <TextView
-                            android:id="@+id/book_detail_type2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
-                            android:drawablePadding="@dimen/view_all_drawable_padding"
-                            android:drawableRight="@mipmap/ic_go_view_all"
-                            android:text="@{bookDetailViewModel.bookDetailResultBean.detail.getPublisher()}" />
 
                     </LinearLayout>
 
