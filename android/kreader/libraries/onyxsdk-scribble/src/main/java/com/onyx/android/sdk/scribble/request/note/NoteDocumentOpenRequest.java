@@ -12,7 +12,6 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
 
     private volatile String documentUniqueId;
     private volatile boolean newCreate;
-    private boolean resume;
 
     public NoteModel getNoteModel() {
         return noteModel;
@@ -20,16 +19,15 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
 
     private NoteModel noteModel;
 
-    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create, boolean r) {
-        this(id, parentUniqueId, create, r, null);
+    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create) {
+        this(id, parentUniqueId, create,null);
     }
 
-    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create, boolean r, String groupId) {
+    public NoteDocumentOpenRequest(final String id, final String parentUniqueId, boolean create, String groupId) {
         newCreate = create;
         setParentLibraryId(parentUniqueId);
         setGroupId(groupId);
         documentUniqueId = id;
-        resume = r;
         setPauseInputProcessor(true);
     }
 
@@ -42,7 +40,7 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
         }
         renderCurrentPage(parent);
         updateShapeDataInfo(parent);
-        setResumeInputProcessor(parent.useDFBForCurrentState() && resume);
+        setResumeInputProcessor(parent.useDFBForCurrentState());
         noteModel = NoteDataProvider.load(documentUniqueId);
     }
 

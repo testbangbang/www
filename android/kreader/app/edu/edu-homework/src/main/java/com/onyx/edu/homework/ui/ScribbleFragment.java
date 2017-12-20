@@ -152,7 +152,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void openDocument(final String uniqueId, final String parentUniqueId, final String groupId, boolean create) {
-        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create, shouldResume()).execute(getNoteViewHelper(), null);
+        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create).execute(getNoteViewHelper(), null);
     }
 
     public void setQuestion(Question question) {
