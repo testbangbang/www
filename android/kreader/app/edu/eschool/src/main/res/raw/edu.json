@@ -21,6 +21,7 @@
     "com.onyx.android.edu",
     "com.android.providers.downloads.ui",
     "com.onyx.kreader",
+    "com.android.camera2",
     "com.iflytek.speechcloud"
   ],
   "test_apps": [
