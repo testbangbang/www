@@ -60,4 +60,28 @@ public class DeviceInfoUtil {
         s += "\n Model (and Product): " + android.os.Build.MODEL + " (" + android.os.Build.PRODUCT + ")";
         return s;
     }
+
+    static public String getPanelVCom() {
+        return OnyxSystemProperties.get("sys.panel.vcom", "");
+    }
+
+    static public String getPanelNvmVersion() {
+        return OnyxSystemProperties.get("sys.panel.nvm_ver", "");
+    }
+
+    static public String getPanelPartNo() {
+        return OnyxSystemProperties.get("sys.panel.partno", "");
+    }
+
+    static public String getPanelWaveFormVersion() {
+        return OnyxSystemProperties.get("sys.panel.wf_version", "");
+    }
+
+    static public String getBarCode() {
+        return OnyxSystemProperties.get("sys.panel.barcode", "");
+    }
+
+    static public String getDigitizerFW() {
+        return OnyxSystemProperties.get("sys.onyx.emtp", "");
+    }
 }
