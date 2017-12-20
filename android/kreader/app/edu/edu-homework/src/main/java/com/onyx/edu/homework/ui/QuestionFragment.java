@@ -2,8 +2,6 @@ package com.onyx.edu.homework.ui;
 
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.Html;
@@ -14,31 +12,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionOption;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.Base64ImageParser;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
-import com.onyx.edu.homework.action.note.DocumentFlushAction;
-import com.onyx.edu.homework.action.note.HomeworkPagesRenderActionChain;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentQuestionBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.utils.TextUtils;
-import com.onyx.edu.homework.view.Base64ImageParser;
 
 import java.util.List;
 
@@ -71,35 +66,52 @@ public class QuestionFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initView(question);
-        initFragment();
+        init(question);
     }
 
     public void setQuestion(Question question) {
         this.question = question;
     }
 
+    private void init(Question question) {
+        initView(question);
+        initFragment();
+        initReviewInfo();
+        updateViewState();
+    }
+
     private void initView(final Question question) {
+        initViewVisibility();
         int questionIndex = Math.max(question.QuesType - 1, 0);
         String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
         binding.questionType.setText(getString(R.string.question_type_str, questionType));
         binding.content.setText(TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null));
         bindQuestionOption(binding.option, question);
         binding.analysis.setText(R.string.analysis);
-        binding.review.setText(R.string.look_review);
         binding.analysis.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showAnalysisDialog(question);
             }
         });
-        binding.review.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                gotoAnswerActivity(question);
-            }
-        });
-        updateReviewInfo();
+
+        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.scribble.getLayoutParams();
+        int heightResId = question.isFillQuestion() ? R.dimen.fill_question_scribble_view_height : R.dimen.scribble_view_height;
+        lp.height = (int) getActivity().getResources().getDimension(heightResId);
+        binding.scribble.setLayoutParams(lp);
+    }
+
+    private void initViewVisibility() {
+        binding.reviewLayout.setVisibility(getDataBundle().isReview() && !question.isFillQuestion() ? View.VISIBLE : View.GONE);
+        binding.score.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
+
+        binding.content.setVisibility(question.isFillQuestion() ? View.GONE : View.VISIBLE);
+        binding.questionType.setVisibility(question.isFillQuestion() ? View.GONE : View.VISIBLE);
+        boolean showScribble = !question.isChoiceQuestion();
+        binding.scribble.setVisibility(showScribble ? View.VISIBLE : View.GONE);
+        binding.scribbleLine.setVisibility(showScribble ? View.VISIBLE : View.GONE);
+        binding.toolLayout.setVisibility(showScribble ? View.VISIBLE : View.GONE);
+        binding.toolLayoutLine.setVisibility(showScribble && !question.isFillQuestion() ? View.VISIBLE : View.GONE);
     }
 
     private void showAnalysisDialog(Question question) {
@@ -183,11 +195,8 @@ public class QuestionFragment extends BaseFragment {
         if (question.isChoiceQuestion()) {
             return;
         }
-        DataBundle.getInstance().resetNoteViewHelper();
-        binding.scribble.setVisibility(View.VISIBLE);
-        binding.scribbleLine.setVisibility(View.VISIBLE);
-        binding.toolLayout.setVisibility(View.VISIBLE);
-        binding.toolLayoutLine.setVisibility(View.VISIBLE);
+        getDataBundle().resetNoteViewHelper();
+        getDataBundle().getNoteViewHelper().setDrawText(question.isFillQuestion() ? question.content : null);
         int initPageCount = 1;
         if (DataBundle.getInstance().isReview()) {
             if (question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
@@ -221,16 +230,14 @@ public class QuestionFragment extends BaseFragment {
     public void reloadQuestion(Question question) {
         this.question = question;
         removeFragment();
-        initView(question);
-        initFragment();
-        updateState();
+        init(question);
     }
 
     public DataBundle getDataBundle() {
         return DataBundle.getInstance();
     }
 
-    public void updateState() {
+    public void updateViewState() {
         boolean enable = getDataBundle().isDoing();
         int size = binding.option.getChildCount();
         for (int i = 0; i < size; i++) {
@@ -238,12 +245,9 @@ public class QuestionFragment extends BaseFragment {
             view.setEnabled(enable);
         }
         binding.option.setClickable(enable);
-        binding.reviewLayout.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
-        binding.score.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
-        updateReviewInfo();
     }
 
-    private void updateReviewInfo() {
+    private void initReviewInfo() {
         if (!getDataBundle().isReview()) {
             return;
         }
@@ -256,11 +260,10 @@ public class QuestionFragment extends BaseFragment {
             binding.rightWrongIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
         }
         binding.analysis.setVisibility(StringUtils.isNullOrEmpty(question.analysis) ? View.GONE : View.VISIBLE);
-        binding.review.setVisibility(question.isChoiceQuestion() ? View.GONE : View.VISIBLE);
     }
 
-    public void saveDocument(BaseCallback callback) {
-        if (question.isChoiceQuestion()) {
+    public void saveQuestion(BaseCallback callback) {
+        if (question.isChoiceQuestion() || !getDataBundle().isDoing() || scribbleFragment == null) {
             BaseCallback.invoke(callback, null, null);
             return;
         }

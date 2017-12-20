@@ -217,10 +217,7 @@ public class RecordFragment extends BaseFragment {
         if (question.isChoiceQuestion()) {
             return;
         }
-        int width = (int) getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) getResources().getDimension(R.dimen.scribble_view_height);
-        Rect size = new Rect(0, 0, width, height);
-        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), size, 3);
+        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), questions, 3);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -165,6 +165,15 @@ public class NoteViewHelper {
         removeLayoutListener();
         quitDrawing();
         setLineLayoutMode(false);
+        setDrawText(null);
+    }
+
+    public void setDrawText(String drawText) {
+        this.drawText = drawText;
+    }
+
+    public String getDrawText() {
+        return drawText;
     }
 
     public Context getContext() {

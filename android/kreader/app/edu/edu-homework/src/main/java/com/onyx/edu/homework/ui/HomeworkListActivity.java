@@ -79,13 +79,13 @@ public class HomeworkListActivity extends BaseActivity {
         binding.prevPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                prevPage();
+                prevPage(v);
             }
         });
         binding.nextPage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                nextPage();
+                nextPage(v);
             }
         });
         binding.total.setText(getString(R.string.total, 0));
@@ -121,7 +121,7 @@ public class HomeworkListActivity extends BaseActivity {
         hideMessage();
     }
 
-    private void nextPage() {
+    private void nextPage(final View view) {
         if (CollectionUtils.isNullOrEmpty(questions)) {
             return;
         }
@@ -129,16 +129,18 @@ public class HomeworkListActivity extends BaseActivity {
         if (next >= questions.size() || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveDocument(new BaseCallback() {
+        view.setEnabled(false);
+        getQuestionFragment().saveQuestion(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = next;
                 reloadQuestionFragment(currentPage);
+                view.setEnabled(true);
             }
         });
     }
 
-    private void prevPage() {
+    private void prevPage(final View view) {
         if (CollectionUtils.isNullOrEmpty(questions)) {
             return;
         }
@@ -146,11 +148,13 @@ public class HomeworkListActivity extends BaseActivity {
         if (prev < 0 || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveDocument(new BaseCallback() {
+        view.setEnabled(false);
+        getQuestionFragment().saveQuestion(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = prev;
                 reloadQuestionFragment(currentPage);
+                view.setEnabled(true);
             }
         });
     }
@@ -177,6 +181,7 @@ public class HomeworkListActivity extends BaseActivity {
                     Toast.makeText(HomeworkListActivity.this, R.string.not_review, Toast.LENGTH_SHORT).show();
                     return;
                 }
+                reloadQuestionFragment(currentPage);
                 updateState();
                 showTotalScore();
             }
@@ -290,7 +295,7 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void initQuestions(final List<Question> questions) {
-        if (questions == null) {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
             return;
         }
         questionFragment = QuestionFragment.newInstance(questions.get(0));
@@ -368,6 +373,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
         updateState();
+        reloadQuestionFragment(currentPage);
     }
 
     @Subscribe
@@ -411,17 +417,25 @@ public class HomeworkListActivity extends BaseActivity {
             public void onClick(DialogInterface dialog, int which) {
                 System.exit(0);
             }
-        }, null).addOnDismissListener(new DialogInterface.OnDismissListener() {
+        }, new DialogInterface.OnClickListener() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
+            public void onClick(DialogInterface dialog, int which) {
                 getDataBundle().post(new ResumeNoteEvent());
             }
         }).show();
     }
 
     private void toggleRecordFragment() {
+        if (getQuestionFragment() == null) {
+            return;
+        }
         if (recordFragment == null) {
-            showRecordFragment();
+            getQuestionFragment().saveQuestion(new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    showRecordFragment();
+                }
+            });
         }else {
             hideRecordFragment();
         }
@@ -440,5 +454,6 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setText(R.string.answer_record);
         getSupportFragmentManager().beginTransaction().remove(recordFragment).commit();
         recordFragment = null;
+        reloadQuestionFragment(currentPage);
     }
 }

@@ -9,7 +9,10 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.Html;
 import android.text.TextUtils;
+import android.util.TypedValue;
+import android.widget.TextView;
 
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -22,8 +25,10 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.utils.Base64ImageParser;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -195,6 +200,7 @@ public class BaseNoteRequest extends BaseRequest {
                 drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
                         parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
             }
+            drawTextView(canvas, parent);
             prepareRenderingBuffer(bitmap);
 
             final Matrix renderMatrix = new Matrix();
@@ -209,6 +215,20 @@ public class BaseNoteRequest extends BaseRequest {
             flushRenderingBuffer(bitmap);
             drawRandomTestPath(canvas, paint);
         }
+    }
+
+    private void drawTextView(final Canvas canvas, final NoteViewHelper parent) {
+        String text = parent.getDrawText();
+        if (StringUtils.isNullOrEmpty(text)) {
+            return;
+        }
+        TextView textView = new TextView(parent.getContext());
+        textView.layout(0, 0, getViewportSize().width(), getViewportSize().height());
+        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 30);
+        textView.setTextColor(Color.BLACK);
+        textView.setText(Html.fromHtml(text, new Base64ImageParser(parent.getContext()), null));
+        textView.setDrawingCacheEnabled(true);
+        canvas.drawBitmap(textView.getDrawingCache(), 10, 10, null);
     }
 
     private Paint preparePaint(final NoteViewHelper parent) {

@@ -9,7 +9,9 @@ import com.android.annotations.Nullable;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.base.BaseNoteAction;
 import com.onyx.edu.homework.request.HomeworkPagesRenderRequest;
 
@@ -25,28 +27,28 @@ import java.util.Map;
 public class HomeworkPagesRenderAction extends BaseNoteAction {
 
     private Map<String, List<String>> pageUniqueMap;
-    private Rect size;
     private boolean saveAsFile;
     private Map<String, List<Bitmap>> pageBitmaps = new HashMap<>();
     private Map<String, List<String>> pageFilePaths = new HashMap<>();
     private List<String> documentIds = new ArrayList<>();
+    private List<Question> questions;
     private int pageCount = -1;
     private int documentRenderCount = 0;
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
-                                     Rect size,
+                                     List<Question> questions,
                                      int pageCount,
                                      boolean saveAsFile) {
         this.pageUniqueMap = pageUniqueMap;
-        this.size = size;
         this.saveAsFile = saveAsFile;
         this.pageCount = pageCount;
+        this.questions = questions;
     }
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
-                                     Rect size,
+                                     List<Question> questions,
                                      boolean saveAsFile) {
-        this(pageUniqueMap, size, -1, saveAsFile);
+        this(pageUniqueMap, questions, -1, saveAsFile);
     }
 
     @Override
@@ -63,14 +65,28 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
             return;
         }
         final String docId = documentIds.get(0);
+        Question question = getQuestion(docId);
+        if (question == null) {
+            BaseCallback.invoke(baseCallback, null, null);
+            return;
+        }
+
         List<String> pageUniqueIds = pageUniqueMap.get(docId);
 
         String pageUniqueId = pageUniqueIds.remove(0);
         List<PageInfo> pageInfoList = new ArrayList<>();
+        int width = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_width);
+        int height = (int) getAppContext().getResources().getDimension(question.isFillQuestion() ? R.dimen.fill_question_scribble_view_height : R.dimen.scribble_view_height);
+        Rect size =  new Rect(0, 0, width, height);
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
-        final HomeworkPagesRenderRequest renderRequest = new HomeworkPagesRenderRequest(docId, pageInfoList, size, saveAsFile);
+        String drawText = question.isFillQuestion() ? question.content : null;
+        final HomeworkPagesRenderRequest renderRequest = new HomeworkPagesRenderRequest(docId,
+                pageInfoList,
+                size,
+                drawText,
+                saveAsFile);
         noteViewHelper.submit(getAppContext(), renderRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -87,6 +103,15 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
                 renderPageBitmap(noteViewHelper, baseCallback);
             }
         });
+    }
+
+    private Question getQuestion(String docId) {
+        for (Question question : questions) {
+            if (question.uniqueId.equals(docId)) {
+                return question;
+            }
+        }
+        return null;
     }
 
     private boolean isFinished(final NoteViewHelper noteViewHelper) {

@@ -1,4 +1,4 @@
-package com.onyx.edu.homework.view;
+package com.onyx.android.sdk.utils;
 
 import android.content.Context;
 import android.graphics.Bitmap;

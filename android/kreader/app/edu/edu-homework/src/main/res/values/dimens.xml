@@ -22,7 +22,8 @@
     <dimen name="button_min_height">100dp</dimen>
     <dimen name="button_text_size">22sp</dimen>
     <dimen name="scribble_view_width">960dp</dimen>
-    <dimen name="scribble_view_height">760dp</dimen>
+    <dimen name="scribble_view_height">860dp</dimen>
+    <dimen name="fill_question_scribble_view_height">1076dp</dimen>
     <dimen name="right_answer_mx_width">500dp</dimen>
     <dimen name="divider_line_size">2dp</dimen>
     <dimen name="question_option_margin">10dp</dimen>

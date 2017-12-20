@@ -24,8 +24,13 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
     private Bitmap renderBitmap;
     private boolean saveAsFile;
     private String filePath;
+    private String drawText;
 
-    public HomeworkPagesRenderRequest(final String id, final List<PageInfo> pages, final Rect size, final boolean saveAsFile) {
+    public HomeworkPagesRenderRequest(final String id,
+                                      final List<PageInfo> pages,
+                                      final Rect size,
+                                      final String text,
+                                      final boolean saveAsFile) {
         setDocUniqueId(id);
         setAbortPendingTasks(false);
         setViewportSize(size);
@@ -33,10 +38,12 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
         setPauseInputProcessor(true);
         setResumeInputProcessor(false);
         this.saveAsFile = saveAsFile;
+        this.drawText = text;
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
         parent.reset();
+        parent.setDrawText(drawText);
         ensureDocumentOpened(parent);
         updateShapeDataInfo(parent);
         loadShapeData(parent);
