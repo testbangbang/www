@@ -7,8 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.text.InputType;
 import android.util.Log;
 import android.view.WindowManager;
+import android.view.inputmethod.EditorInfo;
+import android.widget.SeekBar;
 import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -601,6 +604,73 @@ public class ShowReaderMenuAction extends BaseAction {
         });
     }
 
+    private static void gotoSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
+        final OnyxCustomDialog dlg = OnyxCustomDialog.getInputDialog(readerDataHolder.getContext(),
+                readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number),
+                new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                OnyxCustomDialog onyxCustomDialog = (OnyxCustomDialog) dialog;
+                String page = onyxCustomDialog.getInputValue().toString();
+                if (StringUtils.isNullOrEmpty(page)) {
+                    Toast.makeText(readerDataHolder.getContext(),
+                            readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                int pageNumber = PagePositionUtils.getPageNumber(page);
+                pageNumber--;
+                if (pageNumber >= 0 && pageNumber < readerDataHolder.getSideNotePageCount()) {
+                    new GotoSideNotePageAction(pageNumber).execute(readerDataHolder, null);
+                } else {
+                    Toast.makeText(readerDataHolder.getContext(),
+                            readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).setOnCloseListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                resumeDrawing(readerDataHolder);
+            }
+        }).setDismissOnBackPressed(true);
+
+        dlg.enableProgress(readerDataHolder.getSideNotePageCount() - 1,
+                readerDataHolder.getSideNotePage(),
+                new SeekBar.OnSeekBarChangeListener() {
+                    @Override
+                    public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                        final int page = progress;
+                        new GotoSideNotePageAction(progress).execute(readerDataHolder, new BaseCallback() {
+                            @Override
+                            public void done(BaseRequest request, Throwable e) {
+                                dlg.getInputEditText().setText(String.valueOf(page + 1));
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onStartTrackingTouch(SeekBar seekBar) {
+
+                    }
+
+                    @Override
+                    public void onStopTrackingTouch(SeekBar seekBar) {
+
+                    }
+                });
+
+        dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
+        dlg.getInputEditText().setImeOptions(EditorInfo.IME_FLAG_NO_FULLSCREEN);
+        dlg.getInputEditText().setHint("1-" + readerDataHolder.getSideNotePageCount());
+
+        WindowManager.LayoutParams params = dlg.getWindow().getAttributes();
+        params.x = readerDataHolder.getDisplayWidth() / 4;
+
+        dlg.show();
+    }
+
     private static void addSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
         new AddNoteSubPageAction(readerDataHolder.getFirstPageInfo(),
                 readerDataHolder.getSubPageIndex() + 1).execute(readerDataHolder, new BaseCallback() {
@@ -924,6 +994,9 @@ public class ShowReaderMenuAction extends BaseAction {
                 break;
             case SCRIBBLE_SIDE_NOTE_NEXT_PAGE:
                 nextSideNoteSubPage(readerDataHolder);
+                break;
+            case SCRIBBLE_SIDE_NOTE_POSITION:
+                gotoSideNoteSubPage(readerDataHolder);
                 break;
             case SCRIBBLE_SIDE_NOTE_ADD_PAGE:
                 addSideNoteSubPage(readerDataHolder);

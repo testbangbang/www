@@ -795,6 +795,12 @@ public class ReaderDataHolder {
         }
     }
 
+    public void gotoSideNotePage(int page) {
+        if (page >= 0 && page <= getSideNotePageCount() - 1) {
+            sideNotePage = page;
+        }
+    }
+
     public void prepareEventReceiver() {
         if (eventReceiver == null) {
             eventReceiver = new EventReceiver(getContext());
