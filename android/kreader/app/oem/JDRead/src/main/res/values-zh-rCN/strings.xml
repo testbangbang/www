@@ -24,7 +24,7 @@
     <string name="book_detail_view_directory">查看目录</string>
     <string name="book_detail_view_comments">查看评论</string>
     <string name="book_detail_view_copyright">版权信息</string>
-    <string name="book_detail_text_view_recommend_title">选择此书的人还喜欢</string>
+    <string name="book_detail_text_view_recommend_title">为您推荐</string>
     <string name="book_detail_yuedou_discount">%.1f折</string>
     <string name="book_detail_star">%.1f</string>
     <string name="title_bar_title_book_detail">图书详情</string>

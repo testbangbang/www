@@ -33,6 +33,7 @@
                     android:layout_width="@dimen/layout_book_detail_cover_width"
                     android:layout_height="@dimen/layout_book_detail_cover_height"
                     android:adjustViewBounds="true"
+                    android:scaleType="fitXY"
                     android:src="@drawable/book_default_cover"
                     bind:cover="@{bookDetailViewModel.bookDetailResultBean.detail.getLargeLogo()}" />
 
@@ -306,20 +307,20 @@
                 <com.onyx.android.sdk.ui.view.PageRecyclerView
                     android:id="@+id/recycler_view_recommend"
                     recommendItems="@{bookDetailViewModel.recommendList}"
-                    android:layout_gravity="center_vertical"
                     android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="@dimen/book_detail_recycler_view_recommend_height" />
+                    android:layout_height="@dimen/book_detail_recycler_view_recommend_height"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1" />
 
                 <ImageView
-                    android:onClick="@{()->bookDetailViewModel.onRecommendNextPageClick()}"
-                    android:padding="@dimen/book_detail_button_padding"
-                    android:layout_margin="@dimen/book_detail_margin"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/book_detail_recycler_view_recommend_height"
                     android:layout_alignParentRight="true"
-                    android:background="@drawable/normal_selected_background"
                     android:layout_gravity="center_vertical"
+                    android:layout_margin="@dimen/book_detail_margin"
+                    android:background="@drawable/normal_selected_background"
+                    android:onClick="@{()->bookDetailViewModel.onRecommendNextPageClick()}"
+                    android:padding="@dimen/book_detail_button_padding"
                     android:src="@mipmap/ic_page_next" />
 
             </LinearLayout>

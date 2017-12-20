@@ -14,8 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/book_shop_padding_left_right"
-        android:paddingRight="@dimen/book_shop_padding_left_right"
+        android:paddingLeft="@dimen/book_shop_padding_left"
+        android:paddingRight="@dimen/book_shop_padding_right"
         android:paddingTop="@dimen/book_shop_padding_top">
 
         <include
