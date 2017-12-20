@@ -99,6 +99,8 @@
                 style="@style/homework_text" />
 
             <ImageView
+                android:padding="2dp"
+                android:background="@drawable/press_bg"
                 android:id="@+id/prev_page"
                 android:layout_margin="@dimen/homework_text_margin"
                 android:src="@drawable/ic_note_prev_page_black"
@@ -113,6 +115,8 @@
                 style="@style/homework_text" />
 
             <ImageView
+                android:padding="2dp"
+                android:background="@drawable/press_bg"
                 android:id="@+id/next_page"
                 android:layout_margin="@dimen/homework_text_margin"
                 android:src="@drawable/ic_note_next_page_black"

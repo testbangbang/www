@@ -21,6 +21,7 @@ public class DocumentSaveAction extends BaseNoteAction {
     private volatile boolean resume = true;
     private Context context;
     private boolean showLoading;
+    private boolean render;
 
     public DocumentSaveAction(final Context context,
                               final String uniqueId,
@@ -41,7 +42,7 @@ public class DocumentSaveAction extends BaseNoteAction {
         if (showLoading) {
             showLoadingDialog(context, R.string.saving);
         }
-        final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close, resume);
+        final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close, resume, render);
         noteViewHelper.submit(getAppContext(), saveRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

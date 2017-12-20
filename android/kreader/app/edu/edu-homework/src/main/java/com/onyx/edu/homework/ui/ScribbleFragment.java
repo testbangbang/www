@@ -34,6 +34,7 @@ import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
+import com.onyx.edu.homework.action.note.ChangePenStateAction;
 import com.onyx.edu.homework.action.note.DocumentCheckAction;
 import com.onyx.edu.homework.action.note.DocumentFlushAction;
 import com.onyx.edu.homework.action.note.DocumentOpenAction;
@@ -152,7 +153,12 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void openDocument(final String uniqueId, final String parentUniqueId, final String groupId, boolean create) {
-        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create).execute(getNoteViewHelper(), null);
+        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create).execute(getNoteViewHelper(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                changePenState(shouldResume(), false, null);
+            }
+        });
     }
 
     public void setQuestion(Question question) {
@@ -368,6 +374,10 @@ public class ScribbleFragment extends BaseFragment {
         action.execute(getNoteViewHelper(), callback);
     }
 
+    public void changePenState(boolean resume, boolean render, BaseCallback callback) {
+        new ChangePenStateAction(resume, render).execute(getNoteViewHelper(), callback);
+    }
+
     private void registerDeviceReceiver() {
         deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
             @Override
@@ -414,12 +424,12 @@ public class ScribbleFragment extends BaseFragment {
 
     @Subscribe
     public void onSaveNoteEvent(SaveNoteEvent event) {
-        saveDocument(event.finishAfterSave, shouldResume(), true, null);
+        saveDocument(event.finishAfterSave, shouldResume(), true, true, null);
     }
 
     @Subscribe
     public void onStopNoteEvent(StopNoteEvent event) {
-        saveDocument(event.finishAfterSave, false, false, null);
+        saveDocument(event.finishAfterSave, false, true,false, null);
     }
 
     @Subscribe
@@ -427,19 +437,16 @@ public class ScribbleFragment extends BaseFragment {
         flushDocument(false, shouldResume(), null);
     }
 
-    public void saveDocument(BaseCallback callback) {
-        saveDocument(true, false, false, callback);
-    }
-
     public void saveDocument(final boolean finishAfterSave,
-                             final  boolean resumeDrawing,
+                             final boolean resumeDrawing,
+                             final boolean render,
                              final boolean showLoading,
                              final BaseCallback callback) {
         if (!getDataBundle().isDoing()) {
             return;
         }
         getNoteViewHelper().flushTouchPointList();
-        flushDocument(true, resumeDrawing, new BaseCallback() {
+        flushDocument(render, resumeDrawing, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 saveDocumentImpl(finishAfterSave, resumeDrawing, showLoading, callback);

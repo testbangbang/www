@@ -12,17 +12,16 @@ public class NoteDocumentSaveRequest extends BaseNoteRequest {
     private volatile String title;
     private volatile boolean close;
     private volatile boolean resume = true;
+    private volatile boolean render = false;
 
-    public NoteDocumentSaveRequest(final String t, boolean c) {
-        this(t, c, true);
-    }
-
-    public NoteDocumentSaveRequest(final String t, boolean c , boolean r) {
+    public NoteDocumentSaveRequest(final String t, boolean c , boolean r, boolean render) {
         title = t;
         close = c;
         resume = r;
+        this.render = render;
         setPauseInputProcessor(true);
         setResumeInputProcessor(!close && resume);
+        setRender(render);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {

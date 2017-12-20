@@ -166,11 +166,11 @@ public class BaseNoteRequest extends BaseRequest {
                     }
                 }
                 helper.enableScreenPost(true);
-                if (getCallback() != null) {
-                    getCallback().done(BaseNoteRequest.this, getException());
-                }
                 if (isResumeInputProcessor()) {
                     helper.resumeDrawing();
+                }
+                if (getCallback() != null) {
+                    getCallback().done(BaseNoteRequest.this, getException());
                 }
                 helper.getRequestManager().releaseWakeLock();
             }};

@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -33,7 +34,12 @@ import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentQuestionBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
+import com.onyx.edu.homework.event.HideTopicFragmentEvent;
+import com.onyx.edu.homework.event.ResumeNoteEvent;
+import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.utils.TextUtils;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -49,11 +55,24 @@ public class QuestionFragment extends BaseFragment {
     private ScribbleFragment scribbleFragment;
     private NoteToolFragment toolFragment;
     private ReviewFragment reviewFragment;
+    private TopicFragment topicFragment;
 
     public static QuestionFragment newInstance(Question question) {
         QuestionFragment fragment = new QuestionFragment();
         fragment.setQuestion(question);
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        getDataBundle().register(this);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        getDataBundle().unregister(this);
     }
 
     @Nullable
@@ -85,7 +104,9 @@ public class QuestionFragment extends BaseFragment {
         int questionIndex = Math.max(question.QuesType - 1, 0);
         String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
         binding.questionType.setText(getString(R.string.question_type_str, questionType));
-        binding.content.setText(TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null));
+        Spanned content = !question.isFillQuestion() ? TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null)
+                : null;
+        binding.content.setText(content);
         bindQuestionOption(binding.option, question);
         binding.analysis.setText(R.string.analysis);
         binding.analysis.setOnClickListener(new View.OnClickListener() {
@@ -94,19 +115,30 @@ public class QuestionFragment extends BaseFragment {
                 showAnalysisDialog(question);
             }
         });
+        binding.unfold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showDetailTopic();
+            }
+        });
 
-        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) binding.scribble.getLayoutParams();
+        LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) binding.scribble.getLayoutParams();
         int heightResId = question.isFillQuestion() ? R.dimen.fill_question_scribble_view_height : R.dimen.scribble_view_height;
         lp.height = (int) getActivity().getResources().getDimension(heightResId);
         binding.scribble.setLayoutParams(lp);
     }
 
     private void initViewVisibility() {
-        binding.reviewLayout.setVisibility(getDataBundle().isReview() && !question.isFillQuestion() ? View.VISIBLE : View.GONE);
-        binding.score.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
+        binding.unfold.setVisibility(question.isExplanationQuestion() ? View.VISIBLE : View.GONE);
+
+        boolean showReview = getDataBundle().isReview() && !question.isFillQuestion();
+        binding.rightAnswer.setVisibility(showReview ? View.VISIBLE : View.GONE);
+        binding.rightWrongIcon.setVisibility(showReview ? View.VISIBLE : View.GONE);
+        binding.analysis.setVisibility(showReview ? View.VISIBLE : View.GONE);
 
         binding.content.setVisibility(question.isFillQuestion() ? View.GONE : View.VISIBLE);
         binding.questionType.setVisibility(question.isFillQuestion() ? View.GONE : View.VISIBLE);
+
         boolean showScribble = !question.isChoiceQuestion();
         binding.scribble.setVisibility(showScribble ? View.VISIBLE : View.GONE);
         binding.scribbleLine.setVisibility(showScribble ? View.VISIBLE : View.GONE);
@@ -184,13 +216,7 @@ public class QuestionFragment extends BaseFragment {
             option.setChecked(false);
         }
     }
-
-    private void gotoAnswerActivity(final Question question) {
-        Intent intent = new Intent(getActivity(), AnswerActivity.class);
-        intent.putExtra(Constant.TAG_QUESTION, question);
-        startActivity(intent);
-    }
-
+    
     public void initFragment() {
         if (question.isChoiceQuestion()) {
             return;
@@ -225,7 +251,44 @@ public class QuestionFragment extends BaseFragment {
             getChildFragmentManager().beginTransaction().remove(toolFragment).commit();
             toolFragment = null;
         }
+        if (topicFragment != null) {
+            getChildFragmentManager().beginTransaction().remove(topicFragment).commit();
+            topicFragment = null;
+        }
     }
+
+    private void showDetailTopic() {
+        if (topicFragment != null) {
+            return;
+        }
+        binding.unfold.setVisibility(View.GONE);
+        if (scribbleFragment != null) {
+            scribbleFragment.changePenState(false,true, new BaseCallback() {
+                @Override
+                public void done(BaseRequest request, Throwable e) {
+                    showTopicFragment();
+                }
+            });
+        }else {
+            showTopicFragment();
+        }
+    }
+
+    private void showTopicFragment() {
+        topicFragment = TopicFragment.newInstance(question);
+        getChildFragmentManager().beginTransaction().replace(R.id.topic_fragment, topicFragment).commit();
+    }
+
+    @Subscribe
+    public void onHideTopicFragmentEvent(HideTopicFragmentEvent event) {
+        if (topicFragment != null) {
+            getDataBundle().post(new ResumeNoteEvent());
+            getChildFragmentManager().beginTransaction().remove(topicFragment).commit();
+            topicFragment = null;
+            binding.unfold.setVisibility(View.VISIBLE);
+        }
+    }
+
 
     public void reloadQuestion(Question question) {
         this.question = question;
@@ -256,7 +319,6 @@ public class QuestionFragment extends BaseFragment {
             binding.rightAnswer.setText(getString(R.string.right_answer, answers));
         }
         if (question.review != null) {
-            binding.score.setText(getString(R.string.score, question.review.score));
             binding.rightWrongIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
         }
         binding.analysis.setVisibility(StringUtils.isNullOrEmpty(question.analysis) ? View.GONE : View.VISIBLE);
@@ -267,6 +329,6 @@ public class QuestionFragment extends BaseFragment {
             BaseCallback.invoke(callback, null, null);
             return;
         }
-        scribbleFragment.saveDocument(callback);
+        scribbleFragment.saveDocument(true, false, false, false, callback);
     }
 }

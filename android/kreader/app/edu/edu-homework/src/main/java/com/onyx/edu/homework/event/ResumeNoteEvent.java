@@ -5,4 +5,7 @@ package com.onyx.edu.homework.event;
  */
 
 public class ResumeNoteEvent {
+
+    public boolean render;
+
 }
