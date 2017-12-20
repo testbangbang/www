@@ -54,23 +54,59 @@ public class WaveformUpdateRequest extends BaseCloudRequest {
         if (!WaveformResult.checkValid(result)) {
             return;
         }
-        if (checkFileMd5(md5Path, result.md5)) {
+        if (result.md5.equalsIgnoreCase(getActualMD5(md5Path))) {
             success = true;
             return;
         }
-        String tmpPath = downloadPath + ".tmp";
+        String tmpPath = getTempFilePath(downloadPath);
         if (!downloadFile(parent, result.url, tmpPath)) {
             return;
         }
         try {
             success = checkFileMd5(tmpPath, result.md5) &&
                     FileUtils.copyFile(new File(tmpPath), new File(downloadPath)) &&
-                    FileUtils.saveContentToFile(result.md5, new File(md5Path));
+                    saveToMD5File(result.md5, downloadPath, md5Path);
+            if (success) {
+                setFileReadable(downloadPath);
+                setFileReadable(md5Path);
+            }
         } catch (Exception e) {
             setException(e);
         } finally {
             FileUtils.deleteFile(tmpPath);
         }
+    }
+
+    private String getTempFilePath(String path) {
+        String tempPath = path + ".tmp";
+        File file = new File(tempPath);
+        if (!file.exists() && !file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        return tempPath;
+    }
+
+    private void setFileReadable(@NonNull String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            file.setReadable(true, false);
+        }
+    }
+
+    private String getActualMD5(String md5FilePath) {
+        if (!FileUtils.fileExist(md5FilePath)) {
+            return null;
+        }
+        String content = FileUtils.readContentOfFile(md5FilePath);
+        if (StringUtils.isNullOrEmpty(content)) {
+            return null;
+        }
+        String[] result = content.split(" ");
+        return result[0];
+    }
+
+    private boolean saveToMD5File(String md5, String targetFilePath, String md5Path) {
+        return FileUtils.saveContentToFile(md5.toLowerCase() + " " + targetFilePath, new File(md5Path));
     }
 
     private WaveformResult fetchUpdateResult(String serverApi, PanelInfo panelInfo) {
@@ -103,7 +139,7 @@ public class WaveformUpdateRequest extends BaseCloudRequest {
         }
         try {
             String md5 = FileUtils.computeFullMD5Checksum(new File(filePath));
-            return StringUtils.isNotBlank(md5) && md5.equals(compareMd5.toLowerCase());
+            return StringUtils.isNotBlank(md5) && md5.equalsIgnoreCase(compareMd5);
         } catch (Exception e) {
             return false;
         }
