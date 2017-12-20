@@ -20,6 +20,7 @@ import retrofit2.Response;
  * Created by suicheng on 2017/12/19.
  */
 public class WaveformUpdateRequest extends BaseCloudRequest {
+    public static String DIVIDER = "  ";
 
     private String serverApi;
     private PanelInfo panelInfo;
@@ -101,12 +102,12 @@ public class WaveformUpdateRequest extends BaseCloudRequest {
         if (StringUtils.isNullOrEmpty(content)) {
             return null;
         }
-        String[] result = content.split(" ");
+        String[] result = content.split(DIVIDER);
         return result[0];
     }
 
     private boolean saveToMD5File(String md5, String targetFilePath, String md5Path) {
-        return FileUtils.saveContentToFile(md5.toLowerCase() + " " + targetFilePath, new File(md5Path));
+        return FileUtils.saveContentToFile(md5.toLowerCase() + DIVIDER + targetFilePath, new File(md5Path));
     }
 
     private WaveformResult fetchUpdateResult(String serverApi, PanelInfo panelInfo) {
