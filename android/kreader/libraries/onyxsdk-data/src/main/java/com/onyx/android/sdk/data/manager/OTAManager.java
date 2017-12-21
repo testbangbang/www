@@ -44,6 +44,9 @@ public class OTAManager {
     public static final String LOCAL_PATH_EXTSD = DeviceInfoUtil.getRemovableSDCardDirectory()
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
 
+    public static final String WAVEFORM_PATH = "/vendor/waveform/waveform.wbf";
+    public static final String WAVEFORM_MD5_PATH = "/vendor/waveform/waveform.wbf.md5";
+
     /**
      * Temp empty implement here.
     */

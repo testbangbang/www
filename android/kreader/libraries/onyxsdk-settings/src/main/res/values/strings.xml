@@ -238,10 +238,16 @@
     <string name="vcom" translatable="false">VCom</string>
     <string name="barcode_key" translatable="false">barcode_key</string>
     <string name="barcode">Screen Barcode</string>
+    <string name="waveform_key" translatable="false">waveform_key</string>
+    <string name="waveform_version">Waveform Version</string>
     <string name="still_need_times_to_activate">Still need %1$d times to enter device info settings.</string>
     <string name="digitizer_fw_key" translatable="false">digitizer_fw_key</string>
     <string name="digitizer_fw">Digitizer FW</string>
     <string name="add_network">Add Network</string>
     <string name="network_ssid">Network SSID</string>
+
+    <string name="waveform_no_update">The waveform no update</string>
+    <string name="waveform_is_latest">The waveform is latest</string>
+    <string name="waveform_update_success">The waveform update success</string>
 </resources>
 

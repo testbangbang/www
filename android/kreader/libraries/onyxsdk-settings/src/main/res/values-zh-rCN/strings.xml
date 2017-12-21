@@ -177,8 +177,13 @@
     <string name="setting_product_detail">产品规格</string>
     <string name="device_info">系统信息</string>
     <string name="barcode">屏幕条码</string>
+    <string name="waveform_version">Waveform版本</string>
     <string name="still_need_times_to_activate">尚需点击%1$d次以进入设备信息设置.</string>
     <string name="digitizer_fw">电磁屏版本</string>
     <string name="add_network">添加网络</string>
     <string name="network_ssid">网络 SSID</string>
+
+    <string name="waveform_no_update">Waveform暂无更新</string>
+    <string name="waveform_is_latest">当前Waveform已是最新版本</string>
+    <string name="waveform_update_success">Waveform更新成功</string>
 </resources>
