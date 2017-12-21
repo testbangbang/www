@@ -247,7 +247,7 @@ public class HomeActivity extends BaseActivity {
             return null;
         }
         if (selectGroupIndex >= CollectionUtils.getSize(currentAccount.groups)) {
-            selectGroupIndex--;
+            selectGroupIndex = 0;
         }
         NeoAccountBase account = new NeoAccountBase();
         account.name = currentAccount.getName();
