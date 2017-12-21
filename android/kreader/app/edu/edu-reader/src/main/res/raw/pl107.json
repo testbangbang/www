@@ -1,5 +1,5 @@
 {
-  "ttsEnabled" : true,
+  "ttsEnabled" : false,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
   "askForClose" : true,
