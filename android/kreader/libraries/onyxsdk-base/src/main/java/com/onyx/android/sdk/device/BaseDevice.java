@@ -508,4 +508,12 @@ public class BaseDevice {
     }
 
     public void mergeDisplayUpdate(int timeout, UpdateMode mode) {}
+
+    public String getWaveformPath() {
+        return "";
+    }
+
+    public String getWaveformMD5Path() {
+        return "";
+    }
 }
