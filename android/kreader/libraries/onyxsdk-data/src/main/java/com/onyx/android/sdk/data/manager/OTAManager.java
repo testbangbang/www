@@ -44,6 +44,9 @@ public class OTAManager {
     public static final String LOCAL_PATH_EXTSD = DeviceInfoUtil.getRemovableSDCardDirectory()
             .getAbsolutePath() + File.separator + UPDATE_FILE_NAME;
 
+    public static final String WAVEFORM_PATH = com.onyx.android.sdk.device.Device.currentDevice().getWaveformPath();
+    public static final String WAVEFORM_MD5_PATH = com.onyx.android.sdk.device.Device.currentDevice().getWaveformMD5Path();
+
     /**
      * Temp empty implement here.
     */

@@ -936,4 +936,11 @@ public class RK32XXDevice extends BaseDevice {
         long value = System.currentTimeMillis();
         ReflectUtil.invokeMethodSafely(sMethodGotoSleep, context, value);
     }
+
+    public String getWaveformPath() {
+        return "/vendor/waveform/waveform.wbf";
+    }
+    public String getWaveformMD5Path() {
+        return "/vendor/waveform/waveform.wbf.md5";
+    }
 }
