@@ -6,4 +6,8 @@
     <integer name="setting_adapter_col">2</integer>
     <integer name="wifi_setting_adapter_row">5</integer>
     <integer name="wifi_setting_adapter_col">1</integer>
+    <integer name="refresh_adapter_row">4</integer>
+    <integer name="refresh_adapter_col">1</integer>
+    <integer name="lock_screen_adapter_row">4</integer>
+    <integer name="lock_screen_adapter_col">1</integer>
 </resources>

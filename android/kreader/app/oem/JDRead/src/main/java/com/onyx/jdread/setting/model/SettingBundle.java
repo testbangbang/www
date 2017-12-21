@@ -11,6 +11,8 @@ public class SettingBundle {
     private static SettingBundle bundle;
     private SettingDataModel settingDataModel;
     private SettingTitleModel titleModel;
+    private SettingRefreshModel settingRefreshModel;
+    private SettingLockScreenModel settingLockScreenModel;
 
     public static SettingBundle getInstance() {
         if (bundle == null) {
@@ -36,5 +38,19 @@ public class SettingBundle {
             titleModel = new SettingTitleModel(eventBus);
         }
         return titleModel;
+    }
+
+    public SettingRefreshModel getSettingRefreshModel() {
+        if (settingRefreshModel == null) {
+            settingRefreshModel = new SettingRefreshModel();
+        }
+        return settingRefreshModel;
+    }
+
+    public SettingLockScreenModel getSettingLockScreenModel() {
+        if (settingLockScreenModel == null) {
+            settingLockScreenModel = new SettingLockScreenModel();
+        }
+        return settingLockScreenModel;
     }
 }

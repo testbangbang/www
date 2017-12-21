@@ -68,4 +68,5 @@ dependencies {
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
     compile project(path: ':libraries:onyxsdk-settings')
+    compile project(path: ':libraries:onyxsdk-reader')
 }

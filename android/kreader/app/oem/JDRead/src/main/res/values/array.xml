@@ -17,4 +17,11 @@
         <item name="setting_lab">@mipmap/ic_setting_lab</item>
         <item name="setting_help">@mipmap/ic_setting_help</item>
     </string-array>
+
+    <string-array name="device_setting_page_refreshes">
+        <item>@string/device_setting_ten_pages</item>
+        <item>@string/device_setting_twenty_pages</item>
+        <item>@string/device_setting_forty_pages</item>
+        <item>@string/device_setting_eighty_pages</item>
+    </string-array>
 </resources>

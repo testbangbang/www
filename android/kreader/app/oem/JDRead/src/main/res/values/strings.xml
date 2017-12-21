@@ -14,4 +14,12 @@
     <string name="interest_rates_screen_time">Interest rates screen time</string>
     <string name="laboratory">laboratory</string>
     <string name="help_and_feedback">Help and feedback</string>
+    <string name="device_setting_ten_pages">10 pages</string>
+    <string name="device_setting_twenty_pages">20 pages</string>
+    <string name="device_setting_forty_pages">40 pages</string>
+    <string name="device_setting_eighty_pages">80 pages</string>
+    <string name="device_setting_never">Never</string>
+    <string name="refresh_tips">Refresh the page to ensure that the ink screen is clear, to reduce the page damage, please set it according to your needs.</string>
+    <string name="refresh_mode">Speed refresh mode</string>
+    <string name="refresh_mode_tips">The function of the laboratory greatly improved the page speed, but the shadow was more obvious</string>
 </resources>

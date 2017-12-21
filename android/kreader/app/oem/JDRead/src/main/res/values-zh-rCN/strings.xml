@@ -13,4 +13,12 @@
     <string name="interest_rates_screen_time">熄屏时间</string>
     <string name="laboratory">实验室</string>
     <string name="help_and_feedback">帮助与反馈</string>
+    <string name="device_setting_ten_pages">10 页</string>
+    <string name="device_setting_twenty_pages">20 页</string>
+    <string name="device_setting_forty_pages">40 页</string>
+    <string name="device_setting_eighty_pages">80 页</string>
+    <string name="device_setting_never">永不</string>
+    <string name="refresh_tips">刷新页面可以保证墨水屏的清晰，减少页面残影，请根据您的需要进行设置。</string>
+    <string name="refresh_mode">极速刷新模式</string>
+    <string name="refresh_mode_tips">实验室功能，大幅提高翻页速度，但残影较明显</string>
 </resources>

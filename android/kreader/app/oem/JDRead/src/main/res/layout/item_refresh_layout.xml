@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ItemRefreshBinding">
+
+        <import type="android.view.View" />
+
+        <variable
+            name="pageTime"
+            type="CharSequence" />
+
+        <variable
+            name="show"
+            type="boolean" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@{pageTime}"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/wifi"
+            android:visibility="@{show ? View.VISIBLE : View.GONE}" />
+    </LinearLayout>
+</layout>
