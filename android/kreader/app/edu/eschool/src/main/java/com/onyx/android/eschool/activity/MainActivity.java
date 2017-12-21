@@ -132,7 +132,8 @@ public class MainActivity extends BaseActivity {
                     ToastUtils.showToast(getApplicationContext(), R.string.online_group_load_error);
                     return;
                 }
-                loadGroupLibraryList(groupContainerList = groupLoadAction.getContainerList());
+                groupContainerList = groupLoadAction.getContainerList();
+                loadGroupLibraryList(groupContainerList);
                 invalidateOptionsMenu();
             }
         });
