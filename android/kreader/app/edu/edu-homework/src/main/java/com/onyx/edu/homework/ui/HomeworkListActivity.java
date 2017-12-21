@@ -29,6 +29,7 @@ import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.GetHomeworkReviewsAction;
 import com.onyx.edu.homework.action.HomeworkListActionChain;
+import com.onyx.edu.homework.action.ShowAnalysisAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Homework;
@@ -118,7 +119,23 @@ public class HomeworkListActivity extends BaseActivity {
                 showExitDialog();
             }
         });
+        binding.analysis.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showAnalysisDialog();
+            }
+        });
         hideMessage();
+    }
+
+    private void showAnalysisDialog() {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
+        if (currentPage >= questions.size()) {
+            return;
+        }
+        new ShowAnalysisAction(questions.get(currentPage)).execute(HomeworkListActivity.this, null);
     }
 
     private void nextPage(final View view) {
@@ -133,7 +150,7 @@ public class HomeworkListActivity extends BaseActivity {
         getQuestionFragment().saveQuestion(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                currentPage = next;
+                currentPage = Math.min(next, questions.size() - 1);
                 reloadQuestionFragment(currentPage);
                 view.setEnabled(true);
             }
@@ -152,7 +169,7 @@ public class HomeworkListActivity extends BaseActivity {
         getQuestionFragment().saveQuestion(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                currentPage = prev;
+                currentPage = Math.max(prev, 0);
                 reloadQuestionFragment(currentPage);
                 view.setEnabled(true);
             }
@@ -182,7 +199,7 @@ public class HomeworkListActivity extends BaseActivity {
                     return;
                 }
                 reloadQuestionFragment(currentPage);
-                updateState();
+                updateViewState();
                 showTotalScore();
             }
         });
@@ -223,7 +240,7 @@ public class HomeworkListActivity extends BaseActivity {
                 }
                 hideMessage();
                 showWaitingDialog();
-                updateState();
+                updateViewState();
                 showTotalScore();
                 initQuestions(questions);
             }
@@ -357,6 +374,13 @@ public class HomeworkListActivity extends BaseActivity {
             return;
         }
         binding.page.setText(current + File.separator + total);
+
+        if (getDataBundle().isReview()) {
+            Question question = questions.get(position);
+            if (question.review != null) {
+                binding.answerIcon.setImageResource(question.review.isRightAnswer() ? R.drawable.ic_right : R.drawable.ic_wrong);
+            }
+        }
     }
 
     @Override
@@ -372,7 +396,7 @@ public class HomeworkListActivity extends BaseActivity {
 
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
-        updateState();
+        updateViewState();
         reloadQuestionFragment(currentPage);
     }
 
@@ -396,7 +420,9 @@ public class HomeworkListActivity extends BaseActivity {
         return DataBundle.getInstance();
     }
 
-    private void updateState() {
+    private void updateViewState() {
+        binding.analysis.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
+        binding.answerIcon.setVisibility(getDataBundle().isReview() ? View.VISIBLE : View.GONE);
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
@@ -456,4 +482,5 @@ public class HomeworkListActivity extends BaseActivity {
         recordFragment = null;
         reloadQuestionFragment(currentPage);
     }
+
 }

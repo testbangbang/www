@@ -72,6 +72,21 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"/>
 
+            <ImageView
+                android:id="@+id/answer_icon"
+                android:layout_margin="@dimen/homework_text_margin"
+                android:src="@drawable/ic_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="@string/analysis"
+                android:visibility="gone"
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/analysis"
+                style="@style/homework_text" />
+
             <TextView
                 android:visibility="gone"
                 android:padding="@dimen/homework_text_margin"

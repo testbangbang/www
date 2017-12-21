@@ -76,12 +76,12 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         String pageUniqueId = pageUniqueIds.remove(0);
         List<PageInfo> pageInfoList = new ArrayList<>();
         int width = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) getAppContext().getResources().getDimension(question.isFillQuestion() ? R.dimen.fill_question_scribble_view_height : R.dimen.scribble_view_height);
+        int height = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_height);
         Rect size =  new Rect(0, 0, width, height);
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
-        String drawText = question.isFillQuestion() ? question.content : null;
+        String drawText = !question.isChoiceQuestion() ? question.content : null;
         final HomeworkPagesRenderRequest renderRequest = new HomeworkPagesRenderRequest(docId,
                 pageInfoList,
                 size,

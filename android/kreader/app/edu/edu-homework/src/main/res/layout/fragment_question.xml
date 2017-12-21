@@ -6,145 +6,80 @@
 
     </data>
 
-    <FrameLayout
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:orientation="vertical"
-            android:gravity="center_horizontal"
+        <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+            android:padding="10dp"
+            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="0dp">
 
-            <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+            <TextView
+                android:textSize="@dimen/question_type_text_size"
+                android:textColor="@android:color/black"
+                android:id="@+id/question_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:layout_toRightOf="@+id/question_type"
+                android:ellipsize="end"
+                android:layout_marginLeft="6dp"
+                android:textSize="@dimen/question_content_text_size"
+                android:textColor="@android:color/black"
+                android:id="@+id/content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+
+            <RadioGroup
+                android:layout_below="@+id/content"
+                android:orientation="vertical"
                 android:padding="10dp"
-                android:layout_weight="1"
+                android:id="@+id/option"
                 android:layout_width="match_parent"
-                android:layout_height="0dp">
+                android:layout_height="wrap_content"/>
 
-                <TextView
-                    android:textSize="@dimen/question_type_text_size"
-                    android:textColor="@android:color/black"
-                    android:id="@+id/question_type"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+        </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
 
-                <TextView
-                    android:layout_toRightOf="@+id/question_type"
-                    android:ellipsize="end"
-                    android:layout_marginLeft="6dp"
-                    android:textSize="@dimen/question_content_text_size"
-                    android:textColor="@android:color/black"
-                    android:id="@+id/content"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_above="@+id/scribble_line"
+            android:visibility="gone"
+            android:id="@+id/tool_layout"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/onyx_main_note_menu_height"/>
 
-                <RadioGroup
-                    android:layout_below="@+id/content"
-                    android:orientation="vertical"
-                    android:padding="10dp"
-                    android:id="@+id/option"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+        <View
+            android:layout_above="@+id/scribble"
+            android:visibility="gone"
+            android:id="@+id/scribble_line"
+            android:background="@android:color/black"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"/>
 
-                <ImageView
-                    android:id="@+id/unfold"
-                    android:src="@drawable/topic_unfold"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentBottom="true"
-                    android:layout_margin="10dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-                <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
-                    appCompat:alwaysLayoutImageView="true"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:layout_margin="8dp"
-                    android:layout_below="@+id/option"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <TextView
-                        android:layout_marginRight="10dp"
-                        android:textSize="@dimen/homework_text_size"
-                        android:textColor="@android:color/black"
-                        android:id="@+id/right_answer"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <ImageView
-                        android:id="@+id/right_wrong_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-
-                    <View
-                        android:layout_weight="1"
-                        android:layout_width="0dp"
-                        android:layout_height="1dp"/>
-
-                    <TextView
-                        android:layout_gravity="right"
-                        android:padding="@dimen/homework_text_margin"
-                        android:background="@drawable/round_bg"
-                        android:textColor="@android:color/black"
-                        android:id="@+id/analysis"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content" />
-                </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
-
-            </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
-
-            <View
-                android:layout_above="@+id/tool_layout"
-                android:visibility="gone"
-                android:id="@+id/tool_layout_line"
-                android:background="@android:color/black"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"/>
+        <FrameLayout
+            android:visibility="gone"
+            android:id="@+id/scribble"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/scribble_view_height">
 
             <LinearLayout
-                android:layout_above="@+id/scribble_line"
-                android:visibility="gone"
-                android:id="@+id/tool_layout"
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/onyx_main_note_menu_height"/>
-
-            <View
-                android:layout_above="@+id/scribble"
-                android:visibility="gone"
-                android:id="@+id/scribble_line"
-                android:background="@android:color/black"
-                android:layout_width="match_parent"
-                android:layout_height="2dp"/>
-
-            <FrameLayout
-                android:visibility="gone"
-                android:id="@+id/scribble"
                 android:orientation="vertical"
+                android:id="@+id/scribble_layout"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/scribble_view_height">
+                android:layout_height="match_parent" />
 
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:id="@+id/scribble_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+            <RelativeLayout
+                android:id="@+id/sub_menu_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </FrameLayout>
 
-                <RelativeLayout
-                    android:id="@+id/sub_menu_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
-            </FrameLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:id="@+id/topic_fragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </FrameLayout>
+    </LinearLayout>
 
 </layout>

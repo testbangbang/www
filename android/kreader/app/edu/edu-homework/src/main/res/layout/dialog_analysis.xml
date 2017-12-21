@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:text="@string/right_answer"
+            android:layout_margin="@dimen/homework_text_margin"
+            android:id="@+id/answers_title"
+            android:textSize="@dimen/homework_text_size"
+            android:textColor="@color/text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_toRightOf="@+id/answers_title"
+            android:layout_margin="@dimen/homework_text_margin"
+            android:id="@+id/answers"
+            android:textSize="@dimen/homework_text_size"
+            android:textColor="@color/text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:text="@string/detail_analysis"
+            android:layout_below="@+id/answers"
+            android:layout_margin="@dimen/homework_text_margin"
+            android:id="@+id/analysis_title"
+            android:textSize="@dimen/homework_text_size"
+            android:textColor="@color/text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_toRightOf="@+id/analysis_title"
+            android:layout_below="@+id/answers"
+            android:layout_margin="@dimen/homework_text_margin"
+            android:id="@+id/analysis"
+            android:textSize="@dimen/homework_text_size"
+            android:textColor="@color/text_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </RelativeLayout>
+</layout>
