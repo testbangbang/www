@@ -214,7 +214,7 @@ public class RecordFragment extends BaseFragment {
     }
 
     private void loadScribbleImage(final Question question, final CommonViewHolder viewHolder) {
-        if (question.isChoiceQuestion()) {
+        if (question.isChoiceQuestion() || !question.doneAnswer) {
             return;
         }
         final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), questions, 3);
