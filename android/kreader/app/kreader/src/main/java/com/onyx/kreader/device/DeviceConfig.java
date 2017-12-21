@@ -12,6 +12,8 @@ import com.onyx.kreader.R;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -78,6 +80,7 @@ public class DeviceConfig {
     private String statisticsUrl = "http://dev.onyx-international.cn/api/1/";
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
+    private List<String> scriblableFileFormatFilter = new ArrayList<String>();
 
     private String noteAppPackageName = "com.moxi.writeNote";
     private String noteAppClassName = "com.moxi.writeNote.MainActivity";
@@ -584,6 +587,14 @@ public class DeviceConfig {
 
     public void setNoteAppClassName(String noteAppClassName) {
         this.noteAppClassName = noteAppClassName;
+    }
+
+    public List<String> getScriblableFileFormatFilter() {
+        return scriblableFileFormatFilter;
+    }
+
+    public void setScriblableFileFormatFilter(List<String> scriblableFileFormatFilter) {
+        this.scriblableFileFormatFilter = scriblableFileFormatFilter;
     }
 }
 

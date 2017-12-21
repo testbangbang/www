@@ -10,6 +10,7 @@
   "defaultShowDocTitleInStatusBar": false,
   "noteAppPackageName": "com.moxi.writeNote",
   "noteAppClassName": "com.moxi.writeNote.Activity.ExternalActivity",
+  "scriblableFileFormatFilter": ["pdf"],
   "keyBinding": {
     "HandlerManager": {
       "KEYCODE_PAGE_DOWN":  {"action": "nextScreen", "args": ""},

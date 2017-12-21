@@ -118,7 +118,6 @@ import java.util.List;
  */
 public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
-    private static final String[] NOTE_FILE_FILTER_ARR = {"pdf"};
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
@@ -335,7 +334,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void reconfigStatusBar() {
-        boolean isShowNoteIcon = !Arrays.asList(NOTE_FILE_FILTER_ARR).contains(
+        boolean isShowNoteIcon = !DeviceConfig.sharedInstance(this).getScriblableFileFormatFilter().contains(
                 FileUtils.getFileExtension(FileUtils.getRealFilePathFromUri(ReaderActivity.this, getIntent().getData())));
         statusBar.reConfigure(SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_percentage_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_key, false),
