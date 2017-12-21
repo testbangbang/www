@@ -1009,4 +1009,11 @@ public class IMX6Device extends BaseDevice {
     public void mergeDisplayUpdate(int timeout, UpdateMode mode) {
         ReflectUtil.invokeMethodSafely(sMethodMergeDisplayUpdate, null, timeout, getUpdateMode(mode));
     }
+
+    public String getWaveformPath() {
+        return "/vendor/firmware/imx/waveform.wbf";
+    }
+    public String getWaveformMD5Path() {
+        return "/vendor/firmware/imx/waveform.wbf.md5";
+    }
 }

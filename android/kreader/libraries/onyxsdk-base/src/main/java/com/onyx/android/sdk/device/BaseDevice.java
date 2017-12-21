@@ -391,4 +391,12 @@ public class BaseDevice {
     public void setInfoShowConfig(int orientation, int startX, int startY) {}
 
     public void mergeDisplayUpdate(int timeout, UpdateMode mode) {}
+
+    public String getWaveformPath() {
+        return "";
+    }
+
+    public String getWaveformMD5Path() {
+        return "";
+    }
 }
