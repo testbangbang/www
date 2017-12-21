@@ -167,7 +167,7 @@ public class NotePage {
         }
 
         for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            hitTestAndSelectShape(entry, touchPointList, radius);
+            hitTestAndRemoveShape(entry, touchPointList, radius);
         }
     }
 
