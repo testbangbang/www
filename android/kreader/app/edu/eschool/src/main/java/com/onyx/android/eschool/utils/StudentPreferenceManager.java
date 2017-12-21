@@ -48,4 +48,12 @@ public class StudentPreferenceManager extends PreferenceManager {
     public static void setImportContent(Context context, boolean imported) {
         setBooleanValue(context, Constant.IMPORT_CONTENT_IN_FIRST_BOOT_TAG, imported);
     }
+
+    public static int getCloudGroupSelected(Context context) {
+        return getIntValue(context, Constant.CLOUD_GROUP_SELECTED_TAG, 0);
+    }
+
+    public static void setCloudGroupSelected(Context context, int index) {
+        setIntValue(context, Constant.CLOUD_GROUP_SELECTED_TAG, index);
+    }
 }

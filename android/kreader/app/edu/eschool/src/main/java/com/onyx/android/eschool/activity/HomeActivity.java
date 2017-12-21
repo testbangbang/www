@@ -16,6 +16,7 @@ import com.onyx.android.eschool.action.ContentImportAction;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.AccountTokenErrorEvent;
+import com.onyx.android.eschool.events.GroupSelectEvent;
 import com.onyx.android.eschool.model.AppConfig;
 import com.onyx.android.eschool.model.StudentAccount;
 import com.onyx.android.eschool.utils.ResourceUtils;
@@ -24,9 +25,12 @@ import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
+import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.ActivityUtil;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -34,6 +38,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import butterknife.OnClick;
 
@@ -42,6 +47,8 @@ import butterknife.OnClick;
  */
 public class HomeActivity extends BaseActivity {
     private static boolean checkedOnBootComplete = false;
+
+    private NeoAccountBase currentAccount;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -206,11 +213,46 @@ public class HomeActivity extends BaseActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountAvailableEvent(AccountAvailableEvent event) {
-        StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, event.getAccount());
+        currentAccount = event.getAccount();
+        updateAccountInfo(event.getAccount(), StudentPreferenceManager.getCloudGroupSelected(getApplicationContext()));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onAccountTokenErrorEvent(AccountTokenErrorEvent errorEvent) {
         StudentAccount.sendUserInfoSettingIntent(HomeActivity.this, getString(R.string.account_un_login));
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onGroupSelectEvent(GroupSelectEvent event) {
+        updateAccountInfo(currentAccount, event.index);
+    }
+
+    private void updateAccountInfo(NeoAccountBase account, int selectGroupIndex) {
+        account = switchAccountGroup(account, selectGroupIndex);
+        if (account == null) {
+            return;
+        }
+        StudentAccount.sendUserInfoSettingIntent(getApplicationContext(), account);
+        updateScreenAccountInfo(account);
+    }
+
+    private void updateScreenAccountInfo(NeoAccountBase account) {
+        final GenerateAccountInfoRequest generateAccountInfoRequest = new GenerateAccountInfoRequest(account,
+                DeviceConfig.sharedInstance(getApplicationContext()).getInfoShowConfig());
+        SchoolApp.getSchoolCloudStore().submitRequest(getApplicationContext(), generateAccountInfoRequest, null);
+    }
+
+    private NeoAccountBase switchAccountGroup(NeoAccountBase currentAccount, int selectGroupIndex) {
+        if (currentAccount == null || CollectionUtils.isNullOrEmpty(currentAccount.groups)) {
+            return null;
+        }
+        if (selectGroupIndex >= CollectionUtils.getSize(currentAccount.groups)) {
+            selectGroupIndex--;
+        }
+        NeoAccountBase account = new NeoAccountBase();
+        account.name = currentAccount.getName();
+        account.groups = new ArrayList<>();
+        account.groups.add(currentAccount.groups.get(selectGroupIndex));
+        return account;
     }
 }

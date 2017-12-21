@@ -8,6 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="ToolBarStyle.Transparent.TextLarge" parent="@style/OnyxToolBarStyle">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="popupTheme">@style/ToolBar.Popup</item>
+    </style>
+
+    <style name="ToolBar.Popup" parent="@style/OnyxAppCompat.ToolBar.Popup"> 
+        <item name="android:textSize">@dimen/menu_item_text_size</item>
+    </style>
+
     <style name="tabLayoutTextAppearance" parent="TextAppearance.AppCompat.Widget.ActionBar.Title.Inverse">
         <item name="android:textSize">25sp</item>
         <item name="android:textAllCaps">true</item>
