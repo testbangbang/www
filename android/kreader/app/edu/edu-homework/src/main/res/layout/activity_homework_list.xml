@@ -73,6 +73,7 @@
                 android:layout_height="1dp"/>
 
             <ImageView
+                android:visibility="gone"
                 android:id="@+id/answer_icon"
                 android:layout_margin="@dimen/homework_text_margin"
                 android:src="@drawable/ic_right"

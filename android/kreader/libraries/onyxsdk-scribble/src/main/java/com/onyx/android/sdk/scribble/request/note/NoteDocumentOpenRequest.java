@@ -52,7 +52,7 @@ public class NoteDocumentOpenRequest extends BaseNoteRequest {
         if (StringUtils.isNullOrEmpty(text)) {
             return 1;
         }
-        StaticLayout sl = parent.getTextLayout(text);
+        StaticLayout sl = parent.getTextLayout(text, parent.getViewportSize().width());
         return (int) Math.ceil((float)sl.getHeight() / getViewportSize().height());
     }
 }

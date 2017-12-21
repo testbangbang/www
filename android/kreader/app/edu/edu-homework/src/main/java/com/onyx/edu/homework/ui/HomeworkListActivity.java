@@ -37,6 +37,7 @@ import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
+import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
@@ -146,13 +147,11 @@ public class HomeworkListActivity extends BaseActivity {
         if (next >= questions.size() || getQuestionFragment() == null) {
             return;
         }
-        view.setEnabled(false);
         getQuestionFragment().saveQuestion(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.min(next, questions.size() - 1);
                 reloadQuestionFragment(currentPage);
-                view.setEnabled(true);
             }
         });
     }
@@ -165,13 +164,11 @@ public class HomeworkListActivity extends BaseActivity {
         if (prev < 0 || getQuestionFragment() == null) {
             return;
         }
-        view.setEnabled(false);
         getQuestionFragment().saveQuestion(new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.max(prev, 0);
                 reloadQuestionFragment(currentPage);
-                view.setEnabled(true);
             }
         });
     }

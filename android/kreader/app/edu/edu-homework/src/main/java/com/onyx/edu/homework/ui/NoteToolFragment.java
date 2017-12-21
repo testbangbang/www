@@ -250,7 +250,7 @@ public class NoteToolFragment extends BaseFragment {
         if (!getDataBundle().isDoing()) {
             return;
         }
-        flushDocument(false, false, new BaseCallback() {
+        flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 eraserPageImpl();
@@ -278,7 +278,7 @@ public class NoteToolFragment extends BaseFragment {
         if (!getDataBundle().isDoing()) {
             return;
         }
-        flushDocument(false, false, new BaseCallback() {
+        flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 deletePageImpl();

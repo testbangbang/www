@@ -8,6 +8,7 @@
     <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:padding="10dp"
+        android:minWidth="@dimen/common_dialog_width"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
