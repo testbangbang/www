@@ -20,6 +20,7 @@
     <string name="name_colon">Name：</string>
     <string name="student_id_colon">ID：</string>
     <string name="grade_colon">Grade：</string>
+    <string name="phone_colon">Phone：</string>
     <string name="publisher">Publisher</string>
     <string name="primary_school">Primary School</string>
     <string name="secondary_school">Secondary School</string>

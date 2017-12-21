@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.model.v2;
 
+import android.support.annotation.Nullable;
+
 import com.alibaba.fastjson.annotation.JSONField;
 import com.onyx.android.sdk.data.converter.ListStringConverter;
 import com.onyx.android.sdk.data.model.BaseData;
@@ -38,6 +40,17 @@ public class NeoAccountBase extends BaseData {
             return "";
         }
         return groups.get(0).replaceAll(DELIMITER, "");
+    }
+
+    @Nullable
+    public String getGroupName(int index) {
+        if (CollectionUtils.isNullOrEmpty(groups)) {
+            return null;
+        }
+        if (index >= CollectionUtils.getSize(groups)) {
+            index = 0;
+        }
+        return groups.get(index).replaceAll(DELIMITER, "");
     }
 
     public String getPhone() {
