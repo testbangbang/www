@@ -12,6 +12,7 @@ import org.apache.commons.collections4.map.ListOrderedMap;
 
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zhuzeng on 6/20/16.
@@ -332,6 +333,18 @@ public class NoteDocument {
         }
         return null;
     }
+
+    public int getNotePagePosition(NotePage notePage) {
+        int index = 0;
+        for (Map.Entry<String, NotePage> stringNotePageEntry : pageDataMap.entrySet()) {
+            if (stringNotePageEntry.getValue() == notePage) {
+                return index;
+            }
+            index++;
+        }
+        return index;
+    }
+
 
     public int getPageCount() {
         return pageDataMap.size();

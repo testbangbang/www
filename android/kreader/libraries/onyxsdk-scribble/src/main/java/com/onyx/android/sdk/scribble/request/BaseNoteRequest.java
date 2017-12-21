@@ -10,8 +10,14 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.Html;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.hanvon.core.Algorithm;
@@ -200,13 +206,14 @@ public class BaseNoteRequest extends BaseRequest {
                 drawBackground(canvas, paint, parent.getNoteDocument().getBackground(),
                         parent.getNoteDocument().getNoteDrawingArgs().bgFilePath);
             }
-            drawTextView(canvas, parent);
             prepareRenderingBuffer(bitmap);
 
             final Matrix renderMatrix = new Matrix();
             final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
             for (PageInfo page : getVisiblePages()) {
                 final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+                int pagePosition = parent.getNoteDocument().getNotePagePosition(notePage);
+                drawTextView(canvas, parent, pagePosition);
                 notePage.render(renderContext, null);
             }
             parent.renderCursorShape(renderContext);
@@ -217,18 +224,38 @@ public class BaseNoteRequest extends BaseRequest {
         }
     }
 
-    private void drawTextView(final Canvas canvas, final NoteViewHelper parent) {
+    private void drawTextView(final Canvas canvas, final NoteViewHelper parent, int pagePosition) {
         String text = parent.getDrawText();
         if (StringUtils.isNullOrEmpty(text)) {
             return;
         }
-        TextView textView = new TextView(parent.getContext());
-        textView.layout(0, 0, getViewportSize().width(), getViewportSize().height());
-        textView.setTextSize(TypedValue.COMPLEX_UNIT_PX, 30);
-        textView.setTextColor(Color.BLACK);
-        textView.setText(Html.fromHtml(text, new Base64ImageParser(parent.getContext()), null));
-        textView.setDrawingCacheEnabled(true);
-        canvas.drawBitmap(textView.getDrawingCache(), 10, 10, null);
+
+        TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+        tp.setColor(Color.BLACK);
+        tp.setTextSize(40);
+        StaticLayout sl=new StaticLayout(Html.fromHtml(text, new Base64ImageParser(parent.getContext()), null),tp,getViewportSize().width(),
+                Layout.Alignment.ALIGN_CENTER, 1f,0f,false);
+        int pageTop = getViewportSize().height() * pagePosition;
+        if (pageTop > sl.getHeight()) {
+            return;
+        }
+        canvas.save();
+        canvas.translate(0, -getTextTop(sl, pageTop));
+        sl.draw(canvas);
+        canvas.restore();
+    }
+
+    private int getTextTop(StaticLayout sl, int pageTop) {
+        if (pageTop == 0) {
+            return 0;
+        }
+        int lineCount = sl.getLineCount();
+        for (int i = 0; i < lineCount; i++) {
+            if (sl.getLineTop(i) > pageTop && i > 0) {
+                return sl.getLineTop(i - 1);
+            }
+        }
+        return 0;
     }
 
     private Paint preparePaint(final NoteViewHelper parent) {
