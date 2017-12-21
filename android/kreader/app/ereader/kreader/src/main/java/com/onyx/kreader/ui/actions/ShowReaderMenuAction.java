@@ -612,22 +612,7 @@ public class ShowReaderMenuAction extends BaseAction {
             public void onClick(DialogInterface dialog, int which) {
                 OnyxCustomDialog onyxCustomDialog = (OnyxCustomDialog) dialog;
                 String page = onyxCustomDialog.getInputValue().toString();
-                if (StringUtils.isNullOrEmpty(page)) {
-                    Toast.makeText(readerDataHolder.getContext(),
-                            readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error),
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-
-                int pageNumber = PagePositionUtils.getPageNumber(page);
-                pageNumber--;
-                if (pageNumber >= 0 && pageNumber < readerDataHolder.getSideNotePageCount()) {
-                    new GotoSideNotePageAction(pageNumber).execute(readerDataHolder, null);
-                } else {
-                    Toast.makeText(readerDataHolder.getContext(),
-                            readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error),
-                            Toast.LENGTH_SHORT).show();
-                }
+                onGotoSideNotePage(readerDataHolder, page);
             }
         }).setOnCloseListener(new DialogInterface.OnDismissListener() {
             @Override
@@ -669,6 +654,25 @@ public class ShowReaderMenuAction extends BaseAction {
         params.x = readerDataHolder.getDisplayWidth() / 4;
 
         dlg.show();
+    }
+
+    private static void onGotoSideNotePage(final ReaderDataHolder readerDataHolder, final String page) {
+        if (StringUtils.isNullOrEmpty(page)) {
+            Toast.makeText(readerDataHolder.getContext(),
+                    readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_empty_error),
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int pageNumber = PagePositionUtils.getPageNumber(page);
+        pageNumber--;
+        if (pageNumber >= 0 && pageNumber < readerDataHolder.getSideNotePageCount()) {
+            new GotoSideNotePageAction(pageNumber).execute(readerDataHolder, null);
+        } else {
+            Toast.makeText(readerDataHolder.getContext(),
+                    readerDataHolder.getContext().getString(R.string.dialog_quick_view_enter_page_number_out_of_range_error),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private static void addSideNoteSubPage(final ReaderDataHolder readerDataHolder) {
