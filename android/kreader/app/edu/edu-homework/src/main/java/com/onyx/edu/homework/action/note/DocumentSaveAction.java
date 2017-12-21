@@ -42,7 +42,7 @@ public class DocumentSaveAction extends BaseNoteAction {
         if (showLoading) {
             showLoadingDialog(context, R.string.saving);
         }
-        final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close, resume, render);
+        final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close, resume, render, false);
         noteViewHelper.submit(getAppContext(), saveRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
