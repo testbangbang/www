@@ -97,4 +97,5 @@
 
     <dimen name="light_settings_rating_bar_minHeight">64px</dimen>
     <dimen name="light_settings_rating_bar_maxHeight">64px</dimen>
+    <dimen name="reader_statusbar_note_icon_width">50dp</dimen>
 </resources>

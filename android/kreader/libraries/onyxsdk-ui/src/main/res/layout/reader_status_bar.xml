@@ -57,10 +57,11 @@
 
             <ImageView
                 android:id="@+id/status_scrible"
-                android:layout_width="wrap_content"
+                android:layout_width="@dimen/reader_statusbar_note_icon_width"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="8dp"
                 android:src="@drawable/ic_dialog_reader_edit_black"
+                android:scaleType="centerInside"
                 android:background="@drawable/image_button_bg"/>
         </LinearLayout>
 

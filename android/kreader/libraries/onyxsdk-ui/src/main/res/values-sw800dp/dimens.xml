@@ -56,4 +56,5 @@
     <dimen name="abc_text_size_medium_material" tools:override="true">24sp</dimen>
 
     <dimen name="abc_text_size_body_1_material" tools:override="true">@dimen/abc_text_size_medium_material</dimen>
+    <dimen name="reader_statusbar_note_icon_width">60dp</dimen>
 </resources>
