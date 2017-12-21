@@ -9,6 +9,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,11 +20,12 @@ import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.action.ActionChain;
 import com.onyx.android.eschool.action.AuthTokenAction;
-import com.onyx.android.eschool.action.CloudLibraryListLoadAction;
+import com.onyx.android.eschool.action.CloudGroupContainerListLoadAction;
 import com.onyx.android.eschool.custom.NoSwipePager;
 import com.onyx.android.eschool.device.DeviceConfig;
 import com.onyx.android.eschool.events.BookLibraryEvent;
 import com.onyx.android.eschool.events.DataRefreshEvent;
+import com.onyx.android.eschool.events.GroupSelectEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.fragment.AccountFragment;
 import com.onyx.android.eschool.fragment.BookTextFragment;
@@ -33,9 +36,12 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.v2.CloudGroup;
+import com.onyx.android.sdk.data.model.v2.GroupContainer;
+import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -69,6 +75,9 @@ public class MainActivity extends BaseActivity {
     private AccountFragment studentInfoFragment;
 
     private Map<String, Library> libraryMap = new HashMap<>();
+    private List<GroupContainer> groupContainerList = new ArrayList<>();
+
+    private CloudGroup currentGroup;
 
     public static final int BOOK_TEXT_TAB = 0;
     public static final int HOMEWORK_TAB = 1;
@@ -87,6 +96,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     protected void initView() {
+        initToolBar();
         initTableView();
         initViewPager();
     }
@@ -110,23 +120,47 @@ public class MainActivity extends BaseActivity {
 
     private void loadData() {
         final AuthTokenAction authTokenAction = new AuthTokenAction();
-        final CloudLibraryListLoadAction loadAction = new CloudLibraryListLoadAction(getLibraryParentId());
-        ActionChain actionChain = new ActionChain();
+        final CloudGroupContainerListLoadAction groupLoadAction = new CloudGroupContainerListLoadAction();
+        final ActionChain actionChain = new ActionChain();
         actionChain.addAction(authTokenAction);
-        actionChain.addAction(loadAction);
+        actionChain.addAction(groupLoadAction);
         actionChain.execute(SchoolApp.getLibraryDataHolder(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                if (e != null) {
+                dismissProgressDialog(actionChain);
+                if (e != null || CollectionUtils.isNullOrEmpty(groupLoadAction.getContainerList())) {
+                    ToastUtils.showToast(getApplicationContext(), R.string.online_group_load_error);
                     return;
                 }
-                final List<Library> list = loadAction.getLibraryList();
-                notifyDataChanged(list);
+                loadGroupLibraryList(groupContainerList = groupLoadAction.getContainerList());
+                invalidateOptionsMenu();
             }
         });
+        showProgressDialog(actionChain, R.string.refreshing, null);
+    }
+
+    private void loadGroupLibraryList(List<GroupContainer> groupContainerList) {
+        int index = StudentPreferenceManager.getCloudGroupSelected(getApplicationContext());
+        if (index >= CollectionUtils.getSize(groupContainerList)) {
+            index = 0;
+        }
+        processGroupSelect(index);
+    }
+
+    private void processGroupSelect(int index) {
+        List<Library> libraryList = new ArrayList<>();
+        if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            currentGroup = groupContainerList.get(index).group;
+            libraryList = groupContainerList.get(index).libraryList;
+        }
+        notifyDataChanged(libraryList);
     }
 
     private void notifyDataChanged(List<Library> list) {
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            ToastUtils.showToast(getApplicationContext(), R.string.online_library_load_empty);
+            return;
+        }
         for (Library library : list) {
             if (!Library.isValid(library)) {
                 Log.e(getClass().getSimpleName(), "detected the invalid library");
@@ -209,6 +243,10 @@ public class MainActivity extends BaseActivity {
         }
     }
 
+    private void initToolBar() {
+        initSupportActionBarWithCustomBackFunction();
+    }
+
     private void initTableView() {
         titleList.add("课本");
         titleList.add("作业");
@@ -257,6 +295,32 @@ public class MainActivity extends BaseActivity {
     public void onStop() {
         super.onStop();
         EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            return super.onCreateOptionsMenu(menu);
+        }
+        for (int i = 0; i < groupContainerList.size(); i++) {
+            menu.add(0, i, Menu.NONE, groupContainerList.get(i).group.name);
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (CollectionUtils.isNullOrEmpty(groupContainerList)) {
+            return super.onOptionsItemSelected(item);
+        }
+        switchCloudGroup(item.getItemId());
+        return true;
+    }
+
+    private void switchCloudGroup(int selectGroupIndex) {
+        processGroupSelect(selectGroupIndex);
+        StudentPreferenceManager.setCloudGroupSelected(getApplicationContext(), selectGroupIndex);
+        EventBus.getDefault().post(new GroupSelectEvent(currentGroup, selectGroupIndex));
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

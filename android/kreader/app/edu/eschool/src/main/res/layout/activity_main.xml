@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <android.support.v7.widget.Toolbar
+        style="@style/ToolBarStyle.Transparent.TextLarge"
+        android:layout_width="match_parent"
+        android:layout_height="1dp">
+
+    </android.support.v7.widget.Toolbar>
+
     <android.support.design.widget.TabLayout
         android:id="@+id/contentTab"
         style="@style/tabLayoutStyle"
