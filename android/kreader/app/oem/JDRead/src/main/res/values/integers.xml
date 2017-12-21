@@ -2,4 +2,8 @@
 <resources>
     <integer name="library_view_type_thumbnail_row">2</integer>
     <integer name="library_view_type_thumbnail_col">3</integer>
+    <integer name="setting_adapter_row">3</integer>
+    <integer name="setting_adapter_col">2</integer>
+    <integer name="wifi_setting_adapter_row">5</integer>
+    <integer name="wifi_setting_adapter_col">1</integer>
 </resources>

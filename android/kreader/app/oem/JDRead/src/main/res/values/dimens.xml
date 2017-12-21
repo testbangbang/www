@@ -9,4 +9,15 @@
     <dimen name="level_two_heading_font">18sp</dimen>
     <dimen name="level_three_heading_font">16sp</dimen>
     <dimen name="line_width">1dp</dimen>
+    <dimen name="wifi_view_item_padding_top">8dp</dimen>
+    <dimen name="wifi_view_item_margin_left">10dp</dimen>
+    <dimen name="wifi_view_item_margin_top">5dp</dimen>
+    <dimen name="wifi_view_item_margin_right">10dp</dimen>
+    <dimen name="setting_device_detail_height">189dp</dimen>
+    <dimen name="setting_device_detail_margin_left">100dp</dimen>
+    <dimen name="setting_device_detail_describe_margin_left">35dp</dimen>
+    <dimen name="setting_device_detail_describe_margin_top">22dp</dimen>
+    <dimen name="setting_device_detail_setting_height">330dp</dimen>
+    <dimen name="setting_title_bar_padding">10dp</dimen>
+    <dimen name="setting_title_bar_switch_margin_right">20dp</dimen>
 </resources>

@@ -8,4 +8,10 @@
     <string name="back_name">Back</string>
     <string name="setting_name">Setting</string>
     <string name="personal_name">Personal</string>
+    <string name="wireless_network">wireless network</string>
+    <string name="intensity_control">intensity control</string>
+    <string name="page_refresh">Page Refresh</string>
+    <string name="interest_rates_screen_time">Interest rates screen time</string>
+    <string name="laboratory">laboratory</string>
+    <string name="help_and_feedback">Help and feedback</string>
 </resources>

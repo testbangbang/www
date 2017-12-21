@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data class="ItemSettingBinding">
+
+        <import type="android.view.View"/>
+
+        <import type="com.onyx.android.sdk.utils.StringUtils"/>
+
+        <variable
+            name="data"
+            type="com.onyx.jdread.setting.model.SettingItemData"/>
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/line_setting"
+            android:layout_width="@dimen/line_width"
+            android:layout_alignParentRight="true"
+            android:layout_height="match_parent"
+            android:background="@color/divider_color"/>
+
+        <LinearLayout
+            android:layout_toLeftOf="@id/line_setting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerCrop"
+                bind:cover="@{data.settingImage}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/level_one_heading_font"
+                android:text="@{data.settingName}"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/level_three_heading_font"
+                android:text="@{data.settingDescribable}"
+                android:visibility="@{StringUtils.isNullOrEmpty(data.settingDescribable) ? View.GONE : View.VISIBLE}"/>
+        </LinearLayout>
+    </RelativeLayout>
+</layout>

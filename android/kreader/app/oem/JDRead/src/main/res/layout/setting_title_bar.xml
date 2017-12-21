@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="titleModel"
+            type="com.onyx.jdread.setting.model.SettingTitleModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/setting_title_bar_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:drawableLeft="@mipmap/ic_setting_more"
+            android:onClick="@{()->titleModel.backSetting()}"
+            android:text="@{titleModel.title}"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <Switch
+            android:id="@+id/setting_title_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/setting_title_bar_switch_margin_right"
+            android:layout_toLeftOf="@+id/setting_title_add"
+            android:visibility="@{titleModel.toggle ? View.VISIBLE : View.GONE}" />
+
+        <ImageView
+            android:id="@+id/setting_title_add"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/ic_setting_more"
+            android:visibility="@{titleModel.toggle ? View.VISIBLE : View.GONE}" />
+    </RelativeLayout>
+</layout>

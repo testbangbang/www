@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="setting_content">
+        <item>@string/wireless_network</item>
+        <item>@string/intensity_control</item>
+        <item>@string/page_refresh</item>
+        <item>@string/interest_rates_screen_time</item>
+        <item>@string/laboratory</item>
+        <item>@string/help_and_feedback</item>
+    </string-array>
+
+    <string-array name="setting_drawables">
+        <item name="setting_wifi">@mipmap/ic_setting_wifi</item>
+        <item name="setting_light">@mipmap/ic_setting_light</item>
+        <item name="setting_refresh">@mipmap/ic_setting_refresh</item>
+        <item name="setting_rest">@mipmap/ic_setting_rest</item>
+        <item name="setting_lab">@mipmap/ic_setting_lab</item>
+        <item name="setting_help">@mipmap/ic_setting_help</item>
+    </string-array>
+</resources>

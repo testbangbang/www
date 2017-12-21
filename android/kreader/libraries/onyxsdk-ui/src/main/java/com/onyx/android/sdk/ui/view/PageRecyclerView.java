@@ -394,12 +394,21 @@ public class PageRecyclerView extends RecyclerView {
     public static abstract class PageAdapter<VH extends RecyclerView.ViewHolder> extends RecyclerView.Adapter<VH>{
 
         protected PageRecyclerView pageRecyclerView;
+        protected OnItemClickListener onItemClickListener;
 
         public abstract int getRowCount();
         public abstract int getColumnCount();
         public abstract int getDataCount();
         public abstract VH onPageCreateViewHolder(ViewGroup parent, int viewType);
         public abstract void onPageBindViewHolder(VH holder, int position);
+
+        public interface OnItemClickListener {
+            void onItemClick(int position);
+        }
+
+        public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+            this.onItemClickListener = onItemClickListener;
+        }
 
         @Override
         public VH onCreateViewHolder(ViewGroup parent, int viewType) {

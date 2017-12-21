@@ -7,4 +7,10 @@
     <string name="back_name">返回</string>
     <string name="setting_name">设置</string>
     <string name="personal_name">我的</string>
+    <string name="wireless_network">无线网络</string>
+    <string name="intensity_control">亮度调节</string>
+    <string name="page_refresh">翻页刷新</string>
+    <string name="interest_rates_screen_time">熄屏时间</string>
+    <string name="laboratory">实验室</string>
+    <string name="help_and_feedback">帮助与反馈</string>
 </resources>
