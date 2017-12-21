@@ -29,6 +29,7 @@ public class WaveformUpdateRequest extends BaseCloudRequest {
 
     private WaveformResult result;
     private boolean success;
+    private boolean updated = false;
 
     public WaveformUpdateRequest(@Nullable String serverApi, @NonNull PanelInfo panelInfo, @NonNull String downloadPath,
                                  @NonNull String md5Path) {
@@ -46,6 +47,10 @@ public class WaveformUpdateRequest extends BaseCloudRequest {
         return success;
     }
 
+    public boolean isUpdated() {
+        return updated;
+    }
+
     @Override
     public void execute(CloudManager parent) throws Exception {
         if (StringUtils.isNullOrEmpty(serverApi)) {
@@ -57,6 +62,7 @@ public class WaveformUpdateRequest extends BaseCloudRequest {
         }
         if (result.md5.equalsIgnoreCase(getActualMD5(md5Path))) {
             success = true;
+            updated = true;
             return;
         }
         String tmpPath = getTempFilePath(downloadPath);

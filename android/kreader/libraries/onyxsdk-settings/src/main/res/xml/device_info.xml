@@ -5,6 +5,10 @@
         android:title="@string/vcom" />
 
     <android.support.v7.preference.Preference
+        android:key="@string/waveform_key"
+        android:title="@string/waveform_version" />
+
+    <android.support.v7.preference.Preference
         android:key="@string/barcode_key"
         android:title="@string/barcode" />
 

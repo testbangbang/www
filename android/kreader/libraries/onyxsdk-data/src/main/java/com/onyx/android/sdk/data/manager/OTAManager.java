@@ -41,6 +41,9 @@ public class OTAManager {
     public static final String CLOUD_PATH_SDCARD = getCloudSdcardPath();
     public static final String LOCAL_PATH_EXTSD = getLocalExtsdPath();
 
+    public static final String WAVEFORM_PATH = "/vendor/waveform/waveform.wbf";
+    public static final String WAVEFORM_MD5_PATH = "/vendor/waveform/waveform.wbf.md5";
+
     /**
      * Temp empty implement here.
     */
