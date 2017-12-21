@@ -39,7 +39,7 @@ public class RxMetadataLoadAction extends BaseAction<DataBundle> {
     @Override
     public void execute(final DataBundle dataHolder, final RxCallback baseCallback) {
         final LibraryViewDataModel dataModel = dataHolder.getLibraryViewDataModel();
-        final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getListSelected(), dataModel.selectAllFlag.get(), dataHolder.getEventBus(), loadMetadata);
+        final RxLibraryLoadRequest libraryRequest = new RxLibraryLoadRequest(dataHolder.getDataManager(), queryArgs, dataModel.getListSelected(), dataModel.isSelectAll(), dataHolder.getEventBus(), loadMetadata);
         libraryRequest.setLoadFromCache(loadFromCache);
         RxLibraryLoadRequest.setAppContext(dataHolder.getAppContext());
         libraryRequest.execute(new RxCallback<RxLibraryLoadRequest>() {

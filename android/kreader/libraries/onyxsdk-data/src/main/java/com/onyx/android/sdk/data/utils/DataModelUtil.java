@@ -36,6 +36,7 @@ public class DataModelUtil {
             Library library = iterator.next();
             long metadataCount = dataProvider.libraryMetadataCount(library);
             if (metadataCount == 0 && !loadEmpty) {
+                dataProvider.deleteLibrary(library);
                 iterator.remove();
                 continue;
             }
@@ -48,7 +49,7 @@ public class DataModelUtil {
             model.desc.set(library.getDescription());
             model.checked.set(false);
             model.coverDefault.set(defaultCoverRes);
-            model.childCount.set(metadataCount);
+            model.childCount.set(String.valueOf(metadataCount));
             dataModels.add(model);
         }
     }

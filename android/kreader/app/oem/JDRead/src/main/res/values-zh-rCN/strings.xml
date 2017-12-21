@@ -12,4 +12,11 @@
     <string name="yes">是</string>
     <string name="no">否</string>
     <string name="delete_book_prompt">是否从本机中删除所选图书？</string>
+    <string name="build_library">新建分组</string>
+    <string name="build_library_hint">最多输入20个字符</string>
+    <string name="library_move_to_fail">书库移动失败</string>
+    <string name="adding">添加中...</string>
+    <string name="group_exist">分组已存在</string>
+    <string name="please_enter_group_name">请输入分组名</string>
+    <string name="please_select_book">请选择图书</string>
 </resources>

@@ -50,7 +50,7 @@
                 android:layout_alignParentRight="true"
                 android:onClick="@{()->libraryModel.onMenuClick()}"
                 android:src="@mipmap/ic_menu"
-                android:visibility="@{libraryModel.showManage?View.VISIBLE:View.INVISIBLE}" />
+                android:visibility="@{libraryModel.showTopMenu?View.VISIBLE:View.INVISIBLE}" />
 
             <ImageView
                 android:id="@+id/image_manage"
@@ -61,7 +61,7 @@
                 android:layout_toLeftOf="@id/image_menu"
                 android:onClick="@{()->libraryModel.onManageClick()}"
                 android:src="@mipmap/ic_manage"
-                android:visibility="@{libraryModel.showManage?View.VISIBLE:View.INVISIBLE}" />
+                android:visibility="@{libraryModel.showTopMenu?View.VISIBLE:View.INVISIBLE}" />
 
             <ImageView
                 android:id="@+id/image_search"
@@ -72,7 +72,7 @@
                 android:layout_toLeftOf="@id/image_manage"
                 android:onClick="@{()->libraryModel.onSearchClick()}"
                 android:src="@mipmap/ic_search"
-                android:visibility="@{libraryModel.showManage?View.VISIBLE:View.INVISIBLE}" />
+                android:visibility="@{libraryModel.showTopMenu?View.VISIBLE:View.INVISIBLE}" />
         </RelativeLayout>
 
         <com.onyx.android.sdk.ui.view.SinglePageRecyclerView
@@ -90,14 +90,14 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/normal_black"
-            android:visibility="@{libraryModel.showManage?View.GONE:View.VISIBLE}" />
+            android:visibility="@{libraryModel.showBottomMenu?View.VISIBLE:View.GONE}" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/function_bar_height"
             android:gravity="center"
             android:orientation="horizontal"
-            android:visibility="@{libraryModel.showManage?View.GONE:View.VISIBLE}">
+            android:visibility="@{libraryModel.showBottomMenu?View.VISIBLE:View.GONE}">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -127,6 +127,7 @@
                 android:layout_marginTop="@dimen/function_bar_item_image_margin"
                 android:drawablePadding="@dimen/function_bar_item_name_margin"
                 android:drawableTop="@mipmap/ic_undo"
+                android:onClick="@{()->libraryModel.moveTo()}"
                 android:text="@string/move_to"
                 android:textSize="@dimen/level_one_heading_font" />
         </LinearLayout>

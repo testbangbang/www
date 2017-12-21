@@ -1,4 +1,4 @@
-package com.onyx.jdread.library;
+package com.onyx.jdread.library.view;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -11,7 +11,7 @@ import android.view.WindowManager;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.databinding.DialogCustomLayoutBinding;
+import com.onyx.jdread.databinding.DialogLibraryBuildLayoutBinding;
 
 import java.util.Observable;
 
@@ -20,12 +20,12 @@ import java.util.Observable;
  * Created by 12 on 2016/12/14.
  */
 
-public class LibraryDeleteDialog extends Dialog {
-    private LibraryDeleteDialog(Context context) {
+public class LibraryBuildDialog extends Dialog {
+    private LibraryBuildDialog(Context context) {
         super(context);
     }
 
-    private LibraryDeleteDialog(Context context, int themeResId) {
+    private LibraryBuildDialog(Context context, int themeResId) {
         super(context, themeResId);
     }
 
@@ -38,9 +38,9 @@ public class LibraryDeleteDialog extends Dialog {
             this.model = model;
         }
 
-        public LibraryDeleteDialog create() {
-            final LibraryDeleteDialog dialog = new LibraryDeleteDialog(context, R.style.CustomDialogStyle);
-            DialogCustomLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_custom_layout, null));
+        public LibraryBuildDialog create() {
+            final LibraryBuildDialog dialog = new LibraryBuildDialog(context, R.style.CustomDialogStyle);
+            DialogLibraryBuildLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.dialog_library_build_layout, null));
             bind.setDialogModel(model);
             dialog.setContentView(bind.getRoot());
             return dialog;
@@ -48,10 +48,10 @@ public class LibraryDeleteDialog extends Dialog {
     }
 
     public static class DialogModel extends Observable {
-        public final ObservableField<String> title = new ObservableField<>();
-        public final ObservableField<String> message = new ObservableField<>();
-        public final ObservableField<String> positiveText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.yes));
-        public final ObservableField<String> negativeText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.no));
+        public final ObservableField<String> title = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.build_library));
+        public final ObservableField<String> libraryName = new ObservableField<>();
+        public final ObservableField<String> positiveText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.ok));
+        public final ObservableField<String> negativeText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.cancel));
 
         public interface OnClickListener {
             void onClicked();
@@ -83,7 +83,7 @@ public class LibraryDeleteDialog extends Dialog {
         window.setGravity(Gravity.CENTER);
         WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.width = getContext().getResources().getInteger(R.integer.library_delete_dialog_width);
-        attributes.height = getContext().getResources().getInteger(R.integer.library_delete_dialog_height);
+        attributes.height = getContext().getResources().getInteger(R.integer.library_build_dialog_height);
         window.setAttributes(attributes);
         super.show();
     }

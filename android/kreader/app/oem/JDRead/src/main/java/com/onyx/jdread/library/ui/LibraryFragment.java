@@ -26,7 +26,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
 import com.onyx.jdread.event.ModifyLibraryDataEvent;
-import com.onyx.jdread.library.LibraryDeleteDialog;
+import com.onyx.jdread.library.action.LibraryMoveToAction;
 import com.onyx.jdread.library.action.MetadataDeleteAction;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
@@ -34,9 +34,11 @@ import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
+import com.onyx.jdread.library.event.MoveToLibraryEvent;
 import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -252,30 +254,34 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private boolean processBackRequest() {
-        if (isMultiSelectionMode()) {
-            quitMultiSelectionMode();
-            updateContentView();
-            return true;
-        }
-        if (CollectionUtils.isNullOrEmpty(dataBundle.getLibraryViewDataModel().libraryPathList)) {
+        if (!CollectionUtils.isNullOrEmpty(dataBundle.getLibraryViewDataModel().libraryPathList)) {
+            removeLastParentLibrary();
+            loadData(libraryBuildQueryArgs(), false);
             return false;
         }
-        removeLastParentLibrary();
-        loadData();
-        return false;
+        if (isMultiSelectionMode()) {
+            quitMultiSelectionMode();
+            loadData(libraryBuildQueryArgs(), false);
+            return false;
+        }
+        return true;
     }
 
     private void removeLastParentLibrary() {
         dataBundle.getLibraryViewDataModel().libraryPathList.remove(dataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
         int size = dataBundle.getLibraryViewDataModel().libraryPathList.size();
-        dataBundle.getLibraryViewDataModel().title.set(size > 0 ? dataBundle.getLibraryViewDataModel().libraryPathList.get(size - 1).title.get() : "");
+        if (size > 0) {
+            dataBundle.getLibraryViewDataModel().title.set(dataBundle.getLibraryViewDataModel().libraryPathList.get(size - 1).title.get());
+        } else {
+            dataBundle.getLibraryViewDataModel().title.set(isMultiSelectionMode() ? getString(R.string.manage_book) : "");
+        }
         loadData();
     }
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
         dataBundle.getLibraryViewDataModel().quitManageMode();
-        viewEventCallBack.hideOrShowFunctionBar(true);
+        showMangeMenu();
     }
 
     @Subscribe
@@ -288,8 +294,7 @@ public class LibraryFragment extends BaseFragment {
         dataBundle.getLibraryViewDataModel().title.set(getString(R.string.manage_book));
         modelAdapter.setMultiSelectionMode(SelectionMode.MULTISELECT_MODE);
         getIntoMultiSelectMode();
-        dataBundle.getLibraryViewDataModel().setShowManage(false);
-        viewEventCallBack.hideOrShowFunctionBar(false);
+        showMangeMenu();
     }
 
     @Subscribe
@@ -316,7 +321,7 @@ public class LibraryFragment extends BaseFragment {
     public void onModifyLibraryDataEvent(ModifyLibraryDataEvent event) {
         dataBundle.getLibraryViewDataModel().libraryPathList.clear();
         pagination.setCurrentPage(0);
-        loadData();
+        loadData(libraryBuildQueryArgs(), false);
     }
 
     @Subscribe
@@ -341,14 +346,27 @@ public class LibraryFragment extends BaseFragment {
         });
     }
 
+    @Subscribe
+    public void onMoveToLibraryEvent(MoveToLibraryEvent event) {
+        LibraryMoveToAction moveToAction = new LibraryMoveToAction(getActivity());
+        moveToAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                quitMultiSelectionMode();
+                int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
+                loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
+            }
+        });
+    }
+
     private void deleteBook() {
         MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction();
         metadataDeleteAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
-                loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount));
                 quitMultiSelectionMode();
+                int deletePageCount = dataBundle.getLibraryViewDataModel().getDeletePageCount();
+                loadData(dataBundle.getLibraryViewDataModel().gotoPage(pagination.getCurrentPage() - deletePageCount), false);
             }
         });
     }
@@ -364,12 +382,19 @@ public class LibraryFragment extends BaseFragment {
     private void processLibraryItem(DataModel model) {
         addLibraryToParentRefList(model);
         loadData(libraryBuildQueryArgs(), false);
+        dataBundle.getLibraryViewDataModel().getSelectHelper().putLibrarySelectedModelMap(model.idString.get());
     }
 
     private void addLibraryToParentRefList(DataModel model) {
         dataBundle.getLibraryViewDataModel().libraryPathList.add(model);
         dataBundle.getLibraryViewDataModel().title.set(model.title.get());
-        dataBundle.getLibraryViewDataModel().setShowManage(true);
+        showMangeMenu();
+    }
+
+    private void showMangeMenu() {
+        dataBundle.getLibraryViewDataModel().setShowTopMenu(!isMultiSelectionMode());
+        dataBundle.getLibraryViewDataModel().setShowBottomMenu(isMultiSelectionMode());
+        viewEventCallBack.hideOrShowFunctionBar(!isMultiSelectionMode());
     }
 
     private void processBookItemOpen(DataModel dataModel) {
@@ -388,6 +413,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void processMultiModeItemClick(DataModel dataModel) {
         if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
+            processLibraryItem(dataModel);
             return;
         }
         dataModel.checked.set(!dataModel.checked.get());

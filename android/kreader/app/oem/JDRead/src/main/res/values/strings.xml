@@ -14,4 +14,11 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="delete_book_prompt">Whether to delete the selected book from this machine?</string>
+    <string name="build_library">build group</string>
+    <string name="build_library_hint">Enter up to 20 characters</string>
+    <string name="library_move_to_fail">move to fail</string>
+    <string name="adding">adding...</string>
+    <string name="group_exist">group exist</string>
+    <string name="please_enter_group_name">please enter group name</string>
+    <string name="please_select_book">please select book</string>
 </resources>

@@ -19,4 +19,6 @@
     <dimen name="library_manage_layout_margin">10dp</dimen>
     <dimen name="library_delete_dialog_title_padding">20dp</dimen>
     <dimen name="library_delete_dialog_button_padding">10dp</dimen>
+    <dimen name="dialog_move_to_library_list_scroll_bar_width">5dp</dimen>
+    <dimen name="select_count_circle_width">40dp</dimen>
 </resources>

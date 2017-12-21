@@ -12,6 +12,8 @@ import com.onyx.android.sdk.data.QueryPagination;
 import com.onyx.android.sdk.data.SortBy;
 import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.model.ModelType;
+import com.onyx.android.sdk.data.request.cloud.DeviceAddRequest;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -21,12 +23,13 @@ import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
+import com.onyx.jdread.library.event.MoveToLibraryEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Observable;
 
 /**
@@ -40,21 +43,22 @@ public class LibraryViewDataModel extends Observable {
     public final ObservableField<String> selectAllBtnText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.select_all));
     public final ObservableInt count = new ObservableInt();
     public final ObservableInt libraryCount = new ObservableInt(0);
-    public final ObservableBoolean showManage = new ObservableBoolean(true);
-    public final ObservableBoolean selectAllFlag = new ObservableBoolean(false);
+    public final ObservableBoolean showTopMenu = new ObservableBoolean(true);
+    public final ObservableBoolean showBottomMenu = new ObservableBoolean(false);
     public final ObservableList<DataModel> libraryPathList = new ObservableArrayList<>();
     private int queryLimit = 9;
     private int deletePageCount = 0;
     private QueryPagination queryPagination = QueryPagination.create(3, 3);
     private QueryArgs queryArgs;
-    private List<DataModel> listSelected = new ArrayList<>();
     private EventBus eventBus;
+    private LibrarySelectHelper selectHelper;
 
     public LibraryViewDataModel(EventBus eventBus) {
         this.eventBus = eventBus;
         this.queryArgs = new QueryArgs();
         queryArgs.limit = queryLimit;
         queryPagination.setCurrentPage(0);
+        selectHelper = new LibrarySelectHelper();
     }
 
     public static LibraryViewDataModel create(EventBus eventBus, int rows, int cols) {
@@ -189,19 +193,25 @@ public class LibraryViewDataModel extends Observable {
             for (int i = libraryCount.get(); i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
                 DataModel dataModel = items.get(i);
                 dataModel.id.set(currentPage * itemsPerPage + visibleItems.size());
+                if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
+                    dataModel.selectedCount.set(getSelectCount(dataModel));
+                }
                 visibleItems.add(dataModel);
             }
         } else {
             for (int i = currentPage * itemsPerPage; i < Math.min((currentPage + 1) * itemsPerPage, items.size()); i++) {
                 DataModel dataModel = items.get(i);
                 dataModel.id.set(currentPage * itemsPerPage + visibleItems.size());
+                if (dataModel.type.get() == ModelType.TYPE_LIBRARY) {
+                    dataModel.selectedCount.set(getSelectCount(dataModel));
+                }
                 visibleItems.add(dataModel);
             }
         }
     }
 
     public List<DataModel> getListSelected() {
-        return listSelected;
+        return getLibrarySelectedModel().getSelectedList();
     }
 
     public void clearItemSelectedList() {
@@ -271,15 +281,20 @@ public class LibraryViewDataModel extends Observable {
         eventBus.post(new LibraryBackEvent());
     }
 
-    public void setShowManage(boolean isShowManage) {
-        showManage.set(isShowManage);
+    public void setShowTopMenu(boolean isShowManage) {
+        showTopMenu.set(isShowManage);
+    }
+
+    public void setShowBottomMenu(boolean isShowBottom) {
+        showBottomMenu.set(isShowBottom);
     }
 
     public void selectAll() {
         if (isSelectAll()) {
-            this.selectAllFlag.set(false);
+            getLibrarySelectedModel().setSelectedAll(false);
             checkedOrCancelAll(false);
         } else {
+            getLibrarySelectedModel().setSelectedAll(true);
             checkedOrCancelAll(true);
         }
         getListSelected().clear();
@@ -293,7 +308,7 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void clickItem(DataModel dataModel) {
-        if (selectAllFlag.get()) {
+        if (getLibrarySelectedModel().isSelectedAll()) {
             if (dataModel.checked.get()) {
                 removeFromSelected(dataModel);
             } else {
@@ -314,14 +329,17 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public boolean isSelectAll() {
-        return (selectAllFlag.get() && getListSelected().size() == 0) || (!selectAllFlag.get() && getListSelected().size() == count.get());
+        return (getLibrarySelectedModel().isSelectedAll() && getListSelected().size() == 0) || (!getLibrarySelectedModel().isSelectedAll() && getListSelected().size() == count.get());
+    }
+
+    public LibrarySelectedModel getLibrarySelectedModel() {
+        return selectHelper.getLibrarySelectedModel(getLibraryIdString());
     }
 
     public void quitManageMode() {
-        selectAllFlag.set(false);
+        getSelectHelper().getChildLibrarySelectedMap().clear();
+        getLibrarySelectedModel().setSelectedAll(false);
         clearItemSelectedList();
-        setShowManage(true);
-        title.set(libraryPathList.size() > 0 ? libraryPathList.get(libraryPathList.size() - 1).title.get() : "");
         checkedOrCancelAll(false);
     }
 
@@ -331,5 +349,26 @@ public class LibraryViewDataModel extends Observable {
 
     public int getDeletePageCount() {
         return deletePageCount;
+    }
+
+    public void moveTo() {
+        eventBus.post(new MoveToLibraryEvent());
+    }
+
+    public LibrarySelectHelper getSelectHelper() {
+        return selectHelper;
+    }
+
+    public String getSelectCount(DataModel model) {
+        Map<String, LibrarySelectedModel> selectedMap = getSelectHelper().getChildLibrarySelectedMap();
+        if (selectedMap.containsKey(model.idString.get())) {
+            LibrarySelectedModel librarySelectedModel = selectedMap.get(model.idString.get());
+            if (librarySelectedModel.isSelectedAll()) {
+                return String.valueOf(Integer.valueOf(model.childCount.get()) - librarySelectedModel.getSelectedList().size());
+            } else {
+                return String.valueOf(librarySelectedModel.getSelectedList().size());
+            }
+        }
+        return "0";
     }
 }
