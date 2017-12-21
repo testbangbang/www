@@ -230,11 +230,9 @@ public class BaseNoteRequest extends BaseRequest {
             return;
         }
 
-        TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
-        tp.setColor(Color.BLACK);
-        tp.setTextSize(40);
-        StaticLayout sl=new StaticLayout(Html.fromHtml(text, new Base64ImageParser(parent.getContext()), null),tp,getViewportSize().width(),
-                Layout.Alignment.ALIGN_CENTER, 1f,0f,false);
+        StaticLayout sl = parent.getTextLayout(text);
+        int minPageCount = (int) Math.ceil((float)sl.getHeight() / getViewportSize().height());
+        parent.getNoteDocument().setMinPageCount(minPageCount);
         int pageTop = getViewportSize().height() * pagePosition;
         if (pageTop > sl.getHeight()) {
             return;
@@ -251,8 +249,8 @@ public class BaseNoteRequest extends BaseRequest {
         }
         int lineCount = sl.getLineCount();
         for (int i = 0; i < lineCount; i++) {
-            if (sl.getLineTop(i) > pageTop && i > 0) {
-                return sl.getLineTop(i - 1);
+            if (sl.getLineBottom(i) > pageTop && i > 0) {
+                return sl.getLineTop(i);
             }
         }
         return 0;

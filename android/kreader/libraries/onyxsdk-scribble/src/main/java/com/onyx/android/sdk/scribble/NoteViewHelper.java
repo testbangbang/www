@@ -2,8 +2,13 @@ package com.onyx.android.sdk.scribble;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.Html;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -34,6 +39,8 @@ import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
+import com.onyx.android.sdk.utils.Base64ImageParser;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -198,12 +205,12 @@ public class NoteViewHelper {
         onDocumentOpened();
     }
 
-    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        createDocument(context, documentUniqueId, parentUniqueId, null);
-    }
-
-    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId, final String groupId) {
-        getNoteDocument().create(context, documentUniqueId, parentUniqueId, groupId);
+    public void createDocument(final Context context,
+                               final String documentUniqueId,
+                               final String parentUniqueId,
+                               final String groupId,
+                               final int minPageCount) {
+        getNoteDocument().create(context, documentUniqueId, parentUniqueId, groupId, minPageCount);
         onDocumentOpened();
     }
 
@@ -275,6 +282,14 @@ public class NoteViewHelper {
             };
         }
         return globalLayoutListener;
+    }
+
+    public StaticLayout getTextLayout(String text) {
+        TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+        tp.setColor(Color.BLACK);
+        tp.setTextSize(40);
+        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getContext()), null),tp,getViewportSize().width(),
+                Layout.Alignment.ALIGN_CENTER, 1f,0f,false);
     }
 
     private void setCallback(final InputCallback c) {

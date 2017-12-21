@@ -26,6 +26,7 @@ public class NoteDocument {
     private ListOrderedMap<String, NotePage> pageDataMap = new ListOrderedMap<String, NotePage>();
     private int currentPageIndex = 0;
     private boolean isOpen = false;
+    private int minPageCount = 1;
     private NoteDrawingArgs noteDrawingArgs = new NoteDrawingArgs();
 
     public void open(final Context context,
@@ -57,7 +58,16 @@ public class NoteDocument {
                        final String uniqueId,
                        final String parentLibraryUniqueId,
                        final String groupId) {
+        create(context, uniqueId, parentLibraryUniqueId, groupId, 1);
+    }
+
+    public void create(final Context context,
+                       final String uniqueId,
+                       final String parentLibraryUniqueId,
+                       final String groupId,
+                       final int minPageCount) {
         close(context);
+        setMinPageCount(minPageCount);
         setGroupId(groupId);
         setDocumentUniqueId(uniqueId);
         setParentUniqueId(parentLibraryUniqueId);
@@ -71,8 +81,17 @@ public class NoteDocument {
         documentUniqueId = null;
         parentUniqueId = null;
         currentPageIndex = 0;
+        minPageCount = 1;
         resetNoteDrawingArgs();
         markDocumentOpen(false);
+    }
+
+    public void setMinPageCount(int minPageCount) {
+        this.minPageCount = minPageCount;
+    }
+
+    public int getMinPageCount() {
+        return minPageCount;
     }
 
     public boolean isOpen() {
@@ -253,7 +272,10 @@ public class NoteDocument {
         if (pageDataMap.size() > 0) {
             return;
         }
-        createBlankPage(context, 0);
+        for (int i = 0; i < minPageCount; i++) {
+            createBlankPage(context, i);
+        }
+        currentPageIndex = 0;
     }
 
     private NotePage createPage(final int index, final String pageUniqueId) {
