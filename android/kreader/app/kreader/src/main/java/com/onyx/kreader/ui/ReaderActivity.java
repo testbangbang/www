@@ -110,6 +110,7 @@ import com.onyx.kreader.ui.view.PinchZoomingPopupMenu;
 
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -117,6 +118,7 @@ import java.util.List;
  */
 public class ReaderActivity extends OnyxBaseActivity {
     private static final String DOCUMENT_PATH_TAG = "document";
+    private static final String[] NOTE_FILE_FILTER_ARR = {"pdf"};
 
     private WakeLockHolder startupWakeLock = new WakeLockHolder();
     private SurfaceView surfaceView;
@@ -333,11 +335,13 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void reconfigStatusBar() {
+        boolean isShowNoteIcon = !Arrays.asList(NOTE_FILE_FILTER_ARR).contains(
+                FileUtils.getFileExtension(FileUtils.getRealFilePathFromUri(ReaderActivity.this, getIntent().getData())));
         statusBar.reConfigure(SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_percentage_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_format_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_graphic_show_key, false),
-                DeviceConfig.sharedInstance(this).isSupportBrushPen());
+                DeviceConfig.sharedInstance(this).isSupportBrushPen() && isShowNoteIcon);
 
         if (!SingletonSharedPreference.isReaderStatusBarEnabled(this)) {
             statusBar.setVisibility(View.GONE);
@@ -348,7 +352,7 @@ public class ReaderActivity extends OnyxBaseActivity {
                 SingletonSharedPreference.isStatusBarTimeShow(this),
                 SingletonSharedPreference.isStatusBarTime24HourFormat(this),
                 SingletonSharedPreference.isStatusBarShowBatteryGraphical(this),
-                DeviceConfig.sharedInstance(this).isSupportBrushPen());
+                DeviceConfig.sharedInstance(this).isSupportBrushPen() && isShowNoteIcon);
     }
 
     private void initSurfaceView() {
