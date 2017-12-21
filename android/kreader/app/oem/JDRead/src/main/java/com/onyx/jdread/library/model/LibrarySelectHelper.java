@@ -11,7 +11,6 @@ public class LibrarySelectHelper {
     private Map<String, LibrarySelectedModel> childLibrarySelectedMap = new HashMap<>();
     private LibrarySelectedModel librarySelectedModel = new LibrarySelectedModel();
 
-
     public Map<String, LibrarySelectedModel> getChildLibrarySelectedMap() {
         return childLibrarySelectedMap;
     }
