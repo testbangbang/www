@@ -42,6 +42,7 @@
     <string name="look_review">查看批改</string>
     <string name="opening_wifi">wifi没有连接，正在打开wifi...</string>
     <string name="loading_questions">正在加载题目列表....</string>
+    <string name="ask_for_eraser_page">你确定要擦除该页面吗？</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>
