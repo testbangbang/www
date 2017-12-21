@@ -230,7 +230,7 @@ public class BaseNoteRequest extends BaseRequest {
             return;
         }
 
-        StaticLayout sl = parent.getTextLayout(text);
+        StaticLayout sl = parent.getTextLayout(text, getViewportSize().width());
         int minPageCount = (int) Math.ceil((float)sl.getHeight() / getViewportSize().height());
         parent.getNoteDocument().setMinPageCount(minPageCount);
         int pageTop = getViewportSize().height() * pagePosition;
@@ -238,7 +238,7 @@ public class BaseNoteRequest extends BaseRequest {
             return;
         }
         canvas.save();
-        canvas.translate(0, -getTextTop(sl, pageTop));
+        canvas.translate(NoteViewHelper.DRAW_TEXT_PADDING, -getTextTop(sl, pageTop));
         sl.draw(canvas);
         canvas.restore();
     }

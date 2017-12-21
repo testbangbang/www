@@ -66,6 +66,10 @@ public class NoteViewHelper {
     private static final int PEN_PAUSE = 3;
     private static final int PEN_ERASING = 4;
 
+
+    public static final int DRAW_TEXT_SIZE = 40;
+    public static final int DRAW_TEXT_PADDING = 10;
+
     public static abstract class InputCallback {
 
         // when received pen down or stylus button
@@ -284,12 +288,12 @@ public class NoteViewHelper {
         return globalLayoutListener;
     }
 
-    public StaticLayout getTextLayout(String text) {
+    public StaticLayout getTextLayout(String text, int width) {
         TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
         tp.setColor(Color.BLACK);
-        tp.setTextSize(40);
-        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getContext()), null),tp,getViewportSize().width(),
-                Layout.Alignment.ALIGN_CENTER, 1f,0f,false);
+        tp.setTextSize(DRAW_TEXT_SIZE);
+        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
+                Layout.Alignment.ALIGN_NORMAL, 1f,0f,false);
     }
 
     private void setCallback(final InputCallback c) {
