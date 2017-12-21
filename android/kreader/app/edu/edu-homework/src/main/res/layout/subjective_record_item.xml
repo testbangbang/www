@@ -12,6 +12,7 @@
         android:layout_height="match_parent">
 
         <TextView
+            android:textColor="@color/text_color"
             android:textSize="22sp"
             android:gravity="center"
             android:id="@+id/position"
@@ -31,6 +32,7 @@
             android:layout_height="0dp">
 
             <TextView
+                android:textColor="@color/text_color"
                 android:padding="10dp"
                 android:layout_gravity="center"
                 android:background="@drawable/round_bg"
@@ -73,6 +75,7 @@
                     android:layout_height="match_parent">
 
                     <TextView
+                        android:textColor="@color/text_color"
                         android:padding="10dp"
                         android:layout_gravity="center"
                         android:background="@drawable/round_bg"

@@ -21,7 +21,7 @@ public class QuestionReview implements Serializable {
     }
 
     public boolean isRightAnswer() {
-        return  correct == 1;
+        return correct == 1;
     }
 
     public void setComment(String comment) {

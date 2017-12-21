@@ -144,7 +144,7 @@ public class RecordFragment extends BaseFragment {
                     viewHolder.setText(R.id.answer, getQuestionAnswer(question));
                 }
                 boolean showRightLine = ((position + 1) % column) == 0
-                        || (position < column && position == (getDataCount() - 1));
+                        || position == (getDataCount() - 1);
                 viewHolder.setVisibility(R.id.right_line, showRightLine ? View.VISIBLE : View.GONE);
             }
         });
@@ -214,13 +214,10 @@ public class RecordFragment extends BaseFragment {
     }
 
     private void loadScribbleImage(final Question question, final CommonViewHolder viewHolder) {
-        if (question.isChoiceQuestion()) {
+        if (question.isChoiceQuestion() || !question.doneAnswer) {
             return;
         }
-        int width = (int) getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) getResources().getDimension(R.dimen.scribble_view_height);
-        Rect size = new Rect(0, 0, width, height);
-        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), size, 3);
+        final HomeworkPagesRenderActionChain pageAction = new HomeworkPagesRenderActionChain(question.getUniqueId(), questions, 3);
         pageAction.execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

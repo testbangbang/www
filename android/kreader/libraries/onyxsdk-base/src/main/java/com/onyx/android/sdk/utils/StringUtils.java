@@ -225,4 +225,13 @@ public class StringUtils {
         }
         return false;
     }
+
+    public static String filterHtmlWrapChar(String s) {
+        if (isNullOrEmpty(s)) {
+            return s;
+        }
+        s = s.replaceAll("<p>", "");
+        s = s.replaceAll("</p>", "");
+        return s;
+    }
 }

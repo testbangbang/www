@@ -2,8 +2,13 @@ package com.onyx.android.sdk.scribble;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.Html;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceView;
@@ -34,6 +39,8 @@ import com.onyx.android.sdk.scribble.touch.RawInputReader;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
+import com.onyx.android.sdk.utils.Base64ImageParser;
+import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -58,6 +65,10 @@ public class NoteViewHelper {
     private static final int PEN_DRAWING = 2;
     private static final int PEN_PAUSE = 3;
     private static final int PEN_ERASING = 4;
+
+
+    public static final int DRAW_TEXT_SIZE = 40;
+    public static final int DRAW_TEXT_PADDING = 10;
 
     public static abstract class InputCallback {
 
@@ -109,6 +120,7 @@ public class NoteViewHelper {
     private LineLayoutArgs lineLayoutArgs;
     private Shape currentShape = null;
     private Shape cursorShape = null;
+    private String drawText;
     private boolean shortcutErasing = false;
     private int viewPosition[] = {0, 0};
     private float src[] = {0, 0};
@@ -125,6 +137,13 @@ public class NoteViewHelper {
     public void reset(final View view) {
         EpdController.setScreenHandWritingPenState(view, PEN_PAUSE);
         EpdController.enablePost(view, 1);
+    }
+
+    public NoteViewHelper() {
+    }
+
+    public NoteViewHelper(Context context) {
+        this.context = context.getApplicationContext();
     }
 
     public void setView(final Context context, final SurfaceView view, final InputCallback c) {
@@ -157,6 +176,15 @@ public class NoteViewHelper {
         removeLayoutListener();
         quitDrawing();
         setLineLayoutMode(false);
+        setDrawText(null);
+    }
+
+    public void setDrawText(String drawText) {
+        this.drawText = drawText;
+    }
+
+    public String getDrawText() {
+        return drawText;
     }
 
     public Context getContext() {
@@ -181,12 +209,12 @@ public class NoteViewHelper {
         onDocumentOpened();
     }
 
-    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId) {
-        createDocument(context, documentUniqueId, parentUniqueId, null);
-    }
-
-    public void createDocument(final Context context, final String documentUniqueId, final String parentUniqueId, final String groupId) {
-        getNoteDocument().create(context, documentUniqueId, parentUniqueId, groupId);
+    public void createDocument(final Context context,
+                               final String documentUniqueId,
+                               final String parentUniqueId,
+                               final String groupId,
+                               final int minPageCount) {
+        getNoteDocument().create(context, documentUniqueId, parentUniqueId, groupId, minPageCount);
         onDocumentOpened();
     }
 
@@ -258,6 +286,14 @@ public class NoteViewHelper {
             };
         }
         return globalLayoutListener;
+    }
+
+    public StaticLayout getTextLayout(String text, int width) {
+        TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
+        tp.setColor(Color.BLACK);
+        tp.setTextSize(DRAW_TEXT_SIZE);
+        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
+                Layout.Alignment.ALIGN_NORMAL, 1f,0f,false);
     }
 
     private void setCallback(final InputCallback c) {

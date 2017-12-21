@@ -26,6 +26,7 @@
                 android:layout_height="20dp" />
 
             <TextView
+                android:textColor="@color/text_color"
                 android:textSize="@dimen/button_text_size"
                 android:id="@+id/title"
                 android:layout_marginLeft="5dp"

@@ -12,26 +12,29 @@ public class NoteDocumentSaveRequest extends BaseNoteRequest {
     private volatile String title;
     private volatile boolean close;
     private volatile boolean resume = true;
+    private volatile boolean render = false;
+    private volatile boolean saveThumbnail = false;
 
-    public NoteDocumentSaveRequest(final String t, boolean c) {
-        this(t, c, true);
-    }
-
-    public NoteDocumentSaveRequest(final String t, boolean c , boolean r) {
+    public NoteDocumentSaveRequest(final String t, boolean c , boolean r, boolean render, boolean s) {
         title = t;
         close = c;
         resume = r;
+        this.render = render;
+        saveThumbnail = s;
         setPauseInputProcessor(true);
         setResumeInputProcessor(!close && resume);
+        setRender(render);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
         renderCurrentPage(parent);
-        NoteDataProvider.saveThumbnailWithSize(getContext(),
-                parent.getNoteDocument().getDocumentUniqueId(),
-                parent.getRenderBitmap(),
-                512,
-                512);
+        if (saveThumbnail) {
+            NoteDataProvider.saveThumbnailWithSize(getContext(),
+                    parent.getNoteDocument().getDocumentUniqueId(),
+                    parent.getRenderBitmap(),
+                    512,
+                    512);
+        }
         parent.save(getContext(), title, close);
     }
 

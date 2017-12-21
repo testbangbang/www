@@ -30,9 +30,11 @@ import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
+import com.onyx.edu.homework.action.note.ChangePenStateAction;
 import com.onyx.edu.homework.action.note.DocumentCheckAction;
 import com.onyx.edu.homework.action.note.DocumentFlushAction;
 import com.onyx.edu.homework.action.note.DocumentOpenAction;
@@ -43,6 +45,7 @@ import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentScribbleBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.RequestFinishedEvent;
+import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.UpdatePagePositionEvent;
@@ -69,7 +72,6 @@ public class ScribbleFragment extends BaseFragment {
     private TouchPoint erasePoint = null;
     private SurfaceHolder.Callback surfaceCallback;
     private Question question;
-    private boolean isRunning = false;
 
     public static ScribbleFragment newInstance(Question question) {
         ScribbleFragment fragment = new ScribbleFragment();
@@ -80,6 +82,7 @@ public class ScribbleFragment extends BaseFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        DataBundle.getInstance().register(this);
     }
 
     @Nullable
@@ -87,32 +90,27 @@ public class ScribbleFragment extends BaseFragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_scribble, container, false);
         registerDeviceReceiver();
+        initSurfaceView();
         return binding.getRoot();
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        DataBundle.getInstance().register(this);
     }
 
     @Override
     public void onResume() {
-        isRunning = true;
         super.onResume();
-        initSurfaceView();
     }
 
     @Override
     public void onPause() {
-        DataBundle.getInstance().post(new StopNoteEvent(false));
-        isRunning = false;
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "onDestroy: ");
         DataBundle.getInstance().unregister(this);
         unregisterDeviceReceiver();
         super.onDestroy();
@@ -132,7 +130,6 @@ public class ScribbleFragment extends BaseFragment {
 
                 @Override
                 public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-
                 }
 
                 @Override
@@ -156,7 +153,12 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void openDocument(final String uniqueId, final String parentUniqueId, final String groupId, boolean create) {
-        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create, shouldResume()).execute(getNoteViewHelper(), null);
+        new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create).execute(getNoteViewHelper(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                changePenState(shouldResume(), false, null);
+            }
+        });
     }
 
     public void setQuestion(Question question) {
@@ -164,7 +166,7 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     public NoteViewHelper getNoteViewHelper() {
-        return DataBundle.getInstance().getNoteViewHelper();
+        return getDataBundle().getNoteViewHelper();
     }
 
     private NoteViewHelper.InputCallback inputCallback() {
@@ -372,6 +374,10 @@ public class ScribbleFragment extends BaseFragment {
         action.execute(getNoteViewHelper(), callback);
     }
 
+    public void changePenState(boolean resume, boolean render, BaseCallback callback) {
+        new ChangePenStateAction(resume, render).execute(getNoteViewHelper(), callback);
+    }
+
     private void registerDeviceReceiver() {
         deviceReceiver.setSystemUIChangeListener(new DeviceReceiver.SystemUIChangeListener() {
             @Override
@@ -404,10 +410,6 @@ public class ScribbleFragment extends BaseFragment {
         deviceReceiver.unregisterReceiver(getActivity());
     }
 
-    public boolean isRunning() {
-        return isRunning;
-    }
-
     protected void onSystemUIOpened() {
         if (isRunning()) {
             flushDocument(true, false, null);
@@ -422,28 +424,40 @@ public class ScribbleFragment extends BaseFragment {
 
     @Subscribe
     public void onSaveNoteEvent(SaveNoteEvent event) {
-        save(event.finishAfterSave, shouldResume(), true);
+        saveDocument(event.finishAfterSave, shouldResume(), true, true, null);
     }
 
     @Subscribe
     public void onStopNoteEvent(StopNoteEvent event) {
-        save(event.finishAfterSave, false, false);
+        saveDocument(event.finishAfterSave, false, true,false, null);
     }
 
-    public void save(final boolean finishAfterSave, final  boolean resumeDrawing, final boolean showLoading) {
+    @Subscribe
+    public void onResumeNoteEvent(ResumeNoteEvent event) {
+        flushDocument(false, shouldResume(), null);
+    }
+
+    public void saveDocument(final boolean finishAfterSave,
+                             final boolean resumeDrawing,
+                             final boolean render,
+                             final boolean showLoading,
+                             final BaseCallback callback) {
         if (!getDataBundle().isDoing()) {
             return;
         }
         getNoteViewHelper().flushTouchPointList();
-        flushDocument(true, resumeDrawing, new BaseCallback() {
+        flushDocument(render, resumeDrawing, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                saveDocument(finishAfterSave, resumeDrawing, showLoading);
+                saveDocumentImpl(finishAfterSave, resumeDrawing, showLoading, callback);
             }
         });
     }
 
-    private void saveDocument(final boolean finishAfterSave, final boolean resumeDrawing, boolean showLoading) {
+    private void saveDocumentImpl(final boolean finishAfterSave,
+                              final boolean resumeDrawing,
+                              boolean showLoading,
+                              final BaseCallback callback) {
         String documentUniqueId = getShapeDataInfo().getDocumentUniqueId();
         if (StringUtils.isNullOrEmpty(documentUniqueId)) {
             return;
@@ -459,6 +473,7 @@ public class ScribbleFragment extends BaseFragment {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 DataBundle.getInstance().post(new DoneAnswerEvent(question));
+                BaseCallback.invoke(callback, request, e);
             }
         });
     }
@@ -474,6 +489,7 @@ public class ScribbleFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && getDataBundle().isDoing();
+                && getDataBundle().isDoing()
+                && isRunning();
     }
 }

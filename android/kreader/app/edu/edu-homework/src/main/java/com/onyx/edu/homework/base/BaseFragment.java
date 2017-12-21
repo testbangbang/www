@@ -16,6 +16,8 @@ import com.onyx.android.sdk.utils.Debug;
 
 public abstract class BaseFragment extends Fragment {
 
+    private boolean isRunning = false;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -32,5 +34,23 @@ public abstract class BaseFragment extends Fragment {
     public void onDestroyView() {
         Debug.d(getClass(), "onDestroyView");
         super.onDestroyView();
+    }
+
+    @Override
+    public void onResume() {
+        Debug.d(getClass(), "onResume");
+        isRunning = true;
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        Debug.d(getClass(), "onPause");
+        isRunning = false;
+        super.onPause();
+    }
+
+    public boolean isRunning() {
+        return isRunning;
     }
 }

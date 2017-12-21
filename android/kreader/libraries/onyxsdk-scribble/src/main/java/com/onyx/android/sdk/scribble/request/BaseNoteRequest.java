@@ -9,7 +9,16 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.Html;
+import android.text.Layout;
+import android.text.StaticLayout;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.util.Log;
+import android.util.TypedValue;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.hanvon.core.Algorithm;
 import com.onyx.android.sdk.common.request.BaseRequest;
@@ -22,8 +31,10 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.utils.Base64ImageParser;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.Debug;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.TestUtils;
 
 import java.util.ArrayList;
@@ -161,11 +172,11 @@ public class BaseNoteRequest extends BaseRequest {
                     }
                 }
                 helper.enableScreenPost(true);
-                if (getCallback() != null) {
-                    getCallback().done(BaseNoteRequest.this, getException());
-                }
                 if (isResumeInputProcessor()) {
                     helper.resumeDrawing();
+                }
+                if (getCallback() != null) {
+                    getCallback().done(BaseNoteRequest.this, getException());
                 }
                 helper.getRequestManager().releaseWakeLock();
             }};
@@ -201,6 +212,8 @@ public class BaseNoteRequest extends BaseRequest {
             final RenderContext renderContext = RenderContext.create(bitmap, canvas, paint, renderMatrix);
             for (PageInfo page : getVisiblePages()) {
                 final NotePage notePage = parent.getNoteDocument().getNotePage(getContext(), page.getName());
+                int pagePosition = parent.getNoteDocument().getNotePagePosition(notePage);
+                drawTextView(canvas, parent, pagePosition);
                 notePage.render(renderContext, null);
             }
             parent.renderCursorShape(renderContext);
@@ -209,6 +222,38 @@ public class BaseNoteRequest extends BaseRequest {
             flushRenderingBuffer(bitmap);
             drawRandomTestPath(canvas, paint);
         }
+    }
+
+    private void drawTextView(final Canvas canvas, final NoteViewHelper parent, int pagePosition) {
+        String text = parent.getDrawText();
+        if (StringUtils.isNullOrEmpty(text)) {
+            return;
+        }
+
+        StaticLayout sl = parent.getTextLayout(text, getViewportSize().width());
+        int minPageCount = (int) Math.ceil((float)sl.getHeight() / getViewportSize().height());
+        parent.getNoteDocument().setMinPageCount(minPageCount);
+        int pageTop = getViewportSize().height() * pagePosition;
+        if (pageTop > sl.getHeight()) {
+            return;
+        }
+        canvas.save();
+        canvas.translate(NoteViewHelper.DRAW_TEXT_PADDING, -getTextTop(sl, pageTop));
+        sl.draw(canvas);
+        canvas.restore();
+    }
+
+    private int getTextTop(StaticLayout sl, int pageTop) {
+        if (pageTop == 0) {
+            return 0;
+        }
+        int lineCount = sl.getLineCount();
+        for (int i = 0; i < lineCount; i++) {
+            if (sl.getLineBottom(i) > pageTop && i > 0) {
+                return sl.getLineTop(i);
+            }
+        }
+        return 0;
     }
 
     private Paint preparePaint(final NoteViewHelper parent) {

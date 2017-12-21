@@ -3,13 +3,11 @@ package com.onyx.edu.homework.ui;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.KeyEvent;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.utils.Base64ImageParser;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
@@ -18,9 +16,7 @@ import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.ActivityAnswerBinding;
 import com.onyx.edu.homework.event.CloseScribbleEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
-import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.utils.TextUtils;
-import com.onyx.edu.homework.view.Base64ImageParser;
 
 import org.greenrobot.eventbus.Subscribe;
 
@@ -64,10 +60,10 @@ public class AnswerActivity extends BaseActivity {
             reviewFragment = ReviewFragment.newInstance(question);
             getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
         }else {
-            scribbleFragment = ScribbleFragment.newInstance(question);
+//            scribbleFragment = ScribbleFragment.newInstance(question);
             getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
         }
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
+//        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
         getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 

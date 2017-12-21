@@ -29,8 +29,8 @@ public class DialogLoading extends OnyxBaseDialog {
         mCancelButton = (ImageView) findViewById(R.id.button_cancel);
         mConfirmButton = (ImageView) findViewById(R.id.button_confirm);
         if (!enableCancel) {
-            findViewById(R.id.divider_line).setVisibility(View.INVISIBLE);
-            mCancelButton.setVisibility(View.INVISIBLE);
+            findViewById(R.id.divider_line).setVisibility(View.GONE);
+            mCancelButton.setVisibility(View.GONE);
         }
         setToastViewMaxWidth(getPercentageWidth(context));
         setCanceledOnTouchOutside(false);

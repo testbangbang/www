@@ -18,7 +18,7 @@ public abstract class BaseNoteAction {
     public DialogLoading showLoadingDialog(final Context context, String title) {
         if (dialogLoading == null) {
             dialogLoading = new DialogLoading(context,
-                    title, true);
+                    title, false);
         }
         dialogLoading.show();
         return dialogLoading;

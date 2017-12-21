@@ -59,6 +59,14 @@ public class Question implements Serializable {
         return getType() == QuestionType.SINGLE || getType() == QuestionType.JUDGMENT;
     }
 
+    public boolean isFillQuestion() {
+        return getType() == QuestionType.FILL;
+    }
+
+    public boolean isExplanationQuestion() {
+        return getType() == QuestionType.ANSWER;
+    }
+
     public boolean isMultipleChoiceQuestion() {
         return getType() == QuestionType.MULTIPLE;
     }

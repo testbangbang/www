@@ -12,6 +12,7 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.HomeworkSubmitAction;
@@ -77,7 +78,7 @@ public class SubmitDialog extends OnyxBaseDialog {
     }
 
     private void submit() {
-        if (questions == null) {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
             return;
         }
         final List<HomeworkSubmitAnswer> totalAnswers = new ArrayList<>();
@@ -89,11 +90,8 @@ public class SubmitDialog extends OnyxBaseDialog {
                 fillAnswers.add(answer);
             }
         }
-        int width = (int) getContext().getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) getContext().getResources().getDimension(R.dimen.scribble_view_height);
-        Rect size = new Rect(0, 0, width, height);
         onStartSubmit();
-        new MakeHomeworkPagesAnswerActionChain(fillAnswers, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
+        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {

@@ -210,4 +210,9 @@ public class OnyxCustomDialog extends OnyxBaseDialog implements DialogInterface{
         progressBar.setProgress(progress);
         progressBar.setOnSeekBarChangeListener(seekBarChangeListener);
     }
+
+    public OnyxCustomDialog addOnDismissListener(@Nullable OnDismissListener listener) {
+        setOnDismissListener(listener);
+        return this;
+    }
 }

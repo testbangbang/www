@@ -105,9 +105,11 @@ public class NoteToolFragment extends BaseFragment {
         switch (event.getMenuId()) {
             case MenuId.PEN_STYLE:
             case MenuId.PEN_WIDTH:
-            case MenuId.ERASER:
             case MenuId.BG:
                 prepareShowSubMenu(event.getMenuId());
+                return;
+            case MenuId.ERASER:
+                eraserPage();
                 return;
             case MenuId.ADD_PAGE:
                 addPage();
@@ -244,11 +246,39 @@ public class NoteToolFragment extends BaseFragment {
         });
     }
 
+    private void eraserPage() {
+        if (!getDataBundle().isDoing()) {
+            return;
+        }
+        flushDocument(true, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                eraserPageImpl();
+            }
+        });
+    }
+
+    private void eraserPageImpl() {
+        OnyxCustomDialog dialog = OnyxCustomDialog.getConfirmDialog(getActivity(), getString(R.string.ask_for_eraser_page), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                new ClearAllFreeShapesAction(shouldResume()).execute(getNoteViewHelper(), null);
+            }
+        }, null);
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                flushDocument(false, shouldResume(), null);
+            }
+        });
+        dialog.show();
+    }
+
     private void deletePage() {
         if (!getDataBundle().isDoing()) {
             return;
         }
-        flushDocument(false, false, new BaseCallback() {
+        flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 deletePageImpl();
@@ -365,7 +395,18 @@ public class NoteToolFragment extends BaseFragment {
         functionMenuIds.add(MenuId.NEXT_PAGE);
         functionMenuIds.add(MenuId.PAGE);
 
+        functionMenuIds.removeAll(buildDisableMenuIds());
         return functionMenuIds;
+    }
+
+    private List<Integer> buildDisableMenuIds() {
+        List<Integer> menuIds = new ArrayList<>();
+        menuIds.add(MenuId.PEN_STYLE);
+        menuIds.add(MenuId.BG);
+
+        menuIds.add(MenuId.THICKNESS_ULTRA_BOLD);
+        menuIds.add(MenuId.THICKNESS_CUSTOM_BOLD);
+        return menuIds;
     }
 
     private void prepareShowSubMenu(final int parentId) {
@@ -385,7 +426,7 @@ public class NoteToolFragment extends BaseFragment {
         subMenuLayout.setVisibility(View.VISIBLE);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         menuManager.addSubMenu(subMenuLayout,
                 DataBundle.getInstance().getEventBus(),
                 getSubLayoutId(parentId),
@@ -414,6 +455,8 @@ public class NoteToolFragment extends BaseFragment {
         resultList.add(MenuId.THICKNESS_BOLD);
         resultList.add(MenuId.THICKNESS_ULTRA_BOLD);
         resultList.add(MenuId.THICKNESS_CUSTOM_BOLD);
+
+        resultList.removeAll(buildDisableMenuIds());
         return resultList;
     }
 
@@ -500,7 +543,7 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     public NoteViewHelper getNoteViewHelper() {
-        return DataBundle.getInstance().getNoteViewHelper();
+        return getDataBundle().getNoteViewHelper();
     }
 
     public void flushDocument(boolean render,
@@ -521,6 +564,7 @@ public class NoteToolFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && getDataBundle().isDoing();
+                && getDataBundle().isDoing()
+                && isRunning();
     }
 }

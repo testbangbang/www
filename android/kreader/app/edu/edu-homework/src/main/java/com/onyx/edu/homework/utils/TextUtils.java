@@ -21,6 +21,10 @@ public class TextUtils {
         return Html.fromHtml(source);
     }
 
+    public static Spanned fromHtml(String source, Html.ImageGetter imageGetter) {
+        return Html.fromHtml(source, imageGetter, null);
+    }
+
     public static Spanned fromHtml(String source, Html.ImageGetter imageGetter, Html.TagHandler tagHandler) {
         if (StringUtils.isNullOrEmpty(source)) {
             return new SpannableString("");

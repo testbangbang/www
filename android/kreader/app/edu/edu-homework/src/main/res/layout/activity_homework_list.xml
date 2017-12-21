@@ -20,9 +20,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp">
 
-            <com.onyx.android.sdk.ui.view.OnyxCustomViewPager
-                android:padding="14dp"
-                android:id="@+id/list"
+            <LinearLayout
+                android:orientation="vertical"
+                android:id="@+id/question_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
@@ -33,6 +33,7 @@
                 android:layout_height="match_parent"/>
 
             <TextView
+                android:textColor="@color/text_color"
                 android:id="@+id/message"
                 android:gravity="center"
                 android:textSize="@dimen/homework_text_size"
@@ -71,6 +72,22 @@
                 android:layout_width="0dp"
                 android:layout_height="1dp"/>
 
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/answer_icon"
+                android:layout_margin="@dimen/homework_text_margin"
+                android:src="@drawable/ic_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:text="@string/analysis"
+                android:visibility="gone"
+                android:padding="@dimen/homework_text_margin"
+                android:background="@drawable/round_bg"
+                android:id="@+id/analysis"
+                style="@style/homework_text" />
+
             <TextView
                 android:visibility="gone"
                 android:padding="@dimen/homework_text_margin"
@@ -98,6 +115,8 @@
                 style="@style/homework_text" />
 
             <ImageView
+                android:padding="2dp"
+                android:background="@drawable/press_bg"
                 android:id="@+id/prev_page"
                 android:layout_margin="@dimen/homework_text_margin"
                 android:src="@drawable/ic_note_prev_page_black"
@@ -112,6 +131,8 @@
                 style="@style/homework_text" />
 
             <ImageView
+                android:padding="2dp"
+                android:background="@drawable/press_bg"
                 android:id="@+id/next_page"
                 android:layout_margin="@dimen/homework_text_margin"
                 android:src="@drawable/ic_note_next_page_black"
