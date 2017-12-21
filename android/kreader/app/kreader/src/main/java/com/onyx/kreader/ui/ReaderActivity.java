@@ -334,7 +334,7 @@ public class ReaderActivity extends OnyxBaseActivity {
     }
 
     private void reconfigStatusBar() {
-        boolean isShowNoteIcon = !DeviceConfig.sharedInstance(this).getScriblableFileFormatFilter().contains(
+        boolean isShowNoteIcon = !DeviceConfig.sharedInstance(this).getFileNoNeedExternalNoteApp().contains(
                 FileUtils.getFileExtension(FileUtils.getRealFilePathFromUri(ReaderActivity.this, getIntent().getData())));
         statusBar.reConfigure(SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_battery_percentage_show_key, false),
                 SingletonSharedPreference.getBooleanByStringID(this, R.string.settings_time_show_key, false),

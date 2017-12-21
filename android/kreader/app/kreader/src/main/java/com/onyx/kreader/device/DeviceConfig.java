@@ -80,7 +80,7 @@ public class DeviceConfig {
     private String statisticsUrl = "http://dev.onyx-international.cn/api/1/";
     private String defaultAnnotationHighlightStyle = "Highlight";
     private Float[] defaultFontSizes = {20.0f, 24.0f, 28.0f, 32.0f, 36.0f, 40.0f, 44.0f, 48.0f};
-    private List<String> scriblableFileFormatFilter = new ArrayList<String>();
+    private List<String> fileNoNeedExternalNoteApp = new ArrayList<String>();
 
     private String noteAppPackageName = "com.moxi.writeNote";
     private String noteAppClassName = "com.moxi.writeNote.MainActivity";
@@ -589,12 +589,12 @@ public class DeviceConfig {
         this.noteAppClassName = noteAppClassName;
     }
 
-    public List<String> getScriblableFileFormatFilter() {
-        return scriblableFileFormatFilter;
+    public List<String> getFileNoNeedExternalNoteApp() {
+        return fileNoNeedExternalNoteApp;
     }
 
-    public void setScriblableFileFormatFilter(List<String> scriblableFileFormatFilter) {
-        this.scriblableFileFormatFilter = scriblableFileFormatFilter;
+    public void setFileNoNeedExternalNoteApp(List<String> fileNoNeedExternalNoteApp) {
+        this.fileNoNeedExternalNoteApp = fileNoNeedExternalNoteApp;
     }
 }
 
