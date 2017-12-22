@@ -72,8 +72,8 @@ public class OTAManager {
 
     public static FirmwareLocalCheckLegalityRequest localFirmwareCheckRequest(Context context) {
         List<String> pathList = new ArrayList<>();
-        pathList.add(LOCAL_PATH_SDCARD);
         pathList.add(LOCAL_PATH_EXTSD);
+        pathList.add(LOCAL_PATH_SDCARD);
         return new FirmwareLocalCheckLegalityRequest(pathList);
     }
 
