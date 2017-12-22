@@ -89,7 +89,7 @@ public class QuestionFragment extends BaseFragment {
         int questionIndex = Math.max(question.QuesType - 1, 0);
         String questionType = getResources().getStringArray(R.array.question_type_list)[questionIndex];
         binding.questionType.setText(getString(R.string.question_type_str, questionType));
-        Spanned content = !question.isChoiceQuestion() ? TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null)
+        Spanned content = question.isChoiceQuestion() ? TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null)
                 : null;
         binding.content.setText(content);
         bindQuestionOption(binding.option, question);
