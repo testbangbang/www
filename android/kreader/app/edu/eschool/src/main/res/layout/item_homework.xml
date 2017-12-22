@@ -54,6 +54,19 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/book_item_date_text_size" />
 
+            <TextView
+                android:id="@+id/textView_subject"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignLeft="@+id/image_cover"
+                android:layout_alignTop="@+id/image_cover"
+                android:background="#A0000000"
+                android:gravity="center"
+                android:lines="1"
+                android:text="@{viewModel.child==null?@string/blank:viewModel.child.subjectName}"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/book_item_date_text_size" />
+
         </RelativeLayout>
 
         <TextView
