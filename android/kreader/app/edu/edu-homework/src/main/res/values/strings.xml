@@ -24,7 +24,7 @@
     <string name="exit">退出</string>
     <string name="submit_fail">提交失败</string>
     <string name="answer_record">答题记录</string>
-    <string name="get_result">批改结果</string>
+    <string name="get_result">获取批改</string>
     <string name="waiting_review">作业还在等待老师批改</string>
     <string name="right_answer">正确答案：</string>
     <string name="exit_tips">确定要退出吗？</string>
