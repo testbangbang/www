@@ -7,7 +7,6 @@ import android.preference.PreferenceActivity;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.onyx.android.libsetting.data.PowerSettingTimeoutCategory;
 import com.onyx.android.libsetting.data.SettingCategory;
@@ -16,9 +15,11 @@ import com.onyx.android.libsetting.util.Constant;
 import com.onyx.android.libsetting.view.activity.StorageSettingActivity;
 import com.onyx.android.sdk.data.DeviceType;
 import com.onyx.android.sdk.data.GObject;
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.utils.CompatibilityUtil;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -85,6 +86,8 @@ public class SettingConfig {
         static private final String USE_EDU_CONFIG = "use_edu_config";
         static private final String PRESET_CUSTOM_WIFI_SSID = "preset_custom_wifi_ssid";
         static private final String PRESET_CUSTOM_WIFI_PASSWORD = "preset_custom_wifi_password";
+        static private final String USER_RESOURCES_CONFIG_PATH_TAG = "user_resources_config_path";
+        static private final String USER_MANUAL_NAME_TAG = "user_manual_name";
     }
 
     static class Default {
@@ -107,6 +110,11 @@ public class SettingConfig {
 
         static public final String ONYX_PRESET_WIFI_SSID= "onyx-ap";
         static public final String ONYX_PRESET_WIFI_PASSWORD = "";
+
+        static private final String DEFAULT_USER_RESOURCES_CONFIG_PATH =
+                Device.currentDevice.getExternalStorageDirectory().getPath() + File.separator + "PL107_user_manual";
+        static public final String DEFAULT_USER_MANUAL_NAME = "YOUNGY BOOX用户手册.pdf";
+
     }
 
     private boolean enableNetworkLatencyConfig = false;
@@ -586,5 +594,17 @@ public class SettingConfig {
             result[1] = Default.ONYX_PRESET_WIFI_PASSWORD;
         }
         return result;
+    }
+
+    public File getUserManualFile() {
+        String userManualFolderPath = getData(Custom.USER_RESOURCES_CONFIG_PATH_TAG, String.class);
+        if (TextUtils.isEmpty(userManualFolderPath)) {
+            userManualFolderPath = Default.DEFAULT_USER_RESOURCES_CONFIG_PATH;
+        }
+        String userManualFileName = getData(Custom.USER_MANUAL_NAME_TAG, String.class);
+        if (TextUtils.isEmpty(userManualFileName)) {
+            userManualFileName = Default.DEFAULT_USER_MANUAL_NAME;
+        }
+        return new File(userManualFolderPath + File.separator + userManualFileName);
     }
 }
