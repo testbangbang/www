@@ -9,7 +9,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -532,7 +531,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onAddNewPage() {
-        syncWithCallback(false, false, new BaseCallback() {
+        syncWithCallback(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 final DocumentAddNewPageAction<BaseScribbleActivity> action = new DocumentAddNewPageAction<>(-1);
@@ -548,6 +547,7 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     }
 
     protected void onDeletePage() {
+        //keep resume false here because we need to show a confirm dialog.
         syncWithCallback(false, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {

@@ -168,7 +168,7 @@ public class ScribbleSubMenu extends RelativeLayout {
     /**
      * @param isCancel if no submenu item was previous selected -> true,otherwise false.
      */
-    private void dismiss(boolean isCancel) {
+    public void dismiss(boolean isCancel) {
         if (mMenuCallback != null && isCancel) {
             mMenuCallback.onCancel();
         }
@@ -357,7 +357,9 @@ public class ScribbleSubMenu extends RelativeLayout {
 
     private GAdapter createEraseAdapter() {
         GAdapter erase_menus = new GAdapter();
-        erase_menus.addObject(createImageButtonMenu(R.drawable.ic_eraser_part, ScribbleSubMenuID.ERASE_PARTIALLY, true));
+        if (!NoteAppConfig.sharedInstance(getContext()).useEduConfig()) {
+            erase_menus.addObject(createImageButtonMenu(R.drawable.ic_eraser_part, ScribbleSubMenuID.ERASE_PARTIALLY, true));
+        }
         erase_menus.addObject(createImageButtonMenu(R.drawable.ic_eraser_all, ScribbleSubMenuID.ERASE_TOTALLY, true));
         return erase_menus;
     }
