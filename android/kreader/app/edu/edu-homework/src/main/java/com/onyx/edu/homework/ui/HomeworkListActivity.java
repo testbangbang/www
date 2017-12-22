@@ -180,7 +180,7 @@ public class HomeworkListActivity extends BaseActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                getDataBundle().post(new ResumeNoteEvent());
+                getDataBundle().post(new ResumeNoteEvent(false));
             }
         });
         dialog.show();
@@ -394,7 +394,6 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
         updateViewState();
-        reloadQuestionFragment(currentPage);
     }
 
     @Subscribe
