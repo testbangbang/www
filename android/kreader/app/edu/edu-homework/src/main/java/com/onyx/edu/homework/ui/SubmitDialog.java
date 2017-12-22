@@ -143,7 +143,7 @@ public class SubmitDialog extends OnyxBaseDialog {
 
     private NoteViewHelper getNoteViewHelper() {
         if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
+            noteViewHelper = new NoteViewHelper(getContext());
         }
         return noteViewHelper;
     }

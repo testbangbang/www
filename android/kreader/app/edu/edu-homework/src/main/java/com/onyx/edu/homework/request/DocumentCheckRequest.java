@@ -25,7 +25,7 @@ public class DocumentCheckRequest extends BaseNoteRequest {
     @Override
     public void execute(NoteViewHelper helper) throws Exception {
         super.execute(helper);
-        hasNote = NoteDataProvider.checkHasNote(helper.getContext(), uniqueId, parentUniqueId);
+        hasNote = NoteDataProvider.checkHasNote(helper.getAppContext(), uniqueId, parentUniqueId);
     }
 
     public boolean isHasNote() {
