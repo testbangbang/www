@@ -1,6 +1,7 @@
 package com.onyx.android.eschool.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.KeyEvent;
@@ -15,17 +16,16 @@ import com.onyx.android.eschool.SchoolApp;
 import com.onyx.android.eschool.events.AccountAvailableEvent;
 import com.onyx.android.eschool.events.GroupSelectEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
+import com.onyx.android.eschool.utils.ResourceUtils;
 import com.onyx.android.eschool.utils.StudentPreferenceManager;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
-import com.onyx.android.sdk.data.KeyAction;
 import com.onyx.android.sdk.data.db.table.EduAccountProvider;
 import com.onyx.android.sdk.data.model.v2.EduAccount;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.v2.LoginByHardwareInfoRequest;
 import com.onyx.android.sdk.ui.utils.PageTurningDetector;
 import com.onyx.android.sdk.ui.utils.PageTurningDirection;
-import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -43,6 +43,8 @@ public class AccountFragment extends Fragment {
 
     @Bind(R.id.student_name)
     TextView studentName;
+    @Bind(R.id.student_role)
+    TextView studentRole;
     @Bind(R.id.student_grade)
     TextView studentGrade;
     @Bind(R.id.student_phone_number)
@@ -113,12 +115,21 @@ public class AccountFragment extends Fragment {
             return;
         }
         studentName.setText(account.getName());
+        studentRole.setText(getString(R.string.role_colon) + getAccountRole(account));
         studentGrade.setText(getString(R.string.grade_colon) + getGroupName(account));
         studentPhone.setText(getString(R.string.phone_colon) + account.getPhone());
     }
 
     private String getGroupName(NeoAccountBase account) {
         return StringUtils.getBlankStr(account.getGroupName(StudentPreferenceManager.getCloudGroupSelected(getContext())));
+    }
+
+    private String getAccountRole(@NonNull NeoAccountBase account) {
+        int resId = ResourceUtils.getStringResIdByName(getContext(), account.role);
+        if (resId <= 0) {
+            return account.role;
+        }
+        return getString(resId);
     }
 
     private boolean isViewInValid() {

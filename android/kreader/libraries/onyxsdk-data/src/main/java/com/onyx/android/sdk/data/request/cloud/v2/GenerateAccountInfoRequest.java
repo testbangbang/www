@@ -29,7 +29,7 @@ public class GenerateAccountInfoRequest extends BaseCloudRequest {
     public void execute(CloudManager parent) throws Exception {
         boolean needRotation = true;
         int rotationAngle = infoShowConfig == null ? 90 : infoShowConfig.rotationAngle;
-        String targetString = authAccount.getName() + " " + authAccount.getFirstGroup();
+        String targetString = authAccount.getNameAppendRole() + " " + authAccount.getFirstGroup();
         Bitmap bitmap = BitmapUtils.buildBitmapFromText(StringUtils.getBlankStr(targetString).trim(),
                 100, 25, true,
                 true, true, needRotation, rotationAngle,

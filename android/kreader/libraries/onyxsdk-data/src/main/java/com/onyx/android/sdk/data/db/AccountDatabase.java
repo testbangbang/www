@@ -15,7 +15,7 @@ public class AccountDatabase {
 
     public static final String NAME = "AccountDatabase";
 
-    public static final int VERSION = 2;
+    public static final int VERSION = 3;
 
     @Migration(version = 2, database = AccountDatabase.class)
     public static class Version2Migration extends AlterTableMigration<EduAccount> {
@@ -26,6 +26,18 @@ public class AccountDatabase {
         @Override
         public void onPreMigrate() {
             addColumn(SQLiteType.TEXT, EduAccount_Table._id.getNameAlias().name());
+        }
+    }
+
+    @Migration(version = 3, database = AccountDatabase.class)
+    public static class Version3Migration extends AlterTableMigration<EduAccount> {
+        public Version3Migration(Class<EduAccount> table) {
+            super(table);
+        }
+
+        @Override
+        public void onPreMigrate() {
+            addColumn(SQLiteType.TEXT, EduAccount_Table.role.getNameAlias().name());
         }
     }
 }
