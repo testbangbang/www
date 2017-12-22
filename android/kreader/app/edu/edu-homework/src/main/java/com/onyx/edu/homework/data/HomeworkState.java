@@ -6,7 +6,7 @@ package com.onyx.edu.homework.data;
 
 public enum HomeworkState {
 
-    DOING,DONE,REVIEW;
+    DOING, SUBMITTED, REVIEW;
 
     public static HomeworkState getHomeworkState(int state) {
         int size = HomeworkState.values().length;

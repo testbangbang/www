@@ -38,7 +38,6 @@ import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
-import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
@@ -182,7 +181,7 @@ public class HomeworkListActivity extends BaseActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                getDataBundle().post(new ResumeNoteEvent(false));
+                reloadQuestionFragment(currentPage);
             }
         });
         dialog.show();
@@ -238,7 +237,6 @@ public class HomeworkListActivity extends BaseActivity {
                     return;
                 }
                 hideMessage();
-                showWaitingDialog();
                 updateViewState();
                 showTotalScore();
                 initQuestions(questions);
@@ -339,13 +337,6 @@ public class HomeworkListActivity extends BaseActivity {
         binding.total.setText(getString(R.string.total, questions.size()));
     }
 
-    private void showWaitingDialog() {
-        if (!getDataBundle().isDone()) {
-            return;
-        }
-        OnyxCustomDialog.getMessageDialog(this, getString(R.string.waiting_review)).show();
-    }
-
     @Subscribe
     public void onDoneAnswerEvent(DoneAnswerEvent event) {
         checkAnswer();
@@ -438,7 +429,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
-        binding.getResult.setVisibility(getDataBundle().isDone() ? View.VISIBLE : View.GONE);
+        binding.getResult.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());
     }

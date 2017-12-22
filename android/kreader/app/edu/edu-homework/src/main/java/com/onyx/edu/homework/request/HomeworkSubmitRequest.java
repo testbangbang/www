@@ -6,6 +6,7 @@ import com.onyx.android.sdk.data.model.HomeworkSubmitBody;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.HomeworkState;
@@ -40,12 +41,15 @@ public class HomeworkSubmitRequest extends BaseCloudRequest {
 
     @Override
     public void execute(CloudManager parent) throws Exception {
+        benchmarkStart();
         response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).submitAnswers(libraryId, body, getFilePathMap()));
+        Debug.d(getClass(), "submitAnswers:" + benchmarkEnd());
         if (isSuccess()) {
             HomeworkModel model = DBDataProvider.loadHomework(libraryId);
             if (model == null) {
                 model = HomeworkModel.create(libraryId);
             }
+            model.setState(HomeworkState.SUBMITTED.ordinal());
             DBDataProvider.saveHomework(model);
         }
         clearFileCache();

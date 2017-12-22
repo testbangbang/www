@@ -95,7 +95,7 @@ public class SubmitDialog extends OnyxBaseDialog {
             }
         }
         onStartSubmit();
-        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions).execute(getNoteViewHelper(), new BaseCallback() {
+        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
@@ -139,12 +139,5 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.action0.setText(R.string.close);
         binding.action0.setVisibility(View.VISIBLE);
         DataBundle.getInstance().post(new SubmitEvent());
-    }
-
-    private NoteViewHelper getNoteViewHelper() {
-        if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper(getContext());
-        }
-        return noteViewHelper;
     }
 }
