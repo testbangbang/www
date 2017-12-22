@@ -355,5 +355,6 @@
     <string name="exit">退出</string>
     <string name="submit">提交</string>
     <string name="fetch">获取</string>
-    <string name="erase_all_tip">确定后会全部擦除笔迹，请谨慎</string>
+
+    <string name="erase_all_tip">确认删除全部笔迹？</string>
 </resources>
