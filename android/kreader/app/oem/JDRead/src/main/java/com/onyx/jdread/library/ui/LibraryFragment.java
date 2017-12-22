@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.api.device.EpdDeviceManager;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
@@ -17,7 +18,6 @@ import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
-import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
@@ -35,8 +35,11 @@ import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
 import com.onyx.jdread.library.event.DeleteBookEvent;
 import com.onyx.jdread.library.event.LibraryBackEvent;
+import com.onyx.jdread.library.event.LibraryDeleteEvent;
+import com.onyx.jdread.library.event.LibraryDeleteIncludeBookEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
+import com.onyx.jdread.library.event.LibraryRenameEvent;
 import com.onyx.jdread.library.event.MoveToLibraryEvent;
 import com.onyx.jdread.library.event.MyBookEvent;
 import com.onyx.jdread.library.event.SortByNameEvent;
@@ -47,6 +50,7 @@ import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.library.view.MenuPopupWindow;
+import com.onyx.jdread.library.view.SingleItemManageDialog;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -67,7 +71,6 @@ public class LibraryFragment extends BaseFragment {
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.library_view_type_thumbnail_col);
     private GPaginator pagination;
     private PageIndicatorModel pageIndicatorModel;
-    private DataModel currentChosenModel;
 
     @Nullable
     @Override
@@ -316,7 +319,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void OnSortByTimeEvent(SortByTimeEvent event) {
+    public void onSortByTimeEvent(SortByTimeEvent event) {
         dataBundle.getLibraryViewDataModel().updateSortBy(SortBy.CreationTime, SortOrder.Asc);
         refreshData();
     }
@@ -327,25 +330,49 @@ public class LibraryFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void OnSortByNameEvent(SortByNameEvent event) {
+    public void onSortByNameEvent(SortByNameEvent event) {
         dataBundle.getLibraryViewDataModel().updateSortBy(SortBy.Name, SortOrder.Asc);
         refreshData();
     }
 
     @Subscribe
-    public void OnMyBookEvent(MyBookEvent event) {
+    public void onMyBookEvent(MyBookEvent event) {
 
     }
 
     @Subscribe
-    public void OnWifiPassBookEvent(WifiPassBookEvent event) {
+    public void onWifiPassBookEvent(WifiPassBookEvent event) {
+
+    }
+
+    @Subscribe
+    public void onLibraryRenameEvent(LibraryRenameEvent event) {
+
+    }
+
+    @Subscribe
+    public void onLibraryDeleteEvent(LibraryDeleteEvent event) {
+
+    }
+
+    @Subscribe
+    public void onLibraryDeleteIncludeBookEvent(LibraryDeleteIncludeBookEvent event) {
 
     }
 
     @Subscribe
     public void onItemLongClickEvent(ItemLongClickEvent event) {
-        currentChosenModel = event.getDataModel();
+        DataModel currentChosenModel = event.getDataModel();
         dataBundle.getLibraryViewDataModel().addItemSelected(currentChosenModel, true);
+        showSingleMangeDialog(currentChosenModel);
+    }
+
+    private void showSingleMangeDialog(DataModel currentChosenModel) {
+        SingleItemManageDialog.DialogModel dialogModel = new SingleItemManageDialog.DialogModel(dataBundle.getEventBus());
+        dialogModel.dataModel.set(currentChosenModel);
+        SingleItemManageDialog.Builder builder = new SingleItemManageDialog.Builder(getContext(), dialogModel);
+        SingleItemManageDialog dialog = builder.create();
+        dialog.show();
     }
 
     @Subscribe
@@ -366,24 +393,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onDeleteBookEvent(DeleteBookEvent event) {
-        LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
-        dialogModel.message.set(getString(R.string.delete_book_prompt));
-        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(getContext(), dialogModel);
-        final LibraryDeleteDialog libraryDeleteDialog = builder.create();
-        libraryDeleteDialog.show();
-        dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
-            @Override
-            public void onClicked() {
-                deleteBook();
-                libraryDeleteDialog.dismiss();
-            }
-        });
-        dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
-            @Override
-            public void onClicked() {
-                libraryDeleteDialog.dismiss();
-            }
-        });
+        deleteBook();
     }
 
     @Subscribe
@@ -400,7 +410,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void deleteBook() {
-        MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction();
+        MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction(getActivity());
         metadataDeleteAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {

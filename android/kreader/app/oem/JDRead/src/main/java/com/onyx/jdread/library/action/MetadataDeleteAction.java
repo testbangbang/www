@@ -1,5 +1,7 @@
 package com.onyx.jdread.library.action;
 
+import android.app.Activity;
+
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
@@ -7,6 +9,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.library.request.RxDeleteMetadataFromMultipleLibraryRequest;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
 
 import java.util.List;
 import java.util.Map;
@@ -16,6 +19,12 @@ import java.util.Map;
  */
 
 public class MetadataDeleteAction extends BaseAction<DataBundle> {
+    private Activity activity;
+    private Map<String, List<Metadata>> chosenItemsMap;
+
+    public MetadataDeleteAction(Activity activity) {
+        this.activity = activity;
+    }
 
     @Override
     public void execute(final DataBundle dataBundle, final RxCallback baseCallback) {
@@ -23,11 +32,33 @@ public class MetadataDeleteAction extends BaseAction<DataBundle> {
         getSelectedMetadataAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
-                if (CollectionUtils.isNullOrEmpty(getSelectedMetadataAction.getChosenItemsMap())) {
+                chosenItemsMap = getSelectedMetadataAction.getChosenItemsMap();
+                if (CollectionUtils.isNullOrEmpty(chosenItemsMap)) {
                     ToastUtils.showToast(dataBundle.getAppContext(), R.string.please_select_book);
                     return;
                 }
-                deleteMetadata(dataBundle, getSelectedMetadataAction.getChosenItemsMap(), baseCallback);
+                showDeleteDialog(dataBundle, chosenItemsMap, baseCallback);
+            }
+        });
+    }
+
+    private void showDeleteDialog(final DataBundle dataBundle, final Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
+        LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
+        dialogModel.message.set(dataBundle.getAppContext().getString(R.string.delete_book_prompt));
+        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(activity, dialogModel);
+        final LibraryDeleteDialog libraryDeleteDialog = builder.create();
+        libraryDeleteDialog.show();
+        dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                deleteMetadata(dataBundle, chosenItemsMap, baseCallback);
+                libraryDeleteDialog.dismiss();
+            }
+        });
+        dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                libraryDeleteDialog.dismiss();
             }
         });
     }

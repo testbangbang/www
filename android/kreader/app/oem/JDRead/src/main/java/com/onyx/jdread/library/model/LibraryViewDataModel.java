@@ -294,6 +294,9 @@ public class LibraryViewDataModel extends Observable {
     }
 
     public void selectAll() {
+        if (count.get() == 0 || count.get() == libraryCount.get()) {
+            return;
+        }
         if (isSelectAll()) {
             getLibrarySelectedModel().setSelectedAll(false);
             checkedOrCancelAll(false);
@@ -376,12 +379,12 @@ public class LibraryViewDataModel extends Observable {
         return "0";
     }
 
-    public List<PopMenuModel> getMenuData(){
-        List<PopMenuModel> list= new ArrayList<>();
-        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.sort_by_time),new SortByTimeEvent()));
-        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.sort_by_name),new SortByNameEvent()));
-        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.my_book),new MyBookEvent()));
-        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.wifi_pass_book),new WifiPassBookEvent()));
+    public List<PopMenuModel> getMenuData() {
+        List<PopMenuModel> list = new ArrayList<>();
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.sort_by_time), new SortByTimeEvent()));
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.sort_by_name), new SortByNameEvent()));
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.my_book), new MyBookEvent()));
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.wifi_pass_book), new WifiPassBookEvent()));
         return list;
     }
 }

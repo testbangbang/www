@@ -437,7 +437,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             final List<Metadata> metadataList = generateMetadata(dataManager, getContext(), total, tag, title, author, series);
             List<DataModel> dataModels = new ArrayList<>();
             DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null, ThumbnailUtils.defaultThumbnailMapping());
-            final RxLibraryMoveToRequest request = new RxLibraryMoveToRequest(dataManager, list.get(from), list.get(to), dataModels);
+            final RxLibraryMoveToRequest request = new RxLibraryMoveToRequest(dataManager, list.get(from), list.get(to), metadataList);
 
             request.execute(new RxCallback<RxLibraryMoveToRequest>() {
                 @Override

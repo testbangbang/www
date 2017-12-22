@@ -23,4 +23,8 @@
     <string name="sort_by_name">名称排序</string>
     <string name="my_book">我的图书</string>
     <string name="wifi_pass_book">WIFI传书</string>
+    <string name="book_detail">图书详情</string>
+    <string name="rename_library">重命名</string>
+    <string name="delete_library">删除分组</string>
+    <string name="delete_library_include_book">删除分组及全部图书</string>
 </resources>

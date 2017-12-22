@@ -80,8 +80,7 @@
             android:id="@+id/content_pageView"
             items="@{libraryModel.visibleItems}"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_height="@dimen/library_content_page_view_height" />
 
         <include
             layout="@layout/page_indicator_layout"
