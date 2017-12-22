@@ -24,7 +24,7 @@
     <string name="exit">退出</string>
     <string name="submit_fail">提交失败</string>
     <string name="answer_record">答题记录</string>
-    <string name="get_result">批改结果</string>
+    <string name="get_result">获取批改</string>
     <string name="waiting_review">作业还在等待老师批改</string>
     <string name="right_answer">正确答案：</string>
     <string name="exit_tips">确定要退出吗？</string>
@@ -47,6 +47,8 @@
     <string name="can_not_delete_page">不能删除该页面</string>
     <string name="note_page" formatted="false">页：%s</string>
     <string name="question_page" formatted="false">题：%s</string>
+    <string name="subject" formatted="false">学科：%s</string>
+    <string name="publish_time" formatted="false">发布时间：%s</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>

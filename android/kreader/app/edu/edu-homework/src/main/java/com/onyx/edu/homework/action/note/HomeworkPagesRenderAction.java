@@ -66,8 +66,10 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         }
         final String docId = documentIds.get(0);
         Question question = getQuestion(docId);
-        if (question == null) {
-            BaseCallback.invoke(baseCallback, null, null);
+        if (question == null || !question.doneAnswer) {
+            documentIds.remove(docId);
+            documentRenderCount = 0;
+            renderPageBitmap(noteViewHelper, baseCallback);
             return;
         }
 

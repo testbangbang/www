@@ -9,6 +9,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.utils.BitmapUtils;
@@ -50,7 +51,9 @@ public class HomeworkPagesRenderRequest extends BaseNoteRequest {
         loadShapeData(parent);
         renderVisiblePages(parent);
         if (saveAsFile) {
+            benchmarkStart();
             filePath = saveToFile(parent.getRenderBitmap(), getDocUniqueId(), getVisiblePages().get(0).getName());
+            Debug.d(getClass(), "saveToFile:" + benchmarkEnd());
         }else {
             renderBitmap = Bitmap.createBitmap(parent.getRenderBitmap());
         }

@@ -40,9 +40,6 @@ import com.onyx.android.sdk.scribble.utils.DeviceConfig;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 import com.onyx.android.sdk.scribble.utils.MappingConfig;
 import com.onyx.android.sdk.utils.Base64ImageParser;
-import com.onyx.android.sdk.utils.StringUtils;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -129,7 +126,7 @@ public class NoteViewHelper {
     private boolean isLineLayoutMode = false;
     private volatile boolean isDrawing = false;
     private boolean enableTouchEvent = true;
-    private Context context;
+    private Context appContext;
     private ShapeDataInfo shapeDataInfo = new ShapeDataInfo();
 
     private Rect customLimitRect = null;
@@ -143,7 +140,7 @@ public class NoteViewHelper {
     }
 
     public NoteViewHelper(Context context) {
-        this.context = context.getApplicationContext();
+        this.appContext = context.getApplicationContext();
     }
 
     public void setView(final Context context, final SurfaceView view, final InputCallback c) {
@@ -156,7 +153,7 @@ public class NoteViewHelper {
         updateViewMatrix();
         updateLimitRect();
         pauseDrawing();
-        this.context = context.getApplicationContext();
+        this.appContext = context.getApplicationContext();
     }
 
     public ShapeDataInfo getShapeDataInfo() {
@@ -187,8 +184,8 @@ public class NoteViewHelper {
         return drawText;
     }
 
-    public Context getContext() {
-        return context;
+    public Context getAppContext() {
+        return appContext;
     }
 
     public void flushTouchPointList() {
@@ -292,7 +289,7 @@ public class NoteViewHelper {
         TextPaint tp = new TextPaint(TextPaint.ANTI_ALIAS_FLAG);
         tp.setColor(Color.BLACK);
         tp.setTextSize(DRAW_TEXT_SIZE);
-        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
+        return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getAppContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
                 Layout.Alignment.ALIGN_NORMAL, 1f,0f,false);
     }
 
@@ -524,7 +521,7 @@ public class NoteViewHelper {
     }
 
     public void reset() {
-        getNoteDocument().close(getContext());
+        getNoteDocument().close(getAppContext());
         quit();
         recycleBitmap();
     }

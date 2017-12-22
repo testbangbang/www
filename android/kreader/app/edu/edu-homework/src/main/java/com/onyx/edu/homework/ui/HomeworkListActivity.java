@@ -22,6 +22,7 @@ import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
@@ -37,13 +38,13 @@ import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
-import com.onyx.edu.homework.event.SaveNoteEvent;
 import com.onyx.edu.homework.event.StopNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -180,7 +181,7 @@ public class HomeworkListActivity extends BaseActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                getDataBundle().post(new ResumeNoteEvent(false));
+                reloadQuestionFragment(currentPage);
             }
         });
         dialog.show();
@@ -223,26 +224,39 @@ public class HomeworkListActivity extends BaseActivity {
             showMessage(R.string.no_find_homework);
             return;
         }
-        binding.toolbar.title.setText(homework.child.title);
-        DataBundle.getInstance().setHomeworkId(homework.child);
+        DataBundle.getInstance().setHomeworkId(homework.child._id);
         showMessage(R.string.loading_questions);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                initToolbarTitle();
                 questions = actionChain.getQuestions();
                 if (e != null && CollectionUtils.isNullOrEmpty(questions)) {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
                 hideMessage();
-                showWaitingDialog();
                 updateViewState();
                 showTotalScore();
                 initQuestions(questions);
             }
 
         });
+    }
+
+    private void initToolbarTitle() {
+        String title = homework.child.title;
+        String subject = getDataBundle().getHomeworkInfo().subject;
+        Date beginTime = getDataBundle().getHomeworkInfo().beginTime;
+        if (!StringUtils.isNullOrEmpty(subject)) {
+            title += "  " + getString(R.string.subject, subject);
+        }
+        if (beginTime != null) {
+            String time = DateTimeUtil.formatDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            title += "  " + getString(R.string.publish_time, time);
+        }
+        binding.toolbar.title.setText(title);
     }
 
     private boolean checkWifi(boolean showMessage) {
@@ -321,13 +335,6 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void updateShowInfo() {
         binding.total.setText(getString(R.string.total, questions.size()));
-    }
-
-    private void showWaitingDialog() {
-        if (!getDataBundle().isDone()) {
-            return;
-        }
-        OnyxCustomDialog.getMessageDialog(this, getString(R.string.waiting_review)).show();
     }
 
     @Subscribe
@@ -422,7 +429,7 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setVisibility(getDataBundle().isDoing() ? View.VISIBLE : View.GONE);
         binding.submit.setVisibility(getDataBundle().isReview() ? View.GONE : View.VISIBLE);
         binding.result.setVisibility((getDataBundle().isReview() && Config.getInstance().isShowScore()) ? View.VISIBLE : View.GONE);
-        binding.getResult.setVisibility(getDataBundle().isDone() ? View.VISIBLE : View.GONE);
+        binding.getResult.setVisibility(getDataBundle().isSubmitted() ? View.VISIBLE : View.GONE);
         binding.submit.setText(getDataBundle().isDoing() ? R.string.submit : R.string.submited);
         binding.submit.setEnabled(getDataBundle().isDoing());
     }

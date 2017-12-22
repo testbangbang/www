@@ -7,8 +7,7 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
-import com.onyx.edu.homework.data.Homework;
-import com.onyx.edu.homework.data.HomeworkDetail;
+import com.onyx.edu.homework.data.HomeworkInfo;
 import com.onyx.edu.homework.data.HomeworkState;
 
 import org.greenrobot.eventbus.EventBus;
@@ -39,7 +38,7 @@ public class DataBundle {
 
     private CloudManager cloudManager;
     private DataManager dataManager;
-    private HomeworkDetail homework;
+    private HomeworkInfo homeworkInfo = new HomeworkInfo();
     private EventBus eventBus;
     private NoteViewHelper noteViewHelper;
     private HomeworkState state = HomeworkState.DOING;
@@ -57,11 +56,15 @@ public class DataBundle {
 
     @Nullable
     public String getHomeworkId() {
-        return homework == null ? null : homework._id;
+        return homeworkInfo.homeworkId;
     }
 
-    public void setHomeworkId(HomeworkDetail detail) {
-        this.homework = detail;
+    public void setHomeworkId(String id) {
+        homeworkInfo.setHomeworkId(id);
+    }
+
+    public HomeworkInfo getHomeworkInfo() {
+        return homeworkInfo;
     }
 
     public EventBus getEventBus() {
@@ -102,12 +105,12 @@ public class DataBundle {
         this.state = state;
     }
 
-    public boolean isDone() {
-        return state == HomeworkState.DONE;
+    public boolean isSubmitted() {
+        return state == HomeworkState.SUBMITTED;
     }
 
     public boolean isDoing() {
-        return state == HomeworkState.DOING;
+        return state == HomeworkState.DOING || state == HomeworkState.SUBMITTED;
     }
 
     public boolean isReview() {

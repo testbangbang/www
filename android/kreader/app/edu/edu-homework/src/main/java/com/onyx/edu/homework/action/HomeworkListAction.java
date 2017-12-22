@@ -6,6 +6,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkRequestModel;
 import com.onyx.android.sdk.data.model.Question;
+import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.base.BaseAction;
 import com.onyx.edu.homework.request.HomeworkListRequest;
 
@@ -35,6 +36,7 @@ public class HomeworkListAction extends BaseAction {
                 if (homeworkRequestModel != null) {
                     questions.addAll(homeworkRequestModel.questions);
                 }
+                DataBundle.getInstance().getHomeworkInfo().loadFromHomeworkRequestModel(homeworkRequestModel);
                 baseCallback.done(request, e);
             }
         });
