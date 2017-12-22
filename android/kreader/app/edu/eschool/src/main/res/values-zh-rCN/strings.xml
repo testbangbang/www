@@ -113,4 +113,6 @@
     <string name="online_library_load_error">获取书库异常</string>
     <string name="online_library_load_empty">在线书库为空</string>
     <string name="online_group_load_error">获取分组异常</string>
+
+    <string name="date_format">MM月dd日HH时mm分</string>
 </resources>
