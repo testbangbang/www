@@ -50,8 +50,10 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by suicheng on 2017/12/7.
@@ -59,6 +61,7 @@ import java.util.List;
 public class HomeworkFragment extends Fragment {
     private static final String TAG = "HomeworkFragment";
 
+    private static SimpleDateFormat DATE_FORMAT_MMDD_HHMM = new SimpleDateFormat("MM月dd日HH时mm分", Locale.SIMPLIFIED_CHINESE);
     private PageRecyclerView contentPageView;
 
     private FragmentHomeworkBinding binding;
@@ -77,6 +80,12 @@ public class HomeworkFragment extends Fragment {
     public static HomeworkFragment newInstance() {
         HomeworkFragment fragment = new HomeworkFragment();
         return fragment;
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        DATE_FORMAT_MMDD_HHMM = new SimpleDateFormat(getContext().getString(R.string.date_format), Locale.getDefault());
     }
 
     @Nullable
@@ -363,7 +372,6 @@ public class HomeworkFragment extends Fragment {
         return CloudConf.create(host, api, Constant.DEFAULT_CLOUD_STORAGE);
     }
 
-
     private CloudManager getCloudManager() {
         return getDataHolder().getCloudManager();
     }
@@ -388,7 +396,15 @@ public class HomeworkFragment extends Fragment {
 
         public void bind(Homework item) {
             binding.setViewModel(item);
+            binding.textViewDate.setText(getDateString(item));
             binding.executePendingBindings();
+        }
+
+        private String getDateString(Homework item) {
+            if (item.getUpdatedAt() == null) {
+                return null;
+            }
+            return DATE_FORMAT_MMDD_HHMM.format(item.getUpdatedAt());
         }
     }
 }

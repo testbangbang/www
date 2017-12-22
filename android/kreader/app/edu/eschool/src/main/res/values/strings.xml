@@ -120,4 +120,6 @@
     <string name="online_library_load_error">Online library got the exception</string>
     <string name="online_library_load_empty">Online library got the empty</string>
     <string name="online_group_load_error">Online grouping got the exception</string>
+
+    <string name="date_format">MM-dd HH:mm</string>
 </resources>
