@@ -23,6 +23,7 @@
     <dimen name="tab_item_text_padding_right">8dp</dimen>
     <dimen name="tab_item_text_padding_bottom">8dp</dimen>
     <dimen name="book_item_text_size">26sp</dimen>
+    <dimen name="book_item_date_text_size">24sp</dimen>
     <dimen name="book_item_text_margin_right">19dp</dimen>
     <dimen name="book_item_cover_image_width">232dp</dimen>
     <dimen name="book_item_cover_image_height">320dp</dimen>
