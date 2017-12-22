@@ -1,5 +1,10 @@
 {
   "ttsEnabled" : false,
+  "scribbleShapeEnable": false,
+  "scribbleColorEnable": false,
+  "scribbleUndoEnable": false,
+  "scribbleRedoEnable": false,
+  "scribbleEraseAllDirectEnable": true,
   "hasFrontLight" : false,
   "disableNoteFunc" : false,
   "askForClose" : true,

@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.utils.DimenUtils;
@@ -65,6 +66,7 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     private boolean isDrag = false;
     private Set<ReaderMenuAction> disableMenuActions;
     private boolean showFullToolbar = false;
+    private boolean directToUseEraserAll = false;
     private CommonViewHolder pagePositionHolder;
 
     public ShowScribbleMenuAction(ViewGroup parent,
@@ -154,7 +156,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             @Override
             public OnyxToolbar OnClickListener(View view) {
                 ReaderMenuAction action = (ReaderMenuAction) view.getTag();
-                handleClickListener(action);
+                if (processDirectMenuClick(readerDataHolder, action)) {
+                    return null;
+                }
                 return handleBottomMenuView(readerDataHolder, action, expandedActions);
             }
         });
@@ -166,6 +170,15 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             }
         });
         return toolbar;
+    }
+
+    private boolean processDirectMenuClick(final ReaderDataHolder readerDataHolder, ReaderMenuAction action) {
+        if (action == ReaderMenuAction.SCRIBBLE_ERASER && directToUseEraserAll) {
+            showEraseAllConfirmDialog(readerDataHolder);
+            return true;
+        }
+        handleClickListener(action);
+        return false;
     }
 
     private OnyxToolbar createScribbleTopToolbar(ReaderDataHolder readerDataHolder) {
@@ -496,6 +509,29 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         });
     }
 
+    private void showEraseAllConfirmDialog(final ReaderDataHolder readerDataHolder) {
+        FlushNoteAction.flush(readerDataHolder, true, true, false, false, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final OnyxCustomDialog customDialog = OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(),
+                        readerDataHolder.getContext().getString(R.string.erase_all_tip),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                handleClickListener(ReaderMenuAction.SCRIBBLE_ERASER_ALL);
+                                dialog.dismiss();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FlushNoteAction.flush(readerDataHolder, true, true, false, false, false, null);
+                            }
+                        });
+                customDialog.show();
+            }
+        });
+    }
+
     private void switchDragFunc(boolean alwaysDisable){
         CommonViewHolder dragViewHolder = scribbleViewHolderMap.get(ReaderMenuAction.SCRIBBLE_DRAG);
         if (dragViewHolder == null) {
@@ -595,5 +631,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
 
     public void setSelectWidthAction(ReaderMenuAction selectWidthAction) {
         this.selectWidthAction = selectWidthAction;
+    }
+
+    public void setDirectToUseEraserAll(boolean all) {
+        this.directToUseEraserAll = all;
     }
 }

@@ -203,6 +203,22 @@ public class ShowReaderMenuAction extends BaseAction {
         if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isEnableCustomRefreshConfig()){
             disableMenus.add(ReaderMenuAction.REFRESH);
         }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isScribbleShapeEnable()) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_SHAPE);
+        }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isScribbleColorEnable()) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_COLOR);
+        }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isScribbleUndoEnable()) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_UNDO);
+        }
+
+        if (!DeviceConfig.sharedInstance(readerDataHolder.getContext()).isScribbleRedoEnable()) {
+            disableMenus.add(ReaderMenuAction.SCRIBBLE_REDO);
+        }
     }
 
     private void createReaderSideMenu(final ReaderDataHolder readerDataHolder) {
@@ -800,6 +816,7 @@ public class ShowReaderMenuAction extends BaseAction {
                 getScribbleActionCallback(readerDataHolder),
                 disableMenus,
                 showFullToolbar);
+        menuAction.setDirectToUseEraserAll(DeviceConfig.sharedInstance(readerDataHolder.getContext()).isScribbleEraseAllDirectEnable());
         ReaderNoteDataInfo noteDataInfo = readerDataHolder.getNoteManager().getNoteDataInfo();
         if (noteDataInfo != null) {
             int currentShapeType = noteDataInfo.getCurrentShapeType();
@@ -844,7 +861,11 @@ public class ShowReaderMenuAction extends BaseAction {
         return callback;
     }
 
-    public static boolean isGroupAction(final ReaderMenuAction action) {
+    public static boolean isGroupAction(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
+        if (action == ReaderMenuAction.SCRIBBLE_ERASER &&
+                DeviceConfig.sharedInstance(readerDataHolder.getContext()).isScribbleEraseAllDirectEnable()) {
+            return false;
+        }
         return (action == ReaderMenuAction.SCRIBBLE_ERASER ||
                 action == ReaderMenuAction.SCRIBBLE_WIDTH ||
                 action == ReaderMenuAction.SCRIBBLE_SHAPE ||
@@ -852,7 +873,7 @@ public class ShowReaderMenuAction extends BaseAction {
     }
 
     public static boolean processScribbleActionGroup(final ReaderDataHolder readerDataHolder, final ReaderMenuAction action) {
-        if (!isGroupAction(action)) {
+        if (!isGroupAction(readerDataHolder, action)) {
             return false;
         }
         final FlushNoteAction flushNoteAction = new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false);
