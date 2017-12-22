@@ -22,6 +22,7 @@ import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.DateTimeUtil;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.homework.DataBundle;
@@ -44,6 +45,7 @@ import com.onyx.edu.homework.event.SubmitEvent;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -223,13 +225,13 @@ public class HomeworkListActivity extends BaseActivity {
             showMessage(R.string.no_find_homework);
             return;
         }
-        binding.toolbar.title.setText(homework.child.title);
-        DataBundle.getInstance().setHomeworkId(homework.child);
+        DataBundle.getInstance().setHomeworkId(homework.child._id);
         showMessage(R.string.loading_questions);
         final HomeworkListActionChain actionChain = new HomeworkListActionChain(libraryId);
         actionChain.execute(this, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
+                initToolbarTitle();
                 questions = actionChain.getQuestions();
                 if (e != null && CollectionUtils.isNullOrEmpty(questions)) {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -243,6 +245,20 @@ public class HomeworkListActivity extends BaseActivity {
             }
 
         });
+    }
+
+    private void initToolbarTitle() {
+        String title = homework.child.title;
+        String subject = getDataBundle().getHomeworkInfo().subject;
+        Date beginTime = getDataBundle().getHomeworkInfo().beginTime;
+        if (!StringUtils.isNullOrEmpty(subject)) {
+            title += "  " + getString(R.string.subject, subject);
+        }
+        if (beginTime != null) {
+            String time = DateTimeUtil.formatDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
+            title += "  " + getString(R.string.publish_time, time);
+        }
+        binding.toolbar.title.setText(title);
     }
 
     private boolean checkWifi(boolean showMessage) {

@@ -47,6 +47,8 @@
     <string name="can_not_delete_page">不能删除该页面</string>
     <string name="note_page" formatted="false">页：%s</string>
     <string name="question_page" formatted="false">题：%s</string>
+    <string name="subject" formatted="false">学科：%s</string>
+    <string name="publish_time" formatted="false">发布时间：%s</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>
