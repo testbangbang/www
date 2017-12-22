@@ -516,4 +516,6 @@
     <string name="exit">Exit</string>
     <string name="submit">Submit</string>
     <string name="fetch">Fetch</string>
+
+    <string name="erase_all_tip">Be sure to erase all handwriting, please be careful</string>
 </resources>

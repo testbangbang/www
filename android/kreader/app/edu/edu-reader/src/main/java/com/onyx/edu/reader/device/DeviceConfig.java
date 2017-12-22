@@ -32,6 +32,11 @@ public class DeviceConfig {
     private boolean hasFrontLight = true;
     private boolean hasNaturalLight = false;
     private boolean regalEnable = false;
+    private boolean scribbleShapeEnable = true;
+    private boolean scribbleColorEnable = true;
+    private boolean scribbleUndoEnable = true;
+    private boolean scribbleRedoEnable = true;
+    private boolean scribbleEraseAllDirectEnable = false;
 
     private KeyBinding keyBinding = null;
     private TouchBinding touchBinding = null;
@@ -648,6 +653,46 @@ public class DeviceConfig {
     @JSONField(deserialize = false, serialize = false)
     public int getMergeUpdateTimeout(boolean isFastUpdateMode) {
         return isFastUpdateMode ? mergeFastUpdateTimeout : mergeUpdateTimeout;
+    }
+
+    public boolean isScribbleShapeEnable() {
+        return scribbleShapeEnable;
+    }
+
+    public void setScribbleShapeEnable(boolean enable) {
+        this.scribbleShapeEnable = enable;
+    }
+
+    public boolean isScribbleColorEnable() {
+        return scribbleColorEnable;
+    }
+
+    public void setScribbleColorEnable(boolean enable) {
+        this.scribbleColorEnable = enable;
+    }
+
+    public boolean isScribbleUndoEnable() {
+        return scribbleUndoEnable;
+    }
+
+    public void setScribbleUndoEnable(boolean enable) {
+        this.scribbleUndoEnable = enable;
+    }
+
+    public boolean isScribbleRedoEnable() {
+        return scribbleRedoEnable;
+    }
+
+    public void setScribbleRedoEnable(boolean enable) {
+        this.scribbleRedoEnable = enable;
+    }
+
+    public boolean isScribbleEraseAllDirectEnable() {
+        return scribbleEraseAllDirectEnable;
+    }
+
+    public void setScribbleEraseAllDirectEnable(boolean enable) {
+        this.scribbleEraseAllDirectEnable = enable;
     }
 
     public static void adjustOptionsWithDeviceConfig(final BaseOptions baseOptions, final Context context) {
