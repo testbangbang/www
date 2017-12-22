@@ -180,7 +180,7 @@ public class HomeworkListActivity extends BaseActivity {
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialog) {
-                getDataBundle().post(new ResumeNoteEvent());
+                getDataBundle().post(new ResumeNoteEvent(false));
             }
         });
         dialog.show();
@@ -370,7 +370,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (position >= total) {
             return;
         }
-        binding.page.setText(current + File.separator + total);
+        binding.page.setText(getString(R.string.question_page, current + File.separator + total));
 
         if (getDataBundle().isReview()) {
             Question question = questions.get(position);
@@ -394,7 +394,6 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onSubmitEvent(SubmitEvent event) {
         updateViewState();
-        reloadQuestionFragment(currentPage);
     }
 
     @Subscribe

@@ -97,7 +97,11 @@ public class NoteToolFragment extends BaseFragment {
 
     @Subscribe
     public void onUpdatePagePositionEvent(UpdatePagePositionEvent event) {
-        menuManager.getMainMenu().setText(MenuId.PAGE, event.position);
+        menuManager.getMainMenu().setText(MenuId.PAGE, createPagePositionText(event.position));
+    }
+
+    private String createPagePositionText(String position) {
+        return getString(R.string.note_page, position);
     }
 
     @Subscribe
@@ -361,7 +365,7 @@ public class NoteToolFragment extends BaseFragment {
             }
         });
         subMenuLayout.setVisibility(View.GONE);
-        menuManager.getMainMenu().setText(MenuId.PAGE, "1/" + initPageCount);
+        menuManager.getMainMenu().setText(MenuId.PAGE, createPagePositionText("1/" + initPageCount));
     }
 
     private void prepareHideSubMenu() {

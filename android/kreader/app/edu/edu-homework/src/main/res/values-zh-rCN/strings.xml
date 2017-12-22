@@ -15,7 +15,7 @@
     <string name="total" formatted="false">总数：%d</string>
     <string name="has_answer" formatted="false">已答：%d</string>
     <string name="not_answer" formatted="false">未答：%d</string>
-    <string name="submit_tips">提交后不可修改，是否确认提交？</string>
+    <string name="submit_tips">确认提交吗？</string>
     <string name="continue_answer">继续答题</string>
     <string name="submit">提交</string>
     <string name="submit_success">提交成功</string>
@@ -45,6 +45,8 @@
     <string name="ask_for_eraser_page">你确定要擦除该页面吗？</string>
     <string name="detail_analysis">解析：</string>
     <string name="can_not_delete_page">不能删除该页面</string>
+    <string name="note_page" formatted="false">页：%s</string>
+    <string name="question_page" formatted="false">题：%s</string>
     <string-array name="question_option">
         <item>A</item>
         <item>B</item>

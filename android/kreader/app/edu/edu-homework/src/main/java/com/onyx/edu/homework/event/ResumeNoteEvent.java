@@ -8,4 +8,10 @@ public class ResumeNoteEvent {
 
     public boolean render;
 
+    public ResumeNoteEvent() {
+    }
+
+    public ResumeNoteEvent(boolean render) {
+        this.render = render;
+    }
 }

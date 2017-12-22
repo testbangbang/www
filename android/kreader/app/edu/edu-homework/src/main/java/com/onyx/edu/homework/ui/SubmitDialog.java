@@ -6,11 +6,13 @@ import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.Question;
+import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.DataBundle;
@@ -19,6 +21,7 @@ import com.onyx.edu.homework.action.HomeworkSubmitAction;
 import com.onyx.edu.homework.action.note.MakeHomeworkPagesAnswerActionChain;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.databinding.DialogSubmitBinding;
+import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import java.util.ArrayList;
@@ -32,6 +35,7 @@ public class SubmitDialog extends OnyxBaseDialog {
 
     private DialogSubmitBinding binding;
     private List<Question> questions;
+    private NoteViewHelper noteViewHelper;
 
     public SubmitDialog(@NonNull Context context, List<Question> questions) {
         super(context, R.style.NoTitleDialog);
@@ -91,7 +95,7 @@ public class SubmitDialog extends OnyxBaseDialog {
             }
         }
         onStartSubmit();
-        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
+        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions).execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {
@@ -134,7 +138,13 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.action1.setVisibility(View.GONE);
         binding.action0.setText(R.string.close);
         binding.action0.setVisibility(View.VISIBLE);
-        DataBundle.getInstance().setState(HomeworkState.DONE);
         DataBundle.getInstance().post(new SubmitEvent());
+    }
+
+    private NoteViewHelper getNoteViewHelper() {
+        if (noteViewHelper == null) {
+            noteViewHelper = new NoteViewHelper();
+        }
+        return noteViewHelper;
     }
 }

@@ -434,7 +434,7 @@ public class ScribbleFragment extends BaseFragment {
 
     @Subscribe
     public void onResumeNoteEvent(ResumeNoteEvent event) {
-        flushDocument(false, shouldResume(), null);
+        flushDocument(event.render, shouldResume(), null);
     }
 
     public void saveDocument(final boolean finishAfterSave,

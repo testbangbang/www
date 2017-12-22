@@ -19,7 +19,7 @@
             android:layout_height="0dp">
 
             <TextView
-                android:textSize="@dimen/question_type_text_size"
+                android:textSize="@dimen/question_content_text_size"
                 android:textColor="@android:color/black"
                 android:id="@+id/question_type"
                 android:layout_width="wrap_content"
