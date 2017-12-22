@@ -1,7 +1,7 @@
 package com.onyx.jdread.shop.cloud.entity.jdbean;
 
 
-import com.onyx.jdread.data.database.BookDetailEntity;
+import com.onyx.android.sdk.data.model.Metadata;
 
 /**
  * Created by huxiaomao on 17/3/28.
@@ -10,7 +10,7 @@ import com.onyx.jdread.data.database.BookDetailEntity;
 public class BookDetailResultBean {
     public String code;
     public Detail detail;
-    public GetBookDetailEntity getBookDetailEntity;
+    public GetMetadataEntity getMetadataEntity;
 
     public String getCode() {
         return code;
@@ -28,55 +28,35 @@ public class BookDetailResultBean {
         this.detail = detail;
     }
 
-    public GetBookDetailEntity getGetBookDetailEntity() {
-        return getBookDetailEntity;
+    public GetMetadataEntity getGetMetadataEntity() {
+        return getMetadataEntity;
     }
 
-    public void setGetBookDetailEntity(GetBookDetailEntity getBookDetailEntity) {
-        this.getBookDetailEntity = getBookDetailEntity;
+    public void setGetBookDetailEntity(GetMetadataEntity getMetadataEntity) {
+        this.getMetadataEntity = getMetadataEntity;
     }
 
-    public static class GetBookDetailEntity {
-        private BookDetailEntity bookDetailEntity = new BookDetailEntity();
+    public static class GetMetadataEntity {
+        private Metadata metadata = new Metadata();
 
-        public GetBookDetailEntity(BookDetailResultBean.Detail detail) {
-            bookDetailEntity.bookId = detail.getEbookId();
-            bookDetailEntity.imageUrl = detail.getLargeLogo();
-            bookDetailEntity.author = detail.getAuthor();
-            bookDetailEntity.bookName = detail.getBookName();
-            bookDetailEntity.info = detail.getInfo();
-            bookDetailEntity.isTryRead = detail.isTryRead();
-            bookDetailEntity.isAlreadyBorrow = detail.isAlreadyBorrow();
-            bookDetailEntity.catalog = detail.getCatalog();
-            bookDetailEntity.isAlreadyBuy = detail.isAlreadyBuy();
-            bookDetailEntity.isBorrow = detail.isBorrow();
-            bookDetailEntity.isBuy = detail.isBuy();
-            bookDetailEntity.fileSize = detail.getSize();
-            bookDetailEntity.format = detail.getFormat();
-            bookDetailEntity.isFluentRead = detail.isFluentRead();
-            bookDetailEntity.isFree = detail.isFree();
-            bookDetailEntity.isCanFreeGet = detail.isCanFreeGet();
-            bookDetailEntity.isUserCanFluentRead = detail.isUserCanFluentRead();
-            bookDetailEntity.isUserFluentReadAddToCard = detail.isUserFluentReadAddToCard();
-            bookDetailEntity.jdPrice = detail.getJdPrice();
-            bookDetailEntity.star = detail.getStar();
-            bookDetailEntity.priceMessage = detail.getPriceMessage();
-            bookDetailEntity.orderId = detail.getOrderId();
-            bookDetailEntity.orgJdPrice = detail.getOrgJdPrice();
-            bookDetailEntity.publisher = detail.getPublisher();
-            bookDetailEntity.edition = detail.getEdition();
-            bookDetailEntity.isbn = detail.getIsbn();
-            bookDetailEntity.publishTime = detail.getPublishTime();
-            bookDetailEntity.size = detail.getSize();
-            bookDetailEntity.tryDownLoadUrl = detail.getTryDownLoadUrl();
+        public GetMetadataEntity(BookDetailResultBean.Detail detail) {
+            metadata.setId(detail.getEbookId());
+            metadata.setCoverUrl(detail.getLargeLogo());
+            metadata.setAuthors(detail.getAuthor());
+            metadata.setName(detail.getBookName());
+            metadata.setDescription(detail.getInfo());
+            metadata.setType(detail.getFormat());
+            metadata.setPublisher(detail.getPublisher());
+            metadata.setISBN(detail.getIsbn());
+            metadata.setLanguage(detail.getLanguage());
         }
 
-        public BookDetailEntity getBookDetailEntity() {
-            return bookDetailEntity;
+        public Metadata getMetadata() {
+            return metadata;
         }
 
-        public void setBookDetailEntity(BookDetailEntity bookDetailEntity) {
-            this.bookDetailEntity = bookDetailEntity;
+        public void setMetadata(Metadata metadata) {
+            this.metadata = metadata;
         }
     }
 

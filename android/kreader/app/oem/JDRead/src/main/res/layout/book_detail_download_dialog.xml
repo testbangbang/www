@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/book_download_dialog_fluent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawableLeft="@mipmap/ic_cart"
+            android:drawablePadding="@dimen/book_detail_dialog_drawable_padding"
+            android:gravity="center_vertical"
+            android:padding="@dimen/book_detail_dialog_message_margin_left"
+            android:text="@string/book_detail_dialog_fluent"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <include layout="@layout/layout_line" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/book_download_dialog_buy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@mipmap/ic_cart"
+        android:drawablePadding="@dimen/book_detail_dialog_drawable_padding"
+        android:gravity="center_vertical"
+        android:padding="@dimen/book_detail_dialog_message_margin_left"
+        android:text="@string/book_detail_dialog_buy"
+        android:textSize="@dimen/level_two_heading_font" />
+
+    <include layout="@layout/layout_line" />
+
+    <TextView
+        android:id="@+id/book_download_dialog_add_cart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawableLeft="@mipmap/ic_cart"
+        android:drawablePadding="@dimen/book_detail_dialog_drawable_padding"
+        android:gravity="center_vertical"
+        android:padding="@dimen/book_detail_dialog_message_margin_left"
+        android:text="@string/book_detail_dialog_add_cart"
+        android:textSize="@dimen/level_two_heading_font" />
+
+</LinearLayout>

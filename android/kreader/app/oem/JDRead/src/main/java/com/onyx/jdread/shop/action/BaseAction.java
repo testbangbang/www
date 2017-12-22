@@ -7,7 +7,7 @@ import com.onyx.jdread.shop.model.ShopDataBundle;
 
 public abstract class BaseAction<T extends ShopDataBundle> {
 
-    public abstract void execute(T dataBundle, RxCallback baseCallback);
+    public abstract void execute(T dataBundle, RxCallback rxCallback);
 
     public void showLoadingDialog(T dataBundle, int messageResId) {
         dataBundle.getEventBus().post(new LoadingDialogEvent(messageResId));

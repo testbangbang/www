@@ -6,6 +6,7 @@ import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.DeviceReceiver;
 import com.onyx.android.sdk.utils.PreferenceManager;
@@ -41,6 +42,12 @@ public class JDReadApplication extends MultiDexApplication {
         DataManager.init(instance, null);
         PreferenceManager.init(this);
         initEventListener();
+        initDownloadManager();
+    }
+
+    private void initDownloadManager() {
+        OnyxDownloadManager.init(this);
+        OnyxDownloadManager.getInstance();
     }
 
     private void initEventListener() {

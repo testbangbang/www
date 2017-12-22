@@ -4,6 +4,7 @@ import android.databinding.BindingAdapter;
 import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
@@ -11,6 +12,7 @@ import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
+import com.onyx.jdread.shop.view.HtmlTextView;
 
 import java.util.List;
 
@@ -64,6 +66,13 @@ public class ShopDatabingUtil {
         BookCommentsAdapter adapter = (BookCommentsAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"htmlContent"})
+    public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
+        if (!StringUtils.isNullOrEmpty(content)){
+            htmlTextView.setHtml(content);
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.onyx.jdread.shop.model;
 
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.jdread.common.AppBaseInfo;
 
 import org.greenrobot.eventbus.EventBus;
@@ -14,6 +15,7 @@ public class ShopDataBundle {
     private BookShopViewModel shopViewModel;
     private BookDetailViewModel bookDetailViewModel;
     private AppBaseInfo appBaseInfo;
+    private DataManager dataManager;
 
     private ShopDataBundle() {
 
@@ -68,5 +70,16 @@ public class ShopDataBundle {
             }
         }
         return appBaseInfo;
+    }
+
+    public DataManager getDataManager() {
+        if (dataManager == null) {
+            synchronized (DataManager.class) {
+                if (dataManager == null) {
+                    dataManager = new DataManager();
+                }
+            }
+        }
+        return dataManager;
     }
 }

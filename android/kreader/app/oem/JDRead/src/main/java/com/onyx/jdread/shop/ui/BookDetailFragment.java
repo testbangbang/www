@@ -1,5 +1,7 @@
 package com.onyx.jdread.shop.ui;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -8,34 +10,53 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.liulishuo.filedownloader.BaseDownloadTask;
+import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.common.CommonUtils;
 import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.common.ManagerActivityUtils;
+import com.onyx.jdread.common.ToastUtil;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
 import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
+import com.onyx.jdread.shop.action.BookshelfInsertAction;
+import com.onyx.jdread.shop.action.DownloadAction;
+import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
+import com.onyx.jdread.shop.event.BookShelfEvent;
+import com.onyx.jdread.shop.event.DownloadingEvent;
+import com.onyx.jdread.shop.event.OnBookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
 import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
 import com.onyx.jdread.shop.event.OnCopyrightEvent;
 import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
 import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
 import com.onyx.jdread.shop.event.OnViewCommentEvent;
+import com.onyx.jdread.shop.event.ShopSmoothCardEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.DownLoadHelper;
+import com.onyx.jdread.shop.view.CustomDialog;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 
 /**
  * Created by jackdeng on 2017/12/16.
@@ -49,6 +70,12 @@ public class BookDetailFragment extends BaseFragment {
     private long ebookId;
     private PageRecyclerView recyclerViewRecommend;
     private AlertDialog copyRightDialog;
+    private boolean isTryRead;
+    private boolean isSmoothRead;
+    private String localPath;
+    private BookDetailResultBean.Detail bookDetailBean;
+    private int downloadTaskState;
+    private BaseCallback.ProgressInfo progressInfo;
 
     @Nullable
     @Override
@@ -60,13 +87,29 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void initData() {
+        cleanData();
         ebookId = PreferenceManager.getLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, 0);
         getBookDetail();
     }
 
     private void getBookDetail() {
+        queryMetadata();
         getBookDetailData();
         getRecommendData();
+    }
+
+    private void queryMetadata() {
+        MetadataQueryAction metadataQueryAction = new MetadataQueryAction("");
+
+    }
+
+    private void cleanData() {
+        isTryRead = false;
+        ebookId = 0;
+        isSmoothRead = false;
+        localPath = "";
+        downloadTaskState = 0;
+        progressInfo = new BaseCallback.ProgressInfo();
     }
 
     private void initView() {
@@ -138,6 +181,7 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
     public void onRecommendItemClickEvent(OnRecommendItemClickEvent event) {
         ResultBookBean bookBean = event.getBookBean();
+        cleanData();
         setBookId(bookBean.ebookId);
     }
 
@@ -169,6 +213,126 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCopyrightCancelEvent(OnCopyrightCancelEvent event) {
         dismissCopyRightDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBookDetailReadNowEvent(OnBookDetailReadNowEvent event) {
+        bookDetailBean = event.getBookDetailBean();
+        tryDownload(bookDetailBean);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadingEvent(DownloadingEvent event) {
+        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
+        if (task != null) {
+            downloadTaskState = task.getStatus();
+            progressInfo = event.progressInfo;
+            localPath = task.getPath();
+            if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {
+                insertBookDetail(bookDetailBean, localPath);
+            }
+        }
+    }
+
+    private void insertBookDetail(BookDetailResultBean.Detail bookDetailBean, String localPath) {
+        BookshelfInsertAction insertAction = new BookshelfInsertAction(bookDetailBean, localPath);
+        insertAction.execute(getShopDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
+    }
+
+    private void tryDownload(BookDetailResultBean.Detail bookDetailBean) {
+        if (!CommonUtils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ManagerActivityUtils.showWifiDialog(getActivity());
+            return;
+        }
+
+        String strNowRead = bookDetailBinding.bookDetailInfo.bookDetailNowRead.getText().toString();
+        if (!getString(R.string.book_detail_button_now_read).equals(strNowRead)) {
+            download(bookDetailBean);
+            ToastUtil.showToast(getContext(), getString(R.string.book_detail_download_go_on));
+            return;
+        }
+
+        if (bookDetailBean == null) {
+            return;
+        }
+
+        if (isTryRead && DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
+            insertBookDetail(bookDetailBean, localPath);
+            return;
+        }
+
+        if (bookDetailBean != null && DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
+            insertBookDetail(bookDetailBean, localPath);
+            return;
+        }
+
+        if (bookDetailBean != null && DownLoadHelper.isDownloading(downloadTaskState)) {
+            ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_downloading));
+            return;
+        }
+
+        if (StringUtils.isNullOrEmpty(bookDetailBean.getTryDownLoadUrl())) {
+            ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
+            return;
+        }
+
+        download(bookDetailBean);
+        showDownloadAfterGoDialog(getString(R.string.book_detail_try_read), getString(R.string.book_detail_download_add_shelf),
+                getString(R.string.book_detail_go_shelf));
+    }
+
+    private void showDownloadAfterGoDialog(String title, String message, final String positiveText) {
+        CustomDialog.Builder builder = new CustomDialog.Builder(getActivity());
+        builder.setTitle(title).setMessage(message)
+                .setPositiveButton(positiveText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        if (getString(R.string.book_detail_go_shelf).equals(positiveText)) {
+                            EventBus.getDefault().post(new BookShelfEvent());
+                        } else {
+                            EventBus.getDefault().post(new ShopSmoothCardEvent());
+                        }
+                    }
+                })
+                .setNegativeButton(getString(R.string.book_detail_stay), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                }).create().show();
+    }
+
+    private void download(BookDetailResultBean.Detail bookDetailBean) {
+        String tryDownLoadUrl = bookDetailBean.getTryDownLoadUrl();
+        if (StringUtils.isNullOrEmpty(tryDownLoadUrl)) {
+            ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
+            return;
+        }
+        String bookName = tryDownLoadUrl.substring(tryDownLoadUrl.lastIndexOf("/") + 1);
+        bookName = bookName.substring(0, bookName.indexOf(Constants.BOOK_FORMAT)) + Constants.BOOK_FORMAT;
+        String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
+        DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, bookDetailBean.getBookName());
+        downloadAction.execute(getShopDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
+    }
+
+    public Context getContext() {
+        return JDReadApplication.getInstance().getApplicationContext();
     }
 
     private void showCopyRightDialog() {

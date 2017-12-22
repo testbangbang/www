@@ -29,4 +29,8 @@
         <item name="android:maxHeight">@dimen/rating_bar_style_max_height</item>
     </style>
 
+    <style name="BookDialog" parent="android:style/Theme.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+    </style>
 </resources>

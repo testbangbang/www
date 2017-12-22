@@ -5,6 +5,7 @@ import android.databinding.BaseObservable;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.event.OnBookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
 import com.onyx.jdread.shop.event.OnBookDetailTopRightEvent;
 import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
@@ -127,7 +128,7 @@ public class BookDetailViewModel extends BaseObservable {
     }
 
     public void onNowReadClick() {
-
+        getEventBus().post(new OnBookDetailReadNowEvent(bookDetailResultBean.detail));
     }
 
     public void onDownBookClick() {
