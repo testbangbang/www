@@ -35,7 +35,6 @@ public class SubmitDialog extends OnyxBaseDialog {
 
     private DialogSubmitBinding binding;
     private List<Question> questions;
-    private NoteViewHelper noteViewHelper;
 
     public SubmitDialog(@NonNull Context context, List<Question> questions) {
         super(context, R.style.NoTitleDialog);
