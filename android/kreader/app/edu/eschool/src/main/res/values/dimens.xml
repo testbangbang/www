@@ -34,4 +34,12 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="menu_item_text_size">28sp</dimen>
+
+    <dimen name="account_fragment_padding">28dp</dimen>
+    <dimen name="account_fragment_avatar_size">210dp</dimen>
+    <dimen name="account_fragment_avatar_margin">36dp</dimen>
+    <dimen name="account_fragment_name_size">30sp</dimen>
+    <dimen name="account_fragment_text_size">28sp</dimen>
+    <dimen name="account_fragment_text_margin">30dp</dimen>
+    <dimen name="account_fragment_first_divider_marin_top">35dp</dimen>
 </resources>

@@ -33,6 +33,7 @@ public class NeoAccountBase extends BaseData {
 
     public String info;
     public String library;
+    public String role;
 
     @JSONField(serialize = false, deserialize = false)
     public String getFirstGroup() {
@@ -59,6 +60,13 @@ public class NeoAccountBase extends BaseData {
 
     public String getName() {
         return StringUtils.getBlankStr(name);
+    }
+
+    public String getNameAppendRole() {
+        if (StringUtils.isNullOrEmpty(role)) {
+            return getName();
+        }
+        return getName() + "(" + role + ")";
     }
 
     @JSONField(serialize = false, deserialize = false)

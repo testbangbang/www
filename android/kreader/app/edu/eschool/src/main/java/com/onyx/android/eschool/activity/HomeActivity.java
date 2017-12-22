@@ -3,6 +3,7 @@ package com.onyx.android.eschool.activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +28,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.data.request.cloud.v2.GenerateAccountInfoRequest;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.utils.ActivityUtil;
@@ -232,8 +234,17 @@ public class HomeActivity extends BaseActivity {
         if (account == null) {
             return;
         }
+        translateAccountRole(account);
         StudentAccount.sendUserInfoSettingIntent(getApplicationContext(), account);
         updateScreenAccountInfo(account);
+    }
+
+    private void translateAccountRole(@NonNull NeoAccountBase account) {
+        int resId = ResourceUtils.getStringResIdByName(getApplicationContext(), account.role);
+        if (resId <= 0) {
+            return;
+        }
+        account.role = getString(resId);
     }
 
     private void updateScreenAccountInfo(NeoAccountBase account) {
@@ -249,8 +260,11 @@ public class HomeActivity extends BaseActivity {
         if (selectGroupIndex >= CollectionUtils.getSize(currentAccount.groups)) {
             selectGroupIndex = 0;
         }
-        NeoAccountBase account = new NeoAccountBase();
-        account.name = currentAccount.getName();
+        NeoAccountBase account = JSONObjectParseUtils.parseObject(JSONObjectParseUtils.toJson(currentAccount),
+                NeoAccountBase.class);
+        if (account == null) {
+            return null;
+        }
         account.groups = new ArrayList<>();
         account.groups.add(currentAccount.groups.get(selectGroupIndex));
         return account;

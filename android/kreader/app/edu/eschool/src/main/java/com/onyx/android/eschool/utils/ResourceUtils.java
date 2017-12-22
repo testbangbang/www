@@ -18,6 +18,10 @@ public class ResourceUtils {
         return 0;
     }
 
+    static public int getStringResIdByName(Context context, final String resourceName) {
+        return getResourceIdByName(context, "string", resourceName);
+    }
+
     static public int getDrawableResIdByName(Context context, final String resourceName) {
         return getResourceIdByName(context, "drawable", resourceName);
     }
