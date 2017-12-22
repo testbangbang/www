@@ -13,7 +13,6 @@ import android.support.v7.app.ActionBar;
 import android.text.Layout;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -77,16 +76,18 @@ import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 
@@ -177,6 +178,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         int category = ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp));
+                        if (processDirectMenuItemClick(category)) {
+                            return;
+                        }
                         if (digestionSpanMenu(category)) {
                             return;
                         }
@@ -294,6 +298,34 @@ public class ScribbleActivity extends BaseScribbleActivity {
             settingBtn.setVisibility(View.GONE);
             saveBtn.setVisibility(View.GONE);
         }
+    }
+
+
+    private boolean processDirectMenuItemClick(int category) {
+        if (CollectionUtils.isNullOrEmpty(NoteAppConfig.sharedInstance(this).getScribbleActionDirectList())) {
+            return false;
+        }
+        if (NoteAppConfig.sharedInstance(this).getScribbleActionDirectList().contains(category)) {
+            switch (category) {
+                case ScribbleMenuCategory.ERASER:
+                    showEraseAllConfirmDialog();
+                    return true;
+            }
+        }
+        return false;
+    }
+
+    private void showEraseAllConfirmDialog() {
+        final OnyxCustomDialog customDialog = OnyxCustomDialog.getConfirmDialog(this,
+                getApplicationContext().getString(R.string.erase_all_tip),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onEraseClicked(false);
+                        dialog.dismiss();
+                    }
+                }, null);
+        customDialog.show();
     }
 
     private void gcInvalidate() {
@@ -488,7 +520,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void updateMenuView(boolean isLineLayoutMode) {
         switchBtn.setImageResource(isLineLayoutMode ? R.drawable.ic_vector : R.drawable.ic_note);
-        functionContentView.setupContent(1, getResources().getInteger(R.integer.onyx_scribble_main_function_cols), getFunctionAdapter(isLineLayoutMode), 0, true);
+        functionContentView.setupContent(1, getResources().getInteger(R.integer.onyx_scribble_main_function_cols),
+                getFunctionAdapter(isLineLayoutMode), 0, true);
     }
 
     private void updateWorkView(boolean isLineLayoutMode) {
@@ -932,6 +965,20 @@ public class ScribbleActivity extends BaseScribbleActivity {
         return mapping;
     }
 
+    private void disableScribbleAction(GAdapter adapter) {
+        List<Integer> list = NoteAppConfig.sharedInstance(getApplicationContext()).getDisableScribbleActionList();
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return;
+        }
+        Iterator<GObject> iterator = adapter.getList().iterator();
+        while (iterator.hasNext()) {
+            GObject object = iterator.next();
+            if (list.contains(GAdapterUtil.getUniqueIdAsIntegerType(object))) {
+                iterator.remove();
+            }
+        }
+    }
+
     private GAdapter getFunctionAdapter(boolean isLineLayoutMode) {
         GAdapter adapter = new GAdapter();
         adapter.addObject(createFunctionItem(R.drawable.ic_shape, ScribbleMenuCategory.PEN_STYLE));
@@ -939,8 +986,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
             adapter.addObject(createFunctionItem(R.drawable.ic_template, ScribbleMenuCategory.BG));
         }
         if (!isLineLayoutMode) {
-            adapter.addObject(createFunctionItem(R.drawable.ic_eraser, ScribbleMenuCategory.ERASER));
             adapter.addObject(createFunctionItem(R.drawable.ic_width, ScribbleMenuCategory.PEN_WIDTH));
+            adapter.addObject(createFunctionItem(R.drawable.ic_eraser, ScribbleMenuCategory.ERASER));
         }else {
             adapter.addObject(createFunctionItem(R.drawable.ic_delet_big, ScribbleMenuCategory.DELETE));
             adapter.addObject(createFunctionItem(R.drawable.ic_space, ScribbleMenuCategory.SPACE));
@@ -950,6 +997,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (getNoteViewHelper().supportColor(this)){
             adapter.addObject(createFunctionItem(R.drawable.ic_color, ScribbleMenuCategory.COLOR));
         }
+        disableScribbleAction(adapter);
         return adapter;
     }
 

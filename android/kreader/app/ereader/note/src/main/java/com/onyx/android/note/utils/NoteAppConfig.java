@@ -14,6 +14,8 @@ import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.RawResourceUtil;
 import com.onyx.android.sdk.utils.StringUtils;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA. User: zhuzeng Date: 5/18/14 Time: 5:21 PM To change this template use
  * File | Settings | File Templates.
@@ -35,6 +37,9 @@ public class NoteAppConfig {
     //once use edu config.hide import/export function.give extra shape and less note background.
     public static final String USE_EDU_CONFIG = "use_edu_config";
     static public final boolean useDebugConfig = false;
+
+    public static final String SCRIBBLE_DISABLE_ACTION_LIST = "scribble_disable_action_list";
+    public static final String SCRIBBLE_ACTION_DIRECT_LIST= "scribble_action_direct_list";
 
     static public NoteAppConfig sharedInstance(Context context) {
         if (globalInstance == null) {
@@ -178,5 +183,19 @@ public class NoteAppConfig {
 
     public boolean useEduConfig(){
         return backend.hasKey(USE_EDU_CONFIG) && backend.getBoolean(USE_EDU_CONFIG);
+    }
+
+    public List<Integer> getDisableScribbleActionList() {
+        if (backend.hasKey(SCRIBBLE_DISABLE_ACTION_LIST)) {
+            return backend.getList(SCRIBBLE_DISABLE_ACTION_LIST);
+        }
+        return null;
+    }
+
+    public List<Integer> getScribbleActionDirectList() {
+        if (backend.hasKey(SCRIBBLE_ACTION_DIRECT_LIST)) {
+            return backend.getList(SCRIBBLE_ACTION_DIRECT_LIST);
+        }
+        return null;
     }
 }

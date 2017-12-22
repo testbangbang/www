@@ -56,4 +56,6 @@
     <string name="find_old_scribble">发现旧手写数据，需要导入吗？</string>
     <string name="ask_for_delete_note">确定要删除吗？</string>
     <string name="name_length_illegal">文件名不多于20个字符.</string>
+
+    <string name="erase_all_tip">确认删除全部笔迹？</string>
 </resources>
