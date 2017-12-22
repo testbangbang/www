@@ -4,15 +4,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="28dp"
+    android:padding="@dimen/account_fragment_padding"
     app:alwaysLayoutImageView="true">
 
     <ImageView
         android:id="@+id/student_avatar"
-        android:layout_width="210dp"
-        android:layout_height="210dp"
+        android:layout_width="@dimen/account_fragment_avatar_size"
+        android:layout_height="@dimen/account_fragment_avatar_size"
         android:layout_gravity="center_horizontal"
-        android:layout_margin="36dp"
+        android:layout_margin="@dimen/account_fragment_avatar_margin"
         android:src="@drawable/user_girl_glass" />
 
     <TextView
@@ -20,13 +20,27 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:text="张筱雨"
-        android:textSize="30sp" />
+        android:text="------"
+        android:textSize="@dimen/account_fragment_name_size" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="@dimen/account_fragment_first_divider_marin_top"
+        android:background="@android:color/black" />
+
+    <TextView
+        android:id="@+id/student_role"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_margin="@dimen/account_fragment_text_margin"
+        android:text="身份："
+        android:textSize="@dimen/account_fragment_text_size" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
         android:background="@android:color/black" />
 
     <TextView
@@ -34,9 +48,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_margin="30dp"
-        android:text="年级：四年级5班"
-        android:textSize="28sp" />
+        android:layout_margin="@dimen/account_fragment_text_margin"
+        android:text="@string/grade_colon"
+        android:textSize="@dimen/account_fragment_text_size" />
 
     <View
         android:layout_width="match_parent"
@@ -48,9 +62,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_margin="30dp"
-        android:text="电话：13323332333"
-        android:textSize="28sp" />
+        android:layout_margin="@dimen/account_fragment_text_margin"
+        android:text="@string/phone_colon"
+        android:textSize="@dimen/account_fragment_text_size" />
 
     <View
         android:layout_width="match_parent"

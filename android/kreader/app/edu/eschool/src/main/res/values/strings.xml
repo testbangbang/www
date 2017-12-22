@@ -21,6 +21,7 @@
     <string name="student_id_colon">ID：</string>
     <string name="grade_colon">Grade：</string>
     <string name="phone_colon">Phone：</string>
+    <string name="role_colon">Role：</string>
     <string name="publisher">Publisher</string>
     <string name="primary_school">Primary School</string>
     <string name="secondary_school">Secondary School</string>
@@ -122,4 +123,10 @@
     <string name="online_group_load_error">Online grouping got the exception</string>
 
     <string name="date_format">MM-dd HH:mm</string>
+    <string translatable="false" name="append_content_format">(%s)</string>
+
+    <string name="student">Student</string>
+    <string name="parent">Parent</string>
+    <string name="teacher">Teacher</string>
+    <string name="admin">Admin</string>
 </resources>
