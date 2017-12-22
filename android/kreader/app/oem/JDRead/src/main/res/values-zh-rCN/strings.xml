@@ -19,4 +19,8 @@
     <string name="group_exist">分组已存在</string>
     <string name="please_enter_group_name">请输入分组名</string>
     <string name="please_select_book">请选择图书</string>
+    <string name="sort_by_time">时间排序</string>
+    <string name="sort_by_name">名称排序</string>
+    <string name="my_book">我的图书</string>
+    <string name="wifi_pass_book">WIFI传书</string>
 </resources>

@@ -23,9 +23,14 @@ import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
 import com.onyx.jdread.library.event.MoveToLibraryEvent;
+import com.onyx.jdread.library.event.MyBookEvent;
+import com.onyx.jdread.library.event.SortByNameEvent;
+import com.onyx.jdread.library.event.SortByTimeEvent;
+import com.onyx.jdread.library.event.WifiPassBookEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -369,5 +374,14 @@ public class LibraryViewDataModel extends Observable {
             }
         }
         return "0";
+    }
+
+    public List<PopMenuModel> getMenuData(){
+        List<PopMenuModel> list= new ArrayList<>();
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.sort_by_time),new SortByTimeEvent()));
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.sort_by_name),new SortByNameEvent()));
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.my_book),new MyBookEvent()));
+        list.add(new PopMenuModel(JDReadApplication.getInstance().getString(R.string.wifi_pass_book),new WifiPassBookEvent()));
+        return list;
     }
 }

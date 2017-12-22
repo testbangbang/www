@@ -21,4 +21,8 @@
     <string name="group_exist">group exist</string>
     <string name="please_enter_group_name">please enter group name</string>
     <string name="please_select_book">please select book</string>
+    <string name="sort_by_time">Sort by time</string>
+    <string name="sort_by_name">Sort by name</string>
+    <string name="my_book">My book</string>
+    <string name="wifi_pass_book">WIFI pass book</string>
 </resources>

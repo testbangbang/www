@@ -11,4 +11,5 @@
     <integer name="library_build_dialog_height">300</integer>
     <integer name="library_list_dialog_row">5</integer>
     <integer name="library_list_dialog_col">1</integer>
+    <integer name="library_pop_menu_width">200</integer>
 </resources>

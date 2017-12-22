@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.SortBy;
+import com.onyx.android.sdk.data.SortOrder;
 import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.event.ItemLongClickEvent;
 import com.onyx.android.sdk.data.model.DataModel;
@@ -15,6 +17,7 @@ import com.onyx.android.sdk.data.model.ModelType;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
@@ -35,10 +38,15 @@ import com.onyx.jdread.library.event.LibraryBackEvent;
 import com.onyx.jdread.library.event.LibraryManageEvent;
 import com.onyx.jdread.library.event.LibraryMenuEvent;
 import com.onyx.jdread.library.event.MoveToLibraryEvent;
+import com.onyx.jdread.library.event.MyBookEvent;
+import com.onyx.jdread.library.event.SortByNameEvent;
+import com.onyx.jdread.library.event.SortByTimeEvent;
+import com.onyx.jdread.library.event.WifiPassBookEvent;
 import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.view.LibraryDeleteDialog;
+import com.onyx.jdread.library.view.MenuPopupWindow;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -181,8 +189,7 @@ public class LibraryFragment extends BaseFragment {
 
             @Override
             public void onRefresh() {
-                pagination.setCurrentPage(0);
-                loadData();
+                refreshData();
             }
         });
         libraryBinding.setIndicatorModel(pageIndicatorModel);
@@ -269,18 +276,23 @@ public class LibraryFragment extends BaseFragment {
 
     private void removeLastParentLibrary() {
         dataBundle.getLibraryViewDataModel().libraryPathList.remove(dataBundle.getLibraryViewDataModel().libraryPathList.size() - 1);
+        setTitle();
+        loadData();
+    }
+
+    private void setTitle() {
         int size = dataBundle.getLibraryViewDataModel().libraryPathList.size();
         if (size > 0) {
             dataBundle.getLibraryViewDataModel().title.set(dataBundle.getLibraryViewDataModel().libraryPathList.get(size - 1).title.get());
         } else {
             dataBundle.getLibraryViewDataModel().title.set(isMultiSelectionMode() ? getString(R.string.manage_book) : "");
         }
-        loadData();
     }
 
     private void quitMultiSelectionMode() {
         modelAdapter.setMultiSelectionMode(SelectionMode.NORMAL_MODE);
         dataBundle.getLibraryViewDataModel().quitManageMode();
+        setTitle();
         showMangeMenu();
     }
 
@@ -299,6 +311,34 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onLibraryMenuEvent(LibraryMenuEvent event) {
+        MenuPopupWindow menuPopupWindow = new MenuPopupWindow(getActivity(), getEventBus());
+        menuPopupWindow.showPopupWindow(libraryBinding.imageMenu, dataBundle.getLibraryViewDataModel().getMenuData());
+    }
+
+    @Subscribe
+    public void OnSortByTimeEvent(SortByTimeEvent event) {
+        dataBundle.getLibraryViewDataModel().updateSortBy(SortBy.CreationTime, SortOrder.Asc);
+        refreshData();
+    }
+
+    private void refreshData() {
+        pagination.setCurrentPage(0);
+        loadData();
+    }
+
+    @Subscribe
+    public void OnSortByNameEvent(SortByNameEvent event) {
+        dataBundle.getLibraryViewDataModel().updateSortBy(SortBy.Name, SortOrder.Asc);
+        refreshData();
+    }
+
+    @Subscribe
+    public void OnMyBookEvent(MyBookEvent event) {
+
+    }
+
+    @Subscribe
+    public void OnWifiPassBookEvent(WifiPassBookEvent event) {
 
     }
 
