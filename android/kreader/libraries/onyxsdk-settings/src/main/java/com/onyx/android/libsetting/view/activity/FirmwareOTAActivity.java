@@ -194,7 +194,7 @@ public class FirmwareOTAActivity extends OnyxAppCompatActivity {
                 String targetPath = localRequest.getLegalityTargetPath();
                 if (StringUtils.isNotBlank(targetPath)) {
                     cleanup();
-                    showLocalUpdateDialog(targetPath);
+                    OTAManager.sharedInstance().startFirmwareUpdate(FirmwareOTAActivity.this, targetPath);
                 } else {
                     BaseCallback.invoke(callback, request, e);
                 }
