@@ -60,5 +60,8 @@
     "Pictures",
     "DCIM"
   ],
-  "support_color": true
+  "support_color": true,
+  "customized_icon_apps_maps": {
+    "com.onyx.music": "app_music"
+  }
 }
