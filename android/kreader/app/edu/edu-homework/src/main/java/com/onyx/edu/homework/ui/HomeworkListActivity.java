@@ -370,7 +370,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (position >= total) {
             return;
         }
-        binding.page.setText(current + File.separator + total);
+        binding.page.setText(getString(R.string.question_page, current + File.separator + total));
 
         if (getDataBundle().isReview()) {
             Question question = questions.get(position);
