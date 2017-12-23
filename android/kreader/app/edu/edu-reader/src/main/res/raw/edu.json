@@ -7,7 +7,6 @@
   "defaultGamma": 100,
   "defaultTextGamma": 100,
   "fixedGamma": 100,
-  "frontLight" : 100,
   "regalEnable" : true,
   "defaultUseSystemStatusBar" : false,
   "supportBrushPen": true,
