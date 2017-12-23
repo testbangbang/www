@@ -1,6 +1,6 @@
 package com.onyx.jdread.library.action;
 
-import android.app.Activity;
+import android.content.Context;
 import android.databinding.ObservableList;
 
 import com.onyx.android.sdk.data.QueryArgs;
@@ -33,10 +33,10 @@ public class LibrarySelectionAction extends BaseAction<DataBundle> {
     private Map<String, List<Metadata>> chosenItemsMap;
     private List<DataModel> libraryList = new ArrayList<>();
     private DataModel librarySelected;
-    private Activity activity;
+    private Context context;
 
-    public LibrarySelectionAction(Map<String, List<Metadata>> chosenItemsMap, Activity activity) {
-        this.activity = activity;
+    public LibrarySelectionAction(Map<String, List<Metadata>> chosenItemsMap, Context context) {
+        this.context = context;
         this.chosenItemsMap = chosenItemsMap;
     }
 
@@ -81,7 +81,7 @@ public class LibrarySelectionAction extends BaseAction<DataBundle> {
     private void showLibraryEntryTocDialog(final DataBundle dataBundle, final RxCallback callback) {
         MoveToLibraryListDialog.DialogModel model = new MoveToLibraryListDialog.DialogModel(dataBundle.getAppContext().getResources().getInteger(R.integer.library_list_dialog_row)
                 , dataBundle.getAppContext().getResources().getInteger(R.integer.library_list_dialog_col), libraryList);
-        MoveToLibraryListDialog.Builder builder = new MoveToLibraryListDialog.Builder(activity, model);
+        MoveToLibraryListDialog.Builder builder = new MoveToLibraryListDialog.Builder(context, model);
         final MoveToLibraryListDialog libraryListDialog = builder.create();
         model.setListener(new MoveToLibraryListDialog.DialogModel.ClickListener() {
             @Override
@@ -101,7 +101,7 @@ public class LibrarySelectionAction extends BaseAction<DataBundle> {
 
     private void showBuildLibrary(final DataBundle dataBundle, final RxCallback callback) {
         final LibraryBuildDialog.DialogModel model = new LibraryBuildDialog.DialogModel();
-        LibraryBuildDialog.Builder builder = new LibraryBuildDialog.Builder(activity, model);
+        LibraryBuildDialog.Builder builder = new LibraryBuildDialog.Builder(context, model);
         final LibraryBuildDialog libraryBuildDialog = builder.create();
         model.setPositiveClickLister(new LibraryBuildDialog.DialogModel.OnClickListener() {
             @Override

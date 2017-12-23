@@ -1,6 +1,6 @@
 package com.onyx.jdread.library.action;
 
-import android.app.Activity;
+import android.content.Context;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -19,11 +19,11 @@ import java.util.Map;
  */
 
 public class MetadataDeleteAction extends BaseAction<DataBundle> {
-    private Activity activity;
+    private Context context;
     private Map<String, List<Metadata>> chosenItemsMap;
 
-    public MetadataDeleteAction(Activity activity) {
-        this.activity = activity;
+    public MetadataDeleteAction(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -45,7 +45,7 @@ public class MetadataDeleteAction extends BaseAction<DataBundle> {
     private void showDeleteDialog(final DataBundle dataBundle, final Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
         LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
         dialogModel.message.set(dataBundle.getAppContext().getString(R.string.delete_book_prompt));
-        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(activity, dialogModel);
+        LibraryDeleteDialog.Builder builder = new LibraryDeleteDialog.Builder(context, dialogModel);
         final LibraryDeleteDialog libraryDeleteDialog = builder.create();
         libraryDeleteDialog.show();
         dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {

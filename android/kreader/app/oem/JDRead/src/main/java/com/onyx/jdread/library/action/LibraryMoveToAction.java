@@ -1,6 +1,6 @@
 package com.onyx.jdread.library.action;
 
-import android.app.Activity;
+import android.content.Context;
 
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Metadata;
@@ -20,11 +20,11 @@ import java.util.Map;
 
 public class LibraryMoveToAction extends BaseAction<DataBundle> {
 
-    private Activity activity;
+    private Context context;
     private Map<String, List<Metadata>> chosenItemsMap;
 
-    public LibraryMoveToAction(Activity activity) {
-        this.activity = activity;
+    public LibraryMoveToAction(Context context) {
+        this.context = context;
     }
 
     @Override
@@ -44,7 +44,7 @@ public class LibraryMoveToAction extends BaseAction<DataBundle> {
     }
 
     private void selectTargetLibrary(final DataBundle dataBundle, Map<String, List<Metadata>> chosenItemsMap, final RxCallback baseCallback) {
-        final LibrarySelectionAction selectionAction = new LibrarySelectionAction(chosenItemsMap, activity);
+        final LibrarySelectionAction selectionAction = new LibrarySelectionAction(chosenItemsMap, context);
         selectionAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {

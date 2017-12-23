@@ -132,6 +132,7 @@ public class SingleItemManageDialog extends Dialog {
         attributes.width = getContext().getResources().getInteger(R.integer.library_delete_dialog_width);
         attributes.height = getContext().getResources().getInteger(R.integer.single_manage_dialog_height);
         window.setAttributes(attributes);
+        window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         super.show();
     }
 }

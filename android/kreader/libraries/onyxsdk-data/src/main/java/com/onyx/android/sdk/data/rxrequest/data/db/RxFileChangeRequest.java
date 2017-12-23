@@ -65,14 +65,17 @@ public class RxFileChangeRequest extends RxBaseDBRequest {
                 library.setParentUniqueId(null);
                 getDataProvider().addLibrary(library);
             }
-            getDataProvider().addMetadataCollection(getAppContext(), MetadataCollection.create(metadata.getIdString(), library.getIdString()));
+            MetadataCollection collection = getDataProvider().loadMetadataCollection(getAppContext(), library.getIdString(), metadata.getIdString());
+            if (collection == null || !collection.hasValidId()) {
+                getDataProvider().addMetadataCollection(getAppContext(), MetadataCollection.create(metadata.getIdString(), library.getIdString()));
+            }
         } else {
             Metadata metadata = getDataProvider().findMetadataByPath(getAppContext(), file.getAbsolutePath());
             if (metadata != null && metadata.hasValidId()) {
                 getDataProvider().removeMetadata(getAppContext(), metadata);
                 Library library = getDataProvider().findLibraryByName(getAppContext(), file.getParentFile().getName());
                 if (library != null && library.hasValidId()) {
-                    getDataProvider().deleteMetadataCollection(getAppContext(), library.getIdString(), metadata.getNativeAbsolutePath());
+                    getDataProvider().deleteMetadataCollection(getAppContext(), library.getIdString(), metadata.getIdString());
                 }
             }
         }

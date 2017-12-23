@@ -125,6 +125,7 @@ public class MoveToLibraryListDialog extends Dialog {
         attributes.width = getContext().getResources().getInteger(R.integer.move_to_library_list_dialog_width);
         attributes.height = getContext().getResources().getInteger(R.integer.move_to_library_list_dialog_height);
         window.setAttributes(attributes);
+        window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
         super.show();
     }
 }

@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.android.sdk.api.device.EpdDeviceManager;
 import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryArgs;
 import com.onyx.android.sdk.data.SortBy;
@@ -29,7 +28,9 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
 import com.onyx.jdread.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.library.action.LibraryDeleteAction;
 import com.onyx.jdread.library.action.LibraryMoveToAction;
+import com.onyx.jdread.library.action.LibraryRenameAction;
 import com.onyx.jdread.library.action.MetadataDeleteAction;
 import com.onyx.jdread.library.action.RxMetadataLoadAction;
 import com.onyx.jdread.library.adapter.ModelAdapter;
@@ -48,7 +49,6 @@ import com.onyx.jdread.library.event.WifiPassBookEvent;
 import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
-import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
 
@@ -347,17 +347,35 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onLibraryRenameEvent(LibraryRenameEvent event) {
-
+        LibraryRenameAction renameAction = new LibraryRenameAction(JDReadApplication.getInstance(), event.getDataModel());
+        renameAction.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                refreshData();
+            }
+        });
     }
 
     @Subscribe
     public void onLibraryDeleteEvent(LibraryDeleteEvent event) {
-
+        LibraryDeleteAction action = new LibraryDeleteAction(JDReadApplication.getInstance(), event.getDataModel(), false);
+        action.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                loadData();
+            }
+        });
     }
 
     @Subscribe
     public void onLibraryDeleteIncludeBookEvent(LibraryDeleteIncludeBookEvent event) {
-
+        LibraryDeleteAction action = new LibraryDeleteAction(JDReadApplication.getInstance(), event.getDataModel(), true);
+        action.execute(dataBundle, new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                refreshData();
+            }
+        });
     }
 
     @Subscribe
@@ -370,7 +388,7 @@ public class LibraryFragment extends BaseFragment {
     private void showSingleMangeDialog(DataModel currentChosenModel) {
         SingleItemManageDialog.DialogModel dialogModel = new SingleItemManageDialog.DialogModel(dataBundle.getEventBus());
         dialogModel.dataModel.set(currentChosenModel);
-        SingleItemManageDialog.Builder builder = new SingleItemManageDialog.Builder(getContext(), dialogModel);
+        SingleItemManageDialog.Builder builder = new SingleItemManageDialog.Builder(JDReadApplication.getInstance(), dialogModel);
         SingleItemManageDialog dialog = builder.create();
         dialog.show();
     }
@@ -398,7 +416,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onMoveToLibraryEvent(MoveToLibraryEvent event) {
-        LibraryMoveToAction moveToAction = new LibraryMoveToAction(getActivity());
+        LibraryMoveToAction moveToAction = new LibraryMoveToAction(JDReadApplication.getInstance());
         moveToAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -410,7 +428,7 @@ public class LibraryFragment extends BaseFragment {
     }
 
     private void deleteBook() {
-        MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction(getActivity());
+        MetadataDeleteAction metadataDeleteAction = new MetadataDeleteAction(JDReadApplication.getInstance());
         metadataDeleteAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
