@@ -284,6 +284,11 @@ public class NoteManager {
 
     public void setCurrentShapeType(int type) {
         getNoteDrawingArgs().setCurrentShapeType(type);
+        if (type == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
+            EpdController.setStrokeStyle(1);
+        } else {
+            EpdController.setStrokeStyle(0);
+        }
         updateInUserErasingState();
         updateRenderByFrameworkState();
     }
