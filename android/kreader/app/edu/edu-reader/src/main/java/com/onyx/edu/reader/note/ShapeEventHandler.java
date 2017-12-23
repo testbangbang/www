@@ -28,6 +28,7 @@ import com.onyx.edu.reader.ui.events.ShapeDrawingEvent;
 import com.onyx.edu.reader.ui.events.ShapeErasingEvent;
 import com.onyx.edu.reader.ui.events.ShortcutDrawingFinishedEvent;
 import com.onyx.edu.reader.ui.events.ShortcutDrawingStartEvent;
+import com.onyx.edu.reader.ui.events.ShortcutErasingEvent;
 import com.onyx.edu.reader.ui.events.ShortcutErasingFinishEvent;
 import com.onyx.edu.reader.ui.events.ShortcutErasingStartEvent;
 
@@ -378,7 +379,7 @@ public class ShapeEventHandler {
     @Subscribe
     public void onRawErasePointListReceivedEvent(RawErasePointListReceivedEvent e) {
         Debug.e(getClass(), "onRawErasePointListReceivedEvent");
-
+        getEventBus().post(new ShortcutErasingEvent(e.getTouchPointList()));
     }
 
 }
