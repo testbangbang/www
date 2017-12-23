@@ -175,10 +175,9 @@ public class QuestionFragment extends BaseFragment {
         getDataBundle().resetNoteViewHelper();
         getDataBundle().getNoteViewHelper().setDrawText(!question.isChoiceQuestion() ? question.content : null);
         int initPageCount = 1;
-        if (DataBundle.getInstance().isReview()) {
-            if (question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
-                initPageCount = question.review.attachmentUrl.size();
-            }
+        boolean hasReview = question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachmentUrl);
+        if (DataBundle.getInstance().isReview() && hasReview) {
+            initPageCount = question.review.attachmentUrl.size();
             reviewFragment = ReviewFragment.newInstance(question);
             getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
         }else {

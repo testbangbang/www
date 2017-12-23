@@ -196,6 +196,7 @@ public class HomeworkListActivity extends BaseActivity {
                     Toast.makeText(HomeworkListActivity.this, R.string.not_review, Toast.LENGTH_SHORT).show();
                     return;
                 }
+                hideRecordFragment(false);
                 reloadQuestionFragment(currentPage);
                 updateViewState();
                 showTotalScore();
@@ -406,7 +407,7 @@ public class HomeworkListActivity extends BaseActivity {
     @Subscribe
     public void onGotoQuestionPageEvent(GotoQuestionPageEvent event) {
         if (event.hideRecord) {
-            hideRecordFragment();
+            hideRecordFragment(true);
         }
         reloadQuestionFragment(event.page);
     }
@@ -466,7 +467,7 @@ public class HomeworkListActivity extends BaseActivity {
                 }
             });
         }else {
-            hideRecordFragment();
+            hideRecordFragment(true);
         }
     }
 
@@ -476,14 +477,16 @@ public class HomeworkListActivity extends BaseActivity {
         binding.answerRecord.setText(R.string.return_answer);
     }
 
-    private void hideRecordFragment() {
+    private void hideRecordFragment(boolean reload) {
         if (recordFragment == null) {
             return;
         }
         binding.answerRecord.setText(R.string.answer_record);
         getSupportFragmentManager().beginTransaction().remove(recordFragment).commit();
         recordFragment = null;
-        reloadQuestionFragment(currentPage);
+        if (reload) {
+            reloadQuestionFragment(currentPage);
+        }
     }
 
 }
