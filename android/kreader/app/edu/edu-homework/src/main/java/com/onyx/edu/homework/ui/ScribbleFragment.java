@@ -39,11 +39,14 @@ import com.onyx.edu.homework.action.note.DocumentCheckAction;
 import com.onyx.edu.homework.action.note.DocumentFlushAction;
 import com.onyx.edu.homework.action.note.DocumentOpenAction;
 import com.onyx.edu.homework.action.note.DocumentSaveAction;
+import com.onyx.edu.homework.action.note.GotoNextPageAction;
+import com.onyx.edu.homework.action.note.GotoPrevPageAction;
 import com.onyx.edu.homework.action.note.RemoveByPointListAction;
 import com.onyx.edu.homework.base.BaseFragment;
 import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.databinding.FragmentScribbleBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
+import com.onyx.edu.homework.event.PageChangeEvent;
 import com.onyx.edu.homework.event.RequestFinishedEvent;
 import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.SaveNoteEvent;
@@ -245,6 +248,33 @@ public class ScribbleFragment extends BaseFragment {
         if (event.updatePage) {
             drawPage();
         }
+    }
+
+    @Subscribe
+    public void onPageChangeEvent(PageChangeEvent event) {
+        if (event.next) {
+            nextPage();
+        }else {
+            prevPage();
+        }
+    }
+
+    private void nextPage() {
+        flushDocument(false, shouldResume(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new GotoNextPageAction(shouldResume()).execute(getNoteViewHelper(), null);
+            }
+        });
+    }
+
+    private void prevPage() {
+        flushDocument(false, shouldResume(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                new GotoPrevPageAction(shouldResume()).execute(getNoteViewHelper(), null);
+            }
+        });
     }
 
     protected void updateDataInfo(final BaseNoteRequest request) {
