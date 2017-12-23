@@ -29,4 +29,5 @@
     <string name="rename_library">Rename group</string>
     <string name="delete_library">Delete library</string>
     <string name="delete_library_include_book">Delete library include book</string>
+    <string name="the_same_name">Rename can not be the same as the original group name</string>
 </resources>
