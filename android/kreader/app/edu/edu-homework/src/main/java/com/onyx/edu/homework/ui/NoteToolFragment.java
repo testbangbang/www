@@ -307,29 +307,11 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void prevPage() {
-        if (getDataBundle().isReview()) {
-            getDataBundle().post(new PageChangeEvent(false));
-            return;
-        }
-        flushDocument(false, shouldResume(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                new GotoPrevPageAction(shouldResume()).execute(getNoteViewHelper(), null);
-            }
-        });
+        getDataBundle().post(new PageChangeEvent(false));
     }
 
     private void nextPage() {
-        if (getDataBundle().isReview()) {
-            getDataBundle().post(new PageChangeEvent(true));
-            return;
-        }
-        flushDocument(false, shouldResume(), new BaseCallback() {
-            @Override
-            public void done(BaseRequest request, Throwable e) {
-                new GotoNextPageAction(shouldResume()).execute(getNoteViewHelper(), null);
-            }
-        });
+        getDataBundle().post(new PageChangeEvent(true));
     }
 
     private void undo() {
