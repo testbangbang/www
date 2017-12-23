@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.ReaderMenuAction;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.utils.DimenUtils;
@@ -127,12 +128,12 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         toolbar.setAdjustLayoutForColorDevices(AppCompatUtils.isColorDevice(readerDataHolder.getContext()));
         final ReaderMenuAction[] expandedActions = {ReaderMenuAction.SCRIBBLE_WIDTH, ReaderMenuAction.SCRIBBLE_SHAPE, ReaderMenuAction.SCRIBBLE_ERASER};
 
-        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE, R.string.shape);
+//        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_shape, ReaderMenuAction.SCRIBBLE_SHAPE, R.string.shape);
         addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_width, ReaderMenuAction.SCRIBBLE_WIDTH, R.string.width);
         addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_eraser_part, ReaderMenuAction.SCRIBBLE_ERASER, R.string.eraser);
-        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_black, ReaderMenuAction.SCRIBBLE_COLOR, R.string.black);
-        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_undo, ReaderMenuAction.SCRIBBLE_UNDO, R.string.undo);
-        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_redo, ReaderMenuAction.SCRIBBLE_REDO, R.string.redo);
+//        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_black, ReaderMenuAction.SCRIBBLE_COLOR, R.string.black);
+//        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_undo, ReaderMenuAction.SCRIBBLE_UNDO, R.string.undo);
+//        addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_redo, ReaderMenuAction.SCRIBBLE_REDO, R.string.redo);
         addImageViewTitleHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_scribble_pack_up, ReaderMenuAction.SCRIBBLE_MINIMIZE, R.string.pack_up);
 
         toolbar.addViewHolder(new CommonViewHolder(OnyxToolbar.Builder.createSpaceView(readerDataHolder.getContext(), 1f)));
@@ -154,7 +155,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
             @Override
             public OnyxToolbar OnClickListener(View view) {
                 ReaderMenuAction action = (ReaderMenuAction) view.getTag();
-                handleClickListener(action);
+                if (processDirectMenuClick(readerDataHolder, action)) {
+                    return null;
+                }
                 return handleBottomMenuView(readerDataHolder, action, expandedActions);
             }
         });
@@ -596,4 +599,37 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
     public void setSelectWidthAction(ReaderMenuAction selectWidthAction) {
         this.selectWidthAction = selectWidthAction;
     }
+
+    private boolean processDirectMenuClick(final ReaderDataHolder readerDataHolder, ReaderMenuAction action) {
+        if (action == ReaderMenuAction.SCRIBBLE_ERASER) {
+            showEraseAllConfirmDialog(readerDataHolder);
+            return true;
+        }
+        handleClickListener(action);
+        return false;
+    }
+
+    private void showEraseAllConfirmDialog(final ReaderDataHolder readerDataHolder) {
+        FlushNoteAction.flush(readerDataHolder, true, true, false, false, true, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                final OnyxCustomDialog customDialog = OnyxCustomDialog.getConfirmDialog(readerDataHolder.getContext(),
+                        readerDataHolder.getContext().getString(R.string.erase_all_tip),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                handleClickListener(ReaderMenuAction.SCRIBBLE_ERASER_ALL);
+                                dialog.dismiss();
+                            }
+                        }, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FlushNoteAction.flush(readerDataHolder, true, true, false, false, false, null);
+                            }
+                        });
+                customDialog.show();
+            }
+        });
+    }
+
 }
