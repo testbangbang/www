@@ -113,6 +113,7 @@ public class ScribbleFragment extends BaseFragment {
     public void onDestroy() {
         DataBundle.getInstance().unregister(this);
         unregisterDeviceReceiver();
+        changePenState(false, false, null);
         super.onDestroy();
     }
 

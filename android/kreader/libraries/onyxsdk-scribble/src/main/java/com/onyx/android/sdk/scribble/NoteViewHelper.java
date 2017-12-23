@@ -66,6 +66,7 @@ public class NoteViewHelper {
 
     public static final int DRAW_TEXT_SIZE = 40;
     public static final int DRAW_TEXT_PADDING = 10;
+    public static final float DRAW_TEXT_SPACING_ADD = 10f;
 
     public static abstract class InputCallback {
 
@@ -290,7 +291,7 @@ public class NoteViewHelper {
         tp.setColor(Color.BLACK);
         tp.setTextSize(DRAW_TEXT_SIZE);
         return new StaticLayout(Html.fromHtml(text, new Base64ImageParser(getAppContext()), null),tp,width - (DRAW_TEXT_PADDING * 2),
-                Layout.Alignment.ALIGN_NORMAL, 1f,0f,false);
+                Layout.Alignment.ALIGN_NORMAL, 1f,DRAW_TEXT_SPACING_ADD,false);
     }
 
     private void setCallback(final InputCallback c) {
@@ -484,7 +485,7 @@ public class NoteViewHelper {
     }
 
     public Bitmap updateRenderBitmap(final Rect viewportSize) {
-        renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
+        renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.RGB_565);
         return renderBitmapWrapper.getBitmap();
     }
 
