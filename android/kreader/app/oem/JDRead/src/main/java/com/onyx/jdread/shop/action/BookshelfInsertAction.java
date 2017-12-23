@@ -1,9 +1,11 @@
 package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.data.model.Metadata;
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
+import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.db.RxRequestBookshelfInsert;
 
@@ -55,6 +57,10 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         metadata.setDescription(detailBean.getInfo());
         metadata.setNativeAbsolutePath(localPath);
         metadata.setLocation(localPath);
+        BookExtraInfoBean extraInfo = detailBean.getBookExtraInfoBean();
+        if (extraInfo != null) {
+            metadata.setExtraAttributes(JSONObjectParseUtils.toJson(extraInfo));
+        }
         return metadata;
     }
 }

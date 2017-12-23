@@ -6,6 +6,8 @@
 
         <import type="com.onyx.jdread.common.CommonUtils" />
 
+        <import type="android.view.View" />
+
         <variable
             name="bookDetailViewModel"
             type="com.onyx.jdread.shop.model.BookDetailViewModel" />
@@ -166,6 +168,7 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:visibility="@{bookDetailViewModel.bookDetailResultBean.detail.isTryRead ? View.VISIBLE : View.GONE}"
                         android:id="@+id/book_detail_now_read"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

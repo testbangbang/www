@@ -64,4 +64,8 @@
     <string name="menu_wifi_setting">WIFI 设置</string>
     <string name="fragment_book_bought_download_status_read">阅读</string>
     <string name="book_detail_button_try_read">试读</string>
+    <string name="book_detail_empty_introduce">暂无简介</string>
+    <string name="book_detail_button_try_again">重试</string>
+    <string name="book_detail_tip_try_again">下载出错,请稍后重试</string>
+    <string name="book_detail_tip_Success">下载成功</string>
 </resources>

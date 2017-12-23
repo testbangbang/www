@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
@@ -73,6 +74,9 @@ public class ShopDatabingUtil {
     public static void setHtmlContent(HtmlTextView htmlTextView, String content) {
         if (!StringUtils.isNullOrEmpty(content)){
             htmlTextView.setHtml(content);
+        } else {
+            String emptyCOntent = JDReadApplication.getInstance().getResources().getString(R.string.book_detail_empty_introduce);
+            htmlTextView.setHtml(emptyCOntent);
         }
     }
 }

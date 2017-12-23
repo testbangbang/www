@@ -110,6 +110,15 @@ public class BookDetailResultBean {
         private String bookName;
         private String info;
         private String orderId;
+        private BookExtraInfoBean bookExtraInfoBean;
+
+        public BookExtraInfoBean getBookExtraInfoBean() {
+            return bookExtraInfoBean;
+        }
+
+        public void setBookExtraInfoBean(BookExtraInfoBean bookExtraInfoBean) {
+            this.bookExtraInfoBean = bookExtraInfoBean;
+        }
 
         public String getOrderId() {
             return orderId;

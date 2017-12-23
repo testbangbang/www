@@ -9,12 +9,9 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
-import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.common.ViewConfig;
 import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.event.ChangeChildViewEvent;
@@ -23,12 +20,6 @@ import com.onyx.jdread.event.PushChildViewToStackEvent;
 import com.onyx.jdread.model.FunctionBarModel;
 import com.onyx.jdread.model.MainViewModel;
 import com.onyx.jdread.model.SystemBarModel;
-import com.onyx.jdread.shop.common.PageTagConstants;
-import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
-import com.onyx.jdread.shop.event.OnBookItemClickEvent;
-import com.onyx.jdread.shop.event.OnViewCommentEvent;
-import com.onyx.jdread.shop.ui.BookDetailFragment;
-import com.onyx.jdread.shop.ui.CommentFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -186,28 +177,5 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeChildViewEvent(ChangeChildViewEvent event) {
         switchCurrentFragment(event.childViewName);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookItemClickEvent(OnBookItemClickEvent event) {
-        PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
-        switchCurrentFragment(BookDetailFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onViewCommentEvent(OnViewCommentEvent event) {
-        switchCurrentFragment(CommentFragment.class.getName());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailTopBackEvent(OnBookDetailTopBackEvent event) {
-        switch (event.getTag()) {
-            case PageTagConstants.BOOK_COMMENT:
-                switchCurrentFragment(BookDetailFragment.class.getName());
-                break;
-            case PageTagConstants.BOOK_DETAIL:
-                switchCurrentFragment(ShopFragment.class.getName());
-                break;
-        }
     }
 }

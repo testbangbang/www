@@ -8,6 +8,8 @@ import com.liulishuo.filedownloader.model.FileDownloadStatus;
 
 public class DownLoadHelper {
 
+    public static final int DOWNLOAD_PERCENT_FINISH = 100;
+
     public static boolean isDownloaded (int status) {
         return status == FileDownloadStatus.completed;
     }
