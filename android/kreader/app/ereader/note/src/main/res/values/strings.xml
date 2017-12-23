@@ -59,4 +59,5 @@
     <string name="find_old_scribble">Find old scribble data, need to import?</string>
     <string name="ask_for_delete_note">Are you sure want to delete？</string>
     <string name="name_length_illegal">20 Character Only.</string>
+    <string name="erase_all_tip">Confirm to delete all the handwriting?</string>
 </resources>

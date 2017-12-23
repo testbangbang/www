@@ -74,6 +74,7 @@ import com.onyx.android.sdk.ui.compat.AppCompatUtils;
 import com.onyx.android.sdk.ui.dialog.DialogCustomLineWidth;
 import com.onyx.android.sdk.ui.dialog.DialogSetValue;
 import com.onyx.android.sdk.ui.dialog.OnyxAlertDialog;
+import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
@@ -173,6 +174,9 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         int category = ScribbleMenuCategory.translate(GAdapterUtil.getUniqueIdAsIntegerType(temp));
+                        if (processDirectMenuItemClick(category)) {
+                            return;
+                        }
                         if (digestionSpanMenu(category)) {
                             return;
                         }
@@ -1205,5 +1209,27 @@ public class ScribbleActivity extends BaseScribbleActivity {
         if (reloadDocument && !TextUtils.isEmpty(uniqueID)) {
             handleDocumentEdit(uniqueID, parentID);
         }
+    }
+
+    private boolean processDirectMenuItemClick(int category) {
+        switch (category) {
+            case ScribbleMenuCategory.ERASER:
+                showEraseAllConfirmDialog();
+                return true;
+        }
+        return false;
+    }
+
+    private void showEraseAllConfirmDialog() {
+        final OnyxCustomDialog customDialog = OnyxCustomDialog.getConfirmDialog(this,
+                getApplicationContext().getString(R.string.erase_all_tip),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        onEraseClicked(false);
+                        dialog.dismiss();
+                    }
+                }, null);
+        customDialog.show();
     }
 }
