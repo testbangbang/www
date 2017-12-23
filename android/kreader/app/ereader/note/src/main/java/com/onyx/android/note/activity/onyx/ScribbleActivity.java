@@ -128,6 +128,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        hidePotentialShowSubMenu();
         wakeLockHolder.releaseWakeLock();
     }
 
@@ -196,30 +197,35 @@ public class ScribbleActivity extends BaseScribbleActivity {
         prevPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onPrevPage();
             }
         });
         nextPageBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onNextPage();
             }
         });
         undoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onUndo();
             }
         });
         redoBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onRedo();
             }
         });
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hidePotentialShowSubMenu();
                 onSave(false);
             }
         });
@@ -241,6 +247,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         if (e == null) {
+                            hidePotentialShowSubMenu();
                             showGotoPageDialog();
                         }
                     }
@@ -296,18 +303,20 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     @Override
     protected void onAddNewPage() {
-        if (getScribbleSubMenu().isShow()) {
-            getScribbleSubMenu().dismiss(false);
-        }
+        hidePotentialShowSubMenu();
         super.onAddNewPage();
     }
 
     @Override
     protected void onDeletePage() {
+        hidePotentialShowSubMenu();
+        super.onDeletePage();
+    }
+
+    private void hidePotentialShowSubMenu(){
         if (getScribbleSubMenu().isShow()) {
             getScribbleSubMenu().dismiss(false);
         }
-        super.onDeletePage();
     }
 
     private void initSpanTextView() {
