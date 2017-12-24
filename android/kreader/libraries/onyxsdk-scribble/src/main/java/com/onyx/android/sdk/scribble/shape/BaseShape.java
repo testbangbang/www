@@ -56,6 +56,8 @@ public class BaseShape implements Shape {
     private PointF rotationCenterPoint = new PointF();
 
     private static boolean useRawInput;
+    private static float maxTouchPressure = 1024;
+
     /**
      * rectangle, circle, etc.
      * @return
@@ -547,5 +549,13 @@ public class BaseShape implements Shape {
 
     public static void setUseRawInput(boolean useRawInput) {
         BaseShape.useRawInput = useRawInput;
+    }
+
+    public static float getMaxTouchPressure() {
+        return maxTouchPressure;
+    }
+
+    public static void setMaxTouchPressure(float v) {
+        maxTouchPressure = v;
     }
 }
