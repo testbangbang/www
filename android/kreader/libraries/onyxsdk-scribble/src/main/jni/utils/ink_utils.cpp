@@ -154,7 +154,6 @@ private:
         if (ASSUME_STYLUS_CALIBRATED && point.toolType == TOOL_TYPE_STYLUS) {
             pressureNorm = point.pressure;
         } else {
-//            pressureNorm = pressureCooker.getAdjustedPressure(point.pressure);
             pressureNorm = point.pressure;
         }
 
