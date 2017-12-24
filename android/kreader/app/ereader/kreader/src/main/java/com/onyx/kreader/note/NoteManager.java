@@ -146,7 +146,7 @@ public class NoteManager {
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
-
+        BaseShape.setMaxTouchPressure(EpdController.getMaxTouchPressure());
         getTouchHelper().getTouchReader().setSupportBigPen(noteConfig.supportBigPen());
     }
 
