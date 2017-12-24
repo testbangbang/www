@@ -17,6 +17,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -132,6 +133,7 @@ public class NoteManager {
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
+        BaseShape.setMaxTouchPressure(EpdController.getMaxTouchPressure());
     }
 
     public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {
