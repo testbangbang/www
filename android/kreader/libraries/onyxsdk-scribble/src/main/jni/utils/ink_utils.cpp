@@ -147,8 +147,15 @@ public:
         return dirty;
     }
 
+    float setStrokeWidth(float value) {
+        //LOGI("setStrokeWidth: %f", value);
+        mRadiusMax = value + 3;
+        mRadiusMin = 1.0f;
+        return mRadiusMax;
+    }
+
 private:
-    Rect strokeTo(JNIEnv *env, jobject canvas, jobject paint, BrushPoint point) {
+    Rect strokeTo(JNIEnv *env, jobject canvas, jobject paint, const BrushPoint &point) {
         float pressureNorm;
 
         if (ASSUME_STYLUS_CALIBRATED && point.toolType == TOOL_TYPE_STYLUS) {
@@ -164,6 +171,7 @@ private:
     }
 
     Rect strokeTo(JNIEnv *env, jobject canvas, jobject paint, float x, float y, float r) {
+        //LOGI("strokeTo: %f, %f, %f, %f, %f, %f", mLastX, mLastY, mLastR, x, y, r);
         Rect dirty(static_cast<int>(x), static_cast<int>(y),
                    static_cast<int>(x), static_cast<int>(y));
 
@@ -206,6 +214,7 @@ private:
     }
 
     void drawBrushPoint(JNIEnv *env, jobject canvas, jobject paint, float x, float y, float r, Rect *dirty) {
+        //LOGI("drawBrushPoint: %f, %f, %f", x, y, r);
         JNIUtils utils(env);
         if (!utils.findClass("android/graphics/Canvas")) {
             return;
@@ -247,7 +256,7 @@ private:
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_utils_InkUtils_nativeDrawStroke
-  (JNIEnv *env, jclass, jobject canvas, jobject paint, jfloatArray points) {
+  (JNIEnv *env, jclass, jobject canvas, jobject paint, jfloat strokeWidth, jfloatArray points) {
     jsize len = env->GetArrayLength(points);
     std::vector<float> pts(static_cast<size_t>(len));
     env->GetFloatArrayRegion(points, 0, len, pts.data());
@@ -263,5 +272,6 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_utils_InkUtils_nativeD
     }
 
     BrushStrokeRenderer renderer(stroke);
+    renderer.setStrokeWidth(strokeWidth);
     renderer.drawStroke(env, canvas, paint);
 }
