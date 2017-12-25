@@ -88,5 +88,6 @@
     <string name="book_detail_empty_introduce">暂无简介</string>
     <string name="book_detail_button_try_again">重试</string>
     <string name="book_detail_tip_try_again">下载出错,请稍后重试</string>
-    <string name="book_detail_tip_Success">下载成功</string>
+    <string name="book_detail_tip_book_add_to_bookself">已加入书架</string>
+    <string name="download_finished">下载完成</string>
 </resources>

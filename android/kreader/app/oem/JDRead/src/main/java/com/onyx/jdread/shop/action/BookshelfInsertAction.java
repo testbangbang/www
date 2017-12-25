@@ -61,6 +61,7 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         if (extraInfo != null) {
             metadata.setExtraAttributes(JSONObjectParseUtils.toJson(extraInfo));
         }
+        metadata.setIdString(String.valueOf(detailBean.getBookId()));
         return metadata;
     }
 }

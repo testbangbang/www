@@ -92,5 +92,6 @@
     <string name="book_detail_empty_introduce">NO introduction</string>
     <string name="book_detail_button_try_again">Try Again</string>
     <string name="book_detail_tip_try_again">download error,try again later</string>
-    <string name="book_detail_tip_Success">download success</string>
+    <string name="book_detail_tip_book_add_to_bookself">has add to bookshelf</string>
+    <string name="download_finished">download finished</string>
 </resources>

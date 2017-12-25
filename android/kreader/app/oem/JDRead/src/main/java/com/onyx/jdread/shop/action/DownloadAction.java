@@ -10,7 +10,10 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.ToastUtil;
+import com.onyx.jdread.shop.event.DownloadingErrorEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
+import com.onyx.jdread.shop.event.DownloadingFinishEvent;
+import com.onyx.jdread.shop.model.ProgressInfoModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import org.greenrobot.eventbus.EventBus;
@@ -64,21 +67,29 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
 
             @Override
             public void progress(BaseRequest request, ProgressInfo info) {
-                EventBus.getDefault().post(new DownloadingEvent(tag, info));
+                ProgressInfoModel infoModel = new ProgressInfoModel();
+                infoModel.soFarBytes = info.soFarBytes;
+                infoModel.totalBytes = info.totalBytes;
+                if (infoModel.totalBytes > 0) {
+                    infoModel.progress = infoModel.soFarBytes / infoModel.totalBytes;
+                }
+                EventBus.getDefault().post(new DownloadingEvent(tag, infoModel));
             }
 
             @Override
             public void done(BaseRequest request, Throwable e) {
-                EventBus.getDefault().post(new DownloadingEvent());
-                removeDownloadingTask(tag);
                 if (rxCallback != null) {
                     if (e != null) {
+                        EventBus.getDefault().post(new DownloadingErrorEvent());
                         ToastUtil.showToast(context, R.string.download_fail);
                         rxCallback.onError(e);
                     } else {
+                        EventBus.getDefault().post(new DownloadingFinishEvent());
+                        ToastUtil.showToast(context, R.string.download_finished);
                         rxCallback.onNext(DownloadAction.this);
                     }
                 }
+                removeDownloadingTask(tag);
             }
 
         });

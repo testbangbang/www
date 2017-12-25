@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.R;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.db.RxRequestMetadataQuery;
 
@@ -11,20 +12,22 @@ import com.onyx.jdread.shop.request.db.RxRequestMetadataQuery;
 
 public class MetadataQueryAction extends BaseAction<ShopDataBundle> {
 
-    private String absolutePath;
+    private String bookId;
     private Metadata metadataResult;
 
-    public MetadataQueryAction(String absolutePath) {
-        this.absolutePath = absolutePath;
+    public MetadataQueryAction(String bookId) {
+        this.bookId = bookId;
     }
 
     @Override
-    public void execute(ShopDataBundle dataBundle, final RxCallback rxCallback) {
-        RxRequestMetadataQuery rxRequestMetadataQuery = new RxRequestMetadataQuery(dataBundle.getDataManager(), absolutePath);
+    public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
+        showLoadingDialog(dataBundle, R.string.loading);
+        RxRequestMetadataQuery rxRequestMetadataQuery = new RxRequestMetadataQuery(dataBundle.getDataManager(), bookId);
         rxRequestMetadataQuery.execute(new RxCallback<RxRequestMetadataQuery>() {
             @Override
             public void onNext(RxRequestMetadataQuery request) {
                 metadataResult = request.getMetadataResult();
+                hideLoadingDialog(dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onNext(MetadataQueryAction.this);
                     rxCallback.onComplete();
@@ -34,6 +37,7 @@ public class MetadataQueryAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onError(Throwable throwable) {
                 super.onError(throwable);
+                hideLoadingDialog(dataBundle);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
                 }

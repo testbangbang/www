@@ -10,12 +10,12 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxBaseDBRequest;
 
 public class RxRequestMetadataQuery extends RxBaseDBRequest {
 
-    private String absolutePath;
+    private String bookId;
     private Metadata metadata;
 
-    public RxRequestMetadataQuery(DataManager dm, String absolutePath) {
+    public RxRequestMetadataQuery(DataManager dm, String bookId) {
         super(dm);
-        this.absolutePath = absolutePath;
+        this.bookId = bookId;
     }
 
     public Metadata getMetadataResult() {
@@ -23,7 +23,7 @@ public class RxRequestMetadataQuery extends RxBaseDBRequest {
     }
 
     private void queryBook() {
-        metadata = getDataProvider().findMetadataByPath(getAppContext(), absolutePath);
+        metadata = getDataProvider().findMetadataByIdString(getAppContext(), bookId);
     }
 
     @Override

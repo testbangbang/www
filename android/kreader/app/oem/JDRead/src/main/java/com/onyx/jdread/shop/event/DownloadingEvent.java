@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.event;
 
-import com.onyx.android.sdk.common.request.BaseCallback.ProgressInfo;
+
+import com.onyx.jdread.shop.model.ProgressInfoModel;
 
 /**
  * Created by jackdeng on 2017/12/21.
@@ -8,13 +9,13 @@ import com.onyx.android.sdk.common.request.BaseCallback.ProgressInfo;
 
 public class DownloadingEvent {
     public Object tag;
-    public ProgressInfo progressInfo;
+    public ProgressInfoModel progressInfoModel;
 
     public DownloadingEvent() {
     }
 
-    public DownloadingEvent(Object tag,ProgressInfo progressInfo) {
+    public DownloadingEvent(Object tag,ProgressInfoModel progressInfoModel) {
         this.tag = tag;
-        this.progressInfo = progressInfo;
+        this.progressInfoModel = progressInfoModel;
     }
 }
