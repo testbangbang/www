@@ -35,11 +35,7 @@ public class ViewConfig {
         return childViewInfo.get(childViewName);
     }
 
-    public static void initLibraryStack(StackList stackList){
-        stackList.push(LibraryFragment.class.getName());
-    }
-
-    public static void initShoppingStack(StackList stackList){
-        stackList.push(StoreFragment.class.getName());
+    public static void initStackByName(StackList stackList, String fragmentName) {
+        stackList.push(fragmentName);
     }
 }

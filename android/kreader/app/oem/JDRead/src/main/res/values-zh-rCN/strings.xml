@@ -1,5 +1,4 @@
 <resources>
-    <string name="library">书架</string>
     <string name="book_total" translatable="false">共%s本书</string>
     <string name="app_name">京东阅读</string>
     <string name="library_name">书架</string>
@@ -7,4 +6,26 @@
     <string name="back_name">返回</string>
     <string name="setting_name">设置</string>
     <string name="personal_name">我的</string>
+    <string name="select_all">全选</string>
+    <string name="move_to">移动到</string>
+    <string name="manage_book">图书管理</string>
+    <string name="yes">是</string>
+    <string name="no">否</string>
+    <string name="delete_book_prompt">是否从本机中删除所选图书？</string>
+    <string name="build_library">新建分组</string>
+    <string name="build_library_hint">最多输入20个字符</string>
+    <string name="library_move_to_fail">书库移动失败</string>
+    <string name="adding">添加中...</string>
+    <string name="group_exist">分组已存在</string>
+    <string name="please_enter_group_name">请输入分组名</string>
+    <string name="please_select_book">请选择图书</string>
+    <string name="sort_by_time">时间排序</string>
+    <string name="sort_by_name">名称排序</string>
+    <string name="my_book">我的图书</string>
+    <string name="wifi_pass_book">WIFI传书</string>
+    <string name="book_detail">图书详情</string>
+    <string name="rename_library">重命名</string>
+    <string name="delete_library">删除分组</string>
+    <string name="delete_library_include_book">删除分组及全部图书</string>
+    <string name="the_same_name">重命名不能与原组名相同</string>
 </resources>
