@@ -57,29 +57,4 @@ public class ReaderViewUtil {
         surfaceView.getHolder().unlockCanvasAndPost(canvas);
         mIsFullUpdate = false;
     }
-
-//    //TODO:use drawPage Action to draw in worker thread.direct call will work in UI thread.
-//    public static void drawPage(SurfaceView surfaceView, Bitmap viewBitmap, List<Shape> stashShapeList) {
-//        if (surfaceView == null || !surfaceView.getHolder().getSurface().isValid()) {
-//            Log.e(TAG, "surfaceView is not valid");
-//            return;
-//        }
-//        Rect rect = getViewportSize(surfaceView);
-//        Canvas canvas = getCanvasForDraw(surfaceView, rect);
-//        if (canvas == null) {
-//            resetFullUpdate();
-//            return;
-//        }
-//
-//        Paint paint = new Paint();
-//        resetViewPortBackground(canvas, paint, rect);
-//        if (viewBitmap != null) {
-//            canvas.drawBitmap(viewBitmap, 0, 0, paint);
-//        }
-//        RenderContext renderContext = RenderContext.create(canvas, paint, null);
-//        for (Shape shape : stashShapeList) {
-//            shape.render(renderContext);
-//        }
-//        unlockDrawingCanvas(surfaceView, canvas);
-//    }
 }
