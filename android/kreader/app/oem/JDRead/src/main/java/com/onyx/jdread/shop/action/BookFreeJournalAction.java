@@ -31,8 +31,8 @@ public class BookFreeJournalAction extends BaseAction<ShopDataBundle> {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookShopModule.ID, CloudApiContext.BookShopModule.FREE_JOURNALS_ID);
-        body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.FREE_JOURNALS_MODULE_TYPE);
+        body.put(CloudApiContext.BookShopModule.MODULE_ID, CloudApiContext.BookShopModule.TODAY_SPECIAL_ID);
+        body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.TODAY_SPECIAL_MODULE_TYPE);
         baseRequestBean.setBody(body.toJSONString());
         RxRequestBookModule request = new RxRequestBookModule();
         request.setBaseRequestBean(baseRequestBean);

@@ -31,7 +31,7 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookShopModule.ID, CloudApiContext.BookShopModule.NEW_BOOK_DELIVERY_ID);
+        body.put(CloudApiContext.BookShopModule.MODULE_ID, CloudApiContext.BookShopModule.NEW_BOOK_DELIVERY_ID);
         body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.NEW_BOOK_DELIVERY_MODULE_TYPE);
         baseRequestBean.setBody(body.toJSONString());
         RxRequestBookModule request = new RxRequestBookModule();

@@ -31,7 +31,7 @@ public class SpecialTodayAction extends BaseAction<ShopDataBundle> {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookShopModule.ID, CloudApiContext.BookShopModule.TODAY_SPECIAL_ID);
+        body.put(CloudApiContext.BookShopModule.MODULE_ID, CloudApiContext.BookShopModule.TODAY_SPECIAL_ID);
         body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.TODAY_SPECIAL_MODULE_TYPE);
         baseRequestBean.setBody(body.toJSONString());
         RxRequestBookModule request = new RxRequestBookModule();
@@ -42,7 +42,7 @@ public class SpecialTodayAction extends BaseAction<ShopDataBundle> {
                 BookModelResultBean bookModelResultBean = request.getBookModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
                 subjectViewModel.setModelBean(bookModelResultBean);
-                shopViewModel.setTitleSubjectIems(subjectViewModel);
+                shopViewModel.setCoverSubjectTwoItems(subjectViewModel);
                 if (rxCallback != null) {
                     rxCallback.onNext(SpecialTodayAction.this);
                     rxCallback.onComplete();

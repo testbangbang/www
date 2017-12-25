@@ -5,12 +5,9 @@ import com.onyx.jdread.common.AppBaseInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 
-import java.util.Map;
-
 import retrofit2.Call;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 /**
  * Created by huxiaomao on 2016/12/19.
@@ -18,7 +15,6 @@ import retrofit2.http.QueryMap;
 
 public interface GetBookDetailService {
     @POST("client.action")
-    Call<BookDetailResultBean> getBookDetail(@QueryMap Map<String, String> map,
-                                             @Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
+    Call<BookDetailResultBean> getBookDetail(@Query(CloudApiContext.NewBookDetail.FUNCTION_ID) String functionID,
                                              @Query(AppBaseInfo.BODY_KEY) String body);
 }

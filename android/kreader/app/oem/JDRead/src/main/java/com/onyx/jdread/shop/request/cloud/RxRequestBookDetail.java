@@ -46,10 +46,7 @@ public class RxRequestBookDetail extends RxBaseCloudRequest {
     }
 
     private Call<BookDetailResultBean> getCall(GetBookDetailService getCommonService) {
-        return getCommonService.getBookDetail(baseRequestBean.getAppBaseInfo().getRequestParamsMap(),
-                CloudApiContext.NewBookDetail.API_NEW_BOOK_DETAIL,
-                baseRequestBean.getBody()
-        );
+        return getCommonService.getBookDetail(CloudApiContext.NewBookDetail.API_NEW_BOOK_DETAIL, baseRequestBean.getBody());
     }
 
     private GetBookDetailService init(String URL) {

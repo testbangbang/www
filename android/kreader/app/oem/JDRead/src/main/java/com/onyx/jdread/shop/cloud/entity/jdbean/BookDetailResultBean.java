@@ -41,9 +41,9 @@ public class BookDetailResultBean {
 
         public GetMetadataEntity(BookDetailResultBean.Detail detail) {
             metadata.setId(detail.getEbookId());
-            metadata.setCoverUrl(detail.getLargeLogo());
+            metadata.setCoverUrl(detail.getImageUrl());
             metadata.setAuthors(detail.getAuthor());
-            metadata.setName(detail.getBookName());
+            metadata.setName(detail.getName());
             metadata.setDescription(detail.getInfo());
             metadata.setType(detail.getFormat());
             metadata.setPublisher(detail.getPublisher());
@@ -61,56 +61,60 @@ public class BookDetailResultBean {
     }
 
     public static class Detail {
-        private String largeLogo;
-        private String author;
-        private boolean isTryRead;
-        private float orgJdPrice;
-        private boolean isCanBuy;
-        private String acreditInst;
-        private String logo;
-        private String newLargeLogo;
-        private int canBuyBorrowDays;
-        private String catalog;
-        private boolean isAddToCart;
-        private boolean isCanFreeGet;
-        private String priceMessage;
-        private boolean isAlreadyUserBuyBorrow;
-        private String publishTime;
-        private String tryDownLoadUrl;
-        private String edition;
-        private String adWords;
-        private boolean isUserFluentReadAddToCard;
-        private int wordCount;
-        private String currentTime;
-        private boolean isFluentRead;
-        private boolean isAlreadyBorrow;
-        private boolean isEBook;
-        private float star;
-        private boolean isBorrow;
-        private boolean isBuyBorrow;
-        private boolean isFree;
-        private boolean isMyWish;
-        private float price;
-        private long bookId;
-        private String format;
-        private boolean isBuy;
-        private boolean isUserCanFluentRead;
-        private float size;
-        private long ebookId;
-        private boolean received;
-        private String promotion;
-        private String publisher;
-        private String isbn;
+
         private boolean EBook;
+        private String acreditInst;
+        private boolean addToCart;
+        private String author;
+        private String authorInfo;
+        private String catalog;
+        private String categoryPath;
+        private String currentTime;
+        private long ebookId;
+        private String editorPick;
+        private float fileSize;
+        private int firstCatid;
+        private String format;
+        private int good;
+        private String imageUrl;
+        private String info;
+        private boolean isAlreadyBuy;
+        private boolean isBuy;
+        private boolean isFluentRead;
+        private boolean isFree;
+        private boolean isUserCanFluentRead;
+        private boolean isUserFluentReadAddToCard;
+        private String isbn;
         private float jdPrice;
         private String language;
-        private String newLogo;
-        private String editorPick;
-        private boolean isAlreadyBuy;
-        private String bookName;
-        private String info;
-        private String orderId;
+        private String largeImageUrl;
+        private String mediaComments;
+        private String name;
+        private int paperBookId;
+        private boolean pass;
+        private float price;
+        private String priceMessage;
+        private String promotion;
+        private String publishTime;
+        private String publisher;
+        private int secondCatid1;
+        private float star;
+        private int thirdCatid1;
+        private boolean tobFluentRead;
+        private String tryEpubDownUrl;
+        private boolean tryRead;
+        private int type;
+        private int wordCount;
+        private String edition;
         private BookExtraInfoBean bookExtraInfoBean;
+
+        public String getEdition() {
+            return edition;
+        }
+
+        public void setEdition(String edition) {
+            this.edition = edition;
+        }
 
         public BookExtraInfoBean getBookExtraInfoBean() {
             return bookExtraInfoBean;
@@ -120,60 +124,12 @@ public class BookDetailResultBean {
             this.bookExtraInfoBean = bookExtraInfoBean;
         }
 
-        public String getOrderId() {
-            return orderId;
+        public boolean isEBook() {
+            return EBook;
         }
 
-        public void setOrderId(String orderId) {
-            this.orderId = orderId;
-        }
-
-        public String getInfo() {
-            return info;
-        }
-
-        public void setInfo(String info) {
-            this.info = info;
-        }
-
-        public String getLargeLogo() {
-            return largeLogo;
-        }
-
-        public void setLargeLogo(String largeLogo) {
-            this.largeLogo = largeLogo;
-        }
-
-        public String getAuthor() {
-            return author;
-        }
-
-        public void setAuthor(String author) {
-            this.author = author;
-        }
-
-        public boolean isTryRead() {
-            return isTryRead;
-        }
-
-        public void setTryRead(boolean tryRead) {
-            isTryRead = tryRead;
-        }
-
-        public float getOrgJdPrice() {
-            return orgJdPrice;
-        }
-
-        public void setOrgJdPrice(float orgJdPrice) {
-            this.orgJdPrice = orgJdPrice;
-        }
-
-        public boolean isCanBuy() {
-            return isCanBuy;
-        }
-
-        public void setCanBuy(boolean canBuy) {
-            isCanBuy = canBuy;
+        public void setEBook(boolean EBook) {
+            this.EBook = EBook;
         }
 
         public String getAcreditInst() {
@@ -184,28 +140,28 @@ public class BookDetailResultBean {
             this.acreditInst = acreditInst;
         }
 
-        public String getLogo() {
-            return logo;
+        public boolean isAddToCart() {
+            return addToCart;
         }
 
-        public void setLogo(String logo) {
-            this.logo = logo;
+        public void setAddToCart(boolean addToCart) {
+            this.addToCart = addToCart;
         }
 
-        public String getNewLargeLogo() {
-            return newLargeLogo;
+        public String getAuthor() {
+            return author;
         }
 
-        public void setNewLargeLogo(String newLargeLogo) {
-            this.newLargeLogo = newLargeLogo;
+        public void setAuthor(String author) {
+            this.author = author;
         }
 
-        public int getCanBuyBorrowDays() {
-            return canBuyBorrowDays;
+        public String getAuthorInfo() {
+            return authorInfo;
         }
 
-        public void setCanBuyBorrowDays(int canBuyBorrowDays) {
-            this.canBuyBorrowDays = canBuyBorrowDays;
+        public void setAuthorInfo(String authorInfo) {
+            this.authorInfo = authorInfo;
         }
 
         public String getCatalog() {
@@ -216,84 +172,12 @@ public class BookDetailResultBean {
             this.catalog = catalog;
         }
 
-        public boolean isAddToCart() {
-            return isAddToCart;
+        public String getCategoryPath() {
+            return categoryPath;
         }
 
-        public void setAddToCart(boolean addToCart) {
-            isAddToCart = addToCart;
-        }
-
-        public boolean isCanFreeGet() {
-            return isCanFreeGet;
-        }
-
-        public void setCanFreeGet(boolean canFreeGet) {
-            isCanFreeGet = canFreeGet;
-        }
-
-        public String getPriceMessage() {
-            return priceMessage;
-        }
-
-        public void setPriceMessage(String priceMessage) {
-            this.priceMessage = priceMessage;
-        }
-
-        public boolean isAlreadyUserBuyBorrow() {
-            return isAlreadyUserBuyBorrow;
-        }
-
-        public void setAlreadyUserBuyBorrow(boolean alreadyUserBuyBorrow) {
-            isAlreadyUserBuyBorrow = alreadyUserBuyBorrow;
-        }
-
-        public String getPublishTime() {
-            return publishTime;
-        }
-
-        public void setPublishTime(String publishTime) {
-            this.publishTime = publishTime;
-        }
-
-        public String getTryDownLoadUrl() {
-            return tryDownLoadUrl;
-        }
-
-        public void setTryDownLoadUrl(String tryDownLoadUrl) {
-            this.tryDownLoadUrl = tryDownLoadUrl;
-        }
-
-        public String getEdition() {
-            return edition;
-        }
-
-        public void setEdition(String edition) {
-            this.edition = edition;
-        }
-
-        public String getAdWords() {
-            return adWords;
-        }
-
-        public void setAdWords(String adWords) {
-            this.adWords = adWords;
-        }
-
-        public boolean isUserFluentReadAddToCard() {
-            return isUserFluentReadAddToCard;
-        }
-
-        public void setUserFluentReadAddToCard(boolean userFluentReadAddToCard) {
-            isUserFluentReadAddToCard = userFluentReadAddToCard;
-        }
-
-        public int getWordCount() {
-            return wordCount;
-        }
-
-        public void setWordCount(int wordCount) {
-            this.wordCount = wordCount;
+        public void setCategoryPath(String categoryPath) {
+            this.categoryPath = categoryPath;
         }
 
         public String getCurrentTime() {
@@ -304,6 +188,86 @@ public class BookDetailResultBean {
             this.currentTime = currentTime;
         }
 
+        public long getEbookId() {
+            return ebookId;
+        }
+
+        public void setEbookId(long ebookId) {
+            this.ebookId = ebookId;
+        }
+
+        public String getEditorPick() {
+            return editorPick;
+        }
+
+        public void setEditorPick(String editorPick) {
+            this.editorPick = editorPick;
+        }
+
+        public float getFileSize() {
+            return fileSize;
+        }
+
+        public void setFileSize(float fileSize) {
+            this.fileSize = fileSize;
+        }
+
+        public int getFirstCatid() {
+            return firstCatid;
+        }
+
+        public void setFirstCatid(int firstCatid) {
+            this.firstCatid = firstCatid;
+        }
+
+        public String getFormat() {
+            return format;
+        }
+
+        public void setFormat(String format) {
+            this.format = format;
+        }
+
+        public int getGood() {
+            return good;
+        }
+
+        public void setGood(int good) {
+            this.good = good;
+        }
+
+        public String getImageUrl() {
+            return imageUrl;
+        }
+
+        public void setImageUrl(String imageUrl) {
+            this.imageUrl = imageUrl;
+        }
+
+        public String getInfo() {
+            return info;
+        }
+
+        public void setInfo(String info) {
+            this.info = info;
+        }
+
+        public boolean isAlreadyBuy() {
+            return isAlreadyBuy;
+        }
+
+        public void setAlreadyBuy(boolean alreadyBuy) {
+            isAlreadyBuy = alreadyBuy;
+        }
+
+        public boolean isBuy() {
+            return isBuy;
+        }
+
+        public void setBuy(boolean buy) {
+            isBuy = buy;
+        }
+
         public boolean isFluentRead() {
             return isFluentRead;
         }
@@ -312,20 +276,36 @@ public class BookDetailResultBean {
             isFluentRead = fluentRead;
         }
 
-        public boolean isAlreadyBorrow() {
-            return isAlreadyBorrow;
+        public boolean isFree() {
+            return isFree;
         }
 
-        public void setAlreadyBorrow(boolean alreadyBorrow) {
-            isAlreadyBorrow = alreadyBorrow;
+        public void setFree(boolean free) {
+            isFree = free;
         }
 
-        public boolean isEBook() {
-            return isEBook;
+        public boolean isUserCanFluentRead() {
+            return isUserCanFluentRead;
         }
 
-        public void setEBook(boolean EBook) {
-            isEBook = EBook;
+        public void setUserCanFluentRead(boolean userCanFluentRead) {
+            isUserCanFluentRead = userCanFluentRead;
+        }
+
+        public boolean isUserFluentReadAddToCard() {
+            return isUserFluentReadAddToCard;
+        }
+
+        public void setUserFluentReadAddToCard(boolean userFluentReadAddToCard) {
+            isUserFluentReadAddToCard = userFluentReadAddToCard;
+        }
+
+        public String getIsbn() {
+            return isbn;
+        }
+
+        public void setIsbn(String isbn) {
+            this.isbn = isbn;
         }
 
         public float getJdPrice() {
@@ -344,76 +324,44 @@ public class BookDetailResultBean {
             this.language = language;
         }
 
-        public String getNewLogo() {
-            return newLogo;
+        public String getLargeImageUrl() {
+            return largeImageUrl;
         }
 
-        public void setNewLogo(String newLogo) {
-            this.newLogo = newLogo;
+        public void setLargeImageUrl(String largeImageUrl) {
+            this.largeImageUrl = largeImageUrl;
         }
 
-        public String getEditorPick() {
-            return editorPick;
+        public String getMediaComments() {
+            return mediaComments;
         }
 
-        public void setEditorPick(String editorPick) {
-            this.editorPick = editorPick;
+        public void setMediaComments(String mediaComments) {
+            this.mediaComments = mediaComments;
         }
 
-        public boolean isAlreadyBuy() {
-            return isAlreadyBuy;
+        public String getName() {
+            return name;
         }
 
-        public void setAlreadyBuy(boolean alreadyBuy) {
-            isAlreadyBuy = alreadyBuy;
+        public void setName(String name) {
+            this.name = name;
         }
 
-        public String getBookName() {
-            return bookName;
+        public int getPaperBookId() {
+            return paperBookId;
         }
 
-        public void setBookName(String bookName) {
-            this.bookName = bookName;
+        public void setPaperBookId(int paperBookId) {
+            this.paperBookId = paperBookId;
         }
 
-        public float getStar() {
-            return star;
+        public boolean isPass() {
+            return pass;
         }
 
-        public void setStar(int star) {
-            this.star = star;
-        }
-
-        public boolean isBorrow() {
-            return isBorrow;
-        }
-
-        public void setBorrow(boolean borrow) {
-            isBorrow = borrow;
-        }
-
-        public boolean isBuyBorrow() {
-            return isBuyBorrow;
-        }
-
-        public void setBuyBorrow(boolean buyBorrow) {
-            isBuyBorrow = buyBorrow;
-        }
-
-        public boolean isFree() {
-            return isFree;
-        }
-
-        public void setFree(boolean free) {
-            isFree = free;
-        }
-
-        public boolean isMyWish() {
-            return isMyWish;
-        }
-
-        public void setMyWish(boolean myWish) {
-            isMyWish = myWish;
+        public void setPass(boolean pass) {
+            this.pass = pass;
         }
 
         public float getPrice() {
@@ -424,60 +372,12 @@ public class BookDetailResultBean {
             this.price = price;
         }
 
-        public long getBookId() {
-            return bookId;
+        public String getPriceMessage() {
+            return priceMessage;
         }
 
-        public void setBookId(long bookId) {
-            this.bookId = bookId;
-        }
-
-        public String getFormat() {
-            return format;
-        }
-
-        public void setFormat(String format) {
-            this.format = format;
-        }
-
-        public boolean isBuy() {
-            return isBuy;
-        }
-
-        public void setBuy(boolean buy) {
-            isBuy = buy;
-        }
-
-        public boolean isUserCanFluentRead() {
-            return isUserCanFluentRead;
-        }
-
-        public void setUserCanFluentRead(boolean userCanFluentRead) {
-            isUserCanFluentRead = userCanFluentRead;
-        }
-
-        public float getSize() {
-            return size;
-        }
-
-        public void setSize(float size) {
-            this.size = size;
-        }
-
-        public long getEbookId() {
-            return ebookId;
-        }
-
-        public void setEbookId(long ebookId) {
-            this.ebookId = ebookId;
-        }
-
-        public boolean isReceived() {
-            return received;
-        }
-
-        public void setReceived(boolean received) {
-            this.received = received;
+        public void setPriceMessage(String priceMessage) {
+            this.priceMessage = priceMessage;
         }
 
         public String getPromotion() {
@@ -488,6 +388,14 @@ public class BookDetailResultBean {
             this.promotion = promotion;
         }
 
+        public String getPublishTime() {
+            return publishTime;
+        }
+
+        public void setPublishTime(String publishTime) {
+            this.publishTime = publishTime;
+        }
+
         public String getPublisher() {
             return publisher;
         }
@@ -496,12 +404,68 @@ public class BookDetailResultBean {
             this.publisher = publisher;
         }
 
-        public String getIsbn() {
-            return isbn;
+        public int getSecondCatid1() {
+            return secondCatid1;
         }
 
-        public void setIsbn(String isbn) {
-            this.isbn = isbn;
+        public void setSecondCatid1(int secondCatid1) {
+            this.secondCatid1 = secondCatid1;
+        }
+
+        public float getStar() {
+            return star;
+        }
+
+        public void setStar(float star) {
+            this.star = star;
+        }
+
+        public int getThirdCatid1() {
+            return thirdCatid1;
+        }
+
+        public void setThirdCatid1(int thirdCatid1) {
+            this.thirdCatid1 = thirdCatid1;
+        }
+
+        public boolean isTobFluentRead() {
+            return tobFluentRead;
+        }
+
+        public void setTobFluentRead(boolean tobFluentRead) {
+            this.tobFluentRead = tobFluentRead;
+        }
+
+        public String getTryEpubDownUrl() {
+            return tryEpubDownUrl;
+        }
+
+        public void setTryEpubDownUrl(String tryEpubDownUrl) {
+            this.tryEpubDownUrl = tryEpubDownUrl;
+        }
+
+        public boolean isTryRead() {
+            return tryRead;
+        }
+
+        public void setTryRead(boolean tryRead) {
+            this.tryRead = tryRead;
+        }
+
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
+
+        public int getWordCount() {
+            return wordCount;
+        }
+
+        public void setWordCount(int wordCount) {
+            this.wordCount = wordCount;
         }
     }
 }

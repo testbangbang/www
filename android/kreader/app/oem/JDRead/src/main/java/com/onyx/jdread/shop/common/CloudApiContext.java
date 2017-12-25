@@ -19,8 +19,8 @@ import okhttp3.OkHttpClient;
  */
 
 public class CloudApiContext {
-    public static final String JD_BOOK_SHOP_URL = "http://gw.e.jd.com/";
-    public static final String JD_BASE_URL = "https://gw-e.jd.com/";
+    public static final String JD_BOOK_SHOP_URL = "http://tob-gw.jd.com/";
+    public static final String JD_BASE_URL = "https://tob-gw.jd.com/";
 
     public static class NewBookDetail {
         public static final String BOOK_SPECIAL_PRICE_TYPE = "specialPrice";
@@ -43,12 +43,13 @@ public class CloudApiContext {
     public static class BookShopModule {
         public static final String ID = "id";
         public static final String MODULE_TYPE = "moduleType";
+        public static final String MODULE_ID = "moduleId";
         public static final String RETURN_MESSAGE = "returnMessage";
-        public static final String MODULE_CHILD_INFO = "getModuleChildInfo";
-        public static final int TODAY_SPECIAL_ID = 226;
+        public static final String MODULE_CHILD_INFO = "getReversionModuleData";
+        public static final int TODAY_SPECIAL_ID = 11;
         public static final int TODAY_SPECIAL_MODULE_TYPE = 10;
-        public static final int NEW_BOOK_DELIVERY_ID = 68;
-        public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 5;
+        public static final int NEW_BOOK_DELIVERY_ID = 18;
+        public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 6;
         public static final int FREE_JOURNALS_ID = 181;
         public static final int FREE_JOURNALS_MODULE_TYPE = 6;
     }

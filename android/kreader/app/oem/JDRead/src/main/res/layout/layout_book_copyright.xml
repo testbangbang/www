@@ -51,7 +51,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{bookDetailViewModel.bookDetailResultBean.detail.bookName}"
+                android:text="@{bookDetailViewModel.bookDetailResultBean.detail.name}"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
@@ -183,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@{@string/copyright_book_size_value(bookDetailViewModel.bookDetailResultBean.detail.size)}"
+                android:text="@{@string/copyright_book_size_value(bookDetailViewModel.bookDetailResultBean.detail.fileSize)}"
                 android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>

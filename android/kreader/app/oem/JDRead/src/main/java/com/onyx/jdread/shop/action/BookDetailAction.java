@@ -30,9 +30,7 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
     public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
         final BookDetailViewModel bookDetailViewModel = shopDataBundle.getBookDetailViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
-        baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.NewBookDetail.TYPE, CloudApiContext.NewBookDetail.BOOK_SPECIAL_PRICE_TYPE);
         body.put(CloudApiContext.NewBookDetail.BOOK_ID, bookID);
         baseRequestBean.setBody(body.toJSONString());
         final RxRequestBookDetail rq = new RxRequestBookDetail();

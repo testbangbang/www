@@ -49,7 +49,7 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
 
     private Metadata convertBookDetailEntityToMetadata(BookDetailResultBean.Detail detailBean) {
         Metadata metadata = new Metadata();
-        metadata.setName(detailBean.getBookName());
+        metadata.setName(detailBean.getName());
         metadata.setAuthors(detailBean.getAuthor());
         metadata.setPublisher(detailBean.getPublisher());
         metadata.setLanguage(detailBean.getLanguage());
@@ -61,7 +61,7 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
         if (extraInfo != null) {
             metadata.setExtraAttributes(JSONObjectParseUtils.toJson(extraInfo));
         }
-        metadata.setIdString(String.valueOf(detailBean.getBookId()));
+        metadata.setIdString(String.valueOf(detailBean.getEbookId()));
         return metadata;
     }
 }

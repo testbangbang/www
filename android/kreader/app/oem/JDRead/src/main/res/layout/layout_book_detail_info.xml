@@ -37,7 +37,7 @@
                     android:adjustViewBounds="true"
                     android:scaleType="fitXY"
                     android:src="@drawable/book_default_cover"
-                    bind:cover="@{bookDetailViewModel.bookDetailResultBean.detail.getLargeLogo()}" />
+                    bind:cover="@{bookDetailViewModel.bookDetailResultBean.detail.largeImageUrl}" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -52,7 +52,7 @@
                         android:layout_height="wrap_content"
                         android:ellipsize="middle"
                         android:maxLines="2"
-                        android:text="@{bookDetailViewModel.bookDetailResultBean.detail.getBookName()}"
+                        android:text="@{bookDetailViewModel.bookDetailResultBean.detail.name}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_two_heading_font" />
 
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:drawablePadding="@dimen/view_all_drawable_padding"
                             android:drawableRight="@mipmap/ic_go_view_all"
-                            android:text="@{bookDetailViewModel.bookDetailResultBean.detail.getPublishTime()}" />
+                            android:text="@{bookDetailViewModel.bookDetailResultBean.detail.categoryPath}" />
 
                     </LinearLayout>
 

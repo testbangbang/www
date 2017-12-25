@@ -303,7 +303,7 @@ public class BookDetailFragment extends BaseFragment {
             //TODO open the book
             return;
         }
-        if (StringUtils.isNullOrEmpty(bookDetailBean.getTryDownLoadUrl())) {
+        if (StringUtils.isNullOrEmpty(bookDetailBean.getTryEpubDownUrl())) {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
             return;
         }
@@ -317,7 +317,7 @@ public class BookDetailFragment extends BaseFragment {
         }
         nowReadButton.setEnabled(false);
         download(bookDetailBean);
-        ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.getBookName() + getString(R.string.book_detail_tip_book_add_to_bookself));
+        ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.getName() + getString(R.string.book_detail_tip_book_add_to_bookself));
     }
 
     private void showDownloadAfterGoDialog(String title, String message, final String positiveText) {
@@ -343,7 +343,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void download(BookDetailResultBean.Detail bookDetailBean) {
-        String tryDownLoadUrl = bookDetailBean.getTryDownLoadUrl();
+        String tryDownLoadUrl = bookDetailBean.getTryEpubDownUrl();
         if (StringUtils.isNullOrEmpty(tryDownLoadUrl)) {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.empty_url));
             return;
@@ -351,7 +351,7 @@ public class BookDetailFragment extends BaseFragment {
         String bookName = tryDownLoadUrl.substring(tryDownLoadUrl.lastIndexOf("/") + 1);
         bookName = bookName.substring(0, bookName.indexOf(Constants.BOOK_FORMAT)) + Constants.BOOK_FORMAT;
         String localPath = CommonUtils.getJDBooksPath() + File.separator + bookName;
-        DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, bookDetailBean.getBookName());
+        DownloadAction downloadAction = new DownloadAction(getContext(), tryDownLoadUrl, localPath, bookDetailBean.getName());
         downloadAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -377,10 +377,10 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     private void showCopyRightDialog() {
+        LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
+        copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
         if (copyRightDialog == null) {
             AlertDialog.Builder copyRightDialogBuild = new AlertDialog.Builder(getActivity());
-            LayoutBookCopyrightBinding copyrightBinding = LayoutBookCopyrightBinding.inflate(LayoutInflater.from(getActivity()), null, false);
-            copyrightBinding.setBookDetailViewModel(getBookDetailViewModel());
             copyRightDialogBuild.setView(copyrightBinding.getRoot());
             copyRightDialogBuild.setCancelable(true);
             copyRightDialog = copyRightDialogBuild.create();

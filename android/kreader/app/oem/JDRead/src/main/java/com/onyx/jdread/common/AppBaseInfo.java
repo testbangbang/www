@@ -39,6 +39,8 @@ public class AppBaseInfo {
     private String brand;
     public static final String SCREEN_KEY = "screen";
     private String screen;
+    public static final String DEVICE_ID_KEY = "device_id";
+    private String deviceId;
 
     public static final String BODY_KEY = "body";
     public static final String PARTNER_ID_KEY = "partnerID";
@@ -63,6 +65,7 @@ public class AppBaseInfo {
         unionId = AppInformationUtils.getPropertiesValue(AppInformationUtils.CPA_PROPERTIES);
         model = Build.MODEL;
         brand = Build.BRAND;
+        deviceId =  ClientUtils.getDeviceId();
         screen = AppInformationUtils.getScreenSize();
         requestParamsMap = new HashMap<>();
         requestParamsMap.put(BUILD_KEY, build);
@@ -78,6 +81,7 @@ public class AppBaseInfo {
         requestParamsMap.put(MODEL_KEY, model);
         requestParamsMap.put(BRAND_KEY, brand);
         requestParamsMap.put(SCREEN_KEY, screen);
+        requestParamsMap.put(DEVICE_ID_KEY, deviceId);
     }
 
     public String getBuild() {
@@ -130,6 +134,10 @@ public class AppBaseInfo {
 
     public String getScreen() {
         return screen;
+    }
+
+    public String getDeviceId() {
+        return deviceId;
     }
 
     public Map<String, String> getRequestParamsMap() {
