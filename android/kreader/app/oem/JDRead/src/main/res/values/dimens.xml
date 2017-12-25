@@ -25,4 +25,13 @@
     <dimen name="lock_screen_recycler_height">330dp</dimen>
     <dimen name="refresh_whole_top">20dp</dimen>
     <dimen name="refresh_whole_padding">20dp</dimen>
+    <dimen name="device_config_hour_format_margin_left">20dp</dimen>
+    <dimen name="device_config_clock_margin_left">10dp</dimen>
+    <dimen name="device_config_recycler_height">400dp</dimen>
+    <dimen name="device_config_recycler_padding">10dp</dimen>
+    <dimen name="system_update_whole_padding">10dp</dimen>
+    <dimen name="system_update_package_downloaded_margin_left">10dp</dimen>
+    <dimen name="system_update_divider_margin_top">10dp</dimen>
+    <dimen name="system_update_consideration_margin_top">20dp</dimen>
+    <dimen name="system_update_upgrade_immediately_padding">5dp</dimen>
 </resources>

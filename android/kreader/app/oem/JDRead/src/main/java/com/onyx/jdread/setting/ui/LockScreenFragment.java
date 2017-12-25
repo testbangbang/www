@@ -61,6 +61,7 @@ public class LockScreenFragment extends BaseFragment {
         SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
         titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.interest_rates_screen_time));
         titleModel.setToggle(false);
+        titleModel.setViewHistory(false);
         binding.lockScreenTitleBar.setTitleModel(titleModel);
 
         settingLockScreenModel = SettingBundle.getInstance().getSettingLockScreenModel();

@@ -13,6 +13,7 @@ public class SettingBundle {
     private SettingTitleModel titleModel;
     private SettingRefreshModel settingRefreshModel;
     private SettingLockScreenModel settingLockScreenModel;
+    private DeviceConfigModel deviceConfigModel;
 
     public static SettingBundle getInstance() {
         if (bundle == null) {
@@ -52,5 +53,13 @@ public class SettingBundle {
             settingLockScreenModel = new SettingLockScreenModel();
         }
         return settingLockScreenModel;
+    }
+
+    public DeviceConfigModel getDeviceConfigModel() {
+        if (deviceConfigModel == null) {
+            deviceConfigModel = new DeviceConfigModel();
+        }
+        deviceConfigModel.loadDeviceConfig();
+        return deviceConfigModel;
     }
 }

@@ -22,6 +22,7 @@
             android:drawableLeft="@mipmap/ic_setting_more"
             android:onClick="@{()->titleModel.backSetting()}"
             android:text="@{titleModel.title}"
+            android:textColor="@android:color/black"
             android:textSize="@dimen/level_one_heading_font" />
 
         <Switch
@@ -41,5 +42,16 @@
             android:layout_centerVertical="true"
             android:src="@mipmap/ic_setting_more"
             android:visibility="@{titleModel.toggle ? View.VISIBLE : View.GONE}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bottom_line"
+            android:text="@string/view_history_version"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font"
+            android:visibility="@{titleModel.viewHistory ? View.VISIBLE : View.GONE}" />
     </RelativeLayout>
 </layout>

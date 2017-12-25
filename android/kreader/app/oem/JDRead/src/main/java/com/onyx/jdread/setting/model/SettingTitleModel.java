@@ -14,6 +14,7 @@ public class SettingTitleModel extends BaseObservable {
     private EventBus eventBus;
     private String title;
     private boolean toggle;
+    private boolean viewHistory;
 
     public SettingTitleModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -25,6 +26,15 @@ public class SettingTitleModel extends BaseObservable {
 
     public void setTitle(String title) {
         this.title = title;
+        notifyChange();
+    }
+
+    public boolean isViewHistory() {
+        return viewHistory;
+    }
+
+    public void setViewHistory(boolean viewHistory) {
+        this.viewHistory = viewHistory;
         notifyChange();
     }
 

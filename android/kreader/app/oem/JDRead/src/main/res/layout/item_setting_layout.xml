@@ -40,6 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/level_one_heading_font"
+                android:textColor="@android:color/black"
                 android:text="@{data.settingName}"/>
 
             <TextView
@@ -47,6 +48,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/level_three_heading_font"
                 android:text="@{data.settingDescribable}"
+                android:textColor="@android:color/black"
                 android:visibility="@{StringUtils.isNullOrEmpty(data.settingDescribable) ? View.GONE : View.VISIBLE}"/>
         </LinearLayout>
     </RelativeLayout>

@@ -231,6 +231,7 @@ public class WifiFragment extends BaseFragment {
         SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
         titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.wireless_network));
         titleModel.setToggle(true);
+        titleModel.setViewHistory(false);
         binding.wifiTitleBar.setTitleModel(titleModel);
     }
 

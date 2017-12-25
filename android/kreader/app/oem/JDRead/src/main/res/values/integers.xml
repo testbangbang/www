@@ -10,4 +10,6 @@
     <integer name="refresh_adapter_col">1</integer>
     <integer name="lock_screen_adapter_row">4</integer>
     <integer name="lock_screen_adapter_col">1</integer>
+    <integer name="device_config_adapter_row">6</integer>
+    <integer name="device_config_adapter_col">1</integer>
 </resources>

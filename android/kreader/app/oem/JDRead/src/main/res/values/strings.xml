@@ -22,4 +22,19 @@
     <string name="refresh_tips">Refresh the page to ensure that the ink screen is clear, to reduce the page damage, please set it according to your needs.</string>
     <string name="refresh_mode">Speed refresh mode</string>
     <string name="refresh_mode_tips">The function of the laboratory greatly improved the page speed, but the shadow was more obvious</string>
+    <string name="view_history_version">View history version</string>
+    <string name="updatable_version">Updatable version</string>
+    <string name="current_version">Current version</string>
+    <string name="system_update">System update</string>
+    <string name="device_config">Device config</string>
+    <string name="hour_format">24-hour format</string>
+    <string name="sample_clock">13:00</string>
+    <string name="date_time">Date/time</string>
+    <string name="screen_saver">Screen saver</string>
+    <string name="password">Password</string>
+    <string name="read_tool">Tool in read</string>
+    <string name="device_information">Device information</string>
+    <string name="update_package_downloaded">The update package has been downloaded</string>
+    <string name="consideration">Considerations</string>
+    <string name="upgrade_immediately">Upgrade immediately</string>
 </resources>
