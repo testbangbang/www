@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">JDRead</string>
-    <string name="library">Library</string>
     <string name="page_count" translatable="false">%1$d/%2$d</string>
     <string name="book_total" translatable="false">total %s book</string>
     <string name="library_name">Library</string>
@@ -8,6 +7,29 @@
     <string name="back_name">Back</string>
     <string name="setting_name">Setting</string>
     <string name="personal_name">Personal</string>
+    <string name="show_back_tab_key">show_back_tab_key</string>
+    <string name="select_all">All</string>
+    <string name="move_to">Move</string>
+    <string name="manage_book">Manage book</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="delete_book_prompt">Whether to delete the selected book from this machine?</string>
+    <string name="build_library">build group</string>
+    <string name="build_library_hint">Enter up to 20 characters</string>
+    <string name="library_move_to_fail">move to fail</string>
+    <string name="adding">adding...</string>
+    <string name="group_exist">group exist</string>
+    <string name="please_enter_group_name">please enter group name</string>
+    <string name="please_select_book">please select book</string>
+    <string name="sort_by_time">Sort by time</string>
+    <string name="sort_by_name">Sort by name</string>
+    <string name="my_book">My book</string>
+    <string name="wifi_pass_book">WIFI pass book</string>
+    <string name="book_detail">Book detail</string>
+    <string name="rename_library">Rename group</string>
+    <string name="delete_library">Delete library</string>
+    <string name="delete_library_include_book">Delete library include book</string>
+    <string name="the_same_name">Rename can not be the same as the original group name</string>
     <string name="view_all">View All</string>
     <string name="ranking">Ranking</string>
     <string name="enjoy_read">Enjoy Read</string>

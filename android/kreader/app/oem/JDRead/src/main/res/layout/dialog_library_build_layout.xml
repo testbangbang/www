@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="dialogModel"
+            type="com.onyx.jdread.library.view.LibraryBuildDialog.DialogModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/library_delete_dialog_title_padding"
+            android:text="@{dialogModel.title}"
+            android:textSize="@dimen/level_two_heading_font"
+            android:visibility="@{StringUtils.isNullOrEmpty(dialogModel.title)?View.GONE:View.VISIBLE}" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="@string/build_library_hint"
+            android:padding="@dimen/library_delete_dialog_title_padding"
+            android:text="@={dialogModel.libraryName}"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selected_background"
+                android:gravity="center"
+                android:onClick="@{()->dialogModel.onPositiveClick()}"
+                android:padding="@dimen/library_delete_dialog_button_padding"
+                android:text="@{dialogModel.positiveText}"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/selected_background"
+                android:gravity="center"
+                android:onClick="@{()->dialogModel.onNegativeClick()}"
+                android:padding="@dimen/library_delete_dialog_button_padding"
+                android:text="@{dialogModel.negativeText}"
+                android:textSize="@dimen/level_two_heading_font" />
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.adapter.PageAdapter;
+import com.onyx.jdread.library.view.CustomScrollBar;
 
 
 import java.util.List;
@@ -88,5 +89,15 @@ public class OnyxDataBindingUtil {
             layoutParams.setMargins(layoutParams.leftMargin, (int) topMargin, layoutParams.rightMargin, layoutParams.bottomMargin);
         }
         view.setLayoutParams(layoutParams);
+    }
+
+    @BindingAdapter("totalPage")
+    public static void setTotal(CustomScrollBar customScrollBar, int totalPage) {
+        customScrollBar.setTotal(totalPage);
+    }
+
+    @BindingAdapter("focus")
+    public static void setFocusPosition(CustomScrollBar customScrollBar, int focus) {
+        customScrollBar.setFocusPosition(focus);
     }
 }

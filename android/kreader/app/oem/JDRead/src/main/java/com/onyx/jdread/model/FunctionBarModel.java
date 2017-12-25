@@ -1,36 +1,22 @@
 package com.onyx.jdread.model;
 
+import android.databinding.ObservableArrayList;
 import android.databinding.ObservableBoolean;
-import android.view.View;
+import android.databinding.ObservableList;
 
-import com.onyx.jdread.common.ViewConfig;
-import com.onyx.jdread.event.ChangeChildViewEvent;
-
-import org.greenrobot.eventbus.EventBus;
+import java.util.Observable;
 
 /**
  * Created by huxiaomao on 2017/12/9.
  */
 
-public class FunctionBarModel {
+public class FunctionBarModel extends Observable {
     private static final String TAG = FunctionBarModel.class.getSimpleName();
     private ObservableBoolean isShow = new ObservableBoolean(true);
-    private StackList libraryStack;
-    private StackList shoppingStack;
+    public ObservableList<FunctionBarItem> itemModels = new ObservableArrayList<>();
 
     public FunctionBarModel() {
-        initLibraryStack();
-        initShoppingStack();
-    }
 
-    private void initLibraryStack(){
-        libraryStack = new StackList();
-        ViewConfig.initLibraryStack(libraryStack);
-    }
-
-    private void initShoppingStack(){
-        shoppingStack = new StackList();
-        ViewConfig.initShoppingStack(shoppingStack);
     }
 
     public ObservableBoolean getIsShow() {
@@ -38,30 +24,12 @@ public class FunctionBarModel {
     }
 
     public void setIsShow(boolean isShow) {
-
+        this.isShow.set(isShow);
     }
 
-    public void libraryClickListener(View view) {
-        ChangeChildViewEvent event = new ChangeChildViewEvent();
-        event.childViewName = libraryStack.peek();
-        EventBus.getDefault().post(event);
-    }
-
-    public void shoppingClickListener(View view) {
-        ChangeChildViewEvent event = new ChangeChildViewEvent();
-        event.childViewName = shoppingStack.peek();
-        EventBus.getDefault().post(event);
-    }
-
-    public void backClickListener(View view) {
-
-    }
-
-    public void settingClickListener(View view) {
-
-    }
-
-    public void personalClickListener(View view) {
-
+    public void changeTabSelection(String selectedTab) {
+        for (FunctionBarItem itemModel : itemModels) {
+            itemModel.setSelected(selectedTab.equals(itemModel.fragmentName.get()));
+        }
     }
 }

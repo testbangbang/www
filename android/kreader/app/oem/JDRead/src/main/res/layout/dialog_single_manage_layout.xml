@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="com.onyx.android.sdk.data.model.DataModel" />
+
+        <variable
+            name="dialogModel"
+            type="com.onyx.jdread.library.view.SingleItemManageDialog.DialogModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="1dp">
+
+        <ImageView
+            android:id="@+id/close_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:padding="@dimen/dialog_single_manage_padding"
+            android:src="@drawable/ic_dialog_close" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dialog_single_manage_padding">
+
+            <ImageView
+                thumbnail="@{dialogModel.dataModel.coverBitmap}"
+                android:layout_width="@dimen/model_item_cover_width"
+                android:layout_height="@dimen/model_item_cover_height"
+                android:scaleType="fitXY"
+                android:src="@{dialogModel.dataModel.coverDefault}" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{dialogModel.dataModel.title}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{dialogModel.dataModel.author}" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/book_detail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selected_background"
+            android:padding="@dimen/dialog_single_manage_padding"
+            android:text="@string/book_detail"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/delete"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selected_background"
+            android:padding="@dimen/dialog_single_manage_padding"
+            android:text="@string/delete"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/move_to"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selected_background"
+            android:padding="@dimen/dialog_single_manage_padding"
+            android:text="@string/move_to"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{dialogModel.showBookMenu()?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/rename_library"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selected_background"
+            android:padding="10dp"
+            android:text="@string/rename_library"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/delete_library"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selected_background"
+            android:padding="@dimen/dialog_single_manage_padding"
+            android:text="@string/delete_library"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
+
+        <TextView
+            android:id="@+id/delete_library_include_book"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selected_background"
+            android:padding="@dimen/dialog_single_manage_padding"
+            android:text="@string/delete_library_include_book"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{dialogModel.showLibraryMenu()?View.VISIBLE:View.GONE}" />
+
+    </LinearLayout>
+</layout>
