@@ -655,12 +655,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<ScribbleActivity> action = new RedoAction<>();
+                final RedoAction<ScribbleActivity> action = new RedoAction<>(shouldResume());
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
                         loadLineLayoutShapes();
+                        if (shouldResume()){
+                            getNoteViewHelper().resumeDrawing();
+                        }
                     }
                 });
             }
@@ -671,12 +674,15 @@ public class ScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<ScribbleActivity> action = new UndoAction<>();
+                final UndoAction<ScribbleActivity> action = new UndoAction<>(shouldResume());
                 action.execute(ScribbleActivity.this, new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         onRequestFinished((BaseNoteRequest) request, true);
                         loadLineLayoutShapes();
+                        if (shouldResume()){
+                            getNoteViewHelper().resumeDrawing();
+                        }
                     }
                 });
             }

@@ -43,7 +43,6 @@ import com.onyx.android.sdk.ui.view.ContentItemView;
 import com.onyx.android.sdk.ui.view.ContentView;
 import com.onyx.android.sdk.utils.StringUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.List;
 
@@ -178,7 +177,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final RedoAction<SpanScribbleActivity> action = new RedoAction<>();
+                final RedoAction<SpanScribbleActivity> action = new RedoAction<>(shouldResume());
                 action.execute(SpanScribbleActivity.this);
             }
         });
@@ -188,7 +187,7 @@ public class SpanScribbleActivity extends BaseScribbleActivity {
         syncWithCallback(false, true, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                final UndoAction<SpanScribbleActivity> action = new UndoAction<>();
+                final UndoAction<SpanScribbleActivity> action = new UndoAction<>(shouldResume());
                 action.execute(SpanScribbleActivity.this);
             }
         });
