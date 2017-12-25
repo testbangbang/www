@@ -4,15 +4,22 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.SurfaceHolder;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
 import com.onyx.jdread.reader.actions.CreatePageViewAction;
+import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
+import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.actions.ShowReaderSettingMenuAction;
+import com.onyx.jdread.reader.event.MenuAreaEvent;
+import com.onyx.jdread.reader.event.NextPageEvent;
 import com.onyx.jdread.reader.event.OpenDocumentFailResultEvent;
 import com.onyx.jdread.reader.event.OpenDocumentSuccessResultEvent;
+import com.onyx.jdread.reader.event.PrevPageEvent;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -125,5 +132,30 @@ public class ReaderActivity extends AppCompatActivity {
     public void onOpenDocumentSuccessResultEvent(OpenDocumentSuccessResultEvent event) {
         CreatePageViewAction createPageViewAction = new CreatePageViewAction();
         createPageViewAction.execute(readerViewModel.getReaderDataHolder());
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if(event.getAction() == KeyEvent.ACTION_UP){
+            if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+                finish();
+            }
+        }
+        return super.dispatchKeyEvent(event);
+    }
+
+    @Subscribe
+    public void onMenuAreaEvent(MenuAreaEvent event){
+        new ShowReaderSettingMenuAction().execute(readerViewModel.getReaderDataHolder());
+    }
+
+    @Subscribe
+    public void onPrevPageEvent(PrevPageEvent event){
+        new PrevPageAction().execute(readerViewModel.getReaderDataHolder());
+    }
+
+    @Subscribe
+    public void onNextPageEvent(NextPageEvent event){
+        new NextPageAction().execute(readerViewModel.getReaderDataHolder());
     }
 }

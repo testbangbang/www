@@ -6,7 +6,6 @@ import android.databinding.ObservableField;
 import android.view.SurfaceView;
 
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.utils.ReaderViewUtil;

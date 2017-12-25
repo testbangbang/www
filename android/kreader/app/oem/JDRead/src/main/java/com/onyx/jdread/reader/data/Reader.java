@@ -10,11 +10,13 @@ public class Reader {
     private ReaderHelper readerHelper;
     private DocumentInfo documentInfo;
     private ReaderViewHelper readerViewHelper;
+    private ReaderTouchHelper readerTouchHelper;
 
     public Reader(DocumentInfo documentInfo) {
         this.documentInfo = documentInfo;
         this.readerHelper = new ReaderHelper();
         this.readerViewHelper = new ReaderViewHelper();
+        this.readerTouchHelper = new ReaderTouchHelper();
     }
 
     public ReaderHelper getReaderHelper() {
@@ -27,5 +29,9 @@ public class Reader {
 
     public ReaderViewHelper getReaderViewHelper() {
         return readerViewHelper;
+    }
+
+    public ReaderTouchHelper getReaderTouchHelper() {
+        return readerTouchHelper;
     }
 }

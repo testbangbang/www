@@ -29,6 +29,7 @@ public class ReaderDataHolder {
 
     public void setReadPageView(SurfaceView readPageView) {
         reader.getReaderViewHelper().setReadPageView(readPageView);
+        reader.getReaderTouchHelper().setReaderViewTouchListener(readPageView);
     }
 
     public ReaderViewHelper getReaderViewHelper() {
