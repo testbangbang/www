@@ -10,10 +10,10 @@ extern "C" {
 /*
  * Class:     com_onyx_android_sdk_scribble_utils_InkUtils
  * Method:    nativeDrawStroke
- * Signature: (Landroid/graphics/Canvas;Landroid/graphics/Paint;[F)V
+ * Signature: (Landroid/graphics/Canvas;Landroid/graphics/Paint;F[F)V
  */
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_utils_InkUtils_nativeDrawStroke
-  (JNIEnv *, jclass, jobject, jobject, jfloatArray);
+  (JNIEnv *, jclass, jobject, jobject, jfloat, jfloatArray);
 
 #ifdef __cplusplus
 }
