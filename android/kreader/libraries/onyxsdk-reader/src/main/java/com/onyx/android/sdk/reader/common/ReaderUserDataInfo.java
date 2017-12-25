@@ -281,7 +281,8 @@ public class ReaderUserDataInfo {
                 OrderBy.fromProperty(Bookmark_Table.pageNumber).ascending());
         if (bookmarks != null) {
             for (Bookmark bookmark : bookmarks) {
-                bookmarkMap.put(bookmark.getPosition(), bookmark);
+                int page = reader.getNavigator().getPageNumberByPosition(bookmark.getPosition());
+                bookmarkMap.put(PagePositionUtils.fromPageNumber(page), bookmark);
             }
         }
         return true;
