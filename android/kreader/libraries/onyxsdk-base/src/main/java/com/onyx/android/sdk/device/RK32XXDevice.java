@@ -523,7 +523,7 @@ public class RK32XXDevice extends BaseDevice {
             return value.floatValue();
         } catch (Exception e) {
         }
-        return 0;
+        return 2048.0f;
     }
 
     public float startStroke(float baseWidth, float x, float y, float pressure, float size, float time) {
