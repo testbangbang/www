@@ -1,5 +1,7 @@
 package com.onyx.android.note.actions.scribble;
 
+import android.util.Log;
+
 import com.onyx.android.note.actions.BaseNoteAction;
 import com.onyx.android.note.activity.BaseScribbleActivity;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -12,6 +14,12 @@ import com.onyx.android.sdk.scribble.request.shape.UndoRequest;
 public class UndoAction<T extends BaseScribbleActivity> extends BaseNoteAction<T> {
     private UndoRequest undoRequest;
 
+    public UndoAction(boolean resume) {
+        this.resume = resume;
+        Log.e("TAG", "UndoAction: " );
+    }
+
+    private boolean resume;
 
     public void execute(final T activity) {
         execute(activity, new BaseCallback() {
@@ -24,7 +32,7 @@ public class UndoAction<T extends BaseScribbleActivity> extends BaseNoteAction<T
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
-        undoRequest = new UndoRequest();
+        undoRequest = new UndoRequest(resume);
         activity.submitRequest(undoRequest, callback);
     }
 

@@ -1028,10 +1028,6 @@ public class ReaderActivity extends OnyxBaseActivity {
 
     @Subscribe
     public void onShortcutErasingEvent(final ShortcutErasingEvent event) {
-        final RemoveShapesByTouchPointListAction action = new RemoveShapesByTouchPointListAction(
-                getReaderDataHolder().getVisiblePages(),
-                event.getTouchPointList());
-        action.execute(getReaderDataHolder(), null);
     }
 
     @Subscribe

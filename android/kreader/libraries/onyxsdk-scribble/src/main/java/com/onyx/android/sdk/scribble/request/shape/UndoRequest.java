@@ -8,7 +8,8 @@ import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
  */
 public class UndoRequest extends BaseNoteRequest {
 
-    public UndoRequest() {
+    public UndoRequest(boolean resume) {
+        setResumeInputProcessor(resume);
     }
 
     public void execute(final NoteViewHelper parent) throws Exception {
