@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.MotionEvent;
 import android.view.View;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -13,14 +12,11 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.common.request.WakeLockHolder;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
-import com.onyx.android.sdk.reader.api.ReaderFormField;
-import com.onyx.android.sdk.reader.api.ReaderFormScribble;
 import com.onyx.android.sdk.scribble.api.TouchHelper;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
-import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -33,15 +29,8 @@ import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.edu.reader.note.data.ReaderNoteDataInfo;
 import com.onyx.edu.reader.note.data.ReaderNoteDocument;
 import com.onyx.edu.reader.note.data.ReaderNotePage;
-import com.onyx.edu.reader.note.data.ReaderShapeFactory;
 import com.onyx.edu.reader.note.request.ReaderBaseNoteRequest;
 import com.onyx.edu.reader.ui.data.ReaderDataHolder;
-import com.onyx.edu.reader.ui.events.ShapeDrawingEvent;
-import com.onyx.edu.reader.ui.events.ShortcutDrawingFinishedEvent;
-import com.onyx.edu.reader.ui.events.ShapeErasingEvent;
-import com.onyx.edu.reader.ui.events.ShortcutDrawingStartEvent;
-import com.onyx.edu.reader.ui.events.ShortcutErasingFinishEvent;
-import com.onyx.edu.reader.ui.events.ShortcutErasingStartEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -152,6 +141,8 @@ public class NoteManager {
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
+
+        getTouchHelper().getTouchReader().setSupportBigPen(noteConfig.supportBigPen());
     }
 
     public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {

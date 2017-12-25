@@ -3,7 +3,12 @@ package com.onyx.edu.reader.note.data;
 import android.content.Context;
 import android.graphics.Matrix;
 
-import com.onyx.android.sdk.scribble.data.*;
+import com.onyx.android.sdk.scribble.data.ShapeActions;
+import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
+import com.onyx.android.sdk.scribble.data.ShapeModel;
+import com.onyx.android.sdk.scribble.data.TouchPoint;
+import com.onyx.android.sdk.scribble.data.TouchPointList;
+import com.onyx.android.sdk.scribble.data.UndoRedoManager;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
@@ -149,8 +154,8 @@ public class ReaderNotePage {
             return removed;
         }
         Map<String, Shape> hitShapes = new HashMap<>();
-        for(Shape shape : shapeList) {
-            for(TouchPoint touchPoint : touchPointList.getPoints()) {
+        for (Shape shape : shapeList) {
+            for (TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (shape.fastHitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     hitShapes.put(shape.getShapeUniqueId(), shape);
                     break;
@@ -158,8 +163,8 @@ public class ReaderNotePage {
             }
         }
 
-        for(Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
-            for(TouchPoint touchPoint : touchPointList.getPoints()) {
+        for (Map.Entry<String, Shape> entry : hitShapes.entrySet()) {
+            for (TouchPoint touchPoint : touchPointList.getPoints()) {
                 if (entry.getValue().hitTest(touchPoint.getX(), touchPoint.getY(), radius)) {
                     removeShape(entry.getValue(), true);
                     removed = true;
