@@ -18,9 +18,9 @@ public class RxLibraryMoveToRequest extends RxBaseDBRequest {
 
     private DataModel fromLibrary;
     private DataModel toLibrary;
-    private List<DataModel> addList = new ArrayList<>();
+    private List<Metadata> addList = new ArrayList<>();
 
-    public RxLibraryMoveToRequest(DataManager dataManager,DataModel fromLibrary, DataModel toLibrary, List<DataModel> addList) {
+    public RxLibraryMoveToRequest(DataManager dataManager, DataModel fromLibrary, DataModel toLibrary, List<Metadata> addList) {
         super(dataManager);
         this.fromLibrary = fromLibrary;
         this.toLibrary = toLibrary;
@@ -38,16 +38,26 @@ public class RxLibraryMoveToRequest extends RxBaseDBRequest {
             toIdString = toLibrary.idString.get();
         }
         DataProviderBase providerBase = getDataProvider();
-        for (DataModel metadata : addList) {
+        if (StringUtils.isNotBlank(toIdString)) {
+            Library library = providerBase.findLibraryByName(getAppContext(), toLibrary.title.get());
+            if (!library.hasValidId()) {
+                library.setIdString(toLibrary.idString.get());
+                library.setParentUniqueId(toLibrary.parentId.get());
+                library.setName(toLibrary.title.get());
+                library.setDescription(toLibrary.desc.get());
+                getDataProvider().addLibrary(library);
+            }
+        }
+        for (Metadata metadata : addList) {
             MetadataCollection collection = providerBase.loadMetadataCollection(getAppContext(),
-                    fromIdString, metadata.idString.get());
+                    fromIdString, metadata.getIdString());
             if (StringUtils.isNullOrEmpty(toIdString)) {
                 if (collection != null) {
-                    providerBase.deleteMetadataCollection(getAppContext(), fromIdString, metadata.idString.get());
+                    providerBase.deleteMetadataCollection(getAppContext(), fromIdString, metadata.getIdString());
                 }
             } else {
                 if (collection == null) {
-                    collection = MetadataCollection.create(metadata.idString.get(), toIdString);
+                    collection = MetadataCollection.create(metadata.getIdString(), toIdString);
                 }
                 collection.setLibraryUniqueId(toIdString);
                 if (collection.hasValidId()) {

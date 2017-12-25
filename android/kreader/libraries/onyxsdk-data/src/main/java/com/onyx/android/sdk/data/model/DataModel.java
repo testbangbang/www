@@ -36,6 +36,8 @@ public class DataModel extends BaseObservable {
     public final ObservableBoolean enableSelection = new ObservableBoolean(false);
     public final ObservableField<FileModel> fileModel = new ObservableField<>();
     public final ObservableBoolean isDocument = new ObservableBoolean(false);
+    public final ObservableField<String> childCount = new ObservableField<>();
+    public final ObservableField<String> selectedCount = new ObservableField<>();
     private EventBus eventBus;
 
     public DataModel(EventBus eventBus) {
@@ -101,5 +103,13 @@ public class DataModel extends BaseObservable {
 
     public EventBus getEventBus() {
         return eventBus;
+    }
+
+    public boolean showCheckBox() {
+        return enableSelection.get() && type.get() == ModelType.TYPE_METADATA;
+    }
+
+    public boolean showCheckCount() {
+        return enableSelection.get() && type.get() == ModelType.TYPE_LIBRARY;
     }
 }

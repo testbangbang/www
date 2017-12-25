@@ -27,6 +27,7 @@ import com.onyx.android.sdk.data.model.Metadata_Table;
 import com.onyx.android.sdk.data.model.Thumbnail;
 import com.onyx.android.sdk.data.model.Thumbnail_Table;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.utils.BitmapUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.FileUtils;
@@ -262,10 +263,12 @@ public class RemoteDataProvider implements DataProviderBase {
     @Override
     public List<Library> loadAllLibrary(String parentId, QueryArgs queryArgs) {
         Condition condition = getNullOrEqualCondition(Library_Table.parentUniqueId, queryArgs.libraryUniqueId);
+        QueryArgs libraryQueryArgs = new QueryArgs(queryArgs.sortBy, queryArgs.order).appendFilter(queryArgs.filter);
+        QueryBuilder.generateQueryArgs(libraryQueryArgs);
         return ContentUtils.queryList(OnyxLibraryProvider.CONTENT_URI,
                 Library.class,
                 ConditionGroup.clause().and(condition),
-                null);
+                libraryQueryArgs.getOrderByQueryWithLimitOffset());
     }
 
     @Override
@@ -436,5 +439,24 @@ public class RemoteDataProvider implements DataProviderBase {
                 MetadataCollection.class,
                 group,
                 null);
+    }
+
+    @Override
+    public Library findLibraryByName(Context appContext, String name) {
+        Library library = null;
+        try {
+            library = ContentUtils.querySingle(OnyxLibraryProvider.CONTENT_URI,
+                    Library.class, ConditionGroup.clause().and(Library_Table.name.eq(name)), null);
+        } catch (Exception e) {
+        } finally {
+            return library != null ? library : new Library();
+        }
+    }
+
+    @Override
+    public long libraryMetadataCount(Library library) {
+        List<MetadataCollection> metadataCollections = ContentUtils.queryList(OnyxMetadataCollectionProvider.CONTENT_URI, MetadataCollection.class,
+                ConditionGroup.clause().and(MetadataCollection_Table.libraryUniqueId.eq(library.getIdString())), null);
+        return metadataCollections == null ? 0 : metadataCollections.size();
     }
 }

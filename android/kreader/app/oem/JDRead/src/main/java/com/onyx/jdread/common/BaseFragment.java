@@ -8,7 +8,7 @@ import android.support.v4.app.Fragment;
  */
 
 public class BaseFragment extends Fragment {
-    private ChildViewEventCallBack viewEventCallBack = null;
+    protected ChildViewEventCallBack viewEventCallBack = null;
 
     public interface ChildViewEventCallBack {
         void gotoView(String childClassName);

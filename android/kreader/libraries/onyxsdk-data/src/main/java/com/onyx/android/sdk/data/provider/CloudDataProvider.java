@@ -451,6 +451,16 @@ public class CloudDataProvider implements DataProviderBase {
                 .querySingle();
     }
 
+    @Override
+    public Library findLibraryByName(Context appContext, String name) {
+        return null;
+    }
+
+    @Override
+    public long libraryMetadataCount(Library library) {
+        return 0;
+    }
+
     private ContentService getContentService() {
         return ServiceFactory.getContentService(conf.getApiBase());
     }
