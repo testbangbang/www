@@ -282,7 +282,9 @@ public class ReaderUserDataInfo {
         if (bookmarks != null) {
             for (Bookmark bookmark : bookmarks) {
                 int page = reader.getNavigator().getPageNumberByPosition(bookmark.getPosition());
+                bookmark.setPageNumber(page);
                 bookmarkMap.put(PagePositionUtils.fromPageNumber(page), bookmark);
+
             }
         }
         return true;
