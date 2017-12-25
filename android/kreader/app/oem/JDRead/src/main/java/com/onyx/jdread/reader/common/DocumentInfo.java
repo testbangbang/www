@@ -1,5 +1,9 @@
 package com.onyx.jdread.reader.common;
 
+import android.content.Intent;
+
+import com.onyx.android.sdk.utils.StringUtils;
+
 /**
  * Created by huxiaomao on 2017/12/20.
  */
@@ -85,5 +89,27 @@ public class DocumentInfo {
 
     public void setMessageId(int messageId) {
         this.messageId = messageId;
+    }
+
+    public void documentInfoToIntent(Intent intent){
+        if(StringUtils.isNullOrEmpty(bookPath)){
+            return;
+        }
+        intent.putExtra(BOOK_PATH,bookPath);
+        if(StringUtils.isNotBlank(bookName)) {
+            intent.putExtra(BOOK_NAME, bookName);
+        }
+        if(StringUtils.isNotBlank(password)) {
+            intent.putExtra(PASSWORD, password);
+        }
+        if(StringUtils.isNotBlank(securityInfo.key)){
+            intent.putExtra(SecurityInfo.KEY,securityInfo.key);
+        }
+        if(StringUtils.isNotBlank(securityInfo.random)){
+            intent.putExtra(SecurityInfo.RANDOM,securityInfo.random);
+        }
+        if(StringUtils.isNotBlank(securityInfo.uuId)){
+            intent.putExtra(SecurityInfo.UU_ID,securityInfo.uuId);
+        }
     }
 }

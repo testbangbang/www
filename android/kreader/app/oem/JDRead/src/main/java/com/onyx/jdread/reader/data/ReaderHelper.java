@@ -103,8 +103,8 @@ public class ReaderHelper {
     }
 
     public void updateViewportSize(int newWidth, int newHeight) throws ReaderException {
+        getViewOptions().setSize(newWidth, newHeight);
         updateView();
-        //getImageReflowManager().updateViewportSize(viewOptions.getViewWidth(), viewOptions.getViewHeight());
     }
 
     public void onLayoutChanged() {
@@ -141,10 +141,6 @@ public class ReaderHelper {
     }
 
     public ReaderHitTestManager getHitTestManager() {
-        return null;
-    }
-
-    public ImageReflowManager getImageReflowManager() {
         return null;
     }
 
