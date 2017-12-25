@@ -28,8 +28,8 @@ public class BrushScribbleShape extends EPDShape  {
     public void render(final RenderContext renderContext) {
         applyStrokeStyle(renderContext.paint, getDisplayScale(renderContext));
         renderContext.paint.setStrokeWidth(1.0f);
-        InkUtils.drawStroke(renderContext,
-                getPoints().getPoints(),
+        InkUtils.drawStroke(renderContext, getPoints().getPoints(),
+                getStrokeWidth() * renderContext.displayScale,
                 getMaxTouchPressure());
     }
 
