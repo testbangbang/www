@@ -3,6 +3,7 @@ package com.onyx.jdread.reader.request;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
 
+import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
@@ -14,6 +15,7 @@ public class CreatePageViewRequest extends ReaderBaseRequest {
     private ReaderDataHolder readerDataHolder;
 
     public CreatePageViewRequest(ReaderDataHolder readerDataHolder) {
+        super(readerDataHolder.getRequestManager());
         this.readerDataHolder = readerDataHolder;
     }
 

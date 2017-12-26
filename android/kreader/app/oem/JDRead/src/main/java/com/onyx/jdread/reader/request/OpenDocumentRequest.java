@@ -1,5 +1,6 @@
 package com.onyx.jdread.reader.request;
 
+import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
@@ -7,6 +8,7 @@ import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
 import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.Reader;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.exception.FileFormatErrorException;
 
 /**
@@ -14,12 +16,13 @@ import com.onyx.jdread.reader.exception.FileFormatErrorException;
  */
 
 public class OpenDocumentRequest extends ReaderBaseRequest {
-    private Reader reader;
+    private ReaderDataHolder readerDataHolder;
     private ReaderDocumentOptionsImpl documentOptions;
     private ReaderPluginOptions pluginOptions;
 
-    public OpenDocumentRequest(Reader reader) {
-        this.reader = reader;
+    public OpenDocumentRequest(ReaderDataHolder readerDataHolder) {
+        super(readerDataHolder.getRequestManager());
+        this.readerDataHolder = readerDataHolder;
     }
 
     @Override
@@ -38,16 +41,16 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     }
 
     private boolean openDocument() throws Exception {
-        ReaderDocument document = reader.getReaderHelper().getPlugin().open(reader.getDocumentInfo().getBookPath(), documentOptions, pluginOptions);
+        ReaderDocument document = readerDataHolder.getReader().getReaderHelper().getPlugin().open(readerDataHolder.getReader().getDocumentInfo().getBookPath(), documentOptions, pluginOptions);
         if(document != null) {
-            reader.getReaderHelper().saveReaderDocument(document);
+            readerDataHolder.getReader().getReaderHelper().saveReaderDocument(document);
             return true;
         }
         return false;
     }
 
     private boolean selectPlugin() {
-        if (!reader.getReaderHelper().selectPlugin(getAppContext(), reader.getDocumentInfo(), pluginOptions)) {
+        if (!readerDataHolder.getReader().getReaderHelper().selectPlugin(getAppContext(), readerDataHolder.getReader().getDocumentInfo(), pluginOptions)) {
             return false;
         }
         return true;
