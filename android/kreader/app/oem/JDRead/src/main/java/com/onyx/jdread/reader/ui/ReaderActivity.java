@@ -9,22 +9,10 @@ import android.view.SurfaceHolder;
 
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
-import com.onyx.jdread.reader.actions.CreatePageViewAction;
-import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
-import com.onyx.jdread.reader.actions.PrevPageAction;
-import com.onyx.jdread.reader.actions.ShowReaderSettingMenuAction;
-import com.onyx.jdread.reader.event.MenuAreaEvent;
-import com.onyx.jdread.reader.event.NextPageEvent;
-import com.onyx.jdread.reader.event.OpenDocumentFailResultEvent;
-import com.onyx.jdread.reader.event.OpenDocumentSuccessResultEvent;
-import com.onyx.jdread.reader.event.PrevPageEvent;
+import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by huxiaomao on 2017/12/7.
@@ -34,6 +22,7 @@ public class ReaderActivity extends AppCompatActivity {
     private ActivityReaderBinding binding;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private ReaderViewModel readerViewModel;
+    private ReaderActivityEventHandler readerActivityEventHandler;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -47,6 +36,7 @@ public class ReaderActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reader);
         readerViewModel = new ReaderViewModel();
         binding.setReadViewModel(readerViewModel);
+        readerActivityEventHandler = new ReaderActivityEventHandler(readerViewModel);
         initSurfaceView();
     }
 
@@ -98,16 +88,12 @@ public class ReaderActivity extends AppCompatActivity {
     }
 
     private void initThirdLibrary() {
-        if (!EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().register(this);
-        }
+        readerActivityEventHandler.registeredLibrary();
     }
 
     @Override
     protected void onDestroy() {
-        if (EventBus.getDefault().isRegistered(this)) {
-            EventBus.getDefault().unregister(this);
-        }
+        readerActivityEventHandler.unregisteredLibrary();
         super.onDestroy();
     }
 
@@ -123,39 +109,13 @@ public class ReaderActivity extends AppCompatActivity {
         removeSurfaceViewCallback();
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onOpenDocumentFailResultEvent(OpenDocumentFailResultEvent event) {
-        binding.getReadViewModel().setTipMessage(event.getMessage());
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onOpenDocumentSuccessResultEvent(OpenDocumentSuccessResultEvent event) {
-        CreatePageViewAction createPageViewAction = new CreatePageViewAction();
-        createPageViewAction.execute(readerViewModel.getReaderDataHolder());
-    }
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
-        if(event.getAction() == KeyEvent.ACTION_UP){
-            if(event.getKeyCode() == KeyEvent.KEYCODE_BACK){
+        if (event.getAction() == KeyEvent.ACTION_UP) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
                 finish();
             }
         }
         return super.dispatchKeyEvent(event);
-    }
-
-    @Subscribe
-    public void onMenuAreaEvent(MenuAreaEvent event){
-        new ShowReaderSettingMenuAction().execute(readerViewModel.getReaderDataHolder());
-    }
-
-    @Subscribe
-    public void onPrevPageEvent(PrevPageEvent event){
-        new PrevPageAction().execute(readerViewModel.getReaderDataHolder());
-    }
-
-    @Subscribe
-    public void onNextPageEvent(NextPageEvent event){
-        new NextPageAction().execute(readerViewModel.getReaderDataHolder());
     }
 }
