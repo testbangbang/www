@@ -10,7 +10,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
  * Created by huxiaomao on 2017/12/22.
  */
 
-public class CreatePageViewRequest extends RxRequest {
+public class CreatePageViewRequest extends ReaderBaseRequest {
     private ReaderDataHolder readerDataHolder;
 
     public CreatePageViewRequest(ReaderDataHolder readerDataHolder) {

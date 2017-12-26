@@ -13,7 +13,7 @@ import com.onyx.jdread.reader.exception.FileFormatErrorException;
  * Created by huxiaomao on 2017/12/20.
  */
 
-public class OpenDocumentRequest extends RxRequest {
+public class OpenDocumentRequest extends ReaderBaseRequest {
     private Reader reader;
     private ReaderDocumentOptionsImpl documentOptions;
     private ReaderPluginOptions pluginOptions;
