@@ -178,7 +178,7 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                     }
                     synchronized (parent) {
                         updateShapeDataInfo(parent);
-                        if (isRender() && isTransfer()) {
+                        if (isRender() && isTransfer() && !isAbort()) {
                             parent.copyBitmap();
                         }
                     }
@@ -223,11 +223,19 @@ public class ReaderBaseNoteRequest extends BaseRequest {
         renderContext.prepareRenderingBuffer(bitmap.getBitmap());
 
         for (PageInfo page : getVisiblePages()) {
+            if (isAbort()) {
+                break;
+            }
             updateMatrix(renderMatrix, page);
             renderContext.update(bitmap.getBitmap(), canvas, paint, renderMatrix);
             final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getRange(), page.getSubPage());
             if (notePage != null) {
-                notePage.render(renderContext, null);
+                notePage.render(renderContext, new ReaderNotePage.RenderCallback() {
+                    @Override
+                    public boolean isRenderAbort() {
+                        return isAbort();
+                    }
+                });
                 rendered = true;
             }
         }
