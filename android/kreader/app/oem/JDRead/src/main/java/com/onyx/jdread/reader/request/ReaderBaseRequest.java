@@ -1,6 +1,6 @@
 package com.onyx.jdread.reader.request;
 
-import com.onyx.android.sdk.common.request.RequestManager;
+import com.onyx.android.sdk.common.request.ExecutorContext;
 import com.onyx.android.sdk.rx.RxRequest;
 
 import java.util.concurrent.ExecutorService;
@@ -13,16 +13,10 @@ import io.reactivex.schedulers.Schedulers;
  */
 
 public abstract class ReaderBaseRequest extends RxRequest {
-
-    private RequestManager requestManager;
-
-    public ReaderBaseRequest(RequestManager requestManager) {
-        this.requestManager = requestManager;
-    }
+    static final ExecutorService executorService = new ExecutorContext().getSingleThreadPool();
 
     @Override
     public Scheduler subscribeScheduler() {
-        final ExecutorService executorService = requestManager.getExecutorByIdentifier("reader").getSingleThreadPool();
         return Schedulers.from(executorService);
     }
 }

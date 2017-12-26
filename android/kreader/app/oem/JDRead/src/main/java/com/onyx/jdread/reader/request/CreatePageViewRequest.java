@@ -15,7 +15,6 @@ public class CreatePageViewRequest extends ReaderBaseRequest {
     private ReaderDataHolder readerDataHolder;
 
     public CreatePageViewRequest(ReaderDataHolder readerDataHolder) {
-        super(readerDataHolder.getRequestManager());
         this.readerDataHolder = readerDataHolder;
     }
 

@@ -2,6 +2,7 @@ package com.onyx.jdread.reader.data;
 
 import android.view.SurfaceView;
 
+import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.jdread.reader.common.DocumentInfo;
 
 /**

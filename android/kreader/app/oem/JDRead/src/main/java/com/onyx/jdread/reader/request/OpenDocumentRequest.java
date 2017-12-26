@@ -21,7 +21,6 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     private ReaderPluginOptions pluginOptions;
 
     public OpenDocumentRequest(ReaderDataHolder readerDataHolder) {
-        super(readerDataHolder.getRequestManager());
         this.readerDataHolder = readerDataHolder;
     }
 

@@ -24,7 +24,7 @@ public class OpenDocumentAction extends BaseAction {
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder.getReader());
+        OpenDocumentRequest openDocumentRequest = new OpenDocumentRequest(readerDataHolder);
         OpenDocumentRequest.setAppContext(JDReadApplication.getInstance());
         openDocumentRequest.execute(new RxCallback() {
             @Override
