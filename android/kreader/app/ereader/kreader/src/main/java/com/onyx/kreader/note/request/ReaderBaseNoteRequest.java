@@ -13,6 +13,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.PageInfo;
+import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
@@ -210,30 +211,33 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public boolean renderVisiblePages(final NoteManager parent) {
-        synchronized (parent) {
-            boolean rendered = false;
-            Bitmap bitmap = parent.updateRenderBitmap(getViewportSize());
-            bitmap.eraseColor(Color.TRANSPARENT);
-            Canvas canvas = new Canvas(bitmap);
-            Paint paint = preparePaint(parent);
+        boolean rendered = false;
+        ReaderBitmapImpl bitmap = new ReaderBitmapImpl(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
+        bitmap.getBitmap().eraseColor(Color.TRANSPARENT);
+        Canvas canvas = new Canvas(bitmap.getBitmap());
+        Paint paint = preparePaint(parent);
 
-            drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
-            final Matrix renderMatrix = new Matrix();
-            final RenderContext renderContext = parent.getRenderContext();
-            renderContext.prepareRenderingBuffer(bitmap);
+        drawBackground(canvas, paint, parent.getNoteDocument().getBackground());
+        final Matrix renderMatrix = new Matrix();
+        final RenderContext renderContext = parent.getRenderContext();
+        renderContext.prepareRenderingBuffer(bitmap.getBitmap());
 
-            for (PageInfo page : getVisiblePages()) {
-                updateMatrix(renderMatrix, page);
-                renderContext.update(bitmap, canvas, paint, renderMatrix);
-                final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getRange(), page.getSubPage());
-                if (notePage != null) {
-                    notePage.render(renderContext, null);
-                    rendered = true;
-                }
+        for (PageInfo page : getVisiblePages()) {
+            updateMatrix(renderMatrix, page);
+            renderContext.update(bitmap.getBitmap(), canvas, paint, renderMatrix);
+            final ReaderNotePage notePage = parent.getNoteDocument().loadPage(getContext(), page.getRange(), page.getSubPage());
+            if (notePage != null) {
+                notePage.render(renderContext, null);
+                rendered = true;
             }
-            renderContext.flushRenderingBuffer(bitmap);
-            return rendered;
         }
+        renderContext.flushRenderingBuffer(bitmap.getBitmap());
+
+        synchronized (parent) {
+            parent.setRenderBitmap(bitmap);
+        }
+
+        return rendered;
     }
 
     private void loadNotePages(final NoteManager parent) {
