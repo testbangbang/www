@@ -2,6 +2,7 @@ package com.onyx.edu.reader.ui.dialog;
 
 import android.content.DialogInterface;
 import android.text.InputType;
+import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -9,6 +10,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.edu.reader.R;
 import com.onyx.edu.reader.ui.actions.GotoPageAction;
@@ -53,6 +55,12 @@ public class DialogGotoPage {
                 readerDataHolder.postDialogUiChangedEvent(false);
             }
         }).setDismissOnBackPressed(true);
+        dlg.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                InputMethodUtils.hideInputKeyboard(readerDataHolder.getContext());
+            }
+        });
         dlg.getInputEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
         dlg.getInputEditText().setHint("1-" + readerDataHolder.getPageCount());
         if (showProgress) {
