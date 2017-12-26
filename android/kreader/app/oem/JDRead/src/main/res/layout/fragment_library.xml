@@ -95,7 +95,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/function_bar_height"
-            android:gravity="center"
+            android:gravity="center_horizontal"
             android:orientation="horizontal"
             android:visibility="@{libraryModel.showBottomMenu?View.VISIBLE:View.GONE}">
 
