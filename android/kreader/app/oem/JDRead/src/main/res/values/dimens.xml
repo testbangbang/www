@@ -22,6 +22,7 @@
     <dimen name="dialog_move_to_library_list_scroll_bar_width">5dp</dimen>
     <dimen name="select_count_circle_width">40dp</dimen>
     <dimen name="pop_menu_item_padding">10dp</dimen>
-    <dimen name="library_content_page_view_height">511dp</dimen>
+    <dimen name="library_content_page_view_height">555dp</dimen>
     <dimen name="dialog_single_manage_padding">10dp</dimen>
+    <dimen name="library_build_edit_padding">8dp</dimen>
 </resources>
