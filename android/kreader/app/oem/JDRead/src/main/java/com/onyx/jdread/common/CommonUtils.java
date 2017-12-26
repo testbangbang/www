@@ -8,6 +8,8 @@ import android.os.Environment;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 
+import java.text.DecimalFormat;
+
 /**
  * Created by huxiaomao on 2016/11/30.
  */
@@ -45,5 +47,9 @@ public class CommonUtils {
 
     public static String getJDBooksPath() {
         return LOCAL_JDBOOKS_PATH;
+    }
+
+    public static String getYueDouPrice(float price) {
+        return String.valueOf(new DecimalFormat("0").format(price * 100));
     }
 }

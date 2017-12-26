@@ -37,7 +37,7 @@
     <string name="back_to_top">返回顶部</string>
     <string name="view_all_books">查看全部%1$s万册图书</string>
     <string name="search_view_hint">请输入搜索内容</string>
-    <string name="book_detail_yuedou_price">%.0f阅豆</string>
+    <string name="book_detail_yuedou_price">%1$s阅豆</string>
     <string name="book_detail_button_now_read">立即阅读</string>
     <string name="book_detail_button_buy_whole_book">全本购买</string>
     <string name="cart">购物车</string>

@@ -107,7 +107,7 @@
                             android:id="@+id/book_detail_yuedou_price_old"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@{@string/book_detail_yuedou_price(bookDetailViewModel.bookDetailResultBean.detail.getPrice())}"
+                            android:text="@{@string/book_detail_yuedou_price(CommonUtils.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.detail.getPrice()))}"
                             android:textColor="@android:color/darker_gray"
                             android:textSize="@dimen/level_three_heading_font" />
 
@@ -115,7 +115,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/book_detail_sub_info_margin_left"
-                            android:text="@{@string/book_detail_yuedou_price(bookDetailViewModel.bookDetailResultBean.detail.getJdPrice())}"
+                            android:text="@{@string/book_detail_yuedou_price(CommonUtils.getYueDouPrice(bookDetailViewModel.bookDetailResultBean.detail.getJdPrice()))}"
                             android:textColor="@android:color/black"
                             android:textSize="@dimen/level_three_heading_font" />
 
