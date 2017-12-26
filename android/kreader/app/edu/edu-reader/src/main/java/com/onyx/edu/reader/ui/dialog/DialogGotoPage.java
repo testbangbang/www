@@ -2,7 +2,6 @@ package com.onyx.edu.reader.ui.dialog;
 
 import android.content.DialogInterface;
 import android.text.InputType;
-import android.util.Log;
 import android.widget.SeekBar;
 import android.widget.Toast;
 
@@ -55,6 +54,8 @@ public class DialogGotoPage {
                 readerDataHolder.postDialogUiChangedEvent(false);
             }
         }).setDismissOnBackPressed(true);
+        //TODO:when in scribble mode,disable touch outside cancel function.
+        dlg.setCloseOnTouchOutside((!readerDataHolder.inScribbleProvider()));
         dlg.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
