@@ -3,7 +3,7 @@ package com.onyx.jdread.reader.event;
 import com.onyx.jdread.reader.actions.CreatePageViewAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
-import com.onyx.jdread.reader.actions.ShowReaderSettingMenuAction;
+import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -46,7 +46,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe
     public void onMenuAreaEvent(MenuAreaEvent event) {
-        new ShowReaderSettingMenuAction().execute(readerViewModel.getReaderDataHolder());
+        new ShowSettingMenuAction().execute(readerViewModel.getReaderDataHolder());
     }
 
     @Subscribe
