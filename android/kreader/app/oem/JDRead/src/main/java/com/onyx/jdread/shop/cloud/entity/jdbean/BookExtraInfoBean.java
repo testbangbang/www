@@ -7,6 +7,7 @@ package com.onyx.jdread.shop.cloud.entity.jdbean;
 public class BookExtraInfoBean {
     public boolean isWholeBook;
     public int percentage;
-    public int downLoadstate;
+    public int downLoadState;
     public String localPath;
+    public Object downLoadTaskTag;
 }

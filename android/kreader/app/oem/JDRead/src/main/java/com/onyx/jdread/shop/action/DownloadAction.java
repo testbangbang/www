@@ -10,13 +10,11 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.ToastUtil;
-import com.onyx.jdread.shop.event.DownloadingErrorEvent;
+import com.onyx.jdread.shop.event.DownloadFinishEvent;
+import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
-import com.onyx.jdread.shop.event.DownloadingFinishEvent;
 import com.onyx.jdread.shop.model.ProgressInfoModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
-
-import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by jackdeng on 2017/12/21.
@@ -50,19 +48,19 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
         if (isTaskDownloading(tag)) {
             return;
         }
-        startDownload(rxCallback);
+        startDownload(dataBundle, rxCallback);
     }
 
     private boolean isTaskDownloading(Object tag) {
         return getDownLoaderManager().getTask(tag) != null;
     }
 
-    private void startDownload(final RxCallback rxCallback) {
+    private void startDownload(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         BaseDownloadTask task = getDownLoaderManager().download(context, url, filePath, tag, new BaseCallback() {
 
             @Override
             public void start(BaseRequest request) {
-                EventBus.getDefault().post(new DownloadingEvent());
+                dataBundle.getEventBus().post(new DownloadStartEvent(tag));
             }
 
             @Override
@@ -73,18 +71,17 @@ public class DownloadAction extends BaseAction<ShopDataBundle> {
                 if (infoModel.totalBytes > 0) {
                     infoModel.progress = infoModel.soFarBytes / infoModel.totalBytes;
                 }
-                EventBus.getDefault().post(new DownloadingEvent(tag, infoModel));
+                dataBundle.getEventBus().post(new DownloadingEvent(tag, infoModel));
             }
 
             @Override
             public void done(BaseRequest request, Throwable e) {
+                dataBundle.getEventBus().post(new DownloadFinishEvent(tag));
                 if (rxCallback != null) {
                     if (e != null) {
-                        EventBus.getDefault().post(new DownloadingErrorEvent());
                         ToastUtil.showToast(context, R.string.download_fail);
                         rxCallback.onError(e);
                     } else {
-                        EventBus.getDefault().post(new DownloadingFinishEvent());
                         ToastUtil.showToast(context, R.string.download_finished);
                         rxCallback.onNext(DownloadAction.this);
                     }

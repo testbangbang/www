@@ -11,9 +11,6 @@ public class DownloadingEvent {
     public Object tag;
     public ProgressInfoModel progressInfoModel;
 
-    public DownloadingEvent() {
-    }
-
     public DownloadingEvent(Object tag,ProgressInfoModel progressInfoModel) {
         this.tag = tag;
         this.progressInfoModel = progressInfoModel;

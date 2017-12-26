@@ -25,7 +25,12 @@ public class RxRequestBookshelfInsert extends RxBaseDBRequest {
 
     public void insert() {
         if (metadata != null) {
-            getDataProvider().saveMetadata(getAppContext(), metadata);
+            Metadata findMeta = getDataProvider().findMetadataByIdString(getAppContext(), metadata.getIdString());
+            if (findMeta != null && findMeta.hasValidId()) {
+                getDataProvider().updateMetadataExtraAttributes(getAppContext(), metadata);
+            } else {
+                getDataProvider().saveMetadata(getAppContext(), metadata);
+            }
         }
     }
 }
