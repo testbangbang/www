@@ -30,7 +30,7 @@ public class ReaderTouchHelper {
     private void onTouchEvent(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (readerMode == 0) {
-                AreaFunctionRecognition.processAreaFunction(v.getWidth(), v.getHeight(), (int) event.getX(), (int) event.getY());
+                RegionFunctionRecognition.processRegionFunction(v.getWidth(), v.getHeight(), (int) event.getX(), (int) event.getY());
             }
         }
     }
