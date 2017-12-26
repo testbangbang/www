@@ -195,6 +195,13 @@ public class NoteManager {
         return renderBitmapWrapper.getBitmap();
     }
 
+    public void setRenderBitmap(ReaderBitmapImpl bitmap) {
+        if (renderBitmapWrapper != null) {
+            renderBitmapWrapper.recycleBitmap();
+        }
+        renderBitmapWrapper = bitmap;
+    }
+
     // copy from render bitmap to surfaceView bitmap.
     public void copyBitmap() {
         if (renderBitmapWrapper == null) {
