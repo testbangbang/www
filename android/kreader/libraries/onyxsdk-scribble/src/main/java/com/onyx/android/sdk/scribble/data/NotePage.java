@@ -1,6 +1,7 @@
 package com.onyx.android.sdk.scribble.data;
 
 import android.content.Context;
+import android.graphics.Matrix;
 
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.shape.Shape;
@@ -225,7 +226,9 @@ public class NotePage {
         if (shapeList == null) {
             return;
         }
-        for(Shape shape : shapeList) {
+        //TODO: fix concurrent modification exception.
+        final List<Shape> renderShapeList = new ArrayList<>(shapeList);
+        for (Shape shape : renderShapeList) {
             shape.render(renderContext);
             if (callback != null && callback.isRenderAbort()) {
                 break;
