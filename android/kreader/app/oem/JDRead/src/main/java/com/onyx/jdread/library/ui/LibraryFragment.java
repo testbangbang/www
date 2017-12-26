@@ -326,7 +326,7 @@ public class LibraryFragment extends BaseFragment {
 
     private void refreshData() {
         pagination.setCurrentPage(0);
-        loadData();
+        loadData(libraryBuildQueryArgs(), false);
     }
 
     @Subscribe

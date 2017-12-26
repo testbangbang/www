@@ -15,13 +15,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingTop="@dimen/library_delete_dialog_title_padding"
+        android:paddingRight="@dimen/library_delete_dialog_title_padding"
+        android:paddingLeft="@dimen/library_delete_dialog_title_padding"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:padding="@dimen/library_delete_dialog_title_padding"
             android:text="@{dialogModel.title}"
             android:textSize="@dimen/level_two_heading_font"
             android:visibility="@{StringUtils.isNullOrEmpty(dialogModel.title)?View.GONE:View.VISIBLE}" />
@@ -29,9 +31,10 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:hint="@string/build_library_hint"
-            android:padding="@dimen/library_delete_dialog_title_padding"
+            android:padding="@dimen/library_build_edit_padding"
+            android:layout_marginTop="@dimen/library_delete_dialog_title_padding"
+            android:background="@drawable/rectangle_stroke"
             android:text="@={dialogModel.libraryName}"
             android:textSize="@dimen/level_two_heading_font" />
 
