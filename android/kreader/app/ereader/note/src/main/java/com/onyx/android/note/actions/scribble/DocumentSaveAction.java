@@ -33,6 +33,8 @@ public class DocumentSaveAction<T extends BaseScribbleActivity> extends BaseNote
 
     @Override
     public void execute(final T activity, final BaseCallback callback) {
+        //TODO:confirm pause drawing before updating ui.we don't sync here,avoid cause too much latency.
+        activity.getNoteViewHelper().pauseDrawing();
         showLoadingDialog(activity, DialogLoading.ARGS_LOADING_MSG, R.string.saving_note);
         final NoteDocumentSaveRequest saveRequest = new NoteDocumentSaveRequest(title, close, resume);
         activity.submitRequestWithIdentifier(documentUniqueId, saveRequest, new BaseCallback() {

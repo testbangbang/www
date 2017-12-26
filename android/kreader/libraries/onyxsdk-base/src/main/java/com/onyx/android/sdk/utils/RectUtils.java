@@ -3,7 +3,6 @@ package com.onyx.android.sdk.utils;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.util.MutableFloat;
 import android.util.Pair;
 
 import java.util.ArrayList;
@@ -20,7 +19,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class RectUtils {
 
     static public Rect toRect(final RectF source) {
-        return new Rect((int)source.left, (int)source.top, (int)source.width(), (int)source.height());
+        return new Rect((int)source.left, (int)source.top, (int)source.right, (int)source.bottom);
     }
 
     static public List<Rect> toRectList(final List<RectF> source) {
