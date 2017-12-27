@@ -1,13 +1,10 @@
 package com.onyx.jdread.reader.request;
 
-import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderPluginOptions;
 import com.onyx.android.sdk.reader.host.impl.ReaderDocumentOptionsImpl;
 import com.onyx.android.sdk.reader.host.impl.ReaderPluginOptionsImpl;
-import com.onyx.android.sdk.rx.RxRequest;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.data.Reader;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.exception.FileFormatErrorException;
 
