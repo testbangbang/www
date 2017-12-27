@@ -13,4 +13,28 @@
     <integer name="library_list_dialog_col">1</integer>
     <integer name="library_pop_menu_width">200</integer>
     <integer name="single_manage_dialog_height">800</integer>
+    <integer name="prev_page_touch_region_left">0</integer>
+    <integer name="prev_page_touch_region_top">100</integer>
+    <integer name="prev_page_touch_region_right">100</integer>
+    <integer name="prev_page_touch_region_bottom">1448</integer>
+
+    <integer name="next_page_touch_one_region_left">972</integer>
+    <integer name="next_page_touch_one_region_top">100</integer>
+    <integer name="next_page_touch_one_region_right">1072</integer>
+    <integer name="next_page_touch_one_region_bottom">1448</integer>
+
+    <integer name="next_page_touch_two_region_left">100</integer>
+    <integer name="next_page_touch_two_region_top">1348</integer>
+    <integer name="next_page_touch_two_region_right">1072</integer>
+    <integer name="next_page_touch_two_region_bottom">1448</integer>
+
+    <integer name="show_menu_touch_one_region_left">0</integer>
+    <integer name="show_menu_touch_one_region_top">0</integer>
+    <integer name="show_menu_touch_one_region_right">1072</integer>
+    <integer name="show_menu_touch_one_region_bottom">100</integer>
+
+    <integer name="show_menu_touch_two_region_left">100</integer>
+    <integer name="show_menu_touch_two_region_top">100</integer>
+    <integer name="show_menu_touch_two_region_right">972</integer>
+    <integer name="show_menu_touch_two_region_bottom">1448</integer>
 </resources>
