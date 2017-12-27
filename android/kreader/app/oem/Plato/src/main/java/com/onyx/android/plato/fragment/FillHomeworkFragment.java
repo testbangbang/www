@@ -66,7 +66,6 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
 
     @Override
     protected void loadData() {
-
     }
 
     @Override
@@ -75,8 +74,6 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
         fillHomeworkBinding.fillHomeworkRecycler.setLayoutManager(new DisableScrollGridManager(SunApplication.getInstance()));
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(SunApplication.getInstance(), DividerItemDecoration.VERTICAL_LIST);
         fillHomeworkBinding.fillHomeworkRecycler.addItemDecoration(dividerItemDecoration);
-        fillHomeworkBinding.fillHomeworkTitleBar.setTitle(String.format(getResources().getString(R.string.homework_unfinished_title_format),
-                StringUtil.transitionHomeworkType(type), title));
         fillHomeworkBinding.fillHomeworkTitleBar.setRecord(getResources().getString(R.string.file_homework_record));
         fillHomeworkAdapter = new FillHomeworkAdapter();
         fillHomeworkBinding.fillHomeworkRecycler.setAdapter(fillHomeworkAdapter);
@@ -87,6 +84,8 @@ public class FillHomeworkFragment extends BaseFragment implements HomeworkView, 
     @Override
     public void onResume() {
         super.onResume();
+        fillHomeworkBinding.fillHomeworkTitleBar.setTitle(String.format(getResources().getString(R.string.homework_unfinished_title_format),
+                StringUtil.transitionHomeworkType(type), title));
     }
 
     @Override

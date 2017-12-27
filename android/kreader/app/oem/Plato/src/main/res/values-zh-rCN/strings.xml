@@ -160,7 +160,7 @@
     <string name="change_password_old_password_title">输入原密码 :</string>
     <string name="change_password_old_password_title_tips">(请先验证原密码)</string>
     <string name="change_password_new_password_title">输入新密码 :</string>
-    <string name="change_password_new_password_title_tips">(最小长度为6个字符)</string>
+    <string name="change_password_new_password_title_tips">(密码长度为6-18)</string>
     <string name="change_password_final_password_title">再次输入新密码 :</string>
     <string name="change_password_passwords_match_error">两次新密码不匹配</string>
     <string name="change_password_success_tips">修改密码成功</string>
@@ -223,5 +223,8 @@
     <string name="input_mistake">输入错因</string>
     <string name="input_mistake_tip">提示：错因分析，最多四个字</string>
     <string name="verify_original_password_error">验证原密码错误</string>
-    <string name="password_length_less_than_normal">密码长度小于6</string>
+    <string name="password_length_less_than_normal">密码长度小于6或者大于18</string>
+    <string name="part_two_undeveloped">第二部分功能，暂未开发</string>
+    <string name="input_ip_address_hint">请输入IP地址</string>
+    <string name="ip_address">举例：http://116.62.152.51:9001/</string>
 </resources>

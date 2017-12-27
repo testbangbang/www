@@ -11,6 +11,7 @@ import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.activity.BaseActivity;
 import com.onyx.android.plato.adapter.ShapePageAdapter;
 import com.onyx.android.plato.bean.ScribbleToolBean;
+import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.databinding.ActivityScribbleBinding;
 import com.onyx.android.plato.event.ShapePageItemEvent;
@@ -25,7 +26,6 @@ import com.onyx.android.sdk.scribble.api.event.ErasingTouchEvent;
 import com.onyx.android.sdk.scribble.api.event.RawTouchPointListReceivedEvent;
 import com.onyx.android.sdk.scribble.asyncrequest.NoteManager;
 import com.onyx.android.sdk.scribble.asyncrequest.navigation.PageGoToTargetIndexRequest;
-import com.onyx.android.sdk.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -186,6 +186,8 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         EventBus.getDefault().post(new SubjectiveResultEvent(questionID));
+                        CommonNotices.show(getString(R.string.saved_successfully));
+                        finish();
                     }
                 });
             }

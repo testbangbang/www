@@ -22,11 +22,11 @@ import com.onyx.android.plato.view.RosePieChart.PieEntry;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by jackdeng on 2017/11/1.
- */
 
-public class GoalAdvancedFragment extends BaseFragment implements GoalAdvancedView {
+/**
+ * Created by zhouzhiming on 2017/12/26.
+ */
+public class LearningManagementFragment extends BaseFragment implements GoalAdvancedView {
 
     private FragmentGoalAdvancedBinding goalAdvancedBinding;
     private DividerItemDecoration dividerItemDecoration;

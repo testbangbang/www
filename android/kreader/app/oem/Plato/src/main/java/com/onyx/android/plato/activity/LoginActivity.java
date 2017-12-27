@@ -2,23 +2,30 @@ package com.onyx.android.plato.activity;
 
 import android.databinding.ViewDataBinding;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
 
-import com.onyx.android.plato.cloud.bean.UserBean;
-import com.onyx.android.sdk.ui.dialog.DialogLoading;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.plato.BR;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
+import com.onyx.android.plato.cloud.bean.UserBean;
 import com.onyx.android.plato.cloud.bean.UserLoginRequestBean;
 import com.onyx.android.plato.common.CommonNotices;
 import com.onyx.android.plato.common.Constants;
 import com.onyx.android.plato.common.ManagerActivityUtils;
 import com.onyx.android.plato.databinding.ActivityUserLoginBinding;
+import com.onyx.android.plato.dialog.InputIpAddressDialog;
+import com.onyx.android.plato.event.ExceptionEvent;
 import com.onyx.android.plato.interfaces.UserLoginView;
 import com.onyx.android.plato.presenter.UserLoginPresenter;
+import com.onyx.android.sdk.ui.dialog.DialogLoading;
+import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.umeng.analytics.MobclickAgent;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.net.ConnectException;
 
@@ -76,7 +83,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
 
     @Override
     protected void initListener() {
-
     }
 
     @Override
@@ -90,6 +96,29 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
             case R.id.login_act_tv_startlogin:
                 startLogin();
                 break;
+            case R.id.user_login_show_password:
+                showPassword();
+                break;
+            case R.id.iv_main_activity_title_icon:
+                showInputIpAddressDialog();
+                break;
+        }
+    }
+
+    private void showInputIpAddressDialog() {
+        InputIpAddressDialog dialog = new InputIpAddressDialog();
+        dialog.show(getFragmentManager(), "");
+    }
+
+    private void showPassword() {
+        if (userLoginRequestBean.isShowPassword) {
+            userLoginRequestBean.setShowPassword(false);
+            loginDataBinding.loginActEtPassword.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            loginDataBinding.loginActEtPassword.setSelection( loginDataBinding.loginActEtPassword.getText().length());
+        } else {
+            userLoginRequestBean.setShowPassword(true);
+            loginDataBinding.loginActEtPassword.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            loginDataBinding.loginActEtPassword.setSelection(loginDataBinding.loginActEtPassword.getText().length());
         }
     }
 
@@ -157,6 +186,11 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener,
         } else {
             CommonNotices.show(getString(R.string.common_tips_request_failed));
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onExceptionEvent(ExceptionEvent event) {
+        CommonNotices.show(event.getError());
     }
 }
 

@@ -9,6 +9,10 @@
             type="android.view.View.OnClickListener" />
 
         <variable
+            name="haveNew"
+            type="boolean" />
+
+        <variable
             name="requestInfo"
             type="com.onyx.android.plato.cloud.bean.UserLoginRequestBean" />
     </data>
@@ -18,6 +22,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="@dimen/login_activity_padding">
+
+        <ImageView
+            android:id="@+id/iv_main_activity_title_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{listener::onClick}"
+            android:src="@drawable/settings" />
 
         <ImageView
             android:layout_width="@dimen/login_activity_logo_width"
@@ -42,14 +53,30 @@
             android:hint="@string/login_activity_account_hint"
             android:text="@={requestInfo.account}" />
 
-        <EditText
-            android:id="@+id/login_act_et_password"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/login_activity_password_margin_top"
-            android:hint="@string/login_activity_password_hint"
-            android:inputType="textPassword"
-            android:text="@={requestInfo.password}" />
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/login_act_et_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/login_activity_password_hint"
+                android:inputType="textPassword"
+                android:text="@={requestInfo.password}" />
+
+            <ImageView
+                android:id="@+id/user_login_show_password"
+                android:layout_width="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:onClick="@{listener::onClick}"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:src="@{requestInfo.isShowPassword?@drawable/eye_open:@drawable/eye_close}"/>
+
+        </RelativeLayout>
 
         <CheckBox
             android:id="@+id/login_act_cb_keep_password"

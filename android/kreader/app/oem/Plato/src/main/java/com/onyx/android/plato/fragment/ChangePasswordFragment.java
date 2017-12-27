@@ -1,8 +1,12 @@
 package com.onyx.android.plato.fragment;
 
+import android.databinding.ObservableBoolean;
 import android.databinding.ViewDataBinding;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.view.View;
+import android.widget.EditText;
 
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
@@ -54,7 +58,6 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
 
     @Override
     protected void initListener() {
-
     }
 
     @Override
@@ -93,6 +96,7 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
 
     @Override
     public boolean onKeyBack() {
+        Utils.hideSoftWindow(getActivity());
         EventBus.getDefault().post(new ToUserCenterEvent());
         return true;
     }
@@ -103,6 +107,27 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
             case R.id.tv_change_password_fragment_confirm:
                 changePassword();
                 break;
+            case R.id.show_old_password:
+                showPassword(changePasswordBinding.etChangePasswordOldPassword, changePasswordRequestBean.isShowOldPassword);
+                break;
+            case R.id.show_new_password:
+                showPassword(changePasswordBinding.etChangePasswordNewPassword, changePasswordRequestBean.isShowNewPassword);
+                break;
+            case R.id.show_final_password:
+                showPassword(changePasswordBinding.etChangePasswordFinalPassword, changePasswordRequestBean.isShowFinalPassword);
+                break;
+        }
+    }
+
+    private void showPassword(EditText editText, ObservableBoolean tag) {
+        if (tag.get()) {
+            tag.set(false);
+            editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
+            editText.setSelection( editText.getText().length());
+        } else {
+            tag.set(true);
+            editText.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+            editText.setSelection(editText.getText().length());
         }
     }
 
@@ -127,7 +152,11 @@ public class ChangePasswordFragment extends BaseFragment implements ChangePasswo
             CommonNotices.show(getString(R.string.password_format_error_tips));
             return false;
         }
-        if (changePasswordRequestBean.newPassword.length() < 6) {
+        if (changePasswordRequestBean.newPassword.length() < 6 || changePasswordRequestBean.newPassword.length() > 18) {
+            CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.password_length_less_than_normal));
+            return false;
+        }
+        if (changePasswordRequestBean.finalPassword.length() < 6 || changePasswordRequestBean.finalPassword.length() > 18) {
             CommonNotices.show(SunApplication.getInstance().getResources().getString(R.string.password_length_less_than_normal));
             return false;
         }

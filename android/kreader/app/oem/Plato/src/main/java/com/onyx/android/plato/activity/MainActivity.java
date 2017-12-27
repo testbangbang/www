@@ -4,7 +4,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.databinding.ViewDataBinding;
 import android.support.design.widget.TabLayout;
-import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -51,6 +50,7 @@ import com.onyx.android.plato.fragment.EmptyFragment;
 import com.onyx.android.plato.fragment.FillHomeworkFragment;
 import com.onyx.android.plato.fragment.FinishedFragment;
 import com.onyx.android.plato.fragment.GoalAdvancedFragment;
+import com.onyx.android.plato.fragment.LearningManagementFragment;
 import com.onyx.android.plato.fragment.MainFragment;
 import com.onyx.android.plato.fragment.ParseAnswerFragment;
 import com.onyx.android.plato.fragment.RankingFragment;
@@ -69,7 +69,6 @@ import com.onyx.android.plato.utils.Utils;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
-import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -266,7 +265,7 @@ public class MainActivity extends BaseActivity implements MainView, View.OnClick
                     baseFragment = new GoalAdvancedFragment();
                     break;
                 case ChildViewID.FRAGMENT_STUDY_MANAGEMENT:
-                    baseFragment = new MainFragment();
+                    baseFragment = new LearningManagementFragment();
                     break;
                 case ChildViewID.FRAGMENT_FILL_HOMEWORK:
                     baseFragment = new FillHomeworkFragment();

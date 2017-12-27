@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="InputIpAddressBinding">
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/input_ip_dialog_content_container_padding">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ip_address"
+            android:textColor="@color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <EditText
+            android:id="@+id/input_ip_dialog_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/input_ip_dialog_content_margin_top"
+            android:hint="@string/input_ip_address_hint" />
+
+        <TextView
+            android:id="@+id/input_ip_dialog_confirm"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/login_activity_login_button_margin_top"
+            android:background="@drawable/selector_login_button_background"
+            android:gravity="center"
+            android:padding="@dimen/login_activity_login_button_pddding"
+            android:text="@string/change_password_confirm"
+            android:textSize="@dimen/level_three_heading_font" />
+
+    </LinearLayout>
+</layout>
