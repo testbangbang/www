@@ -4,7 +4,10 @@ import android.content.Context;
 import android.util.Log;
 
 import com.onyx.android.sdk.device.Device;
+import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.library.request.RxCopyBookToLibraryRequest;
 
 import org.nanohttpd.protocols.http.IHTTPSession;
@@ -79,8 +82,14 @@ public class FileServer extends NanoHTTPD {
             File file = new File(files.get("file"));
             msg = "success";
             File targetFile = new File(Device.currentDevice.getExternalStorageDirectory() + "/Books/" + parameters.get("file"));
+            final String fileName = parameters.get("file");
             RxCopyBookToLibraryRequest request = new RxCopyBookToLibraryRequest(JDReadApplication.getDataBundle().getDataManager(), file, targetFile);
-            request.execute(null);
+            request.execute(new RxCallback<RxCopyBookToLibraryRequest>() {
+                @Override
+                public void onNext(RxCopyBookToLibraryRequest request1) {
+                    ToastUtils.showToast(JDReadApplication.getInstance(), String.format(JDReadApplication.getInstance().getString(R.string.pass_succeed), fileName));
+                }
+            });
         }
         return newFixedLengthResponse(msg);
     }

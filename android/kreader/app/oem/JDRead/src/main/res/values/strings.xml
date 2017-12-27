@@ -33,4 +33,5 @@
     <string name="wifi_pass_book_prompt_top">Enter the address below in the browser or scan the QR code below：</string>
     <string name="wifi_pass_book_prompt_bottom_1">Mobile upload Android phone only</string>
     <string name="wifi_pass_book_prompt_bottom_2">Do not close this page or lock the screen while uploading</string>
+    <string name="pass_succeed">%s pass succeed</string>
 </resources>
