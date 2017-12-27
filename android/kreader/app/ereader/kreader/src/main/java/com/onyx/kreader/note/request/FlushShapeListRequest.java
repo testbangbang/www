@@ -33,10 +33,15 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
         saveDocument = save;
     }
 
-    public static FlushShapeListRequest renderInBackgroundRequest(final List<PageInfo> pages, final List<Shape> list, int spi) {
-        FlushShapeListRequest request = new FlushShapeListRequest(pages, list, spi, true, true, false);
-        request.setRenderToScreen(false);
-        return request;
+    public FlushShapeListRequest(final List<PageInfo> pages, final List<Shape> list, int spi, boolean r, boolean t, boolean save, boolean abortPendingTasks) {
+        setPauseRawInputProcessor(isPause());
+        setAbortPendingTasks(abortPendingTasks);
+        setRender(r);
+        setTransfer(t);
+        setVisiblePages(pages);
+        subPageIndex = spi;
+        shapeList.addAll(list);
+        saveDocument = save;
     }
 
     public void execute(final NoteManager noteManager) throws Exception {
