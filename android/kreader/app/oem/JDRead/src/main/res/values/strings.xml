@@ -38,4 +38,9 @@
     <string name="quick_back_button">Quick back button</string>
     <string name="quick_back_button_explanation">Put in the middle of the menu below,Easy one-handed operation to quickly return to the previous step,Long press can also be closed</string>
     <string name="on">on</string>
+    <string name="file_does_not_exist">File does not exist</string>
+    <string name="file_format_error">Book format error</string>
+    <string name="document_path_error">Book path error</string>
+    <string name="open_book_parameter_error">There is no book path in opening book information</string>
+    <string name="open_book_fail">Open book fail</string>
 </resources>

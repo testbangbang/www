@@ -14,6 +14,7 @@ import android.util.Log;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -219,6 +220,18 @@ public class MainActivity extends AppCompatActivity {
             functionBarModel.setIsShow(flags);
         }
     };
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        DeviceUtils.setFullScreenOnResume(this, true);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
