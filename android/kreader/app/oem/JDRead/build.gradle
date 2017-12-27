@@ -67,4 +67,6 @@ dependencies {
     compile project(':libraries:onyxsdk-data')
     compile "com.android.support:appcompat-v7:$rootProject.supportLibraryVersion"
     compile "com.android.support:recyclerview-v7:$rootProject.supportLibraryVersion"
+    compile files('libs/nanohttpd-2.3.2-SNAPSHOT.jar')
+    compile "com.google.zxing:core:$rootProject.zxingVersion"
 }

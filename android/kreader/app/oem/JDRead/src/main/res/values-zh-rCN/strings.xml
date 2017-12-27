@@ -28,4 +28,7 @@
     <string name="delete_library">删除分组</string>
     <string name="delete_library_include_book">删除分组及全部图书</string>
     <string name="the_same_name">重命名不能与原组名相同</string>
+    <string name="wifi_pass_book_prompt_top">在浏览器中输入以下地址或扫描下方二维码：</string>
+    <string name="wifi_pass_book_prompt_bottom_1">手机上传仅限Android手机</string>
+    <string name="wifi_pass_book_prompt_bottom_2">上传过程中请勿关闭此页面或锁屏</string>
 </resources>

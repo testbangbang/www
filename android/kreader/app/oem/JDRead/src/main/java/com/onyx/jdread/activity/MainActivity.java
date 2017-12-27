@@ -221,6 +221,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(event.childClassName);
+        switchCurrentFragment(event.childClassName);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
