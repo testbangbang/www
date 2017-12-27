@@ -1,5 +1,5 @@
 <resources>
-    <string name="book_total" translatable="false">共%s本书</string>
+    <string name="book_total" translatable="false">总计:%s</string>
     <string name="app_name">京东阅读</string>
     <string name="library_name">书架</string>
     <string name="shop_name">书店</string>
@@ -68,4 +68,9 @@
     <string name="download_update_package">下载更新包</string>
     <string name="downloading">正在下载 %d</string>
     <string name="update_application_not_install">更新应用没有安装，请升级最新的系统</string>
+    <string name="file_does_not_exist">文件不存在</string>
+    <string name="file_format_error">书本格式错误</string>
+    <string name="document_path_error">书本路径错误</string>
+    <string name="open_book_parameter_error">打开书本信息中没有书本路径</string>
+    <string name="open_book_fail">打开书本失败</string>
 </resources>

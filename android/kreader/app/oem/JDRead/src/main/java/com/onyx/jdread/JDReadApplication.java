@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -61,6 +62,7 @@ public class JDReadApplication extends MultiDexApplication {
     private void initConfig() {
         instance = this;
         DataManager.init(instance, null);
+        initFrescoLoader();
         PreferenceManager.init(instance);
 
         OnyxDownloadManager.init(this.getApplicationContext());
@@ -108,5 +110,9 @@ public class JDReadApplication extends MultiDexApplication {
                 getDataBundle().getEventBus().post(new ModifyLibraryDataEvent());
             }
         });
+    }
+
+    private void initFrescoLoader() {
+        Fresco.initialize(getInstance().getApplicationContext());
     }
 }

@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">JDRead</string>
     <string name="page_count" translatable="false">%1$d/%2$d</string>
-    <string name="book_total" translatable="false">total %s book</string>
+    <string name="book_total" translatable="false">total %s</string>
     <string name="library_name">Library</string>
     <string name="shop_name">Shopping</string>
     <string name="back_name">Back</string>
@@ -70,4 +70,9 @@
     <string name="download_update_package">Download the update package</string>
     <string name="downloading">Downloading %d</string>
     <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
+    <string name="file_does_not_exist">File does not exist</string>
+    <string name="file_format_error">Book format error</string>
+    <string name="document_path_error">Book path error</string>
+    <string name="open_book_parameter_error">There is no book path in opening book information</string>
+    <string name="open_book_fail">Open book fail</string>
 </resources>
