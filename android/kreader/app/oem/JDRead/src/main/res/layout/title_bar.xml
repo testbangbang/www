@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="titleModel"
+            type="com.onyx.jdread.model.TitleBarModel"/>
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/global_activities_back_btn_category_tittle"
+            android:background="@drawable/imagebtn_bg"
+            android:gravity="center_vertical"
+            android:text="@{titleModel.title}"
+            android:clickable="true"
+            android:drawableLeft="@drawable/title_back" />
+    </LinearLayout>
+</layout>

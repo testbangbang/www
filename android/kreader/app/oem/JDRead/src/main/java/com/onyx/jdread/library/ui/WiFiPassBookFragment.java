@@ -41,6 +41,7 @@ public class WiFiPassBookFragment extends BaseFragment {
             e.printStackTrace();
         }
         fileServerModel = new FileServerModel();
+        passBookBinding.wifiPassTitleBar.setTitleModel(fileServerModel.titleBarModel);
         passBookBinding.setFileServerModel(fileServerModel);
         return passBookBinding.getRoot();
     }

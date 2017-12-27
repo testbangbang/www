@@ -27,4 +27,6 @@
     <dimen name="library_build_edit_padding">8dp</dimen>
     <dimen name="wifi_pass_book_content_margin_top">100dp</dimen>
     <dimen name="wifi_pass_book_qr_code_width">200dp</dimen>
+    <dimen name="switch_show_quick_button_text_margin">10dp</dimen>
+    <dimen name="fragment_laboratory_content_padding">20dp</dimen>
 </resources>

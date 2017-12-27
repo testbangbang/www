@@ -32,4 +32,8 @@
     <string name="wifi_pass_book_prompt_bottom_1">手机上传仅限Android手机</string>
     <string name="wifi_pass_book_prompt_bottom_2">上传过程中请勿关闭此页面或锁屏</string>
     <string name="pass_succeed">%s 传输成功</string>
+    <string name="laboratory">实验室</string>
+    <string name="quick_back_button">快速返回键</string>
+    <string name="quick_back_button_explanation">放置在下方菜单中间位置，方便单手操作时快速返回上一步，长按也可关闭</string>
+    <string name="on">开</string>
 </resources>
