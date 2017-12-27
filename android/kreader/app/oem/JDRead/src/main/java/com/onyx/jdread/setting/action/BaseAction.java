@@ -10,7 +10,7 @@ import com.onyx.jdread.setting.model.SettingBundle;
  */
 
 public abstract class BaseAction<T extends SettingBundle> {
-    public abstract void excute(T bundle, RxCallback callback);
+    public abstract void execute(T bundle, RxCallback callback);
 
     public void showLoadingDialog(T bundle, int messageId) {
         bundle.getEventBus().post(new LoadingDialogEvent(messageId));

@@ -9,7 +9,7 @@ import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.model.FunctionBarItem;
 import com.onyx.jdread.model.FunctionBarModel;
-import com.onyx.jdread.personal.ui.MyFragment;
+import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.shop.ui.StoreFragment;
 
@@ -33,7 +33,7 @@ public class InitFunctionBarAction extends BaseAction<DataBundle> {
             functionBarModel.itemModels.add(new FunctionBarItem("back", dataBundle.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo));
         }
         functionBarModel.itemModels.add(new FunctionBarItem(SettingFragment.class.getName(), dataBundle.getAppContext().getString(R.string.setting_name), R.mipmap.ic_setting));
-        functionBarModel.itemModels.add(new FunctionBarItem(MyFragment.class.getName(), dataBundle.getAppContext().getString(R.string.personal_name), R.mipmap.ic_me));
+        functionBarModel.itemModels.add(new FunctionBarItem(PersonalFragment.class.getName(), dataBundle.getAppContext().getString(R.string.personal_name), R.mipmap.ic_me));
         if (baseCallback != null) {
             baseCallback.onNext(functionBarModel);
         }

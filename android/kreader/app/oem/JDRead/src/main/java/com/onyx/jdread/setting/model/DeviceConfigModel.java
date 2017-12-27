@@ -9,7 +9,7 @@ import com.onyx.jdread.setting.event.PasswordEvent;
 import com.onyx.jdread.setting.event.ReadToolEvent;
 import com.onyx.jdread.setting.event.ScreenSaverEvent;
 import com.onyx.jdread.setting.event.SystemUpdateEvent;
-import com.onyx.jdread.setting.utils.LocalPackageUpdateUtil;
+import com.onyx.jdread.setting.utils.UpdateUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -52,7 +52,7 @@ public class DeviceConfigModel {
             deviceConfigDataList.add(deviceConfigData);
         }
 
-        String localPath = LocalPackageUpdateUtil.checkLocalPackage();
+        String localPath = UpdateUtil.checkLocalPackage();
         if (FileUtils.fileExist(localPath)) {
             DeviceConfigData deviceConfigData = deviceConfigDataList.get(deviceConfigDataList.size() - 1);
             deviceConfigData.setUpdateRecord("1");

@@ -1,7 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -10,9 +9,6 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
-import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.FileUtils;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
@@ -27,12 +23,9 @@ import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.setting.model.DeviceConfigModel;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingTitleModel;
-import com.onyx.jdread.setting.utils.LocalPackageUpdateUtil;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.List;
 
 /**
  * Created by li on 2017/12/22.

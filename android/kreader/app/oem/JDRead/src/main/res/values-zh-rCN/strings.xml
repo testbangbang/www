@@ -57,4 +57,15 @@
     <string name="delete_library">删除分组</string>
     <string name="delete_library_include_book">删除分组及全部图书</string>
     <string name="the_same_name">重命名不能与原组名相同</string>
+    <string name="system_update_alert">系统升级</string>
+    <string name="will_execute_update">有1个更新已准备好，是否立即执行？</string>
+    <string name="later_to_say">稍后再说</string>
+    <string name="execute_immediately">立即执行</string>
+    <string name="wifi_no_connected">WiFi未连接</string>
+    <string name="new_version_detection">新版本检测中...</string>
+    <string name="already_latest_version">已是最新版本</string>
+    <string name="check_update">检查更新</string>
+    <string name="download_update_package">下载更新包</string>
+    <string name="downloading">正在下载 %d</string>
+    <string name="update_application_not_install">更新应用没有安装，请升级最新的系统</string>
 </resources>

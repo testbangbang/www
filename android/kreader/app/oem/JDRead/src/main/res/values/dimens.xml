@@ -49,4 +49,8 @@
     <dimen name="pop_menu_item_padding">10dp</dimen>
     <dimen name="library_content_page_view_height">511dp</dimen>
     <dimen name="dialog_single_manage_padding">10dp</dimen>
+    <dimen name="dialog_update_alert_padding">20dp</dimen>
+    <dimen name="dialog_update_loading_padding">10dp</dimen>
+    <dimen name="dialog_update_alert_margin_top">20dp</dimen>
+    <dimen name="system_update_progress_margin_bottom">20dp</dimen>
 </resources>

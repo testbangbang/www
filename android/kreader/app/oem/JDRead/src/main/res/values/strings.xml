@@ -59,4 +59,15 @@
     <string name="delete_library">Delete library</string>
     <string name="delete_library_include_book">Delete library include book</string>
     <string name="the_same_name">Rename can not be the same as the original group name</string>
+    <string name="system_update_alert">System update</string>
+    <string name="will_execute_update">One update is ready. Will it be executed immediately?</string>
+    <string name="later_to_say">Later to say</string>
+    <string name="execute_immediately">Executed immediately</string>
+    <string name="wifi_no_connected">WiFi not connected</string>
+    <string name="new_version_detection">New version detection...</string>
+    <string name="already_latest_version">It is the latest version</string>
+    <string name="check_update">Check update</string>
+    <string name="download_update_package">Download the update package</string>
+    <string name="downloading">Downloading %d</string>
+    <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
 </resources>
