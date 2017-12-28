@@ -11,7 +11,6 @@
     <string name="intensity_control">intensity control</string>
     <string name="page_refresh">Page Refresh</string>
     <string name="interest_rates_screen_time">Interest rates screen time</string>
-    <string name="laboratory">laboratory</string>
     <string name="help_and_feedback">Help and feedback</string>
     <string name="device_setting_ten_pages">10 pages</string>
     <string name="device_setting_twenty_pages">20 pages</string>
@@ -70,6 +69,14 @@
     <string name="download_update_package">Download the update package</string>
     <string name="downloading">Downloading %d</string>
     <string name="update_application_not_install">Update the application is not installed, please upgrade the latest system</string>
+    <string name="wifi_pass_book_prompt_top">Enter the address below in the browser or scan the QR code below：</string>
+    <string name="wifi_pass_book_prompt_bottom_1">Mobile upload Android phone only</string>
+    <string name="wifi_pass_book_prompt_bottom_2">Do not close this page or lock the screen while uploading</string>
+    <string name="pass_succeed">%s pass succeed</string>
+    <string name="laboratory">Laboratory</string>
+    <string name="quick_back_button">Quick back button</string>
+    <string name="quick_back_button_explanation">Put in the middle of the menu below,Easy one-handed operation to quickly return to the previous step,Long press can also be closed</string>
+    <string name="on">on</string>
     <string name="file_does_not_exist">File does not exist</string>
     <string name="file_format_error">Book format error</string>
     <string name="document_path_error">Book path error</string>
@@ -83,4 +90,7 @@
     <string name="gift_center">Gift center</string>
     <string name="log_out">Log out</string>
     <string name="unsigned_in">Unsigned</string>
+    <string name="manual">Manual</string>
+    <string name="feedback">The problem of feedback</string>
+    <string name="contact_us">Contact us</string>
 </resources>

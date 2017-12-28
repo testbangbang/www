@@ -87,6 +87,7 @@ public class LibraryFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
+        loadData(libraryBuildQueryArgs(), false);
         getEventBus().register(this);
     }
 
@@ -342,7 +343,7 @@ public class LibraryFragment extends BaseFragment {
 
     @Subscribe
     public void onWifiPassBookEvent(WifiPassBookEvent event) {
-
+        viewEventCallBack.gotoView(WiFiPassBookFragment.class.getName());
     }
 
     @Subscribe
