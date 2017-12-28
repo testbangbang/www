@@ -59,6 +59,7 @@ public class FlushShapeListRequest extends ReaderBaseNoteRequest {
             Debug.e(this.getClass(),  "adding error: " + " origin size: " + shapeList.size() + " result: " + count);
         }
         if (isRender()) {
+            noteManager.setRenderBitmapDirty(count > 0);
             getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         }
         if (saveDocument) {

@@ -892,8 +892,8 @@ public class ShowReaderMenuAction extends BaseAction {
                         action == ReaderMenuAction.SCRIBBLE_WIDTH ||
                         action == ReaderMenuAction.SCRIBBLE_ERASER) {
                     final FlushNoteAction flushNoteAction = expand ?
-                            FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages(), true):
-                            new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false, true);
+                            FlushNoteAction.pauseAfterFlush(readerDataHolder.getVisiblePages(), false):
+                            new FlushNoteAction(readerDataHolder.getVisiblePages(), true, true, false, false, false);
                     flushNoteAction.execute(readerDataHolder, null);
                 }
             }

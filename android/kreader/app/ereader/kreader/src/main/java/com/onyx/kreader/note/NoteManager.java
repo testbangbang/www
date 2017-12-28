@@ -47,6 +47,7 @@ public class NoteManager {
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private TouchHelper touchHelper;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
+    private boolean renderBitmapDirty = false;
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private volatile SurfaceView surfaceView;
@@ -184,6 +185,14 @@ public class NoteManager {
         if (surfaceView != null) {
             EpdController.enablePost(surfaceView, enable ? 1 : 0);
         }
+    }
+
+    public boolean isRenderBitmapDirty() {
+        return renderBitmapDirty;
+    }
+
+    public void setRenderBitmapDirty(boolean renderBitmapDirty) {
+        this.renderBitmapDirty = renderBitmapDirty;
     }
 
     public Bitmap updateRenderBitmap(final Rect viewportSize) {

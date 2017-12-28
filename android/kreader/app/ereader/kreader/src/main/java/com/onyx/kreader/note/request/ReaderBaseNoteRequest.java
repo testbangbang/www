@@ -19,6 +19,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 import com.onyx.android.sdk.scribble.utils.DeviceConfig;
+import com.onyx.android.sdk.utils.Debug;
 import com.onyx.android.sdk.utils.TestUtils;
 import com.onyx.kreader.BuildConfig;
 import com.onyx.kreader.note.NoteManager;
@@ -211,6 +212,10 @@ public class ReaderBaseNoteRequest extends BaseRequest {
     }
 
     public boolean renderVisiblePages(final NoteManager parent) {
+        if (parent.getRenderBitmap() != null && !parent.isRenderBitmapDirty()) {
+            return true;
+        }
+
         boolean rendered = false;
         ReaderBitmapImpl bitmap = new ReaderBitmapImpl(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
         bitmap.getBitmap().eraseColor(Color.TRANSPARENT);
@@ -233,6 +238,9 @@ public class ReaderBaseNoteRequest extends BaseRequest {
                 notePage.render(renderContext, new ReaderNotePage.RenderCallback() {
                     @Override
                     public boolean isRenderAbort() {
+                        if (isAbort()) {
+                            Debug.i(ReaderBaseNoteRequest.this.getClass(), "page rendering is aborted: " + ReaderBaseNoteRequest.this);
+                        }
                         return isAbort();
                     }
                 });
