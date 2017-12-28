@@ -30,6 +30,11 @@
     <string name="delete_library">Delete library</string>
     <string name="delete_library_include_book">Delete library include book</string>
     <string name="the_same_name">Rename can not be the same as the original group name</string>
+    <string name="file_does_not_exist">File does not exist</string>
+    <string name="file_format_error">Book format error</string>
+    <string name="document_path_error">Book path error</string>
+    <string name="open_book_parameter_error">There is no book path in opening book information</string>
+    <string name="open_book_fail">Open book fail</string>
     <string name="view_all">View All</string>
     <string name="ranking">Ranking</string>
     <string name="enjoy_read">Enjoy Read</string>

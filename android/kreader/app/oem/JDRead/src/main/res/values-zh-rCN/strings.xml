@@ -28,6 +28,11 @@
     <string name="delete_library">删除分组</string>
     <string name="delete_library_include_book">删除分组及全部图书</string>
     <string name="the_same_name">重命名不能与原组名相同</string>
+    <string name="file_does_not_exist">文件不存在</string>
+    <string name="file_format_error">书本格式错误</string>
+    <string name="document_path_error">书本路径错误</string>
+    <string name="open_book_parameter_error">打开书本信息中没有书本路径</string>
+    <string name="open_book_fail">打开书本失败</string>
     <string name="view_all">查看全部</string>
     <string name="ranking">排行</string>
     <string name="enjoy_read">畅读</string>

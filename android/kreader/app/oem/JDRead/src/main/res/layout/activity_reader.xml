@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="readViewModel"
+            type="com.onyx.jdread.reader.model.ReaderViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <SurfaceView
+            android:id="@+id/reader_page_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@{readViewModel.tipMessage}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font"
+            android:visibility="@{readViewModel.isShowTipMessage?View.VISIBLE:View.GONE}" />
+    </RelativeLayout>
+
+</layout>
