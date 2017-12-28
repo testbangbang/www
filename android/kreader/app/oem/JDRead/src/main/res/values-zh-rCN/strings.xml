@@ -45,4 +45,6 @@
     <string name="manual">使用手册</string>
     <string name="feedback">问题反馈</string>
     <string name="contact_us">联系我们</string>
+    <string name="product_introduce">产品介绍</string>
+    <string name="common_problem">常见问题</string>
 </resources>

@@ -47,4 +47,6 @@
     <string name="manual">Manual</string>
     <string name="feedback">Feedback</string>
     <string name="contact_us">Contact us</string>
+    <string name="product_introduce">Product introduce</string>
+    <string name="common_problem">Common problem</string>
 </resources>

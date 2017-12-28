@@ -29,4 +29,7 @@
     <dimen name="wifi_pass_book_qr_code_width">200dp</dimen>
     <dimen name="switch_show_quick_button_text_margin">10dp</dimen>
     <dimen name="fragment_content_padding">20dp</dimen>
+    <dimen name="manual_qr_code_width">200dp</dimen>
+    <dimen name="manual_qr_code_margin">10dp</dimen>
+    <dimen name="manual_qr_code_margin_top">100dp</dimen>
 </resources>
