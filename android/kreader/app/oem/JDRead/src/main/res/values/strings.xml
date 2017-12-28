@@ -43,4 +43,8 @@
     <string name="document_path_error">Book path error</string>
     <string name="open_book_parameter_error">There is no book path in opening book information</string>
     <string name="open_book_fail">Open book fail</string>
+    <string name="help_and_feedback">帮助与反馈</string>
+    <string name="manual">使用手册</string>
+    <string name="feedback">问题反馈</string>
+    <string name="contact_us">联系我们</string>
 </resources>

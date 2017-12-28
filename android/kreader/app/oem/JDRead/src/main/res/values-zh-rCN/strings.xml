@@ -41,4 +41,8 @@
     <string name="document_path_error">书本路径错误</string>
     <string name="open_book_parameter_error">打开书本信息中没有书本路径</string>
     <string name="open_book_fail">打开书本失败</string>
+    <string name="help_and_feedback">帮助与反馈</string>
+    <string name="manual">使用手册</string>
+    <string name="feedback">问题反馈</string>
+    <string name="contact_us">联系我们</string>
 </resources>
