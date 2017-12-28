@@ -3,6 +3,7 @@ package com.onyx.kreader.ui.actions;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.RectF;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -65,9 +66,10 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     private void show(final ReaderDataHolder readerDataHolder) {
         parent.removeAllViews();
         sideMenu = new MenuManager();
+        addDividerLine(parent);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
         lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+        lp.addRule(RelativeLayout.RIGHT_OF, R.id.divider_line);
         sideMenu.addMainMenu(parent,
                 readerDataHolder.getEventBus(),
                 R.layout.reader_side_scribble_menu,
@@ -75,7 +77,6 @@ public class ShowSideScribbleMenuAction extends BaseAction {
                 lp,
                 MenuItem.createVisibleMenus(getMainMenuActions()));
         updateSideNotePositionText(readerDataHolder);
-        addDividerLine(parent);
         onMenuViewSizeChange(parent);
     }
 
@@ -93,8 +94,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
     }
 
     private void addDividerLine(ViewGroup parent) {
-        dividerLine = new View(parent.getContext());
-        dividerLine.setBackgroundColor(Color.BLACK);
+        dividerLine = LayoutInflater.from(parent.getContext()).inflate(R.layout.divider_line, null);
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int) parent.getContext().getResources().getDimension(R.dimen.divider_line_size),
                 ViewGroup.LayoutParams.MATCH_PARENT);
         lp.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -240,7 +240,7 @@ public class ShowSideScribbleMenuAction extends BaseAction {
         }
         int mainMenuViewId = sideMenu.getMainMenu().getRootViewId();
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp.addRule(RelativeLayout.LEFT_OF, mainMenuViewId);
+        lp.addRule(RelativeLayout.RIGHT_OF, mainMenuViewId);
         lp.addRule(RelativeLayout.ALIGN_TOP, mainMenuViewId);
         sideMenu.addSubMenu(parent,
                 readerDataHolder.getEventBus(),
