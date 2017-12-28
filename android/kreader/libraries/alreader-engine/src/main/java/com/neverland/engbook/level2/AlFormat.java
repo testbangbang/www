@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import com.neverland.engbook.bookobj.AlBookEng.PairTextStyle;
+import com.neverland.engbook.bookobj.FileBlockInfo;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlIntHolder;
 import com.neverland.engbook.forpublic.AlOneSearchResult;
@@ -33,6 +34,10 @@ import com.neverland.engbook.util.InternalConst;
 import com.neverland.engbook.util.InternalFunc;
 
 import org.mozilla.universalchardet.UniversalDetector;
+
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class AlFormat {
 
@@ -68,6 +73,13 @@ public abstract class AlFormat {
     AlPreferenceOptions preference = new AlPreferenceOptions();
     AlStylesOptions styles = new AlStylesOptions();
     int size;
+    public int customSize = Integer.MAX_VALUE;
+    public int paragraphIndex = Integer.MAX_VALUE;
+    int fileNum = Integer.MAX_VALUE;
+    int blockSize = Integer.MAX_VALUE;
+    public List<FileBlockInfo> fileBlocks = new ArrayList<>();
+    public int oldBlockSize = Integer.MAX_VALUE;
+    private FileBlockInfo fileBlockInfo = null;
 
     protected int use_cpR0;
     protected char[] data_cp = null;
@@ -122,6 +134,10 @@ public abstract class AlFormat {
     final byte[] parser_inBuff = new byte[AlFiles.LEVEL1_FILE_BUF_SIZE + 2];
 
     protected final static int MAX_STACK_STYLES = 1024;
+
+    public int 				start_pos = -1;
+    public int              end_pos = -1;
+    static final int MAX_LOAD_FILE = 5;
 
     public AlFormat() {
         coverName = null;
@@ -385,7 +401,47 @@ public abstract class AlFormat {
     }
 
     private void addRealParagraph(AlOneParagraph a) {
-        par0.add(a);
+        if(paragraphIndex != Integer.MAX_VALUE){
+            AlOneParagraph alOneParagraph = par0.get(paragraphIndex);
+            if(alOneParagraph != null) {
+                alOneParagraph.copy(a);
+            }
+            paragraphIndex++;
+        }else {
+            saveFileBlockInfo(a);
+            par0.add(a);
+        }
+    }
+
+    private void saveFileBlockInfo(AlOneParagraph a){
+        if(blockSize <= start_pos){
+            return;
+        }
+        if(oldBlockSize == Integer.MAX_VALUE){
+            recordBlockSize();
+
+            fileBlockInfo.addParagraphInfo(par0.size(),a.start,a.length,a.positionS,a.positionE);
+            return;
+        }
+        if(oldBlockSize != blockSize){
+            recordBlockSize();
+        }
+        fileBlockInfo.addParagraphInfo(par0.size(),a.start,a.length,a.positionS,a.positionE);
+    }
+
+    public String getFileName(){
+        return null;
+    }
+
+    public String getFileMD5(){
+        return null;
+    }
+
+    private void recordBlockSize(){
+        fileBlockInfo = new FileBlockInfo();
+        fileBlockInfo.setBlockSize(blockSize);
+        fileBlocks.add(fileBlockInfo);
+        oldBlockSize = blockSize;
     }
 
     void setTextStyle(long tag) {
@@ -453,7 +509,8 @@ public abstract class AlFormat {
                 a.level = parText.level;
                 a.table_start = parText.tableStart;
                 a.table_counter = parText.tableCounter;
-
+                a.blockSize = blockSize;
+                a.dataState = true;
                 a.length = parText.copy(a);
 
                 addRealParagraph(a);
@@ -472,6 +529,27 @@ public abstract class AlFormat {
             specialBuff.add(' ');
     }
 
+    public void addEmptyParagraph(List<FileBlockInfo.ParagraphInfo> paragraphInfoList){
+        for(int i = 0;i < paragraphInfoList.size();i++){
+            FileBlockInfo.ParagraphInfo paragraphInfo = paragraphInfoList.get(i);
+            AlOneParagraph a = new AlOneParagraph();
+            a.positionS = 0;
+            a.positionE = 0;
+            a.start = paragraphInfo.startOffset;
+            //a.start = 0;
+            a.paragraph = 0;
+            a.prop = 0;
+            a.level = 0;
+            a.table_start = 0;
+            a.table_counter = 0;
+
+            a.length = paragraphInfo.length;
+            a.ptext = new char[a.length];
+            a.dataState = false;
+
+            addRealParagraph(a);
+        }
+    }
     void addTextFromTag(String s, boolean addSpecial) {
         int i;
         final int l = s.length();
@@ -514,6 +592,10 @@ public abstract class AlFormat {
 
     public int getSize() {
         return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
     }
 
     public void removeCover() {
@@ -681,19 +763,25 @@ public abstract class AlFormat {
             slot.end[0] = slot.end[1] = -1;
             slot.shtamp = shtamp;
         }
-
+        boolean isReloadData = false;
         if (slot.start[slot.active] == pos && slot.end[slot.active] > slot.start[slot.active]) {
-            textAndStyle.txt = slot.txt[slot.active];
-            textAndStyle.stl = slot.stl[slot.active];
-            return slot.end[slot.active] - pos;
+            isReloadData = isReloadData(slot);
+            if(!isReloadData){
+                textAndStyle.txt = slot.txt[slot.active];
+                textAndStyle.stl = slot.stl[slot.active];
+                return slot.end[slot.active] - pos;
+            }
+        }
+        if(!isReloadData) {
+            slot.active = 1 - slot.active;
         }
 
-        slot.active = 1 - slot.active;
-
         if (slot.start[slot.active] == pos && slot.end[slot.active] > slot.start[slot.active]) {
-            textAndStyle.txt = slot.txt[slot.active];
-            textAndStyle.stl = slot.stl[slot.active];
-            return slot.end[slot.active] - pos;
+            if(!isReloadData(slot)){
+                textAndStyle.txt = slot.txt[slot.active];
+                textAndStyle.stl = slot.stl[slot.active];
+                return slot.end[slot.active] - pos;
+            }
         }
 
         slot.initBuffer();
@@ -701,11 +789,25 @@ public abstract class AlFormat {
         //Log.e("fill buffer " + Integer.toString(pos), Integer.toString(slot.active) + '_' + slot.toString());
 
         slot.start[slot.active] = pos;
-        slot.end[slot.active] = pos + getParagraphSlot(pos, slot.txt[slot.active], slot.stl[slot.active], profiles);
+        slot.end[slot.active] = pos + getParagraphSlot(pos, slot.txt[slot.active], slot.stl[slot.active], profiles,slot);
 
         textAndStyle.txt = slot.txt[slot.active];
         textAndStyle.stl = slot.stl[slot.active];
         return slot.end[slot.active] - pos;
+    }
+
+    private boolean isReloadData(AlSlotData slot){
+        if(slot.dataState[slot.active]){
+            return true;
+        }
+        int blockEnd = slot.start[slot.active] + AlFiles.LEVEL1_FILE_BUF_SIZE;
+        if(blockEnd > size){
+            blockEnd = size;
+        }
+        if(slot.end[slot.active] == blockEnd){
+            return false;
+        }
+        return true;
     }
 
     int findParagraphPositionBySourcePos(int start, int end, int pos) {
@@ -1126,7 +1228,13 @@ public abstract class AlFormat {
         stored_par.size = stored_par.length = ap.length;
     }
 
-    private int getParagraphSlot(int pos, char[] slot_t, long[] slot_s, AlProfileOptions profiles) {
+    private void checkParagraphDataState(AlOneParagraph ap,AlSlotData slot){
+        if(!slot.dataState[slot.active] && !ap.dataState){
+            slot.dataState[slot.active] = true;
+        }
+    }
+
+    private int getParagraphSlot(int pos, char[] slot_t, long[] slot_s, AlProfileOptions profiles,AlSlotData slot) {
         boolean isInvisible = false;
         char ch;
 
@@ -1141,6 +1249,7 @@ public abstract class AlFormat {
         int par_num = findParagraphByPos(pos);
         ap = par0.get(par_num);
         getPreparedParagraph0(par_num, ap);
+        checkParagraphDataState(ap,slot);
 
         long style_par = getParagraphRealStyle(ap.paragraph);
         char style_image = 0;
@@ -1570,6 +1679,7 @@ public abstract class AlFormat {
             }
             ap = par0.get(par_num);
             getPreparedParagraph0(par_num, ap);
+            checkParagraphDataState(ap,slot);
 
             style_par = getParagraphRealStyle(ap.paragraph);
             style_par |= AlStyles.SL_PAR | ((long)par_num << AlStyles.SL3_NUMBER_SHIFT);
@@ -2014,6 +2124,10 @@ public abstract class AlFormat {
 
     public int getLengthPragarphByNum(int num) {
         return par0.get(num).length;
+    }
+
+    public int getFileSize(int num){
+         return par0.get(num).blockSize;
     }
 
     public long getStylePragarphByNum(int num) {
@@ -2502,6 +2616,14 @@ public abstract class AlFormat {
 
     abstract protected void parser(final int start_pos, final int stop_posRequest);
 
+    public void parserData(final int start_pos, final int stop_posRequest){
+
+    }
+
+    public void parserAfterData(final int start_pos){
+
+    }
+
     abstract public void initState(AlBookOptions bookOptions, AlFiles myParent,
                                    AlPreferenceOptions pref, AlStylesOptions stl);
 
@@ -2827,5 +2949,17 @@ public abstract class AlFormat {
         }
 
         return res;
+    }
+
+    public List<FileBlockInfo> getBookBlockInfo(){
+        return null;
+    }
+
+    public List<FileBlockInfo> getBookCacheBlockInfo(){
+        return null;
+    }
+
+    public FileBlockInfo.CacheHeadInfo loadCacheHeadInfo(){
+        return null;
     }
 }

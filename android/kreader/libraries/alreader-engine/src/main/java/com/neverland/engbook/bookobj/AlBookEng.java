@@ -99,6 +99,7 @@ import com.neverland.engbook.util.InternalConst.TAL_CALC_MODE;
 import com.neverland.engbook.util.InternalFunc;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * основной класс библиотеки.
@@ -204,6 +205,7 @@ public class AlBookEng{
 	}
 
 	private final AlSelection selection = new AlSelection();
+	private String applicationDirectory;
 
 	public enum SimplifiedAndTraditionalChineseConvert {
 		NONE, SIMPLIFIED_TO_TRADITIONAL, TRADITIONAL_TO_SIMPLIFIED
@@ -351,7 +353,7 @@ public class AlBookEng{
 			EngBitmap.reCreateBookBitmap(bmp[1], 0, 0, null);
 			EngBitmap.reCreateBookBitmap(bmp[2], 0, 0, null);
 		}
-
+		applicationDirectory = engOptions.appInstance.getFilesDir().getAbsolutePath();
 		return TAL_RESULT.OK;
 	}
 
@@ -2748,6 +2750,7 @@ public class AlBookEng{
 			bookOptions.formatOptions &= ~AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG;
 			//if (preferences.calcPagesModeRequest != TAL_SCREEN_PAGES_COUNT.SIZE)
 			bookOptions.formatOptions |= AlFiles.LEVEL1_BOOKOPTIONS_NEED_UNPACK_FLAG;
+			bookOptions.applicationDirectory = applicationDirectory;
 
 			activeFile.setLoadTime2(true);
 
@@ -2782,8 +2785,10 @@ public class AlBookEng{
 			}
 		}
 
-		if (bookPosition < 0 || bookPosition >= format.getSize())
+//		if (bookPosition < 0 || bookPosition >= format.getSize())
+		if(bookPosition < 0) {
 			bookPosition = 0;
+		}
 
 		preferences.calcPagesModeUsed = preferences.calcPagesModeRequest;
 		if (preferences.calcPagesModeUsed == TAL_SCREEN_PAGES_COUNT.AUTO &&
@@ -2809,6 +2814,7 @@ public class AlBookEng{
 		
 		bookPosition = getCorrectScreenPagePosition(bookPosition);
 
+
 		shtamp.value++;
 
 		openState.incState();
@@ -2832,6 +2838,33 @@ public class AlBookEng{
 			}
 		}
 		return TAL_NOTIFY_RESULT.OK;
+	}
+
+	public void parserAfterData() {
+		if (format != null) {
+			format.parserAfterData(format.start_pos);
+		}
+	}
+
+	public List<FileBlockInfo> getBookBlockInfo() {
+		if (format != null) {
+			format.getBookBlockInfo();
+		}
+		return null;
+	}
+
+	public List<FileBlockInfo> getBookCacheBlockInfo() {
+		if (format != null) {
+			return format.getBookCacheBlockInfo();
+		}
+		return null;
+	}
+
+	public FileBlockInfo.CacheHeadInfo loadCacheHeadInfo(){
+		if(format != null) {
+			return format.loadCacheHeadInfo();
+		}
+		return null;
 	}
 
 	TAL_NOTIFY_RESULT createDebugFileInThread(String path) {
@@ -2942,6 +2975,7 @@ public class AlBookEng{
 		/*openState.decState();
 		openState.decState();*/
 		format = null;
+		bookPosition = 0;
 		images.resetStoredImages();
 		openState.decState();
 	}
@@ -2951,6 +2985,7 @@ public class AlBookEng{
      * @return TAL_RESULT.OK если все успешно и TAL_RESULT.ERROR если есть ошибка
      */
 	public int closeBook() {
+		saveLastBookPosition();
 		while (threadData.getObjOpen()) ;
 
 		synchronized (this) {
@@ -2965,6 +3000,14 @@ public class AlBookEng{
 			closeBookReal();
 
 			return returnOkWithRedraw();
+		}
+	}
+
+	private void saveLastBookPosition(){
+		if(format != null && format instanceof AlFormatEPUB){
+			int num_par = format.getNumParagraphByPoint(bookPosition);
+			int lastBlock = format.getFileSize(num_par);
+			FileBlockInfo.saveLastBlockInfo(lastBlock,format);
 		}
 	}
 
@@ -5360,7 +5403,7 @@ public class AlBookEng{
 
 		bookPosition = getCorrectScreenPagePosition(bookPosition);
 		if (preferences.calcPagesModeUsed == TAL_SCREEN_PAGES_COUNT.SCREEN) {
-			bookPosition = pagePositionPointer.get(bookPosition).start;			
+			bookPosition = pagePositionPointer.get(bookPosition).start;
 		} else {
 			clearPagePosition();
 		}

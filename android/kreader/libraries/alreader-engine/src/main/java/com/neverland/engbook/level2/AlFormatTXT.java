@@ -1,5 +1,9 @@
 package com.neverland.engbook.level2;
 
+import android.util.Log;
+
+import com.neverland.engbook.bookobj.FileBlockInfo;
+import com.neverland.engbook.bookobj.TxtParserHelp;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;
@@ -25,8 +29,36 @@ public class AlFormatTXT extends AlFormat {
 	static final int TXT_MODE_SPACE = 2;
 
 	private int txt_mode;
+	public FileBlockInfo loadFileBlockInfo;
+	public boolean isOneParser = false;
+	public boolean isStopParser = false;
+
+	private void initParserParameter	(){
+		isOneParser = false;
+		isStopParser = false;
+		blockSize = 0;
+	}
 
 	private ChineseTextSectionRecognizer chineseTextSectionRecognizer = ChineseTextSectionRecognizer.create();
+
+	public void parserAfterData(final int start_pos){
+		initParserParameter();
+		FileBlockInfo.loadTwoBlockData(this,loadFileBlockInfo.twoBlock);
+		FileBlockInfo.loadThreeBlockData(this,loadFileBlockInfo.threeBlock);
+		size = customSize;
+
+		FileBlockInfo.saveParagraphData(fileBlocks, this);
+	}
+
+	@Override
+	public String getFileName() {
+		return  aFiles.fileName;
+	}
+
+	@Override
+	public String getFileMD5(){
+		return aFiles.getFileMD5();
+	}
 
 	public void initState(AlBookOptions bookOptions, AlFiles myParent, 
 			AlPreferenceOptions pref, AlStylesOptions stl) {
@@ -39,6 +71,7 @@ public class AlFormatTXT extends AlFormat {
 		size = 0;
 				
 		autoCodePage = bookOptions.codePage == TAL_CODE_PAGES.AUTO;
+		aFiles.applicationDirectory = bookOptions.applicationDirectory;
 		
 		allState.state_parser = 0;
 		if (autoCodePage) {
@@ -54,7 +87,24 @@ public class AlFormatTXT extends AlFormat {
 			detectTXTMode();
 
 		allState.state_parser = STATE_TXT_NORMAL;
-		parser(0, aFiles.getSize());
+		blockLoading(bookOptions.readPosition);
+	}
+
+	private void blockLoading(int readPosition){
+		initParserParameter();
+		customSize = 0;
+		if(!FileBlockInfo.isCacheData(this)) {
+			isOneParser = true;
+			isStopParser = false;
+			parser(0, aFiles.getSize());
+			size = customSize;
+			if(stop_posUsed + 1< aFiles.getSize()){
+				loadFileBlockInfo = TxtParserHelp.getBlockLoadInfo(stop_posUsed + 1,aFiles.getSize());
+			}
+		}else{
+			loadFileBlockInfo = TxtParserHelp.parserHelp(readPosition,this);
+			FileBlockInfo.loadOneBlockData(this,loadFileBlockInfo.oneBlock);
+		}
 	}
 
 	void detectTXTMode() {
@@ -153,13 +203,13 @@ public class AlFormatTXT extends AlFormat {
 
 			parText.add(ch);
 
-			size++;
+			customSize++;
 			parText.positionE = allState.start_position;
 			parText.haveLetter = parText.haveLetter || (ch != 0xa0 && ch != 0x20);
 
 			if (parText.length > EngBookMyType.AL_MAX_PARAGRAPH_LEN) {
 				if (!AlUnicode.isLetterOrDigit(ch) && !allState.insertFromTag && allState.state_parser == 0)
-				newParagraph();
+					addNewParagraph();
 			}
 		} else
 		if (ch != 0x20) {
@@ -169,12 +219,28 @@ public class AlFormatTXT extends AlFormat {
 			parText.prop = styleStack.getActualProp();
 			parText.tableStart = currentTable.start;
 			parText.tableCounter = currentTable.counter;
-			parText.sizeStart = size;
+			parText.sizeStart = customSize;
 
 			parText.haveLetter = (ch != 0xa0 && ch != 0x20);
-			size++;
+			customSize++;
 			parText.add(ch);
 		}
+	}
+
+	int stop_posUsed;
+	private void addNewParagraph(){
+		newParagraph();
+		if(isOneParser) {
+			if (parText.positionE > TxtParserHelp.TXT_BASE_SIZE) {
+				stop_posUsed = parText.positionE;
+				isStopParser = true;
+			}
+		}
+	}
+
+	@Override
+	public void parserData(int start_pos, int stop_posRequest) {
+		parser(start_pos,stop_posRequest);
 	}
 
 	@Override
@@ -182,12 +248,15 @@ public class AlFormatTXT extends AlFormat {
 		// this code must be in any parser without change!!!
 		int 	buf_cnt;
 		char 	ch, ch1;
-
+		stop_posUsed = stop_posRequest;
 
 		int j;
 		//AlIntHolder jVal = new AlIntHolder(0);
 		
 		for (int i = start_pos; i < stop_posRequest;) {
+			if(isStopParser){
+				return;
+			}
 			buf_cnt = AlFiles.LEVEL1_FILE_BUF_SIZE;
 			if (i + buf_cnt > stop_posRequest) {
 				buf_cnt = aFiles.getByteBuffer(i, parser_inBuff, stop_posRequest - i + 2);
@@ -199,6 +268,9 @@ public class AlFormatTXT extends AlFormat {
 			}
 			
 			for (j = 0; j < buf_cnt;) {
+				if(isStopParser){
+					return;
+				}
 				allState.start_position = i + j;	
 				
 				/*jVal.value = j;
@@ -338,7 +410,7 @@ public class AlFormatTXT extends AlFormat {
 						if (ch < 0x20) {
 							if (ch == 0x0a) {
 								if (parText.length > 0) {
-									newParagraph();
+									addNewParagraph();
 								} else {
 									newEmptyTextParagraph();
 								}
@@ -373,7 +445,7 @@ public class AlFormatTXT extends AlFormat {
 					case STATE_TXT_WAIT:
 						if (ch == 0x20 || ch == 0xa0 || ch == 0x09) {
 							if (parText.length > 0) {
-								newParagraph();
+								addNewParagraph();
 							} else {
 								newEmptyTextParagraph();
 							}
@@ -393,7 +465,7 @@ public class AlFormatTXT extends AlFormat {
 					if (ch < 0x20) {
 						if (ch == 0x0a) {
 							if (parText.length > 0) {
-								newParagraph();
+								addNewParagraph();
 							} else {
 								newEmptyTextParagraph();
 							}
@@ -411,7 +483,7 @@ public class AlFormatTXT extends AlFormat {
 			}
 			i += j;
 		}
-		newParagraph();
+		addNewParagraph();
 		// end must be cod
 	}
 

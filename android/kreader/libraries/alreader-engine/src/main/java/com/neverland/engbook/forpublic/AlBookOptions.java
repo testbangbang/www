@@ -45,6 +45,8 @@ public class AlBookOptions {
 
 	public String 				password;
 
+	public String 				applicationDirectory;
+
 	public synchronized void setBlocked() {
 		blocked = true;
 	}
