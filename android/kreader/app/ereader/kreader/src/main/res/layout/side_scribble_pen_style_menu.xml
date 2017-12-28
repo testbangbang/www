@@ -23,6 +23,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
+        <View
+            android:background="@android:color/black"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"/>
+
         <include
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_PENCIL.ordinal()].setMenuIcon(R.drawable.ic_shape_pencil)}"
             layout="@layout/scribble_sub_menu"/>
@@ -47,10 +52,6 @@
             bind:item="@{item[ReaderMenuAction.SCRIBBLE_SQUARE.ordinal()].setMenuIcon(R.drawable.ic_shape_square)}"
             layout="@layout/scribble_sub_menu"/>
 
-        <View
-            android:background="@android:color/black"
-            android:layout_width="1dp"
-            android:layout_height="match_parent"/>
     </com.google.android.flexbox.FlexboxLayout>
 
 </layout>
