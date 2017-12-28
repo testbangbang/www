@@ -42,6 +42,11 @@ public class UserLoginViewModel {
         account.set("");
     }
 
+    public void cleanInput() {
+        account.set("");
+        password.set("");
+    }
+
     public void onChangePasswordVisibleViewClick() {
         boolean showPassword = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), Constants.SP_KEY_SHOW_PASSWORD, false);
         isShowPassword.set(!showPassword);

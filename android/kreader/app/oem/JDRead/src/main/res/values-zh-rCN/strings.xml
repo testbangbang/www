@@ -104,4 +104,8 @@
     <string name="login">登录</string>
     <string name="check_password">您输入的密码小于6位!</string>
     <string name="check_user_name">登录账号不能为空</string>
+    <string name="login_resutl_params_error">参数错误</string>
+    <string name="login_resutl_no_function">接口不存在</string>
+    <string name="login_resutl_not_login">账号未登录,请重新登录</string>
+    <string name="login_resutl_server_error">系统错误</string>
 </resources>

@@ -2,6 +2,7 @@ package com.onyx.jdread.personal.action;
 
 import android.content.Context;
 
+import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
@@ -13,6 +14,7 @@ import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.common.ManagerActivityUtils;
 import com.onyx.jdread.common.ToastUtil;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
@@ -32,12 +34,12 @@ import jd.wjlogin_sdk.util.MD5;
 
 public class UserLoginAction extends BaseAction {
     private Context context;
-    private String userName;
+    private String account;
     private String password;
 
-    public UserLoginAction(Context context, String userName, String password) {
+    public UserLoginAction(Context context, String account, String password) {
         this.context = context;
-        this.userName = userName;
+        this.account = account;
         this.password = password;
     }
 
@@ -47,7 +49,7 @@ public class UserLoginAction extends BaseAction {
     }
 
     private void checkLoginInfo(PersonalDataBundle dataBundle) {
-        if (StringUtils.isNullOrEmpty(userName)) {
+        if (StringUtils.isNullOrEmpty(account)) {
             ToastUtil.showToast(JDReadApplication.getInstance(), JDReadApplication.getInstance().getString(R.string.check_user_name));
             return;
         }
@@ -59,15 +61,15 @@ public class UserLoginAction extends BaseAction {
             ManagerActivityUtils.showWifiDialog(context);
             return;
         }
-        userLogin(dataBundle, userName, MD5.encrypt32(password));
+        userLogin(dataBundle, account, MD5.encrypt32(password));
     }
 
-    public void userLogin(final PersonalDataBundle dataBundle, final String userName, final String password) {
+    public void userLogin(final PersonalDataBundle dataBundle, final String account, final String password) {
         final WJLoginHelper helper = ClientUtils.getWJLoginHelper();
-        helper.JDLoginWithPassword(userName, password, null, true, new OnLoginCallback() {
+        helper.JDLoginWithPassword(account, password, null, true, new OnLoginCallback() {
             @Override
             public void onSuccess() {
-                PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_ACCOUNT, userName);
+                PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_ACCOUNT, account);
                 PreferenceManager.setStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_PASSWORD, password);
 
                 LoginHelper loginHelper = new LoginHelper();
@@ -79,7 +81,7 @@ public class UserLoginAction extends BaseAction {
                     public void onNext(UserSyncLoginInfoAction userSyncLoginInfoAction) {
                         SyncLoginInfoBean syncLoginInfoBean = userSyncLoginInfoAction.getSyncLoginInfoBean();
                         if (syncLoginInfoBean != null) {
-                            onSyncLoginInfo(dataBundle,syncLoginInfoBean);
+                            onSyncLoginInfo(dataBundle, syncLoginInfoBean);
                         }
                     }
 
@@ -91,8 +93,15 @@ public class UserLoginAction extends BaseAction {
             }
 
             @Override
-            public void onError(String s) {
-                EventBus.getDefault().post(new UserLoginResultEvent(s));
+            public void onError(String errorJson) {
+                try {
+                    UserLoginResultErrorBean resultErrorBean = JSONObjectParseUtils.parseObject(errorJson, UserLoginResultErrorBean.class);
+                    if (resultErrorBean != null) {
+                        EventBus.getDefault().post(new UserLoginResultEvent(resultErrorBean.errMsg));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
 
             @Override
@@ -108,10 +117,22 @@ public class UserLoginAction extends BaseAction {
     }
 
     public void onSyncLoginInfo(PersonalDataBundle dataBundle, SyncLoginInfoBean syncLoginInfoBean) {
-        if (Constants.LOGIN_CODE_SUCCESS.equals(syncLoginInfoBean.getCode())) {
+        String code = syncLoginInfoBean.getCode();
+        if (Constants.LOGIN_CODE_SUCCESS.equals(code)) {
             dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
         } else {
-            dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_fail)));
+            String errorMsg = JDReadApplication.getInstance().getString(R.string.login_fail);
+            if (Constants.LOGIN_CODE_PARAMS_ERROR.equals(code)) {
+                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_params_error);
+            } else if (Constants.LOGIN_CODE_NO_FUNCTION.equals(code)) {
+                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_no_function);
+            } else if (Constants.LOGIN_CODE_NOT_LOGIN.equals(code)) {
+                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_not_login);
+            } else if (Constants.LOGIN_CODE_SERVER_ERROR_CODE_ONE.equals(code) ||
+                    Constants.LOGIN_CODE_SERVER_ERROR_CODE_TWO.equals(code)) {
+                errorMsg = JDReadApplication.getInstance().getString(R.string.login_resutl_server_error);
+            }
+            dataBundle.getEventBus().post(new UserLoginResultEvent(errorMsg));
         }
     }
 }

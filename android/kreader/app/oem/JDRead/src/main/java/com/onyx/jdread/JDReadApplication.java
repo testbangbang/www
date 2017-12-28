@@ -34,6 +34,7 @@ public class JDReadApplication extends MultiDexApplication {
     private static DataBundle dataBundle;
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private List<String> mtpBuffer = new ArrayList<>();
+    private boolean isUserLogin;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -105,5 +106,13 @@ public class JDReadApplication extends MultiDexApplication {
 
     private void initFrescoLoader() {
         Fresco.initialize(getInstance().getApplicationContext());
+    }
+
+    public void setLogin(boolean isUserLogin) {
+        this.isUserLogin = isUserLogin;
+    }
+
+    public boolean getLogin() {
+        return isUserLogin;
     }
 }

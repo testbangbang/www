@@ -235,7 +235,11 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(OnDownloadWholeBookEvent event) {
-        LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
+        if (!JDReadApplication.getInstance().getLogin()) {
+            LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
+        } else {
+
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -253,6 +257,15 @@ public class BookDetailFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUserLoginResultEvent(UserLoginResultEvent event) {
         ToastUtil.showToast(getContext(), event.getMessage());
+        if (getResources().getString(R.string.login_success).equals(event.getMessage())) {
+            JDReadApplication.getInstance().setLogin(true);
+            clearInput();
+            LoginHelper.dismissUserLoginDialog();
+        }
+    }
+
+    private void clearInput() {
+        getUserLoginViewModel().cleanInput();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

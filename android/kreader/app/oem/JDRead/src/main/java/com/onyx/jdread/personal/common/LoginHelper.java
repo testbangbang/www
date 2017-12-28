@@ -2,6 +2,7 @@ package com.onyx.jdread.personal.common;
 
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 
@@ -63,7 +64,7 @@ public class LoginHelper {
         return PreferenceManager.getStringValue(JDReadApplication.getInstance(), Constants.SP_KEY_USER_NAME, "");
     }
 
-    public static void showUserLoginDialog(final Activity activity, UserLoginViewModel userLoginViewModel) {
+    public static void showUserLoginDialog(final Activity activity, final UserLoginViewModel userLoginViewModel) {
         final DialogUserLoginBinding userLoginBinding = DialogUserLoginBinding.inflate(LayoutInflater.from(activity), null, false);
         userLoginBinding.setLoginViewModel(userLoginViewModel);
         if (userLoginDialog == null) {
@@ -73,6 +74,12 @@ public class LoginHelper {
             userLoginDialog = userLoginDialogBuild.create();
             boolean showPassword = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), Constants.SP_KEY_SHOW_PASSWORD, false);
             userLoginViewModel.isShowPassword.set(showPassword);
+            userLoginDialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialog) {
+                    userLoginViewModel.cleanInput();
+                }
+            });
         }
         if (userLoginDialog != null) {
             userLoginDialog.show();

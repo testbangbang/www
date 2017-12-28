@@ -27,5 +27,10 @@ public class Constants {
     public static final int PAGE_STEP = 1;
     public static final String BOOK_FORMAT = ".JEB";
     public static final String LOGIN_CODE_SUCCESS = "0";
+    public static final String LOGIN_CODE_PARAMS_ERROR = "1";
+    public static final String LOGIN_CODE_NO_FUNCTION = "2";
+    public static final String LOGIN_CODE_NOT_LOGIN = "3";
+    public static final String LOGIN_CODE_SERVER_ERROR_CODE_ONE = "-1";
+    public static final String LOGIN_CODE_SERVER_ERROR_CODE_TWO = "-2";
     public static final int PASSWORD_MIN_LENGTH = 6;
 }
