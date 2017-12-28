@@ -30,9 +30,21 @@
     <string name="delete_library">Delete library</string>
     <string name="delete_library_include_book">Delete library include book</string>
     <string name="the_same_name">Rename can not be the same as the original group name</string>
+    <string name="wifi_pass_book_prompt_top">Enter the address below in the browser or scan the QR code below：</string>
+    <string name="wifi_pass_book_prompt_bottom_1">Mobile upload Android phone only</string>
+    <string name="wifi_pass_book_prompt_bottom_2">Do not close this page or lock the screen while uploading</string>
+    <string name="pass_succeed">%s pass succeed</string>
+    <string name="laboratory">Laboratory</string>
+    <string name="quick_back_button">Quick back button</string>
+    <string name="quick_back_button_explanation">Put in the middle of the menu below,Easy one-handed operation to quickly return to the previous step,Long press can also be closed</string>
+    <string name="on">on</string>
     <string name="file_does_not_exist">File does not exist</string>
     <string name="file_format_error">Book format error</string>
     <string name="document_path_error">Book path error</string>
     <string name="open_book_parameter_error">There is no book path in opening book information</string>
     <string name="open_book_fail">Open book fail</string>
+    <string name="help_and_feedback">帮助与反馈</string>
+    <string name="manual">使用手册</string>
+    <string name="feedback">问题反馈</string>
+    <string name="contact_us">联系我们</string>
 </resources>

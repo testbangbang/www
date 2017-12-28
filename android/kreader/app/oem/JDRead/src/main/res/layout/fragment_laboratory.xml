@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="laboratoryModel"
+            type="com.onyx.jdread.LaboratoryModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.LaboratoryFragment">
+
+        <include
+            android:id="@+id/laboratory_title"
+            layout="@layout/title_bar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/fragment_content_padding">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/quick_back_button"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <Switch
+                    android:id="@+id/switch_show_quick_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:checked="@={laboratoryModel.showBack}"
+                    android:onClick="@{()->laboratoryModel.toggleBackTab()}"
+                    android:switchMinWidth="0dp"
+                    android:textOff=" "
+                    android:textOn="@string/on"
+                    android:thumb="@drawable/thumb_selector"
+                    android:track="@drawable/track_selector" />
+            </RelativeLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/switch_show_quick_button_text_margin"
+                android:lineSpacingExtra="@dimen/switch_show_quick_button_text_margin"
+                android:text="@string/quick_back_button_explanation"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@drawable/bg_dotted_line"
+                android:layerType="software" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>
