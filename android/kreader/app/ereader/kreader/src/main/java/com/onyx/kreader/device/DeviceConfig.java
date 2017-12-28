@@ -91,6 +91,8 @@ public class DeviceConfig {
 
     private int defaultRefreshInterval = DialogScreenRefresh.DEFAULT_INTERVAL_COUNT; // default value, can be overridden by user
 
+    private boolean enableBrushStroke = false;
+
     private DeviceConfig(Context context) {
         String content = readConfig(context);
         if (!StringUtils.isNullOrEmpty(content)) {
@@ -584,6 +586,14 @@ public class DeviceConfig {
 
     public void setDefaultRefreshInterval(int defaultRefreshInterval) {
         this.defaultRefreshInterval = defaultRefreshInterval;
+    }
+
+    public boolean isEnableBrushStroke() {
+        return enableBrushStroke;
+    }
+
+    public void setEnableBrushStroke(boolean enableBrushStroke) {
+        this.enableBrushStroke = enableBrushStroke;
     }
 
     public String getUmengKey() {
