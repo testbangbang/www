@@ -29,5 +29,4 @@ public class ReaderManager {
         }
         return reader;
     }
-
 }

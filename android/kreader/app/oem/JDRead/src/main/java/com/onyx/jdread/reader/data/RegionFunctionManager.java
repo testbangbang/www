@@ -44,10 +44,10 @@ public class RegionFunctionManager {
         regionAction.put(ShowSettingMenuAction.getRegionTwo(),new ShowSettingMenuAction());
     }
 
-    public static void processRegionFunction(int x, int y) {
+    public static void processRegionFunction(ReaderDataHolder readerDataHolder,int x, int y) {
         for (Rect rect : regionAction.keySet()){
             if(rect.contains(x,y)){
-                regionAction.get(rect).execute(null);
+                regionAction.get(rect).execute(readerDataHolder);
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.onyx.jdread.reader.event;
 
-import com.onyx.jdread.reader.actions.CreatePageViewAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
@@ -40,8 +39,7 @@ public class ReaderActivityEventHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOpenDocumentSuccessResultEvent(OpenDocumentSuccessResultEvent event) {
-        CreatePageViewAction createPageViewAction = new CreatePageViewAction();
-        createPageViewAction.execute(readerViewModel.getReaderDataHolder());
+
     }
 
     @Subscribe

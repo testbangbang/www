@@ -37,7 +37,7 @@ public class OpenDocumentRequest extends ReaderBaseRequest {
     }
 
     private boolean openDocument() throws Exception {
-        ReaderDocument document = readerDataHolder.getReader().getReaderHelper().getPlugin().open(readerDataHolder.getReader().getDocumentInfo().getBookPath(), documentOptions, pluginOptions);
+        ReaderDocument document = readerDataHolder.getReader().getReaderHelper().openDocument(readerDataHolder.getReader().getDocumentInfo().getBookPath(), documentOptions, pluginOptions);
         if(document != null) {
             readerDataHolder.getReader().getReaderHelper().saveReaderDocument(document);
             return true;
