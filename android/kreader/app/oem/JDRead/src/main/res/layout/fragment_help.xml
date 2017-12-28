@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="helpModel"
+            type="com.onyx.jdread.HelpModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.HelpFragment">
+
+        <include
+            android:id="@+id/help_title"
+            layout="@layout/title_bar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->helpModel.gotoManual()}"
+                android:padding="@dimen/fragment_content_padding"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/manual"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_read_next" />
+            </RelativeLayout>
+
+            <View
+                style="@style/DottedLineStyle" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->helpModel.gotoFeedBack()}"
+                android:padding="@dimen/fragment_content_padding"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/feedback"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_read_next" />
+            </RelativeLayout>
+
+            <View
+                style="@style/DottedLineStyle" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->helpModel.gotoContactUs()}"
+                android:padding="@dimen/fragment_content_padding"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/contact_us"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:src="@mipmap/ic_read_next" />
+            </RelativeLayout>
+
+            <View
+                style="@style/DottedLineStyle" />
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

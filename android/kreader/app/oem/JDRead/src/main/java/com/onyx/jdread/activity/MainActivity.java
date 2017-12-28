@@ -18,6 +18,7 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.LaboratoryFragment;
 import com.onyx.jdread.R;
 import com.onyx.jdread.action.InitFunctionBarAction;
 import com.onyx.jdread.adapter.FunctionBarAdapter;
@@ -27,6 +28,7 @@ import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.event.ChangeChildViewEvent;
 import com.onyx.jdread.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.event.PushChildViewToStackEvent;
+import com.onyx.jdread.event.ShowBackTabEvent;
 import com.onyx.jdread.event.UsbDisconnectedEvent;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.model.FunctionBarItem;
@@ -56,10 +58,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Build.VERSION.SDK_INT >= 23) {
-            if (! Settings.canDrawOverlays(MainActivity.this)) {
+            if (!Settings.canDrawOverlays(MainActivity.this)) {
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
                         Uri.parse("package:" + getPackageName()));
-                startActivityForResult(intent,10);
+                startActivityForResult(intent, 10);
             }
         }
         initView();
@@ -96,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
-        boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, true);
+        boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
         int col = getResources().getInteger(R.integer.function_bar_col);
         functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), show ? col : col - 1);
@@ -234,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(event.childClassName);
+        switchCurrentFragment(event.childClassName);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -252,7 +255,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onUsbDisconnectedEvent(UsbDisconnectedEvent event){
+    public void onUsbDisconnectedEvent(UsbDisconnectedEvent event) {
         JDReadApplication.getInstance().dealWithMptBuffer();
+    }
+
+    @Subscribe
+    public void onUsbDisconnectedEvent(ShowBackTabEvent event) {
+        isShowBackTab(event.isShow());
     }
 }
