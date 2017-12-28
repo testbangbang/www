@@ -1,6 +1,7 @@
 package com.onyx.jdread.setting.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
@@ -23,5 +24,10 @@ public class Utils {
 
     public static void showMessage(String message) {
         Toast.makeText(JDReadApplication.getInstance(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    public static void sendTimeChangeBroadcast() {
+        Intent timeChanged = new Intent(Intent.ACTION_TIME_CHANGED);
+        JDReadApplication.getInstance().sendBroadcast(timeChanged);
     }
 }

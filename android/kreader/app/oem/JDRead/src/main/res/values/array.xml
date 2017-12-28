@@ -33,4 +33,22 @@
         <item>@string/device_information</item>
         <item>@string/system_update</item>
     </string-array>
+
+    <string-array name="personal_items">
+        <item>@string/personal_task</item>
+        <item>@string/personal_account</item>
+        <item>@string/personal_notes</item>
+        <item>@string/personal_books</item>
+        <item>@string/read_preference</item>
+        <item>@string/gift_center</item>
+    </string-array>
+
+    <string-array name="personal_drawables">
+        <item name="my_task">@mipmap/ic_me_task</item>
+        <item name="my_id">@mipmap/ic_me_id</item>
+        <item name="my_note">@mipmap/ic_me_note</item>
+        <item name="my_book">@mipmap/ic_me_book</item>
+        <item name="my_like">@mipmap/ic_me_like</item>
+        <item name="my_gift">@mipmap/ic_me_gift</item>
+    </string-array>
 </resources>

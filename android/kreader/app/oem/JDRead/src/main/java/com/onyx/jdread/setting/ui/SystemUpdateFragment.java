@@ -28,6 +28,7 @@ import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
 import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
 import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
+import com.onyx.jdread.setting.event.DelayEvent;
 import com.onyx.jdread.setting.event.ExecuteUpdateEvent;
 import com.onyx.jdread.setting.model.DeviceConfigData;
 import com.onyx.jdread.setting.model.SettingBundle;
@@ -58,6 +59,7 @@ public class SystemUpdateFragment extends BaseFragment {
     private String downloadPath;
     private String tag;
     private SettingUpdateModel settingUpdateModel;
+    private CheckApkUpdateAction apkUpdateAction;
 
     @Nullable
     @Override
@@ -192,7 +194,7 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     private void checkApkUpdate() {
-        final CheckApkUpdateAction apkUpdateAction = new CheckApkUpdateAction();
+        apkUpdateAction = new CheckApkUpdateAction();
         apkUpdateAction.execute(SettingBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
@@ -224,6 +226,7 @@ public class SystemUpdateFragment extends BaseFragment {
                     apkUpdateAction.hideLoadingDialog(SettingBundle.getInstance());
                 } else {
                     apkUpdateAction.showLoadingDialog(SettingBundle.getInstance(), R.string.already_latest_version);
+                    DelayEvent delayEvent = new DelayEvent(2000);
                 }
             }
         });
@@ -258,6 +261,11 @@ public class SystemUpdateFragment extends BaseFragment {
                 PreferenceManager.setIntValue(JDReadApplication.getInstance(), UpdateUtil.DOWNLOAD_UPDATE_CODE, UpdateUtil.UPDATE_CODE);
             }
         });
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDelayEvent(DelayEvent event) {
+        apkUpdateAction.hideLoadingDialog(SettingBundle.getInstance());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

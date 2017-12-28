@@ -75,4 +75,12 @@
     <string name="document_path_error">Book path error</string>
     <string name="open_book_parameter_error">There is no book path in opening book information</string>
     <string name="open_book_fail">Open book fail</string>
+    <string name="personal_task">Personal task</string>
+    <string name="personal_account">Personal account</string>
+    <string name="personal_notes">Personal notes</string>
+    <string name="personal_books">Personal books</string>
+    <string name="read_preference">Reading preference</string>
+    <string name="gift_center">Gift center</string>
+    <string name="log_out">Log out</string>
+    <string name="unsigned_in">Unsigned</string>
 </resources>

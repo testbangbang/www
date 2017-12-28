@@ -53,7 +53,7 @@ public class DeviceConfigModel {
         }
 
         String localPath = UpdateUtil.checkLocalPackage();
-        if (FileUtils.fileExist(localPath)) {
+        if (FileUtils.fileExist(localPath) || FileUtils.fileExist(UpdateUtil.getApkUpdateFile())) {
             DeviceConfigData deviceConfigData = deviceConfigDataList.get(deviceConfigDataList.size() - 1);
             deviceConfigData.setUpdateRecord("1");
         }

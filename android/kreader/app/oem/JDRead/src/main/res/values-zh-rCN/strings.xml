@@ -73,4 +73,12 @@
     <string name="document_path_error">书本路径错误</string>
     <string name="open_book_parameter_error">打开书本信息中没有书本路径</string>
     <string name="open_book_fail">打开书本失败</string>
+    <string name="personal_task">我的任务</string>
+    <string name="personal_account">我的账号</string>
+    <string name="personal_notes">我的笔记</string>
+    <string name="personal_books">我的图书</string>
+    <string name="read_preference">阅读偏好</string>
+    <string name="gift_center">礼品中心</string>
+    <string name="log_out">退出登录</string>
+    <string name="unsigned_in">未签到</string>
 </resources>

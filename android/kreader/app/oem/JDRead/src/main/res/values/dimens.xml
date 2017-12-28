@@ -54,4 +54,16 @@
     <dimen name="dialog_update_alert_margin_top">20dp</dimen>
     <dimen name="system_update_progress_margin_bottom">20dp</dimen>
     <dimen name="library_build_edit_padding">8dp</dimen>
+    <dimen name="personal_portrait_margin_top">30dp</dimen>
+    <dimen name="personal_name_margin_top">14dp</dimen>
+    <dimen name="personal_read_time_margin_top">20dp</dimen>
+    <dimen name="personal_sign_in_margin_right">96dp</dimen>
+    <dimen name="personal_sign_in_margin_top">80dp</dimen>
+    <dimen name="personal_sign_in_padding_left">20dp</dimen>
+    <dimen name="personal_sign_in_padding_right">20dp</dimen>
+    <dimen name="personal_sign_in_padding_top">5dp</dimen>
+    <dimen name="personal_sign_in_padding_bottom">5dp</dimen>
+    <dimen name="personal_recycler_margin_top">20dp</dimen>
+    <dimen name="personal_recycler_height">300dp</dimen>
+    <dimen name="personal_log_out_margin">20dp</dimen>
 </resources>
