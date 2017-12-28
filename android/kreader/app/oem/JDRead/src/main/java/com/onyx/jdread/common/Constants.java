@@ -14,9 +14,18 @@ public class Constants {
     public static final String MD_5 = "MD5";
 
     public static final String SP_KEY_BOOK_ID = "book_id";
+    public final static String SP_KEY_ACCOUNT = "user_account";
+    public final static String SP_KEY_PASSWORD = "user_password";
+    public static final String SP_KEY_USER_IMAGE_URL = "user_image_url";
+    public static final String SP_KEY_USER_NICK_NAME = "user_nick_name";
+    public static final String SP_KEY_USER_NAME = "user_name";
+    public static final String SP_KEY_LIST_PIN = "listPin";
+    public static final String SP_KEY_SHOW_PASSWORD = "show_password";
 
     public static final int BOOK_COMMENT_PAGE_SIZE = 20;
     public static final int BOOK_CATEGORY_PAGE_SIZE = 20;
     public static final int PAGE_STEP = 1;
     public static final String BOOK_FORMAT = ".JEB";
+    public static final String LOGIN_CODE_SUCCESS = "0";
+    public static final int PASSWORD_MIN_LENGTH = 6;
 }

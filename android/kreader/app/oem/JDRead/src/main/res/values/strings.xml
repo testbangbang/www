@@ -94,4 +94,13 @@
     <string name="book_detail_tip_try_again">download error,try again later</string>
     <string name="book_detail_tip_book_add_to_bookself">has add to bookshelf</string>
     <string name="download_finished">download finished</string>
+    <string name="login_success">login success</string>
+    <string name="login_fail">login fail</string>
+    <string name="user_login_jd_account">Jingdong to login</string>
+    <string name="password">password</string>
+    <string name="edit_text_account_hint">JDAccount/Phone number/Email</string>
+    <string name="register">Sign up</string>
+    <string name="login">Login</string>
+    <string name="check_password">The password you entered is less than 6!</string>
+    <string name="check_user_name">The login account cannot be empty!</string>
 </resources>

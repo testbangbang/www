@@ -52,6 +52,12 @@ android {
     dexOptions {
         additionalParameters = ['--multi-dex', '--set-max-idx-number=40000']
     }
+
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
 }
 
 dependencies {

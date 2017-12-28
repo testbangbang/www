@@ -1,6 +1,6 @@
 package com.jingdong.app.reader.data;
 
-import com.onyx.jdread.common.AppInformationUtils;
+import android.content.Context;
 
 public class DrmTools {
     static {
@@ -25,12 +25,12 @@ public class DrmTools {
      */
     public static native boolean API02(String Para01, String Para02, String Para03, String Para04, String Para05);
 
-    public static boolean decryptApk(String cert, String random, String oldPath, String newPath) {
-        return API02(cert, hashDevicesInfor(), random, oldPath, newPath);
+    public static boolean decryptApk(String cert, String random, String oldPath, String newPath,Context context) {
+        return API02(cert, hashDevicesInfo(context), random, oldPath, newPath);
     }
 
-    public static String hashDevicesInfor() {
-        String device = AppInformationUtils.getDeviceId() + "ibyxt270";
+    public static String hashDevicesInfo(Context context) {
+        String device = CommonUtil.getDeviceId(context) + "ibyxt270";
         return API01(device);
     }
 }

@@ -18,6 +18,7 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -29,6 +30,14 @@ import com.onyx.jdread.common.ManagerActivityUtils;
 import com.onyx.jdread.common.ToastUtil;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
 import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
+import com.onyx.jdread.personal.action.UserLoginAction;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
+import com.onyx.jdread.personal.event.UserLoginEvent;
+import com.onyx.jdread.personal.event.UserLoginResultEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.personal.model.PersonalViewModel;
+import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
@@ -47,6 +56,7 @@ import com.onyx.jdread.shop.event.OnBookDetailReadNowEvent;
 import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
 import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
 import com.onyx.jdread.shop.event.OnCopyrightEvent;
+import com.onyx.jdread.shop.event.OnDownloadWholeBookEvent;
 import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
 import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
 import com.onyx.jdread.shop.event.OnViewCommentEvent;
@@ -224,6 +234,28 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onDownloadWholeBookEvent(OnDownloadWholeBookEvent event) {
+        LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginEvent(UserLoginEvent event) {
+        InputMethodUtils.hideInputKeyboard(getActivity());
+        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
+        userLoginAction.execute(getPersonalDataBundle(),null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCancelUserLoginDialogEvent(CancelUserLoginDialogEvent event) {
+        LoginHelper.dismissUserLoginDialog();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginResultEvent(UserLoginResultEvent event) {
+        ToastUtil.showToast(getContext(), event.getMessage());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCopyrightEvent(OnCopyrightEvent event) {
         showCopyRightDialog();
     }
@@ -244,15 +276,6 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadStartEvent(DownloadStartEvent event) {
-        BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
-        if (task != null) {
-            downloadTaskState = task.getStatus();
-            localPath = task.getPath();
-            bookDetailBean.getBookExtraInfoBean().downLoadTaskTag = event.tag;
-            if (DownLoadHelper.canInsertBookDetail(downloadTaskState)) {
-                insertBookDetail(bookDetailBean, localPath);
-            }
-        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -335,6 +358,7 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
         nowReadButton.setEnabled(false);
+        nowReadButton.setText(getString(R.string.book_detail_downloading));
         download(bookDetailBean);
         ToastUtil.showToast(JDReadApplication.getInstance(), bookDetailBean.getName() + getString(R.string.book_detail_tip_book_add_to_bookself));
     }
@@ -425,10 +449,23 @@ public class BookDetailFragment extends BaseFragment {
         return ShopDataBundle.getInstance();
     }
 
+    public PersonalDataBundle getPersonalDataBundle() {
+        return PersonalDataBundle.getInstance();
+    }
+
+    public PersonalViewModel getPersonalViewModel() {
+        return getPersonalDataBundle().getPersonalViewModel();
+    }
+
+    public UserLoginViewModel getUserLoginViewModel() {
+        return getPersonalViewModel().getUserLoginViewModel();
+    }
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         dismissCopyRightDialog();
+        LoginHelper.dismissUserLoginDialog();
         copyRightDialog = null;
     }
 }

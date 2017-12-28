@@ -35,7 +35,7 @@ public class DownLoadHelper {
     }
 
     public static boolean canInsertBookDetail (int status){
-        return isDownloaded(status) || isPause(status) || isError(status) || isStarted(status) || isConnected(status);
+        return isDownloaded(status) || isPause(status) || isError(status) || isStarted(status) || isDownloading(status);
     }
 
 }

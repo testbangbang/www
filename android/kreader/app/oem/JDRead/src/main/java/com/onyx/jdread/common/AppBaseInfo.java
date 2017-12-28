@@ -3,6 +3,7 @@ package com.onyx.jdread.common;
 import android.os.Build;
 
 import com.jingdong.app.reader.data.DrmTools;
+import com.onyx.jdread.JDReadApplication;
 
 import java.net.URLEncoder;
 import java.util.HashMap;
@@ -61,7 +62,7 @@ public class AppBaseInfo {
         appId = APP_KEY_DEFAULT_VALUE;
         os = OS_KEY_DEFAULT_VALUE;
         client = CLIENT_KEY_DEFAULT_VALUE;
-        uuid = DrmTools.hashDevicesInfor();
+        uuid = DrmTools.hashDevicesInfo(JDReadApplication.getInstance());
         unionId = AppInformationUtils.getPropertiesValue(AppInformationUtils.CPA_PROPERTIES);
         model = Build.MODEL;
         brand = Build.BRAND;

@@ -105,4 +105,12 @@
     <dimen name="dialog_button_padding_top">10dp</dimen>
     <dimen name="dialog_button_padding_left">80dp</dimen>
     <dimen name="book_detail_dialog_drawable_padding">10dp</dimen>
+    <dimen name="user_login_edit_text_pading_top_and_bottom">8dp</dimen>
+    <dimen name="user_login_edit_text_delete_button_margin">8dp</dimen>
+    <dimen name="user_login_account_contain_margin_top">20dp</dimen>
+    <dimen name="user_login_password_contain_margin_top">15dp</dimen>
+    <dimen name="dialog_user_login_pading_bottom">40dp</dimen>
+    <dimen name="user_login_register_contain_margin">20dp</dimen>
+    <dimen name="user_login_register_button_padding">5dp</dimen>
+    <dimen name="user_login_widget_padding">2dp</dimen>
 </resources>

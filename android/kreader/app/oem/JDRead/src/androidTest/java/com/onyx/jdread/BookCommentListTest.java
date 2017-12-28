@@ -4,6 +4,7 @@ import android.test.ApplicationTestCase;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
+import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestGetBookCommentList;
 
 import org.json.JSONException;
@@ -32,7 +33,7 @@ public class BookCommentListTest extends ApplicationTestCase<JDReadApplication> 
     public void testBookCommentList() throws Exception {
         final CountDownLatch countDownLatch = new CountDownLatch(1);
         BookCommentsRequestBean bookCommentsRequestBean = new BookCommentsRequestBean();
-        bookCommentsRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
+        bookCommentsRequestBean.setAppBaseInfo(ShopDataBundle.getInstance().getAppBaseInfo());
         String bookCommentsJsonBody = getBookCommentsJsonBody(EBOOK, bookId, "1");
         bookCommentsRequestBean.setBody(bookCommentsJsonBody);
         final RxRequestGetBookCommentList rq = new RxRequestGetBookCommentList();
