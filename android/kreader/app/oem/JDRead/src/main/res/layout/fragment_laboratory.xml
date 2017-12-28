@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/fragment_laboratory_content_padding">
+            android:padding="@dimen/fragment_content_padding">
 
             <RelativeLayout
                 android:layout_width="match_parent"

@@ -19,6 +19,6 @@
             android:gravity="center_vertical"
             android:text="@{titleModel.title}"
             android:clickable="true"
-            android:drawableLeft="@drawable/title_back" />
+            android:drawableLeft="@mipmap/ic_read_back" />
     </LinearLayout>
 </layout>

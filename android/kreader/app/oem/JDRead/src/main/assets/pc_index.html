@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8" />
+	<title></title>
+	<style type="text/css">
+			html,body,ul,ol,li,h1,h2,h3,p{
+				margin: 0;
+			    padding: 0;
+			}
+			html,body{
+			    height:100%;
+			    background: #F7F6F9;
+			    min-width: 680px;
+			}
+			ol,ul {
+				list-style: none;
+			}
+			.upload-file{
+				height: 100%;
+				padding: 0 20px;
+			}
+			.upload-file>h3{
+				padding: 20px 0;
+			}
+			.upload-file>p>.upload-title{
+				float: right;
+				margin-top: -4px;
+				width: 100px;
+				line-height: 30px;
+				text-align: center;
+				background: #fff;
+				border: 1px solid #000;
+				position: relative;
+			}
+			.upload-file>p>.upload-title>input{
+				height: 100%;
+				width: 100%;
+				top: 0;
+				left: 0;
+				position: absolute;
+				opacity: 0;
+			}
+			.upload-file>table{
+				width: 100%;
+				margin-top: 12px;
+				border-collapse: collapse;
+			}
+			.upload-file>table tr{
+				text-align: center;
+				border-bottom: 1px dashed #ccc;
+			}
+			.upload-file>table th{
+				padding: 10px 0;
+			}
+			.upload-file>table td{
+				padding: 10px 0;
+			}
+			.upload-file>table .td-file-name{
+				text-align: left;
+			}
+		</style>
+</head>
+
+<body>
+<div class="upload-file">
+	<h3>JDRead WIFI传书</h3>
+	<p>支持格式：TXT、EPUB、EBK、PDF、MOBI、JPEG、DOC、DOCX、PNG
+		<span class="upload-title"><input type="file" name="file" value="上传文件" onchange="handleFiles(this.files)">上传文件</span>
+	</p>
+	<table>
+		<thead>
+		<tr>
+			<th width="50" class="td-file-name">文件名称</th>
+			<th width="30%">大小</th>
+			<th width="20%">状态</th>
+		</tr>
+		</thead>
+		<tbody>
+
+		</tbody>
+	</table>
+</div>
+<script type="text/javascript">
+        function upload(file) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('post', '/upload');
+            xhr.onload = function () {
+                console.log(xhr.responseText);
+            };
+            xhr.upload.onprogress = function (event) {
+                var percent = (event.loaded / event.total * 100).toFixed(0) + '%';
+                document.querySelector('#_' + file.id).innerHTML = percent;
+            };
+            var data = new FormData();
+            data.append('file', file, file.name);
+            xhr.send(data);
+        }
+
+        function addFileToList(file) {
+            var tbodyEl = document.querySelector('tbody');
+            var trEl = document.createElement('tr');
+            var id = Date.now();
+            var content = '<td class="td-file-name">' + file.name + '</td> \
+                           <td>' + humanFileSize(file.size, true) + '</td> \
+                           <td id="_' + id + '">0%</td>';
+            trEl.innerHTML = content;
+            tbodyEl.appendChild(trEl);
+            file.id = id;
+            upload(file);
+        }
+
+        function handleFiles(files) {
+            for (var i = 0; i < files.length; i++) {
+                addFileToList(files[i]);
+            }
+        }
+
+        function humanFileSize(bytes, si) {
+            var thresh = si ? 1000 : 1024;
+            if(Math.abs(bytes) < thresh) {
+                return bytes + ' B';
+            }
+            var units = si
+                ? ['kB','MB','GB','TB','PB','EB','ZB','YB']
+                : ['KiB','MiB','GiB','TiB','PiB','EiB','ZiB','YiB'];
+            var u = -1;
+            do {
+                bytes /= thresh;
+                ++u;
+            } while(Math.abs(bytes) >= thresh && u < units.length - 1);
+            return bytes.toFixed(1)+' '+units[u];
+        }
+    </script>
+</body>
+
+</html>

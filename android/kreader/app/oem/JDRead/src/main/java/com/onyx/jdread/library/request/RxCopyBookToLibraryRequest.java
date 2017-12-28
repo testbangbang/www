@@ -27,7 +27,7 @@ public class RxCopyBookToLibraryRequest extends RxBaseDBRequest {
             return this;
         }
         FileUtils.copyFile(srcFile, targetFile);
-        if (targetFile.exists()) {
+        if (targetFile.exists() && FileUtils.computeMD5(srcFile).equals(FileUtils.computeMD5(targetFile))) {
             Metadata metadata = Metadata.createFromFile(targetFile);
             getDataProvider().saveMetadata(getAppContext(), metadata);
         }
