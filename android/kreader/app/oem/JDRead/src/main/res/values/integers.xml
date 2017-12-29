@@ -2,8 +2,20 @@
 <resources>
     <integer name="library_view_type_thumbnail_row">2</integer>
     <integer name="library_view_type_thumbnail_col">3</integer>
+    <integer name="setting_adapter_row">3</integer>
+    <integer name="setting_adapter_col">2</integer>
+    <integer name="wifi_setting_adapter_row">5</integer>
+    <integer name="wifi_setting_adapter_col">1</integer>
+    <integer name="refresh_adapter_row">4</integer>
+    <integer name="refresh_adapter_col">1</integer>
+    <integer name="lock_screen_adapter_row">4</integer>
+    <integer name="lock_screen_adapter_col">1</integer>
+    <integer name="device_config_adapter_row">6</integer>
+    <integer name="device_config_adapter_col">1</integer>
     <integer name="function_bar_row">1</integer>
     <integer name="function_bar_col">5</integer>
+    <integer name="personal_adapter_row">2</integer>
+    <integer name="personal_adapter_col">3</integer>
     <integer name="library_delete_dialog_width">700</integer>
     <integer name="library_delete_dialog_height">267</integer>
     <integer name="move_to_library_list_dialog_width">700</integer>
@@ -39,3 +51,4 @@
     <integer name="show_menu_touch_two_region_right">772</integer>
     <integer name="show_menu_touch_two_region_bottom">1148</integer>
 </resources>
+
