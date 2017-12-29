@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.ui.ContactUsFragment">
+
+        <include
+            android:id="@+id/cont_us_title"
+            layout="@layout/title_bar" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/fragment_content_padding"
+            android:paddingRight="@dimen/fragment_content_padding"
+            android:paddingTop="@dimen/fragment_content_padding"
+            android:text="@string/consumer_hotline"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fragment_content_padding"
+            android:text="@string/consumer_hotline_comments"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <View style="@style/DottedLineStyle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fragment_content_padding"
+            android:text="@string/official_qq_group"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <View style="@style/DottedLineStyle" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/fragment_content_padding"
+            android:text="@string/official_email"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <View style="@style/DottedLineStyle" />
+
+    </LinearLayout>
+</layout>

@@ -10,6 +10,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -18,7 +20,6 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.LaboratoryFragment;
 import com.onyx.jdread.R;
 import com.onyx.jdread.action.InitFunctionBarAction;
 import com.onyx.jdread.adapter.FunctionBarAdapter;
@@ -35,6 +36,7 @@ import com.onyx.jdread.model.FunctionBarItem;
 import com.onyx.jdread.model.FunctionBarModel;
 import com.onyx.jdread.model.MainViewModel;
 import com.onyx.jdread.model.SystemBarModel;
+import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -239,6 +241,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (currentFragment instanceof ShopFragment) {
+            GestureDetector gestureDetector = ((ShopFragment) currentFragment).getGestureDetector();
+            gestureDetector.onTouchEvent(ev);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
