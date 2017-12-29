@@ -49,4 +49,7 @@
     <string name="contact_us">Contact us</string>
     <string name="product_introduce">Product introduce</string>
     <string name="common_problem">Common problem</string>
+    <string name="commit">commit</string>
+    <string name="feedback_content_hint">Please enter 5-200 word feedback content</string>
+    <string name="feedback_format_error">Feedback format is wrong</string>
 </resources>

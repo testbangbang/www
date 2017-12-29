@@ -38,4 +38,5 @@
     <integer name="show_menu_touch_two_region_top">100</integer>
     <integer name="show_menu_touch_two_region_right">972</integer>
     <integer name="show_menu_touch_two_region_bottom">1448</integer>
+    <integer name="feedback_content_max_length">400</integer>
 </resources>

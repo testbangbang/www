@@ -47,4 +47,7 @@
     <string name="contact_us">联系我们</string>
     <string name="product_introduce">产品介绍</string>
     <string name="common_problem">常见问题</string>
+    <string name="commit">提交</string>
+    <string name="feedback_content_hint">请输入5-200字反馈内容</string>
+    <string name="feedback_format_error">反馈格式有误</string>
 </resources>
