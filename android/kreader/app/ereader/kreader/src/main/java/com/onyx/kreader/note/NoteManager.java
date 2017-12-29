@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.api.TouchHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -301,9 +302,9 @@ public class NoteManager {
     public void setCurrentShapeType(int type) {
         getNoteDrawingArgs().setCurrentShapeType(type);
         if (type == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
-            EpdController.setStrokeStyle(1);
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_BRUSH);
         } else {
-            EpdController.setStrokeStyle(0);
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_PENCIL);
         }
         updateInUserErasingState();
         updateRenderByFrameworkState();

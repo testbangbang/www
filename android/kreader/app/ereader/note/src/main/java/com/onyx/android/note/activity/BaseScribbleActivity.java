@@ -35,6 +35,7 @@ import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -639,9 +640,9 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
     protected void setCurrentShapeType(int type) {
         shapeDataInfo.setCurrentShapeType(type);
         if (type == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
-            EpdController.setStrokeStyle(1);
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_BRUSH);
         } else {
-            EpdController.setStrokeStyle(0);
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_PENCIL);
         }
     }
 
