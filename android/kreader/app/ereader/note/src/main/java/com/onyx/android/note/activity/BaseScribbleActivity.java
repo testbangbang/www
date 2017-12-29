@@ -638,6 +638,11 @@ public abstract class BaseScribbleActivity extends OnyxAppCompatActivity impleme
 
     protected void setCurrentShapeType(int type) {
         shapeDataInfo.setCurrentShapeType(type);
+        if (type == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
+            EpdController.setStrokeStyle(1);
+        } else {
+            EpdController.setStrokeStyle(0);
+        }
     }
 
     protected void setBackgroundType(int type) {
