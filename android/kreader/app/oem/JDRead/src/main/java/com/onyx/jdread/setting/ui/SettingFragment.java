@@ -74,7 +74,7 @@ public class SettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWireLessEvent(WireLessEvent event) {
-        getViewEventCallBack().gotoView(WifiFragment.class.getName());
+        viewEventCallBack.gotoView(WifiFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

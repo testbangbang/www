@@ -101,6 +101,6 @@ public class RefreshFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
-        getViewEventCallBack().gotoView(SettingFragment.class.getName());
+        viewEventCallBack.gotoView(SettingFragment.class.getName());
     }
 }
