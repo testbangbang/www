@@ -95,7 +95,7 @@
                 android:layout_height="wrap_content"
                 android:layout_toLeftOf="@id/user_login_password_edit_text_visibility_button"
                 android:background="@null"
-                android:hint="@string/password"
+                android:hint="@string/password_edit_hint"
                 android:inputType="textPassword"
                 android:paddingBottom="@dimen/user_login_edit_text_pading_top_and_bottom"
                 android:paddingTop="@dimen/user_login_edit_text_pading_top_and_bottom"
