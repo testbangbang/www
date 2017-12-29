@@ -6,8 +6,11 @@ import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.plato.cloud.service.ContentService;
 import com.onyx.android.plato.common.CloudApiContext;
+import com.onyx.android.plato.event.ExceptionEvent;
 import com.onyx.android.plato.requests.requestTool.BaseCloudRequest;
 import com.onyx.android.plato.requests.requestTool.SunRequestManager;
+
+import org.greenrobot.eventbus.EventBus;
 
 import retrofit2.Call;
 import retrofit2.Response;
@@ -37,8 +40,13 @@ public class HomeworkFinishedRequest extends BaseCloudRequest {
             Response<HomeworkFinishedResultBean> response = call.execute();
             if (response.isSuccessful()) {
                 resultBean = response.body();
+            } else {
+                String error = response.errorBody().string();
+                EventBus.getDefault().post(new ExceptionEvent(error));
             }
         } catch (Exception e) {
+            EventBus.getDefault().post(new ExceptionEvent(e.toString()));
+            Log.i(TAG, e.toString());
             Log.i(TAG, e.toString());
             setException(e);
         }

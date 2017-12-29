@@ -1,6 +1,5 @@
 package com.onyx.android.plato.presenter;
 
-import com.alibaba.fastjson.JSON;
 import com.onyx.android.plato.R;
 import com.onyx.android.plato.SunApplication;
 import com.onyx.android.plato.cloud.bean.ContentBean;
@@ -11,7 +10,6 @@ import com.onyx.android.plato.cloud.bean.GetSubjectBean;
 import com.onyx.android.plato.cloud.bean.HomeworkFinishedResultBean;
 import com.onyx.android.plato.cloud.bean.HomeworkRequestBean;
 import com.onyx.android.plato.cloud.bean.HomeworkUnfinishedResultBean;
-import com.onyx.android.plato.cloud.bean.PracticeAnswerBean;
 import com.onyx.android.plato.cloud.bean.Question;
 import com.onyx.android.plato.cloud.bean.QuestionData;
 import com.onyx.android.plato.cloud.bean.ReportListBean;
@@ -43,9 +41,6 @@ import com.onyx.android.plato.requests.requestTool.BaseRequest;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
-
-import okhttp3.MediaType;
-import okhttp3.RequestBody;
 
 /**
  * Created by li on 2017/10/11.
@@ -224,12 +219,13 @@ public class HomeworkPresenter {
         });
     }
 
-    public void submitAnswer(List<PracticeAnswerBean> answerList, int taskId) {
+    public void submitAnswer(String[] answer, int taskId) {
         SubmitPracticeRequestBean submitPracticeRequestBean = new SubmitPracticeRequestBean();
         submitPracticeRequestBean.id = taskId;
-        String answers = JSON.toJSONString(answerList);
-        RequestBody requestBody = RequestBody.create(MediaType.parse(Constants.REQUEST_HEAD), answers);
-        submitPracticeRequestBean.practiceListBody = requestBody;
+        submitPracticeRequestBean.answer = answer;
+//        String answers = JSON.toJSONString(answerList);
+//        RequestBody requestBody = RequestBody.create(MediaType.parse(Constants.REQUEST_HEAD), answers);
+//        submitPracticeRequestBean.practiceListBody = requestBody;
 
         final SubmitPracticeRequest rq = new SubmitPracticeRequest(submitPracticeRequestBean);
         fillHomeworkData.submitAnswers(rq, new BaseCallback() {

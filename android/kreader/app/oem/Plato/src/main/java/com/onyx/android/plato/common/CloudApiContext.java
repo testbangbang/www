@@ -69,6 +69,7 @@ public class CloudApiContext {
         public static final String ENDTIME = "endtime";
         public static final String ID = "id";
         public static final String PID = "pid";
+        public static final String ANSWER = "answer";
         public static final String UNFINISHED_STATE = "tbd";
         public static final String FINISHED_STATE = "completed";
         public static final String REPORT_STATE = "report";

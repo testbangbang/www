@@ -238,6 +238,12 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
 
     @Subscribe
     public void onRequestInfoUpdateEvent(RequestInfoUpdateEvent event) {
+        int pageCount = noteManager.getShapeDataInfo().getPageCount();
+        if (pageCount > 1) {
+            scribbleBinding.scribbleDeletePage.setVisibility(View.VISIBLE);
+        } else {
+            scribbleBinding.scribbleDeletePage.setVisibility(View.GONE);
+        }
         shapePageAdapter.setShapes(noteManager.getShapeDataInfo().getPageCount());
     }
 
@@ -273,7 +279,6 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
                 deletePage();
                 break;
             case R.id.title_bar_title:
-                EventBus.getDefault().post(new SubjectiveResultEvent(questionID));
                 finish();
                 break;
             case R.id.title_bar_image_one:
@@ -287,7 +292,6 @@ public class ScribbleActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     public void onBackPressed() {
-        EventBus.getDefault().post(new SubjectiveResultEvent(questionID));
         super.onBackPressed();
     }
 

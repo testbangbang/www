@@ -46,9 +46,14 @@ public class StringUtil {
         }
     }
 
-    public static boolean isCorrect(String correctTime) {
-        if (String.valueOf(Constants.VALUE_ZERO).equals(correctTime)) {
+    public static boolean isCorrect(String type) {
+        if (StringUtil.isNullOrEmpty(type)) {
+            return true;
+        }
+        if (type.equals(Constants.PRACTICE)) {
             return false;
+        } else if(type.equals(Constants.CORRECT)) {
+            return true;
         }
         return true;
     }

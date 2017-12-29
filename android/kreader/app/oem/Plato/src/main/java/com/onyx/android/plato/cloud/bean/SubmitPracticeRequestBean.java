@@ -9,4 +9,5 @@ import okhttp3.RequestBody;
 public class SubmitPracticeRequestBean {
     public int id;
     public RequestBody practiceListBody;
+    public String[] answer;
 }

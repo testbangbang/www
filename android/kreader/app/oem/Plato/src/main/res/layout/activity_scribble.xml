@@ -99,6 +99,7 @@
                 android:drawablePadding="@dimen/scribble_button_drawable_padding"
                 android:drawableTop="@drawable/icon_delete_page"
                 android:gravity="center"
+                android:visibility="gone"
                 android:onClick="@{listener::onClick}"
                 android:padding="@dimen/scribble_button_padding"
                 android:text="@string/delete_page" />

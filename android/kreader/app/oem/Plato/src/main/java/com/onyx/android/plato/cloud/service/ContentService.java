@@ -1,6 +1,5 @@
 package com.onyx.android.plato.cloud.service;
 
-import com.onyx.android.plato.cloud.bean.ChangePasswordResultBean;
 import com.onyx.android.plato.cloud.bean.GetAnalysisBean;
 import com.onyx.android.plato.cloud.bean.GetCorrectedTaskResultBean;
 import com.onyx.android.plato.cloud.bean.GetReportListBean;
@@ -75,9 +74,9 @@ public interface ContentService {
     @POST("api/auth/login")
     Call<UserLoginResultBean> userLogin(@Body LoginRequestBean bean);
 
-    @POST("api/practice/{id}")
+    @GET("api/practice/{id}")
     Call<SubmitPracticeResultBean> submitPractice(@Path(CloudApiContext.Practices.ID) int id,
-                                                  @Body RequestBody practiceBeanBody);
+                                                  @Query(CloudApiContext.Practices.ANSWER) String[] answer);
 
     @POST("api/practice/favorite")
     Call<SubmitPracticeResultBean> favoriteOrDeletePractice(@Body RequestBody requestBody);
