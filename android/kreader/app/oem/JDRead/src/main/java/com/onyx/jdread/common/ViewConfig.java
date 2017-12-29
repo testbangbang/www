@@ -5,8 +5,13 @@ import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.library.ui.WiFiPassBookFragment;
 import com.onyx.jdread.model.StackList;
 import com.onyx.jdread.personal.ui.PersonalFragment;
+import com.onyx.jdread.setting.ui.ContactUsFragment;
 import com.onyx.jdread.setting.ui.DeviceConfigFragment;
+import com.onyx.jdread.setting.ui.FeedbackFragment;
+import com.onyx.jdread.setting.ui.HelpFragment;
+import com.onyx.jdread.setting.ui.LaboratoryFragment;
 import com.onyx.jdread.setting.ui.LockScreenFragment;
+import com.onyx.jdread.setting.ui.ManualFragment;
 import com.onyx.jdread.setting.ui.RefreshFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
@@ -44,6 +49,11 @@ public class ViewConfig {
         childViewInfo.put(RefreshFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(SystemUpdateFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(WifiFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(LaboratoryFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(HelpFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(ContactUsFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(FeedbackFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(ManualFragment.class.getName(),FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
     }
