@@ -10,6 +10,11 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentManualBinding;
 import com.onyx.jdread.model.TitleBarModel;
+import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
+import com.onyx.jdread.setting.model.SettingBundle;
+
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 /**
  * Created by hehai on 17-12-28.
@@ -28,8 +33,26 @@ public class ManualFragment extends BaseFragment {
     }
 
     private void loadData() {
-        TitleBarModel titleBarModel = new TitleBarModel();
+        TitleBarModel titleBarModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
         titleBarModel.title.set(getString(R.string.manual));
+        titleBarModel.backEvent.set(new BackToHelpFragmentEvent());
         manualBinding.manualTitle.setTitleModel(titleBarModel);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SettingBundle.getInstance().getEventBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        SettingBundle.getInstance().getEventBus().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToHelpFragmentEvent(BackToHelpFragmentEvent event) {
+        viewEventCallBack.gotoView(HelpFragment.class.getName());
     }
 }

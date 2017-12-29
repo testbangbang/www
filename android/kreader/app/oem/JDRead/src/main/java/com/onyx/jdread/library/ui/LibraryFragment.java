@@ -51,6 +51,8 @@ import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
+import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.OpenBookHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -475,9 +477,9 @@ public class LibraryFragment extends BaseFragment {
         if (!file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(getContext().getApplicationContext(),
-                ViewDocumentUtils.viewActionIntentWithMimeType(file),
-                ViewDocumentUtils.getReaderComponentName(getContext().getApplicationContext()));
+        DocumentInfo documentInfo = new DocumentInfo();
+        documentInfo.setBookPath(filePath);
+        OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
     private void processMultiModeItemClick(DataModel dataModel) {

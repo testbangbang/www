@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="setting_content">
+        <item>@string/wireless_network</item>
+        <item>@string/intensity_control</item>
+        <item>@string/page_refresh</item>
+        <item>@string/interest_rates_screen_time</item>
+        <item>@string/laboratory</item>
+        <item>@string/help_and_feedback</item>
+    </string-array>
+
+    <string-array name="setting_drawables">
+        <item name="setting_wifi">@mipmap/ic_setting_wifi</item>
+        <item name="setting_light">@mipmap/ic_setting_light</item>
+        <item name="setting_refresh">@mipmap/ic_setting_refresh</item>
+        <item name="setting_rest">@mipmap/ic_setting_rest</item>
+        <item name="setting_lab">@mipmap/ic_setting_lab</item>
+        <item name="setting_help">@mipmap/ic_setting_help</item>
+    </string-array>
+
+    <string-array name="device_setting_page_refreshes">
+        <item>@string/device_setting_ten_pages</item>
+        <item>@string/device_setting_twenty_pages</item>
+        <item>@string/device_setting_forty_pages</item>
+        <item>@string/device_setting_eighty_pages</item>
+    </string-array>
+
+    <string-array name="device_configs">
+        <item>@string/date_time</item>
+        <item>@string/screen_saver</item>
+        <item>@string/password</item>
+        <item>@string/read_tool</item>
+        <item>@string/device_information</item>
+        <item>@string/system_update</item>
+    </string-array>
+
+    <string-array name="personal_items">
+        <item>@string/personal_task</item>
+        <item>@string/personal_account</item>
+        <item>@string/personal_notes</item>
+        <item>@string/personal_books</item>
+        <item>@string/read_preference</item>
+        <item>@string/gift_center</item>
+    </string-array>
+
+    <string-array name="personal_drawables">
+        <item name="my_task">@mipmap/ic_me_task</item>
+        <item name="my_id">@mipmap/ic_me_id</item>
+        <item name="my_note">@mipmap/ic_me_note</item>
+        <item name="my_book">@mipmap/ic_me_book</item>
+        <item name="my_like">@mipmap/ic_me_like</item>
+        <item name="my_gift">@mipmap/ic_me_gift</item>
+    </string-array>
+</resources>
