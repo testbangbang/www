@@ -11,6 +11,8 @@ import com.onyx.jdread.setting.ui.RefreshFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.setting.ui.SystemUpdateFragment;
 import com.onyx.jdread.setting.ui.WifiFragment;
+import com.onyx.jdread.shop.ui.BookDetailFragment;
+import com.onyx.jdread.shop.ui.CommentFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
 import java.util.HashMap;
@@ -33,6 +35,8 @@ public class ViewConfig {
         childViewInfo.put(WiFiPassBookFragment.class.getName(),FunctionModule.LIBRARY);
         //shop
         childViewInfo.put(ShopFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(BookDetailFragment.class.getName(), FunctionModule.SHOP);
+        childViewInfo.put(CommentFragment.class.getName(), FunctionModule.SHOP);
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);
         childViewInfo.put(DeviceConfigFragment.class.getName(),FunctionModule.SETTING);
