@@ -33,4 +33,6 @@ public class Constants {
     public static final String LOGIN_CODE_SERVER_ERROR_CODE_ONE = "-1";
     public static final String LOGIN_CODE_SERVER_ERROR_CODE_TWO = "-2";
     public static final int PASSWORD_MIN_LENGTH = 6;
+    public static final String CODE_STATE_THREE = "3";
+    public static final String CODE_STATE_FOUR = "4";
 }

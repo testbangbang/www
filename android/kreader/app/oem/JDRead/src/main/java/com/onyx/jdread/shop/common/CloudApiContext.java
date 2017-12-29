@@ -21,6 +21,7 @@ import okhttp3.OkHttpClient;
 public class CloudApiContext {
     public static final String JD_BOOK_SHOP_URL = "http://tob-gw.jd.com/";
     public static final String JD_BASE_URL = "https://tob-gw.jd.com/";
+    public static final String JD_BOOK_VERIFY_URL = "http://rights.e.jd.com/";
 
     public static class NewBookDetail {
         public static final String BOOK_SPECIAL_PRICE_TYPE = "specialPrice";
@@ -78,6 +79,14 @@ public class CloudApiContext {
         public static final String KEY_WORD = "keyword";
         public static final String SEARCH_PAPER_BOOK = "searchPaperBook";
         public static final String SEARCH_BOOK_V2 = "searchBookV2";
+    }
+
+    public static class BookDownloadUrl {
+        public static final String GET_CONTENT = "getContent";
+        public static final String ORDER_ID = "orderId";
+        public static final String UUID = "uuid";
+        public static final String EBOOK_ID = "ebookId";
+        public static final String USER_ID = "userId";
     }
 
     public static String getJDBooxBaseUrl() {

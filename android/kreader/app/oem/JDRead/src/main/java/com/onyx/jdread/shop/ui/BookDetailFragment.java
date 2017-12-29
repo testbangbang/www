@@ -38,6 +38,8 @@ import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
+import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.OpenBookHelper;
 import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
@@ -63,6 +65,7 @@ import com.onyx.jdread.shop.event.OnViewCommentEvent;
 import com.onyx.jdread.shop.event.ShopSmoothCardEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
+import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.view.CustomDialog;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -94,6 +97,7 @@ public class BookDetailFragment extends BaseFragment {
     private TextView nowReadButton;
     private boolean isDataBaseHaveBook;
     private int percentage;
+    private boolean isWholeBook;
 
     @Nullable
     @Override
@@ -238,7 +242,7 @@ public class BookDetailFragment extends BaseFragment {
         if (!JDReadApplication.getInstance().getLogin()) {
             LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
         } else {
-
+            smoothDownload();
         }
     }
 
@@ -282,7 +286,6 @@ public class BookDetailFragment extends BaseFragment {
     public void onBookDetailReadNowEvent(OnBookDetailReadNowEvent event) {
         bookDetailBean = event.getBookDetailBean();
         BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
-        extraInfoBean.isWholeBook = bookDetailBean.isTryRead();
         bookDetailBean.setBookExtraInfoBean(extraInfoBean);
         tryDownload(bookDetailBean);
     }
@@ -346,16 +349,69 @@ public class BookDetailFragment extends BaseFragment {
         }
     }
 
+    private void smoothDownload() {
+        if (isWholeBook && isDataBaseHaveBook && new File(localPath).exists()) {
+            openBook(bookDetailBean.getName(), localPath);
+            return;
+        }
+
+        if (isWholeBook && DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
+            openBook(bookDetailBean.getName(), localPath);
+            return;
+        }
+
+        String path = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.getName();
+        if (path.equals(localPath)) {
+            if (bookDetailBean != null && DownLoadHelper.isDownloading(downloadTaskState)) {
+                ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_downloading));
+                return;
+            }
+            if (bookDetailBean != null && DownLoadHelper.isPause(downloadTaskState)) {
+                BookDownloadUtils.download(bookDetailBean,getShopDataBundle());
+                ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.book_detail_download_go_on));
+                return;
+            }
+        }
+
+        if (!bookDetailBean.isFluentRead()) {
+            ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.the_book_unsupported_fluent_read));
+            showPayDialog();
+            return;
+        }
+
+        if (!bookDetailBean.isUserCanFluentRead ()) {
+            ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.the_book_unsupported_fluent_read));
+            showPayDialog();
+            return;
+        }
+
+        if (bookDetailBean.isFree()) {
+            return;
+        }
+    }
+
+    private void openBook(String name, String localPath) {
+
+    }
+
+    private void showPayDialog() {
+
+    }
+
     private void tryDownload(BookDetailResultBean.Detail bookDetailBean) {
         if (bookDetailBean == null) {
             return;
         }
         if (isDataBaseHaveBook && new File(localPath).exists()) {
-            //TODO open the book
+            openBook(bookDetailBean.getName(), localPath);
             return;
         }
         if (DownLoadHelper.isDownloaded(downloadTaskState) && new File(localPath).exists()) {
-            //TODO open the book
+            openBook(bookDetailBean.getName(), localPath);
+            return;
+        }
+        if (!bookDetailBean.isTryRead()) {
+            ToastUtil.showToast(getContext(), getResources().getString(R.string.the_book_unsupported_try_read));
             return;
         }
         if (StringUtils.isNullOrEmpty(bookDetailBean.getTryEpubDownUrl())) {
@@ -425,6 +481,7 @@ public class BookDetailFragment extends BaseFragment {
         if (extraInfoBean != null) {
             localPath = extraInfoBean.localPath;
             isDataBaseHaveBook = DownLoadHelper.isDownloaded(extraInfoBean.downLoadState);
+            isWholeBook = extraInfoBean.isWholeBook;
         }
     }
 

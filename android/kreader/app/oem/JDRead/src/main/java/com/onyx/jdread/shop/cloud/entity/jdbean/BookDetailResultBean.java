@@ -102,10 +102,12 @@ public class BookDetailResultBean {
         private int thirdCatid1;
         private boolean tobFluentRead;
         private String tryEpubDownUrl;
+        private String downLoadUrl;
         private boolean tryRead;
         private int type;
         private int wordCount;
         private String edition;
+        private String orderId;
         private BookExtraInfoBean bookExtraInfoBean;
 
         public String getEdition() {
@@ -122,6 +124,22 @@ public class BookDetailResultBean {
 
         public void setBookExtraInfoBean(BookExtraInfoBean bookExtraInfoBean) {
             this.bookExtraInfoBean = bookExtraInfoBean;
+        }
+
+        public String getOrderId() {
+            return orderId;
+        }
+
+        public void setOrderId(String orderId) {
+            this.orderId = orderId;
+        }
+
+        public String getDownLoadUrl() {
+            return downLoadUrl;
+        }
+
+        public void setDownLoadUrl(String downLoadUrl) {
+            this.downLoadUrl = downLoadUrl;
         }
 
         public boolean isEBook() {

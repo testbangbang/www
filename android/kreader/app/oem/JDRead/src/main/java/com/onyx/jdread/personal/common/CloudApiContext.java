@@ -19,8 +19,8 @@ import okhttp3.OkHttpClient;
  */
 
 public class CloudApiContext {
-    public static final String JD_BOOK_SHOP_URL = "http://tob-gw.jd.com/";
-    public static final String JD_BASE_URL = "https://tob-gw.jd.com/";
+    public static final String JD_BOOK_SHOP_URL = "https://gw-e.jd.com/";
+    public static final String JD_BASE_URL = "https://gw-e.jd.com/";
 
     public static class NewBookDetail {
         public static final String FUNCTION_ID = "functionId";
