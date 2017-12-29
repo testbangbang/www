@@ -15,6 +15,7 @@ import com.onyx.android.sdk.data.PageRange;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
 import com.onyx.android.sdk.scribble.api.TouchHelper;
+import com.onyx.android.sdk.scribble.asyncrequest.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
@@ -47,6 +48,7 @@ public class NoteManager {
     private RequestManager requestManager = new RequestManager(Thread.NORM_PRIORITY);
     private TouchHelper touchHelper;
     private ReaderNoteDocument noteDocument = new ReaderNoteDocument();
+    private boolean renderBitmapDirty = false;
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
     private volatile SurfaceView surfaceView;
@@ -186,6 +188,14 @@ public class NoteManager {
         }
     }
 
+    public boolean isRenderBitmapDirty() {
+        return renderBitmapDirty;
+    }
+
+    public void setRenderBitmapDirty(boolean renderBitmapDirty) {
+        this.renderBitmapDirty = renderBitmapDirty;
+    }
+
     public Bitmap updateRenderBitmap(final Rect viewportSize) {
         renderBitmapWrapper.update(viewportSize.width(), viewportSize.height(), Bitmap.Config.ARGB_8888);
         return renderBitmapWrapper.getBitmap();
@@ -292,9 +302,9 @@ public class NoteManager {
     public void setCurrentShapeType(int type) {
         getNoteDrawingArgs().setCurrentShapeType(type);
         if (type == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
-            EpdController.setStrokeStyle(1);
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_BRUSH);
         } else {
-            EpdController.setStrokeStyle(0);
+            EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_PENCIL);
         }
         updateInUserErasingState();
         updateRenderByFrameworkState();

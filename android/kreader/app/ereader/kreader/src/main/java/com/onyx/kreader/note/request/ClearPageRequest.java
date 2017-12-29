@@ -23,6 +23,7 @@ public class ClearPageRequest extends ReaderBaseNoteRequest {
             noteManager.getNoteDocument().clearPage(getContext(), p.getRange(),
                     p.getSubPage());
         }
+        noteManager.setRenderBitmapDirty(true);
         renderVisiblePages(noteManager);
         getNoteDataInfo().setContentRendered(true);
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
