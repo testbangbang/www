@@ -18,6 +18,15 @@
         <item name="android:windowIsFloating">true</item>
     </style>
 
+    <style name="DottedLineStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">2dp</item>
+        <item name="android:background">@drawable/bg_dotted_line</item>
+        <item name="android:layout_marginLeft">@dimen/fragment_content_padding</item>
+        <item name="android:layout_marginRight">@dimen/fragment_content_padding</item>
+        <item name="android:layerType">software</item>
+    </style>
+
     <style name="RatingBarStyle" parent="Widget.AppCompat.RatingBar">
         <item name="android:progressDrawable">@drawable/book_detail_ratingbar</item>
         <item name="android:minHeight">@dimen/rating_bar_style_min_height</item>

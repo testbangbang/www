@@ -2,7 +2,7 @@ package com.onyx.jdread.common;
 
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.model.StackList;
-import com.onyx.jdread.personal.ui.MyFragment;
+import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
@@ -28,7 +28,7 @@ public class ViewConfig {
         //setting
         childViewInfo.put(SettingFragment.class.getName(), FunctionModule.SETTING);
         //personal
-        childViewInfo.put(MyFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
     }
 
     public static FunctionModule findChildViewParentId(String childViewName) {

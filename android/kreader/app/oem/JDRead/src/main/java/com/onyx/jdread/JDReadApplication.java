@@ -12,6 +12,8 @@ import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.DeviceReceiver;
+import com.onyx.android.sdk.utils.PreferenceManager;
+import com.onyx.android.sdk.utils.RxBroadcastReceiver;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
@@ -19,6 +21,7 @@ import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.DataBundle;
+import com.onyx.jdread.setting.utils.UpdateUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,6 +49,15 @@ public class JDReadApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         initConfig();
+        checkLocalUpdatePackage();
+    }
+
+    private void checkLocalUpdatePackage() {
+        int code = PreferenceManager.getIntValue(this, UpdateUtil.DOWNLOAD_UPDATE_CODE, UpdateUtil.DEFAULT_CODE);
+        if (code == UpdateUtil.UPDATE_CODE) {
+            UpdateUtil.deleteUpdateZipFile();
+            PreferenceManager.setIntValue(JDReadApplication.getInstance(), UpdateUtil.DOWNLOAD_UPDATE_CODE, UpdateUtil.DEFAULT_CODE);
+        }
     }
 
     private void initConfig() {
@@ -53,6 +65,9 @@ public class JDReadApplication extends MultiDexApplication {
         DataManager.init(instance, null);
         initFrescoLoader();
         PreferenceManager.init(instance);
+
+        OnyxDownloadManager.init(this.getApplicationContext());
+        OnyxDownloadManager.getInstance();
         initEventListener();
         initDownloadManager();
     }

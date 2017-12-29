@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ItemDeviceConfigBinding">
+
+        <import type="android.view.View" />
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
+        <variable
+            name="model"
+            type="com.onyx.jdread.setting.model.DeviceConfigData" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/config_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:text="@{model.configName}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_one_heading_font" />
+
+        <TextView
+            android:id="@+id/hour_format"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/device_config_hour_format_margin_left"
+            android:layout_toRightOf="@id/config_name"
+            android:text="@string/hour_format"
+            android:textSize="@dimen/level_two_heading_font"
+            android:textColor="@android:color/black"
+            android:visibility="@{model.hasToggle ? View.VISIBLE : View.GONE}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/device_config_clock_margin_left"
+            android:layout_toRightOf="@+id/hour_format"
+            android:text="@string/sample_clock"
+            android:textSize="@dimen/level_three_heading_font"
+            android:textColor="@android:color/black"
+            android:visibility="@{model.hasToggle ? View.VISIBLE : View.GONE}" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/item_device_config_arrow"
+            android:text="@{model.updateRecord}"
+            android:textSize="@dimen/level_three_heading_font"
+            android:textColor="@android:color/black"
+            android:visibility="@{StringUtils.isNullOrEmpty(model.updateRecord) ? View.GONE : View.VISIBLE}" />
+
+        <FrameLayout
+            android:id="@+id/item_device_config_arrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true">
+
+            <Switch
+                android:id="@+id/item_data_format"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="@{model.hasToggle ? View.VISIBLE : View.GONE}" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/ic_setting_more"
+                android:visibility="@{model.hasToggle ? View.GONE : View.VISIBLE}" />
+        </FrameLayout>
+    </RelativeLayout>
+</layout>

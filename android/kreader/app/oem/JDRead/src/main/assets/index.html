@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>文件上传</title>
+</head>
+<body>
+<form>
+    <label>选择文件：</label>
+    <input type="file" name="file"> <br>
+    <input type="button" value="上传">
+</form>
+<script type="text/javascript">
+     document.querySelector('input[type=button]').onclick = function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open('post', '/upload');
+        xhr.onload = function () {
+            console.log(xhr.responseText);
+        };
+        xhr.upload.onprogress = function (event) {
+            var percent = event.loaded / event.total * 100 + '%';
+            var percent = (event.loaded / event.total * 100).toFixed(2) + '%';
+            console.log(percent);
+            // document.querySelector('.step').style.width = percent;
+        };
+        var data = new FormData(document.querySelector('form'));
+        xhr.send(data);
+
+    }
+</script>
+</body>
+</html>

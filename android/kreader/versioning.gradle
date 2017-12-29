@@ -18,6 +18,12 @@ ext.gitHash = { path ->
     return hash
 }
 
+ext.gitCurrentTime = { path ->
+    String time = ('bash +x ./current_time_from_git.sh ' + path).execute().text.trim()
+    println('./current_time_from_git.sh ' + path + ' -> ' + time)
+    return time
+}
+
 ext.releaseChannel = { ->
     if (rootProject.hasProperty("releaseChannel")) {
         return rootProject.property("releaseChannel")
