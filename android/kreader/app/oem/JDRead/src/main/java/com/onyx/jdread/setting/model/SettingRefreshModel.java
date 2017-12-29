@@ -1,7 +1,5 @@
 package com.onyx.jdread.setting.model;
 
-import android.content.Context;
-
 import com.onyx.android.sdk.reader.dataprovider.LegacySdkDataUtils;
 import com.onyx.android.sdk.reader.device.ReaderDeviceManager;
 import com.onyx.android.sdk.utils.PreferenceManager;

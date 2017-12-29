@@ -50,4 +50,18 @@
     <integer name="show_menu_touch_two_region_top">100</integer>
     <integer name="show_menu_touch_two_region_right">972</integer>
     <integer name="show_menu_touch_two_region_bottom">1448</integer>
+
+    <integer name="book_shop_subject_row">1</integer>
+    <integer name="book_shop_subject_col">4</integer>
+    <integer name="toast_view_shadow_radius">0</integer>
+    <integer name="toast_view_shadow_dx">0</integer>
+    <integer name="toast_view_shadow_dy">0</integer>
+    <integer name="shop_banner_recycle_view_row">1</integer>
+    <integer name="shop_banner_recycle_view_col">2</integer>
+    <integer name="book_shop_recycle_view_space">8</integer>
+    <integer name="shop_category_recycle_view_row">2</integer>
+    <integer name="shop_category_recycle_view_col">2</integer>
+    <integer name="book_detail_recycle_view_space">10</integer>
+    <integer name="book_shop_comment_row">5</integer>
+    <integer name="book_shop_comment_col">1</integer>
 </resources>
