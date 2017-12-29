@@ -14,17 +14,17 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
  * Created by huxiaomao on 2017/12/22.
  */
 
-public class initFirstPageViewRequest extends ReaderBaseRequest {
+public class InitFirstPageViewRequest extends ReaderBaseRequest {
     private ReaderDataHolder readerDataHolder;
     private int width;
     private int height;
 
-    public initFirstPageViewRequest(ReaderDataHolder readerDataHolder) {
+    public InitFirstPageViewRequest(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
     }
 
     @Override
-    public initFirstPageViewRequest call() throws Exception {
+    public InitFirstPageViewRequest call() throws Exception {
         updateView();
         initPosition();
         RectF displayRect = new RectF(0, 0, width, height);
