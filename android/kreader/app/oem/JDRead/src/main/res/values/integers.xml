@@ -50,7 +50,7 @@
     <integer name="show_menu_touch_two_region_top">100</integer>
     <integer name="show_menu_touch_two_region_right">972</integer>
     <integer name="show_menu_touch_two_region_bottom">1448</integer>
-
+    <integer name="feedback_content_max_length">400</integer>
     <integer name="book_shop_subject_row">1</integer>
     <integer name="book_shop_subject_col">4</integer>
     <integer name="toast_view_shadow_radius">0</integer>

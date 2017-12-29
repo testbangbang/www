@@ -20,7 +20,6 @@ import com.onyx.android.sdk.utils.DeviceUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.LaboratoryFragment;
 import com.onyx.jdread.R;
 import com.onyx.jdread.action.InitFunctionBarAction;
 import com.onyx.jdread.adapter.FunctionBarAdapter;

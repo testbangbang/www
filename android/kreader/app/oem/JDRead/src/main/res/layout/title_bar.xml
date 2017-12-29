@@ -17,6 +17,8 @@
             style="@style/global_activities_back_btn_category_tittle"
             android:background="@drawable/imagebtn_bg"
             android:gravity="center_vertical"
+            android:onClick="@{()->titleModel.back()}"
+            android:drawablePadding="@dimen/title_bar_drawable_padding"
             android:text="@{titleModel.title}"
             android:clickable="true"
             android:drawableLeft="@mipmap/ic_read_back" />

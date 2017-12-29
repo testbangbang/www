@@ -62,6 +62,7 @@ public class SettingFragment extends BaseFragment {
             settingAdapter.setEvent(settingDataModel.getItemEvent());
             settingAdapter.setData(settingDataModel.getItemData());
         }
+        binding.setSettingModel(settingDataModel);
     }
 
     private void initView() {
@@ -74,7 +75,7 @@ public class SettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onWireLessEvent(WireLessEvent event) {
-        getViewEventCallBack().gotoView(WifiFragment.class.getName());
+        viewEventCallBack.gotoView(WifiFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -84,21 +85,21 @@ public class SettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRefreshEvent(RefreshEvent event) {
-
+        viewEventCallBack.gotoView(RefreshFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScreenEvent(ScreenEvent event) {
-
+        viewEventCallBack.gotoView(LockScreenFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLaboratoryEvent(LaboratoryEvent event) {
-
+        viewEventCallBack.gotoView(LaboratoryFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFeedbackEvent(FeedbackEvent event) {
-
+        viewEventCallBack.gotoView(HelpFragment.class.getName());
     }
 }

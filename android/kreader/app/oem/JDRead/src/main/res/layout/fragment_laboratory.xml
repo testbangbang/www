@@ -6,14 +6,14 @@
 
         <variable
             name="laboratoryModel"
-            type="com.onyx.jdread.LaboratoryModel" />
+            type="com.onyx.jdread.setting.model.LaboratoryModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:context="com.onyx.jdread.LaboratoryFragment">
+        tools:context="com.onyx.jdread.setting.ui.LaboratoryFragment">
 
         <include
             android:id="@+id/laboratory_title"
