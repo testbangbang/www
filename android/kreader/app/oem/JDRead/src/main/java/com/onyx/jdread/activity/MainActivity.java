@@ -140,6 +140,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchCurrentFragment(String childViewName) {
+        if(StringUtils.isNullOrEmpty(childViewName)){
+            return;
+        }
         if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(childViewName)) {
             return;
         }
@@ -149,8 +152,13 @@ public class MainActivity extends AppCompatActivity {
 
         transaction.replace(R.id.main_content_view, baseFragment);
         transaction.commitAllowingStateLoss();
-        functionBarModel.changeTabSelection(childViewName);
+        changeFunctionItem(childViewName);
         saveChildViewInfo(childViewName, baseFragment);
+    }
+
+    private void changeFunctionItem(String childViewName){
+        ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(childViewName);
+        functionBarModel.changeTabSelection(functionModule);
     }
 
     private void notifyChildViewChangeWindow() {
@@ -235,13 +243,22 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPushChildViewToStackEvent(PushChildViewToStackEvent event) {
-        ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(event.childClassName);
         switchCurrentFragment(event.childClassName);
+        ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(event.childClassName);
+        FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
+        if(functionBarItem != null){
+            functionBarItem.getStackList().push(event.childClassName);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
-        String childClassName = currentFragment.getClass().getName();
+        ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(currentChildViewName);
+        FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
+        if(functionBarItem != null){
+            String childClassName = functionBarItem.getStackList().popChildView();
+            switchCurrentFragment(childClassName);
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -251,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFunctionBarTabModel(FunctionBarItem event) {
-        functionBarModel.changeTabSelection(event.fragmentName.get());
+        functionBarModel.changeTabSelection(event.functionModule.get());
     }
 
     @Subscribe

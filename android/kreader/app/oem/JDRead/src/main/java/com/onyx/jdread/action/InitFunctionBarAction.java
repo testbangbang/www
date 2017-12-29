@@ -4,6 +4,7 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.common.ViewConfig;
 import com.onyx.jdread.library.action.BaseAction;
 import com.onyx.jdread.library.model.DataBundle;
 import com.onyx.jdread.library.ui.LibraryFragment;
@@ -27,13 +28,13 @@ public class InitFunctionBarAction extends BaseAction<DataBundle> {
     @Override
     public void execute(DataBundle dataBundle, RxCallback baseCallback) {
         functionBarModel.itemModels.clear();
-        functionBarModel.itemModels.add(new FunctionBarItem(LibraryFragment.class.getName(), dataBundle.getAppContext().getString(R.string.library_name), R.mipmap.ic_shelf));
-        functionBarModel.itemModels.add(new FunctionBarItem(StoreFragment.class.getName(), dataBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_shop));
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.LIBRARY,LibraryFragment.class.getName(), dataBundle.getAppContext().getString(R.string.library_name), R.mipmap.ic_shelf));
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.SHOP,StoreFragment.class.getName(), dataBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_shop));
         if (PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false)) {
-            functionBarModel.itemModels.add(new FunctionBarItem("back", dataBundle.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo));
+            functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.BACK,"back", dataBundle.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo));
         }
-        functionBarModel.itemModels.add(new FunctionBarItem(SettingFragment.class.getName(), dataBundle.getAppContext().getString(R.string.setting_name), R.mipmap.ic_setting));
-        functionBarModel.itemModels.add(new FunctionBarItem(PersonalFragment.class.getName(), dataBundle.getAppContext().getString(R.string.personal_name), R.mipmap.ic_me));
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.SETTING,SettingFragment.class.getName(), dataBundle.getAppContext().getString(R.string.setting_name), R.mipmap.ic_setting));
+        functionBarModel.itemModels.add(new FunctionBarItem(ViewConfig.FunctionModule.PERSONAL,PersonalFragment.class.getName(), dataBundle.getAppContext().getString(R.string.personal_name), R.mipmap.ic_me));
         if (baseCallback != null) {
             baseCallback.onNext(functionBarModel);
         }

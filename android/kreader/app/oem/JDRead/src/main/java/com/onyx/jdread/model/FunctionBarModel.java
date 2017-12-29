@@ -3,6 +3,9 @@ package com.onyx.jdread.model;
 import android.databinding.ObservableArrayList;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableList;
+import android.util.Log;
+
+import com.onyx.jdread.common.ViewConfig;
 
 import java.util.Observable;
 
@@ -27,9 +30,18 @@ public class FunctionBarModel extends Observable {
         this.isShow.set(isShow);
     }
 
-    public void changeTabSelection(String selectedTab) {
+    public void changeTabSelection(ViewConfig.FunctionModule selectedTab) {
         for (FunctionBarItem itemModel : itemModels) {
-            itemModel.setSelected(selectedTab.equals(itemModel.fragmentName.get()));
+            itemModel.setSelected(selectedTab.equals(itemModel.functionModule.get()));
         }
+    }
+
+    public FunctionBarItem findFunctionGroup(ViewConfig.FunctionModule functionModule){
+        for (FunctionBarItem itemModel : itemModels) {
+            if(functionModule.equals(itemModel.functionModule.get())){
+                return itemModel;
+            }
+        }
+        return null;
     }
 }
