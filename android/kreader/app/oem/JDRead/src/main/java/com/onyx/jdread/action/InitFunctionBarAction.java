@@ -11,7 +11,7 @@ import com.onyx.jdread.model.FunctionBarItem;
 import com.onyx.jdread.model.FunctionBarModel;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
-import com.onyx.jdread.shop.ui.StoreFragment;
+import com.onyx.jdread.shop.ui.ShopFragment;
 
 /**
  * Created by hehai on 17-12-11.
@@ -28,7 +28,7 @@ public class InitFunctionBarAction extends BaseAction<DataBundle> {
     public void execute(DataBundle dataBundle, RxCallback baseCallback) {
         functionBarModel.itemModels.clear();
         functionBarModel.itemModels.add(new FunctionBarItem(LibraryFragment.class.getName(), dataBundle.getAppContext().getString(R.string.library_name), R.mipmap.ic_shelf));
-        functionBarModel.itemModels.add(new FunctionBarItem(StoreFragment.class.getName(), dataBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_shop));
+        functionBarModel.itemModels.add(new FunctionBarItem(ShopFragment.class.getName(), dataBundle.getAppContext().getString(R.string.shop_name), R.mipmap.ic_shop));
         if (PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false)) {
             functionBarModel.itemModels.add(new FunctionBarItem("back", dataBundle.getAppContext().getString(R.string.back_name), R.mipmap.ic_undo));
         }

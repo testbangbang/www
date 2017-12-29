@@ -25,6 +25,8 @@ public interface DataProviderBase {
 
     void saveMetadata(final Context context, final Metadata metadata);
 
+    void updateMetadataExtraAttributes(final Context context, final Metadata metadata);
+
     QueryResult<Metadata> findMetadataResultByQueryArgs(Context context, QueryArgs queryArgs);
 
     List<Metadata> findMetadataByQueryArgs(final Context context, final QueryArgs queryArgs);

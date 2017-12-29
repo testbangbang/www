@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:bind="http://schemas.android.com/tools">
+
+    <data class="DialogLoadingBinding">
+    </data>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/loading_dialog_min_height"
+        android:minWidth="@dimen/loading_dialog_min_width"
+        android:orientation="vertical"
+        android:layout_margin="@dimen/loading_dialog_margin"
+        android:layout_gravity="center"
+        android:background="@drawable/rectangle_stroke"
+        android:gravity="center">
+
+        <com.onyx.android.sdk.ui.view.EllipsizingTextView
+            android:id="@+id/dialog_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:text="@string/loading"
+            android:ellipsize="end"
+            android:paddingLeft="@dimen/loading_dialog_text_padding_left_and_right"
+            android:paddingRight="@dimen/loading_dialog_text_padding_left_and_right"
+            android:textColor="@android:color/black"
+            android:gravity="center"
+            android:textSize="@dimen/level_two_heading_font"/>
+
+        <ImageView
+            android:layout_marginTop="@dimen/loading_dialog_image_margin_top"
+            android:layout_width="@dimen/loading_dialog_image_width_and_height"
+            android:layout_height="@dimen/loading_dialog_image_width_and_height"
+            android:src="@drawable/loading_3"
+            android:background="@drawable/imagebtn_bg"
+            android:id="@+id/image_loading"/>
+
+    </LinearLayout>
+
+</layout>

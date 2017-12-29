@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data class="CommentItemBinding">
+
+        <variable
+            name="commentEntity"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity" />
+    </data>
+
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left|top">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{commentEntity.nickname}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <RatingBar
+                android:id="@+id/book_comment_rating_bar"
+                style="@style/RatingBarStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:isIndicator="true"
+                android:numStars="5"
+                android:rating="@{commentEntity.score}" />
+
+        </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/book_detail_margin"
+            android:ellipsize="end"
+            android:lines="2"
+            android:text="@{commentEntity.contents}"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_three_heading_font" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dashed_line_height"
+            android:layout_marginBottom="@dimen/book_detail_margin"
+            android:layout_marginTop="@dimen/book_detail_margin"
+            android:background="@mipmap/ic_dashed_line" />
+
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
+
+</layout>

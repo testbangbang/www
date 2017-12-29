@@ -74,6 +74,14 @@ public class CloudDataProvider implements DataProviderBase {
         metadata.save();
     }
 
+    @Override
+    public void updateMetadataExtraAttributes(final Context context, final Metadata metadata) {
+        metadata.beforeSave();
+        Metadata findMeta = findMetadataByCloudId(metadata.getCloudId());
+        metadata.setId(findMeta.getId());
+        metadata.update();
+    }
+
     private Metadata findMetadataByCloudId(String cloudId) {
         Metadata metadata = new Select().from(CloudMetadata.class).where(CloudMetadata_Table.cloudId.eq(cloudId)).querySingle();
         return MetadataUtils.ensureObject(metadata);
