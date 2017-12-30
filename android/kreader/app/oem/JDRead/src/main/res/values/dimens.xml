@@ -158,4 +158,9 @@
     <dimen name="user_login_register_contain_margin">20dp</dimen>
     <dimen name="user_login_register_button_padding">5dp</dimen>
     <dimen name="user_login_widget_padding">2dp</dimen>
+    <dimen name="all_category_title_shadow_margin_top">2dp</dimen>
+    <dimen name="all_category_title_shadow_margin_width">42dp</dimen>
+    <dimen name="all_category_title_shadow_margin_height">2dp</dimen>
+    <dimen name="recycler_view_all_categorys_margin_top">10dp</dimen>
+    <dimen name="all_category_type_margin_top">15dp</dimen>
 </resources>

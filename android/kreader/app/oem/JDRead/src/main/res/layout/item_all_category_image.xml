@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:bind="http://schemas.android.com/apk/res-auto">
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
-    <data class="SubjectModelItemBinding">
+    <data class="AllCategoryImageItemBinding">
 
         <variable
-            name="bookBean"
-            type="com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean" />
+            name="categoryListBean"
+            type="com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean" />
+
     </data>
 
-    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:padding="@dimen/subject_model_item_padding">
+        android:orientation="horizontal"
+        android:padding="@dimen/banner_subject_model_item_padding">
 
         <LinearLayout
-            android:id="@+id/cover_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -27,21 +28,21 @@
                 android:layout_width="@dimen/subject_model_item_width"
                 android:layout_height="@dimen/subject_model_item_height"
                 android:padding="@dimen/rectangle_stroke_width"
-                android:scaleType="fitXY"
-                bind:cover="@{bookBean.imageUrl}" />
+                android:scaleType="fitXY"/>
 
             <TextView
                 android:id="@+id/textView_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:background="@drawable/text_no_stoke_background"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:lines="2"
-                android:text="@{bookBean.name}"
-                android:textSize="@dimen/level_four_heading_font" />
+                android:lines="1"
+                android:text="@{categoryListBean.shortName}"
+                android:textSize="@dimen/level_three_heading_font" />
 
         </LinearLayout>
 
-    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+    </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
 </layout>

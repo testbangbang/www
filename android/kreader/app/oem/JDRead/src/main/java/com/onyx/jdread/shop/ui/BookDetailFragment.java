@@ -58,7 +58,7 @@ import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.event.OnBookDetailReadNowEvent;
-import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
+import com.onyx.jdread.shop.event.OnTopBackEvent;
 import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
 import com.onyx.jdread.shop.event.OnCopyrightEvent;
 import com.onyx.jdread.shop.event.OnDownloadWholeBookEvent;
@@ -154,9 +154,9 @@ public class BookDetailFragment extends BaseFragment {
         buyBookButton = bookDetailBinding.bookDetailInfo.bookDetailBuyBook;
         initDividerItemDecoration();
         setRecommendRecycleView();
-        getBookDetailViewModel().setTitle(getString(R.string.title_bar_title_book_detail));
-        getBookDetailViewModel().setPageTag(PageTagConstants.BOOK_DETAIL);
-        getBookDetailViewModel().setShowRightText(false);
+        getBookDetailViewModel().getTitleBarViewModel().leftText = getString(R.string.title_bar_title_book_detail);
+        getBookDetailViewModel().getTitleBarViewModel().pageTag = PageTagConstants.BOOK_DETAIL;
+        getBookDetailViewModel().getTitleBarViewModel().showRightText = false;
     }
 
     private void setRecommendRecycleView() {
@@ -228,7 +228,7 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailTopBackEvent(OnBookDetailTopBackEvent event) {
+    public void onBookDetailTopBackEvent(OnTopBackEvent event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }

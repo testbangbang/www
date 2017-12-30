@@ -28,6 +28,7 @@ import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectAdapter;
 import com.onyx.jdread.shop.event.OnBookItemClickEvent;
+import com.onyx.jdread.shop.event.OnCategoryViewClick;
 import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnShopBakcTopClick;
 import com.onyx.jdread.shop.model.BookShopViewModel;
@@ -191,7 +192,7 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void setRecyclerViewCategory() {
-        CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus());
+        CategorySubjectAdapter adapter = new CategorySubjectAdapter(getEventBus(),false);
         PageRecyclerView recyclerView = shopTwoBinding.recyclerViewCategorySubject;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
@@ -281,6 +282,13 @@ public class ShopFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(OnRankViewClick event) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCategoryViewClick(OnCategoryViewClick event) {
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(AllCategoryFragment.class.getName());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

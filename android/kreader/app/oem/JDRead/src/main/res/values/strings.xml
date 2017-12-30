@@ -173,4 +173,8 @@
     <string name="the_book_unsupported_fluent_read">The book unsupported fluent read</string>
     <string name="you_unsupported_fluent_read">You unsupported fluent read</string>
     <string name="add_to_smooth_list_failed">Add to smooth list failed</string>
+    <string name="all_category_title_publish">Publish</string>
+    <string name="all_category_title_boy">Boy</string>
+    <string name="all_category_title_girl">Girl</string>
+    <string name="all_category">All Category</string>
 </resources>

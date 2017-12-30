@@ -6,8 +6,6 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.event.OnBookDetailReadNowEvent;
-import com.onyx.jdread.shop.event.OnBookDetailTopBackEvent;
-import com.onyx.jdread.shop.event.OnBookDetailTopRightEvent;
 import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
 import com.onyx.jdread.shop.event.OnCopyrightEvent;
 import com.onyx.jdread.shop.event.OnDownloadWholeBookEvent;
@@ -30,25 +28,10 @@ public class BookDetailViewModel extends BaseObservable {
     private List<CommentEntity> commentItems;
     private int currentPage;
     private int totalPage;
-    private int pageTag;
-    private String title;
-    private String rightText;
-    private boolean isShowRightText;
+    private TitleBarViewModel titleBarViewModel;
 
-    public boolean isShowRightText() {
-        return isShowRightText;
-    }
-
-    public void setShowRightText(boolean showRightText) {
-        isShowRightText = showRightText;
-    }
-
-    public String getRightText() {
-        return rightText;
-    }
-
-    public void setRightText(String rightText) {
-        this.rightText = rightText;
+    public TitleBarViewModel getTitleBarViewModel() {
+        return titleBarViewModel;
     }
 
     public List<CommentEntity> getCommentItems() {
@@ -78,22 +61,6 @@ public class BookDetailViewModel extends BaseObservable {
         notifyChange();
     }
 
-    public int getPageTag() {
-        return pageTag;
-    }
-
-    public void setPageTag(int pageTag) {
-        this.pageTag = pageTag;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public List<ResultBookBean> getRecommendList() {
         return recommendList;
     }
@@ -105,6 +72,8 @@ public class BookDetailViewModel extends BaseObservable {
 
     public BookDetailViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
+        titleBarViewModel = new TitleBarViewModel();
+        titleBarViewModel.setEventBus(eventBus);
     }
 
     public EventBus getEventBus() {
@@ -118,14 +87,6 @@ public class BookDetailViewModel extends BaseObservable {
     public void setBookDetailResultBean(BookDetailResultBean bookDetailResultBean) {
         this.bookDetailResultBean = bookDetailResultBean;
         notifyChange();
-    }
-
-    public void onTopBackClick() {
-        getEventBus().post(new OnBookDetailTopBackEvent(pageTag));
-    }
-
-    public void onTopRightClick() {
-        getEventBus().post(new OnBookDetailTopRightEvent(pageTag));
     }
 
     public void onNowReadClick() {
