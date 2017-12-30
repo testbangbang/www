@@ -11,7 +11,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.PersonalBinding;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
 import com.onyx.jdread.personal.event.GiftCenterEvent;
@@ -20,7 +20,7 @@ import com.onyx.jdread.personal.event.PersonalBookEvent;
 import com.onyx.jdread.personal.event.PersonalNoteEvent;
 import com.onyx.jdread.personal.event.PersonalTaskEvent;
 import com.onyx.jdread.personal.event.ReadPreferenceEvent;
-import com.onyx.jdread.personal.model.PersonalBundle;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
 
 import org.greenrobot.eventbus.Subscribe;
@@ -40,23 +40,33 @@ public class PersonalFragment extends BaseFragment {
         binding = (PersonalBinding) DataBindingUtil.inflate(inflater, R.layout.fragment_personal, container, false);
         initView();
         initData();
+        initListener();
         return binding.getRoot();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        PersonalBundle.getBundle().getEventBus().register(this);
+        PersonalDataBundle.getInstance().getEventBus().register(this);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        PersonalBundle.getBundle().getEventBus().unregister(this);
+        PersonalDataBundle.getInstance().getEventBus().unregister(this);
+    }
+
+    private void initListener() {
+        binding.personalInformation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewEventCallBack.gotoView(PersonalExperienceFragment.class.getSimpleName());
+            }
+        });
     }
 
     private void initData() {
-        PersonalModel personalModel = PersonalBundle.getBundle().getPersonalModel();
+        PersonalModel personalModel = PersonalDataBundle.getInstance().getPersonalModel();
         if (personalAdapter != null) {
             personalAdapter.setData(personalModel.getPersonalData(), personalModel.getEvents());
         }
@@ -65,16 +75,18 @@ public class PersonalFragment extends BaseFragment {
     private void initView() {
         binding.personalRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         binding.personalRecycler.addItemDecoration(new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL));
-        personalAdapter = new PersonalAdapter(PersonalBundle.getBundle().getEventBus());
+        personalAdapter = new PersonalAdapter(PersonalDataBundle.getInstance().getEventBus());
         binding.personalRecycler.setAdapter(personalAdapter);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGiftCenterEvent(GiftCenterEvent event) {
+        viewEventCallBack.gotoView(GiftCenterFragment.class.getSimpleName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPersonalAccountEvent(PersonalAccountEvent event) {
+        viewEventCallBack.gotoView(PersonalAccountFragment.class.getSimpleName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

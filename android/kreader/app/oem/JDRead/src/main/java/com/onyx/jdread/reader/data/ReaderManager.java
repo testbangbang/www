@@ -22,12 +22,6 @@ public class ReaderManager {
     }
 
     public static Reader getReader(final DocumentInfo documentInfo) {
-        Reader reader = readerHashMap.get(documentInfo.getBookSingleFlags());
-        if (reader == null) {
-            reader = new Reader(documentInfo);
-            readerHashMap.put(documentInfo.getBookSingleFlags(), reader);
-        }
-        return reader;
+        return new Reader(documentInfo);
     }
-
 }

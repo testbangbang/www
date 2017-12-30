@@ -17,6 +17,8 @@
             layout="@layout/setting_title_bar"/>
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:paddingLeft="@dimen/fragment_content_padding"
+            android:paddingRight="@dimen/fragment_content_padding"
             android:id="@+id/wifi_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>

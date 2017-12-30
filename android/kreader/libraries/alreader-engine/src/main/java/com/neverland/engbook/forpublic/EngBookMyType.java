@@ -170,7 +170,8 @@ public class EngBookMyType {
 		OPENBOOK_FULLAFTERPARTIAL(11),
 		CREATEDEBUG(12),
 		FIND(13),
-		NEWCALCPAGES(14);
+		PARSER_AFTER_DATA(14),
+		NEWCALCPAGES(15);
 		
 		private int numVal;
 		TAL_THREAD_TASK(int numVal) {
@@ -190,7 +191,8 @@ public class EngBookMyType {
 		OPENBOOK_FULLAFTERPARTIAL(11),
 		CREATEDEBUG(12),
 		FIND(13),
-		NEWCALCPAGES(14);
+		NEWCALCPAGES(14),
+		PARSER_AFTER(15);
 		
 		private int numVal;
 		TAL_NOTIFY_ID(int numVal) {

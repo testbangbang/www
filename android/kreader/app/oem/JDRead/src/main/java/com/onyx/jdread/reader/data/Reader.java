@@ -19,6 +19,10 @@ public class Reader {
         this.readerTouchHelper = new ReaderTouchHelper();
     }
 
+    public void init(ReaderDataHolder readerDataHolder){
+        readerTouchHelper.setReaderDataHolder(readerDataHolder);
+    }
+
     public ReaderHelper getReaderHelper() {
         return readerHelper;
     }

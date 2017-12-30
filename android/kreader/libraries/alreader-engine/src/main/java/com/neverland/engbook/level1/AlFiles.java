@@ -46,6 +46,7 @@ public abstract class AlFiles {
 	public static long			time_load2;
 	protected AlFiles			parent = null;
 	String				ident;
+	public String applicationDirectory;
 
 	public AlFiles getParent() {
 		return parent;
@@ -562,4 +563,7 @@ public abstract class AlFiles {
 	
 	abstract protected int getBuffer(final int pos, byte[] dst, int cnt);
 
+	public String getFileMD5(){
+		return null;
+	}
 }

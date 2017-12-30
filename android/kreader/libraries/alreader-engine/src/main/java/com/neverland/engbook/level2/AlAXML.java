@@ -364,8 +364,7 @@ public abstract class AlAXML extends AlFormat {
 			}
 			if (parText.length > 0) {
 				parText.add(ch);
-
-				size++;
+				customSize++;
 				parText.positionE = allState.start_position;
 				parText.haveLetter = parText.haveLetter || (ch != 0xa0 && ch != 0x20
 						&& (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
@@ -379,13 +378,13 @@ public abstract class AlAXML extends AlFormat {
 
 				parText.paragraph = styleStack.getActualParagraph();
 				parText.prop = styleStack.getActualProp();
-				parText.sizeStart = size;
+				parText.sizeStart = customSize;
 				parText.tableStart = currentTable.start;
 				parText.tableCounter = currentTable.counter;
 				parText.level = styleStack.position;
 
 				parText.haveLetter = (ch != 0xa0 && (ch & AlStyles.STYLE_MASK_4CODECONVERT) != AlStyles.STYLE_BASE_4CODECONVERT);
-				size++;
+				customSize++;
 
 				parText.add(ch);
 			}

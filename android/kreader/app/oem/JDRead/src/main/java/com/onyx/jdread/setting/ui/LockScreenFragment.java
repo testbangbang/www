@@ -12,12 +12,15 @@ import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.LockScreenBinding;
 import com.onyx.jdread.setting.adapter.LockScreenAdapter;
+import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingLockScreenModel;
 import com.onyx.jdread.setting.model.SettingTitleModel;
+
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * Created by li on 2017/12/21.
@@ -68,5 +71,22 @@ public class LockScreenFragment extends BaseFragment {
         if (lockScreenAdapter != null) {
             lockScreenAdapter.setTimes(settingLockScreenModel.getLockScreenTimes(), settingLockScreenModel.getLockScreenValues(), settingLockScreenModel.getCurrentTime());
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        SettingBundle.getInstance().getEventBus().register(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        SettingBundle.getInstance().getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void onBackToSettingFragment(BackToSettingFragmentEvent event) {
+        viewEventCallBack.gotoView(SettingFragment.class.getName());
     }
 }

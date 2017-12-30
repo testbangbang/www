@@ -2,7 +2,7 @@ package com.onyx.jdread.shop.cloud.cache;
 
 import android.util.Log;
 
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.Constants;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

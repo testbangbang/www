@@ -12,7 +12,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
  * Created by huxiaomao on 2017/12/21.
  */
 
-public class ParserOpenDocumentInfoAction extends BaseAction {
+public class ParserOpenDocumentInfoAction extends BaseReaderAction {
     private Intent intent;
     private DocumentInfo documentInfo;
     public ParserOpenDocumentInfoAction(Intent intent) {

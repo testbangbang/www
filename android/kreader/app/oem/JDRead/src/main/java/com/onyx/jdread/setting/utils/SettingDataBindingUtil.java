@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 public class SettingDataBindingUtil {
 
-    @BindingAdapter({"cover"})
+    @BindingAdapter({"settingCover"})
     public static void setSettingImage(ImageView imageView, int res) {
         imageView.setImageResource(res);
     }

@@ -6,7 +6,6 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.OpenDocumentFailResultEvent;
-import com.onyx.jdread.reader.event.OpenDocumentSuccessResultEvent;
 import com.onyx.jdread.reader.request.OpenDocumentRequest;
 
 import org.greenrobot.eventbus.EventBus;
@@ -15,7 +14,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by huxiaomao on 17/11/13.
  */
 
-public class OpenDocumentAction extends BaseAction {
+public class OpenDocumentAction extends BaseReaderAction {
     private ReaderDataHolder readerDataHolder;
 
     public OpenDocumentAction(ReaderDataHolder readerDataHolder) {
@@ -40,8 +39,8 @@ public class OpenDocumentAction extends BaseAction {
     }
 
     private void analysisOpenDocumentSuccessResult(){
-        OpenDocumentSuccessResultEvent event = new OpenDocumentSuccessResultEvent();
-        EventBus.getDefault().post(event);
+        InitPageViewAction createPageViewAction = new InitPageViewAction();
+        createPageViewAction.execute(readerDataHolder);
     }
 
     private void analysisOpenDocumentErrorResult(Throwable throwable) {

@@ -19,15 +19,13 @@ import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.SelectionMode;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.SinglePageRecyclerView;
-import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.StringUtils;
-import com.onyx.android.sdk.utils.ViewDocumentUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLibraryBinding;
-import com.onyx.jdread.event.ModifyLibraryDataEvent;
+import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.LibraryDeleteAction;
 import com.onyx.jdread.library.action.LibraryMoveToAction;
 import com.onyx.jdread.library.action.LibraryRenameAction;
@@ -51,6 +49,8 @@ import com.onyx.jdread.library.model.LibraryViewDataModel;
 import com.onyx.jdread.library.model.PageIndicatorModel;
 import com.onyx.jdread.library.view.MenuPopupWindow;
 import com.onyx.jdread.library.view.SingleItemManageDialog;
+import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.common.OpenBookHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -475,9 +475,9 @@ public class LibraryFragment extends BaseFragment {
         if (!file.exists()) {
             return;
         }
-        ActivityUtil.startActivitySafely(getContext().getApplicationContext(),
-                ViewDocumentUtils.viewActionIntentWithMimeType(file),
-                ViewDocumentUtils.getReaderComponentName(getContext().getApplicationContext()));
+        DocumentInfo documentInfo = new DocumentInfo();
+        documentInfo.setBookPath(filePath);
+        OpenBookHelper.openBook(getContext(), documentInfo);
     }
 
     private void processMultiModeItemClick(DataModel dataModel) {

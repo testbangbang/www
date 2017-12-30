@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="feedbackModel"
+            type="com.onyx.jdread.setting.model.FeedbackModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.ui.FeedbackFragment">
+
+        <include
+            android:id="@+id/feedback_title"
+            layout="@layout/title_bar" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/feedback_content_height"
+                android:layout_marginLeft="@dimen/fragment_content_padding"
+                android:layout_marginRight="@dimen/fragment_content_padding"
+                android:background="@null"
+                android:gravity="left|top"
+                android:hint="@string/feedback_content_hint"
+                android:inputType="textMultiLine"
+                android:maxLength="@integer/feedback_content_max_length"
+                android:text="@={feedbackModel.feedback}" />
+
+            <View style="@style/DottedLineStyle" />
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/fragment_content_padding"
+                android:layout_marginRight="@dimen/fragment_content_padding"
+                android:background="@null"
+                android:inputType="phone"
+                android:padding="@dimen/fragment_content_padding"
+                android:singleLine="true"
+                android:text="@={feedbackModel.phone}"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <View style="@style/DottedLineStyle" />
+
+            <TextView
+                android:layout_width="@dimen/feedback_commit_text_width"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fragment_content_padding"
+                android:background="@drawable/retangle_stroke_selector"
+                android:clickable="true"
+                android:gravity="center"
+                android:onClick="@{()->feedbackModel.commitFeedback()}"
+                android:padding="@dimen/button_padding"
+                android:text="@string/commit"
+                android:textSize="@dimen/level_two_heading_font" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</layout>

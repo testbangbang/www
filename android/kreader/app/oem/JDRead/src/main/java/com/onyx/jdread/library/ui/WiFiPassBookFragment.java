@@ -8,11 +8,14 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentWifiPassBookBinding;
+import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
 import com.onyx.jdread.library.fileserver.FileServer;
 import com.onyx.jdread.library.model.FileServerModel;
 import com.onyx.jdread.library.request.RxFileServerAddressRequest;
+
+import org.greenrobot.eventbus.Subscribe;
 
 import java.io.IOException;
 
@@ -44,6 +47,7 @@ public class WiFiPassBookFragment extends BaseFragment {
     @Override
     public void onStart() {
         super.onStart();
+        JDReadApplication.getDataBundle().getEventBus().register(this);
         try {
             server.start();
             loadData();
@@ -66,5 +70,11 @@ public class WiFiPassBookFragment extends BaseFragment {
     public void onStop() {
         super.onStop();
         server.stop();
+        JDReadApplication.getDataBundle().getEventBus().unregister(this);
+    }
+
+    @Subscribe
+    public void onBackToLibraryFragment(BackToLibraryFragmentEvent event){
+        viewEventCallBack.gotoView(LibraryFragment.class.getName());
     }
 }

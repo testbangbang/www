@@ -5,8 +5,8 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.Constants;
-import com.onyx.jdread.common.CommonUtils;
+import com.onyx.jdread.main.common.Constants;
+import com.onyx.jdread.main.common.CommonUtils;
 
 import java.io.IOException;
 import java.nio.charset.Charset;

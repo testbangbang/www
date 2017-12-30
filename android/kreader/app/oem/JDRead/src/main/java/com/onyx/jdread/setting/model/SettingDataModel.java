@@ -2,6 +2,9 @@ package com.onyx.jdread.setting.model;
 
 import android.content.res.TypedArray;
 import android.databinding.BaseObservable;
+import android.databinding.Observable;
+import android.databinding.ObservableField;
+import android.os.Build;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
@@ -23,6 +26,9 @@ import java.util.Map;
 
 public class SettingDataModel extends BaseObservable {
     private List<SettingItemData> itemData = new ArrayList<>();
+    public final ObservableField<String> deviceModel = new ObservableField<>();
+    public final ObservableField<String> deviceVersion = new ObservableField<>();
+    public final ObservableField<String> deviceSerial = new ObservableField<>();
     private Map<String, Object> itemEvent = new HashMap<String, Object>(){
         {
             put(JDReadApplication.getInstance().getResources().getString(R.string.wireless_network), new WireLessEvent());
@@ -47,6 +53,17 @@ public class SettingDataModel extends BaseObservable {
     }
 
     public void loadSettingData() {
+        loadSettingItem();
+        loadDeviceInfo();
+    }
+
+    private void loadDeviceInfo() {
+        deviceModel.set(Build.MODEL);
+        deviceVersion.set(String.format(JDReadApplication.getInstance().getString(R.string.device_setting_version_number),Build.DISPLAY));
+        deviceSerial.set(String.format(JDReadApplication.getInstance().getString(R.string.device_setting_serial_number),Build.DISPLAY));
+    }
+
+    private void loadSettingItem() {
         String[] settingName = JDReadApplication.getInstance().getResources().getStringArray(R.array.setting_content);
         TypedArray typedArray = JDReadApplication.getInstance().getResources().obtainTypedArray(R.array.setting_drawables);
         int length = typedArray.length();
