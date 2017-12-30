@@ -12,17 +12,18 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
 public class SettingTypefaceAction extends BaseAction {
     private String typefacePath;
+    private ReaderTextStyle style;
 
-    public SettingTypefaceAction(String typefacePath) {
+    public SettingTypefaceAction(ReaderTextStyle style, String typefacePath) {
         this.typefacePath = typefacePath;
+        this.style = style;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        ReaderTextStyle style = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
         style.setFontFace(typefacePath);
 
-        new SettingTextStyleRequest(readerDataHolder).execute(new RxCallback() {
+        new SettingTextStyleRequest(readerDataHolder, style).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
             }

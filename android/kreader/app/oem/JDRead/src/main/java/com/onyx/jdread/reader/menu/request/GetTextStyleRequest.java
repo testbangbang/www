@@ -8,19 +8,21 @@ import com.onyx.jdread.reader.request.ReaderBaseRequest;
  * Created by huxiaomao on 2017/12/30.
  */
 
-public class SettingTextStyleRequest extends ReaderBaseRequest {
+public class GetTextStyleRequest extends ReaderBaseRequest {
     private ReaderDataHolder readerDataHolder;
     private ReaderTextStyle style;
 
-    public SettingTextStyleRequest(ReaderDataHolder readerDataHolder,ReaderTextStyle style) {
+    public GetTextStyleRequest(ReaderDataHolder readerDataHolder) {
         this.readerDataHolder = readerDataHolder;
-        this.style = style;
     }
 
     @Override
-    public SettingTextStyleRequest call() throws Exception {
-        readerDataHolder.getReader().getReaderHelper().getTextStyleManager().setStyle(style);
-        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
+    public GetTextStyleRequest call() throws Exception {
+        style = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
         return this;
+    }
+
+    public ReaderTextStyle getStyle() {
+        return style;
     }
 }

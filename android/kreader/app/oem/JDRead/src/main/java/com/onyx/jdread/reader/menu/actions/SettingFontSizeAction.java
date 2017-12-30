@@ -12,19 +12,21 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
 public class SettingFontSizeAction extends BaseAction {
     private int fontSize;
+    private ReaderTextStyle style;
 
-    public SettingFontSizeAction(int fontSize) {
+    public SettingFontSizeAction(ReaderTextStyle style,int fontSize) {
         this.fontSize = fontSize;
+        this.style = style;
     }
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        ReaderTextStyle style = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
         ReaderTextStyle.SPUnit oldFontSize = style.getFontSize();
         oldFontSize.setValue(fontSize);
-        new SettingTextStyleRequest(readerDataHolder).execute(new RxCallback() {
+        new SettingTextStyleRequest(readerDataHolder,style).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
+
             }
 
             @Override

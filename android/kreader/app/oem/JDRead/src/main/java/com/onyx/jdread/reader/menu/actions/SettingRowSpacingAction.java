@@ -12,17 +12,18 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
 public class SettingRowSpacingAction extends BaseAction {
     private int lineSpacing;
+    private ReaderTextStyle style;
 
-    public SettingRowSpacingAction(int lineSpacing) {
+    public SettingRowSpacingAction(ReaderTextStyle style,int lineSpacing) {
         this.lineSpacing = lineSpacing;
+        this.style = style;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        ReaderTextStyle style = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
         ReaderTextStyle.Percentage oldLineSpacing = style.getLineSpacing();
         oldLineSpacing.setPercent(lineSpacing);
-        new SettingTextStyleRequest(readerDataHolder).execute(new RxCallback() {
+        new SettingTextStyleRequest(readerDataHolder,style).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
             }

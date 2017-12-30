@@ -12,21 +12,22 @@ import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
 public class SettingLeftAndRightSpacingAction extends BaseAction {
     private int margin;
+    private ReaderTextStyle style;
 
-    public SettingLeftAndRightSpacingAction(int margin) {
+    public SettingLeftAndRightSpacingAction(ReaderTextStyle style,int margin) {
         this.margin = margin;
+        this.style = style;
     }
 
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        ReaderTextStyle style = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
         ReaderTextStyle.PageMargin pageMargin = style.getPageMargin();
 
         ReaderTextStyle.Percentage leftMargin = pageMargin.getLeftMargin();
         leftMargin.setPercent(margin);
         ReaderTextStyle.Percentage rightMargin = pageMargin.getRightMargin();
         rightMargin.setPercent(margin);
-        new SettingTextStyleRequest(readerDataHolder).execute(new RxCallback() {
+        new SettingTextStyleRequest(readerDataHolder,style).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
             }
