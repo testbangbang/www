@@ -18,7 +18,8 @@ public class GetTextStyleRequest extends ReaderBaseRequest {
 
     @Override
     public GetTextStyleRequest call() throws Exception {
-        style = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
+        ReaderTextStyle srcStyle = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
+        style = ReaderTextStyle.copy(srcStyle);
         return this;
     }
 
