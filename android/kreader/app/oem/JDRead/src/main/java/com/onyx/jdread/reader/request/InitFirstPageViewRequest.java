@@ -1,8 +1,5 @@
 package com.onyx.jdread.reader.request;
 
-import android.graphics.Bitmap;
-import android.graphics.RectF;
-
 import com.onyx.android.sdk.data.PageConstants;
 import com.onyx.android.sdk.reader.host.options.BaseOptions;
 import com.onyx.android.sdk.utils.PreferenceManager;
