@@ -61,6 +61,8 @@ public class CloudApiContext {
         public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 6;
         public static final int FREE_JOURNALS_ID = 181;
         public static final int FREE_JOURNALS_MODULE_TYPE = 6;
+        public static final int IMPORTANT_RECOMMEND_ID = 91;
+        public static final int IMPORTANT_RECOMMEND_MODULE_TYPE = 6;
     }
 
     public static class CategoryList {

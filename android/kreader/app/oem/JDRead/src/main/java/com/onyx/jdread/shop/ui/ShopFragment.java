@@ -21,7 +21,8 @@ import com.onyx.jdread.databinding.FragmentBookShopOneBinding;
 import com.onyx.jdread.databinding.FragmentBookShopThreeBinding;
 import com.onyx.jdread.databinding.FragmentBookShopTwoBinding;
 import com.onyx.jdread.shop.action.BookCategoryAction;
-import com.onyx.jdread.shop.action.BookFreeJournalAction;
+import com.onyx.jdread.shop.action.BookImportantRecommendAction;
+import com.onyx.jdread.shop.action.BookSpecialTodayAction;
 import com.onyx.jdread.shop.action.NewBookAction;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
@@ -68,6 +69,7 @@ public class ShopFragment extends BaseFragment {
     private void initData() {
         getRecyclerViewSubjectOneData();
         getRecyclerViewSubjectTwoData();
+        getRecyclerViewSubjectFourData();
         getRecyclerViewCategoryData();
     }
 
@@ -227,8 +229,23 @@ public class ShopFragment extends BaseFragment {
     }
 
     public void getRecyclerViewSubjectTwoData() {
-        BookFreeJournalAction freeJournalBookAction = new BookFreeJournalAction(JDReadApplication.getInstance());
-        freeJournalBookAction.execute(getShopDataBundle(), new RxCallback() {
+         BookSpecialTodayAction bookSpecialTodayAction = new BookSpecialTodayAction(JDReadApplication.getInstance());
+        bookSpecialTodayAction.execute(getShopDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+            }
+        });
+    }
+
+    public void getRecyclerViewSubjectFourData() {
+        BookImportantRecommendAction bookImportantRecommendAction = new BookImportantRecommendAction(JDReadApplication.getInstance());
+        bookImportantRecommendAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {
 
