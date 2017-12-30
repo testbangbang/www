@@ -40,12 +40,15 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.common.OpenBookHelper;
+import com.onyx.jdread.shop.action.AddBookToSmoothCardAction;
+import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
 import com.onyx.jdread.shop.action.BookDetailAction;
 import com.onyx.jdread.shop.action.BookRecommendListAction;
 import com.onyx.jdread.shop.action.BookshelfInsertAction;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.action.MetadataQueryAction;
 import com.onyx.jdread.shop.adapter.RecommendAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookExtraInfoBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
@@ -219,7 +222,9 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRecommendNextPageEvent(OnRecommendNextPageEvent event) {
-        recyclerViewRecommend.nextPage();
+        if (recyclerViewRecommend != null){
+            recyclerViewRecommend.nextPage();
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -227,7 +232,6 @@ public class BookDetailFragment extends BaseFragment {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
-
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -239,6 +243,7 @@ public class BookDetailFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDownloadWholeBookEvent(OnDownloadWholeBookEvent event) {
+        bookDetailBean = event.getBookDetailBean();
         if (!JDReadApplication.getInstance().getLogin()) {
             LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
         } else {
@@ -299,7 +304,11 @@ public class BookDetailFragment extends BaseFragment {
         BaseDownloadTask task = OnyxDownloadManager.getInstance().getTask(event.tag);
         if (task != null) {
             handlerDownloadResult(task);
-            upDataButtonDown(nowReadButton, true, bookDetailBean.getBookExtraInfoBean());
+            if (bookDetailBean.getBookExtraInfoBean().isWholeBook) {
+                upDataButtonDown(buyBookButton, true, bookDetailBean.getBookExtraInfoBean());
+            } else {
+                upDataButtonDown(nowReadButton, true, bookDetailBean.getBookExtraInfoBean());
+            }
         }
     }
 
@@ -309,7 +318,11 @@ public class BookDetailFragment extends BaseFragment {
         if (task != null && event.progressInfoModel != null) {
             percentage = (int) (event.progressInfoModel.progress * 100);
             handlerDownloadResult(task);
-            upDataButtonDown(nowReadButton, false, bookDetailBean.getBookExtraInfoBean());
+            if (bookDetailBean.getBookExtraInfoBean().isWholeBook) {
+                upDataButtonDown(buyBookButton, false, bookDetailBean.getBookExtraInfoBean());
+            } else {
+                upDataButtonDown(nowReadButton, false, bookDetailBean.getBookExtraInfoBean());
+            }
         }
     }
 
@@ -360,6 +373,11 @@ public class BookDetailFragment extends BaseFragment {
             return;
         }
 
+        if (bookDetailBean.isFree()) {
+            addBookToSmoothCardList(bookDetailBean, true);
+            return;
+        }
+
         String path = CommonUtils.getJDBooksPath() + File.separator + bookDetailBean.getName();
         if (path.equals(localPath)) {
             if (bookDetailBean != null && DownLoadHelper.isDownloading(downloadTaskState)) {
@@ -373,29 +391,47 @@ public class BookDetailFragment extends BaseFragment {
             }
         }
 
-        if (!bookDetailBean.isFluentRead()) {
-            ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.the_book_unsupported_fluent_read));
-            showPayDialog();
-            return;
-        }
-
         if (!bookDetailBean.isUserCanFluentRead ()) {
-            ToastUtil.showToast(JDReadApplication.getInstance(), getString(R.string.the_book_unsupported_fluent_read));
-            showPayDialog();
+            addToCart();
             return;
         }
+    }
 
-        if (bookDetailBean.isFree()) {
-            return;
-        }
+    private void addBookToSmoothCardList(BookDetailResultBean.Detail bookDetailBean, boolean shouldDownLoad) {
+        AddBookToSmoothCardAction addBookToSmoothCardAction = new AddBookToSmoothCardAction(bookDetailBean, shouldDownLoad);
+        addBookToSmoothCardAction.execute(getShopDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+
+            }
+        });
     }
 
     private void openBook(String name, String localPath) {
-
+        DocumentInfo info = new DocumentInfo();
+        info.setBookName(name);
+        info.setBookPath(localPath);
+        info.setMessageId(10);
+        OpenBookHelper.openBook(getContext(), info);
     }
 
-    private void showPayDialog() {
+    private void addToCart() {
+        final AddOrDeleteCartAction addOrDeleteCartAction = new AddOrDeleteCartAction(new String[]{String.valueOf(ebookId)}, Constants.CART_TYPE_ADD);
+        addOrDeleteCartAction.execute(getShopDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                AddOrDelFromCartBean.ResultBean result = addOrDeleteCartAction.getResult();
+                if (result != null){
+                    setAddOrDelFromCart(result);
+                }
+            }
+        });
+        //TODO  go SHopCartFragment;
+    }
 
+    public void setAddOrDelFromCart(AddOrDelFromCartBean.ResultBean result) {
+        String bookList = result.getBookList();
+        String[] bookArr = CommonUtils.string2Arr(bookList);
     }
 
     private void tryDownload(BookDetailResultBean.Detail bookDetailBean) {

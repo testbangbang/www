@@ -172,5 +172,5 @@
     <string name="the_book_unsupported_try_read">The book unsupported probation</string>
     <string name="the_book_unsupported_fluent_read">The book unsupported fluent read</string>
     <string name="you_unsupported_fluent_read">You unsupported fluent read</string>
-
+    <string name="add_to_smooth_list_failed">Add to smooth list failed</string>
 </resources>
