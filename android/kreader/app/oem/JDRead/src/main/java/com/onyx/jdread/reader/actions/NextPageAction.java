@@ -12,7 +12,7 @@ import com.onyx.jdread.reader.request.NextScreenRequest;
  * Created by huxiaomao on 2017/12/25.
  */
 
-public class NextPageAction extends BaseAction {
+public class NextPageAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
         NextScreenRequest nextScreenRequest = new NextScreenRequest(readerDataHolder);

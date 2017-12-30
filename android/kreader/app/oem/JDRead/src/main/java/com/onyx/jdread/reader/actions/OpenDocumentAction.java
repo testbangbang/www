@@ -14,7 +14,7 @@ import org.greenrobot.eventbus.EventBus;
  * Created by huxiaomao on 17/11/13.
  */
 
-public class OpenDocumentAction extends BaseAction {
+public class OpenDocumentAction extends BaseReaderAction {
     private ReaderDataHolder readerDataHolder;
 
     public OpenDocumentAction(ReaderDataHolder readerDataHolder) {

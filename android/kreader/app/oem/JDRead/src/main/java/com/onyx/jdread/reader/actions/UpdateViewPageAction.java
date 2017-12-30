@@ -8,7 +8,7 @@ import com.onyx.jdread.reader.request.UpdateViewPageRequest;
  * Created by huxiaomao on 2017/12/30.
  */
 
-public class UpdateViewPageAction extends BaseAction {
+public class UpdateViewPageAction extends BaseReaderAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
         new UpdateViewPageRequest(readerDataHolder).execute(new RxCallback() {
