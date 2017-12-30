@@ -65,6 +65,10 @@ public class ToastUtil {
         showToast(appContext, appContext.getString(resId));
     }
 
+    public static void showToast(String message) {
+        showToast(JDReadApplication.getInstance(), message);
+    }
+
     private static void setBackground(@NonNull View view, Drawable drawable) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             view.setBackground(drawable);

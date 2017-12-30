@@ -1,6 +1,7 @@
 package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.personal.cloud.entity.UserInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
@@ -26,7 +27,7 @@ public class UserInfoAction extends BaseAction {
     @Override
     public void execute(PersonalDataBundle dataBundle, final RxCallback rxCallback) {
         UserInfoRequestBean requestBean = new UserInfoRequestBean();
-        requestBean.setAppBaseInfo(dataBundle.getAppBaseInfo());
+        requestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         String userInfoJsonBody = getUserInfoJsonBody(pin);
         requestBean.setBody(userInfoJsonBody);
         final RxRequestUserInfo rq = new RxRequestUserInfo();

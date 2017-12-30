@@ -26,6 +26,20 @@ public class CloudApiContext {
         public static final String FUNCTION_ID = "functionId";
         public static final String USER_BASIC_INFO = "userBasicInfo";
         public static final String SYNC_LOGIN_INFO = "SyncLoginInfo";
+        public static final String GET_TOKEN = "genToken";
+    }
+
+    public static class GotoOrder {
+        public static final String ORDER_ORDERSTEP1_ACTION = "order_orderStep1.action?";
+        public static final String TOKENKEY = "tokenKey=";
+        public static final String NUM = "num";
+        public static final String PURCHASE_QUANTITY = "1";
+        public static final String ID = "Id";
+        public static final String THESKUS = "TheSkus";
+        public static final String SINGLE_UNION_ID = "singleUnionId";
+        public static final String SINGLE_SUB_UNION_ID = "singleSubUnionId";
+        public static final String IS_SUPPORT_JS = "isSupportJs";
+        public static final String BOOLEAN = "true";
     }
 
     public static String getJDBooxBaseUrl() {

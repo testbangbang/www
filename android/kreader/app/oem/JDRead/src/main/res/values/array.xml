@@ -51,4 +51,12 @@
         <item name="my_like">@mipmap/ic_me_like</item>
         <item name="my_gift">@mipmap/ic_me_gift</item>
     </string-array>
+
+    <string-array name="personal_account">
+        <item>@string/top_up</item>
+        <item>@string/consumption_record</item>
+        <item>@string/paid_record</item>
+        <item>@string/read_vip</item>
+        <item>@string/points_for</item>
+    </string-array>
 </resources>

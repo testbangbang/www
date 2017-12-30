@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ItemDialogTopUpBinding">
+
+        <import type="com.onyx.android.sdk.utils.StringUtils" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="bean"
+            type="com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/item_top_up_padding">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/rectangle_stroke"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{bean.value}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/item_top_up_margin_top"
+                android:text="@{bean.valueGift}"
+                android:textSize="@dimen/level_three_heading_font"
+                android:visibility="@{StringUtils.isNullOrEmpty(bean.valueGift) ? View.GONE : View.VISIBLE}" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

@@ -1,7 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -21,7 +20,7 @@ import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingRefreshModel;
 import com.onyx.jdread.setting.model.SettingTitleModel;
-import com.onyx.jdread.setting.utils.ScreenUtils;
+import com.onyx.jdread.util.ScreenUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
