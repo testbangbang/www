@@ -53,6 +53,6 @@ public class ManualFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToHelpFragmentEvent(BackToHelpFragmentEvent event) {
-        viewEventCallBack.gotoView(HelpFragment.class.getName());
+        viewEventCallBack.viewBack();
     }
 }

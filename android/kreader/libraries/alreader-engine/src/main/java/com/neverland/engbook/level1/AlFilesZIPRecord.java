@@ -1,14 +1,31 @@
 package com.neverland.engbook.level1;
 
+import android.util.Log;
+
 import com.neverland.engbook.unicode.AlUnicode;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AlFilesZIPRecord extends AlFiles {
 
     protected final ArrayList<AlOneZIPRecord> recordList = new ArrayList<>();
+    protected final Map<Integer,Integer> recordFileSizeList = new HashMap<>();
 
     private final StringBuilder sb = new StringBuilder();
+
+    public ArrayList<AlOneZIPRecord> getRecordList() {
+        return recordList;
+    }
+
+    public int getRecordFileSize(int num){
+        return recordFileSizeList.get(num);
+    }
+
+    public Map<Integer,Integer> getRecordFileSizeList(){
+        return recordFileSizeList;
+    }
 
     public final int  removeFilesFromRecord(int num) {
         if (num >= 0 && num < recordList.size()) {
@@ -100,6 +117,7 @@ public class AlFilesZIPRecord extends AlFiles {
             recordList.add(a);
 
             size += a.size + a.startSize + a.endSize;
+            recordFileSizeList.put(num,size);
         }
     }
 

@@ -3,7 +3,7 @@ package com.neverland.engbook.util;
 import java.util.ArrayList;
 
 public class AlMultiFiles {
-    public static final int		LEVEL_FOR_MULTI = 32;
+    public static final int		LEVEL_FOR_MULTI = Integer.MAX_VALUE;
 
     public boolean					modePart;
     public boolean					isMultiFiles;

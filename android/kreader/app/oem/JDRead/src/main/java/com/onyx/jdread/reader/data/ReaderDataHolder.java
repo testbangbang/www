@@ -18,6 +18,7 @@ public class ReaderDataHolder {
     public void initReaderDataHolder(final DocumentInfo documentInfo) {
         documentOpenState = DocumentOpenState.INIT;
         reader = ReaderManager.getReader(documentInfo);
+        reader.init(this);
     }
 
     public Reader getReader() {

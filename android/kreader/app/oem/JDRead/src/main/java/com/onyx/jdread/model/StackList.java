@@ -26,6 +26,14 @@ public class StackList {
         return stack.isEmpty();
     }
 
+    public String popChildView(){
+        if(stack.size() <= 1){
+            return stack.peek();
+        }
+        stack.pop();
+        return stack.peek();
+    }
+
     public String toString(){
         return stack.toString();
     }

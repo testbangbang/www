@@ -8,6 +8,9 @@ import android.graphics.Rect;
 import android.view.SurfaceView;
 
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.reader.actions.NextPageAction;
+import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 
 /**
  * Created by huxiaomao on 2017/12/22.
@@ -62,5 +65,26 @@ public class ReaderViewHelper {
         paint.setColor(Color.BLACK);
         canvas.drawBitmap(bitmap, 0, 0, paint);
         readPageView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    public void showTouchFunctionRegion(Canvas canvas){
+        Paint.Style oldStyle = paint.getStyle();
+        paint.setStyle(Paint.Style.STROKE);
+        int oldColor = paint.getColor();
+        paint.setColor(Color.BLACK);
+
+        Rect rect = ShowSettingMenuAction.getRegionOne();
+        canvas.drawRect(rect,paint);
+        rect = ShowSettingMenuAction.getRegionTwo();
+        canvas.drawRect(rect,paint);
+        rect = PrevPageAction.getRegionOne();
+        canvas.drawRect(rect,paint);
+        rect = NextPageAction.getRegionOne();
+        canvas.drawRect(rect,paint);
+        rect = NextPageAction.getRegionTwo();
+        canvas.drawRect(rect,paint);
+
+        paint.setColor(oldColor);
+        paint.setStyle(oldStyle);
     }
 }

@@ -50,7 +50,7 @@ public class HelpFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
-        viewEventCallBack.gotoView(SettingFragment.class.getName());
+        viewEventCallBack.viewBack();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

@@ -19,24 +19,24 @@ public class FunctionBarItem extends BaseObservable {
     private StackList stackList;
     private ObservableBoolean isShow = new ObservableBoolean(true);
     public final ObservableInt drawableTop = new ObservableInt();
-    public final ObservableField<String> fragmentName = new ObservableField<>();
+    public final ObservableField<ViewConfig.FunctionModule> functionModule = new ObservableField<>();
     public final ObservableField<String> itemName = new ObservableField<>();
     public final ObservableBoolean isSelected = new ObservableBoolean(false);
 
-    public FunctionBarItem(String fragmentName, String itemName, int drawableRes) {
-        this.fragmentName.set(fragmentName);
+    public FunctionBarItem(ViewConfig.FunctionModule functionModule,String firstFragmentName, String itemName, int drawableRes) {
+        this.functionModule.set(functionModule);
         this.itemName.set(itemName);
         drawableTop.set(drawableRes);
         stackList = new StackList();
-        ViewConfig.initStackByName(stackList, fragmentName);
+        ViewConfig.initStackByName(stackList, firstFragmentName);
     }
 
     public void tabClicked() {
-        changeSelectedTab();
-        if (ViewConfig.findChildViewParentId(fragmentName.get()) == null) {
+        if (functionModule.get().equals(ViewConfig.FunctionModule.BACK)) {
             EventBus.getDefault().post(new PopCurrentChildViewEvent());
             return;
         }
+
         ChangeChildViewEvent event = new ChangeChildViewEvent();
         event.childViewName = stackList.peek();
         EventBus.getDefault().post(event);

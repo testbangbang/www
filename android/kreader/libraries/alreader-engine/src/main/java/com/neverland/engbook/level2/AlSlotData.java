@@ -9,6 +9,7 @@ public class AlSlotData {
 	public final int[] 	end	= {-1, -1};
 	public final char[][] 	txt 	= {null, null};
 	public final long[][] 	stl 	= {null, null};
+	public final boolean[]  dataState = {false,false};
 	
 	public final void initBuffer() {
 		if (txt[active] == null) {
@@ -17,5 +18,6 @@ public class AlSlotData {
 		if (stl[active] == null) {
 			stl[active] = new long [AlFiles.LEVEL1_FILE_BUF_SIZE];
 		}
+		dataState[active] = false;
 	}
 }
