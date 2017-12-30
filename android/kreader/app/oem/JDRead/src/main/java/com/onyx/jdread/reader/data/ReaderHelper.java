@@ -34,6 +34,7 @@ import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.RectUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 
@@ -59,6 +60,8 @@ public class ReaderHelper {
     private ReaderHitTestManager hitTestManager;
     private String firstVisiblePagePosition;
     private ReaderLayoutManager readerLayoutManager = null;
+    private BaseOptions documentOptions = new BaseOptions();
+    private BitmapReferenceLruCache bitmapCache;
 
     public ReaderHelper() {
     }
@@ -82,6 +85,7 @@ public class ReaderHelper {
 
     public void saveReaderDocument(ReaderDocument readerDocument) {
         this.readerDocument = readerDocument;
+        initData(JDReadApplication.getInstance().getApplicationContext());
     }
 
     private void updateView() {
@@ -184,7 +188,7 @@ public class ReaderHelper {
     }
 
     public BitmapReferenceLruCache getBitmapCache() {
-        return null;
+        return bitmapCache;
     }
 
     public void setLayoutChanged(boolean layoutChanged) {
@@ -196,7 +200,7 @@ public class ReaderHelper {
     }
 
     public void initData(Context context) {
-
+        initBitmapCache();
     }
 
     private void initLayoutManager() {
@@ -216,11 +220,15 @@ public class ReaderHelper {
     }
 
     private void initBitmapCache() {
-
+        if (bitmapCache == null) {
+            bitmapCache = new BitmapReferenceLruCache(5);
+        }
     }
 
     private void clearBitmapCache() {
-
+        if (bitmapCache != null) {
+            bitmapCache.clear();
+        }
     }
 
     private void releaseWordAnalyzer() {
@@ -236,7 +244,7 @@ public class ReaderHelper {
     }
 
     public BaseOptions getDocumentOptions() {
-        return null;
+        return documentOptions;
     }
 
     public ReaderDocument getDocument() {

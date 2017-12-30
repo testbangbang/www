@@ -29,7 +29,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     }
 
     private void restoreScale(final Reader reader,String position) throws Exception {
-        BaseOptions baseOptions = new BaseOptions();
+        BaseOptions baseOptions = reader.getReaderHelper().getDocumentOptions();
         if (PageConstants.isSpecialScale(baseOptions.getSpecialScale())) {
             setSpecialScale(reader, baseOptions, position);
         } else {
