@@ -18,15 +18,11 @@ public class UpdateViewPageRequest extends ReaderBaseRequest {
 
     @Override
     public UpdateViewPageRequest call() throws Exception {
-                int width = readerDataHolder.getReaderViewHelper().getPageViewWidth();
-        int height = readerDataHolder.getReaderViewHelper().getPageViewHeight();
-        RectF displayRect = new RectF(0, 0, width, height);
-        RectF pageRect = new RectF(displayRect);
-        RectF visibleRect = new RectF(pageRect);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        String position = readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
-        readerDataHolder.getReader().getReaderHelper().getRenderer().draw(position, 0, 0, displayRect, pageRect, visibleRect, bitmap);
-        readerDataHolder.getReaderViewHelper().draw(bitmap);
+        updatePageView();
         return this;
+    }
+
+    public void updatePageView(){
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
     }
 }

@@ -3,7 +3,6 @@ package com.onyx.jdread.reader.menu.actions;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.reader.actions.BaseAction;
-import com.onyx.jdread.reader.actions.UpdateViewPageAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.request.SettingTextStyleRequest;
 
@@ -26,7 +25,6 @@ public class SettingFontSizeAction extends BaseAction {
         new SettingTextStyleRequest(readerDataHolder).execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                new UpdateViewPageAction().execute(readerDataHolder);
             }
 
             @Override

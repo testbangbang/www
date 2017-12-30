@@ -1,8 +1,5 @@
 package com.onyx.jdread.reader.request;
 
-import android.graphics.Bitmap;
-import android.graphics.RectF;
-
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
@@ -19,6 +16,7 @@ public class PreviousScreenRequest extends ReaderBaseRequest {
     @Override
     public PreviousScreenRequest call() throws Exception {
         readerDataHolder.getReader().getReaderHelper().previousScreen();
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
         return this;
     }
 }

@@ -27,6 +27,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     public InitFirstPageViewRequest call() throws Exception {
         updateView();
         initPosition();
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
         return this;
     }
 

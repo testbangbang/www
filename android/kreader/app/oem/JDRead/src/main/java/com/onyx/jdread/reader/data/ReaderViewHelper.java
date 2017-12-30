@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.SurfaceView;
 
 import com.onyx.jdread.JDReadApplication;
@@ -48,6 +49,18 @@ public class ReaderViewHelper {
 
     public int getPageViewHeight(){
         return readPageView.getHeight();
+    }
+
+    public void updatePageView(ReaderDataHolder readerDataHolder){
+        int width = getPageViewWidth();
+        int height = getPageViewHeight();
+        RectF displayRect = new RectF(0, 0, width, height);
+        RectF pageRect = new RectF(displayRect);
+        RectF visibleRect = new RectF(pageRect);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        String position = readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
+        readerDataHolder.getReader().getReaderHelper().getRenderer().draw(position, 0, 0, displayRect, pageRect, visibleRect, bitmap);
+        draw(bitmap);
     }
 
     public void draw(Bitmap bitmap){

@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.request.PreviousScreenRequest;
 
@@ -20,7 +19,6 @@ public class PrevPageAction extends BaseAction {
         previousScreenRequest.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                new UpdateViewPageAction().execute(readerDataHolder);
             }
         });
     }

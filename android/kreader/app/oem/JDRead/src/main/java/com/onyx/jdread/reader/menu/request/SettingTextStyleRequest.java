@@ -19,6 +19,7 @@ public class SettingTextStyleRequest extends ReaderBaseRequest {
     public SettingTextStyleRequest call() throws Exception {
         ReaderTextStyle style = readerDataHolder.getReader().getReaderHelper().getTextStyleManager().getStyle();
         readerDataHolder.getReader().getReaderHelper().getTextStyleManager().setStyle(style);
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
         return this;
     }
 }

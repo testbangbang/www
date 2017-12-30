@@ -6,6 +6,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.menu.actions.SettingFontSizeAction;
 
 /**
  * Created by huxiaomao on 2017/12/25.
@@ -14,7 +15,7 @@ import com.onyx.jdread.reader.data.ReaderDataHolder;
 public class ShowSettingMenuAction extends BaseAction {
     @Override
     public void execute(ReaderDataHolder readerDataHolder) {
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"showMenu");
+        new SettingFontSizeAction(15).execute(readerDataHolder);
     }
 
     public static Rect getRegionOne(){
