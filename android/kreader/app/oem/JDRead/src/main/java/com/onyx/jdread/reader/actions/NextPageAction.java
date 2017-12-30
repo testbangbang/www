@@ -15,12 +15,12 @@ import com.onyx.jdread.reader.request.NextScreenRequest;
 
 public class NextPageAction extends BaseAction {
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder) {
         NextScreenRequest nextScreenRequest = new NextScreenRequest(readerDataHolder);
         nextScreenRequest.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-
+                new UpdateViewPageAction().execute(readerDataHolder);
             }
         });
     }
