@@ -7,7 +7,7 @@
 
         <variable
             name="functionBarModel"
-            type="com.onyx.jdread.model.FunctionBarModel" />
+            type="com.onyx.jdread.main.model.FunctionBarModel" />
     </data>
 
     <LinearLayout

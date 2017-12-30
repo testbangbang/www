@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.neverland.engbook.allstyles.AlCSSHtml;
 import com.neverland.engbook.allstyles.AlOneCSS;
+import com.neverland.engbook.bookobj.FileBlockInfo;
 import com.neverland.engbook.forpublic.AlBookOptions;
 import com.neverland.engbook.forpublic.AlOneContent;
 import com.neverland.engbook.forpublic.EngBookMyType;
@@ -21,6 +22,7 @@ import com.neverland.engbook.util.InternalFunc;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class AlFormatEPUB extends AlFormatBaseHTML {
 
@@ -86,10 +88,31 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
     private boolean			acoverREFERENCE_XML;
 
     private String	coverMETAIID = null;
-
+    public FileBlockInfo loadFileBlockInfo;
 
     public AlFormatEPUB() {
         cssStyles = new AlCSSHtml();
+    }
+
+    public void parserAfterData(final int start_pos){
+        FileBlockInfo.loadTwoBlockData(this,loadFileBlockInfo.twoBlock);
+        FileBlockInfo.loadThreeBlockData(this,loadFileBlockInfo.threeBlock);
+        size = customSize;
+        FileBlockInfo.saveParagraphData(fileBlocks,this);
+    }
+
+    @Override
+    public List<FileBlockInfo> getBookBlockInfo() {
+        return fileBlocks;
+    }
+
+    @Override
+    public List<FileBlockInfo> getBookCacheBlockInfo() {
+        return FileBlockInfo.loadParagraphData(this);
+    }
+
+    public FileBlockInfo.CacheHeadInfo loadCacheHeadInfo(){
+        return FileBlockInfo.loadCacheHeadInfo(this);
     }
 
     @Override
@@ -106,6 +129,7 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
         styles = stl;
 
         noUseCover = bookOptions.noUseCover;
+        aFiles.applicationDirectory = bookOptions.applicationDirectory;
         size = 0;
 
         autoCodePage = false;
@@ -149,8 +173,36 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
                 }
             }
         }
+        blockLoading(bookOptions.readPosition);
+    }
 
+    private void blockLoading(int readPosition){
+        customSize = 0;
         parser(0, -1);
+        List<FileBlockInfo> fileBlockInfos = FileBlockInfo.loadParagraphData(this);
+        if(fileBlockInfos != null){
+            //int lastBlock = FileBlockInfo.getLastBlockInfo(this);
+            loadFileBlockInfo = FileBlockInfo.getBlockLoadInfo(start_pos,end_pos,aFiles.getSize(),readPosition,fileBlockInfos);
+        }else{
+            loadFileBlockInfo = FileBlockInfo.getBlockLoadInfo(start_pos,end_pos,aFiles.getSize());
+        }
+
+        FileBlockInfo.loadOneBlockData(this,loadFileBlockInfo.oneBlock);
+    }
+
+    @Override
+    public String getFileName() {
+        return  aFiles.getParent().getParent().fileName;
+    }
+
+    @Override
+    public String getFileMD5(){
+        return aFiles.getParent().getParent().getFileMD5();
+    }
+
+    @Override
+    public void parserData(int start_pos, int stop_posRequest) {
+        parser(start_pos,stop_posRequest);
     }
 
     @Override
@@ -357,8 +409,20 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
     private void addFiles2Read(String fname, int sp) {
         String addFiles = AlFiles.getAbsoluteName(currentFile, fname);
         ((AlFilesEPUB) aFiles).addFilesToRecord(addFiles, sp);
-        if (dinamicSize)
-            stop_posUsed = aFiles.getSize();
+        if (dinamicSize) {
+            if(FileBlockInfo.isBookContent(fname)){
+                if(start_pos == -1) {
+                    stop_posUsed = aFiles.getSize();
+                }else {
+                    if(end_pos == -1){
+                        end_pos = aFiles.getSize();
+                    }
+                }
+                start_pos = stop_posUsed;
+            }else {
+                stop_posUsed = aFiles.getSize();
+            }
+        }
     }
 
     private int removeFiles2Read(int num) {
@@ -879,8 +943,12 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
                     styleStack.clear();
 
                     param = tag.getATTRValue(AlFormatTag.TAG_NUMFILES);
-                    if (param != null)
+
+
+                    if (param != null) {
                         active_file = InternalFunc.str2int(param, 10);
+                        getBlockSize();
+                    }
 
                     param = tag.getATTRValue(AlFormatTag.TAG_ID);
                     if (param != null)
@@ -947,6 +1015,12 @@ public class AlFormatEPUB extends AlFormatBaseHTML {
 
     }
 
+    private void getBlockSize(){
+        if(fileNum != active_file){
+            fileNum = active_file;
+            blockSize = ((AlFilesEPUB) aFiles).getRecordFileSize(fileNum);
+        }
+    }
     //private int countTextFiles = 0;
 
     private void addTOCPoint() {

@@ -25,7 +25,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name=".main.activity.MainActivity"
             android:theme="@style/ActivityFullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,7 +39,7 @@
             android:theme="@style/ActivityFullscreen">
         </activity>
 
-        <receiver android:name=".receiver.UsbStateReceiver">
+        <receiver android:name=".main.receiver.UsbStateReceiver">
             <intent-filter android:priority="800">
                 <action android:name="android.hardware.usb.action.USB_STATE" />
                 <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />

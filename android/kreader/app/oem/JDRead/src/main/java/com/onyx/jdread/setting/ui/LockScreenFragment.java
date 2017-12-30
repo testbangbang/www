@@ -12,7 +12,7 @@ import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.LockScreenBinding;
 import com.onyx.jdread.setting.adapter.LockScreenAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;

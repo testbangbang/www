@@ -6,7 +6,7 @@ import android.content.pm.PackageManager;
 import android.util.Log;
 
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.Constants;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;

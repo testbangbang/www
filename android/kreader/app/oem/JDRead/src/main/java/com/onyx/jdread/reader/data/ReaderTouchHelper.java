@@ -10,6 +10,11 @@ import android.view.View;
 
 public class ReaderTouchHelper {
     private int readerMode = 0;
+    private ReaderDataHolder readerDataHolder;
+
+    public void setReaderDataHolder(ReaderDataHolder readerDataHolder) {
+        this.readerDataHolder = readerDataHolder;
+    }
 
     public void setReaderMode(int readerMode) {
         this.readerMode = readerMode;
@@ -30,7 +35,7 @@ public class ReaderTouchHelper {
     private void onTouchEvent(View v, MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             if (readerMode == 0) {
-                RegionFunctionManager.processRegionFunction((int) event.getX(), (int) event.getY());
+                RegionFunctionManager.processRegionFunction(readerDataHolder,(int) event.getX(), (int) event.getY());
             }
         }
     }

@@ -2,7 +2,7 @@ package com.onyx.jdread.reader.data;
 
 import android.graphics.Rect;
 
-import com.onyx.jdread.reader.actions.BaseAction;
+import com.onyx.jdread.reader.actions.BaseReaderAction;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
@@ -15,7 +15,7 @@ import java.util.Map;
  */
 
 public class RegionFunctionManager {
-    static private Map<Rect,BaseAction> regionAction = new HashMap<>();
+    static private Map<Rect,BaseReaderAction> regionAction = new HashMap<>();
 
     /**
      *
@@ -44,10 +44,10 @@ public class RegionFunctionManager {
         regionAction.put(ShowSettingMenuAction.getRegionTwo(),new ShowSettingMenuAction());
     }
 
-    public static void processRegionFunction(int x, int y) {
+    public static void processRegionFunction(ReaderDataHolder readerDataHolder,int x, int y) {
         for (Rect rect : regionAction.keySet()){
             if(rect.contains(x,y)){
-                regionAction.get(rect).execute(null);
+                regionAction.get(rect).execute(readerDataHolder);
             }
         }
     }

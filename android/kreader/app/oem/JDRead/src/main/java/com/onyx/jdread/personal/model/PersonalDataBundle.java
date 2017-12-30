@@ -1,7 +1,6 @@
 package com.onyx.jdread.personal.model;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.jdread.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
 import com.onyx.jdread.setting.model.SettingTitleModel;

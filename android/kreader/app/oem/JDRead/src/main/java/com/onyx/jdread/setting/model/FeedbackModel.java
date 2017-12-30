@@ -6,9 +6,9 @@ import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.model.TitleBarModel;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
-import com.onyx.jdread.util.RegularUtil;
+import com.onyx.jdread.main.util.RegularUtil;
 
 import java.util.Observable;
 

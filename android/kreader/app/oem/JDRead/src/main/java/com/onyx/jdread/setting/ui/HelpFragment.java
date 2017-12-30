@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentHelpBinding;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.event.ContactUsEvent;
@@ -50,7 +50,7 @@ public class HelpFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
-        viewEventCallBack.gotoView(SettingFragment.class.getName());
+        viewEventCallBack.viewBack();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

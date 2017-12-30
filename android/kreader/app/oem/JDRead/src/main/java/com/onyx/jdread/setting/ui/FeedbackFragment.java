@@ -6,7 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentFeedbackBinding;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.setting.model.FeedbackModel;
@@ -51,6 +51,6 @@ public class FeedbackFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToHelpFragmentEvent(BackToHelpFragmentEvent event) {
-        viewEventCallBack.gotoView(HelpFragment.class.getName());
+        viewEventCallBack.viewBack();
     }
 }

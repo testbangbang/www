@@ -5,9 +5,13 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.view.SurfaceView;
 
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.reader.actions.NextPageAction;
+import com.onyx.jdread.reader.actions.PrevPageAction;
+import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
 
 /**
  * Created by huxiaomao on 2017/12/22.
@@ -47,6 +51,18 @@ public class ReaderViewHelper {
         return readPageView.getHeight();
     }
 
+    public void updatePageView(ReaderDataHolder readerDataHolder){
+        int width = getPageViewWidth();
+        int height = getPageViewHeight();
+        RectF displayRect = new RectF(0, 0, width, height);
+        RectF pageRect = new RectF(displayRect);
+        RectF visibleRect = new RectF(pageRect);
+        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        String position = readerDataHolder.getReader().getReaderHelper().getReaderLayoutManager().getCurrentPagePosition();
+        readerDataHolder.getReader().getReaderHelper().getRenderer().draw(position, 0, 0, displayRect, pageRect, visibleRect, bitmap);
+        draw(bitmap);
+    }
+
     public void draw(Bitmap bitmap){
         if(readPageView == null){
             return;
@@ -62,5 +78,26 @@ public class ReaderViewHelper {
         paint.setColor(Color.BLACK);
         canvas.drawBitmap(bitmap, 0, 0, paint);
         readPageView.getHolder().unlockCanvasAndPost(canvas);
+    }
+
+    public void showTouchFunctionRegion(Canvas canvas){
+        Paint.Style oldStyle = paint.getStyle();
+        paint.setStyle(Paint.Style.STROKE);
+        int oldColor = paint.getColor();
+        paint.setColor(Color.BLACK);
+
+        Rect rect = ShowSettingMenuAction.getRegionOne();
+        canvas.drawRect(rect,paint);
+        rect = ShowSettingMenuAction.getRegionTwo();
+        canvas.drawRect(rect,paint);
+        rect = PrevPageAction.getRegionOne();
+        canvas.drawRect(rect,paint);
+        rect = NextPageAction.getRegionOne();
+        canvas.drawRect(rect,paint);
+        rect = NextPageAction.getRegionTwo();
+        canvas.drawRect(rect,paint);
+
+        paint.setColor(oldColor);
+        paint.setStyle(oldStyle);
     }
 }

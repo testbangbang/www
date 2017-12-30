@@ -2,8 +2,8 @@ package com.onyx.jdread.shop.common;
 
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.ClientUtils;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.ClientUtils;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.request.JavaNetCookieJar;
 import com.onyx.jdread.shop.request.PersistentCookieStore;
 

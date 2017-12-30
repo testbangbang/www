@@ -4,20 +4,20 @@ import android.graphics.Rect;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
 /**
  * Created by huxiaomao on 2017/12/25.
  */
 
-public class ShowSettingMenuAction extends BaseAction {
+public class ShowSettingMenuAction extends BaseReaderAction {
+
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"showMenu");
+    public void execute(final ReaderDataHolder readerDataHolder) {
+
     }
 
-    public static Rect getRegionOne(){
+    public static Rect getRegionOne() {
         Rect rect = new Rect();
         rect.left = JDReadApplication.getInstance().getResources().getInteger(R.integer.show_menu_touch_one_region_left);
         rect.top = JDReadApplication.getInstance().getResources().getInteger(R.integer.show_menu_touch_one_region_top);
@@ -26,7 +26,7 @@ public class ShowSettingMenuAction extends BaseAction {
         return rect;
     }
 
-    public static Rect getRegionTwo(){
+    public static Rect getRegionTwo() {
         Rect rect = new Rect();
         rect.left = JDReadApplication.getInstance().getResources().getInteger(R.integer.show_menu_touch_two_region_left);
         rect.top = JDReadApplication.getInstance().getResources().getInteger(R.integer.show_menu_touch_two_region_top);

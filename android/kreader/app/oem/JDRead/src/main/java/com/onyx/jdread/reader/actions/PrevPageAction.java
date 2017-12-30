@@ -2,19 +2,25 @@ package com.onyx.jdread.reader.actions;
 
 import android.graphics.Rect;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.request.PreviousScreenRequest;
 
 /**
  * Created by huxiaomao on 2017/12/25.
  */
 
-public class PrevPageAction extends BaseAction {
+public class PrevPageAction extends BaseReaderAction {
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"prevPage");
+    public void execute(final ReaderDataHolder readerDataHolder) {
+        PreviousScreenRequest previousScreenRequest = new PreviousScreenRequest(readerDataHolder);
+        previousScreenRequest.execute(new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+            }
+        });
     }
 
     public static Rect getRegionOne(){

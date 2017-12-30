@@ -164,6 +164,12 @@ class AlThreadData {
 
 			id = TAL_NOTIFY_ID.NEEDREDRAW;
 			switch (this.task) {
+				case PARSER_AFTER_DATA: {
+					id = TAL_NOTIFY_ID.PARSER_AFTER;
+					this.book_object.parserAfterData();
+					this.clearWork0();
+				}
+				break;
 				case OPENBOOK_FULLAFTERPARTIAL:
 					id = TAL_NOTIFY_ID.OPENBOOK_FULLAFTERPARTIAL;
 					try {
@@ -253,15 +259,22 @@ class AlThreadData {
 
 				} else {
 					this.clearWork0();
-					this.param_void1.clearBlocked();
-					this.clearObjOpen();
+					synchronized (this.book_object) {
+						this.clearWork0();
+						startThread(param, TAL_THREAD_TASK.PARSER_AFTER_DATA, false);
+					}
 				}
 			} else {
 				this.clearWork0();
 			}
 
-			if (this.task == TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL)
+			if (this.task == TAL_THREAD_TASK.OPENBOOK_FULLAFTERPARTIAL) {
 				this.clearObjOpen();
+			}
+			if(this.task == TAL_THREAD_TASK.PARSER_AFTER_DATA){
+				this.param_void1.clearBlocked();
+				this.clearObjOpen();
+			}
 
 		} catch (Exception e) {
 			e.printStackTrace();

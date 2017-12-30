@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderDocument;
 import com.onyx.android.sdk.reader.api.ReaderDocumentMetadata;
+import com.onyx.android.sdk.reader.api.ReaderDocumentOptions;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderFormManager;
 import com.onyx.android.sdk.reader.api.ReaderHitTestManager;
@@ -31,10 +32,10 @@ import com.onyx.android.sdk.reader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.images.ImagesReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
-import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
 import com.onyx.android.sdk.utils.RectUtils;
 import com.onyx.jdread.reader.common.DocumentInfo;
+import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,6 +57,8 @@ public class ReaderHelper {
     private ReaderSearchManager searchManager;
     private ReaderFormManager formManager;
     private ReaderHitTestManager hitTestManager;
+    private String firstVisiblePagePosition;
+    private ReaderLayoutManager readerLayoutManager = null;
 
     public ReaderHelper() {
     }
@@ -77,10 +80,6 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public ReaderDocument getReaderDocument() {
-        return readerDocument;
-    }
-
     public void saveReaderDocument(ReaderDocument readerDocument) {
         this.readerDocument = readerDocument;
     }
@@ -96,6 +95,36 @@ public class ReaderHelper {
         formManager = view.getFormManager();
     }
 
+    public ReaderDocument openDocument(final String path, final ReaderDocumentOptions documentOptions, final ReaderPluginOptions pluginOptions) throws Exception {
+        return plugin.open(path, documentOptions, pluginOptions);
+    }
+
+    public ReaderLayoutManager getReaderLayoutManager() {
+        if (readerLayoutManager == null) {
+            readerLayoutManager = new ReaderLayoutManager(this,
+                    getDocument(),
+                    getNavigator(),
+                    getRendererFeatures(),
+                    getTextStyleManager(),
+                    getViewOptions());
+        }
+        return readerLayoutManager;
+    }
+
+
+
+    public boolean nextScreen() throws ReaderException {
+        return getReaderLayoutManager().nextScreen();
+    }
+
+    public boolean previousScreen() throws ReaderException{
+        return getReaderLayoutManager().prevScreen();
+    }
+
+    public boolean gotoPosition(String position) throws ReaderException{
+        return getReaderLayoutManager().gotoPosition(position);
+    }
+
     public void onDocumentClosed() {
         clearBitmapCache();
         clearImageReflowManager();
@@ -105,13 +134,15 @@ public class ReaderHelper {
     public void updateViewportSize(int newWidth, int newHeight) throws ReaderException {
         getViewOptions().setSize(newWidth, newHeight);
         updateView();
+        getReaderLayoutManager().init();
+        getReaderLayoutManager().updateViewportSize();
     }
 
     public void onLayoutChanged() {
         setLayoutChanged(true);
     }
 
-    public void onPositionChanged(final String oldPosition, final String newPosition) {
+    public void onPositionChanged() {
     }
 
     public void beforeDraw(ReaderBitmapReferenceImpl bitmap) {
@@ -124,7 +155,7 @@ public class ReaderHelper {
         return null;
     }
 
-    public ReaderPlugin getPlugin() {
+    private ReaderPlugin getPlugin() {
         return plugin;
     }
 
@@ -209,7 +240,7 @@ public class ReaderHelper {
     }
 
     public ReaderDocument getDocument() {
-        return null;
+        return readerDocument;
     }
 
     public ReaderView getView() {
@@ -217,7 +248,7 @@ public class ReaderHelper {
     }
 
     public ReaderNavigator getNavigator() {
-        return null;
+        return navigator;
     }
 
     public ReaderRenderer getRenderer() {
@@ -225,19 +256,19 @@ public class ReaderHelper {
     }
 
     public ReaderRendererFeatures getRendererFeatures() {
-        return null;
+        return rendererFeatures;
     }
 
     public ReaderTextStyleManager getTextStyleManager() {
-        return null;
+        return textStyleManager;
     }
 
     public ReaderSearchManager getSearchManager() {
-        return null;
+        return searchManager;
     }
 
     public ReaderFormManager getFormManager() {
-        return null;
+        return formManager;
     }
 
     private void translateToScreen(PageInfo pageInfo, List<RectF> list) {
