@@ -2,8 +2,8 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.CommonUtils;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.CommonUtils;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.AddOrDelFromCartBean;
 import com.onyx.jdread.shop.common.CloudApiContext;

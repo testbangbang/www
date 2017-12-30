@@ -13,8 +13,9 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentBookAllCategoryBinding;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
@@ -32,8 +33,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.List;
-
-import static com.onyx.jdread.common.Constants.PAGE_STEP;
 
 /**
  * Created by jackdeng on 2017/12/30.
@@ -114,7 +113,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void setCurrentPage(int currentPage) {
-        getAllCategoryViewModel().setCurrentPage(currentPage + PAGE_STEP);
+        getAllCategoryViewModel().setCurrentPage(currentPage + Constants.PAGE_STEP);
     }
 
     private ShopDataBundle getShopDataBundle() {

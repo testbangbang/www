@@ -3,7 +3,7 @@ package com.onyx.jdread.shop.request.cloud;
 import com.onyx.android.sdk.data.rxrequest.data.cloud.base.RxBaseCloudRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.CommonUtils;
+import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.shop.action.DownloadAction;
 import com.onyx.jdread.shop.cloud.api.GetBookCertService;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;

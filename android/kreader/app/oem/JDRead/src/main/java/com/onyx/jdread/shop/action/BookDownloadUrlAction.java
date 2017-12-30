@@ -6,8 +6,6 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.action.BaseAction;
-import com.onyx.jdread.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDetailResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookDownloadUrlResultBean;
