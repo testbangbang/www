@@ -2,9 +2,14 @@ package com.onyx.jdread.reader.actions;
 
 import android.graphics.Rect;
 
+import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.common.GammaInfo;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.menu.actions.ChangeChineseConvertTypeAction;
+import com.onyx.jdread.reader.menu.actions.GammaCorrectionAction;
+import com.onyx.jdread.reader.menu.actions.ScaleToPageCropAction;
 
 /**
  * Created by huxiaomao on 2017/12/25.
@@ -14,7 +19,7 @@ public class ShowSettingMenuAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-
+        new ScaleToPageCropAction().execute(readerDataHolder);
     }
 
     public static Rect getRegionOne() {
