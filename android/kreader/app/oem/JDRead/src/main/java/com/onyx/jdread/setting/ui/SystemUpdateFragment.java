@@ -33,9 +33,9 @@ import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingTitleModel;
 import com.onyx.jdread.setting.model.SettingUpdateModel;
 import com.onyx.jdread.setting.model.SystemUpdateData;
-import com.onyx.jdread.setting.utils.TimeUtils;
+import com.onyx.jdread.util.TimeUtils;
 import com.onyx.jdread.setting.utils.UpdateUtil;
-import com.onyx.jdread.setting.utils.Utils;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;

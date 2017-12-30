@@ -180,4 +180,21 @@
     <string name="the_book_unsupported_try_read">抱歉,该图书不支持试读!</string>
     <string name="the_book_unsupported_fluent_read">抱歉,该图书不支持畅读!</string>
     <string name="you_unsupported_fluent_read">抱歉,您不支持畅读该书!</string>
+    <string name="top_up">充值</string>
+    <string name="consumption_record">消费记录</string>
+    <string name="paid_record">充值记录</string>
+    <string name="read_vip">畅读VIP</string>
+    <string name="points_for">积分兑换</string>
+    <string name="top_up_tips">1元=100阅豆，首次充值返等值代金券</string>
+    <string name="current_balance">当前余额：%1$d阅豆 | %2$d代金券</string>
+    <string name="read_bean">阅豆</string>
+    <string name="vouchers">代金券</string>
+    <string name="available_read">可用畅读</string>
+    <string name="integral">积分</string>
+    <string name="in_number_days">入驻天数</string>
+    <string name="cumulative_reading">累计阅读</string>
+    <string name="finish_read">读完的书</string>
+    <string name="read_note">阅读笔记</string>
+    <string name="switch_book">换一本</string>
+    <string name="receive">领取</string>
 </resources>
