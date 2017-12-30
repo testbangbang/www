@@ -4,7 +4,7 @@
     <data>
         <variable
             name="titleModel"
-            type="com.onyx.jdread.model.TitleBarModel"/>
+            type="com.onyx.jdread.main.model.TitleBarModel"/>
     </data>
 
     <LinearLayout

@@ -1,6 +1,6 @@
 package com.onyx.jdread.shop.cloud.api;
 
-import com.onyx.jdread.common.AppBaseInfo;
+import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 

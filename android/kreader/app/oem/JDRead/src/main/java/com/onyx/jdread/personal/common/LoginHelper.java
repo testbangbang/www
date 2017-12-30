@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.databinding.DialogUserLoginBinding;
 import com.onyx.jdread.personal.action.UserInfoAction;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;

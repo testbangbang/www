@@ -1,7 +1,7 @@
 package com.onyx.jdread.personal.model;
 
 import com.onyx.android.sdk.data.DataManager;
-import com.onyx.jdread.common.AppBaseInfo;
+import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 
 import org.greenrobot.eventbus.EventBus;

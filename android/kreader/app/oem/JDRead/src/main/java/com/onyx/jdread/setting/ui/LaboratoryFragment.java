@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.LaboratoryModel;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentLaboratoryBinding;
 import com.onyx.jdread.setting.model.SettingBundle;
 

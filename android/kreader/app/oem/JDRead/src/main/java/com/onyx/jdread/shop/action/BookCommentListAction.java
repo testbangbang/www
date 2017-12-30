@@ -3,7 +3,7 @@ package com.onyx.jdread.shop.action;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.cloud.entity.BookCommentsRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CommentEntity;

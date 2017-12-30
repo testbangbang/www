@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.library.event.BackToLibraryFragmentEvent;
-import com.onyx.jdread.model.TitleBarModel;
+import com.onyx.jdread.main.model.TitleBarModel;
 
 import java.util.Observable;
 

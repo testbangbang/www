@@ -1,7 +1,7 @@
 package com.onyx.jdread.shop.cloud.cache;
 
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.CommonUtils;
+import com.onyx.jdread.main.common.CommonUtils;
 
 import java.io.IOException;
 

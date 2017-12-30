@@ -2,7 +2,7 @@ package com.onyx.jdread.setting.model;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.model.TitleBarModel;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.event.ContactUsEvent;
 import com.onyx.jdread.setting.event.FeedbackEvent;

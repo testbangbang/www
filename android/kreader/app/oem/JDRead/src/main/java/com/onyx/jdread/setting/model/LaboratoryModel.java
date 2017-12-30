@@ -5,8 +5,8 @@ import android.databinding.ObservableBoolean;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.event.ShowBackTabEvent;
-import com.onyx.jdread.model.TitleBarModel;
+import com.onyx.jdread.main.event.ShowBackTabEvent;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 
 import org.greenrobot.eventbus.EventBus;

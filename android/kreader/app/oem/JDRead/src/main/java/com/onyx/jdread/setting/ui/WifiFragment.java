@@ -1,7 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiConfiguration;
 import android.os.Build;
@@ -23,7 +22,7 @@ import com.onyx.android.sdk.wifi.WifiAdmin;
 import com.onyx.android.sdk.wifi.WifiUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.WifiBinding;
 import com.onyx.jdread.setting.adapter.WifiSettingAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;

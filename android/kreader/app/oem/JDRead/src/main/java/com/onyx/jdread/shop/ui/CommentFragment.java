@@ -14,8 +14,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.databinding.FragmentBookCommentBinding;
 import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
@@ -31,7 +31,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import static com.onyx.jdread.common.Constants.PAGE_STEP;
+import static com.onyx.jdread.main.common.Constants.PAGE_STEP;
 
 /**
  * Created by jackdeng on 2017/12/18.

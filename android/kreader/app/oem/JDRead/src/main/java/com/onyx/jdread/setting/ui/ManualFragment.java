@@ -7,9 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentManualBinding;
-import com.onyx.jdread.model.TitleBarModel;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.event.BackToHelpFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 
