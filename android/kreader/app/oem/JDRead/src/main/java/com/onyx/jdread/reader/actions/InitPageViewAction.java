@@ -8,7 +8,7 @@ import com.onyx.jdread.reader.request.InitFirstPageViewRequest;
  * Created by huxiaomao on 2017/12/22.
  */
 
-public class InitPageViewAction extends BaseAction {
+public class InitPageViewAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {

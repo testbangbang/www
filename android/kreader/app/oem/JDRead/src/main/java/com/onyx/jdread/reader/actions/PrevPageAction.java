@@ -12,7 +12,7 @@ import com.onyx.jdread.reader.request.PreviousScreenRequest;
  * Created by huxiaomao on 2017/12/25.
  */
 
-public class PrevPageAction extends BaseAction {
+public class PrevPageAction extends BaseReaderAction {
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
         PreviousScreenRequest previousScreenRequest = new PreviousScreenRequest(readerDataHolder);
