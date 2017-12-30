@@ -16,7 +16,7 @@ public class InitPageViewAction extends BaseAction {
         initFirstPageViewRequest.execute(new RxCallback() {
             @Override
             public void onNext(Object o) {
-                //
+
             }
 
             @Override

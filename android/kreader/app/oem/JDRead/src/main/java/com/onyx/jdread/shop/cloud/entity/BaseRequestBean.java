@@ -1,7 +1,7 @@
 package com.onyx.jdread.shop.cloud.entity;
 
 
-import com.onyx.jdread.common.AppBaseInfo;
+import com.onyx.jdread.main.common.AppBaseInfo;
 
 /**
  * Created by huxiaomao on 2016/12/19.

@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.request.NextScreenRequest;
 
@@ -15,7 +14,7 @@ import com.onyx.jdread.reader.request.NextScreenRequest;
 
 public class NextPageAction extends BaseAction {
     @Override
-    public void execute(ReaderDataHolder readerDataHolder) {
+    public void execute(final ReaderDataHolder readerDataHolder) {
         NextScreenRequest nextScreenRequest = new NextScreenRequest(readerDataHolder);
         nextScreenRequest.execute(new RxCallback() {
             @Override

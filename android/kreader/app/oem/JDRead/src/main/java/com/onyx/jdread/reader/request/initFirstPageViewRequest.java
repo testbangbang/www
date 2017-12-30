@@ -27,12 +27,7 @@ public class InitFirstPageViewRequest extends ReaderBaseRequest {
     public InitFirstPageViewRequest call() throws Exception {
         updateView();
         initPosition();
-        RectF displayRect = new RectF(0, 0, width, height);
-        RectF pageRect = new RectF(displayRect);
-        RectF visibleRect = new RectF(pageRect);
-        Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-        readerDataHolder.getReader().getReaderHelper().getRenderer().draw("0", 0, 0, displayRect, pageRect, visibleRect, bitmap);
-        readerDataHolder.getReaderViewHelper().draw(bitmap);
+        readerDataHolder.getReaderViewHelper().updatePageView(readerDataHolder);
         return this;
     }
 

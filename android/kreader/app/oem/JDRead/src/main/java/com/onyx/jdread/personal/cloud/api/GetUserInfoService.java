@@ -1,6 +1,6 @@
 package com.onyx.jdread.personal.cloud.api;
 
-import com.onyx.jdread.common.AppBaseInfo;
+import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.personal.common.CloudApiContext;
 

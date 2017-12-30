@@ -1,7 +1,7 @@
 package com.onyx.jdread.personal.cloud.entity;
 
 
-import com.onyx.jdread.common.AppBaseInfo;
+import com.onyx.jdread.main.common.AppBaseInfo;
 
 /**
  * Created by 12 on 2017/3/31.

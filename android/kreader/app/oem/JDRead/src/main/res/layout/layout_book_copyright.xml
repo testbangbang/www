@@ -4,7 +4,7 @@
 
     <data>
 
-        <import type="com.onyx.jdread.common.CommonUtils" />
+        <import type="com.onyx.jdread.main.common.CommonUtils" />
 
         <variable
             name="bookDetailViewModel"

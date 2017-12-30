@@ -1,7 +1,6 @@
 package com.onyx.jdread.setting.ui;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,7 +13,7 @@ import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.RefreshBinding;
 import com.onyx.jdread.setting.adapter.RefreshAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;

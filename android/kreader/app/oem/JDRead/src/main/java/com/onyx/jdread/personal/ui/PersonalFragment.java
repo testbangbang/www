@@ -11,7 +11,7 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.BaseFragment;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.PersonalBinding;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
 import com.onyx.jdread.personal.event.GiftCenterEvent;

@@ -9,7 +9,7 @@ import com.onyx.android.sdk.data.OnyxDownloadManager;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.R;
-import com.onyx.jdread.common.ToastUtil;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;

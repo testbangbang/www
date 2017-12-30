@@ -1,7 +1,7 @@
 package com.onyx.jdread.personal.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.cloud.entity.UserInfoRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.UserInfoBean;
 import com.onyx.jdread.personal.model.PersonalDataBundle;

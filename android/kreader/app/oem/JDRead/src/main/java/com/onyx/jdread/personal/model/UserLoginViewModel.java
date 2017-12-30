@@ -4,7 +4,7 @@ import android.databinding.ObservableField;
 
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
-import com.onyx.jdread.common.Constants;
+import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
 import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.UserRegisterJDAccountEvent;
