@@ -184,6 +184,9 @@
     <string name="the_book_unsupported_try_read">The book unsupported probation</string>
     <string name="the_book_unsupported_fluent_read">The book unsupported fluent read</string>
     <string name="you_unsupported_fluent_read">You unsupported fluent read</string>
+    <string name="reader_menu_catalog">Catalog</string>
+    <string name="reader_menu_progress">Progress</string>
+    <string name="reader_menu_brightness">Brightness</string>
     <string name="top_up">Top-up</string>
     <string name="consumption_record">Records of consumption</string>
     <string name="paid_record">Records of payment</string>
