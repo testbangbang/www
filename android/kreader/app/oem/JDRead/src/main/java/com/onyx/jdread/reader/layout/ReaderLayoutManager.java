@@ -87,8 +87,7 @@ public class ReaderLayoutManager {
     }
 
     public ImageReflowManager getImageReflowManager() {
-        //return readerHelper.getImageReflowManager();
-        return null;
+        return readerHelper.getImageReflowManager();
     }
 
     public void init()  {
