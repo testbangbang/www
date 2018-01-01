@@ -187,4 +187,21 @@
     <string name="reader_menu_catalog">Catalog</string>
     <string name="reader_menu_progress">Progress</string>
     <string name="reader_menu_brightness">Brightness</string>
+    <string name="top_up">Top-up</string>
+    <string name="consumption_record">Records of consumption</string>
+    <string name="paid_record">Records of payment</string>
+    <string name="read_vip">Read VIP</string>
+    <string name="points_for">Points for</string>
+    <string name="top_up_tips">1 yuan =100 reading beans, and the first recharging equivalent voucher</string>
+    <string name="current_balance">Current balance: %1$d read bean | %2$d vouchers</string>
+    <string name="read_bean">Read bean</string>
+    <string name="vouchers">Vouchers</string>
+    <string name="available_read">Available read</string>
+    <string name="integral">Integral</string>
+    <string name="in_number_days">Stay days</string>
+    <string name="cumulative_reading">cumulative reading</string>
+    <string name="finish_read">Finished read</string>
+    <string name="read_note">Reading notes</string>
+    <string name="switch_book">Switch</string>
+    <string name="receive">Receive</string>
 </resources>

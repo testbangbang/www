@@ -1,4 +1,4 @@
-package com.onyx.jdread.setting.utils;
+package com.onyx.jdread.util;
 
 import java.text.DateFormat;
 import java.text.ParseException;

@@ -15,7 +15,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ItemDeviceConfigBinding;
 import com.onyx.jdread.setting.event.DeviceConfigEvent;
 import com.onyx.jdread.setting.model.DeviceConfigData;
-import com.onyx.jdread.setting.utils.Utils;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 

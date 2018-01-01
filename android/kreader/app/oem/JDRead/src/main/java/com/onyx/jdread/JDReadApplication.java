@@ -16,10 +16,10 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.DataBundle;
-import com.onyx.jdread.setting.utils.UpdateUtil;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -36,6 +36,7 @@ public class JDReadApplication extends MultiDexApplication {
     private DeviceReceiver deviceReceiver = new DeviceReceiver();
     private List<String> mtpBuffer = new ArrayList<>();
     private boolean isUserLogin;
+    private AppBaseInfo appBaseInfo;
 
     @Override
     protected void attachBaseContext(Context context) {
@@ -47,15 +48,6 @@ public class JDReadApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         initConfig();
-        checkLocalUpdatePackage();
-    }
-
-    private void checkLocalUpdatePackage() {
-        int code = PreferenceManager.getIntValue(this, UpdateUtil.DOWNLOAD_UPDATE_CODE, UpdateUtil.DEFAULT_CODE);
-        if (code == UpdateUtil.UPDATE_CODE) {
-            UpdateUtil.deleteUpdateZipFile();
-            PreferenceManager.setIntValue(JDReadApplication.getInstance(), UpdateUtil.DOWNLOAD_UPDATE_CODE, UpdateUtil.DEFAULT_CODE);
-        }
     }
 
     private void initConfig() {
@@ -103,7 +95,7 @@ public class JDReadApplication extends MultiDexApplication {
         return dataBundle;
     }
 
-    public void dealWithMptBuffer() {
+    public void dealWithMtpBuffer() {
         if (CollectionUtils.isNullOrEmpty(mtpBuffer)) {
             return;
         }
@@ -127,5 +119,16 @@ public class JDReadApplication extends MultiDexApplication {
 
     public boolean getLogin() {
         return isUserLogin;
+    }
+
+    public AppBaseInfo getAppBaseInfo() {
+        if (appBaseInfo == null) {
+            synchronized (AppBaseInfo.class) {
+                if (appBaseInfo == null) {
+                    appBaseInfo = new AppBaseInfo();
+                }
+            }
+        }
+        return appBaseInfo;
     }
 }

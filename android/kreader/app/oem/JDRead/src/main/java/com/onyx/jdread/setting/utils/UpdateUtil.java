@@ -19,6 +19,7 @@ import com.onyx.android.sdk.utils.PackageUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.setting.request.RxFirmwareUpdateRequest;
+import com.onyx.jdread.util.Utils;
 
 import java.io.File;
 import java.util.Locale;

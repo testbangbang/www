@@ -284,7 +284,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe
     public void onUsbDisconnectedEvent(UsbDisconnectedEvent event) {
-        JDReadApplication.getInstance().dealWithMptBuffer();
+        JDReadApplication.getInstance().dealWithMtpBuffer();
     }
 
     @Subscribe

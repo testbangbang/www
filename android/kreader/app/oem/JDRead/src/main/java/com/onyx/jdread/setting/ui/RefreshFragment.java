@@ -20,7 +20,7 @@ import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingRefreshModel;
 import com.onyx.jdread.setting.model.SettingTitleModel;
-import com.onyx.jdread.setting.utils.ScreenUtils;
+import com.onyx.jdread.util.ScreenUtils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
