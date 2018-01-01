@@ -29,6 +29,7 @@ import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxModifyLibraryRequest;
 import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
+import com.onyx.android.sdk.data.utils.ThumbnailUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.TestUtils;
@@ -435,7 +436,7 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
             int to = getRandomInt(list.size() - 1, from);
             final List<Metadata> metadataList = generateMetadata(dataManager, getContext(), total, tag, title, author, series);
             List<DataModel> dataModels = new ArrayList<>();
-            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null, null, R.drawable.book_default_cover);
+            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModels, metadataList, null, null, ThumbnailUtils.defaultThumbnailMapping());
             final RxLibraryMoveToRequest request = new RxLibraryMoveToRequest(dataManager, list.get(from), list.get(to), dataModels);
 
             request.execute(new RxCallback<RxLibraryMoveToRequest>() {

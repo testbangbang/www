@@ -28,6 +28,7 @@ import com.onyx.android.sdk.data.provider.DataProviderManager;
 import com.onyx.android.sdk.data.provider.LocalDataProvider;
 import com.onyx.android.sdk.data.provider.RemoteDataProvider;
 import com.onyx.android.sdk.data.request.data.db.LibraryClearRequest;
+import com.onyx.android.sdk.data.rxrequest.data.db.RxRequestLoadDirectoryMetadata;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryDeleteRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryLoadRequest;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxMetadataRequest;
@@ -53,6 +54,7 @@ import org.greenrobot.eventbus.EventBus;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,6 +68,8 @@ import java.util.concurrent.CountDownLatch;
 import static com.onyx.android.sdk.utils.DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMMSS;
 import static com.onyx.android.sdk.utils.TestUtils.defaultContentTypes;
 import static com.onyx.android.sdk.utils.TestUtils.generateRandomFile;
+import static com.onyx.android.sdk.utils.TestUtils.generateRandomFolder;
+import static com.onyx.android.sdk.utils.TestUtils.randInt;
 import static com.onyx.android.sdk.utils.TestUtils.randString;
 import static com.onyx.android.sdk.utils.TestUtils.randomStringList;
 
@@ -511,7 +515,11 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
             final int index = i;
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Benchmark benchMark = new Benchmark();
-            RxRemoveFromLibraryRequest removeRequest = new RxRemoveFromLibraryRequest(dataManager, library, list);
+            DataModel dataModel = new DataModel(EventBus.getDefault());
+            dataModel.idString.set(library.getIdString());
+            List<DataModel> dataModelList = new ArrayList<>();
+            DataModelUtil.metadataToDataModel(EventBus.getDefault(), dataModelList, list, null, ThumbnailUtils.defaultThumbnailMapping());
+            RxRemoveFromLibraryRequest removeRequest = new RxRemoveFromLibraryRequest(dataManager, dataModel, dataModelList);
             removeRequest.execute(new RxCallback<RxRemoveFromLibraryRequest>() {
                 @Override
                 public void onNext(RxRemoveFromLibraryRequest removeFromLibraryRequest) {
@@ -1103,6 +1111,82 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         });
 
         countDownLatch.await();
+    }
+
+
+    public void testLoadDirectoryMetadata() throws Exception {
+        DataProviderBase providerBase = getProviderBaseAndClearTable();
+        clearTestFolder();
+        final DataManager dataManager = new DataManager();
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        String directory = testFolder();
+        final List<String> targetDirList = new ArrayList<>();
+        final List<Metadata> targetMetadataList = new ArrayList<>();
+        for (int i = 0; i < randInt(10, 20); i++) {
+            if (i % 2 == 0) {
+                File file = generateRandomFolder(directory);
+                if (randInt(0, 1) == 0) {
+                    randomMetadata(file.getAbsolutePath(), true);
+                    targetDirList.add(file.getAbsolutePath());
+                }
+            } else {
+                Metadata metadata = randomMetadata(directory, true);
+                providerBase.saveMetadata(getContext(), metadata);
+                targetMetadataList.add(metadata);
+            }
+        }
+        Set<String> set = new HashSet<>();
+        set.add("/storage/sdcard/Android");
+        RxRequestLoadDirectoryMetadata directoryMetadata = new RxRequestLoadDirectoryMetadata(dataManager, directory, set);
+        RxRequestLoadDirectoryMetadata.setAppContext(getContext());
+        directoryMetadata.execute(new RxCallback<RxRequestLoadDirectoryMetadata>() {
+            @Override
+            public void onNext(RxRequestLoadDirectoryMetadata requestLoadDirectoryMetadata) {
+                List<DataModel> targetList = new ArrayList<>();
+                List<DataModel> list = new ArrayList<>();
+                List<Metadata> metadataList = requestLoadDirectoryMetadata.getMetadataList();
+                Map<String, CloseableReference<Bitmap>> map = DataManagerHelper.loadThumbnailBitmapsWithCache(getContext(), dataManager, metadataList);
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), targetList, targetMetadataList, map, ThumbnailUtils.defaultThumbnailMapping());
+                DataModelUtil.metadataToDataModel(EventBus.getDefault(), list, metadataList, map, ThumbnailUtils.defaultThumbnailMapping());
+                RxLibraryTest.assertListEqual(targetList, list);
+                Set<String> dirPathSet = requestLoadDirectoryMetadata.getDirPathSet();
+                assertStringListEqual(targetDirList, dirPathSet);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                assertNull(throwable);
+                countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
+
+    public static boolean assertStringListEqual(Collection<String> sourceList, Collection<String> list) {
+        if (CollectionUtils.isNullOrEmpty(sourceList) || CollectionUtils.isNullOrEmpty(list)) {
+            return false;
+        }
+        if (sourceList.size() != list.size()) {
+            return false;
+        }
+        try {
+            for (String sourceString : sourceList) {
+                boolean have = false;
+                for (String string : list) {
+                    if (sourceString.equals(string)) {
+                        have = true;
+                    }
+                }
+                if (!have) {
+                    return false;
+                }
+            }
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     private void assertRecentlyRead(List<Metadata> metadataList) {
