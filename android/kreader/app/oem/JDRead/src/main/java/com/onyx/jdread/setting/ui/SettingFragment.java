@@ -19,6 +19,7 @@ import com.onyx.jdread.setting.event.IntensityEvent;
 import com.onyx.jdread.setting.event.LaboratoryEvent;
 import com.onyx.jdread.setting.event.RefreshEvent;
 import com.onyx.jdread.setting.event.ScreenEvent;
+import com.onyx.jdread.setting.event.ToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.WireLessEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingDataModel;
@@ -38,7 +39,7 @@ public class SettingFragment extends BaseFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = (SettingBinding)DataBindingUtil.inflate(inflater, R.layout.fragment_setting, container, false);
+        binding = (SettingBinding) DataBindingUtil.inflate(inflater, R.layout.fragment_setting, container, false);
         initView();
         initData();
         return binding.getRoot();
@@ -101,5 +102,10 @@ public class SettingFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFeedbackEvent(FeedbackEvent event) {
         viewEventCallBack.gotoView(HelpFragment.class.getName());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onToDeviceConfigEvent(ToDeviceConfigEvent event) {
+        viewEventCallBack.gotoView(DeviceConfigFragment.class.getName());
     }
 }

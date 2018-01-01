@@ -197,4 +197,5 @@
     <string name="read_note">阅读笔记</string>
     <string name="switch_book">换一本</string>
     <string name="receive">领取</string>
+    <string name="being_set_up">正在设置</string>
 </resources>

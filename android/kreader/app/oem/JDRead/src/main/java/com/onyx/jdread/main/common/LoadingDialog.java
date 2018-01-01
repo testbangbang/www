@@ -1,64 +1,73 @@
 package com.onyx.jdread.main.common;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.util.DisplayMetrics;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
+import android.databinding.ObservableField;
+import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
 import android.view.WindowManager;
 
-import com.onyx.android.sdk.ui.R;
-import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
-import com.onyx.jdread.databinding.DialogLoadingBinding;
+import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.LoadingDialogLayoutBinding;
 
-public class LoadingDialog extends OnyxBaseDialog {
-    private static final String TAG = LoadingDialog.class.getSimpleName();
-    private DialogLoadingBinding dialogLoadingBinding;
+import java.util.Observable;
 
-    public LoadingDialog(Context context, String msg, boolean enableCancel) {
-        super(context, R.style.dialog_progress);
-        dialogLoadingBinding = DataBindingUtil.inflate(LayoutInflater.from(context), R.layout.dialog_loading, (ViewGroup) getWindow().getDecorView().getRootView(), true);
-        setToastViewMaxWidth(getPercentageWidth(context));
-        setCanceledOnTouchOutside(enableCancel);
-        if (msg != null) {
-            setToastMessage(msg);
+
+/**
+ * Created by 12 on 2016/12/14.
+ */
+
+public class LoadingDialog extends Dialog {
+    private LoadingDialog(Context context) {
+        super(context);
+    }
+
+    private LoadingDialog(Context context, int themeResId) {
+        super(context, themeResId);
+    }
+
+    public static class Builder {
+        private Context context;
+        private DialogModel model;
+
+        public Builder(Context context, DialogModel model) {
+            this.context = context;
+            this.model = model;
+        }
+
+        public LoadingDialog create() {
+            final LoadingDialog dialog = new LoadingDialog(context, R.style.CustomDialogStyle);
+            LoadingDialogLayoutBinding bind = DataBindingUtil.bind(View.inflate(context, R.layout.loading_dialog_layout, null));
+            bind.setLoadingModel(model);
+            dialog.setContentView(bind.getRoot());
+            return dialog;
         }
     }
 
-    public LoadingDialog(Context context, int msgResID, boolean enableCancel) {
-        this(context, context.getResources().getString(msgResID), enableCancel);
-    }
+    public static class DialogModel extends Observable {
+        private final ObservableField<String> loadingText = new ObservableField<>(JDReadApplication.getInstance().getString(R.string.loading));
 
-    public LoadingDialog(Context context, boolean enableCancel) {
-        this(context, null, enableCancel);
-    }
+        public String getLoadingText() {
+            return loadingText.get();
+        }
 
-    public void setToastMessage(String msg) {
-        dialogLoadingBinding.dialogMessage.setText(msg);
-    }
-
-    public void setToastMessage(int msgResID) {
-        setToastMessage(getContext().getResources().getString(msgResID));
+        public void setLoadingText(String s) {
+            loadingText.set(s);
+        }
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            cancel();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
-    }
-
-    public void setToastViewMaxWidth(int width) {
-        dialogLoadingBinding.dialogMessage.setMaxWidth(width);
-    }
-
-    private int getPercentageWidth(Context context) {
-        DisplayMetrics dm = new DisplayMetrics();
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        wm.getDefaultDisplay().getMetrics(dm);
-        return (dm.widthPixels * 5 / 10);
+    public void show() {
+        Window window = getWindow();
+        window.setGravity(Gravity.CENTER);
+        WindowManager.LayoutParams attributes = window.getAttributes();
+        attributes.width = getContext().getResources().getInteger(R.integer.loading_dialog_width);
+        attributes.height = getContext().getResources().getInteger(R.integer.loading_dialog_height);
+        window.setAttributes(attributes);
+        window.setType(WindowManager.LayoutParams.TYPE_SYSTEM_ALERT);
+        super.show();
     }
 }

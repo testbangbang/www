@@ -9,6 +9,8 @@ import android.support.v4.app.Fragment;
 
 public class BaseFragment extends Fragment {
     protected ChildViewEventCallBack viewEventCallBack = null;
+    private LoadingDialog loadingDialog;
+    private LoadingDialog.DialogModel loadingModel;
 
     public interface ChildViewEventCallBack {
         void gotoView(String childClassName);
@@ -30,5 +32,23 @@ public class BaseFragment extends Fragment {
 
     protected ChildViewEventCallBack getViewEventCallBack() {
         return viewEventCallBack;
+    }
+
+    public void showLoadingDialog(String loadingText) {
+        if (loadingModel == null) {
+            loadingModel = new LoadingDialog.DialogModel();
+        }
+        loadingModel.setLoadingText(loadingText);
+        if (loadingDialog == null) {
+            LoadingDialog.Builder builder = new LoadingDialog.Builder(getContext().getApplicationContext(), loadingModel);
+            loadingDialog = builder.create();
+        }
+        loadingDialog.show();
+    }
+
+    public void hideLoadingDialog() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 }

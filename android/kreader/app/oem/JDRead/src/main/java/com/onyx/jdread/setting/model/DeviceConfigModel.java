@@ -1,6 +1,7 @@
 package com.onyx.jdread.setting.model;
 
 import com.onyx.android.sdk.utils.FileUtils;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.setting.event.DeviceConfigEvent;
@@ -22,7 +23,7 @@ import java.util.Map;
 
 public class DeviceConfigModel {
     private List<DeviceConfigData> deviceConfigDataList = new ArrayList<>();
-    private Map<String, DeviceConfigEvent> configEvents = new HashMap<String, DeviceConfigEvent>(){
+    private Map<String, DeviceConfigEvent> configEvents = new HashMap<String, DeviceConfigEvent>() {
         {
             put(JDReadApplication.getInstance().getResources().getString(R.string.screen_saver), new ScreenSaverEvent());
             put(JDReadApplication.getInstance().getResources().getString(R.string.password), new PasswordEvent());
@@ -53,6 +54,9 @@ public class DeviceConfigModel {
         }
 
         String localPath = UpdateUtil.checkLocalPackage();
+        if (StringUtils.isNullOrEmpty(localPath)) {
+            return;
+        }
         if (FileUtils.fileExist(localPath) || FileUtils.fileExist(UpdateUtil.getApkUpdateFile())) {
             DeviceConfigData deviceConfigData = deviceConfigDataList.get(deviceConfigDataList.size() - 1);
             deviceConfigData.setUpdateRecord("1");

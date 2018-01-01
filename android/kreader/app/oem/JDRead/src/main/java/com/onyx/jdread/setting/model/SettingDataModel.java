@@ -2,7 +2,6 @@ package com.onyx.jdread.setting.model;
 
 import android.content.res.TypedArray;
 import android.databinding.BaseObservable;
-import android.databinding.Observable;
 import android.databinding.ObservableField;
 import android.os.Build;
 
@@ -13,6 +12,7 @@ import com.onyx.jdread.setting.event.IntensityEvent;
 import com.onyx.jdread.setting.event.LaboratoryEvent;
 import com.onyx.jdread.setting.event.RefreshEvent;
 import com.onyx.jdread.setting.event.ScreenEvent;
+import com.onyx.jdread.setting.event.ToDeviceConfigEvent;
 import com.onyx.jdread.setting.event.WireLessEvent;
 
 import java.util.ArrayList;
@@ -78,5 +78,9 @@ public class SettingDataModel extends BaseObservable {
             data.setSettingImage(images[i]);
             itemData.add(data);
         }
+    }
+
+    public void deviceConfig(){
+        SettingBundle.getInstance().getEventBus().post(new ToDeviceConfigEvent());
     }
 }
