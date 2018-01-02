@@ -34,8 +34,10 @@ import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function3;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -126,7 +128,7 @@ public class RequestTest extends ApplicationTestCase<Application> {
 
     static public class MyRxRequest {
 
-        private int value = 0;
+        private volatile int value = 0;
         public MyRxRequest() {
         }
 
@@ -183,10 +185,10 @@ public class RequestTest extends ApplicationTestCase<Application> {
             return (benchmark.duration());
         }
 
-        public Observable<MyRxRequest> create(final MyRxRequest request) {
-            io.reactivex.Observable<MyRxRequest> observable = io.reactivex.Observable.fromCallable(new Callable<MyRxRequest>() {
+        public <T extends MyRxRequest>  Observable<T> create(final T request) {
+            io.reactivex.Observable<T> observable = io.reactivex.Observable.fromCallable(new Callable<T>() {
                 @Override
-                public MyRxRequest call() throws Exception {
+                public T call() throws Exception {
                     benchmarkStart();
                     request.execute();
                     benchmarkEnd();
@@ -212,7 +214,7 @@ public class RequestTest extends ApplicationTestCase<Application> {
             return wakeLockHolder.isHeld();
         }
 
-        public void enqueue(final MyRxRequest request, final RxCallback<MyRxRequest> callback) {
+        public <T extends MyRxRequest> void enqueue(final T request, final RxCallback<T> callback) {
             acquireWakelock(request.getClass().getSimpleName());
             create(request)
                     .subscribeOn(Schedulers.from(singleThreadPool))
@@ -223,9 +225,9 @@ public class RequestTest extends ApplicationTestCase<Application> {
                             releaseWakelock();
                             callback.onFinally();
                         }})
-                    .subscribe(new Consumer<MyRxRequest>() {
+                    .subscribe(new Consumer<T>() {
                                    @Override
-                                   public void accept(MyRxRequest o) throws Exception {
+                                   public void accept(T o) throws Exception {
                                        callback.onNext(request);
                                    }
                                }, new Consumer<Throwable>() {
@@ -241,10 +243,10 @@ public class RequestTest extends ApplicationTestCase<Application> {
                                });
         }
 
-        public void concat(final List<MyRxRequest> requests,
-                           final RxCallback<MyRxRequest> callback) {
-            final List<Observable<MyRxRequest>> list = new ArrayList<>();
-            for(MyRxRequest rxRequest : requests) {
+        public <T extends MyRxRequest> void concat(final List<T> requests,
+                           final RxCallback<T> callback) {
+            final List<Observable<T>> list = new ArrayList<>();
+            for(T rxRequest : requests) {
                 list.add(create(rxRequest));
             }
             acquireWakelock(list.getClass().getSimpleName());
@@ -258,9 +260,9 @@ public class RequestTest extends ApplicationTestCase<Application> {
                             callback.onFinally();
                         }
                     })
-                    .subscribe(new Consumer<MyRxRequest>() {
+                    .subscribe(new Consumer<T>() {
                         @Override
-                        public void accept(MyRxRequest o) throws Exception {
+                        public void accept(T o) throws Exception {
                             callback.onNext(o);
                         }
                     }, new Consumer<Throwable>() {
@@ -276,7 +278,43 @@ public class RequestTest extends ApplicationTestCase<Application> {
                     });
         }
 
-
+        public <T1 extends MyRxRequest, T2 extends MyRxRequest, T3 extends MyRxRequest, T4> void zip3(
+                final T1 r1,
+                final T2 r2,
+                final T3 r3,
+                final Function3<T1, T2, T3, T4> function3,
+                final RxCallback<T4> callback) {
+            final Observable<T1> observable1 = create(r1);
+            final Observable<T2> observable2 = create(r2);
+            final Observable<T3> observable3 = create(r3);
+            Observable
+                    .zip(observable1, observable2, observable3, function3)
+                    .subscribeOn(Schedulers.from(singleThreadPool))
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doFinally(new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            releaseWakelock();
+                            callback.onFinally();
+                        }
+                    })
+                    .subscribe(new Consumer<T4>() {
+                        @Override
+                        public void accept(T4 o) throws Exception {
+                            callback.onNext(o);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(Throwable throwable) throws Exception {
+                            callback.onError(throwable);
+                        }
+                    }, new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            callback.onComplete();
+                        }
+                    });
+        }
 
     }
 
@@ -338,6 +376,40 @@ public class RequestTest extends ApplicationTestCase<Application> {
                 assertTrue(true);
                 countDownLatch.countDown();
                 assertTrue(rxManager.isWakelockHeld());
+            }
+
+            @Override
+            public void onFinally() {
+                countDownLatch.countDown();
+                assertFalse(rxManager.isWakelockHeld());
+            }
+        });
+        awaitCountDownLatch(countDownLatch);
+    }
+
+    public void test2RxZip() {
+        final CountDownLatch countDownLatch = new CountDownLatch(2);
+        final MyRxRequest r1 = new MyRxRequest(TestUtils.randInt(10, 100) + 1000);
+        final MyRxRequest r2 = new MyRxRequest(TestUtils.randInt(10, 100) + 2000);
+        final MyRxRequest r3 = new MyRxRequest(TestUtils.randInt(10, 100) + 3000);
+        final RxManager rxManager = new RxManager(getContext());
+        rxManager.zip3(r1, r2, r3,
+                new Function3<MyRxRequest, MyRxRequest, MyRxRequest, Integer>() {
+                    @Override
+                    public Integer apply(@NonNull MyRxRequest request, @NonNull MyRxRequest request2, @NonNull MyRxRequest request3) throws Exception {
+                        return Math.max(Math.max(request.getValue(), request2.getValue()), request3.getValue());
+                    }
+                },
+            new RxCallback<Integer>() {
+            @Override
+            public void onNext(Integer value) {
+                assertTrue(value == Math.max(Math.max(r1.getValue(), r2.getValue()), r3.getValue()));
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                assertTrue(false);
             }
 
             @Override
@@ -430,7 +502,7 @@ public class RequestTest extends ApplicationTestCase<Application> {
 
             @Override
             public void onComplete() {
-                assertTrue(false);
+                // assertTrue(false);
             }
 
             public void onError(Throwable throwable) {
