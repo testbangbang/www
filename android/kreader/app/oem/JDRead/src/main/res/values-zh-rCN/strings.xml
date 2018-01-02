@@ -200,13 +200,10 @@
     <string name="read_note">阅读笔记</string>
     <string name="switch_book">换一本</string>
     <string name="receive">领取</string>
-<<<<<<< HEAD
     <string name="being_set_up">正在设置</string>
-=======
     <string name="add_to_smooth_list_failed">加入畅读列表失败</string>
     <string name="all_category_title_publish">出版</string>
     <string name="all_category_title_boy">男生</string>
     <string name="all_category_title_girl">女生</string>
     <string name="all_category">全部分类</string>
->>>>>>> 6cf18b2e1c2f5e669653f9f7b7e48233b3300b84
 </resources>
