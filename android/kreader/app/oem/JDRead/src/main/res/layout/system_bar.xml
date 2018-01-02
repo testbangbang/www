@@ -15,6 +15,7 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:paddingBottom="5dp"
+        android:background="@android:color/white"
         android:visibility="@{systemBarModel.isShow?View.VISIBLE:View.GONE}">
 
         <LinearLayout
