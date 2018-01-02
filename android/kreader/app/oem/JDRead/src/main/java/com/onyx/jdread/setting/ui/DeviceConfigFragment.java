@@ -99,8 +99,7 @@ public class DeviceConfigFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemUpdateEvent(SystemUpdateEvent event) {
-        DeviceConfigData deviceConfigData = event.getDeviceConfigData();
-        // TODO: 2017/12/25  
+        viewEventCallBack.gotoView(SystemUpdateFragment.class.getName());
     }
 
     @Subscribe
