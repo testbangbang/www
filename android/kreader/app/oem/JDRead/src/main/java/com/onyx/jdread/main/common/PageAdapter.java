@@ -1,4 +1,4 @@
-package com.onyx.jdread.library.adapter;
+package com.onyx.jdread.main.common;
 
 import android.content.Context;
 import android.databinding.BaseObservable;

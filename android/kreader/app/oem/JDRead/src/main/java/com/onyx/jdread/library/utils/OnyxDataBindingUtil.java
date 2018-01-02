@@ -14,7 +14,7 @@ import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
-import com.onyx.jdread.library.adapter.PageAdapter;
+import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.library.view.CustomScrollBar;
 
 

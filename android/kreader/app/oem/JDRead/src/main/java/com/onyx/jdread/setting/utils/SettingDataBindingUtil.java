@@ -5,7 +5,7 @@ import android.widget.ImageView;
 
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
-import com.onyx.jdread.library.adapter.PageAdapter;
+import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.shop.common.ManageImageCache;
 
 import java.util.List;

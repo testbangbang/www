@@ -60,7 +60,7 @@ public class SettingDataModel extends BaseObservable {
     private void loadDeviceInfo() {
         deviceModel.set(Build.MODEL);
         deviceVersion.set(String.format(JDReadApplication.getInstance().getString(R.string.device_setting_version_number),Build.DISPLAY));
-        deviceSerial.set(String.format(JDReadApplication.getInstance().getString(R.string.device_setting_serial_number),Build.DISPLAY));
+        deviceSerial.set(String.format(JDReadApplication.getInstance().getString(R.string.device_setting_serial_number),Build.SERIAL));
     }
 
     private void loadSettingItem() {
