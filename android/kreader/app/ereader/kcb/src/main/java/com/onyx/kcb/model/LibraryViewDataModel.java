@@ -48,6 +48,7 @@ public class LibraryViewDataModel extends Observable {
     private QueryArgs queryArgs;
     private List<DataModel> listSelected = new ArrayList<>();
     private EventBus eventBus;
+    private boolean selectAll;
 
     public LibraryViewDataModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -249,5 +250,9 @@ public class LibraryViewDataModel extends Observable {
     public void updateFilterBy(BookFilter bookFilter, SortOrder sortOrder) {
         queryArgs.filter = bookFilter;
         queryArgs.order = sortOrder;
+    }
+
+    public boolean isSelectAll() {
+        return selectAll;
     }
 }

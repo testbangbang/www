@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.FragmentManager;
 
 import com.onyx.android.sdk.data.model.DataModel;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.rxrequest.data.db.RxLibraryMoveToRequest;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
@@ -20,11 +21,11 @@ import java.util.List;
 public class LibraryMoveToAction extends BaseAction<DataBundle> {
 
     private FragmentManager fragmentManager;
-    private List<DataModel> chosenItemsList;
+    private List<Metadata> chosenItemsList;
 
     private RxCallback baseCallback;
 
-    public LibraryMoveToAction(Activity activity, List<DataModel> list) {
+    public LibraryMoveToAction(Activity activity, List<Metadata> list) {
         this.fragmentManager = activity.getFragmentManager();
         this.chosenItemsList = list;
     }

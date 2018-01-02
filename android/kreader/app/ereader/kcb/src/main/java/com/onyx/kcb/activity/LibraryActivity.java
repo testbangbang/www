@@ -16,7 +16,9 @@ import com.onyx.android.sdk.data.event.ItemClickEvent;
 import com.onyx.android.sdk.data.event.ItemLongClickEvent;
 import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.data.model.Library;
+import com.onyx.android.sdk.data.model.Metadata;
 import com.onyx.android.sdk.data.model.ModelType;
+import com.onyx.android.sdk.data.utils.DataModelUtil;
 import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.device.EnvironmentUtil;
 import com.onyx.android.sdk.rx.RxCallback;
@@ -59,6 +61,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -492,7 +495,8 @@ public class LibraryActivity extends OnyxAppCompatActivity {
 
     private void processAddToLibrary() {
         List<DataModel> listSelected = dataBundle.getLibraryViewDataModel().getListSelected();
-        LibraryMoveToAction libraryMoveToAction = new LibraryMoveToAction(this, listSelected);
+        List<Metadata> metadataList = DataModelUtil.dataModelToMetadata(listSelected);
+        LibraryMoveToAction libraryMoveToAction = new LibraryMoveToAction(this, metadataList);
         libraryMoveToAction.execute(dataBundle, new RxCallback() {
             @Override
             public void onNext(Object o) {
