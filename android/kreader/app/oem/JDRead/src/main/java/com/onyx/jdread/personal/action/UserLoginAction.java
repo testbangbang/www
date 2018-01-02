@@ -36,6 +36,7 @@ public class UserLoginAction extends BaseAction {
     private Context context;
     private String account;
     private String password;
+    private RxCallback rxCallback;
 
     public UserLoginAction(Context context, String account, String password) {
         this.context = context;
@@ -45,6 +46,7 @@ public class UserLoginAction extends BaseAction {
 
     @Override
     public void execute(PersonalDataBundle dataBundle, RxCallback rxCallback) {
+        this.rxCallback = rxCallback;
         checkLoginInfo(dataBundle);
     }
 
@@ -120,6 +122,9 @@ public class UserLoginAction extends BaseAction {
         String code = syncLoginInfoBean.getCode();
         if (Constants.LOGIN_CODE_SUCCESS.equals(code)) {
             dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
+            if (rxCallback != null) {
+                rxCallback.onNext(UserLoginAction.class);
+            }
         } else {
             String errorMsg = JDReadApplication.getInstance().getString(R.string.login_fail);
             if (Constants.LOGIN_CODE_PARAMS_ERROR.equals(code)) {

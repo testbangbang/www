@@ -7,6 +7,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.onyx.jdread.R;
+import com.onyx.jdread.shop.common.ManageImageCache;
 
 /**
  * Created by jackdeng on 2017/12/12.
@@ -29,6 +30,13 @@ public class PersonalDatabingUtil {
             } else {
                 editText.setTransformationMethod(PasswordTransformationMethod.getInstance());
             }
+        }
+    }
+
+    @BindingAdapter({"personalImage"})
+    public static void setImageUrl(ImageView view, String url) {
+        if (view != null) {
+            ManageImageCache.loadUrl(url, view, R.drawable.book_default_cover);
         }
     }
 }

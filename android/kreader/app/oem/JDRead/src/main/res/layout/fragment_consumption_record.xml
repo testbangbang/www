@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <data class="GiftCenterBinding">
+    <data class="ConsumptionRecordBinding">
 
     </data>
 
@@ -11,17 +11,34 @@
         android:orientation="vertical">
 
         <include
-            android:id="@+id/gift_center_title_bar"
+            android:id="@+id/consumption_record_title"
             layout="@layout/title_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
-        <com.onyx.android.sdk.ui.view.PageRecyclerView
-            android:id="@+id/gift_center_recycler"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:padding="@dimen/gift_center_recycler_padding" />
+            android:orientation="vertical"
+            android:padding="@dimen/gift_center_recycler_padding">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_width"
+                android:background="@color/divider_color" />
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/consumption_record_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_width"
+                android:background="@color/divider_color" />
+        </LinearLayout>
 
         <TextView
             android:layout_width="wrap_content"

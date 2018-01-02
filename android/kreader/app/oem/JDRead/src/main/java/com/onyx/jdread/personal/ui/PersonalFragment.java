@@ -9,11 +9,13 @@ import android.view.ViewGroup;
 
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
+import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.PersonalBinding;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
+import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.GiftCenterEvent;
 import com.onyx.jdread.personal.event.PersonalAccountEvent;
 import com.onyx.jdread.personal.event.PersonalBookEvent;
@@ -60,12 +62,18 @@ public class PersonalFragment extends BaseFragment {
         binding.personalInformation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                viewEventCallBack.gotoView(PersonalExperienceFragment.class.getSimpleName());
+                viewEventCallBack.gotoView(PersonalExperienceFragment.class.getName());
             }
         });
     }
 
     private void initData() {
+        String imgUrl = LoginHelper.getImgUrl();
+        String userName = LoginHelper.getUserName();
+        if (StringUtils.isNotBlank(imgUrl) && StringUtils.isNotBlank(userName)) {
+            binding.setImageUrl(imgUrl);
+            binding.setUserName(userName);
+        }
         PersonalModel personalModel = PersonalDataBundle.getInstance().getPersonalModel();
         if (personalAdapter != null) {
             personalAdapter.setData(personalModel.getPersonalData(), personalModel.getEvents());
@@ -81,12 +89,12 @@ public class PersonalFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGiftCenterEvent(GiftCenterEvent event) {
-        viewEventCallBack.gotoView(GiftCenterFragment.class.getSimpleName());
+        viewEventCallBack.gotoView(GiftCenterFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPersonalAccountEvent(PersonalAccountEvent event) {
-        viewEventCallBack.gotoView(PersonalAccountFragment.class.getSimpleName());
+        viewEventCallBack.gotoView(PersonalAccountFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

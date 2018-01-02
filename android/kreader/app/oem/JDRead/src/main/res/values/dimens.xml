@@ -171,7 +171,7 @@
     <dimen name="top_up_tips_margin_top">10dp</dimen>
     <dimen name="top_up_tips_margin_left">20dp</dimen>
     <dimen name="top_up_tips_recycler_margin">20dp</dimen>
-    <dimen name="gift_center_recycler_padding">10dp</dimen>
+    <dimen name="gift_center_recycler_padding">20dp</dimen>
     <dimen name="gift_center_page_padding">10dp</dimen>
     <dimen name="personal_account_whole_margin_top">20dp</dimen>
     <dimen name="personal_account_whole_padding">10dp</dimen>
@@ -189,4 +189,17 @@
     <dimen name="personal_experience_recycler_margin_top">20dp</dimen>
     <dimen name="receive_padding">10dp</dimen>
     <dimen name="item_gift_center_detail_margin_top">10dp</dimen>
+    <dimen name="user_image_height">74dp</dimen>
+    <dimen name="login_whole_padding">20dp</dimen>
+    <dimen name="login_account_padding">10dp</dimen>
+    <dimen name="login_account_margin_top">20dp</dimen>
+    <dimen name="login_forget_margin_top">10dp</dimen>
+    <dimen name="login_button_margin_top">30dp</dimen>
+    <dimen name="login_button_padding">10dp</dimen>
+    <dimen name="points_for_whole_padding">10dp</dimen>
+    <dimen name="points_for_whole_margin_top">20dp</dimen>
+    <dimen name="points_for_recycler_height">300dp</dimen>
+    <dimen name="item_consumption_record_date_margin_top">10dp</dimen>
+    <dimen name="item_points_for_points_width">120dp</dimen>
+    <dimen name="item_points_for_points_padding">10dp</dimen>
 </resources>
