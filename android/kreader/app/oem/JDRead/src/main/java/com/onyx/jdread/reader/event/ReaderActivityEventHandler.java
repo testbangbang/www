@@ -1,8 +1,14 @@
 package com.onyx.jdread.reader.event;
 
+import android.app.Activity;
+import android.content.Context;
+
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.actions.NextPageAction;
 import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.actions.ShowSettingMenuAction;
+import com.onyx.jdread.reader.common.ReaderViewBack;
+import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -15,9 +21,11 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class ReaderActivityEventHandler {
     private ReaderViewModel readerViewModel;
+    private ReaderViewBack readerViewBack;
 
-    public ReaderActivityEventHandler(ReaderViewModel readerViewModel) {
+    public ReaderActivityEventHandler(ReaderViewModel readerViewModel,ReaderViewBack readerViewBack) {
         this.readerViewModel = readerViewModel;
+        this.readerViewBack = readerViewBack;
     }
 
     public void registeredLibrary() {
@@ -56,4 +64,17 @@ public class ReaderActivityEventHandler {
     public void onNextPageEvent(NextPageEvent event) {
         new NextPageAction().execute(readerViewModel.getReaderDataHolder());
     }
+
+    @Subscribe
+    public void onShowReaderSettingMenuEvent(ShowReaderSettingMenuEvent event) {
+        if(readerViewBack != null){
+            Activity activity = readerViewBack.getContext();
+            if(activity == null){
+                return;
+            }
+            ReaderSettingMenuDialog readerSettingMenuDialog = new ReaderSettingMenuDialog(readerViewModel.getReaderDataHolder(), activity);
+            readerSettingMenuDialog.show();
+        }
+    }
+
 }

@@ -21,7 +21,7 @@ import java.util.List;
  * Created by jackdeng on 2017/12/12.
  */
 
-public class ShopDatabingUtil {
+public class ShopDataBindingUtil {
 
     @BindingAdapter({"cover"})
     public static void setImageResource(ImageView imageView, String imageUrl) {
@@ -48,6 +48,14 @@ public class ShopDatabingUtil {
 
     @BindingAdapter({"categorySubjectItems"})
     public static void setCategoryItems(PageRecyclerView recyclerView, List items) {
+        CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"categoryItems"})
+    public static void setAllCategoryItems(PageRecyclerView recyclerView, List items) {
         CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());

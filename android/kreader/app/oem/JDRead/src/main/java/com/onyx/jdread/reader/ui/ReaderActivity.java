@@ -1,5 +1,7 @@
 package com.onyx.jdread.reader.ui;
 
+import android.app.Activity;
+import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityReaderBinding;
 import com.onyx.jdread.reader.actions.OpenDocumentAction;
 import com.onyx.jdread.reader.actions.ParserOpenDocumentInfoAction;
+import com.onyx.jdread.reader.common.ReaderViewBack;
 import com.onyx.jdread.reader.event.ReaderActivityEventHandler;
 import com.onyx.jdread.reader.model.ReaderViewModel;
 
@@ -18,7 +21,7 @@ import com.onyx.jdread.reader.model.ReaderViewModel;
  * Created by huxiaomao on 2017/12/7.
  */
 
-public class ReaderActivity extends AppCompatActivity {
+public class ReaderActivity extends AppCompatActivity implements ReaderViewBack {
     private ActivityReaderBinding binding;
     private SurfaceHolder.Callback surfaceHolderCallback;
     private ReaderViewModel readerViewModel;
@@ -36,7 +39,7 @@ public class ReaderActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_reader);
         readerViewModel = new ReaderViewModel();
         binding.setReadViewModel(readerViewModel);
-        readerActivityEventHandler = new ReaderActivityEventHandler(readerViewModel);
+        readerActivityEventHandler = new ReaderActivityEventHandler(readerViewModel,this);
         initSurfaceView();
     }
 
@@ -117,5 +120,10 @@ public class ReaderActivity extends AppCompatActivity {
             }
         }
         return super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public Activity getContext() {
+        return this;
     }
 }

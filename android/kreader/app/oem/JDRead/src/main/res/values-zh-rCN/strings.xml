@@ -180,6 +180,9 @@
     <string name="the_book_unsupported_try_read">抱歉,该图书不支持试读!</string>
     <string name="the_book_unsupported_fluent_read">抱歉,该图书不支持畅读!</string>
     <string name="you_unsupported_fluent_read">抱歉,您不支持畅读该书!</string>
+    <string name="reader_menu_catalog">目录</string>
+    <string name="reader_menu_progress">进度</string>
+    <string name="reader_menu_brightness">亮度</string>
     <string name="top_up">充值</string>
     <string name="consumption_record">消费记录</string>
     <string name="paid_record">充值记录</string>
@@ -197,5 +200,13 @@
     <string name="read_note">阅读笔记</string>
     <string name="switch_book">换一本</string>
     <string name="receive">领取</string>
+<<<<<<< HEAD
     <string name="being_set_up">正在设置</string>
+=======
+    <string name="add_to_smooth_list_failed">加入畅读列表失败</string>
+    <string name="all_category_title_publish">出版</string>
+    <string name="all_category_title_boy">男生</string>
+    <string name="all_category_title_girl">女生</string>
+    <string name="all_category">全部分类</string>
+>>>>>>> 6cf18b2e1c2f5e669653f9f7b7e48233b3300b84
 </resources>

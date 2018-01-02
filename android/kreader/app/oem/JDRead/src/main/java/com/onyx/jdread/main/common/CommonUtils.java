@@ -16,7 +16,7 @@ import java.text.DecimalFormat;
 
 public class CommonUtils {
 
-    private static final String JDBOOK_ROOT = "/JDBooks";
+    private static final String JDBOOK_ROOT = "/Books";
     private static final String WEB_CACHE = "/webcache";
     private static final String LOCAL_JDBOOKS_PATH = Environment.getExternalStorageDirectory().getPath() + JDBOOK_ROOT;
     private static final String LOCAL_WEB_CACHE_PATH = Environment.getExternalStorageDirectory().getPath() + WEB_CACHE;
@@ -51,5 +51,30 @@ public class CommonUtils {
 
     public static String getYueDouPrice(float price) {
         return String.valueOf(new DecimalFormat("0").format(price * 100));
+    }
+
+    public static String array2String(String[] bookIds) {
+        StringBuilder stringBuilder = new StringBuilder();
+        if (bookIds != null && bookIds.length > 0) {
+            for (String bookId : bookIds) {
+                stringBuilder.append(bookId);
+                stringBuilder.append(",");
+            }
+            return stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString();
+        } else {
+            return stringBuilder.toString();
+        }
+    }
+
+    public static String[] string2Arr(String bookList) {
+        String[] bookArr = new String[]{};
+        if (bookList != null) {
+            if (bookList.contains(",")) {
+                bookArr = bookList.split(",");
+            } else {
+                bookArr = new String[]{bookList};
+            }
+        }
+        return bookArr;
     }
 }

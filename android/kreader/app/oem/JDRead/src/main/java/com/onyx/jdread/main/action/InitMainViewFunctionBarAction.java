@@ -18,10 +18,10 @@ import com.onyx.jdread.shop.ui.ShopFragment;
  * Created by hehai on 17-12-11.
  */
 
-public class InitFunctionBarAction extends BaseAction<DataBundle> {
+public class InitMainViewFunctionBarAction extends BaseAction<DataBundle> {
     private FunctionBarModel functionBarModel;
 
-    public InitFunctionBarAction(FunctionBarModel functionBarModel) {
+    public InitMainViewFunctionBarAction(FunctionBarModel functionBarModel) {
         this.functionBarModel = functionBarModel;
     }
 

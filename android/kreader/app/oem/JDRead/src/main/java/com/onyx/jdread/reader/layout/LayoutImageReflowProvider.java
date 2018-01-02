@@ -1,10 +1,12 @@
 package com.onyx.jdread.reader.layout;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.RectF;
 
 import com.facebook.common.references.CloseableReference;
 import com.onyx.android.sdk.data.PageConstants;
+import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
@@ -151,7 +153,19 @@ public class LayoutImageReflowProvider extends LayoutProvider {
     }
 
     private ReaderBitmapReferenceImpl renderPageForReflow(final Reader reader) throws ReaderException {
-        return null;
+        getPageManager().scaleToPage(getCurrentPagePosition());
+        getPageManager().scaleWithDelta(getCurrentPagePosition(),
+                (float)(getImageReflowManager().getSettings().zoom * getImageReflowManager().getSettings().columns));
+        PageInfo pageInfo = getPageManager().getPageInfo(getCurrentPagePosition());
+        ReaderBitmapReferenceImpl bitmap = reader.getReaderHelper().getBitmapCache().getFreeBitmap((int)pageInfo.getScaledWidth(),
+                (int)pageInfo.getScaledHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+        bitmap.eraseColor(Color.WHITE);
+        reader.getReaderHelper().getRenderer().draw(getCurrentPagePosition(), pageInfo.getActualScale(),
+                pageInfo.getPageDisplayOrientation(),
+                pageInfo.getPositionRect(), pageInfo.getPositionRect(),
+                pageInfo.getPositionRect(), bitmap.getBitmap());
+        getPageManager().scaleToPage(getCurrentPagePosition());
+        return bitmap;
     }
 
     private void reflowFirstVisiblePageAsync(final Reader reader,

@@ -2,14 +2,18 @@ package com.onyx.jdread.reader.actions;
 
 import android.graphics.Rect;
 
-import com.onyx.android.sdk.reader.api.ReaderChineseConvertType;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.reader.common.GammaInfo;
+import com.onyx.jdread.reader.data.ChangeLayoutParameter;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
-import com.onyx.jdread.reader.menu.actions.ChangeChineseConvertTypeAction;
-import com.onyx.jdread.reader.menu.actions.GammaCorrectionAction;
-import com.onyx.jdread.reader.menu.actions.ScaleToPageCropAction;
+import com.onyx.jdread.reader.event.ShowReaderSettingMenuEvent;
+import com.onyx.jdread.reader.menu.actions.ImageReflowAction;
+import com.onyx.jdread.reader.menu.actions.ResetNavigationAction;
+import com.onyx.jdread.reader.menu.actions.SwitchNavigationToArticleAction;
+import com.onyx.jdread.reader.menu.actions.SwitchNavigationToComicModeAction;
+import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2017/12/25.
@@ -19,7 +23,7 @@ public class ShowSettingMenuAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-        new ScaleToPageCropAction().execute(readerDataHolder);
+        EventBus.getDefault().post(new ShowReaderSettingMenuEvent());
     }
 
     public static Rect getRegionOne() {
