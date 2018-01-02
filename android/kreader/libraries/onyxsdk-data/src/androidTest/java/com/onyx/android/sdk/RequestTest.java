@@ -2,6 +2,7 @@ package com.onyx.android.sdk;
 
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Looper;
 import android.test.ApplicationTestCase;
 import android.util.Log;
@@ -250,6 +251,13 @@ public class RequestTest extends ApplicationTestCase<Application> {
             Observable.concat(list)
                     .subscribeOn(Schedulers.from(singleThreadPool))
                     .observeOn(AndroidSchedulers.mainThread())
+                    .doFinally(new Action() {
+                        @Override
+                        public void run() throws Exception {
+                            releaseWakelock();
+                            callback.onFinally();
+                        }
+                    })
                     .subscribe(new Consumer<MyRxRequest>() {
                         @Override
                         public void accept(MyRxRequest o) throws Exception {
@@ -295,14 +303,16 @@ public class RequestTest extends ApplicationTestCase<Application> {
         awaitCountDownLatch(countDownLatch);
     }
 
+    // test single request with finally.
     public void test2RxRequest() {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final CountDownLatch countDownLatch = new CountDownLatch(2);
         final MyRxRequest myRxRequest = new MyRxRequest();
         final RxManager rxManager = new RxManager(getContext());
         rxManager.enqueue(myRxRequest, new RxCallback<MyRxRequest>() {
             @Override
             public void onNext(MyRxRequest request) {
-
+                assertTrue(rxManager.isWakelockHeld());
+                countDownLatch.countDown();
             }
 
             public void onFinally() {
@@ -314,7 +324,7 @@ public class RequestTest extends ApplicationTestCase<Application> {
     }
 
     public void test2RxRequestError() {
-        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        final CountDownLatch countDownLatch = new CountDownLatch(2);
         final MyRxRequest myRxRequest = new MyRxRequest(-100);
         final RxManager rxManager = new RxManager(getContext());
         rxManager.enqueue(myRxRequest, new RxCallback<MyRxRequest>() {
@@ -326,6 +336,8 @@ public class RequestTest extends ApplicationTestCase<Application> {
             @Override
             public void onError(Throwable throwable) {
                 assertTrue(true);
+                countDownLatch.countDown();
+                assertTrue(rxManager.isWakelockHeld());
             }
 
             @Override
@@ -337,23 +349,23 @@ public class RequestTest extends ApplicationTestCase<Application> {
         awaitCountDownLatch(countDownLatch);
     }
 
+    // test concat with request list without exception
     public void test3RxRequestList() {
-        final CountDownLatch countDownLatch = new CountDownLatch(3);
         final List<Integer> valueList = new ArrayList<>();
         valueList.add(100);
         valueList.add(200);
-        valueList.add(-100);
-        valueList.add(300);
+        valueList.add(200);
         final List<MyRxRequest> requestList = new ArrayList<>();
         for(Integer value : valueList) {
             requestList.add(new MyRxRequest(value));
         }
 
+        // including complete and finally.
+        final CountDownLatch countDownLatch = new CountDownLatch(valueList.size() + 2);
         final RxManager rxManager = new RxManager(getContext());
         rxManager.concat(requestList, new RxCallback<MyRxRequest>() {
             @Override
             public void onNext(MyRxRequest request) {
-                Log.e("#####", "on next");
                 int index = valueList.indexOf(request.getValue());
                 assertTrue(index == 0);
                 valueList.remove(index);
@@ -362,21 +374,76 @@ public class RequestTest extends ApplicationTestCase<Application> {
 
             @Override
             public void onComplete() {
-                Log.e("#####", "onComplete");
-                assertTrue(valueList.size() > 0);
+                assertTrue(valueList.size() <= 0);
                 countDownLatch.countDown();
             }
 
             public void onError(Throwable throwable) {
-                Log.e("#####", "on error");
-//                assertTrue(valueList.size() == 2);
+                assertTrue(false);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFinally() {
-                //assertFalse(rxManager.isWakelockHeld());
+                assertFalse(rxManager.isWakelockHeld());
+                countDownLatch.countDown();
+            }
+        });
+        awaitCountDownLatch(countDownLatch);
+    }
+
+    // test concat with request list
+    public void test4RxRequestList() {
+        int round = TestUtils.randInt(10, 100);
+        for(int i = 0; i < round; ++i) {
+            concatTestLoopImpl();
+        }
+    }
+
+    // generate a list of value, insert negative value to trigger exception.
+    private void concatTestLoopImpl() {
+        final int size = TestUtils.randInt(10, 200);
+        final List<Integer> valueList = new ArrayList<>();
+        for(int i = 0; i < size - 1; ++i) {
+            valueList.add(i);
+        }
+        final int errorIndex = TestUtils.randInt(0, size - 1);
+        valueList.add(errorIndex, -errorIndex);
+
+        final List<MyRxRequest> requestList = new ArrayList<>();
+        for (Integer value : valueList) {
+            requestList.add(new MyRxRequest(value));
+        }
+
+        // including error and finally.
+        final CountDownLatch countDownLatch = new CountDownLatch(valueList.size());
+        final RxManager rxManager = new RxManager(getContext());
+        rxManager.concat(requestList, new RxCallback<MyRxRequest>() {
+            @Override
+            public void onNext(MyRxRequest request) {
+                Log.e("#####", "onNext: " + request.getValue());
+                int index = valueList.indexOf(request.getValue());
+                assertTrue(index == 0);
+                valueList.remove(index);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onComplete() {
+                assertTrue(false);
+            }
+
+            public void onError(Throwable throwable) {
+                Log.e("#####", "on error with errorIndex: " + errorIndex + " list size: " + valueList.size() + " total size: " + size);
+                assertTrue(valueList.size() == size - errorIndex);
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onFinally() {
                 Log.e("#####", "on finally concat");
+                assertFalse(rxManager.isWakelockHeld());
+                countDownLatch.countDown();
             }
         });
         awaitCountDownLatch(countDownLatch);
