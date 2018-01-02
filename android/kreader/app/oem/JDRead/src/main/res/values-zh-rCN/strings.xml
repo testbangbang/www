@@ -206,4 +206,11 @@
     <string name="all_category_title_boy">男生</string>
     <string name="all_category_title_girl">女生</string>
     <string name="all_category">全部分类</string>
+    <string name="device_model_format">设备型号： %s</string>
+    <string name="device_version_format">系统版本： %s</string>
+    <string name="device_serial_format">设备编号： %s</string>
+    <string name="device_mac_address_format">MAC地址： %s</string>
+    <string name="device_store_format">存储信息： 剩余%1$sGB/共%2$dGB</string>
+    <string name="copyright_notice_and_terms_of_service">版权声明与服务条款</string>
+    <string name="reset">恢复出厂设置</string>
 </resources>

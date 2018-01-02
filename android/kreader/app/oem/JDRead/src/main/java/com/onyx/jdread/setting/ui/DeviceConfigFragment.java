@@ -94,7 +94,7 @@ public class DeviceConfigFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceInformationEvent(DeviceInformationEvent event) {
-
+        viewEventCallBack.gotoView(DeviceInformationFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

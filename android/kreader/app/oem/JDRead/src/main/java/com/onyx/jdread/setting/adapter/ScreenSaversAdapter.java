@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ScreenSaversItemBinding;
-import com.onyx.jdread.library.adapter.PageAdapter;
+import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.setting.model.ScreenSaversModel;
 
 import java.util.List;

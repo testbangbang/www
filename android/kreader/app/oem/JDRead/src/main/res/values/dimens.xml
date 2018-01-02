@@ -194,4 +194,6 @@
     <dimen name="all_category_title_shadow_margin_height">2dp</dimen>
     <dimen name="recycler_view_all_categorys_margin_top">10dp</dimen>
     <dimen name="all_category_type_margin_top">15dp</dimen>
+    <dimen name="device_info_recycler_height">467dp</dimen>
+    <dimen name="device_info_item_padding">10dp</dimen>
 </resources>
