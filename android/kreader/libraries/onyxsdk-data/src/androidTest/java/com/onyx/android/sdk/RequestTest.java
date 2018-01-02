@@ -33,6 +33,7 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.ObservableSource;
+import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Action;
@@ -158,6 +159,8 @@ public class RequestTest extends ApplicationTestCase<Application> {
         private Benchmark benchmark;
         private Context appContext;
         private static boolean enableBenchmarkDebug = false;
+        private Scheduler subscribeScheduler;
+        private Scheduler observeScheduler;
 
         private ExecutorService singleThreadPool = Executors.newSingleThreadExecutor(new ThreadFactory() {
             @Override
