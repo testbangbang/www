@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.view.WindowManager;
 
+import com.onyx.android.sdk.utils.BitmapUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.JDReadApplication;
 
 /**
@@ -16,7 +18,7 @@ public class ScreenSaversUtil {
         WindowManager wm = (WindowManager) JDReadApplication.getInstance().getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         int fullScreenPhysicalHeight = wm.getDefaultDisplay().getHeight();
         int fullScreenPhysicalWidth = wm.getDefaultDisplay().getWidth();
-        String targetFormat = ".png";
+        String targetFormat = FileUtils.getFileExtension(targetPicPathString);
         String targetDir = "/data/local/assets/images/";
         Bitmap temp = BitmapFactory.decodeFile(sourcePicPathString);
         if (temp == null) {
@@ -27,16 +29,16 @@ public class ScreenSaversUtil {
             return;
         }
         if (temp.getHeight() > temp.getWidth()) {
-            temp = PicUtils.rotateBmp(temp, -90);
+            temp = BitmapUtils.rotateBmp(temp, -90);
         }
         if ((temp.getWidth() != fullScreenPhysicalHeight) || temp.getHeight() != fullScreenPhysicalWidth) {
             temp = Bitmap.createScaledBitmap(temp, fullScreenPhysicalHeight, fullScreenPhysicalWidth, true);
         }
-        temp = PicUtils.convertToBlackWhite(temp);
-        if (targetFormat.equalsIgnoreCase(".bmp")) {
-            PicUtils.saveBmp(temp, targetDir, targetPicPathString, true);
-        } else if (targetFormat.equalsIgnoreCase(".png")) {
-            PicUtils.savePng(temp, targetDir, targetPicPathString, true);
+        temp = BitmapUtils.convertToBlackWhite(temp);
+        if (targetFormat.equalsIgnoreCase("bmp")) {
+            BitmapUtils.saveBitmapToFile(temp, targetDir, targetPicPathString, true);
+        } else if (targetFormat.equalsIgnoreCase("png")) {
+            BitmapUtils.savePngToFile(temp, targetDir, targetPicPathString, true);
         }
     }
 }
