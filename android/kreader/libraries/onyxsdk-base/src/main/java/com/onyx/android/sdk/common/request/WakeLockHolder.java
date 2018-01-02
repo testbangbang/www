@@ -101,5 +101,11 @@ public class WakeLockHolder {
         }
     }
 
+    public synchronized boolean isHeld() {
+        if (wakeLock == null) {
+            return false;
+        }
+        return wakeLock.isHeld();
+    }
 
 }
