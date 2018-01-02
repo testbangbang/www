@@ -6,7 +6,6 @@ import android.graphics.BitmapFactory;
 import android.view.WindowManager;
 
 import com.onyx.android.sdk.utils.BitmapUtils;
-import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.jdread.JDReadApplication;
 
 /**
@@ -18,7 +17,6 @@ public class ScreenSaversUtil {
         WindowManager wm = (WindowManager) JDReadApplication.getInstance().getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
         int fullScreenPhysicalHeight = wm.getDefaultDisplay().getHeight();
         int fullScreenPhysicalWidth = wm.getDefaultDisplay().getWidth();
-        String targetFormat = FileUtils.getFileExtension(targetPicPathString);
         String targetDir = "/data/local/assets/images/";
         Bitmap temp = BitmapFactory.decodeFile(sourcePicPathString);
         if (temp == null) {
@@ -35,10 +33,6 @@ public class ScreenSaversUtil {
             temp = Bitmap.createScaledBitmap(temp, fullScreenPhysicalHeight, fullScreenPhysicalWidth, true);
         }
         temp = BitmapUtils.convertToBlackWhite(temp);
-        if (targetFormat.equalsIgnoreCase("bmp")) {
-            BitmapUtils.saveBitmapToFile(temp, targetDir, targetPicPathString, true);
-        } else if (targetFormat.equalsIgnoreCase("png")) {
-            BitmapUtils.savePngToFile(temp, targetDir, targetPicPathString, true);
-        }
+        BitmapUtils.savePngToFile(temp, targetDir, targetPicPathString, true);
     }
 }
