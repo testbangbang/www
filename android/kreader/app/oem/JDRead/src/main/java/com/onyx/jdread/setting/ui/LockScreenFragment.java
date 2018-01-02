@@ -87,6 +87,6 @@ public class LockScreenFragment extends BaseFragment {
 
     @Subscribe
     public void onBackToSettingFragment(BackToSettingFragmentEvent event) {
-        viewEventCallBack.gotoView(SettingFragment.class.getName());
+        viewEventCallBack.viewBack();
     }
 }

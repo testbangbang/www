@@ -10,6 +10,7 @@ import com.onyx.android.sdk.data.model.DataModel;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.LibraryListDialogItemBinding;
+import com.onyx.jdread.main.common.PageAdapter;
 
 import java.util.List;
 

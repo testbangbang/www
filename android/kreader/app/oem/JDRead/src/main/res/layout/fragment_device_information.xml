@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="deviceInfoModel"
+            type="com.onyx.jdread.setting.model.DeviceInformationModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.ui.DeviceInformationFragment">
+
+        <include
+            android:id="@+id/device_info_title"
+            layout="@layout/title_bar" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/device_info_recycler"
+            items="@{deviceInfoModel.list}"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/device_info_recycler_height"
+            android:padding="@dimen/device_config_recycler_padding" />
+
+    </LinearLayout>
+</layout>

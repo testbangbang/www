@@ -13,15 +13,15 @@ import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookModule;
 
 /**
- * Created by jackdeng on 2017/12/13.
+ * Created by jackdeng on 2017/12/8.
  */
 
-public class BookFreeJournalAction extends BaseAction<ShopDataBundle> {
+public class BookSpecialTodayAction extends BaseAction<ShopDataBundle> {
 
     private Context context;
     private BookShopViewModel shopViewModel;
 
-    public BookFreeJournalAction(Context context) {
+    public BookSpecialTodayAction(Context context) {
         this.context = context;
     }
 
@@ -44,7 +44,7 @@ public class BookFreeJournalAction extends BaseAction<ShopDataBundle> {
                 subjectViewModel.setModelBean(bookModelResultBean);
                 shopViewModel.setCoverSubjectTwoItems(subjectViewModel);
                 if (rxCallback != null) {
-                    rxCallback.onNext(BookFreeJournalAction.this);
+                    rxCallback.onNext(BookSpecialTodayAction.this);
                     rxCallback.onComplete();
                 }
             }

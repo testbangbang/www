@@ -18,7 +18,7 @@
         android:padding="@dimen/banner_subject_model_item_padding">
 
         <TextView
-            android:gravity="center_vertical"
+            android:gravity="center"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:drawableRight="@mipmap/ic_go_view_all"

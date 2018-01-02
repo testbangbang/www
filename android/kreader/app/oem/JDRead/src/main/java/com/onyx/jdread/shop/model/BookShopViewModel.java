@@ -3,6 +3,7 @@ package com.onyx.jdread.shop.model;
 import android.databinding.BaseObservable;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
+import com.onyx.jdread.shop.event.OnCategoryViewClick;
 import com.onyx.jdread.shop.event.OnRankViewClick;
 import com.onyx.jdread.shop.event.OnShopBakcTopClick;
 
@@ -24,9 +25,17 @@ public class BookShopViewModel extends BaseObservable {
     public SubjectViewModel coverSubjectSixItems;
     public SubjectViewModel titleSubjectIems;
     public SubjectViewModel specialTodaySubjectIems;
+    public AllCategoryViewModel allCategoryViewModel;
     public List<CategoryListResultBean.CatListBean> categorySubjectItems;
     public String searchContent;
     public EventBus eventBus;
+
+    public AllCategoryViewModel getAllCategoryViewModel() {
+        if (allCategoryViewModel == null) {
+            allCategoryViewModel = new AllCategoryViewModel(getEventBus());
+        }
+        return allCategoryViewModel;
+    }
 
     public BookShopViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -150,7 +159,7 @@ public class BookShopViewModel extends BaseObservable {
     }
 
     public void onCategoryViewClick() {
-
+        getEventBus().post(new OnCategoryViewClick());
     }
 
     public void onViewAllBookViewClick() {
