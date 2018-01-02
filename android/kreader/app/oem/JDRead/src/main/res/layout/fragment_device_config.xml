@@ -12,9 +12,7 @@
 
         <include
             android:id="@+id/device_config_title_bar"
-            layout="@layout/setting_title_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            layout="@layout/title_bar" />
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/device_config_recycler"
