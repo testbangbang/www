@@ -55,19 +55,25 @@ public class CommonUtils {
 
     public static String array2String(String[] bookIds) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (String bookId : bookIds) {
-            stringBuilder.append(bookId);
-            stringBuilder.append(",");
+        if (bookIds != null && bookIds.length > 0) {
+            for (String bookId : bookIds) {
+                stringBuilder.append(bookId);
+                stringBuilder.append(",");
+            }
+            return stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString();
+        } else {
+            return stringBuilder.toString();
         }
-        return stringBuilder.deleteCharAt(stringBuilder.length() - 1).toString();
     }
 
     public static String[] string2Arr(String bookList) {
-        String[] bookArr;
-        if (bookList.contains(",")) {
-            bookArr = bookList.split(",");
-        } else {
-            bookArr = new String[]{bookList};
+        String[] bookArr = new String[]{};
+        if (bookList != null) {
+            if (bookList.contains(",")) {
+                bookArr = bookList.split(",");
+            } else {
+                bookArr = new String[]{bookList};
+            }
         }
         return bookArr;
     }
