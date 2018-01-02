@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="bookShopViewModel"
+            type="com.onyx.jdread.shop.model.BookShopViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_title_bar"
+            layout="@layout/layout_title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:titleBarViewModel="@{bookShopViewModel.allCategoryViewModel.titleBarViewModel}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/all_category_type_margin_top"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="@{()->bookShopViewModel.allCategoryViewModel.onPublishClick()}"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_publisher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/all_category_title_publish"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <View
+                    android:id="@+id/title_publisher_shadow"
+                    android:layout_width="@dimen/all_category_title_shadow_margin_width"
+                    android:layout_height="@dimen/all_category_title_shadow_margin_height"
+                    android:layout_marginTop="@dimen/all_category_title_shadow_margin_top"
+                    android:background="@android:color/black"
+                    android:visibility="visible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="@{()->bookShopViewModel.allCategoryViewModel.onBoyClick()}"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_boy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/all_category_title_boy"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <View
+                    android:id="@+id/title_boy_shadow"
+                    android:layout_width="@dimen/all_category_title_shadow_margin_width"
+                    android:layout_height="@dimen/all_category_title_shadow_margin_height"
+                    android:layout_marginTop="@dimen/all_category_title_shadow_margin_top"
+                    android:background="@android:color/black"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:onClick="@{()->bookShopViewModel.allCategoryViewModel.onGirlClick()}"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/title_girl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="@string/all_category_title_girl"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+
+                <View
+                    android:id="@+id/title_girl_shadow"
+                    android:layout_width="@dimen/all_category_title_shadow_margin_width"
+                    android:layout_height="@dimen/all_category_title_shadow_margin_height"
+                    android:layout_marginTop="@dimen/all_category_title_shadow_margin_top"
+                    android:background="@android:color/black"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <include layout="@layout/layout_line" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/recycler_view_all_categorys"
+            categoryItems="@{bookShopViewModel.categorySubjectItems}"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/recycler_view_all_categorys_margin_top"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:paddingBottom="@dimen/book_comment_indicator_padding"
+            android:paddingTop="@dimen/book_comment_indicator_padding"
+            android:text="@{@string/book_comment_indicator_value(bookShopViewModel.allCategoryViewModel.currentPage,bookShopViewModel.allCategoryViewModel.totalPage)}" />
+
+    </LinearLayout>
+
+</layout>

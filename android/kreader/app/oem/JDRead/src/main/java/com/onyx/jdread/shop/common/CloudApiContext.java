@@ -22,6 +22,7 @@ public class CloudApiContext {
     public static final String JD_BOOK_SHOP_URL = "http://tob-gw.jd.com/";
     public static final String JD_BASE_URL = "https://tob-gw.jd.com/";
     public static final String JD_BOOK_VERIFY_URL = "http://rights.e.jd.com/";
+    public static final String JD_SMOOTH_READ_URL = "https://cread.jd.com/";
 
     public static class NewBookDetail {
         public static final String BOOK_SPECIAL_PRICE_TYPE = "specialPrice";
@@ -33,6 +34,13 @@ public class CloudApiContext {
         public static final String BOOK_ID = "bookId";
         public static final String NEW_BOOK_REVIEW = "newBookReview";
         public static final String ADD_BOOK_COMMENT = "addBookComment";
+        public static final String ADD_BOOK_TO_SMOOTH_CARD = "addNewReadInfo";
+        public static final String ADD_BOOKS_TO_SMOOTH_CARD = "addNewReadInfoBatch";
+        public static final String SHOPPING_CART = "shoppingCart";
+    }
+
+    public static class AddToSmooth {
+        public static final String EBOOK_ID = "ebook_id";
     }
 
     public static class BookShopModuleList {
@@ -53,6 +61,8 @@ public class CloudApiContext {
         public static final int NEW_BOOK_DELIVERY_MODULE_TYPE = 6;
         public static final int FREE_JOURNALS_ID = 181;
         public static final int FREE_JOURNALS_MODULE_TYPE = 6;
+        public static final int IMPORTANT_RECOMMEND_ID = 91;
+        public static final int IMPORTANT_RECOMMEND_MODULE_TYPE = 6;
     }
 
     public static class CategoryList {
@@ -89,12 +99,30 @@ public class CloudApiContext {
         public static final String USER_ID = "userId";
     }
 
+    public static class Cert {
+        public static final String GET_CERT = "getCert";
+        public static final String ORDER_ID = "orderId";
+        public static final String ORDER_TYPE = "orderType";
+        public static final String DEVICE_TYPE = "deviceType";
+        public static final String HAS_RANDOM = "hasRandom";
+        public static final String DEVICE_MODEL = "deviceModel";
+        public static final String IS_BORROW_BUY = "isBorrowBuy";
+        public static final String HAS_CERT = "hasCert";
+        public static final String UUID = "uuid";
+        public static final String EBOOK_ID = "ebookId";
+        public static final String USER_ID = "userId";
+    }
+
     public static String getJDBooxBaseUrl() {
         return JD_BOOK_SHOP_URL;
     }
 
     public static String getJdBaseUrl() {
         return JD_BASE_URL;
+    }
+
+    public static String getJdSmoothReadUrl() {
+        return JD_SMOOTH_READ_URL;
     }
 
     private static CookieHandler addCookie() {

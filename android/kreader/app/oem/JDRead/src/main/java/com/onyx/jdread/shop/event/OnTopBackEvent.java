@@ -4,11 +4,11 @@ package com.onyx.jdread.shop.event;
  * Created by jackdeng on 2017/12/16.
  */
 
-public class OnBookDetailTopRightEvent {
+public class OnTopBackEvent {
 
     private int tag;
 
-    public OnBookDetailTopRightEvent(int tag) {
+    public OnTopBackEvent(int tag) {
         this.tag = tag;
     }
 

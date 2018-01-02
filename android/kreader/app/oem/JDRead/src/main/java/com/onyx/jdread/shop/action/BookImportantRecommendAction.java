@@ -13,15 +13,15 @@ import com.onyx.jdread.shop.model.SubjectViewModel;
 import com.onyx.jdread.shop.request.cloud.RxRequestBookModule;
 
 /**
- * Created by jackdeng on 2017/12/8.
+ * Created by jackdeng on 2017/12/13.
  */
 
-public class SpecialTodayAction extends BaseAction<ShopDataBundle> {
+public class BookImportantRecommendAction extends BaseAction<ShopDataBundle> {
 
     private Context context;
     private BookShopViewModel shopViewModel;
 
-    public SpecialTodayAction(Context context) {
+    public BookImportantRecommendAction(Context context) {
         this.context = context;
     }
 
@@ -31,8 +31,8 @@ public class SpecialTodayAction extends BaseAction<ShopDataBundle> {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.BookShopModule.MODULE_ID, CloudApiContext.BookShopModule.TODAY_SPECIAL_ID);
-        body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.TODAY_SPECIAL_MODULE_TYPE);
+        body.put(CloudApiContext.BookShopModule.MODULE_ID, CloudApiContext.BookShopModule.IMPORTANT_RECOMMEND_ID);
+        body.put(CloudApiContext.BookShopModule.MODULE_TYPE, CloudApiContext.BookShopModule.IMPORTANT_RECOMMEND_MODULE_TYPE);
         baseRequestBean.setBody(body.toJSONString());
         RxRequestBookModule request = new RxRequestBookModule();
         request.setBaseRequestBean(baseRequestBean);
@@ -42,9 +42,9 @@ public class SpecialTodayAction extends BaseAction<ShopDataBundle> {
                 BookModelResultBean bookModelResultBean = request.getBookModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
                 subjectViewModel.setModelBean(bookModelResultBean);
-                shopViewModel.setCoverSubjectTwoItems(subjectViewModel);
+                shopViewModel.setCoverSubjectFourItems(subjectViewModel);
                 if (rxCallback != null) {
-                    rxCallback.onNext(SpecialTodayAction.this);
+                    rxCallback.onNext(BookImportantRecommendAction.this);
                     rxCallback.onComplete();
                 }
             }

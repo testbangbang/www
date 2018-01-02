@@ -109,6 +109,24 @@ public class BookDetailResultBean {
         private String edition;
         private String orderId;
         private BookExtraInfoBean bookExtraInfoBean;
+        private String key;
+        private String random;
+
+        public String getKey() {
+            return key;
+        }
+
+        public void setKey(String key) {
+            this.key = key;
+        }
+
+        public String getRandom() {
+            return random;
+        }
+
+        public void setRandom(String random) {
+            this.random = random;
+        }
 
         public String getEdition() {
             return edition;

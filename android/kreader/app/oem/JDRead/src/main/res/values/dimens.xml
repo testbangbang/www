@@ -189,4 +189,9 @@
     <dimen name="personal_experience_recycler_margin_top">20dp</dimen>
     <dimen name="receive_padding">10dp</dimen>
     <dimen name="item_gift_center_detail_margin_top">10dp</dimen>
+    <dimen name="all_category_title_shadow_margin_top">2dp</dimen>
+    <dimen name="all_category_title_shadow_margin_width">42dp</dimen>
+    <dimen name="all_category_title_shadow_margin_height">2dp</dimen>
+    <dimen name="recycler_view_all_categorys_margin_top">10dp</dimen>
+    <dimen name="all_category_type_margin_top">15dp</dimen>
 </resources>
