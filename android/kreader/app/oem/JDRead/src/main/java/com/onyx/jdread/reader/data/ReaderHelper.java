@@ -32,11 +32,16 @@ import com.onyx.android.sdk.reader.plugins.djvu.DjvuReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.images.ImagesReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.jeb.JEBReaderPlugin;
 import com.onyx.android.sdk.reader.plugins.neopdf.NeoPdfReaderPlugin;
+import com.onyx.android.sdk.reader.reflow.ImageReflowManager;
 import com.onyx.android.sdk.reader.utils.ImageUtils;
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.RectUtils;
+import com.onyx.android.sdk.utils.StringUtils;
+import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.reader.common.DocumentInfo;
 import com.onyx.jdread.reader.layout.ReaderLayoutManager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +51,7 @@ import java.util.List;
 
 public class ReaderHelper {
     private static final String TAG = ReaderHelper.class.getSimpleName();
+    private String documentMd5;
     private ReaderDocument readerDocument;
     private ReaderViewOptionsImpl viewOptions = new ReaderViewOptionsImpl();
     private ReaderPlugin plugin;
@@ -59,6 +65,9 @@ public class ReaderHelper {
     private ReaderHitTestManager hitTestManager;
     private String firstVisiblePagePosition;
     private ReaderLayoutManager readerLayoutManager = null;
+    private BaseOptions documentOptions = new BaseOptions();
+    private ImageReflowManager imageReflowManager;
+    private BitmapReferenceLruCache bitmapCache;
 
     public ReaderHelper() {
     }
@@ -80,8 +89,22 @@ public class ReaderHelper {
         return (plugin != null);
     }
 
-    public void saveReaderDocument(ReaderDocument readerDocument) {
+    public void saveReaderDocument(ReaderDocument readerDocument,DocumentInfo documentInfo) {
         this.readerDocument = readerDocument;
+        setFileMd5(documentInfo);
+        initData(JDReadApplication.getInstance().getApplicationContext());
+    }
+
+    public void setFileMd5(DocumentInfo documentInfo){
+        try {
+            if (StringUtils.isNotBlank(getDocumentOptions().getMd5())) {
+                documentMd5 = getDocumentOptions().getMd5();
+            } else {
+                documentMd5 = FileUtils.computeMD5(new File(documentInfo.getBookPath()));
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     private void updateView() {
@@ -138,6 +161,10 @@ public class ReaderHelper {
         getReaderLayoutManager().updateViewportSize();
     }
 
+    public ImageReflowManager getImageReflowManager() {
+        return imageReflowManager;
+    }
+
     public void onLayoutChanged() {
         setLayoutChanged(true);
     }
@@ -184,7 +211,7 @@ public class ReaderHelper {
     }
 
     public BitmapReferenceLruCache getBitmapCache() {
-        return null;
+        return bitmapCache;
     }
 
     public void setLayoutChanged(boolean layoutChanged) {
@@ -196,7 +223,8 @@ public class ReaderHelper {
     }
 
     public void initData(Context context) {
-
+        initImageReflowManager(context);
+        initBitmapCache();
     }
 
     private void initLayoutManager() {
@@ -208,19 +236,34 @@ public class ReaderHelper {
     }
 
     private void initImageReflowManager(Context context) {
-
+        if (imageReflowManager == null) {
+            File cacheLocation = new File(context.getCacheDir(), ImageReflowManager.class.getCanonicalName());
+            if (!cacheLocation.exists()) {
+                cacheLocation.mkdirs();
+            }
+            imageReflowManager = new ImageReflowManager(documentMd5,
+                    cacheLocation,
+                    getViewOptions().getViewWidth(),
+                    getViewOptions().getViewHeight());
+        }
     }
 
     private void clearImageReflowManager() {
-
+        if (imageReflowManager != null) {
+            imageReflowManager.release();
+        }
     }
 
     private void initBitmapCache() {
-
+        if (bitmapCache == null) {
+            bitmapCache = new BitmapReferenceLruCache(5);
+        }
     }
 
     private void clearBitmapCache() {
-
+        if (bitmapCache != null) {
+            bitmapCache.clear();
+        }
     }
 
     private void releaseWordAnalyzer() {
@@ -236,7 +279,7 @@ public class ReaderHelper {
     }
 
     public BaseOptions getDocumentOptions() {
-        return null;
+        return documentOptions;
     }
 
     public ReaderDocument getDocument() {

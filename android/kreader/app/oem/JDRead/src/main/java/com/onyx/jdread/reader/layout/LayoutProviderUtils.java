@@ -6,14 +6,15 @@ import android.graphics.RectF;
 import com.onyx.android.sdk.api.ReaderBitmap;
 import com.onyx.android.sdk.data.PageInfo;
 import com.onyx.android.sdk.data.ReaderTextStyle;
-import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.api.ReaderException;
 import com.onyx.android.sdk.reader.api.ReaderRenderer;
+import com.onyx.android.sdk.reader.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.reader.cache.ReaderBitmapReferenceImpl;
 import com.onyx.android.sdk.reader.common.ReaderDrawContext;
 import com.onyx.android.sdk.reader.common.ReaderViewInfo;
 import com.onyx.android.sdk.reader.host.math.PageManager;
 import com.onyx.android.sdk.reader.host.math.PageUtils;
+import com.onyx.android.sdk.reader.host.math.PositionSnapshot;
 import com.onyx.android.sdk.reader.host.navigation.NavigationList;
 import com.onyx.android.sdk.reader.utils.PagePositionUtils;
 import com.onyx.android.sdk.utils.BitmapUtils;
@@ -50,6 +51,36 @@ public class LayoutProviderUtils {
                                         final ReaderDrawContext drawContext,
                                         final ReaderViewInfo readerViewInfo,
                                         final boolean enableCache) throws ReaderException {
+        // step1: prepare.
+        final ReaderRenderer renderer = reader.getReaderHelper().getRenderer();
+        final BitmapReferenceLruCache cache = reader.getReaderHelper().getBitmapCache();
+        List<PageInfo> visiblePages = layoutManager.getPageManager().collectVisiblePages();
+
+        // step2: check cache.
+        final String key = PositionSnapshot.cacheKey(visiblePages);
+        boolean hitCache = false;
+        if (ENABLE_CACHE && enableCache && checkCache(cache, key, drawContext)) {
+            hitCache = true;
+        }
+        Debug.d(TAG, "hit cache: " + hitCache + ", " + key);
+        if (!hitCache) {
+            ReaderBitmapReferenceImpl freeBitmap = cache.getFreeBitmap(reader.getReaderViewHelper().getPageViewWidth(),
+                    reader.getReaderViewHelper().getPageViewHeight(), ReaderBitmapReferenceImpl.DEFAULT_CONFIG);
+            try {
+                drawContext.renderingBitmap = new ReaderBitmapReferenceImpl();
+                drawContext.renderingBitmap.attachWith(key, freeBitmap.getBitmapReference());
+                drawContext.renderingBitmap.clear();
+            } finally {
+                freeBitmap.close();
+            }
+        }
+        Debug.d(TAG, "rendering bitmap reference count: " + drawContext.renderingBitmap.getBitmapReference().getUnderlyingReferenceTestOnly().getRefCountTestOnly());
+
+        // step3: render
+        drawVisiblePagesImpl(renderer, layoutManager, drawContext, drawContext.renderingBitmap, visiblePages, hitCache);
+
+        // final step: update view info.
+        updateReaderViewInfo(reader, readerViewInfo, layoutManager);
     }
 
     static private void drawVisiblePagesImpl(final ReaderRenderer renderer,
@@ -191,6 +222,14 @@ public class LayoutProviderUtils {
     }
 
     static public boolean checkCache(final BitmapReferenceLruCache cache, final String key, final ReaderDrawContext context) {
+        ReaderBitmapReferenceImpl result = cache.get(key);
+        if (result == null || !canReuse(result, context)) {
+            return false;
+        }
+
+        result = result.clone();
+        cache.remove(key);
+        context.renderingBitmap = result;
         return true;
     }
 

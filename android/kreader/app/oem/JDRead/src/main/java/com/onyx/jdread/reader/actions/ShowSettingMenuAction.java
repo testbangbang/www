@@ -4,7 +4,16 @@ import android.graphics.Rect;
 
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.reader.data.ChangeLayoutParameter;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.event.ShowReaderSettingMenuEvent;
+import com.onyx.jdread.reader.menu.actions.ImageReflowAction;
+import com.onyx.jdread.reader.menu.actions.ResetNavigationAction;
+import com.onyx.jdread.reader.menu.actions.SwitchNavigationToArticleAction;
+import com.onyx.jdread.reader.menu.actions.SwitchNavigationToComicModeAction;
+import com.onyx.jdread.reader.menu.dialog.ReaderSettingMenuDialog;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by huxiaomao on 2017/12/25.
@@ -14,7 +23,7 @@ public class ShowSettingMenuAction extends BaseReaderAction {
 
     @Override
     public void execute(final ReaderDataHolder readerDataHolder) {
-
+        EventBus.getDefault().post(new ShowReaderSettingMenuEvent());
     }
 
     public static Rect getRegionOne() {

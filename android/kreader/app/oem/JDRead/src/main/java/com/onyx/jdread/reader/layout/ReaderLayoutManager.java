@@ -87,8 +87,7 @@ public class ReaderLayoutManager {
     }
 
     public ImageReflowManager getImageReflowManager() {
-        //return readerHelper.getImageReflowManager();
-        return null;
+        return readerHelper.getImageReflowManager();
     }
 
     public void init()  {
@@ -343,6 +342,13 @@ public class ReaderLayoutManager {
     }
 
     public boolean drawVisiblePages(final Reader reader, final ReaderDrawContext drawContext, final ReaderViewInfo viewInfo) throws ReaderException {
+        drawContext.targetGammaCorrection = reader.getReaderHelper().getDocumentOptions().getGammaLevel();
+        drawContext.targetTextGammaCorrection = reader.getReaderHelper().getDocumentOptions().getTextGammaLevel();
+        drawContext.targetEmboldenLevel = reader.getReaderHelper().getDocumentOptions().getEmboldenLevel();
+        if (!getCurrentLayoutProvider().drawVisiblePages(reader, drawContext, viewInfo)) {
+            return false;
+        }
+        reader.getReaderHelper().applyPostBitmapProcess(viewInfo, drawContext.renderingBitmap);
         return true;
     }
 

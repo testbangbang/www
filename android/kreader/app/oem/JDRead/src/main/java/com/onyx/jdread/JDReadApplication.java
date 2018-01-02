@@ -95,7 +95,7 @@ public class JDReadApplication extends MultiDexApplication {
         return dataBundle;
     }
 
-    public void dealWithMptBuffer() {
+    public void dealWithMtpBuffer() {
         if (CollectionUtils.isNullOrEmpty(mtpBuffer)) {
             return;
         }

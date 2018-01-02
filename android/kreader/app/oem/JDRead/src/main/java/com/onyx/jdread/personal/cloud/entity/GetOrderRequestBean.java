@@ -1,5 +1,6 @@
 package com.onyx.jdread.personal.cloud.entity;
 
+
 import com.onyx.jdread.main.common.AppBaseInfo;
 
 /**
