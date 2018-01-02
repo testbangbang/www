@@ -71,6 +71,22 @@ public class CloudApiContext {
         public static final String CATEGORY_LIST = "CategoryList";
     }
 
+    public static class CategoryBookListV2 {
+        public static final String SORT_TYPE = "sortType";
+        public static final String PAGE_SIZE = "pageSize";
+        public static final String CAT_ID = "catId";
+        public static final String CURRENT_PAGE = "currentPage";
+        public static final String SORT_KEY = "sortKey";
+        public static final String CLIENT_PLATFORM = "clientPlatform";
+        public static final String ROOT_ID = "rootId";
+        public static final String CATEGORY_BOOK_LIST_V2 = "categoryBookListV2";
+        public static final int SORT_TYPE_DEFAULT_VALUES = 1;
+        public static final int PAGE_SIZE_DEFAULT_VALUES = 20;
+        public static final int SORT_KEY_DEFAULT_VALUES = 1;
+        public static final int CLIENT_PLATFORM_DEFAULT_VALUES = 1;
+        public static final int ROOT_ID_DEFAULT_VALUES = 2;
+    }
+
     public static class RecommendList {
         public static final String BOOK_ID = "bookId";
         public static final String BOOK_DETAIL_RECOMMEND_LIST_V2 = "bookDetailRecommendListV2";

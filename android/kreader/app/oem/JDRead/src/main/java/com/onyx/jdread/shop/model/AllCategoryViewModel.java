@@ -2,11 +2,14 @@ package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
 
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.OnCategoryBoyClick;
 import com.onyx.jdread.shop.event.OnCategoryGirlClick;
 import com.onyx.jdread.shop.event.OnCategoryPublishClick;
 
 import org.greenrobot.eventbus.EventBus;
+
+import java.util.List;
 
 /**
  * Created by jackdeng on 2017/12/11.
@@ -18,6 +21,9 @@ public class AllCategoryViewModel extends BaseObservable{
     private TitleBarViewModel titleBarViewModel;
     private int currentPage;
     private int totalPage;
+    public List<CategoryListResultBean.CatListBean> allCategoryItems;
+    public List<CategoryListResultBean.CatListBean> topCategoryItems;
+    public List<CategoryListResultBean.CatListBean> bottomCategoryItems;
 
     public AllCategoryViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -48,6 +54,33 @@ public class AllCategoryViewModel extends BaseObservable{
 
     public void setTotalPage(int totalPage) {
         this.totalPage = totalPage;
+        notifyChange();
+    }
+
+    public List<CategoryListResultBean.CatListBean> getAllCategoryItems() {
+        return allCategoryItems;
+    }
+
+    public void setAllCategoryItems(List<CategoryListResultBean.CatListBean> allCategoryItems) {
+        this.allCategoryItems = allCategoryItems;
+        notifyChange();
+    }
+
+    public List<CategoryListResultBean.CatListBean> getTopCategoryItems() {
+        return topCategoryItems;
+    }
+
+    public void setTopCategoryItems(List<CategoryListResultBean.CatListBean> topCategoryItems) {
+        this.topCategoryItems = topCategoryItems;
+        notifyChange();
+    }
+
+    public List<CategoryListResultBean.CatListBean> getBottomCategoryItems() {
+        return bottomCategoryItems;
+    }
+
+    public void setBottomCategoryItems(List<CategoryListResultBean.CatListBean> bottomCategoryItems) {
+        this.bottomCategoryItems = bottomCategoryItems;
         notifyChange();
     }
 

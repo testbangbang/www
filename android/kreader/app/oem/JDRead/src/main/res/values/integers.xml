@@ -65,7 +65,8 @@
     <integer name="book_detail_recycle_view_space">10</integer>
     <integer name="book_shop_comment_row">5</integer>
     <integer name="book_shop_comment_col">1</integer>
-    <integer name="all_category_recycle_view_space">35</integer>
-    <integer name="all_category_recycle_view_row">6</integer>
+    <integer name="all_category_recycle_view_space">0</integer>
+    <integer name="all_category_recycle_view_row">5</integer>
     <integer name="all_category_recycle_view_col">4</integer>
+    <integer name="all_category_top_recycle_view_row">1</integer>
 </resources>

@@ -13,14 +13,17 @@ import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.FragmentBookAllCategoryBinding;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryAction;
+import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
+import com.onyx.jdread.shop.event.OnCategoryAdapterRawDataChangeEvent;
 import com.onyx.jdread.shop.event.OnCategoryBoyClick;
 import com.onyx.jdread.shop.event.OnCategoryGirlClick;
+import com.onyx.jdread.shop.event.OnCategoryItemClickEvent;
 import com.onyx.jdread.shop.event.OnCategoryPublishClick;
 import com.onyx.jdread.shop.event.OnTopBackEvent;
 import com.onyx.jdread.shop.model.AllCategoryViewModel;
@@ -50,6 +53,8 @@ public class AllCategoryFragment extends BaseFragment {
     private static final int TYPE_BOY = 11;
     private static final int TYPE_GIRL = 12;
     private int currentType = TYPE_PUBLISH;
+    private BookCategoryAction bookCategoryAction;
+    private PageRecyclerView topRecyclerView;
 
     @Nullable
     @Override
@@ -61,23 +66,32 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void initData() {
-        List<CategoryListResultBean.CatListBean> categorySubjectItems = getShopViewModel().getCategorySubjectItems();
-        if (categorySubjectItems == null) {
-            getCategoryData();
-        } else {
-            getShopViewModel().setCategorySubjectItems(categorySubjectItems);
-            initPageIndicator(categorySubjectItems);
-        }
+        getCategoryData();
     }
 
     private void getCategoryData() {
-        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance());
-        bookCategoryAction.execute(getShopDataBundle(), new RxCallback() {
+        bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance(), true);
+        bookCategoryAction.execute(getShopDataBundle(), new RxCallback<BookCategoryAction>() {
             @Override
-            public void onNext(Object o) {
-
+            public void onNext(BookCategoryAction bookCategoryAction) {
+                List<CategoryListResultBean.CatListBean> catList = bookCategoryAction.getCatList();
+                setCategoryData(catList);
             }
         });
+    }
+
+    private void setCategoryData(List<CategoryListResultBean.CatListBean> categorySubjectItems) {
+        if (categorySubjectItems != null) {
+            getAllCategoryViewModel().setAllCategoryItems(categorySubjectItems);
+            if (categorySubjectItems.size() <= row) {
+                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems);
+                initPageIndicator(categorySubjectItems);
+            } else {
+                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(0,row));
+                getAllCategoryViewModel().setBottomCategoryItems(categorySubjectItems.subList(row,categorySubjectItems.size()));
+                initPageIndicator(categorySubjectItems);
+            }
+        }
     }
 
     private void initView() {
@@ -91,7 +105,6 @@ public class AllCategoryFragment extends BaseFragment {
         recyclerView.setAdapter(adapter);
         recyclerView.addItemDecoration(itemDecoration);
         paginator = recyclerView.getPaginator();
-        allCategoryBinding.setBookShopViewModel(getShopViewModel());
         getAllCategoryViewModel().getTitleBarViewModel().leftText = getString(R.string.all_category);
         recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
@@ -101,12 +114,20 @@ public class AllCategoryFragment extends BaseFragment {
                 }
             }
         });
+
+        AllCategoryTopAdapter topAdapter = new AllCategoryTopAdapter(getEventBus());
+        topRecyclerView = allCategoryBinding.recyclerViewCategoryTop;
+        topRecyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        topRecyclerView.setAdapter(topAdapter);
+        topRecyclerView.addItemDecoration(itemDecoration);
+        allCategoryBinding.setCategoryViewModel(getAllCategoryViewModel());
     }
 
     private void initPageIndicator(List<CategoryListResultBean.CatListBean> resultBean) {
         if (resultBean != null) {
             int size = resultBean.size();
             recyclerView.resize(recyclerView.getPageAdapter().getRowCount(), recyclerView.getPageAdapter().getColumnCount(), size);
+            recyclerView.gotoPage(0);
             getAllCategoryViewModel().setTotalPage(paginator.pages());
             setCurrentPage(paginator.getCurrentPage());
         }
@@ -180,6 +201,24 @@ public class AllCategoryFragment extends BaseFragment {
             getCategoryData();
             changeCategoryButtonState();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCategoryItemClickEvent(OnCategoryItemClickEvent event) {
+        CategoryListResultBean.CatListBean categoryBean = event.getCategoryBean();
+        if (categoryBean != null){
+            if (categoryBean.isLeaf == 0){
+                List<CategoryListResultBean.CatListBean> catListBeen = bookCategoryAction.loadCategoryV2(getAllCategoryViewModel().getAllCategoryItems(), categoryBean.catId);
+                setCategoryData(catListBeen);
+            } else {
+
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCategoryAdapterRawDataChangeEvent(OnCategoryAdapterRawDataChangeEvent event) {
+        initPageIndicator(event.getData());
     }
 
     public void changeCategoryButtonState() {

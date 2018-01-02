@@ -260,7 +260,7 @@ public class ShopFragment extends BaseFragment {
     }
 
     private void getRecyclerViewCategoryData() {
-        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance());
+        BookCategoryAction bookCategoryAction = new BookCategoryAction(JDReadApplication.getInstance(),false);
         bookCategoryAction.execute(getShopDataBundle(), new RxCallback() {
             @Override
             public void onNext(Object o) {

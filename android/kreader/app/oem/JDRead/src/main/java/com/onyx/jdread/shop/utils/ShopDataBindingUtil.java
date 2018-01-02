@@ -7,6 +7,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.BannerSubjectAdapter;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
@@ -57,6 +58,14 @@ public class ShopDataBindingUtil {
     @BindingAdapter({"categoryItems"})
     public static void setAllCategoryItems(PageRecyclerView recyclerView, List items) {
         CategorySubjectAdapter adapter = (CategorySubjectAdapter) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
+            adapter.setRawData(items, recyclerView.getContext());
+        }
+    }
+
+    @BindingAdapter({"categoryTopItems"})
+    public static void setAllCategoryTopItems(PageRecyclerView recyclerView, List items) {
+        AllCategoryTopAdapter adapter = (AllCategoryTopAdapter) recyclerView.getAdapter();
         if (adapter != null && items != null) {
             adapter.setRawData(items, recyclerView.getContext());
         }

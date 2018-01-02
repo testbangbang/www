@@ -11,17 +11,23 @@ import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.request.cloud.RxRequestCategoryList;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by jackdeng on 2017/12/15.
  */
 
 public class BookCategoryAction extends BaseAction<ShopDataBundle> {
 
+    private boolean isAllCategory;
     private Context context;
     private BookShopViewModel shopViewModel;
+    private List<CategoryListResultBean.CatListBean> catList;
 
-    public BookCategoryAction(Context context) {
+    public BookCategoryAction(Context context, boolean isAllCategory) {
         this.context = context;
+        this.isAllCategory = isAllCategory;
     }
 
     @Override
@@ -38,7 +44,15 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestCategoryList request) {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
-                shopViewModel.setCategorySubjectItems(categoryListResultBean.catList);
+                if (categoryListResultBean != null) {
+                    catList = categoryListResultBean.catList;
+                    if (isAllCategory) {
+                        shopViewModel.getAllCategoryViewModel().setAllCategoryItems(catList);
+                    } else {
+                        shopViewModel.setCategorySubjectItems(catList);
+                    }
+                }
+
                 if (rxCallback != null) {
                     rxCallback.onNext(BookCategoryAction.this);
                     rxCallback.onComplete();
@@ -53,5 +67,30 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
                 }
             }
         });
+    }
+
+    public List<CategoryListResultBean.CatListBean> getCatList() {
+        return catList;
+    }
+
+    public List<CategoryListResultBean.CatListBean> loadCategoryV2(List<CategoryListResultBean.CatListBean> catList, int catId) {
+        List<CategoryListResultBean.CatListBean> list = new ArrayList<>();
+        if (catList != null) {
+            for (CategoryListResultBean.CatListBean catListBean : catList) {
+                if (catId == catListBean.catId) {
+                    List<CategoryListResultBean.CatListBean.ChildListBean> childList = catListBean.childList;
+                    for (CategoryListResultBean.CatListBean.ChildListBean childListBean : childList) {
+                        CategoryListResultBean.CatListBean bean = new CategoryListResultBean.CatListBean();
+                        bean.amount = childListBean.amount;
+                        bean.catId = childListBean.catId;
+                        bean.catName = childListBean.catName;
+                        bean.catType = childListBean.catType;
+                        bean.isLeaf = childListBean.isLeaf;
+                        list.add(bean);
+                    }
+                }
+            }
+        }
+        return list;
     }
 }

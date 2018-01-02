@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.databinding.AllCategoryImageItemBinding;
 import com.onyx.jdread.databinding.AllCategoryNormalItemBinding;
 import com.onyx.jdread.databinding.CategorySubjectModelItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean;
@@ -26,8 +25,7 @@ import java.util.List;
 public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHolder, CatListBean, CatListBean> {
 
     private static final int TYPE_MAINMODEL = 1;
-    private static final int TYPE_ALL_CAT_IMAGE = 2;
-    private static final int TYPE_ALL_CAT_NORMAL = 3;
+    private static final int TYPE_ALL_CAT_NORMAL = 2;
     private boolean isAllCategory;
     private EventBus eventBus;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.shop_category_recycle_view_row);
@@ -61,11 +59,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
     @Override
     public int getItemViewType(int position) {
         if (isAllCategory) {
-            if (position < 4) {
-                return TYPE_ALL_CAT_IMAGE;
-            } else {
-                return TYPE_ALL_CAT_NORMAL;
-            }
+            return TYPE_ALL_CAT_NORMAL;
         } else {
             return TYPE_MAINMODEL;
         }
@@ -76,8 +70,6 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
         switch (viewType) {
             case TYPE_MAINMODEL:
                 return new ModelViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_category_subject_model, null));
-            case TYPE_ALL_CAT_IMAGE:
-                return new AllCategoryImageViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_all_category_image, null));
             case TYPE_ALL_CAT_NORMAL:
                 return new AllCategoryNormalViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_all_category_normal, null));
             default:
@@ -93,12 +85,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
             viewHolder.itemView.setOnClickListener(this);
             viewHolder.itemView.setTag(position);
             viewHolder.bindTo(catListBean);
-        } else if (holder instanceof AllCategoryImageViewHolder) {
-            AllCategoryImageViewHolder viewHolder = (AllCategoryImageViewHolder) holder;
-            viewHolder.itemView.setOnClickListener(this);
-            viewHolder.itemView.setTag(position);
-            viewHolder.bindTo(catListBean);
-        } else if (holder instanceof AllCategoryNormalViewHolder) {
+        }  else if (holder instanceof AllCategoryNormalViewHolder) {
             AllCategoryNormalViewHolder viewHolder = (AllCategoryNormalViewHolder) holder;
             viewHolder.itemView.setOnClickListener(this);
             viewHolder.itemView.setTag(position);
@@ -135,25 +122,6 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
         }
 
         public CategorySubjectModelItemBinding getBind() {
-            return bind;
-        }
-
-        public void bindTo(CatListBean catListBean) {
-            bind.setCategoryListBean(catListBean);
-            bind.executePendingBindings();
-        }
-    }
-
-    static class AllCategoryImageViewHolder extends PageRecyclerView.ViewHolder {
-
-        private final AllCategoryImageItemBinding bind;
-
-        public AllCategoryImageViewHolder(View view) {
-            super(view);
-            bind = DataBindingUtil.bind(view);
-        }
-
-        public AllCategoryImageItemBinding getBind() {
             return bind;
         }
 
