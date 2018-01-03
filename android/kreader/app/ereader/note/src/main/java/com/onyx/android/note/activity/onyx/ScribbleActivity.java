@@ -229,7 +229,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
         screenRefreshBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                syncWithCallback(true, shouldResume(), new BaseCallback() {
+                syncWithCallback(true, shouldResume() && !isKeyboardInput(), new BaseCallback() {
                     @Override
                     public void done(BaseRequest request, Throwable e) {
                         gcInvalidate();
