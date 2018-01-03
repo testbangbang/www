@@ -17,6 +17,7 @@
     <dimen name="question_content_text_size">26sp</dimen>
     <dimen name="question_option_text_size">24sp</dimen>
     <dimen name="homework_text_size">22sp</dimen>
+    <dimen name="submit_text_size">26sp</dimen>
     <dimen name="homework_text_margin">10dp</dimen>
     <dimen name="button_min_width">140dp</dimen>
     <dimen name="button_min_height">100dp</dimen>
