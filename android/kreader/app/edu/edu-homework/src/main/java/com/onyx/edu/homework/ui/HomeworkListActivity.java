@@ -35,6 +35,7 @@ import com.onyx.edu.homework.action.ShowAnalysisAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Homework;
+import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
@@ -150,7 +151,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (next >= questions.size() || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveQuestion(new BaseCallback() {
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.min(next, questions.size() - 1);
@@ -167,7 +168,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (prev < 0 || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveQuestion(new BaseCallback() {
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.max(prev, 0);
@@ -177,7 +178,10 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showSubmitDialog() {
-        getDataBundle().post(new StopNoteEvent(false, new BaseCallback() {
+        if (getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onSubmitSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
@@ -189,7 +193,7 @@ public class HomeworkListActivity extends BaseActivity {
                 });
                 dialog.show();
             }
-        }));
+        });
     }
 
     private void getHomeworkReview() {
@@ -465,7 +469,7 @@ public class HomeworkListActivity extends BaseActivity {
             return;
         }
         if (recordFragment == null) {
-            getQuestionFragment().saveQuestion(new BaseCallback() {
+            getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     showRecordFragment();

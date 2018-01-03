@@ -460,7 +460,7 @@ public class ScribbleFragment extends BaseFragment {
 
     @Subscribe
     public void onStopNoteEvent(StopNoteEvent event) {
-        saveDocument(event.finishAfterSave, false, true,false, event.callback);
+        saveDocument(event.finishAfterSave, false, true,false, null);
     }
 
     @Subscribe

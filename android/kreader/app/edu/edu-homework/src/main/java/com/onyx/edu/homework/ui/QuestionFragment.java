@@ -2,6 +2,7 @@ package com.onyx.edu.homework.ui;
 
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.Html;
 import android.text.Spanned;
@@ -26,6 +27,7 @@ import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
 import com.onyx.edu.homework.base.BaseFragment;
+import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.FragmentQuestionBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.utils.TextUtils;
@@ -227,11 +229,15 @@ public class QuestionFragment extends BaseFragment {
         binding.option.setClickable(enable);
     }
 
-    public void saveQuestion(BaseCallback callback) {
+    public void saveQuestion(@NonNull SaveDocumentOption option, BaseCallback callback) {
         if (question.isChoiceQuestion() || !getDataBundle().isDoing() || scribbleFragment == null) {
             BaseCallback.invoke(callback, null, null);
             return;
         }
-        scribbleFragment.saveDocument(true, false, false, false, callback);
+        scribbleFragment.saveDocument(option.finishAfterSave,
+                option.resumeDrawing,
+                option.render,
+                option.showLoading,
+                callback);
     }
 }
