@@ -181,4 +181,53 @@
         <item name="android:padding">@dimen/reader_image_setting_style_change_layout_padding</item>
         <item name="android:background">@drawable/imagebtn_bg</item>
     </style>
+
+    <style name="ReaderPageInfoChapterStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">2</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:clickable">true</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">10dp</item>
+    </style>
+
+    <style name="ReaderPageInfoChapterSeekBarStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">6</item>
+        <item name="android:background">@drawable/focused_bg</item>
+        <item name="android:max">20</item>
+        <item name="android:maxHeight">@dimen/menu_seek_bar_height</item>
+        <item name="android:minHeight">@dimen/menu_seek_bar_height</item>
+        <item name="android:padding">@dimen/reader_page_info_menu_reading_process_padding</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress</item>
+        <item name="android:thumb">@drawable/seekbar_thumb</item>
+    </style>
+
+    <style name="ReaderPageInfoLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">20dp</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+
+    <style name="ReaderPageInfoBookNameStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_gravity">left|center_vertical</item>
+        <item name="android:layout_weight">8</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:paddingBottom">@dimen/reader_page_info_menu_book_name_padding</item>
+        <item name="android:paddingRight">@dimen/reader_page_info_menu_book_name_padding</item>
+        <item name="android:paddingTop">@dimen/reader_page_info_menu_book_name_padding</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
+
 </resources>
