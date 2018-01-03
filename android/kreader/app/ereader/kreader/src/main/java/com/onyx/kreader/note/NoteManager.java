@@ -134,7 +134,6 @@ public class NoteManager {
         NoteModel.setDefaultEraserRadius(noteConfig.getEraserRadius());
         NoteModel.setDefaultStrokeColor(noteConfig.getDefaultStrokeColor());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
-        BaseShape.setMaxTouchPressure(EpdController.getMaxTouchPressure());
     }
 
     public void updateHostView(final Context context, final View sv, final Rect visibleDrawRect, final List<RectF> excludeRect, int orientation) {

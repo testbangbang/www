@@ -450,11 +450,4 @@ public class BaseShape implements Shape {
         BaseShape.useRawInput = useRawInput;
     }
 
-    public static float getMaxTouchPressure() {
-        return maxTouchPressure;
-    }
-
-    public static void setMaxTouchPressure(float v) {
-        maxTouchPressure = v;
-    }
 }
