@@ -6,26 +6,15 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.PreferenceManager;
-import com.onyx.jdread.common.ClientUtils;
-import com.onyx.jdread.common.Constants;
-import com.onyx.jdread.personal.action.UserLoginAction;
-import com.onyx.jdread.personal.action.UserSyncLoginInfoAction;
+import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.personal.cloud.entity.GetOrderRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
 import com.onyx.jdread.personal.common.CloudApiContext;
-import com.onyx.jdread.personal.common.LoginHelper;
-import com.onyx.jdread.personal.event.UserLoginResultEvent;
-import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +26,8 @@ import jd.wjlogin_sdk.model.FailResult;
 import jd.wjlogin_sdk.model.JumpResult;
 import jd.wjlogin_sdk.model.PicDataInfo;
 import jd.wjlogin_sdk.util.MD5;
+
+;
 
 /**
  * Created by li on 2017/12/30.

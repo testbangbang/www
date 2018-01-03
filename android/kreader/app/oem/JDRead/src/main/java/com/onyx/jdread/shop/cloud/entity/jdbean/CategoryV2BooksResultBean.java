@@ -8,9 +8,13 @@ import java.util.List;
  */
 
 public class CategoryV2BooksResultBean {
-    public int amount;
+
     public String code;
     public int currentPage;
+    public boolean isSuccess;
+    public int pageSize;
+    public int resultCount;
     public int totalPage;
-    public List<ResultBookBean> resultList;
+    public List<Integer> bookIdList;
+    public List<ResultBookBean> bookList;
 }

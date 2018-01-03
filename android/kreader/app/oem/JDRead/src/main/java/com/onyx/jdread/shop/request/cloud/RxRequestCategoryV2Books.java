@@ -46,7 +46,7 @@ public class RxRequestCategoryV2Books extends RxBaseCloudRequest {
     }
 
     private void checkQuestResult() {
-        if (categoryV2BooksResultBean != null && categoryV2BooksResultBean.resultList != null) {
+        if (categoryV2BooksResultBean != null && categoryV2BooksResultBean.bookList != null) {
         }
     }
 

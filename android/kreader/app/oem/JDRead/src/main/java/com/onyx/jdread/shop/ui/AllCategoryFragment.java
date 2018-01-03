@@ -35,6 +35,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -83,14 +84,15 @@ public class AllCategoryFragment extends BaseFragment {
     private void setCategoryData(List<CategoryListResultBean.CatListBean> categorySubjectItems) {
         if (categorySubjectItems != null) {
             getAllCategoryViewModel().setAllCategoryItems(categorySubjectItems);
-            if (categorySubjectItems.size() <= row) {
+            if (categorySubjectItems.size() <= col) {
                 getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems);
-                initPageIndicator(categorySubjectItems);
+                getAllCategoryViewModel().setBottomCategoryItems(new ArrayList<CategoryListResultBean.CatListBean>());
             } else {
-                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(0,row));
-                getAllCategoryViewModel().setBottomCategoryItems(categorySubjectItems.subList(row,categorySubjectItems.size()));
-                initPageIndicator(categorySubjectItems);
+                getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(0,col));
+                getAllCategoryViewModel().setBottomCategoryItems(categorySubjectItems.subList(col,categorySubjectItems.size()));
             }
+            updateContentView(getAllCategoryViewModel().getBottomCategoryItems());
+            recyclerView.gotoPage(0);
         }
     }
 
@@ -126,11 +128,18 @@ public class AllCategoryFragment extends BaseFragment {
     private void initPageIndicator(List<CategoryListResultBean.CatListBean> resultBean) {
         if (resultBean != null) {
             int size = resultBean.size();
-            recyclerView.resize(recyclerView.getPageAdapter().getRowCount(), recyclerView.getPageAdapter().getColumnCount(), size);
-            recyclerView.gotoPage(0);
+            paginator.resize(row, col, size);
             getAllCategoryViewModel().setTotalPage(paginator.pages());
             setCurrentPage(paginator.getCurrentPage());
         }
+    }
+
+    private void updateContentView(List<CategoryListResultBean.CatListBean> resultBean) {
+        if (recyclerView == null) {
+            return;
+        }
+        recyclerView.getAdapter().notifyDataSetChanged();
+        initPageIndicator(resultBean);
     }
 
     private void setCurrentPage(int currentPage) {
@@ -218,7 +227,7 @@ public class AllCategoryFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryAdapterRawDataChangeEvent(OnCategoryAdapterRawDataChangeEvent event) {
-        initPageIndicator(event.getData());
+        updateContentView(event.getData());
     }
 
     public void changeCategoryButtonState() {

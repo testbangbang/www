@@ -46,9 +46,7 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
                 CategoryListResultBean categoryListResultBean = request.getCategoryListResultBean();
                 if (categoryListResultBean != null) {
                     catList = categoryListResultBean.catList;
-                    if (isAllCategory) {
-                        shopViewModel.getAllCategoryViewModel().setAllCategoryItems(catList);
-                    } else {
+                    if (!isAllCategory) {
                         shopViewModel.setCategorySubjectItems(catList);
                     }
                 }

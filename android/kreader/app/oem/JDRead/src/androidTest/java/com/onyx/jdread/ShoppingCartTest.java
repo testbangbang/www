@@ -5,6 +5,7 @@ import android.test.ApplicationTestCase;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.AddOrDeleteCartAction;
+import com.onyx.jdread.shop.action.BookCategoryV2BooksAction;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 
 import java.util.concurrent.CountDownLatch;
@@ -31,7 +32,26 @@ public class ShoppingCartTest extends ApplicationTestCase<JDReadApplication> {
                 super.onError(throwable);
                 assertNull(throwable);
                 countDownLatch.countDown();
+            }
+        });
+        countDownLatch.await();
+    }
 
+    public void testGetCategoryBookList() throws Exception {
+        final CountDownLatch countDownLatch = new CountDownLatch(1);
+        BookCategoryV2BooksAction bookCategoryV2BooksAction = new BookCategoryV2BooksAction(9253,1);
+        bookCategoryV2BooksAction.execute(ShopDataBundle.getInstance(),new RxCallback<BookCategoryV2BooksAction>() {
+            @Override
+            public void onNext(BookCategoryV2BooksAction bookCategoryV2BooksAction) {
+                assertNotNull(bookCategoryV2BooksAction.getBooksResultBean());
+                countDownLatch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                assertNull(throwable);
+                countDownLatch.countDown();
             }
         });
         countDownLatch.await();

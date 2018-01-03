@@ -1,6 +1,7 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableInt;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.event.OnCategoryBoyClick;
@@ -19,8 +20,8 @@ public class AllCategoryViewModel extends BaseObservable{
 
     private EventBus eventBus;
     private TitleBarViewModel titleBarViewModel;
-    private int currentPage;
-    private int totalPage;
+    public final ObservableInt currentPosition = new ObservableInt();
+    public final ObservableInt totalPage = new ObservableInt();
     public List<CategoryListResultBean.CatListBean> allCategoryItems;
     public List<CategoryListResultBean.CatListBean> topCategoryItems;
     public List<CategoryListResultBean.CatListBean> bottomCategoryItems;
@@ -40,21 +41,19 @@ public class AllCategoryViewModel extends BaseObservable{
     }
 
     public int getCurrentPage() {
-        return currentPage;
+        return currentPosition.get();
     }
 
-    public void setCurrentPage(int currentPage) {
-        this.currentPage = currentPage;
-        notifyChange();
+    public void setCurrentPage(int curPage) {
+        currentPosition.set(curPage);
     }
 
     public int getTotalPage() {
-        return totalPage;
+        return totalPage.get();
     }
 
-    public void setTotalPage(int totalPage) {
-        this.totalPage = totalPage;
-        notifyChange();
+    public void setTotalPage(int allPage) {
+        totalPage.set(allPage);
     }
 
     public List<CategoryListResultBean.CatListBean> getAllCategoryItems() {
