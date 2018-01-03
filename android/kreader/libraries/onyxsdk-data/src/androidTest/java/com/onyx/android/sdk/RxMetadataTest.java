@@ -135,7 +135,7 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
 
     public DataProviderBase getProviderBase() {
         init();
-        return DataProviderManager.getRemoteDataProvider();
+        return DataProviderManager.getLocalDataProvider();
     }
 
     public static Metadata randomMetadata(final String parent, boolean ext) {
@@ -229,11 +229,11 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         maxLevel = 2;
         Debug.setDebug(true);
         DataManager dataManager = new DataManager();
-        dataManager.getRemoteContentProvider().clearLibrary();
-        dataManager.getRemoteContentProvider().clearMetadataCollection();
-        dataManager.getRemoteContentProvider().clearMetadata();
+        dataManager.getLocalContentProvider().clearLibrary();
+        dataManager.getLocalContentProvider().clearMetadataCollection();
+        dataManager.getLocalContentProvider().clearMetadata();
         Library topLibrary = getRandomLibrary();
-        dataManager.getRemoteContentProvider().addLibrary(topLibrary);
+        dataManager.getLocalContentProvider().addLibrary(topLibrary);
         int libraryCount = getNestedLibrary(topLibrary.getIdString(), 0);
         List<Library> libraryList = new ArrayList<>();
         DataManagerHelper.loadLibraryRecursive(dataManager, libraryList, topLibrary.getIdString());
@@ -247,9 +247,9 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
             total += metadataCount;
             for (int j = 0; j < metadataCount; j++) {
                 Metadata meta = RxMetadataTest.randomMetadata(RxMetadataTest.testFolder(), true);
-                dataManager.getRemoteContentProvider().saveMetadata(getContext(), meta);
+                dataManager.getLocalContentProvider().saveMetadata(getContext(), meta);
                 MetadataCollection collection = MetadataCollection.create(meta.getIdString(), library.getIdString());
-                dataManager.getRemoteContentProvider().addMetadataCollection(getContext(), collection);
+                dataManager.getLocalContentProvider().addMetadataCollection(getContext(), collection);
             }
         }
 
@@ -263,10 +263,10 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
 
             int count = 0;
             for (Library library : tmpList) {
-                count += dataManager.getRemoteContentProvider().loadMetadataCollection(getContext(), library.getIdString()).size();
+                count += dataManager.getLocalContentProvider().loadMetadataCollection(getContext(), library.getIdString()).size();
             }
             QueryArgs args = QueryBuilder.libraryAllBookQuery(parentLibrary.getParentUniqueId(), SortBy.CreationTime, SortOrder.Desc);
-            count += dataManager.getRemoteContentProvider().count(getContext(), args);
+            count += dataManager.getLocalContentProvider().count(getContext(), args);
 
             //calculate time when deleting
             final int calCount = count;
@@ -290,7 +290,7 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
 
             countDownLatch.await();
 
-            assertTrue(count == dataManager.getRemoteContentProvider().count(getContext(), QueryBuilder.libraryAllBookQuery(parentLibrary.getParentUniqueId(),
+            assertTrue(count == dataManager.getLocalContentProvider().count(getContext(), QueryBuilder.libraryAllBookQuery(parentLibrary.getParentUniqueId(),
                     SortBy.CreationTime, SortOrder.Desc)));
             for (Library library : tmpList) {
                 for (Library tmp : libraryList) {
@@ -402,7 +402,7 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         Debug.setDebug(true);
         clearTestFolder();
         DataManager dataManager = new DataManager();
-        DataProviderBase remoteContentProvider = dataManager.getRemoteContentProvider();
+        DataProviderBase remoteContentProvider = dataManager.getLocalContentProvider();
         remoteContentProvider.clearLibrary();
         remoteContentProvider.clearMetadata();
         remoteContentProvider.clearMetadataCollection();
@@ -475,9 +475,9 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         DataProviderBase providerBase = getProviderBaseAndClearTable();
 
         DataManager dataManager = new DataManager();
-        dataManager.getRemoteContentProvider().clearLibrary();
-        dataManager.getRemoteContentProvider().clearMetadataCollection();
-        dataManager.getRemoteContentProvider().clearMetadata();
+        dataManager.getLocalContentProvider().clearLibrary();
+        dataManager.getLocalContentProvider().clearMetadataCollection();
+        dataManager.getLocalContentProvider().clearMetadata();
 
         Library topLibrary = getRandomLibrary();
         providerBase.addLibrary(topLibrary);
@@ -507,7 +507,7 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
             topTotalCount += limit;
             QueryArgs args = QueryBuilder.libraryAllBookQuery(library.getIdString(), SortBy.CreationTime, SortOrder.Desc);
             args.limit = limit;
-            List<Metadata> list = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(getContext(), args);
+            List<Metadata> list = dataManager.getLocalContentProvider().findMetadataByQueryArgs(getContext(), args);
             List<DataModel> modelList = new ArrayList<>();
             DataModelUtil.metadataToDataModel(EventBus.getDefault(), modelList, list, null, ThumbnailUtils.defaultThumbnailMapping());
             final int index = i;
@@ -534,11 +534,11 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
             awaitCountDownLatch(countDownLatch);
 
             args.limit = Integer.MAX_VALUE;
-            assertTrue(dataManager.getRemoteContentProvider().count(getContext(), args) == libraryMetaCountMap.get(library.getIdString()) - limit);
+            assertTrue(dataManager.getLocalContentProvider().count(getContext(), args) == libraryMetaCountMap.get(library.getIdString()) - limit);
 
             //test top library count
             args = QueryBuilder.libraryAllBookQuery(null, SortBy.CreationTime, SortOrder.Desc);
-            assertTrue(dataManager.getRemoteContentProvider().count(getContext(), args) == topTotalCount);
+            assertTrue(dataManager.getLocalContentProvider().count(getContext(), args) == topTotalCount);
         }
     }
 
@@ -661,7 +661,7 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
         Debug.setDebug(true);
         init();
         DataManager dataManager = new DataManager();
-        DataProviderBase providerBase = dataManager.getRemoteContentProvider();
+        DataProviderBase providerBase = dataManager.getLocalContentProvider();
         providerBase.clearMetadata();
         providerBase.clearMetadataCollection();
         providerBase.clearLibrary();

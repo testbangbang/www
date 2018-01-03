@@ -347,11 +347,11 @@ public class LocalDataProvider implements DataProviderBase {
 
     @Override
     public Library findLibraryByName(Context appContext, String name) {
-        return null;
+        return new Select().from(Library.class).where(Library_Table.name.eq(name)).querySingle();
     }
 
     @Override
     public long libraryMetadataCount(Library library) {
-        return 0;
+        return new Select().from(MetadataCollection.class).where(MetadataCollection_Table.libraryUniqueId.eq(library.getIdString())).queryList().size();
     }
 }
