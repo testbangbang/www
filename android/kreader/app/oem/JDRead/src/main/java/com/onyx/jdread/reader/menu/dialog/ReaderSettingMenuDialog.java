@@ -3,7 +3,9 @@ package com.onyx.jdread.reader.menu.dialog;
 import android.app.Activity;
 import android.app.Dialog;
 import android.databinding.DataBindingUtil;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.view.LayoutInflater;
 import android.view.View;
 
 import com.onyx.android.sdk.rx.RxCallback;
@@ -16,6 +18,7 @@ import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.model.FunctionBarModel;
+import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 
@@ -37,30 +40,39 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
     public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
+    }
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
         setCanceledOnTouchOutside(false);
-        initView(activity);
+        initView();
         initThirdLibrary();
-        initData(activity);
+        initData();
     }
 
-
-    private void initView(Activity activity) {
-        binding = DataBindingUtil.setContentView(activity, R.layout.reader_setting_menu);
+    private void initView() {
+        binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),R.layout.reader_setting_menu,null,false);
+        setContentView(binding.getRoot());
     }
 
-    private void initFunctionBar(Activity activity) {
+    private void initSystemBar() {
+        binding.mainSystemBar.setSystemBarModel(new SystemBarModel());
+    }
+
+    private void initFunctionBar() {
         functionBarModel = new FunctionBarModel();
         binding.mainFunctionBar.setFunctionBarModel(functionBarModel);
         PageRecyclerView functionBarRecycler = getFunctionBarRecycler();
-        functionBarRecycler.setLayoutManager(new DisableScrollGridManager(activity));
+        functionBarRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         functionBarAdapter = new FunctionBarAdapter();
-        setFunctionAdapter(activity,functionBarRecycler);
+        setFunctionAdapter(functionBarRecycler);
     }
 
-    private void setFunctionAdapter(Activity activity, PageRecyclerView functionBarRecycler) {
+    private void setFunctionAdapter( PageRecyclerView functionBarRecycler) {
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
-        int col = activity.getResources().getInteger(R.integer.function_bar_col);
+        int col = getContext().getResources().getInteger(R.integer.function_bar_col);
         functionBarAdapter.setRowAndCol(functionBarAdapter.getRowCount(), show ? col : col - 1);
         functionBarRecycler.setAdapter(functionBarAdapter);
         updateFunctionBar();
@@ -88,8 +100,9 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
         return binding.mainFunctionBar.functionBarRecycler;
     }
 
-    private void initData(Activity activity) {
-        initFunctionBar(activity);
+    private void initData() {
+        initFunctionBar();
+        initSystemBar();
     }
 
     private void initThirdLibrary() {

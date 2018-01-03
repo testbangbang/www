@@ -57,7 +57,7 @@ dependencies {
     compile "pub.devrel:easypermissions:$rootProject.easyPermissonVersion"
     compile "commons-io:commons-io:+"
     compile "io.reactivex.rxjava2:rxjava:$rootProject.rxjava"
-    compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxjava"
+    compile "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroid"
 
 }
 
