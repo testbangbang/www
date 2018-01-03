@@ -200,4 +200,19 @@
     <string name="read_note">阅读笔记</string>
     <string name="switch_book">换一本</string>
     <string name="receive">领取</string>
+    <string name="prev_chapter">上一章</string>
+    <string name="next_chapter">下一章</string>
+    <string name="off_brightness">关灯</string>
+    <string name="brightest_brightness">最亮</string>
+    <string name="reader_typeface">字体</string>
+    <string name="reader_boldface">黑体</string>
+    <string name="reader_arial">宋体</string>
+    <string name="reader_italics">楷体</string>
+    <string name="reader_round_body">圆体</string>
+    <string name="reader_traditional">繁体</string>
+    <string name="reader_simplified">简体</string>
+    <string name="reader_font_size">字号</string>
+    <string name="reader_format">版式</string>
+    <string name="reader_adaptive">自适应</string>
+    <string name="reader_customize">自定义</string>
 </resources>

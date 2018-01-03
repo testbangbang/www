@@ -189,4 +189,15 @@
     <dimen name="personal_experience_recycler_margin_top">20dp</dimen>
     <dimen name="receive_padding">10dp</dimen>
     <dimen name="item_gift_center_detail_margin_top">10dp</dimen>
+    <dimen name="reader_title_bar_item_margin_right">20dp</dimen>
+    <dimen name="reader_title_bar_item_padding">10dp</dimen>
+    <dimen name="reader_page_info_menu_book_name_padding">10dp</dimen>
+    <dimen name="reader_page_info_menu_back_margin_right">15dp</dimen>
+    <dimen name="reader_page_info_menu_margin_bottom">10dp</dimen>
+    <dimen name="reader_page_info_menu_prev_chapter_padding_left">5dp</dimen>
+    <dimen name="reader_page_info_menu_prev_chapter_padding_right">5dp</dimen>
+    <dimen name="reader_page_info_menu_reading_process_padding">5dp</dimen>
+    <dimen name="reader_page_info_menu_next_chapter_padding_left">5dp</dimen>
+    <dimen name="reader_page_info_menu_next_chapter_padding_right">5dp</dimen>
+    <dimen name="reader_setting_menu_item_margin_bottom">20dp</dimen>
 </resources>

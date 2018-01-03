@@ -204,4 +204,25 @@
     <string name="read_note">Reading notes</string>
     <string name="switch_book">Switch</string>
     <string name="receive">Receive</string>
+    <string name="next_chapter">Next chapter</string>
+    <string name="prev_chapter">Pre chapter</string>
+    <string name="off_brightness">Turn off the lights</string>
+    <string name="brightest_brightness">The brightest</string>
+    <string name="reader_typeface">Typeface</string>
+    <string name="reader_boldface">Boldface</string>
+    <string name="reader_arial">Arial</string>
+    <string name="reader_italics">Italics</string>
+    <string name="reader_round_body">Round body</string>
+    <string name="reader_traditional">Traditional</string>
+    <string name="reader_simplified">Simplified</string>
+    <string name="reader_font_size">Font size</string>
+    <string name="reader_font_size_one">1</string>
+    <string name="reader_font_size_two">2</string>
+    <string name="reader_font_size_three">3</string>
+    <string name="reader_font_size_four">4</string>
+    <string name="reader_font_size_five">5</string>
+    <string name="reader_font_size_six">6</string>
+    <string name="reader_format">Format</string>
+    <string name="reader_adaptive">Adaptive</string>
+    <string name="reader_customize">Customize</string>
 </resources>

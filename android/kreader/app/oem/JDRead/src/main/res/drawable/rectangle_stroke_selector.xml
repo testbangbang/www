@@ -2,4 +2,5 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:drawable="@drawable/rectangle_stroke_press" android:state_pressed="true" />
     <item android:drawable="@drawable/rectangle_stroke" android:state_pressed="false" />
+    <item android:state_accelerated="true" android:drawable="@drawable/rectangle_stroke_press"/>
 </selector>
