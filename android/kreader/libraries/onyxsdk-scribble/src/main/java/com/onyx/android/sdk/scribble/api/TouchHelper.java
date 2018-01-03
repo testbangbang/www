@@ -176,7 +176,7 @@ public class TouchHelper {
         destroyRawDrawing();
     }
 
-    public void setRawDrawingState(boolean enabled) {
+    public void setRawDrawingEnabled(boolean enabled) {
         if (enabled) {
             resumeRawDrawing();
         } else {
