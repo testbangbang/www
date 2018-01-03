@@ -177,15 +177,19 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showSubmitDialog() {
-        getDataBundle().post(new StopNoteEvent(false));
-        SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        getDataBundle().post(new StopNoteEvent(false, new BaseCallback() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
-                reloadQuestionFragment(currentPage);
+            public void done(BaseRequest request, Throwable e) {
+                SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        reloadQuestionFragment(currentPage);
+                    }
+                });
+                dialog.show();
             }
-        });
-        dialog.show();
+        }));
     }
 
     private void getHomeworkReview() {

@@ -15,6 +15,7 @@ import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
+import com.onyx.edu.homework.action.CheckAnswerAction;
 import com.onyx.edu.homework.action.HomeworkSubmitAction;
 import com.onyx.edu.homework.action.WifiConnectAction;
 import com.onyx.edu.homework.action.note.MakeHomeworkPagesAnswerActionChain;
@@ -43,7 +44,6 @@ public class SubmitDialog extends OnyxBaseDialog {
     }
 
     private void initView() {
-        initQuestionInfo();
         binding.message.setText(R.string.submit_tips);
         binding.action0.setText(R.string.continue_answer);
         binding.action0.setOnClickListener(new View.OnClickListener() {
@@ -57,6 +57,16 @@ public class SubmitDialog extends OnyxBaseDialog {
             @Override
             public void onClick(View v) {
                 prepareSubmit();
+            }
+        });
+        checkQuestionAnswer();
+    }
+
+    private void checkQuestionAnswer() {
+        new CheckAnswerAction(questions).execute(getContext(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                initQuestionInfo();
             }
         });
     }
