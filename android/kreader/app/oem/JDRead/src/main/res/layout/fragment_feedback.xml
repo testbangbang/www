@@ -57,7 +57,7 @@
                 android:layout_width="@dimen/feedback_commit_text_width"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/fragment_content_padding"
-                android:background="@drawable/retangle_stroke_selector"
+                android:background="@drawable/rectangle_stroke_selector"
                 android:clickable="true"
                 android:gravity="center"
                 android:onClick="@{()->feedbackModel.commitFeedback()}"
