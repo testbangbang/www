@@ -18,6 +18,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionReview;
+import com.onyx.android.sdk.data.model.Subject;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
@@ -248,10 +249,10 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void initToolbarTitle() {
         String title = homework.child.title;
-        String subject = getDataBundle().getHomeworkInfo().subject;
+        Subject subject = getDataBundle().getHomeworkInfo().subject;
         Date beginTime = getDataBundle().getHomeworkInfo().beginTime;
-        if (!StringUtils.isNullOrEmpty(subject)) {
-            title += "  " + getString(R.string.subject, subject);
+        if (subject != null && !StringUtils.isNullOrEmpty(subject.name)) {
+            title += "  " + getString(R.string.subject, subject.name);
         }
         if (beginTime != null) {
             String time = DateTimeUtil.formatDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);

@@ -1,6 +1,7 @@
 package com.onyx.edu.homework.data;
 
 import com.onyx.android.sdk.data.model.HomeworkRequestModel;
+import com.onyx.android.sdk.data.model.Subject;
 
 import java.util.Date;
 
@@ -14,7 +15,7 @@ public class HomeworkInfo {
     public String title;
     public Date beginTime;
     public Date endTime;
-    public String subject;
+    public Subject subject;
 
     public void setHomeworkId(String homeworkId) {
         this.homeworkId = homeworkId;
@@ -32,7 +33,7 @@ public class HomeworkInfo {
         this.endTime = endTime;
     }
 
-    public void setSubject(String subject) {
+    public void setSubject(Subject subject) {
         this.subject = subject;
     }
 

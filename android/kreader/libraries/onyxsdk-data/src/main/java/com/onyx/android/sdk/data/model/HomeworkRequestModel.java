@@ -17,6 +17,6 @@ public class HomeworkRequestModel {
     public List<Question> questions;
     public Date beginTime;
     public Date endTime;
-    public String subject;
+    public Subject subject;
     public boolean published;
 }
