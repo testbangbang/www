@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
+import com.liulishuo.filedownloader.i.IFileDownloadIPCCallback;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
@@ -42,13 +43,17 @@ import java.util.Map;
 public class DataManagerHelper {
 
     private static DataProviderBase getDataProviderBase() {
-        return DataProviderManager.getLocalDataProvider();
+        if (DataManager.useDefault) {
+            return DataProviderManager.getLocalDataProvider();
+        }else {
+            return DataProviderManager.getRemoteDataProvider();
+        }
     }
 
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
         QueryArgs args = new QueryArgs();
         args.libraryUniqueId = parentId;
-        return loadLibraryList(dataManager.getLocalContentProvider(), list, args);
+        return loadLibraryList(getDataProviderBase(), list, args);
     }
 
     public static List<Library> loadLibraryList(DataProviderBase dataProvider, List<Library> list, QueryArgs args) {
@@ -76,7 +81,7 @@ public class DataManagerHelper {
         QueryArgs args = new QueryArgs();
         args.libraryUniqueId = targetId;
         args.fetchPolicy = FetchPolicy.MEM_DB_ONLY;
-        loadLibraryRecursive(dataManager.getLocalContentProvider(), list, args);
+        loadLibraryRecursive(getDataProviderBase(), list, args);
     }
 
     public static Thumbnail loadThumbnail(Context context, String path, String associationId, OnyxThumbnail.ThumbnailKind kind) {
@@ -104,7 +109,7 @@ public class DataManagerHelper {
 
     public static void deleteAllLibrary(Context context, DataManager dataManager, String parentUniqueId,
                                         List<Library> libraryList) {
-        deleteAllLibrary(context, dataManager.getLocalContentProvider(), parentUniqueId, libraryList);
+        deleteAllLibrary(context, getDataProviderBase(), parentUniqueId, libraryList);
     }
 
     public static void deleteAllLibrary(Context context, DataProviderBase providerBase, String parentUniqueId,
@@ -129,16 +134,16 @@ public class DataManagerHelper {
         }
     }
 
-    public static void deleteMetadataCollection(Context context, DataManager dataManager, String libraryIdString){
-        dataManager.getLocalContentProvider().deleteMetadataCollection(context, libraryIdString);
+    public static void deleteMetadataCollection(Context context, DataManager dataManager, String libraryIdString) {
+        getDataProviderBase().deleteMetadataCollection(context, libraryIdString);
     }
 
     public static MetadataCollection loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString, String metaIdString) {
-        return dataManager.getLocalContentProvider().loadMetadataCollection(context, libraryIdString, metaIdString);
+        return getDataProviderBase().loadMetadataCollection(context, libraryIdString, metaIdString);
     }
 
     public static List<MetadataCollection> loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString) {
-        return dataManager.getLocalContentProvider().loadMetadataCollection(context, libraryIdString);
+        return getDataProviderBase().loadMetadataCollection(context, libraryIdString);
     }
 
     public static List<Metadata> loadMetadataListWithCache(Context context, DataManager dataManager,
@@ -150,7 +155,7 @@ public class DataManagerHelper {
             list = dataManager.getCacheManager().getMetadataLruCache(queryKey);
         }
         if (list == null) {
-            list = dataManager.getLocalContentProvider().findMetadataByQueryArgs(context, queryArgs);
+            list = getDataProviderBase().findMetadataByQueryArgs(context, queryArgs);
             if (!CollectionUtils.isNullOrEmpty(list)) {
                 dataManager.getCacheManager().addToMetadataCache(queryKey, list);
             }
@@ -222,7 +227,7 @@ public class DataManagerHelper {
         if (refBitmap != null) {
             return refBitmap.clone();
         }
-        return decodeFileAndCache(context, dataManager.getLocalContentProvider(), bitmapLruCache, associationId);
+        return decodeFileAndCache(context, getDataProviderBase(), bitmapLruCache, associationId);
     }
 
     private static CloseableReference<Bitmap> decodeFileAndCache(File file, BitmapReferenceLruCache bitmapLruCache, String associationId) {
@@ -240,8 +245,8 @@ public class DataManagerHelper {
     }
 
     private static CloseableReference<Bitmap> decodeFileAndCache(Context context, DataProviderBase dataProvider,
-                                                                BitmapReferenceLruCache bitmapLruCache,
-                                                                String associationId) {
+                                                                 BitmapReferenceLruCache bitmapLruCache,
+                                                                 String associationId) {
         CloseableReference<Bitmap> refBitmap = null;
         String path = getThumbnailPath(context, dataProvider, associationId);
         if (StringUtils.isNotBlank(path)) {
@@ -266,7 +271,7 @@ public class DataManagerHelper {
     }
 
     public static synchronized CloseableReference<Bitmap> loadThumbnailBitmapWithCacheByOriginContentPath(Context context, DataManager dataManager,
-                                                                                             String originContentPath) {
+                                                                                                          String originContentPath) {
         BitmapReferenceLruCache bitmapLruCache = dataManager.getCacheManager().getBitmapLruCache();
         if (StringUtils.isNullOrEmpty(originContentPath)) {
             return null;
@@ -275,12 +280,12 @@ public class DataManagerHelper {
         if (refBitmap != null && refBitmap.isValid()) {
             return refBitmap.clone();
         }
-        return decodeFileAndCacheByOriginContentPath(context, dataManager.getLocalContentProvider(), bitmapLruCache, originContentPath);
+        return decodeFileAndCacheByOriginContentPath(context, getDataProviderBase(), bitmapLruCache, originContentPath);
     }
 
     private static synchronized CloseableReference<Bitmap> decodeFileAndCacheByOriginContentPath(Context context, DataProviderBase dataProvider,
-                                                                                    BitmapReferenceLruCache bitmapLruCache,
-                                                                                    String originContentPath) {
+                                                                                                 BitmapReferenceLruCache bitmapLruCache,
+                                                                                                 String originContentPath) {
         CloseableReference<Bitmap> refBitmap = null;
         String path = getThumbnailPathByOriginContentPath(context, dataProvider, originContentPath);
         if (StringUtils.isNotBlank(path)) {
@@ -310,7 +315,7 @@ public class DataManagerHelper {
         }
         String parentId = library.getParentUniqueId();
         while (StringUtils.isNotBlank(parentId)) {
-            Library parentLibrary = dataManager.getLocalContentProvider().loadLibrary(parentId);
+            Library parentLibrary = getDataProviderBase().loadLibrary(parentId);
             if (parentLibrary == null) {
                 break;
             }
@@ -462,9 +467,9 @@ public class DataManagerHelper {
         List<Library> totalLibraryList = new ArrayList<>();
         final DatabaseWrapper database = FlowManager.getDatabase(ContentDatabase.NAME).getWritableDatabase();
         database.beginTransaction();
-        if(recursive) {
+        if (recursive) {
             loadLibraryRecursive(dataProviderBase, totalLibraryList, queryArgs);
-        }else{
+        } else {
             loadLibraryList(dataProviderBase, totalLibraryList, queryArgs);
         }
         for (Library library : totalLibraryList) {
