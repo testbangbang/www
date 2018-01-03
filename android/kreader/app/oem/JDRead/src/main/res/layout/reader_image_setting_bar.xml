@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <View style="@style/ReaderHorizontalSeparationLine" />
+
+        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
+
+            <TextView
+                style="@style/ReaderTextSettingStyle"
+                android:text="@string/reader_format" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="1dp">
+
+                <LinearLayout
+                    style="@style/ReaderTextSettingItemParentStyle"
+                    android:layout_weight="5">
+
+                    <TextView
+                        style="@style/ReaderTextSettingFormatStyle"
+                        android:text="@string/reader_default_mode" />
+
+                    <View style="@style/ReaderVerticalSeparationLine" />
+
+                    <TextView
+                        style="@style/ReaderTextSettingFormatStyle"
+                        android:text="@string/reader_comic_mode" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
+
+            <TextView
+                style="@style/ReaderTextSettingStyle"
+                android:text="@string/reader_with_black" />
+
+            <LinearLayout
+                style="@style/ReaderTextSettingItemParentStyle"
+                android:layout_weight="5">
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_one" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_two" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_three" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_four" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_five" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_six" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/bg_dotted_line" />
+
+        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    style="@style/ReaderImageSettingStyleChangeLayoutStyle"
+                    android:drawableLeft="@mipmap/ic_read_cut"
+                    android:text="@string/reader_trimming" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    style="@style/ReaderImageSettingStyleChangeLayoutStyle"
+                    android:drawableLeft="@mipmap/ic_read_again"
+                    android:text="@string/reader_rearrange" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <TextView
+                    style="@style/ReaderImageSettingStyleChangeLayoutStyle"
+                    android:drawableLeft="@mipmap/ic_read_reset"
+                    android:text="@string/reader_reset" />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

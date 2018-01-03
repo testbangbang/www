@@ -229,4 +229,10 @@
     <string name="reader_segment_spacing">Segment spacing</string>
     <string name="reader_left_and_right_spacing">Left and right spacing</string>
     <string name="reader_up_and_down_spacing">Up and down spacing</string>
+    <string name="reader_comic_mode">Comic</string>
+    <string name="reader_default_mode">Default</string>
+    <string name="reader_with_black">With black</string>
+    <string name="reader_trimming">Trimming</string>
+    <string name="reader_rearrange">Rearrange</string>
+    <string name="reader_reset">Reset</string>
 </resources>
