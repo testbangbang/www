@@ -38,7 +38,6 @@ public class DocumentHelper {
         NoteModel.setDefaultEraserRadius(noteManager.getDeviceConfig().getEraserRadius());
         getNoteDocument().getNoteDrawingArgs().setEraserRadius(noteManager.getDeviceConfig().getEraserRadius());
         InkUtils.setPressureEntries(noteManager.getMappingConfig().getPressureList());
-        BaseShape.setMaxTouchPressure(EpdController.getMaxTouchPressure());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }

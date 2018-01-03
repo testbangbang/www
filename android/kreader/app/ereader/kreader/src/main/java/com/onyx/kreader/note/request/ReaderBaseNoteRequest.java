@@ -383,7 +383,6 @@ public class ReaderBaseNoteRequest extends BaseRequest {
 
     private void restoreNoteDrawingArgs(NoteManager noteManager) {
         noteManager.restoreStrokeWidth();
-        BaseShape.setMaxTouchPressure(EpdController.getMaxTouchPressure());
     }
 
     public void syncDrawingArgs(final NoteDrawingArgs args) {

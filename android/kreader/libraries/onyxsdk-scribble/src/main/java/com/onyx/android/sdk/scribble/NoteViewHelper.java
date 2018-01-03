@@ -171,7 +171,6 @@ public class NoteViewHelper {
         NoteModel.setDefaultEraserRadius(deviceConfig.getEraserRadius());
         getNoteDocument().getNoteDrawingArgs().setEraserRadius(deviceConfig.getEraserRadius());
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
-        BaseShape.setMaxTouchPressure(EpdController.getMaxTouchPressure());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }
