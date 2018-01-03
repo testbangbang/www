@@ -33,6 +33,7 @@ public class NoteAppConfig {
     public static final String SHOW_INPUT_METHOD_INSTANTLY_AFTER_OPEN_DIALOG = "show_input_method_instantly_after_open_dialog";
     public static final String USE_MX_UI_STYLE = "use_mx_ui_style";
     //once use edu config.hide import/export function.give extra shape and less note background.
+    public static final String ENABLE_PRESSSTRESS_DETECT = "enable_pressstress_detect";
     public static final String USE_EDU_CONFIG = "use_edu_config";
     public static final String DISABLE_IMPORT = "disable_import";
     public static final String CUSTOM_DEFAULT_WIDTH = "custom_default_width";
@@ -182,7 +183,7 @@ public class NoteAppConfig {
 
     //TODO:key to config support PressStress or not,now just disable for no function.
     public boolean isEnablePressStressDetect(){
-        return false;
+        return backend.hasKey(ENABLE_PRESSSTRESS_DETECT) && backend.getBoolean(ENABLE_PRESSSTRESS_DETECT);
     }
 
     public boolean useEduConfig(){

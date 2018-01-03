@@ -1,11 +1,11 @@
 package com.onyx.android.sdk.scribble.utils;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Path;
 
-import com.onyx.android.sdk.scribble.EPDRenderer;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
-import com.onyx.android.sdk.scribble.math.ScribbleInk;
 import com.onyx.android.sdk.scribble.shape.BrushScribbleShape;
 import com.onyx.android.sdk.scribble.shape.RenderContext;
 
@@ -18,7 +18,13 @@ import java.util.List;
 
 public class InkUtils {
 
+    static {
+        System.loadLibrary("ink_utils");
+    }
+
     private static List<MappingConfig.PressureEntry> pressureEntries;
+
+    private static native void nativeDrawStroke(Canvas canvas, Paint paint, float strokeWidth, float[] points);
 
     public static class PathEntry {
         public Path path;
@@ -28,6 +34,29 @@ public class InkUtils {
             path = p;
             pathWidth = w;
         }
+    }
+
+    public static void drawStroke(final RenderContext renderContext,
+                                  final List<TouchPoint> points,
+                                  final float strokeWidth,
+                                  final float maxTouchPressure) {
+        float[] src = new float[2];
+        float[] dst = new float[2];
+        float[] array = new float[points.size() * 5];
+        for (int i = 0; i < points.size(); i++) {
+            int idx = 5 * i;
+            src[0] = points.get(i).x;
+            src[1] = points.get(i).y;
+            renderContext.matrix.mapPoints(dst, src);
+
+            array[idx] = dst[0];
+            array[idx + 1] = dst[1];
+            array[idx + 2] = points.get(i).pressure / maxTouchPressure;
+            array[idx + 3] = points.get(i).size;
+            array[idx + 4] = points.get(i).timestamp;
+        }
+
+        nativeDrawStroke(renderContext.canvas, renderContext.paint, strokeWidth, array);
     }
 
     public static void setPressureEntries(final List<MappingConfig.PressureEntry> list) {

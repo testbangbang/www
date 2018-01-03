@@ -47,6 +47,7 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
             }
         }
 
+        boolean dirty = false;
         for (PageInfo pageInfo : getVisiblePages()) {
             List<TouchPointList> normalizedList = normalizeOnPage(pageInfo);
 
@@ -56,9 +57,11 @@ public class RemoveShapesByTouchPointListRequest extends ReaderBaseNoteRequest {
             if (notePage != null) {
                 for (TouchPointList list : normalizedList) {
                     notePage.removeShapesByTouchPointList(list, radius);
+                    dirty |= notePage.getRemovedShapeIdList().size() > 0;
                 }
             }
         }
+        noteManager.setRenderBitmapDirty(dirty);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         renderToScreen(noteManager);
         

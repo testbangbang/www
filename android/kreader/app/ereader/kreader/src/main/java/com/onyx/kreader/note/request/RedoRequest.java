@@ -15,6 +15,7 @@ public class RedoRequest extends ReaderBaseNoteRequest {
     public void execute(final NoteManager noteManager) throws Exception {
         noteManager.redo(getContext(), getVisiblePages().get(0).getRange(),
                 getVisiblePages().get(0).getSubPage());
+        noteManager.setRenderBitmapDirty(true);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }

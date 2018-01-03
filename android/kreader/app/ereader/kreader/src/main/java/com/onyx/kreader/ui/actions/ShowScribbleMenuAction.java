@@ -23,6 +23,7 @@ import com.onyx.android.sdk.ui.view.CommonViewHolder;
 import com.onyx.android.sdk.ui.view.OnyxToolbar;
 import com.onyx.android.sdk.utils.DimenUtils;
 import com.onyx.kreader.R;
+import com.onyx.kreader.device.DeviceConfig;
 import com.onyx.kreader.note.actions.ChangeStrokeWidthAction;
 import com.onyx.kreader.note.actions.FlushNoteAction;
 import com.onyx.kreader.note.actions.RestoreShapeAction;
@@ -324,7 +325,9 @@ public class ShowScribbleMenuAction extends BaseAction implements View.OnClickLi
         final ReaderMenuAction[] selectActions = {ReaderMenuAction.SCRIBBLE_PENCIL, ReaderMenuAction.SCRIBBLE_BRUSH, ReaderMenuAction.SCRIBBLE_LINE, ReaderMenuAction.SCRIBBLE_TRIANGLE, ReaderMenuAction.SCRIBBLE_CIRCLE, ReaderMenuAction.SCRIBBLE_SQUARE};
 
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_pencil, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_PENCIL);
-//        addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_brush, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_BRUSH);
+        if (DeviceConfig.sharedInstance(readerDataHolder.getContext()).isEnableBrushStroke()) {
+            addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_brush, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_BRUSH);
+        }
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_line, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_LINE);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_trigon, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_TRIANGLE);
         addMarkerViewHolder(toolbar, readerDataHolder.getContext(), R.drawable.ic_shape_circle, R.drawable.ic_dot, R.layout.scribble_expand_menu_item_view, ReaderMenuAction.SCRIBBLE_CIRCLE);
