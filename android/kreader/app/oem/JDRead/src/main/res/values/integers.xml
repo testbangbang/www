@@ -75,4 +75,6 @@
     <integer name="device_info_row">7</integer>
     <integer name="device_info_col">1</integer>
     <integer name="all_category_top_recycle_view_row">1</integer>
+    <integer name="subject_list_recycle_viw_row">5</integer>
+    <integer name="subject_list_recycle_viw_col">1</integer>
 </resources>

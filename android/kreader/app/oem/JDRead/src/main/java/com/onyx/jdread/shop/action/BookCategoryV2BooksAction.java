@@ -21,7 +21,7 @@ public class BookCategoryV2BooksAction extends BaseAction<ShopDataBundle> {
     private BookShopViewModel shopViewModel;
     private CategoryV2BooksResultBean categoryV2BooksResultBean;
 
-    public BookCategoryV2BooksAction(int  catId, int currentPage) {
+    public BookCategoryV2BooksAction(int catId, int currentPage) {
         this.currentPage = currentPage;
         this.catId = catId;
     }
@@ -47,6 +47,10 @@ public class BookCategoryV2BooksAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onNext(RxRequestCategoryV2Books request) {
                 categoryV2BooksResultBean = request.getCategoryV2BooksResultBean();
+                if (categoryV2BooksResultBean != null) {
+                    shopViewModel.getAllCategoryViewModel().getSubjectListViewModel().setBookList(categoryV2BooksResultBean.bookList);
+                }
+
                 if (rxCallback != null) {
                     rxCallback.onNext(BookCategoryV2BooksAction.this);
                     rxCallback.onComplete();

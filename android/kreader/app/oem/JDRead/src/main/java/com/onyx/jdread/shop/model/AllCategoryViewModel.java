@@ -25,6 +25,7 @@ public class AllCategoryViewModel extends BaseObservable{
     public List<CategoryListResultBean.CatListBean> allCategoryItems;
     public List<CategoryListResultBean.CatListBean> topCategoryItems;
     public List<CategoryListResultBean.CatListBean> bottomCategoryItems;
+    public SubjectListViewModel subjectListViewModel;
 
     public AllCategoryViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -45,6 +46,7 @@ public class AllCategoryViewModel extends BaseObservable{
     }
 
     public void setCurrentPage(int curPage) {
+        curPage = curPage < 1 ? 1 : curPage;
         currentPosition.set(curPage);
     }
 
@@ -53,6 +55,7 @@ public class AllCategoryViewModel extends BaseObservable{
     }
 
     public void setTotalPage(int allPage) {
+        allPage = allPage < 1 ? 1 : allPage;
         totalPage.set(allPage);
     }
 
@@ -81,6 +84,13 @@ public class AllCategoryViewModel extends BaseObservable{
     public void setBottomCategoryItems(List<CategoryListResultBean.CatListBean> bottomCategoryItems) {
         this.bottomCategoryItems = bottomCategoryItems;
         notifyChange();
+    }
+
+    public SubjectListViewModel getSubjectListViewModel() {
+        if (subjectListViewModel == null){
+            subjectListViewModel = new SubjectListViewModel(getEventBus());
+        }
+        return subjectListViewModel;
     }
 
     public void onPublishClick(){

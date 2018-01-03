@@ -11,6 +11,7 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
+import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookAllCategoryBinding;
@@ -91,7 +92,7 @@ public class AllCategoryFragment extends BaseFragment {
                 getAllCategoryViewModel().setTopCategoryItems(categorySubjectItems.subList(0,col));
                 getAllCategoryViewModel().setBottomCategoryItems(categorySubjectItems.subList(col,categorySubjectItems.size()));
             }
-            updateContentView(getAllCategoryViewModel().getBottomCategoryItems());
+            updateContentView(getAllCategoryViewModel().getAllCategoryItems());
             recyclerView.gotoPage(0);
         }
     }
@@ -126,12 +127,13 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     private void initPageIndicator(List<CategoryListResultBean.CatListBean> resultBean) {
+        int size = 0;
         if (resultBean != null) {
-            int size = resultBean.size();
-            paginator.resize(row, col, size);
-            getAllCategoryViewModel().setTotalPage(paginator.pages());
-            setCurrentPage(paginator.getCurrentPage());
+            size = resultBean.size();
         }
+        paginator.resize(row, col, size);
+        getAllCategoryViewModel().setTotalPage(paginator.pages());
+        setCurrentPage(paginator.getCurrentPage());
     }
 
     private void updateContentView(List<CategoryListResultBean.CatListBean> resultBean) {
@@ -220,14 +222,16 @@ public class AllCategoryFragment extends BaseFragment {
                 List<CategoryListResultBean.CatListBean> catListBeen = bookCategoryAction.loadCategoryV2(getAllCategoryViewModel().getAllCategoryItems(), categoryBean.catId);
                 setCategoryData(catListBeen);
             } else {
-
+                PreferenceManager.setIntValue(getContextJD(),Constants.SP_KEY_CATEGORY_ID,categoryBean.catId);
+                PreferenceManager.setStringValue(getContextJD(),Constants.SP_KEY_CATEGORY_NAME,categoryBean.catName);
+                getViewEventCallBack().gotoView(SubjectListFragment.class.getName());
             }
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCategoryAdapterRawDataChangeEvent(OnCategoryAdapterRawDataChangeEvent event) {
-        updateContentView(event.getData());
+        updateContentView(getAllCategoryViewModel().getAllCategoryItems());
     }
 
     public void changeCategoryButtonState() {

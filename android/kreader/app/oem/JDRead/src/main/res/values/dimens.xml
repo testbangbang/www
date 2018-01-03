@@ -221,4 +221,7 @@
     <dimen name="item_all_category_image_width">75dp</dimen>
     <dimen name="item_all_category_image_height">95dp</dimen>
     <dimen name="recycler_view_top_categorys_height">120dp</dimen>
+    <dimen name="item_subject_list_cover_width">75dp</dimen>
+    <dimen name="item_subject_list_cover_height">100dp</dimen>
+    <dimen name="item_subject_list_info_marginleft">15dp</dimen>
 </resources>
