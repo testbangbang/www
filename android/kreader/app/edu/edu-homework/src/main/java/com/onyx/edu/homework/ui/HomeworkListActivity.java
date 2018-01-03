@@ -77,6 +77,7 @@ public class HomeworkListActivity extends BaseActivity {
         super.onDestroy();
         unregisterReceiver();
         DataBundle.getInstance().unregister(this);
+        DataBundle.getInstance().quit();
     }
 
     private void initView() {

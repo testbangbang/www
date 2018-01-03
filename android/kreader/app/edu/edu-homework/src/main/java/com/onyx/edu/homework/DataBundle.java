@@ -83,6 +83,10 @@ public class DataBundle {
         getEventBus().unregister(subscriber);
     }
 
+    public void quit() {
+        getNoteViewHelper().quit();
+    }
+
     public void post(Object event) {
         getEventBus().post(event);
     }
