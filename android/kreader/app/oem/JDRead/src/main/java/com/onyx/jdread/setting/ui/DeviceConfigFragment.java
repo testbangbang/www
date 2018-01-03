@@ -13,7 +13,9 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.DeviceConfigBinding;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.adapter.DeviceConfigAdapter;
+import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.event.DeviceInformationEvent;
 import com.onyx.jdread.setting.event.PasswordEvent;
 import com.onyx.jdread.setting.event.ReadToolEvent;
@@ -57,12 +59,10 @@ public class DeviceConfigFragment extends BaseFragment {
     }
 
     private void initData() {
-        SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.device_config));
-        titleModel.setToggle(false);
-        titleModel.setViewHistory(false);
+        TitleBarModel titleModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
+        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.device_config));
+        titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.deviceConfigTitleBar.setTitleModel(titleModel);
-
         DeviceConfigModel deviceConfigModel = SettingBundle.getInstance().getDeviceConfigModel();
         if (deviceConfigAdapter != null) {
             deviceConfigAdapter.setData(deviceConfigModel.getDeviceConfigDataList(), deviceConfigModel.getConfigEvents());
@@ -79,27 +79,31 @@ public class DeviceConfigFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onScreenSaverEvent(ScreenSaverEvent event) {
-
+        viewEventCallBack.gotoView(ScreensaversFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPasswordEvent(PasswordEvent event) {
-
+        viewEventCallBack.gotoView(PasswordSettingFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadToolEvent(ReadToolEvent event) {
-
+        viewEventCallBack.gotoView(ReadingToolsFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onDeviceInformationEvent(DeviceInformationEvent event) {
-
+        viewEventCallBack.gotoView(DeviceInformationFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onSystemUpdateEvent(SystemUpdateEvent event) {
-        DeviceConfigData deviceConfigData = event.getDeviceConfigData();
-        // TODO: 2017/12/25  
+        viewEventCallBack.gotoView(SystemUpdateFragment.class.getName());
+    }
+
+    @Subscribe
+    public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
+        viewEventCallBack.viewBack();
     }
 }

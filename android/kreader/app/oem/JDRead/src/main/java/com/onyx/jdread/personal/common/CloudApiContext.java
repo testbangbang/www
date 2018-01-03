@@ -21,12 +21,14 @@ import okhttp3.OkHttpClient;
 public class CloudApiContext {
     public static final String JD_BOOK_SHOP_URL = "https://gw-e.jd.com/";
     public static final String JD_BASE_URL = "https://gw-e.jd.com/";
+    public static final String JD_BOOK_STATISTIC_URL = "https://sns-e.jd.com/";
 
     public static class NewBookDetail {
         public static final String FUNCTION_ID = "functionId";
         public static final String USER_BASIC_INFO = "userBasicInfo";
         public static final String SYNC_LOGIN_INFO = "SyncLoginInfo";
         public static final String GET_TOKEN = "genToken";
+        public static final String READ_TOTAL_BOOK = "userReadEBookScale";
     }
 
     public static class GotoOrder {

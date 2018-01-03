@@ -338,11 +338,10 @@ public class BitmapUtils {
                 file.createNewFile();
             }
             if (isNeedOverrideDirPermission) {
-                String folderCommand = "chmod 777 " + dir.getAbsolutePath();
-                String fileCommand = "chmod 777 " + file.getAbsolutePath();
-                Runtime runtime = Runtime.getRuntime();
-                runtime.exec(folderCommand);
-                runtime.exec(fileCommand);
+                file.setReadable(true);
+                file.setWritable(true);
+                dir.setWritable(true);
+                dir.setReadable(true);
             }
             FileOutputStream fileos = new FileOutputStream(pngFileName);
             bitmap.compress(Bitmap.CompressFormat.PNG, 100, fileos);
@@ -378,11 +377,10 @@ public class BitmapUtils {
                 file.createNewFile();
             }
             if (isNeedOverrideDirPermission) {
-                String folderCommand = "chmod 777 " + dir.getAbsolutePath();
-                String fileCommand = "chmod 777 " + file.getAbsolutePath();
-                Runtime runtime = Runtime.getRuntime();
-                runtime.exec(folderCommand);
-                runtime.exec(fileCommand);
+                file.setReadable(true);
+                file.setWritable(true);
+                dir.setWritable(true);
+                dir.setReadable(true);
             }
             FileOutputStream fileos = new FileOutputStream(bmpFileName);
             // bmp file head

@@ -7,8 +7,8 @@
         <import type="android.view.View" />
 
         <variable
-            name="bookDetailViewModel"
-            type="com.onyx.jdread.shop.model.BookDetailViewModel" />
+            name="titleBarViewModel"
+            type="com.onyx.jdread.shop.model.TitleBarViewModel" />
 
     </data>
 
@@ -24,7 +24,7 @@
             android:layout_centerVertical="true"
             android:background="@drawable/normal_selected_background"
             android:gravity="center_vertical"
-            android:onClick="@{()->bookDetailViewModel.onTopBackClick()}"
+            android:onClick="@{()->titleBarViewModel.onLeftTitleClick()}"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/book_detail_margin"
             android:paddingRight="@dimen/book_detail_margin"
@@ -41,7 +41,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/book_detail_margin"
-                android:text="@{bookDetailViewModel.title}"
+                android:text="@{titleBarViewModel.leftText}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 
@@ -54,18 +54,18 @@
             android:layout_centerVertical="true"
             android:background="@drawable/normal_selected_background"
             android:gravity="center_vertical"
-            android:onClick="@{()->bookDetailViewModel.onTopRightClick()}"
+            android:onClick="@{()->titleBarViewModel.onRightTitleClick()}"
             android:orientation="horizontal"
             android:paddingBottom="@dimen/book_detail_margin"
             android:paddingTop="@dimen/book_detail_margin"
-            android:visibility="@{bookDetailViewModel.showRightText ? View.VISIBLE : View.GONE}">
+            android:visibility="@{titleBarViewModel.showRightText ? View.VISIBLE : View.GONE}">
 
             <TextView
                 android:id="@+id/title_bar_right_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/book_detail_margin"
-                android:text="@{bookDetailViewModel.rightText}"
+                android:text="@{titleBarViewModel.rightText}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_three_heading_font" />
 

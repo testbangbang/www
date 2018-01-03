@@ -6,31 +6,18 @@ import android.util.Log;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONException;
 import com.alibaba.fastjson.JSONObject;
-import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
-import com.onyx.android.sdk.utils.PreferenceManager;
-import com.onyx.jdread.common.ClientUtils;
-import com.onyx.jdread.common.Constants;
-import com.onyx.jdread.personal.action.UserLoginAction;
-import com.onyx.jdread.personal.action.UserSyncLoginInfoAction;
+import com.onyx.jdread.main.common.ClientUtils;
 import com.onyx.jdread.personal.cloud.entity.GetOrderRequestBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.SyncLoginInfoBean;
-import com.onyx.jdread.personal.cloud.entity.jdbean.UserLoginResultErrorBean;
 import com.onyx.jdread.personal.common.CloudApiContext;
-import com.onyx.jdread.personal.common.LoginHelper;
-import com.onyx.jdread.personal.event.UserLoginResultEvent;
-import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-
-import org.greenrobot.eventbus.EventBus;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import jd.wjlogin_sdk.common.WJLoginHelper;
 import jd.wjlogin_sdk.common.listener.OnLoginCallback;
 import jd.wjlogin_sdk.model.FailResult;
@@ -56,24 +43,28 @@ public class GetOrderUrlTest extends ApplicationTestCase<JDReadApplication> {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: ");
+                assertTrue(true);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onError(String errorJson) {
                 Log.d(TAG, "onError: " + errorJson);
+                assertNull(errorJson);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFail(FailResult failResult, PicDataInfo picDataInfo) {
                 Log.d(TAG, "onFail: ");
+                assertNull(failResult);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFail(FailResult failResult, JumpResult jumpResult, PicDataInfo picDataInfo) {
                 Log.d(TAG, "onFail: ");
+                assertNull(failResult);
                 countDownLatch.countDown();
             }
         });

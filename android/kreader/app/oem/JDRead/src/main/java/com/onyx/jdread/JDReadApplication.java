@@ -17,6 +17,7 @@ import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.main.common.AppBaseInfo;
+import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.DataBundle;
@@ -48,6 +49,14 @@ public class JDReadApplication extends MultiDexApplication {
     public void onCreate() {
         super.onCreate();
         initConfig();
+        lockScreen();
+    }
+
+    private void lockScreen() {
+        String passWord = PreferenceManager.getStringValue(instance, R.string.password_key, "");
+        if (StringUtils.isNotBlank(passWord)){
+            ManagerActivityUtils.lockScreen(instance);
+        }
     }
 
     private void initConfig() {

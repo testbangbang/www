@@ -12,6 +12,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ModelItemBinding;
+import com.onyx.jdread.main.common.PageAdapter;
 
 import java.util.List;
 

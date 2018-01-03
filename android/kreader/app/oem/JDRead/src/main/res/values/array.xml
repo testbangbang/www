@@ -59,4 +59,20 @@
         <item>@string/read_vip</item>
         <item>@string/points_for</item>
     </string-array>
+
+    <string-array name="points_for_days">
+        <item>@string/seven_days</item>
+        <item>@string/thirty_days</item>
+        <item>@string/ninety_days</item>
+        <item>@string/one_and_eighty_days</item>
+        <item>@string/year_days</item>
+    </string-array>
+
+    <string-array name="points_for_points">
+        <item>@string/one_and_fifty_points</item>
+        <item>@string/nine_hundred_points</item>
+        <item>@string/twenty_seven_hundred_points</item>
+        <item>@string/forty_five_hundred_points</item>
+        <item>@string/eighty_one_hundred_points</item>
+    </string-array>
 </resources>
