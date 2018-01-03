@@ -2,6 +2,7 @@ package com.onyx.android.sdk.scribble.shape;
 
 import android.graphics.Paint;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 
@@ -9,6 +10,8 @@ import com.onyx.android.sdk.scribble.utils.InkUtils;
  * Created by zhuzeng on 4/21/16.
  */
 public class BrushScribbleShape extends EPDShape  {
+
+    private static final float MAX_TOUCH_PRESSURE = EpdController.getMaxTouchPressure();
 
     public int getType() {
         return ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
@@ -34,7 +37,7 @@ public class BrushScribbleShape extends EPDShape  {
         renderContext.paint.setStrokeWidth(1.0f);
         InkUtils.drawStroke(renderContext, getPoints().getPoints(),
                 getStrokeWidth() * renderContext.displayScale,
-                getMaxTouchPressure());
+                MAX_TOUCH_PRESSURE);
         renderContext.paint.setStyle(oldStyle);
     }
 
