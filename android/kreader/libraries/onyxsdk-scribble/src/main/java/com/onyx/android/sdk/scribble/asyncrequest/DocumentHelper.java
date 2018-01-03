@@ -8,6 +8,7 @@ import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.NotePage;
 import com.onyx.android.sdk.scribble.request.ShapeDataInfo;
+import com.onyx.android.sdk.scribble.shape.BaseShape;
 import com.onyx.android.sdk.scribble.shape.ShapeFactory;
 import com.onyx.android.sdk.scribble.utils.InkUtils;
 
@@ -37,6 +38,7 @@ public class DocumentHelper {
         NoteModel.setDefaultEraserRadius(noteManager.getDeviceConfig().getEraserRadius());
         getNoteDocument().getNoteDrawingArgs().setEraserRadius(noteManager.getDeviceConfig().getEraserRadius());
         InkUtils.setPressureEntries(noteManager.getMappingConfig().getPressureList());
+        BaseShape.setMaxTouchPressure(EpdController.getMaxTouchPressure());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
     }
