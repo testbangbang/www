@@ -25,7 +25,7 @@ public class RxModifyLibraryRequest extends RxBaseDBRequest {
     @Override
     public RxModifyLibraryRequest call() throws Exception {
         if (!modifyCriteria) {
-            getDataManager().getRemoteContentProvider().updateLibrary(library);
+            getDataProvider().updateLibrary(library);
             return this;
         }
         return this;

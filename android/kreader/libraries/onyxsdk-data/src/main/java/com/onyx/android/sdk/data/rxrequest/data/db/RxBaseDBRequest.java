@@ -17,7 +17,7 @@ public abstract class RxBaseDBRequest extends RxBaseDataRequest {
     }
 
     public DataProviderBase getDataProvider() {
-        return getDataManager().getRemoteContentProvider();
+        return getDataManager().getLocalContentProvider();
     }
 
     @Override

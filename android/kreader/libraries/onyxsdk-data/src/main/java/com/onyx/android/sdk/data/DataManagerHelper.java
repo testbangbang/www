@@ -48,7 +48,7 @@ public class DataManagerHelper {
     public static List<Library> loadLibraryList(DataManager dataManager, List<Library> list, String parentId) {
         QueryArgs args = new QueryArgs();
         args.libraryUniqueId = parentId;
-        return loadLibraryList(dataManager.getRemoteContentProvider(), list, args);
+        return loadLibraryList(dataManager.getLocalContentProvider(), list, args);
     }
 
     public static List<Library> loadLibraryList(DataProviderBase dataProvider, List<Library> list, QueryArgs args) {
@@ -76,7 +76,7 @@ public class DataManagerHelper {
         QueryArgs args = new QueryArgs();
         args.libraryUniqueId = targetId;
         args.fetchPolicy = FetchPolicy.MEM_DB_ONLY;
-        loadLibraryRecursive(dataManager.getRemoteContentProvider(), list, args);
+        loadLibraryRecursive(dataManager.getLocalContentProvider(), list, args);
     }
 
     public static Thumbnail loadThumbnail(Context context, String path, String associationId, OnyxThumbnail.ThumbnailKind kind) {
@@ -104,7 +104,7 @@ public class DataManagerHelper {
 
     public static void deleteAllLibrary(Context context, DataManager dataManager, String parentUniqueId,
                                         List<Library> libraryList) {
-        deleteAllLibrary(context, dataManager.getRemoteContentProvider(), parentUniqueId, libraryList);
+        deleteAllLibrary(context, dataManager.getLocalContentProvider(), parentUniqueId, libraryList);
     }
 
     public static void deleteAllLibrary(Context context, DataProviderBase providerBase, String parentUniqueId,
@@ -130,15 +130,15 @@ public class DataManagerHelper {
     }
 
     public static void deleteMetadataCollection(Context context, DataManager dataManager, String libraryIdString){
-        dataManager.getRemoteContentProvider().deleteMetadataCollection(context, libraryIdString);
+        dataManager.getLocalContentProvider().deleteMetadataCollection(context, libraryIdString);
     }
 
     public static MetadataCollection loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString, String metaIdString) {
-        return dataManager.getRemoteContentProvider().loadMetadataCollection(context, libraryIdString, metaIdString);
+        return dataManager.getLocalContentProvider().loadMetadataCollection(context, libraryIdString, metaIdString);
     }
 
     public static List<MetadataCollection> loadMetadataCollection(Context context, DataManager dataManager, String libraryIdString) {
-        return dataManager.getRemoteContentProvider().loadMetadataCollection(context, libraryIdString);
+        return dataManager.getLocalContentProvider().loadMetadataCollection(context, libraryIdString);
     }
 
     public static List<Metadata> loadMetadataListWithCache(Context context, DataManager dataManager,
@@ -150,7 +150,7 @@ public class DataManagerHelper {
             list = dataManager.getCacheManager().getMetadataLruCache(queryKey);
         }
         if (list == null) {
-            list = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(context, queryArgs);
+            list = dataManager.getLocalContentProvider().findMetadataByQueryArgs(context, queryArgs);
             if (!CollectionUtils.isNullOrEmpty(list)) {
                 dataManager.getCacheManager().addToMetadataCache(queryKey, list);
             }
@@ -222,7 +222,7 @@ public class DataManagerHelper {
         if (refBitmap != null) {
             return refBitmap.clone();
         }
-        return decodeFileAndCache(context, dataManager.getRemoteContentProvider(), bitmapLruCache, associationId);
+        return decodeFileAndCache(context, dataManager.getLocalContentProvider(), bitmapLruCache, associationId);
     }
 
     private static CloseableReference<Bitmap> decodeFileAndCache(File file, BitmapReferenceLruCache bitmapLruCache, String associationId) {
@@ -275,7 +275,7 @@ public class DataManagerHelper {
         if (refBitmap != null && refBitmap.isValid()) {
             return refBitmap.clone();
         }
-        return decodeFileAndCacheByOriginContentPath(context, dataManager.getRemoteContentProvider(), bitmapLruCache, originContentPath);
+        return decodeFileAndCacheByOriginContentPath(context, dataManager.getLocalContentProvider(), bitmapLruCache, originContentPath);
     }
 
     private static synchronized CloseableReference<Bitmap> decodeFileAndCacheByOriginContentPath(Context context, DataProviderBase dataProvider,
@@ -310,7 +310,7 @@ public class DataManagerHelper {
         }
         String parentId = library.getParentUniqueId();
         while (StringUtils.isNotBlank(parentId)) {
-            Library parentLibrary = dataManager.getRemoteContentProvider().loadLibrary(parentId);
+            Library parentLibrary = dataManager.getLocalContentProvider().loadLibrary(parentId);
             if (parentLibrary == null) {
                 break;
             }

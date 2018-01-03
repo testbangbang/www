@@ -25,7 +25,7 @@ import java.util.Map;
  * Created by john on 29/10/2017.
  */
 
-public class RxMetadataRequest extends RxBaseDataRequest {
+public class RxMetadataRequest extends RxBaseDBRequest {
 
     private HashSet<String> pathList = new HashSet<>();
     private List<Metadata> list = new ArrayList<>();
@@ -48,8 +48,8 @@ public class RxMetadataRequest extends RxBaseDataRequest {
 
     @Override
     public RxMetadataRequest call() throws Exception {
-        count = getDataManager().getRemoteContentProvider().count(getAppContext(), queryArgs);
-        list.addAll(getDataManager().getRemoteContentProvider().findMetadataByQueryArgs(getAppContext(), queryArgs));
+        count = getDataProvider().count(getAppContext(), queryArgs);
+        list.addAll(getDataProvider().findMetadataByQueryArgs(getAppContext(), queryArgs));
         loadThumbnails(getAppContext(), getDataManager());
         loadPathList();
         return this;
