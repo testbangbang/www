@@ -52,6 +52,16 @@ public class TimeUtils {
         return getTime(getCurrentTimeInLong(), dateFormat);
     }
 
+    public static Date parseDateDefault(String date) {
+        try {
+            return DEFAULT_DATE_FORMAT.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public static int compareDate(String DATE1, String DATE2) {
         DateFormat df = new SimpleDateFormat(DATA_TIME_FORMAT);
         try {
@@ -98,5 +108,22 @@ public class TimeUtils {
             e.printStackTrace();
         }
         return castString;
+    }
+
+    public static int daysBetweenDefault(Date first, Date end) {
+        try {
+            first = DEFAULT_DATE_FORMAT.parse(DEFAULT_DATE_FORMAT.format(first));
+            end = DEFAULT_DATE_FORMAT.parse(DEFAULT_DATE_FORMAT.format(end));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(first);
+        long timeFirst = cal.getTimeInMillis();
+        cal.setTime(end);
+        long timeEnd = cal.getTimeInMillis();
+        long between = (timeEnd - timeFirst) / (1000 * 3600 * 24);
+        return Integer.parseInt(String.valueOf(between));
     }
 }
