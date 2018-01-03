@@ -36,8 +36,11 @@
 
         <activity
             android:name=".reader.ui.ReaderActivity"
-            android:theme="@style/ActivityFullscreen">
-        </activity>
+            android:theme="@style/ActivityFullscreen"></activity>
+
+        <activity
+            android:name=".main.activity.LockScreenActivity"
+            android:theme="@style/ActivityFullscreen" />
 
         <receiver android:name=".main.receiver.UsbStateReceiver">
             <intent-filter android:priority="800">

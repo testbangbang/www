@@ -3,6 +3,7 @@ package com.onyx.jdread.setting.model;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 
+import com.onyx.android.sdk.utils.FileUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
@@ -46,13 +47,13 @@ public class PswSettingModel extends Observable {
             return;
         }
         // TODO: 18-1-2 save password
-        PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.password_key, passwordEdit.get());
+        PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.password_key, FileUtils.computeMD5(passwordEdit.get()));
         encrypted.set(true);
     }
 
     public void unlockPassword() {
         String unlockPassword = unlockPasswordEdit.get();
-        if (StringUtils.isNotBlank(unlockPassword) && unlockPassword.equals(password)) {
+        if (StringUtils.isNotBlank(unlockPassword) && FileUtils.computeMD5(unlockPassword).equals(password)) {
             // TODO: 18-1-2 unlock password
             PreferenceManager.setStringValue(JDReadApplication.getInstance(), R.string.password_key, "");
             encrypted.set(false);

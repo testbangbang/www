@@ -224,6 +224,7 @@
     <string name="encrypted">Encrypted</string>
     <string name="unlock_the_password">Unlock the password</string>
     <string name="password_key">password_key</string>
-    <string name="password_format_error">The password is wrongly formatted. Please enter% 1 $ d-% 2 $ d digits</string>
+    <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
     <string name="wrong_password">Wrong password</string>
+    <string name="reading_tools">Reading tools</string>
 </resources>

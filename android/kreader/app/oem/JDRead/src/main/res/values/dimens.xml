@@ -202,4 +202,7 @@
     <dimen name="phone_edit_hint_margin_top">20dp</dimen>
     <dimen name="unlock_password_edit_margin_top">30dp</dimen>
     <dimen name="unlock_password_text_margin_top">100dp</dimen>
+    <dimen name="activity_screen_lock_padding">100dp</dimen>
+    <dimen name="activity_screen_lock_margin_top">100dp</dimen>
+    <dimen name="lock_screen_password_margin_top">30dp</dimen>
 </resources>
