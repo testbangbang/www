@@ -3,7 +3,13 @@ package com.onyx.jdread.main.common;
 import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.library.ui.WiFiPassBookFragment;
 import com.onyx.jdread.main.model.StackList;
+import com.onyx.jdread.personal.ui.ConsumptionRecordFragment;
+import com.onyx.jdread.personal.ui.GiftCenterFragment;
+import com.onyx.jdread.personal.ui.LoginFragment;
+import com.onyx.jdread.personal.ui.PersonalAccountFragment;
+import com.onyx.jdread.personal.ui.PersonalExperienceFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
+import com.onyx.jdread.personal.ui.TopUpRecordFragment;
 import com.onyx.jdread.setting.ui.ContactUsFragment;
 import com.onyx.jdread.setting.ui.DeviceConfigFragment;
 import com.onyx.jdread.setting.ui.DeviceInformationFragment;
@@ -63,6 +69,12 @@ public class ViewConfig {
         childViewInfo.put(PasswordSettingFragment.class.getName(),FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(PersonalExperienceFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(PersonalAccountFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(GiftCenterFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(LoginFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(ConsumptionRecordFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(TopUpRecordFragment.class.getName(), FunctionModule.PERSONAL);
     }
 
     public static FunctionModule findChildViewParentId(String childViewName) {

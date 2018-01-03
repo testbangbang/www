@@ -13,8 +13,10 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.GiftCenterBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.adapter.GiftCenterAdapter;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingTitleModel;
 
 /**
@@ -35,10 +37,9 @@ public class GiftCenterFragment extends BaseFragment {
     }
 
     private void initData() {
-        SettingTitleModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.gift_center));
-        titleModel.setViewHistory(false);
-        titleModel.setToggle(false);
+        TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
+        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.gift_center));
+        titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.giftCenterTitleBar.setTitleModel(titleModel);
     }
 

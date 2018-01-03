@@ -1,11 +1,14 @@
 package com.onyx.jdread.util;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.util.DisplayMetrics;
+import android.view.View;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.onyx.jdread.JDReadApplication;
@@ -46,5 +49,16 @@ public class Utils {
 
     public static int getScreenHeight(Context context) {
         return getDisplayMetrics(context).heightPixels;
+    }
+
+    public static void hideSoftWindow(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) JDReadApplication.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+    }
+
+    public static void showSoftWindow(View view) {
+        InputMethodManager imm = (InputMethodManager) JDReadApplication.getInstance().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+        view.requestFocus();
     }
 }

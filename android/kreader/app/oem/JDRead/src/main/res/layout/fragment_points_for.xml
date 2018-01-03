@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="PointsForBinding">
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/points_for_title_bar"
+            layout="@layout/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/points_for_whole_margin_top"
+            android:orientation="vertical"
+            android:padding="@dimen/points_for_whole_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_width"
+                android:layout_marginTop="@dimen/points_for_whole_margin_top"
+                android:background="@color/divider_color" />
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/points_for_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/points_for_recycler_height" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_width"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
