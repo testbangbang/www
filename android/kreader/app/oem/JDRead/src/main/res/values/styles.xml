@@ -51,8 +51,8 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/level_one_heading_font</item>
-        <item name="android:layout_marginRight">20dp</item>
-        <item name="android:padding">5dp</item>
+        <item name="android:layout_marginRight">@dimen/reader_text_setting_margin_right</item>
+        <item name="android:padding">@dimen/reader_text_setting_padding</item>
         <item name="android:textColor">@android:color/black</item>
     </style>
 
@@ -60,8 +60,8 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">@dimen/reader_text_setting_font_padding_top</item>
+        <item name="android:paddingBottom">@dimen/reader_text_setting_font_padding_bottom</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -71,8 +71,8 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">1</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">@dimen/reader_text_setting_font_size_padding_top</item>
+        <item name="android:paddingBottom">@dimen/reader_text_setting_font_size_padding_bottom</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -82,8 +82,8 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_weight">2</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingTop">@dimen/reader_text_setting_format_padding_top</item>
+        <item name="android:paddingBottom">@dimen/reader_text_setting_format_padding_bottom</item>
         <item name="android:gravity">center</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -93,8 +93,8 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginTop">20dp</item>
-        <item name="android:paddingLeft">10dp</item>
-        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingLeft">@dimen/reader_text_setting_layout_padding_left</item>
+        <item name="android:paddingRight">@dimen/reader_text_setting_layout_padding_right</item>
         <item name="android:gravity">center</item>
         <item name="android:orientation">horizontal</item>
     </style>
@@ -123,10 +123,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginBottom">@dimen/reader_page_info_menu_margin_bottom</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingTop">10dp</item>
-        <item name="android:paddingBottom">10dp</item>
-        <item name="android:paddingLeft">20dp</item>
-        <item name="android:paddingRight">20dp</item>
+        <item name="android:paddingTop">@dimen/reader_customize_format_layout_padding_top</item>
+        <item name="android:paddingBottom">@dimen/reader_customize_format_layout_padding_bottom</item>
+        <item name="android:paddingLeft">@dimen/reader_customize_format_layout_padding_left</item>
+        <item name="android:paddingRight">@dimen/reader_customize_format_layout_padding_right</item>
         <item name="android:orientation">horizontal</item>
     </style>
 
@@ -146,7 +146,7 @@
     <style name="ReaderCustomizeFormatTitleStyle">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_marginRight">@dimen/reader_customize_format_title_margin_right</item>
         <item name="android:layout_weight">1</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
@@ -155,30 +155,30 @@
     <style name="ReaderCustomizeMinusStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">15dp</item>
+        <item name="android:padding">@dimen/reader_customize_minus_style_padding</item>
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/imagebtn_bg</item>
-        <item name="android:layout_marginRight">15dp</item>
+        <item name="android:layout_marginRight">@dimen/reader_customize_minus_style_margin_right</item>
     </style>
 
     <style name="ReaderCustomizePlusStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">15dp</item>
+        <item name="android:padding">@dimen/reader_customize_plus_style_padding</item>
         <item name="android:clickable">true</item>
         <item name="android:background">@drawable/imagebtn_bg</item>
-        <item name="android:layout_marginLeft">15dp</item>
+        <item name="android:layout_marginLeft">@dimen/reader_customize_plus_style_margin_left</item>
     </style>
 
     <style name="ReaderImageSettingStyleChangeLayoutStyle">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center</item>
-        <item name="android:hint">10dp</item>
+        <item name="android:drawablePadding">@dimen/reader_image_setting_style_change_layout_drawable_padding</item>
         <item name="android:textColor">@android:color/black</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
         <item name="android:clickable">true</item>
-        <item name="android:padding">15dp</item>
+        <item name="android:padding">@dimen/reader_image_setting_style_change_layout_padding</item>
         <item name="android:background">@drawable/imagebtn_bg</item>
     </style>
 </resources>
