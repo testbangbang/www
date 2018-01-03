@@ -1,7 +1,6 @@
 package com.onyx.android.sdk.scribble.utils;
 
 import android.graphics.Canvas;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 
@@ -25,7 +24,7 @@ public class InkUtils {
 
     private static List<MappingConfig.PressureEntry> pressureEntries;
 
-    private static native void nativeDrawStroke(Canvas canvas, Paint paint, float[] points);
+    private static native void nativeDrawStroke(Canvas canvas, Paint paint, float strokeWidth, float[] points);
 
     public static class PathEntry {
         public Path path;
@@ -37,7 +36,10 @@ public class InkUtils {
         }
     }
 
-    public static void drawStroke(Canvas canvas, Paint paint, List<TouchPoint> points, Matrix matrix) {
+    public static void drawStroke(final RenderContext renderContext,
+                                  final List<TouchPoint> points,
+                                  final float strokeWidth,
+                                  final float maxTouchPressure) {
         float[] src = new float[2];
         float[] dst = new float[2];
         float[] array = new float[points.size() * 5];
@@ -45,16 +47,16 @@ public class InkUtils {
             int idx = 5 * i;
             src[0] = points.get(i).x;
             src[1] = points.get(i).y;
-            matrix.mapPoints(dst, src);
+            renderContext.matrix.mapPoints(dst, src);
 
             array[idx] = dst[0];
             array[idx + 1] = dst[1];
-            array[idx + 2] = points.get(i).pressure / 2047.0f;
+            array[idx + 2] = points.get(i).pressure / maxTouchPressure;
             array[idx + 3] = points.get(i).size;
             array[idx + 4] = points.get(i).timestamp;
         }
 
-        nativeDrawStroke(canvas, paint, array);
+        nativeDrawStroke(renderContext.canvas, renderContext.paint, strokeWidth, array);
     }
 
     public static void setPressureEntries(final List<MappingConfig.PressureEntry> list) {

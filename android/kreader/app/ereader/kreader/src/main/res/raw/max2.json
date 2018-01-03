@@ -9,6 +9,7 @@
   "supportMultipleTabs": true,
   "supportSideNote": true,
   "defaultRefreshInterval": 2147483647,
+  "enableBrushStroke": true,
   "keysForSetting": ["KEYCODE_PAGE_DOWN", "KEYCODE_PAGE_UP"],
   "keyBinding": {
     "HandlerManager": {

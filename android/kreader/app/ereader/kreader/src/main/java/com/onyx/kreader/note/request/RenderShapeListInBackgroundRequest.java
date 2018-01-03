@@ -44,6 +44,7 @@ public class RenderShapeListInBackgroundRequest extends ReaderBaseNoteRequest {
             Debug.e(this.getClass(),  "adding error: " + " origin size: " + shapeList.size() + " result: " + count);
         }
 
+        noteManager.setRenderBitmapDirty(count > 0);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
     }
 

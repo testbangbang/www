@@ -1,5 +1,6 @@
 package com.onyx.kreader.note;
 
+import android.text.method.Touch;
 import android.view.MotionEvent;
 
 import com.onyx.android.sdk.api.device.epd.EpdController;
@@ -285,6 +286,8 @@ public class ShapeEventHandler {
             shortcutDrawing = true;
             getEventBus().post(new ShortcutDrawingStartEvent());
         }
+
+        PageInfo lastPageInfo = null;
     }
 
     @Subscribe
@@ -305,23 +308,23 @@ public class ShapeEventHandler {
 
     @Subscribe
     public void onRawTouchPointMoveReceivedEvent(RawTouchPointMoveReceivedEvent e) {
+        TouchPoint p = e.getTouchPoint();
+        PageInfo pageInfo = hitTest(p.getX(), p.getY());
+        if (pageInfo == null || (lastPageInfo != null && pageInfo != lastPageInfo)) {
+            if (currentShape != null) {
+                finishCurrentShape();
+            }
+            lastPageInfo = pageInfo;
+            return;
+        }
+
+        collectPoint(pageInfo, p, true, false);
+        lastPageInfo = pageInfo;
     }
 
     @Subscribe
     public void onRawTouchPointListReceivedEvent(RawTouchPointListReceivedEvent e) {
         Debug.e(getClass(), "onRawTouchPointListReceivedEvent");
-        PageInfo lastPageInfo = null;
-        for (TouchPoint p : e.getTouchPointList().getPoints()) {
-            PageInfo pageInfo = hitTest(p.getX(), p.getY());
-            if (pageInfo == null || (lastPageInfo != null && pageInfo != lastPageInfo)) {
-                if (currentShape != null) {
-                    finishCurrentShape();
-                }
-                continue;
-            }
-
-            collectPoint(pageInfo, p, true, false);
-        }
         if (currentShape != null) {
             finishCurrentShape();
         }

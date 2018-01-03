@@ -1,6 +1,5 @@
 package com.onyx.kreader.ui.dialog;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -9,7 +8,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -53,7 +51,7 @@ import com.onyx.kreader.ui.actions.ExportAnnotationAction;
 import com.onyx.kreader.ui.actions.ExportScribbleAction;
 import com.onyx.kreader.ui.actions.GetDocumentInfoChain;
 import com.onyx.kreader.ui.actions.GotoPositionAction;
-import com.onyx.kreader.ui.actions.GotoSideNotePageAction;
+import com.onyx.kreader.ui.actions.StartAndGotoSideNotePageAction;
 import com.onyx.kreader.ui.actions.ShowAnnotationEditDialogAction;
 import com.onyx.kreader.ui.data.ReaderDataHolder;
 import com.onyx.kreader.ui.data.SingletonSharedPreference;
@@ -65,7 +63,6 @@ import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -700,7 +697,7 @@ public class DialogTableOfContent extends OnyxBaseDialog implements CompoundButt
                                 }
                             });
                         } else {
-                            new GotoSideNotePageAction(previewViewHolder.getPage()).execute(readerDataHolder, new BaseCallback() {
+                            new StartAndGotoSideNotePageAction(previewViewHolder.getPage()).execute(readerDataHolder, new BaseCallback() {
                                 @Override
                                 public void done(BaseRequest request, Throwable e) {
                                     DialogTableOfContent.this.dismiss();

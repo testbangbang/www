@@ -26,6 +26,7 @@ public class FlushNoteAction extends BaseAction {
     private boolean showDialog;
     private boolean transfer;
     private boolean pauseNote = false;
+    private boolean abortPendingTasks = false;
 
     public FlushNoteAction(List<PageInfo> list, boolean renderShapes, boolean transferBitmap, boolean saveToDatabase, boolean show) {
         render = renderShapes;
@@ -37,9 +38,25 @@ public class FlushNoteAction extends BaseAction {
         transfer = transferBitmap;
     }
 
+    public FlushNoteAction(List<PageInfo> list, boolean renderShapes, boolean transferBitmap, boolean saveToDatabase, boolean show, boolean abortPendingTasks) {
+        render = renderShapes;
+        save = saveToDatabase;
+        if (list != null) {
+            visiblePages.addAll(list);
+        }
+        showDialog = show;
+        transfer = transferBitmap;
+        this.abortPendingTasks = abortPendingTasks;
+    }
+
     public static FlushNoteAction pauseAfterFlush(List<PageInfo> list) {
+        return pauseAfterFlush(list, false);
+    }
+
+    public static FlushNoteAction pauseAfterFlush(List<PageInfo> list, boolean abortPendingTasks) {
         final FlushNoteAction flushNoteAction = new FlushNoteAction(list, true, true, false, false);
         flushNoteAction.pauseNote = true;
+        flushNoteAction.abortPendingTasks = abortPendingTasks;
         return flushNoteAction;
     }
 
@@ -55,7 +72,7 @@ public class FlushNoteAction extends BaseAction {
             showLoadingDialog(readerDataHolder, R.string.saving);
         }
 
-        final FlushShapeListRequest flushRequest = new FlushShapeListRequest(visiblePages, stash, 0, render, transfer, save);
+        final FlushShapeListRequest flushRequest = new FlushShapeListRequest(visiblePages, stash, 0, render, transfer, save, abortPendingTasks);
         flushRequest.setPause(isPauseNote());
         final int id = readerDataHolder.getLastRequestSequence();
         noteManager.submitWithUniqueId(readerDataHolder.getContext(), id, flushRequest, new BaseCallback() {

@@ -162,16 +162,20 @@ public class ReaderNotePage {
     }
 
     public void render(final RenderContext renderContext, final RenderCallback callback) {
-        if (shapeList == null) {
+        if (shapeList == null || isAbort(callback)) {
             return;
         }
         checkContextMatrix(renderContext);
         for(Shape shape : shapeList) {
             shape.render(renderContext);
-            if (callback != null && callback.isRenderAbort()) {
+            if (isAbort(callback)) {
                 break;
             }
         }
+    }
+
+    private boolean isAbort(final RenderCallback callback) {
+        return callback != null && callback.isRenderAbort();
     }
 
     private void checkContextMatrix(final RenderContext renderContext) {

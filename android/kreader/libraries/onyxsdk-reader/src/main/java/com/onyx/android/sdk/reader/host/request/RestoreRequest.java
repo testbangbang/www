@@ -31,18 +31,23 @@ public class RestoreRequest extends BaseReaderRequest {
     }
 
     public void execute(final Reader reader) throws Exception {
-        // overrides with doc built-in options
-        reader.getDocument().readBuiltinOptions(baseOptions);
+        try {
+            // overrides with doc built-in options
+            reader.getDocument().readBuiltinOptions(baseOptions);
 
-        restoreDocumentCategory(reader);
-        restoreLayoutType(reader);
-        restorePagePosition(reader);
-        restoreScale(reader);
-        restoreOrientation(reader);
-        restoreViewport(reader);
-        restoreReflowSettings(reader);
-        restoreContrast(reader);
-        restoreReaderTextStyle(reader);
+            restoreDocumentCategory(reader);
+            restoreLayoutType(reader);
+            restorePagePosition(reader);
+            restoreScale(reader);
+            restoreOrientation(reader);
+            restoreViewport(reader);
+            restoreReflowSettings(reader);
+            restoreContrast(reader);
+            restoreReaderTextStyle(reader);
+        } catch (Throwable tr) {
+            Debug.e(getClass(), tr);
+        }
+
         if (alwaysScaleToPage) {
             scaleToPage(reader);
         }

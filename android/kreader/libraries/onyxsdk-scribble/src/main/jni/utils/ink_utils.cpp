@@ -20,6 +20,9 @@ const int TOOL_TYPE_STYLUS = 2;
 struct Rect {
     int left, top, right, bottom;
 
+    Rect() {
+    }
+
     Rect(int left, int top, int right, int bottom)
         : left(left), top(top), right(right), bottom(bottom) {
     }
@@ -136,8 +139,16 @@ public:
 
 public:
     void drawStroke(JNIEnv *env, jobject canvas, jobject paint) {
+        JNIUtils utils(env);
+        if (!utils.findClass("android/graphics/Canvas")) {
+            return;
+        }
+        if (!utils.findMethod("drawCircle", "(FFFLandroid/graphics/Paint;)V")) {
+            return;
+        }
+
         for (auto &p : stroke.points) {
-            strokeTo(env, canvas, paint, p);
+            strokeTo(env, &utils, canvas, paint, p);
         }
     }
 
@@ -147,35 +158,54 @@ public:
         return dirty;
     }
 
+    float setStrokeWidth(float value) {
+        //LOGI("setStrokeWidth: %f", value);
+        mRadiusMax = value + 3;
+        mRadiusMin = 1.0f;
+        return mRadiusMax;
+    }
+
 private:
-    Rect strokeTo(JNIEnv *env, jobject canvas, jobject paint, BrushPoint point) {
+    Rect strokeTo(JNIEnv *env, jobject canvas, jobject paint, const BrushPoint &point) {
+        JNIUtils utils(env);
+        if (!utils.findClass("android/graphics/Canvas")) {
+            return Rect();
+        }
+        if (!utils.findMethod("drawCircle", "(FFFLandroid/graphics/Paint;)V")) {
+            return Rect();
+        }
+        return strokeTo(env, &utils, canvas, paint, point);
+    }
+
+    Rect strokeTo(JNIEnv *env, JNIUtils *utils, jobject canvas, jobject paint, const BrushPoint &point) {
         float pressureNorm;
 
         if (ASSUME_STYLUS_CALIBRATED && point.toolType == TOOL_TYPE_STYLUS) {
             pressureNorm = point.pressure;
         } else {
-//            pressureNorm = pressureCooker.getAdjustedPressure(point.pressure);
             pressureNorm = point.pressure;
         }
 
         float radius = lerp(mRadiusMin, mRadiusMax,
                             static_cast<float>(std::pow(pressureNorm, mPressureExponent)));
 
-        return strokeTo(env, canvas, paint, point.x, point.y, radius);
+        return strokeTo(env, utils, canvas, paint, point.x, point.y, radius);
     }
 
-    Rect strokeTo(JNIEnv *env, jobject canvas, jobject paint, float x, float y, float r) {
+    Rect strokeTo(JNIEnv *env, JNIUtils *utils, jobject canvas, jobject paint, float x, float y, float r) {
+        //LOGI("strokeTo: %f, %f, %f, %f, %f, %f", mLastX, mLastY, mLastR, x, y, r);
         Rect dirty(static_cast<int>(x), static_cast<int>(y),
                    static_cast<int>(x), static_cast<int>(y));
 
         if (mLastR < 0) {
             // always draw the first point
-            drawBrushPoint(env, canvas, paint, x, y, r, &dirty);
+            drawBrushPoint(env, utils, canvas, paint, x, y, r, &dirty);
         } else {
             // connect the dots, la-la-la
             mLastLen = dist(mLastX, mLastY, x, y);
             float xi, yi, ri, frac;
             float d = 0;
+
             while (true) {
                 if (d > mLastLen) {
                     break;
@@ -184,11 +214,11 @@ private:
                 ri = lerp(mLastR, r, frac);
                 xi = lerp(mLastX, x, frac);
                 yi = lerp(mLastY, y, frac);
-                drawBrushPoint(env, canvas, paint, xi, yi, ri, &dirty);
+                drawBrushPoint(env, utils, canvas, paint, xi, yi, ri, &dirty);
 
                 // for very narrow lines we must step (not much more than) one radius at a time
                 constexpr float MIN = 1.0f;
-                constexpr float THRESH = 16.0f;
+                constexpr float THRESH = 4.0f;
                 constexpr float SLOPE = 0.1f; // asymptote: the spacing will increase as SLOPE*x
                 if (ri <= THRESH) {
                     d += MIN;
@@ -206,15 +236,9 @@ private:
         return dirty;
     }
 
-    void drawBrushPoint(JNIEnv *env, jobject canvas, jobject paint, float x, float y, float r, Rect *dirty) {
-        JNIUtils utils(env);
-        if (!utils.findClass("android/graphics/Canvas")) {
-            return;
-        }
-        if (!utils.findMethod("drawCircle", "(FFFLandroid/graphics/Paint;)V")) {
-            return;
-        }
-        env->CallVoidMethod(canvas, utils.getMethodId(), x, y, r, paint);
+    void drawBrushPoint(JNIEnv *env, JNIUtils *utils, jobject canvas, jobject paint, float x, float y, float r, Rect *dirty) {
+        //LOGI("drawBrushPoint: %f, %f, %f", x, y, r);
+        env->CallVoidMethod(canvas, utils->getMethodId(), x, y, r, paint);
 
         dirty->left = std::min(dirty->left, static_cast<int>(x - r));
         dirty->top = std::min(dirty->top, static_cast<int>(y - r));
@@ -248,7 +272,7 @@ private:
 }
 
 JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_utils_InkUtils_nativeDrawStroke
-  (JNIEnv *env, jclass, jobject canvas, jobject paint, jfloatArray points) {
+  (JNIEnv *env, jclass, jobject canvas, jobject paint, jfloat strokeWidth, jfloatArray points) {
     jsize len = env->GetArrayLength(points);
     std::vector<float> pts(static_cast<size_t>(len));
     env->GetFloatArrayRegion(points, 0, len, pts.data());
@@ -264,5 +288,6 @@ JNIEXPORT void JNICALL Java_com_onyx_android_sdk_scribble_utils_InkUtils_nativeD
     }
 
     BrushStrokeRenderer renderer(stroke);
+    renderer.setStrokeWidth(strokeWidth);
     renderer.drawStroke(env, canvas, paint);
 }

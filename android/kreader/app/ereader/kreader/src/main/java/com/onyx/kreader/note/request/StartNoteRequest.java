@@ -51,6 +51,7 @@ public class StartNoteRequest extends ReaderBaseNoteRequest {
         noteManager.setCurrentShapeColor(NoteDrawingArgs.defaultColor());
         noteManager.restoreStrokeWidth();
         noteManager.setNoteDirty(true);
+        noteManager.setRenderBitmapDirty(true);
         getNoteDataInfo().setContentRendered(renderVisiblePages(noteManager));
         setResumeRawInputProcessor(noteManager.isDFBForCurrentShape());
     }

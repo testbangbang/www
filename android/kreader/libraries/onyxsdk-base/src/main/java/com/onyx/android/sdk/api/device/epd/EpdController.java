@@ -274,6 +274,10 @@ public abstract class EpdController
         return Device.currentDevice().getTouchHeight();
     }
 
+    public static float getMaxTouchPressure() {
+        return Device.currentDevice().getMaxTouchPressure();
+    }
+
     public static float getEpdWidth() {
         return Device.currentDevice().getEpdWidth();
     }
