@@ -76,4 +76,6 @@
     <integer name="device_info_col">1</integer>
     <integer name="read_preference_row">5</integer>
     <integer name="read_preference_col">4</integer>
+    <integer name="reading_tools_row">4</integer>
+    <integer name="reading_tools_col">1</integer>
 </resources>

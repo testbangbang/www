@@ -15,11 +15,9 @@ import com.onyx.jdread.personal.common.CloudApiContext;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import jd.wjlogin_sdk.common.WJLoginHelper;
 import jd.wjlogin_sdk.common.listener.OnLoginCallback;
 import jd.wjlogin_sdk.model.FailResult;
