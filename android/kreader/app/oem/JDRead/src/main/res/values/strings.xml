@@ -225,4 +225,8 @@
     <string name="reader_format">Format</string>
     <string name="reader_adaptive">Adaptive</string>
     <string name="reader_customize">Customize</string>
+    <string name="reader_line_spacing">Line spacing</string>
+    <string name="reader_segment_spacing">Segment spacing</string>
+    <string name="reader_left_and_right_spacing">Left and right spacing</string>
+    <string name="reader_up_and_down_spacing">Up and down spacing</string>
 </resources>

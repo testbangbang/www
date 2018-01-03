@@ -215,4 +215,8 @@
     <string name="reader_format">版式</string>
     <string name="reader_adaptive">自适应</string>
     <string name="reader_customize">自定义</string>
+    <string name="reader_line_spacing">行间距</string>
+    <string name="reader_segment_spacing">段间距</string>
+    <string name="reader_left_and_right_spacing">左右间距</string>
+    <string name="reader_up_and_down_spacing">上下间距</string>
 </resources>

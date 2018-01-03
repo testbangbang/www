@@ -117,4 +117,56 @@
         <item name="android:background">@drawable/rectangle_stroke_corners</item>
         <item name="android:padding">1dp</item>
     </style>
+
+    <style name="ReaderCustomizeFormatLayoutStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">@dimen/reader_page_info_menu_margin_bottom</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="ReaderCustomizeFormatSeekBarStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">4</item>
+        <item name="android:background">@drawable/focused_bg</item>
+        <item name="android:max">20</item>
+        <item name="android:maxHeight">@dimen/menu_seek_bar_height</item>
+        <item name="android:minHeight">@dimen/menu_seek_bar_height</item>
+        <item name="android:padding">@dimen/reader_page_info_menu_reading_process_padding</item>
+        <item name="android:progressDrawable">@drawable/seekbar_progress</item>
+        <item name="android:thumb">@drawable/seekbar_thumb</item>
+    </style>
+
+    <style name="ReaderCustomizeFormatTitleStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginRight">20dp</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
+
+    <style name="ReaderCustomizeMinusStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:layout_marginRight">15dp</item>
+    </style>
+
+    <style name="ReaderCustomizePlusStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:clickable">true</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:layout_marginLeft">15dp</item>
+    </style>
 </resources>
