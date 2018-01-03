@@ -18,6 +18,7 @@ import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionReview;
+import com.onyx.android.sdk.data.model.Subject;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.dialog.OnyxCustomDialog;
@@ -34,6 +35,7 @@ import com.onyx.edu.homework.action.ShowAnalysisAction;
 import com.onyx.edu.homework.base.BaseActivity;
 import com.onyx.edu.homework.data.Config;
 import com.onyx.edu.homework.data.Homework;
+import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.ActivityHomeworkListBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
 import com.onyx.edu.homework.event.GotoQuestionPageEvent;
@@ -76,6 +78,7 @@ public class HomeworkListActivity extends BaseActivity {
         super.onDestroy();
         unregisterReceiver();
         DataBundle.getInstance().unregister(this);
+        DataBundle.getInstance().quit();
     }
 
     private void initView() {
@@ -148,7 +151,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (next >= questions.size() || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveQuestion(new BaseCallback() {
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.min(next, questions.size() - 1);
@@ -165,7 +168,7 @@ public class HomeworkListActivity extends BaseActivity {
         if (prev < 0 || getQuestionFragment() == null) {
             return;
         }
-        getQuestionFragment().saveQuestion(new BaseCallback() {
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 currentPage = Math.max(prev, 0);
@@ -175,16 +178,22 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showSubmitDialog() {
-        checkWifi(false);
-        getDataBundle().post(new StopNoteEvent(false));
-        SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
-        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+        if (getQuestionFragment() == null) {
+            return;
+        }
+        getQuestionFragment().saveQuestion(SaveDocumentOption.onSubmitSaveOption(), new BaseCallback() {
             @Override
-            public void onDismiss(DialogInterface dialog) {
-                reloadQuestionFragment(currentPage);
+            public void done(BaseRequest request, Throwable e) {
+                SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
+                dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                    @Override
+                    public void onDismiss(DialogInterface dialog) {
+                        reloadQuestionFragment(currentPage);
+                    }
+                });
+                dialog.show();
             }
         });
-        dialog.show();
     }
 
     private void getHomeworkReview() {
@@ -248,10 +257,10 @@ public class HomeworkListActivity extends BaseActivity {
 
     private void initToolbarTitle() {
         String title = homework.child.title;
-        String subject = getDataBundle().getHomeworkInfo().subject;
+        Subject subject = getDataBundle().getHomeworkInfo().subject;
         Date beginTime = getDataBundle().getHomeworkInfo().beginTime;
-        if (!StringUtils.isNullOrEmpty(subject)) {
-            title += "  " + getString(R.string.subject, subject);
+        if (subject != null && !StringUtils.isNullOrEmpty(subject.name)) {
+            title += "  " + getString(R.string.subject, subject.name);
         }
         if (beginTime != null) {
             String time = DateTimeUtil.formatDate(beginTime, DateTimeUtil.DATE_FORMAT_YYYYMMDD_HHMM);
@@ -460,7 +469,7 @@ public class HomeworkListActivity extends BaseActivity {
             return;
         }
         if (recordFragment == null) {
-            getQuestionFragment().saveQuestion(new BaseCallback() {
+            getQuestionFragment().saveQuestion(SaveDocumentOption.onPageSaveOption(), new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
                     showRecordFragment();
