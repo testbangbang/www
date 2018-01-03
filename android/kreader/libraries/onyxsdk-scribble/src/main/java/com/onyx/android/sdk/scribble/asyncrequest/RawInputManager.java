@@ -145,6 +145,10 @@ public class RawInputManager {
         return this;
     }
 
+    public View getHostView() {
+        return getRawInputReader().getHostView();
+    }
+
     public RawInputManager setHostView(final View view) {
         getRawInputReader().setHostView(view);
         Rect limitRect = new Rect();

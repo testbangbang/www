@@ -4,6 +4,7 @@ import android.graphics.Rect;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.scribble.asyncrequest.EpdPenManager;
 import com.onyx.android.sdk.scribble.asyncrequest.RawInputManager;
 import com.onyx.android.sdk.scribble.asyncrequest.TouchReader;
@@ -166,6 +167,24 @@ public class TouchHelper {
         return this;
     }
 
+    public TouchHelper openRawDrawing() {
+        return createRawDrawing();
+    }
+
+    public void closeRawDrawing() {
+        pauseRawDrawing();
+        destroyRawDrawing();
+    }
+
+    public void setRawDrawingEnabled(boolean enabled) {
+        if (enabled) {
+            resumeRawDrawing();
+        } else {
+            EpdController.leaveScribbleMode(getRawInputManager().getHostView());
+            pauseRawDrawing();
+        }
+    }
+
     public TouchHelper createRawDrawing() {
         getRawInputManager().startRawInputReader();
         getEpdPenManager().startDrawing();
@@ -185,16 +204,6 @@ public class TouchHelper {
     public void resumeRawDrawing() {
         getRawInputManager().resumeRawInputReader();
         getEpdPenManager().resumeDrawing();
-    }
-
-    public void startRawDrawing() {
-        createRawDrawing();
-        resumeRawDrawing();
-    }
-
-    public void stopRawDrawing() {
-        pauseRawDrawing();
-        destroyRawDrawing();
     }
 
     public boolean checkShapesOutOfRange(List<Shape> shapes) {
@@ -242,3 +251,4 @@ public class TouchHelper {
         return rect;
     }
 }
+
