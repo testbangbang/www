@@ -1,5 +1,7 @@
 package com.onyx.android.sdk.data.request.cloud.v2;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.alibaba.fastjson.JSON;
@@ -22,6 +24,7 @@ import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.raizlabs.android.dbflow.sql.language.Condition;
 import com.raizlabs.android.dbflow.sql.language.OrderBy;
 import com.raizlabs.android.dbflow.sql.language.SQLite;
 
@@ -131,7 +134,7 @@ public class HomeworkListLoadRequest extends BaseCloudRequest {
 
     private void clearTable() {
         try {
-            StoreUtils.clearTable(Homework.class);
+            SQLite.delete(Homework.class).where(queryArgs.conditionGroup).execute();
         } catch (Exception ignored) {
         }
     }

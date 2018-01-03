@@ -3,6 +3,7 @@ package com.onyx.android.eschool.fragment;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
@@ -10,13 +11,15 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 
+import com.alibaba.fastjson.TypeReference;
 import com.onyx.android.eschool.R;
 import com.onyx.android.eschool.SchoolApp;
+import com.onyx.android.eschool.custom.CustomRadioGroup;
 import com.onyx.android.eschool.custom.PageIndicator;
 import com.onyx.android.eschool.databinding.FragmentHomeworkBinding;
 import com.onyx.android.eschool.databinding.ItemHomeworkBinding;
-import com.onyx.android.eschool.events.DataRefreshEvent;
 import com.onyx.android.eschool.events.TabSwitchEvent;
 import com.onyx.android.eschool.holder.LibraryDataHolder;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -27,15 +30,16 @@ import com.onyx.android.sdk.data.GPaginator;
 import com.onyx.android.sdk.data.QueryBase;
 import com.onyx.android.sdk.data.QueryResult;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
+import com.onyx.android.sdk.data.model.v2.GroupContainer;
 import com.onyx.android.sdk.data.model.v2.Homework;
+import com.onyx.android.sdk.data.model.v2.HomeworkQuery;
+import com.onyx.android.sdk.data.model.v2.Homework_Table;
 import com.onyx.android.sdk.data.model.v2.ResourceCode;
-import com.onyx.android.sdk.data.model.v2.ResourceQuery;
+import com.onyx.android.sdk.data.model.v2.Subject;
 import com.onyx.android.sdk.data.request.cloud.v2.HomeworkListLoadRequest;
-import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.data.utils.MetadataUtils;
-import com.onyx.android.sdk.data.v1.ServiceFactory;
-import com.onyx.android.sdk.data.v2.ContentService;
+import com.onyx.android.sdk.data.utils.QueryBuilder;
 import com.onyx.android.sdk.ui.dialog.DialogProgressHolder;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -43,8 +47,8 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.utils.ActivityUtil;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.android.sdk.utils.NetworkUtil;
-import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.android.sdk.utils.ViewDocumentUtils;
+import com.raizlabs.android.dbflow.sql.language.ConditionGroup;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -63,6 +67,7 @@ public class HomeworkFragment extends Fragment {
 
     private static SimpleDateFormat DATE_FORMAT_MMDD_HHMM = new SimpleDateFormat("MM月dd日HH时mm分", Locale.SIMPLIFIED_CHINESE);
     private PageRecyclerView contentPageView;
+    private CustomRadioGroup subjectGroupView;
 
     private FragmentHomeworkBinding binding;
     private PageIndicator pageIndicator;
@@ -75,11 +80,39 @@ public class HomeworkFragment extends Fragment {
 
     private boolean isVisibleToUser;
 
+    private List<Subject> subjectList = new ArrayList<>();
     private List<Homework> homeworkDataList = new ArrayList<>();
+
+    private int subjectIndex = 0;
 
     public static HomeworkFragment newInstance() {
         HomeworkFragment fragment = new HomeworkFragment();
+        fragment.setArguments(resetArguments(new Bundle(), null));
         return fragment;
+    }
+
+    @NonNull
+    private static Bundle resetArguments(@NonNull Bundle bundle, List<Subject> subjectList) {
+        if (CollectionUtils.isNullOrEmpty(subjectList)) {
+            return bundle;
+        }
+        bundle.putString(Constant.ARGS_TAG, String.valueOf(JSONObjectParseUtils.toJson(subjectList)));
+        return bundle;
+    }
+
+    private static List<Subject> restoreArguments(@NonNull Bundle bundle) {
+        return JSONObjectParseUtils.parseObject(bundle.getString(Constant.ARGS_TAG), new TypeReference<List<Subject>>() {
+        });
+    }
+
+    private static List<Subject> restoreArguments(@NonNull Bundle bundle, @NonNull List<Subject> targetList) {
+        List<Subject> list = restoreArguments(bundle);
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return targetList;
+        }
+        targetList.clear();
+        targetList.addAll(list);
+        return targetList;
     }
 
     @Override
@@ -99,6 +132,7 @@ public class HomeworkFragment extends Fragment {
     private void initView() {
         initPageView();
         initPageIndicator();
+        initSubjectGroupView();
     }
 
     private void initPageIndicator() {
@@ -123,6 +157,19 @@ public class HomeworkFragment extends Fragment {
             @Override
             public void onRefresh() {
                 refreshData();
+            }
+        });
+    }
+
+    private void initSubjectGroupView() {
+        subjectGroupView = binding.subjectGroupView;
+        subjectGroupView.setDivideIndicatorAverage(false);
+        subjectGroupView.setBackgroundMaxRadius(0);
+        subjectGroupView.setOnCheckedChangeListener(new CustomRadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId, int checkedIndex) {
+                subjectIndex = checkedIndex;
+                loadData(getQueryArgs(queryLimit, 0), true, null);
             }
         });
     }
@@ -185,7 +232,7 @@ public class HomeworkFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        loadData(getQueryArgs(queryLimit, 0), true, null);
+        updateSubjectGroupView(restoreArguments(getArguments(), subjectList));
     }
 
     private void prevPage() {
@@ -236,11 +283,24 @@ public class HomeworkFragment extends Fragment {
         return contentPageView.getPaginator();
     }
 
+    private String getSubjectId() {
+        if (CollectionUtils.isNullOrEmpty(subjectList)) {
+            return null;
+        }
+        if (subjectIndex >= subjectList.size()) {
+            subjectIndex = 0;
+        }
+        return subjectList.get(subjectIndex)._id;
+    }
+
     private QueryBase getQueryArgs(int limit, int offset) {
         QueryBase args = new QueryBase();
+        HomeworkQuery query = new HomeworkQuery(ResourceCode.MY_HOMEWORK, ResourceCode.MY_HOMEWORK_REF);
+        query.setSubject(getSubjectId());
         args.limit = limit;
         args.offset = offset;
-        args.query = JSONObjectParseUtils.toJson(new ResourceQuery(ResourceCode.MY_HOMEWORK, ResourceCode.MY_HOMEWORK_REF));
+        args.query = JSONObjectParseUtils.toJson(query);
+        args.conditionGroup = ConditionGroup.clause().and(QueryBuilder.matchLike(Homework_Table.child, query.getSubject()));
         return args;
     }
 
@@ -261,12 +321,20 @@ public class HomeworkFragment extends Fragment {
 
     private void loadMoreData() {
         QueryBase args = getQueryArgs(queryLimit, CollectionUtils.getSize(homeworkDataList));
-        loadData(args, false, null);
+        loadData(args, false, new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                HomeworkListLoadRequest loadRequest = (HomeworkListLoadRequest) request;
+                if (!QueryResult.isValidQueryResult(loadRequest.getQueryResult())) {
+                    showTipsMessage(R.string.no_more_items);
+                }
+            }
+        });
     }
 
     private void loadData(final QueryBase args, final boolean clearLocal, final BaseCallback callback) {
         final HomeworkListLoadRequest loadRequest = new HomeworkListLoadRequest(args, clearLocal);
-        getCloudManager().submitRequest(getContext(), loadRequest, new BaseCallback() {
+        getCloudManager().submitRequest(getContext().getApplicationContext(), loadRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 dialogProgressHolder.dismissProgressDialog(loadRequest);
@@ -275,11 +343,7 @@ public class HomeworkFragment extends Fragment {
                     showTipsMessage(R.string.refresh_fail);
                     return;
                 }
-                if (!QueryResult.isValidQueryResult(result)) {
-                    showTipsMessage(R.string.no_more_items);
-                    return;
-                }
-                notificationDataChanged(loadRequest.getQueryResult(), clearLocal);
+                notificationDataChanged(result, clearLocal);
                 BaseCallback.invoke(callback, loadRequest, null);
             }
         });
@@ -294,14 +358,16 @@ public class HomeworkFragment extends Fragment {
     }
 
     private void notificationDataChanged(QueryResult<Homework> result, boolean clear) {
-        if (result == null || CollectionUtils.isNullOrEmpty(result.list)) {
+        if (result == null) {
             return;
         }
         if (clear) {
             homeworkDataList.clear();
         }
-        homeworkDataList.addAll(result.list);
-        updateContentView(result.list);
+        if (!CollectionUtils.isNullOrEmpty(result.list)) {
+            homeworkDataList.addAll(result.list);
+        }
+        updateContentView(homeworkDataList);
     }
 
     private void updateContentView(List<Homework> list) {
@@ -324,8 +390,6 @@ public class HomeworkFragment extends Fragment {
         int totalCount = getTotalCount();
         getPagination().resize(pageRow, pageCol, totalCount);
         pageIndicator.resetGPaginator(getPagination());
-        pageIndicator.updateTotal(totalCount);
-        pageIndicator.updateCurrentPage(totalCount);
     }
 
     private void gotoPage(int selectPage) {
@@ -333,9 +397,32 @@ public class HomeworkFragment extends Fragment {
         updatePageIndicator();
     }
 
+    private void updateSubjectGroupView(List<Subject> list) {
+        if (CollectionUtils.isNullOrEmpty(list)) {
+            return;
+        }
+        List<String> nameList = new ArrayList<>();
+        List<Subject> validList = new ArrayList<>();
+        for (Subject subject : list) {
+            if (!Subject.isValid(subject)) {
+                continue;
+            }
+            validList.add(subject);
+            nameList.add(subject.name);
+        }
+        subjectList.clear();
+        subjectList.addAll(validList);
+        if (subjectIndex >= CollectionUtils.getSize(subjectList)) {
+            subjectIndex = 0;
+        }
+        subjectGroupView.updateItemsText(subjectIndex, nameList);
+        subjectGroupView.setVisibility(View.VISIBLE);
+    }
+
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDataRefreshEvent(DataRefreshEvent event) {
-        refreshData();
+    public void onGroupContainer(GroupContainer groupContainer) {
+        resetArguments(getArguments(), groupContainer.subjectList);
+        updateSubjectGroupView(groupContainer.subjectList);
     }
 
     @Override
@@ -358,18 +445,6 @@ public class HomeworkFragment extends Fragment {
         if (!success) {
             ToastUtils.showToast(getContext().getApplicationContext(), R.string.app_no_installed);
         }
-    }
-
-    private void updateTokenHeader(final CloudManager cloudManager) {
-        if (StringUtils.isNotBlank(cloudManager.getToken())) {
-            ServiceFactory.addRetrofitTokenHeader(cloudManager.getCloudConf().getApiBase(),
-                    Constant.HEADER_AUTHORIZATION,
-                    ContentService.CONTENT_AUTH_PREFIX + cloudManager.getToken());
-        }
-    }
-
-    private CloudConf getCloudConf(String host, String api) {
-        return CloudConf.create(host, api, Constant.DEFAULT_CLOUD_STORAGE);
     }
 
     private CloudManager getCloudManager() {

@@ -38,7 +38,6 @@ import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.GroupContainer;
-import com.onyx.android.sdk.data.model.v2.NeoAccountBase;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.ui.utils.ToastUtils;
 import com.onyx.android.sdk.utils.CollectionUtils;
@@ -153,6 +152,7 @@ public class MainActivity extends BaseActivity {
         if (!CollectionUtils.isNullOrEmpty(groupContainerList)) {
             currentGroup = groupContainerList.get(index).group;
             libraryList = groupContainerList.get(index).libraryList;
+            EventBus.getDefault().postSticky(groupContainerList.get(index));
         }
         notifyDataChanged(libraryList);
     }

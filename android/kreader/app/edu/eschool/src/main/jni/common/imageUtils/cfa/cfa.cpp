@@ -31,7 +31,7 @@ extern "C" {
 #include "prof.h"
 #endif
 
-#include "com_onyx_android_libsetting_util_QRCodeUtil.h"
+#include "com_onyx_android_eschool_utils_QRCodeUtil.h"
 
 #include "JNIUtils.h"
 
@@ -99,7 +99,7 @@ bool JNIBitmap::attach(jobject bitmap) {
     return true;
 }
 
-JNIEXPORT void JNICALL Java_com_onyx_android_libsetting_util_QRCodeUtil_toRgbwBitmap
+JNIEXPORT void JNICALL Java_com_onyx_android_eschool_utils_QRCodeUtil_toRgbwBitmap
 (JNIEnv *env, jclass thiz, jobject dstBitmap, jobject srcBitmap, jint orientation) {
     JNIBitmap dst(env);
     JNIBitmap src(env);

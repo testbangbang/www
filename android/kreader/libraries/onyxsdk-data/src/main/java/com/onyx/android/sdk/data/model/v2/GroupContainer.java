@@ -11,4 +11,5 @@ import java.util.List;
 public class GroupContainer implements Serializable {
     public CloudGroup group;
     public List<Library> libraryList;
+    public List<Subject> subjectList;
 }

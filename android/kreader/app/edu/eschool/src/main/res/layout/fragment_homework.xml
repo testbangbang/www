@@ -6,11 +6,52 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.onyx.android.sdk.ui.compat.AppCompatLinearLayout
             android:id="@+id/place_holder_layout"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal" />
+            android:layout_height="@dimen/place_holder_layout_height"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/place_holder_layout_padding_left_right"
+            android:paddingRight="@dimen/place_holder_layout_padding_left_right"
+            android:paddingTop="@dimen/place_holder_layout_padding_top">
+
+            <com.onyx.android.eschool.custom.CustomRadioGroup
+                android:id="@+id/subject_groupView"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="@dimen/subject_radio_group_margin_right"
+                android:layout_weight="1"
+                android:visibility="invisible"
+                android:minHeight="@dimen/subject_radio_group_min_height" />
+
+            <TextView
+                android:id="@+id/button_find_homework"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/button_find_homework_margin_left_right"
+                android:layout_marginRight="@dimen/button_find_homework_margin_left_right"
+                android:background="@drawable/default_button_background"
+                android:gravity="center"
+                android:text="@string/find_homework"
+                android:textSize="@dimen/button_find_homework_text_size"
+                android:visibility="invisible" />
+
+            <TextView
+                android:id="@+id/button_wrong_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/button_find_homework_margin_left_right"
+                android:layout_marginRight="@dimen/button_find_homework_margin_left_right"
+                android:background="@drawable/default_button_background"
+                android:gravity="center"
+                android:text="@string/wrong_question_record"
+                android:textSize="@dimen/button_find_homework_text_size"
+                android:visibility="invisible" />
+
+        </com.onyx.android.sdk.ui.compat.AppCompatLinearLayout>
 
         <com.onyx.android.sdk.ui.view.PageRecyclerView
             android:id="@+id/content_pageView"
