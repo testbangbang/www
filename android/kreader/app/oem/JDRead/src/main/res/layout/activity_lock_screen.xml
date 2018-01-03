@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="screenLockModel"
+            type="com.onyx.jdread.main.model.LockScreenModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/activity_screen_lock_margin_top"
+        android:orientation="vertical"
+        android:padding="@dimen/activity_screen_lock_padding"
+        tools:context=".main.activity.LockScreenActivity">
+
+        <TextView
+            style="@style/PasswordEditTextStyle"
+            android:background="@null"
+            android:gravity="center"
+            android:text="@string/password" />
+
+        <EditText
+            style="@style/PasswordEditTextStyle"
+            android:layout_marginTop="@dimen/lock_screen_password_margin_top"
+            android:text="@={screenLockModel.passwordEdit}" />
+
+        <TextView
+            style="@style/PasswordEditTextStyle"
+            android:layout_marginTop="@dimen/unlock_password_text_margin_top"
+            android:gravity="center"
+            android:onClick="@{()->screenLockModel.unlockScreen()}"
+            android:text="@string/confirm" />
+    </LinearLayout>
+
+</layout>

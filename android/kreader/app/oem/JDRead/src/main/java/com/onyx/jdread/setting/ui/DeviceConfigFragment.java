@@ -84,7 +84,7 @@ public class DeviceConfigFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPasswordEvent(PasswordEvent event) {
-
+        viewEventCallBack.gotoView(PasswordSettingFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

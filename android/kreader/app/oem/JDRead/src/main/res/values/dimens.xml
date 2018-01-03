@@ -209,4 +209,13 @@
     <dimen name="all_category_type_margin_top">15dp</dimen>
     <dimen name="device_info_recycler_height">467dp</dimen>
     <dimen name="device_info_item_padding">10dp</dimen>
+    <dimen name="edit_text_padding">10dp</dimen>
+    <dimen name="fragment_password_settings_padding">100dp</dimen>
+    <dimen name="phone_edit_margin_top">50dp</dimen>
+    <dimen name="phone_edit_hint_margin_top">20dp</dimen>
+    <dimen name="unlock_password_edit_margin_top">30dp</dimen>
+    <dimen name="unlock_password_text_margin_top">100dp</dimen>
+    <dimen name="activity_screen_lock_padding">100dp</dimen>
+    <dimen name="activity_screen_lock_margin_top">100dp</dimen>
+    <dimen name="lock_screen_password_margin_top">30dp</dimen>
 </resources>

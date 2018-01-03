@@ -230,4 +230,12 @@
     <string name="device_store_format">存储信息： 剩余%1$sGB/共%2$dGB</string>
     <string name="copyright_notice_and_terms_of_service">版权声明与服务条款</string>
     <string name="reset">恢复出厂设置</string>
+    <string name="phone_number_edit_hint">手机号用于密码找回,请确保真实有效</string>
+    <string name="confirm_password">确认密码</string>
+    <string name="password_setting">密码设置</string>
+    <string name="encrypted">已加密</string>
+    <string name="unlock_the_password">解除密码</string>
+    <string name="password_format_error">密码格式错误,请输入%1$d-%2$d位数字</string>
+    <string name="wrong_password">密码错误</string>
+    <string name="reading_tools">阅读工具</string>
 </resources>

@@ -235,4 +235,13 @@
     <string name="device_store_format">Store： remaining %1$sGB /total %2$dGB</string>
     <string name="copyright_notice_and_terms_of_service">Copyright notice and terms of service</string>
     <string name="reset">Reset</string>
+    <string name="phone_number_edit_hint">The phone number is used for password recovery, please make sure the real and effective</string>
+    <string name="confirm_password">Confirm password</string>
+    <string name="password_setting">Password setting</string>
+    <string name="encrypted">Encrypted</string>
+    <string name="unlock_the_password">Unlock the password</string>
+    <string name="password_key">password_key</string>
+    <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
+    <string name="wrong_password">Wrong password</string>
+    <string name="reading_tools">Reading tools</string>
 </resources>
