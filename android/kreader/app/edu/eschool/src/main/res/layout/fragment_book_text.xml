@@ -7,10 +7,9 @@
     <LinearLayout
         android:id="@+id/parent_library_ref"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="0dp"
+        android:layout_height="@dimen/library_parent_ref_layout_height"
+        android:layout_marginLeft="@dimen/library_parent_ref_layout_padding_left_right"
+        android:layout_marginRight="@dimen/library_parent_ref_layout_padding_left_right"
         android:orientation="horizontal" />
 
     <com.onyx.android.sdk.ui.view.SinglePageRecyclerView

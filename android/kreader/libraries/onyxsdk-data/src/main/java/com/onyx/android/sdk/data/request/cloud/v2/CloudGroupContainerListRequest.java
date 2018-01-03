@@ -3,17 +3,21 @@ package com.onyx.android.sdk.data.request.cloud.v2;
 import com.onyx.android.sdk.data.CloudManager;
 import com.onyx.android.sdk.data.DataManagerHelper;
 import com.onyx.android.sdk.data.QueryArgs;
+import com.onyx.android.sdk.data.db.ContentDatabase;
 import com.onyx.android.sdk.data.model.Library;
 import com.onyx.android.sdk.data.model.common.FetchPolicy;
 import com.onyx.android.sdk.data.model.v2.CloudGroup;
 import com.onyx.android.sdk.data.model.v2.CloudLibrary;
 import com.onyx.android.sdk.data.model.v2.GroupContainer;
+import com.onyx.android.sdk.data.model.v2.Subject;
+import com.onyx.android.sdk.data.model.v2.Subject_Table;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.utils.RetrofitUtils;
 import com.onyx.android.sdk.data.utils.StoreUtils;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
 import com.onyx.android.sdk.utils.CollectionUtils;
 import com.raizlabs.android.dbflow.sql.language.Delete;
+import com.raizlabs.android.dbflow.sql.language.Select;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,11 +55,12 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
         Response<List<GroupContainer>> response = RetrofitUtils.executeCall(ServiceFactory.getContentService(
                 parent.getCloudConf().getApiBase()).getMyGroupContainerList());
         if (response.isSuccessful()) {
-            clearAllGroupLibrary(parent);
+            clearTable(parent);
             list = response.body();
             if (!CollectionUtils.isNullOrEmpty(list)) {
                 saveLibraryListToLocal(parent, list);
                 saveGroupListToLocal(parent, list);
+                saveSubjectListToLocal(parent, list);
             }
         }
         return list;
@@ -71,6 +76,7 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
             GroupContainer container = new GroupContainer();
             container.group = cloudGroup;
             container.libraryList = fetchLibraryListFromLocal(parent, cloudGroup.library);
+            container.subjectList = fetchSubjectListFromLocal(parent, cloudGroup._id);
             containerList.add(container);
         }
         return containerList;
@@ -83,6 +89,12 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
         return DataManagerHelper.fetchLibraryLibraryList(getContext(), parent.getCloudDataProvider(), queryArgs);
     }
 
+    private List<Subject> fetchSubjectListFromLocal(CloudManager parent, String categoryId) {
+        return new Select().from(Subject.class)
+                .where(Subject_Table.category.eq(categoryId))
+                .queryList();
+    }
+
     private void saveGroupListToLocal(CloudManager parent, List<GroupContainer> containerList) {
         if (CollectionUtils.isNullOrEmpty(containerList)) {
             return;
@@ -93,7 +105,7 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
         }
         //use local database
         try {
-            StoreUtils.saveToLocal(groupList, CloudGroup.class, true);
+            StoreUtils.saveToLocal(ContentDatabase.class, groupList);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -111,8 +123,21 @@ public class CloudGroupContainerListRequest extends BaseCloudRequest {
         }
     }
 
-    private void clearAllGroupLibrary(CloudManager parent) {
+    private void saveSubjectListToLocal(CloudManager parent, List<GroupContainer> containerList) {
+        for (GroupContainer groupContainer : containerList) {
+            if (CollectionUtils.isNullOrEmpty(groupContainer.subjectList)) {
+                continue;
+            }
+            for (Subject subject : groupContainer.subjectList) {
+                subject.category = groupContainer.group._id;
+            }
+            StoreUtils.saveToLocal(ContentDatabase.class, groupContainer.subjectList);
+        }
+    }
+
+    private void clearTable(CloudManager parent) {
         Delete.table(CloudGroup.class);
+        Delete.table(Subject.class);
         DataManagerHelper.clearLibrary(parent.getCloudDataProvider());
     }
 

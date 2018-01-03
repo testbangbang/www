@@ -130,4 +130,7 @@
     <string name="teacher">Teacher</string>
     <string name="admin">Admin</string>
     <string name="user">User</string>
+
+    <string name="find_homework">Find homework</string>
+    <string name="wrong_question_record">Wrong question</string>
 </resources>

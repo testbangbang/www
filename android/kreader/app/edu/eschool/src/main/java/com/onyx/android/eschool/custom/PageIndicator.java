@@ -81,6 +81,8 @@ public class PageIndicator {
 
     public void resetGPaginator(GPaginator gPaginator) {
         this.gPaginator = gPaginator;
+        updateTotal(gPaginator.getSize());
+        updateCurrentPage(gPaginator.getSize());
     }
 
     public void setTotalFormat(String totalFormat) {
