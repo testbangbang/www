@@ -20,9 +20,12 @@ import com.raizlabs.android.dbflow.config.ShapeGeneratedDatabaseHolder;
 
 public class HomeworkApp extends MultiDexApplication {
 
+    public static HomeworkApp instance;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         BaseNoteAction.setAppContext(this);
         initContentProvider(this);
         initDataProvider();

@@ -7,6 +7,7 @@ import com.onyx.android.sdk.data.Constant;
 import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.utils.CloudConf;
 import com.onyx.android.sdk.scribble.NoteViewHelper;
+import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.data.HomeworkInfo;
 import com.onyx.edu.homework.data.HomeworkState;
 
@@ -88,7 +89,7 @@ public class DataBundle {
 
     public NoteViewHelper getNoteViewHelper() {
         if (noteViewHelper == null) {
-            noteViewHelper = new NoteViewHelper();
+            noteViewHelper = new NoteViewHelper(HomeworkApp.instance);
         }
         return noteViewHelper;
     }
