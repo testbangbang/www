@@ -12,7 +12,7 @@
 
         <include
             android:id="@+id/account_title_bar"
-            layout="@layout/setting_title_bar"
+            layout="@layout/title_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 

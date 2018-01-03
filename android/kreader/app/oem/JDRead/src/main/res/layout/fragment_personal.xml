@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data class="PersonalBinding">
 
+        <variable
+            name="imageUrl"
+            type="String" />
+
+        <variable
+            name="userName"
+            type="String"/>
     </data>
 
     <LinearLayout
@@ -23,16 +31,16 @@
                 android:orientation="vertical">
 
                 <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/user_image_height"
+                    android:layout_height="@dimen/user_image_height"
                     android:layout_marginTop="@dimen/personal_portrait_margin_top"
-                    android:src="@mipmap/ic_setting_jdread" />
+                    bind:personalImage="@{imageUrl}" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/personal_name_margin_top"
-                    android:text="shuchong"
+                    android:text="@{userName}"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/level_two_heading_font" />
 

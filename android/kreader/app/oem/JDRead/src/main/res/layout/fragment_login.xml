@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="LoginBinding">
+
+        <variable
+            name="model"
+            type="com.onyx.jdread.personal.model.UserLoginViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/login_title_bar"
+            layout="@layout/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/login_whole_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/fragment_switch_account_JD_login"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <EditText
+                android:id="@+id/login_account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_account_margin_top"
+                android:background="@drawable/rectangle_stroke"
+                android:hint="@string/fragment_switch_account_edit_text_account"
+                android:inputType="text"
+                android:padding="@dimen/login_account_padding"
+                android:text="@={model.account}" />
+
+            <EditText
+                android:id="@+id/switch_account_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_account_margin_top"
+                android:background="@drawable/rectangle_stroke"
+                android:drawableRight="@mipmap/eye_close"
+                android:hint="@string/fragment_switch_account_edit_text_password"
+                android:inputType="textPassword"
+                android:padding="@dimen/login_account_padding"
+                android:text="@={model.password}" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_forget_margin_top">
+
+                <TextView
+                    android:id="@+id/switch_account_forget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->model.onForgetPasswordClick()}"
+                    android:text="@string/fragment_switch_account_text_view_forget"
+                    android:textSize="@dimen/level_three_heading_font" />
+
+                <TextView
+                    android:id="@+id/switch_account_register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:onClick="@{()->model.onRegisterViewClick()}"
+                    android:text="@string/fragment_switch_account_text_view_register"
+                    android:textSize="@dimen/level_three_heading_font" />
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/switch_account_login"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/login_button_margin_top"
+                android:background="@drawable/button_login_bg"
+                android:enabled="false"
+                android:onClick="@{()->model.onLoginViewClick()}"
+                android:padding="@dimen/login_button_padding"
+                android:text="@string/fragment_switch_account_login"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/level_one_heading_font" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

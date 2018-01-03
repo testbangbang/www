@@ -1,6 +1,7 @@
 package com.onyx.jdread.setting.model;
 
 import com.onyx.android.sdk.data.CloudManager;
+import com.onyx.android.sdk.data.DataManager;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 
@@ -13,6 +14,7 @@ import org.greenrobot.eventbus.EventBus;
 public class SettingBundle {
     private EventBus eventBus = EventBus.getDefault();
     private CloudManager cloudManager = new CloudManager();
+    private DataManager dataManager = new DataManager();
     private static SettingBundle bundle;
     private SettingDataModel settingDataModel;
     private SettingTitleModel titleModel;
@@ -109,5 +111,9 @@ public class SettingBundle {
 
     public Firmware getResultFirmware() {
         return resultFirmware;
+    }
+
+    public DataManager getDataManager() {
+        return dataManager;
     }
 }

@@ -508,10 +508,14 @@ public class RxMetadataTest extends ApplicationTestCase<Application> {
             QueryArgs args = QueryBuilder.libraryAllBookQuery(library.getIdString(), SortBy.CreationTime, SortOrder.Desc);
             args.limit = limit;
             List<Metadata> list = dataManager.getRemoteContentProvider().findMetadataByQueryArgs(getContext(), args);
+            List<DataModel> modelList = new ArrayList<>();
+            DataModelUtil.metadataToDataModel(EventBus.getDefault(), modelList, list, null, ThumbnailUtils.defaultThumbnailMapping());
             final int index = i;
             final CountDownLatch countDownLatch = new CountDownLatch(1);
             final Benchmark benchMark = new Benchmark();
-            RxRemoveFromLibraryRequest removeRequest = new RxRemoveFromLibraryRequest(dataManager, library, list);
+            DataModel dataModel = new DataModel(EventBus.getDefault());
+            dataModel.idString.set(library.getIdString());
+            RxRemoveFromLibraryRequest removeRequest = new RxRemoveFromLibraryRequest(dataManager, dataModel, modelList);
             removeRequest.execute(new RxCallback<RxRemoveFromLibraryRequest>() {
                 @Override
                 public void onNext(RxRemoveFromLibraryRequest removeFromLibraryRequest) {

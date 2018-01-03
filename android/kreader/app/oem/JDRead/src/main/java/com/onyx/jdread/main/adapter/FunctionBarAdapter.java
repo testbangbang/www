@@ -10,7 +10,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FunctionBarItemBinding;
-import com.onyx.jdread.library.adapter.PageAdapter;
+import com.onyx.jdread.main.common.PageAdapter;
 import com.onyx.jdread.main.model.FunctionBarItem;
 
 import java.util.List;

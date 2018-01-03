@@ -1,9 +1,11 @@
 package com.onyx.jdread.personal.model;
 
 import com.onyx.android.sdk.data.DataManager;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ReadOverInfoBean;
+import com.onyx.jdread.personal.cloud.entity.jdbean.ReadTotalInfoBean;
 import com.onyx.jdread.personal.cloud.entity.jdbean.TopUpValueBean;
-import com.onyx.jdread.setting.model.SettingTitleModel;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -20,10 +22,13 @@ public class PersonalDataBundle {
     private PersonalViewModel personalViewModel;
     private DataManager dataManager;
     private PersonalModel personalModel;
-    private SettingTitleModel titleModel;
+    private TitleBarModel titleModel;
     private PersonalAccountModel personalAccountModel;
     private List<TopUpValueBean> topValueBeans;
     private GetOrderUrlResultBean orderUrlResultBean;
+    private ReadTotalInfoBean readTotalInfo;
+    private ReadOverInfoBean readOverInfo;
+    private PointsForModel pointsForModel;
 
     private PersonalDataBundle() {
 
@@ -69,9 +74,9 @@ public class PersonalDataBundle {
         return dataManager;
     }
 
-    public SettingTitleModel getTitleModel() {
+    public TitleBarModel getTitleModel() {
         if (titleModel == null) {
-            titleModel = new SettingTitleModel(eventBus);
+            titleModel = new TitleBarModel(getEventBus());
         }
         return titleModel;
     }
@@ -105,5 +110,29 @@ public class PersonalDataBundle {
 
     public GetOrderUrlResultBean getOrderUrlResultBean() {
         return orderUrlResultBean;
+    }
+
+    public void setReadTotalInfo(ReadTotalInfoBean readTotalInfo) {
+        this.readTotalInfo = readTotalInfo;
+    }
+
+    public ReadTotalInfoBean getReadTotalInfo() {
+        return readTotalInfo;
+    }
+
+    public void setReadOverInfo(ReadOverInfoBean readOverInfo) {
+        this.readOverInfo = readOverInfo;
+    }
+
+    public ReadOverInfoBean getReadOverInfo() {
+        return readOverInfo;
+    }
+
+    public PointsForModel getPointsForModel() {
+        if (pointsForModel == null) {
+            pointsForModel = new PointsForModel();
+            pointsForModel.loadData();
+        }
+        return pointsForModel;
     }
 }

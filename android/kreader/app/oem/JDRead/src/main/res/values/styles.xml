@@ -37,4 +37,12 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
     </style>
+
+    <style name="PasswordEditTextStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/rectangle_stroke</item>
+        <item name="android:padding">@dimen/edit_text_padding</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+    </style>
 </resources>

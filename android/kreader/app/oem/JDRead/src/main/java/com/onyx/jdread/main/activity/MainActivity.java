@@ -36,6 +36,8 @@ import com.onyx.jdread.main.model.FunctionBarItem;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
+import com.onyx.jdread.personal.ui.LoginFragment;
+import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -274,7 +276,17 @@ public class MainActivity extends AppCompatActivity {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onChangeChildViewEvent(ChangeChildViewEvent event) {
-        switchCurrentFragment(event.childViewName);
+        String name = null;
+        if (event.childViewName.equals(PersonalFragment.class.getName())) {
+            if (JDReadApplication.getInstance().getLogin()) {
+                name = event.childViewName;
+            } else {
+                name = LoginFragment.class.getName();
+            }
+        } else {
+            name = event.childViewName;
+        }
+        switchCurrentFragment(name);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

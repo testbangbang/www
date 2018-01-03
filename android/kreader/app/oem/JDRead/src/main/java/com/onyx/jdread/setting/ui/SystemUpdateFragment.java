@@ -20,12 +20,14 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.SystemUpdateBinding;
 import com.onyx.jdread.library.event.HideAllDialogEvent;
 import com.onyx.jdread.library.event.LoadingDialogEvent;
+import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.setting.action.CheckApkUpdateAction;
 import com.onyx.jdread.setting.action.DownloadPackageAction;
 import com.onyx.jdread.setting.action.LocalUpdateSystemAction;
 import com.onyx.jdread.setting.action.OnlineCheckSystemUpdateAction;
 import com.onyx.jdread.setting.dialog.CheckUpdateLoadingDialog;
 import com.onyx.jdread.setting.dialog.SystemUpdateDialog;
+import com.onyx.jdread.setting.event.BackToDeviceConfigFragment;
 import com.onyx.jdread.setting.event.DelayEvent;
 import com.onyx.jdread.setting.event.ExecuteUpdateEvent;
 import com.onyx.jdread.setting.model.DeviceConfigData;
@@ -51,7 +53,6 @@ import java.util.Map;
 public class SystemUpdateFragment extends BaseFragment {
     private SystemUpdateBinding binding;
     private CheckUpdateLoadingDialog checkUpdateLoadingDialog;
-    private DeviceConfigData deviceConfigData;
     private SystemUpdateData systemUpdateData;
     private String downloadUrl;
     private String downloadPath;
@@ -123,15 +124,15 @@ public class SystemUpdateFragment extends BaseFragment {
     }
 
     private void initData() {
-        SettingTitleModel titleModel = SettingBundle.getInstance().getTitleModel();
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.system_update));
-        titleModel.setViewHistory(true);
-        titleModel.setToggle(false);
+        TitleBarModel titleModel = new TitleBarModel(SettingBundle.getInstance().getEventBus());
+        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.system_update));
+        titleModel.backEvent.set(new BackToDeviceConfigFragment());
         binding.systemUpdateSettingBar.setTitleModel(titleModel);
 
         settingUpdateModel = SettingBundle.getInstance().getSettingUpdateModel();
         systemUpdateData = settingUpdateModel.getSystemUpdateData();
-        if (StringUtils.isNotBlank(deviceConfigData.getUpdateRecord())) {
+        List<DeviceConfigData> deviceConfigDataList = SettingBundle.getInstance().getDeviceConfigModel().getDeviceConfigDataList();
+        if (StringUtils.isNotBlank(deviceConfigDataList.get(deviceConfigDataList.size() - 1).getUpdateRecord())) {
             systemUpdateData.setShowDownloaded(true);
             systemUpdateData.setUpdateDes(JDReadApplication.getInstance().getResources().getString(R.string.upgrade_immediately));
             systemUpdateData.setVersionTitle(JDReadApplication.getInstance().getResources().getString(R.string.updatable_version));
@@ -209,7 +210,7 @@ public class SystemUpdateFragment extends BaseFragment {
                             message += "\n";
                         }
                     }
-                    if(downloadUrlList == null || downloadUrlList.length <= 0){
+                    if (downloadUrlList == null || downloadUrlList.length <= 0) {
                         apkUpdateAction.showLoadingDialog(SettingBundle.getInstance(), R.string.already_latest_version);
                         return;
                     }
@@ -234,10 +235,6 @@ public class SystemUpdateFragment extends BaseFragment {
         SystemUpdateDialog dialog = new SystemUpdateDialog();
         dialog.setEventBus(SettingBundle.getInstance().getEventBus());
         dialog.show(getActivity().getFragmentManager(), "");
-    }
-
-    public void setDeviceConfigData(DeviceConfigData deviceConfigData) {
-        this.deviceConfigData = deviceConfigData;
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -282,5 +279,10 @@ public class SystemUpdateFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onHideAllDialogEvent(HideAllDialogEvent event) {
         checkUpdateLoadingDialog.dismiss();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToDeviceConfigFragment(BackToDeviceConfigFragment event) {
+        viewEventCallBack.viewBack();
     }
 }

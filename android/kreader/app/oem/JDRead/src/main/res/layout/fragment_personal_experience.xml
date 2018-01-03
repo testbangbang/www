@@ -1,8 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
 
     <data class="PersonalExperienceBinding">
 
+        <variable
+            name="imageUrl"
+            type="String" />
+
+        <variable
+            name="userName"
+            type="String"/>
+
+        <variable
+            name="stayTime"
+            type="String"/>
+
+        <variable
+            name="totalCount"
+            type="String"/>
+
+        <variable
+            name="readOver"
+            type="String"/>
+
+        <variable
+            name="notes"
+            type="String"/>
     </data>
 
     <LinearLayout
@@ -12,7 +36,7 @@
 
         <include
             android:id="@+id/experience_title_bar"
-            layout="@layout/setting_title_bar"
+            layout="@layout/title_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
 
@@ -25,15 +49,16 @@
             android:padding="@dimen/personal_experience_whole_padding">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:scaleType="centerCrop" />
+                android:layout_width="@dimen/user_image_height"
+                android:layout_height="@dimen/user_image_height"
+                android:scaleType="centerCrop"
+                bind:personalImage="@{imageUrl}"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/personal_experience_name_margin_top"
-                android:text="name"
+                android:text="@{userName}"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/level_two_heading_font" />
 
@@ -53,7 +78,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20"
+                        android:text="@{stayTime}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -76,7 +101,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20"
+                        android:text="@{totalCount}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -99,7 +124,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20"
+                        android:text="@{readOver}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 
@@ -122,7 +147,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="20"
+                        android:text="@{notes}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/level_three_heading_font" />
 

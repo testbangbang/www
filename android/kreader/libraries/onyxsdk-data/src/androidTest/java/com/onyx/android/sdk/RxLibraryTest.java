@@ -349,9 +349,9 @@ public class RxLibraryTest extends ApplicationTestCase<Application> {
                 List<DataModel> subDataModel = new ArrayList<>();
                 List<DataModel> childDataModel = new ArrayList<>();
                 List<DataModel> parentDataModel = new ArrayList<>();
-                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), subDataModel, subLibraryList, false, R.drawable.library_default_cover);
-                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), childDataModel, childList, false, R.drawable.library_default_cover);
-                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), parentDataModel, parentList, false, R.drawable.library_default_cover);
+                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), subDataModel, subLibraryList, false, 0);
+                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), childDataModel, childList, false, 0);
+                DataModelUtil.libraryToDataModel(dataManager.getRemoteContentProvider(), EventBus.getDefault(), parentDataModel, parentList, false, 0);
                 assertListEqual(subDataModel, childDataModel);
                 List<DataModel> parentLibraryList = rxLibraryGotoRequest.getParentLibraryList();
                 assertFalse(CollectionUtils.isNullOrEmpty(parentLibraryList));

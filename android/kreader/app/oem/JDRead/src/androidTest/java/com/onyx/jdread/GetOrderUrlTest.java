@@ -15,19 +15,15 @@ import com.onyx.jdread.personal.common.CloudApiContext;
 import com.onyx.jdread.personal.request.cloud.RxGetOrderUrlRequest;
 import com.onyx.jdread.personal.request.cloud.RxRequestSyncLoginInfo;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-
 import jd.wjlogin_sdk.common.WJLoginHelper;
 import jd.wjlogin_sdk.common.listener.OnLoginCallback;
 import jd.wjlogin_sdk.model.FailResult;
 import jd.wjlogin_sdk.model.JumpResult;
 import jd.wjlogin_sdk.model.PicDataInfo;
 import jd.wjlogin_sdk.util.MD5;
-
-;
 
 /**
  * Created by li on 2017/12/30.
@@ -47,24 +43,28 @@ public class GetOrderUrlTest extends ApplicationTestCase<JDReadApplication> {
             @Override
             public void onSuccess() {
                 Log.d(TAG, "onSuccess: ");
+                assertTrue(true);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onError(String errorJson) {
                 Log.d(TAG, "onError: " + errorJson);
+                assertNull(errorJson);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFail(FailResult failResult, PicDataInfo picDataInfo) {
                 Log.d(TAG, "onFail: ");
+                assertNull(failResult);
                 countDownLatch.countDown();
             }
 
             @Override
             public void onFail(FailResult failResult, JumpResult jumpResult, PicDataInfo picDataInfo) {
                 Log.d(TAG, "onFail: ");
+                assertNull(failResult);
                 countDownLatch.countDown();
             }
         });

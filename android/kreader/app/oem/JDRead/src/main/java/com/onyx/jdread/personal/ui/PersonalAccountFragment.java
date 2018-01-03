@@ -7,13 +7,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PersonalAccountBinding;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.model.TitleBarModel;
+import com.onyx.jdread.personal.action.GetOrderUrlAction;
 import com.onyx.jdread.personal.adapter.PersonalAccountAdapter;
+import com.onyx.jdread.personal.cloud.entity.jdbean.GetOrderUrlResultBean;
 import com.onyx.jdread.personal.dialog.TopUpDialog;
 import com.onyx.jdread.personal.event.ConsumptionRecordEvent;
 import com.onyx.jdread.personal.event.FiftyYuanEvent;
@@ -28,10 +32,14 @@ import com.onyx.jdread.personal.event.TopUpEvent;
 import com.onyx.jdread.personal.event.TwoHundredYuanEvent;
 import com.onyx.jdread.personal.model.PersonalAccountModel;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingTitleModel;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by li on 2017/12/29.
@@ -64,10 +72,9 @@ public class PersonalAccountFragment extends BaseFragment {
     }
 
     private void initData() {
-        SettingTitleModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
-        titleModel.setToggle(false);
-        titleModel.setViewHistory(false);
-        titleModel.setTitle(JDReadApplication.getInstance().getResources().getString(R.string.personal_account));
+        TitleBarModel titleModel = PersonalDataBundle.getInstance().getTitleModel();
+        titleModel.title.set(JDReadApplication.getInstance().getResources().getString(R.string.personal_account));
+        titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.accountTitleBar.setTitleModel(titleModel);
 
         PersonalAccountModel personalAccountModel = PersonalDataBundle.getInstance().getPersonalAccountModel();
@@ -93,12 +100,12 @@ public class PersonalAccountFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onConsumptionRecordEvent(ConsumptionRecordEvent event) {
-
+        viewEventCallBack.gotoView(ConsumptionRecordFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPaidRecordEvent(PaidRecordEvent event) {
-
+        viewEventCallBack.gotoView(TopUpRecordFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -113,7 +120,16 @@ public class PersonalAccountFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onOneYuanEvent(OneYuanEvent event) {
-
+        // TODO: 2018/1/2    fake data:30104685  30104684   30104683
+        List<String> ids = new ArrayList<>();
+        ids.add("30104685");
+        GetOrderUrlAction getOrderUrlAction = new GetOrderUrlAction(ids);
+        getOrderUrlAction.execute(PersonalDataBundle.getInstance(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                GetOrderUrlResultBean orderUrlResultBean = PersonalDataBundle.getInstance().getOrderUrlResultBean();
+            }
+        });
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -139,5 +155,10 @@ public class PersonalAccountFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onFiveHundredYuanEvent(FiveHundredYuanEvent event) {
 
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
+        viewEventCallBack.viewBack();
     }
 }
