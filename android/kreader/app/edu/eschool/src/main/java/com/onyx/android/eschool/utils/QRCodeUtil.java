@@ -36,7 +36,7 @@ public class QRCodeUtil {
     static public native void toRgbwBitmap(final Bitmap dst, final Bitmap src, int orientation);
 
 
-    private static Bitmap getCFABitMap(Bitmap src) {
+    public static Bitmap getCFABitMap(Bitmap src) {
         Bitmap dst = Bitmap.createBitmap(src.getWidth() * 2, src.getHeight() * 2, Bitmap.Config.ARGB_8888);
         toRgbwBitmap(dst, src, 0);
         return dst;

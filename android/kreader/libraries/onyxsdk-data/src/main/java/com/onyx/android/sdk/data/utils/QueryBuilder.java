@@ -268,7 +268,7 @@ public class QueryBuilder {
         }
     }
 
-    public static Condition matchLike(final Property<String> property, String match) {
+    public static <T> Condition matchLike(final Property<T> property, String match) {
         if (StringUtils.isNullOrEmpty(match)) {
             return null;
         }

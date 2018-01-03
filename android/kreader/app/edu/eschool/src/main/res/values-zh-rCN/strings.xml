@@ -121,4 +121,7 @@
     <string name="parent">父母</string>
     <string name="teacher">教师</string>
     <string name="admin">管理员</string>
+
+    <string name="find_homework">找作业</string>
+    <string name="wrong_question_record">错题本</string>
 </resources>
