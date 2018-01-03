@@ -244,4 +244,8 @@
     <string name="password_format_error">The password is wrongly formatted. Please enter %1$d-%2$d digits</string>
     <string name="wrong_password">Wrong password</string>
     <string name="reading_tools">Reading tools</string>
+    <string name="dictionary">Dictionary</string>
+    <string name="translation">Translation</string>
+    <string name="associated_with_the_impression_notes">Associated with_the impression notes</string>
+    <string name="associated_with_the_email">Associated with the email</string>
 </resources>

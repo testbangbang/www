@@ -218,4 +218,5 @@
     <dimen name="activity_screen_lock_padding">100dp</dimen>
     <dimen name="activity_screen_lock_margin_top">100dp</dimen>
     <dimen name="lock_screen_password_margin_top">30dp</dimen>
+    <dimen name="reading_tools_recycler_height">267dp</dimen>
 </resources>

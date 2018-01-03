@@ -74,4 +74,6 @@
     <integer name="all_category_recycle_view_col">4</integer>
     <integer name="device_info_row">7</integer>
     <integer name="device_info_col">1</integer>
+    <integer name="reading_tools_row">4</integer>
+    <integer name="reading_tools_col">1</integer>
 </resources>

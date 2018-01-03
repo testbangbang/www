@@ -89,7 +89,7 @@ public class DeviceConfigFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadToolEvent(ReadToolEvent event) {
-
+        viewEventCallBack.gotoView(ReadingToolsFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -103,7 +103,7 @@ public class DeviceConfigFragment extends BaseFragment {
     }
 
     @Subscribe
-    public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event){
+    public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
     }
 }

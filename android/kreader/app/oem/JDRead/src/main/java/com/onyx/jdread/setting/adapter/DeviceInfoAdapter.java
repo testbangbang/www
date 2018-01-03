@@ -19,14 +19,22 @@ import java.util.List;
  */
 
 public class DeviceInfoAdapter extends PageAdapter<DeviceInfoAdapter.ViewHolder, DeviceInformationModel.ItemModel, DeviceInformationModel.ItemModel> {
+    private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.device_info_row);
+    private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.device_info_col);
+
+    public void setRowAndCol(int row, int col) {
+        this.row = row;
+        this.col = col;
+    }
+
     @Override
     public int getRowCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.device_info_row);
+        return row;
     }
 
     @Override
     public int getColumnCount() {
-        return JDReadApplication.getInstance().getResources().getInteger(R.integer.device_info_col);
+        return col;
     }
 
     @Override
