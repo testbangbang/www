@@ -19,6 +19,7 @@ import com.onyx.jdread.setting.ui.LaboratoryFragment;
 import com.onyx.jdread.setting.ui.LockScreenFragment;
 import com.onyx.jdread.setting.ui.ManualFragment;
 import com.onyx.jdread.setting.ui.PasswordSettingFragment;
+import com.onyx.jdread.setting.ui.ReadingToolsFragment;
 import com.onyx.jdread.setting.ui.RefreshFragment;
 import com.onyx.jdread.setting.ui.ScreensaversFragment;
 import com.onyx.jdread.setting.ui.SettingFragment;
@@ -67,6 +68,7 @@ public class ViewConfig {
         childViewInfo.put(ScreensaversFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(DeviceInformationFragment.class.getName(),FunctionModule.SETTING);
         childViewInfo.put(PasswordSettingFragment.class.getName(),FunctionModule.SETTING);
+        childViewInfo.put(ReadingToolsFragment.class.getName(),FunctionModule.SETTING);
         //personal
         childViewInfo.put(PersonalFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalExperienceFragment.class.getName(), FunctionModule.PERSONAL);
