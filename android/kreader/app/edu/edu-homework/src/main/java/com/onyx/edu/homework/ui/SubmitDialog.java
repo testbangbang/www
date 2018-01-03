@@ -2,26 +2,23 @@ package com.onyx.edu.homework.ui;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Toast;
 
 import com.onyx.android.sdk.common.request.BaseCallback;
 import com.onyx.android.sdk.common.request.BaseRequest;
 import com.onyx.android.sdk.data.model.HomeworkSubmitAnswer;
 import com.onyx.android.sdk.data.model.Question;
-import com.onyx.android.sdk.scribble.NoteViewHelper;
 import com.onyx.android.sdk.ui.dialog.OnyxBaseDialog;
 import com.onyx.android.sdk.utils.CollectionUtils;
+import com.onyx.android.sdk.utils.NetworkUtil;
 import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.HomeworkSubmitAction;
+import com.onyx.edu.homework.action.WifiConnectAction;
 import com.onyx.edu.homework.action.note.MakeHomeworkPagesAnswerActionChain;
-import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.databinding.DialogSubmitBinding;
-import com.onyx.edu.homework.event.ResumeNoteEvent;
 import com.onyx.edu.homework.event.SubmitEvent;
 
 import java.util.ArrayList;
@@ -59,7 +56,7 @@ public class SubmitDialog extends OnyxBaseDialog {
         binding.action1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                submit();
+                prepareSubmit();
             }
         });
     }
@@ -78,6 +75,20 @@ public class SubmitDialog extends OnyxBaseDialog {
         int notAnswerCount = questions.size() - hasAnswerCount;
         binding.hasAnswer.setText(getContext().getString(R.string.has_answer, hasAnswerCount));
         binding.notAnswer.setText(getContext().getString(R.string.not_answer, notAnswerCount));
+    }
+
+    private void prepareSubmit() {
+        if (NetworkUtil.isWiFiConnected(getContext())) {
+            submit();
+            return;
+        }
+        onWifiConnect();
+        new WifiConnectAction().execute(getContext(), new BaseCallback() {
+            @Override
+            public void done(BaseRequest request, Throwable e) {
+                submit();
+            }
+        });
     }
 
     private void submit() {
@@ -118,6 +129,12 @@ public class SubmitDialog extends OnyxBaseDialog {
                 }
             }
         });
+    }
+
+    private void onWifiConnect() {
+        binding.message.setText(R.string.opening_wifi);
+        binding.action1.setVisibility(View.INVISIBLE);
+        binding.action0.setVisibility(View.INVISIBLE);
     }
 
     private void onStartSubmit() {

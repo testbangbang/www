@@ -177,7 +177,6 @@ public class HomeworkListActivity extends BaseActivity {
     }
 
     private void showSubmitDialog() {
-        checkWifi(false);
         getDataBundle().post(new StopNoteEvent(false));
         SubmitDialog dialog = new SubmitDialog(HomeworkListActivity.this, questions);
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
