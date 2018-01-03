@@ -121,6 +121,7 @@ public class UserLoginAction extends BaseAction {
     public void onSyncLoginInfo(PersonalDataBundle dataBundle, SyncLoginInfoBean syncLoginInfoBean) {
         String code = syncLoginInfoBean.getCode();
         if (Constants.LOGIN_CODE_SUCCESS.equals(code)) {
+            JDReadApplication.getInstance().setLogin(true);
             dataBundle.getEventBus().post(new UserLoginResultEvent(JDReadApplication.getInstance().getString(R.string.login_success)));
             if (rxCallback != null) {
                 rxCallback.onNext(UserLoginAction.class);

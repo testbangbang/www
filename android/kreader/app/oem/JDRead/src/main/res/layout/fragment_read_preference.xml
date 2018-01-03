@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ReadPreferenceBinding">
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/read_preference_title"
+            layout="@layout/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/personal_read_preference_dec_margin"
+            android:text="@string/select_interested_type"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/read_preference_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/personal_read_preference_recycler_height"
+            android:layout_marginTop="@dimen/personal_read_preference_recycler_margin_top" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/read_preference_save"
+            android:layout_width="@dimen/personal_read_preference_save_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="@dimen/personal_read_preference_save_margin"
+            android:background="@drawable/rectangle_stroke"
+            android:gravity="center"
+            android:padding="@dimen/personal_read_preference_save_padding"
+            android:text="@string/save"
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/level_two_heading_font" />
+    </LinearLayout>
+</layout>
