@@ -242,4 +242,8 @@
     <string name="translation">翻译</string>
     <string name="associated_with_the_impression_notes">关联印象笔记</string>
     <string name="associated_with_the_email">关联电子邮箱</string>
+    <string name="author_format" translatable="false">作者： %s</string>
+    <string name="format_format" translatable="false">格式： %s</string>
+    <string name="size_format" translatable="false">大小： %s</string>
+    <string name="read_format" translatable="false">已读： %s</string>
 </resources>
