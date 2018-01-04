@@ -44,6 +44,14 @@ public class BookshelfInsertAction extends BaseAction<ShopDataBundle> {
                     rxCallback.onError(throwable);
                 }
             }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
+                }
+            }
         });
     }
 

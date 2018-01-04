@@ -42,7 +42,6 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                 bookDetailViewModel.setBookDetailResultBean(bookDetailResultBean);
                 if (rxCallback != null) {
                     rxCallback.onNext(BookDetailAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
@@ -51,6 +50,14 @@ public class BookDetailAction extends BaseAction<ShopDataBundle> {
                 super.onError(throwable);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

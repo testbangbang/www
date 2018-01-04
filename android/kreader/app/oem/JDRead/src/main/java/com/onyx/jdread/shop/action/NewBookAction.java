@@ -46,7 +46,6 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
                 shopViewModel.setBannerSubjectIems(subjectViewModel);
                 if (rxCallback != null) {
                     rxCallback.onNext(NewBookAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
@@ -55,6 +54,14 @@ public class NewBookAction extends BaseAction<ShopDataBundle> {
                 super.onError(throwable);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

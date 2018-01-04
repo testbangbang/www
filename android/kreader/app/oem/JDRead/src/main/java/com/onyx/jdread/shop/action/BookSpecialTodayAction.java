@@ -45,7 +45,6 @@ public class BookSpecialTodayAction extends BaseAction<ShopDataBundle> {
                 shopViewModel.setCoverSubjectTwoItems(subjectViewModel);
                 if (rxCallback != null) {
                     rxCallback.onNext(BookSpecialTodayAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
@@ -54,6 +53,14 @@ public class BookSpecialTodayAction extends BaseAction<ShopDataBundle> {
                 super.onError(throwable);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

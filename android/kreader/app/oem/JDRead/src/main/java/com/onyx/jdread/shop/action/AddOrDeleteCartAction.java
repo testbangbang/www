@@ -66,6 +66,9 @@ public class AddOrDeleteCartAction extends BaseAction {
                         //TODO autoLogin();
                     }
                 }
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
+                }
             }
         });
     }

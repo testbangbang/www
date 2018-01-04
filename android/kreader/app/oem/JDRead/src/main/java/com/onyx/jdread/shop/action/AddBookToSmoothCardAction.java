@@ -32,7 +32,7 @@ public class AddBookToSmoothCardAction extends BaseAction {
     }
 
     @Override
-    public void execute(final ShopDataBundle dataBundle, RxCallback rxCallback) {
+    public void execute(final ShopDataBundle dataBundle, final RxCallback rxCallback) {
         BaseRequestBean requestBean = new BaseRequestBean();
         requestBean.setAppBaseInfo(dataBundle.getAppBaseInfo());
         JSONObject body = new JSONObject();
@@ -53,6 +53,17 @@ public class AddBookToSmoothCardAction extends BaseAction {
                     bookDetailBean.setFluentRead(true);
                     BookDownloadUtils.download(bookDetailBean, dataBundle);
                 }
+                if (rxCallback != null) {
+                    rxCallback.onNext(AddBookToSmoothCardAction.this);
+                }
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                super.onError(throwable);
+                if (rxCallback != null) {
+                    rxCallback.onError(throwable);
+                }
             }
 
             @Override
@@ -63,6 +74,9 @@ public class AddBookToSmoothCardAction extends BaseAction {
                         JDReadApplication.getInstance().setLogin(false);
                         //TODO autoLogin();
                     }
+                }
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });

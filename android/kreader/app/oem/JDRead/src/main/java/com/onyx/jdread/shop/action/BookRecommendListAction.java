@@ -45,7 +45,6 @@ public class BookRecommendListAction extends BaseAction<ShopDataBundle> {
                 }
                 if (rxCallback != null) {
                     rxCallback.onNext(BookRecommendListAction.this);
-                    rxCallback.onComplete();
                 }
             }
 
@@ -54,6 +53,14 @@ public class BookRecommendListAction extends BaseAction<ShopDataBundle> {
                 super.onError(throwable);
                 if (rxCallback != null) {
                     rxCallback.onError(throwable);
+                }
+            }
+
+            @Override
+            public void onComplete() {
+                super.onComplete();
+                if (rxCallback != null) {
+                    rxCallback.onComplete();
                 }
             }
         });
