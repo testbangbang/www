@@ -19,13 +19,13 @@ public class ReaderSettingMenuDialogHandler {
         this.readerSettingViewBack = readerSettingViewBack;
     }
 
-    public void registeredLibrary() {
+    public void registerListener() {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
 
-    public void unregisteredLibrary() {
+    public void unregisteredListener() {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }

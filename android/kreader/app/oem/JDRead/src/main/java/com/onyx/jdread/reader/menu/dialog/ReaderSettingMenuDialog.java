@@ -6,7 +6,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
-import android.view.View;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
@@ -21,10 +20,8 @@ import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
+import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
 
 
 /**
@@ -54,9 +51,20 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         initData();
     }
 
+    private void initData() {
+        initReaderSettingMenu();
+        initFunctionBar();
+        initSystemBar();
+        initReaderTitleBar();
+    }
+
     private void initView() {
         binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.reader_setting_menu, null, false);
         setContentView(binding.getRoot());
+    }
+
+    private void initReaderSettingMenu(){
+        binding.setReaderSettingModel(new ReaderSettingModel());
     }
 
     private void initSystemBar() {
@@ -107,19 +115,13 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         return binding.readerSettingFunctionBar.functionBarRecycler;
     }
 
-    private void initData() {
-        initFunctionBar();
-        initSystemBar();
-        initReaderTitleBar();
-    }
-
     private void initThirdLibrary() {
-        readerSettingMenuDialogHandler.registeredLibrary();
+        readerSettingMenuDialogHandler.registerListener();
     }
 
     @Override
     public void dismiss() {
-        readerSettingMenuDialogHandler.unregisteredLibrary();
+        readerSettingMenuDialogHandler.unregisteredListener();
         super.dismiss();
     }
 

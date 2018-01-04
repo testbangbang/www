@@ -3,6 +3,9 @@
 
     <data>
 
+        <variable
+            name="readerSettingModel"
+            type="com.onyx.jdread.reader.menu.model.ReaderSettingModel" />
     </data>
 
     <LinearLayout
@@ -24,10 +27,11 @@
             android:layout_height="wrap_content" />
 
         <View
-            android:id="@+id/reader_setting_dismiss_zone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="@{()->readerSettingModel.dismissZoneClick()}"
             android:background="@android:color/transparent" />
 
         <include
