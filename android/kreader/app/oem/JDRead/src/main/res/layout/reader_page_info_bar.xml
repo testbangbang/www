@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
+
     <data>
+
+        <import type="android.view.View" />
+
         <variable
             name="readerPageInfoModel"
-            type="com.onyx.jdread.reader.menu.model.ReaderPageInfoModel"/>
+            type="com.onyx.jdread.reader.menu.model.ReaderPageInfoModel" />
     </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="@{readerPageInfoModel.isShow ? View.VISIBLE:View.GONE}">
 
         <View
             android:layout_width="match_parent"
@@ -35,9 +41,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/reader_page_info_chapter_margin_right"
                     android:ellipsize="end"
                     android:gravity="center"
-                    android:layout_marginRight="@dimen/reader_page_info_chapter_margin_right"
                     android:maxLines="1"
                     android:text="@{readerPageInfoModel.readProgress}"
                     android:textColor="@android:color/black"
@@ -63,8 +69,8 @@
 
             <TextView
                 style="@style/ReaderPageInfoChapterStyle"
-                android:onClick="@{()->readerPageInfoModel.nextChapter()}"
                 android:layout_marginLeft="@dimen/reader_page_info_chapter_margin_right"
+                android:onClick="@{()->readerPageInfoModel.nextChapter()}"
                 android:text="@string/next_chapter" />
 
         </LinearLayout>
