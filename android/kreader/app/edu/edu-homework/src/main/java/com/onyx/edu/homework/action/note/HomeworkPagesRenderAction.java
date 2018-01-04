@@ -34,21 +34,25 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
     private List<Question> questions;
     private int pageCount = -1;
     private int documentRenderCount = 0;
+    private Rect size;
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
                                      List<Question> questions,
+                                     Rect s,
                                      int pageCount,
                                      boolean saveAsFile) {
         this.pageUniqueMap = pageUniqueMap;
         this.saveAsFile = saveAsFile;
         this.pageCount = pageCount;
         this.questions = questions;
+        size = s;
     }
 
     public HomeworkPagesRenderAction(Map<String, List<String>> pageUniqueMap,
                                      List<Question> questions,
+                                     Rect s,
                                      boolean saveAsFile) {
-        this(pageUniqueMap, questions, -1, saveAsFile);
+        this(pageUniqueMap, questions, s, -1, saveAsFile);
     }
 
     @Override
@@ -77,9 +81,6 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
 
         String pageUniqueId = pageUniqueIds.remove(0);
         List<PageInfo> pageInfoList = new ArrayList<>();
-        int width = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_width);
-        int height = (int) getAppContext().getResources().getDimension(R.dimen.scribble_view_height);
-        Rect size =  new Rect(0, 0, width, height);
         PageInfo pageInfo = new PageInfo(pageUniqueId, size.width(), size.height());
         pageInfo.updateDisplayRect(new RectF(0, 0, size.width(), size.height()));
         pageInfoList.add(pageInfo);
