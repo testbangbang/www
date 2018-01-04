@@ -147,6 +147,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
     }
 
     private void initToolbarButtons() {
+        setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+        
         titleTextView = (TextView) findViewById(R.id.textView_main_title);
         ImageView addPageBtn = (ImageView) findViewById(R.id.button_add_page);
         ImageView deletePageBtn = (ImageView) findViewById(R.id.button_delete_page);
