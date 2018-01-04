@@ -66,7 +66,7 @@ public class HomeworkPagesRenderAction extends BaseNoteAction {
         }
         final String docId = documentIds.get(0);
         Question question = getQuestion(docId);
-        if (question == null || !question.doneAnswer) {
+        if (question == null || !question.doneAnswer || question.isChoiceQuestion()) {
             documentIds.remove(docId);
             documentRenderCount = 0;
             renderPageBitmap(noteViewHelper, baseCallback);

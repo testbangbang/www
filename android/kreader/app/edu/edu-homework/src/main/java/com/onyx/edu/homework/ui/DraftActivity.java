@@ -24,13 +24,12 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by lxm on 2017/12/6.
  */
 
-public class AnswerActivity extends BaseActivity {
+public class DraftActivity extends BaseActivity {
 
     private ActivityAnswerBinding binding;
     private Question question;
     private ScribbleFragment scribbleFragment;
     private NoteToolFragment toolFragment;
-    private ReviewFragment reviewFragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,18 +51,9 @@ public class AnswerActivity extends BaseActivity {
 
     private void initFragment() {
         DataBundle.getInstance().resetNoteViewHelper();
-        int initPageCount = 1;
-        if (DataBundle.getInstance().isReview()) {
-            if (question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachmentUrl)) {
-                initPageCount = question.review.attachmentUrl.size();
-            }
-            reviewFragment = ReviewFragment.newInstance(question);
-            getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
-        }else {
-//            scribbleFragment = ScribbleFragment.newInstance(question);
-            getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        }
-//        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
+        scribbleFragment = ScribbleFragment.newInstance(question);
+        getSupportFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
+        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1);
         getSupportFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 
