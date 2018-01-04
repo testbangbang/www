@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -23,12 +24,14 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.library.ui.LibraryFragment;
+import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.main.event.ChangeChildViewEvent;
+import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
@@ -44,6 +47,7 @@ import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.LoginFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
+import com.onyx.jdread.setting.request.RxLoadPicByPathRequest;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -150,7 +154,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchCurrentFragment(String childViewName) {
-        if(StringUtils.isNullOrEmpty(childViewName)){
+        if (StringUtils.isNullOrEmpty(childViewName)) {
             return;
         }
         if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(childViewName)) {
@@ -166,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         saveChildViewInfo(childViewName, baseFragment);
     }
 
-    private void changeFunctionItem(String childViewName){
+    private void changeFunctionItem(String childViewName) {
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(childViewName);
         functionBarModel.changeTabSelection(functionModule);
     }
@@ -265,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         switchCurrentFragment(event.childClassName);
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(event.childClassName);
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
-        if(functionBarItem != null){
+        if (functionBarItem != null) {
             functionBarItem.getStackList().push(event.childClassName);
         }
     }
@@ -274,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(currentChildViewName);
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
-        if(functionBarItem != null){
+        if (functionBarItem != null) {
             String childClassName = functionBarItem.getStackList().popChildView();
             switchCurrentFragment(childClassName);
         }
@@ -303,6 +307,13 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onUsbDisconnectedEvent(UsbDisconnectedEvent event) {
         JDReadApplication.getInstance().dealWithMtpBuffer();
+        RxFileSystemScanAction scanAction = new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true);
+        scanAction.execute(JDReadApplication.getDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                JDReadApplication.getDataBundle().getEventBus().post(new ModifyLibraryDataEvent());
+            }
+        });
     }
 
     @Subscribe
