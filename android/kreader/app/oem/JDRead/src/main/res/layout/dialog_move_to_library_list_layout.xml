@@ -26,22 +26,23 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
-                android:textSize="@dimen/level_two_heading_font"
-                android:text="@string/move_to" />
+                android:text="@string/move_to"
+                android:textSize="@dimen/level_two_heading_font" />
 
             <ImageView
                 android:id="@+id/close_menu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:background="@drawable/selected_background"
-                android:src="@mipmap/ic_close" />
+                android:paddingBottom="@dimen/dialog_single_manage_close_padding"
+                android:paddingRight="@dimen/dialog_single_manage_close_padding_right"
+                android:paddingTop="@dimen/dialog_single_manage_close_padding"
+                android:src="@mipmap/ic_shelf_close" />
         </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="@dimen/library_list_dialog_height"
             android:orientation="horizontal">
 
             <com.onyx.android.sdk.ui.view.PageRecyclerView
@@ -49,7 +50,7 @@
                 items="@{dialogModel.items}"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"/>
+                android:layout_weight="1" />
 
             <com.onyx.jdread.library.view.CustomScrollBar
                 focus="@{dialogModel.focusPosition}"
@@ -58,15 +59,19 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
+        <View style="@style/DottedLineStyle" />
+
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:onClick="@{()->dialogModel.onBuildLibraryClicked()}"
-            android:gravity="center"
-            android:padding="10dp"
-            android:textSize="@dimen/level_two_heading_font"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/library_build_button_height"
+            android:layout_gravity="center"
             android:background="@drawable/selected_background"
-            android:text="@string/build_library" />
+            android:drawableLeft="@mipmap/ic_shelf_set"
+            android:drawablePadding="@dimen/library_build_button_drawable_padding"
+            android:gravity="center_vertical"
+            android:onClick="@{()->dialogModel.onBuildLibraryClicked()}"
+            android:text="@string/build_library"
+            android:textSize="@dimen/level_two_heading_font" />
     </LinearLayout>
 
 </layout>

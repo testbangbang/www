@@ -30,6 +30,11 @@ public class MenuPopupWindow extends PopupWindow {
     private View contentView;
     private EventBus eventBus;
     private int width;
+    private boolean showItemDecoration;
+
+    public void setShowItemDecoration(boolean showItemDecoration) {
+        this.showItemDecoration = showItemDecoration;
+    }
 
     public MenuPopupWindow(Activity context, EventBus eventBus) {
         this.eventBus = eventBus;
@@ -52,6 +57,10 @@ public class MenuPopupWindow extends PopupWindow {
     private void initView(List<PopMenuModel> list) {
         PageRecyclerView pageRecyclerView = (PageRecyclerView) contentView.findViewById(R.id.pop_menu_recycler);
         pageRecyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        if (showItemDecoration) {
+            DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
+            pageRecyclerView.addItemDecoration(dividerItemDecoration);
+        }
         PopMenuAdapter popMenuAdapter = new PopMenuAdapter(list, list.size(), 1);
         popMenuAdapter.setItemListener(new PopMenuAdapter.ItemClickListener() {
             @Override
