@@ -91,12 +91,12 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     }
 
     private void registerListener() {
-        readerActivityEventHandler.registeredListener();
+        readerActivityEventHandler.registerListener();
     }
 
     @Override
     protected void onDestroy() {
-        readerActivityEventHandler.unregisteredListener();
+        readerActivityEventHandler.unregisterListener();
         super.onDestroy();
     }
 

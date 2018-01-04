@@ -121,7 +121,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     @Override
     public void dismiss() {
-        readerSettingMenuDialogHandler.unregisteredListener();
+        readerSettingMenuDialogHandler.registerListener();
         super.dismiss();
     }
 

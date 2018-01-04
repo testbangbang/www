@@ -25,7 +25,7 @@ public class ReaderSettingMenuDialogHandler {
         }
     }
 
-    public void unregisteredListener() {
+    public void unregisterListener() {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
