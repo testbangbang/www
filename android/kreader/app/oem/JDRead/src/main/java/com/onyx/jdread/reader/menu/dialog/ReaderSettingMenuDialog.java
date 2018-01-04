@@ -20,6 +20,7 @@ import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
 
 import org.greenrobot.eventbus.EventBus;
@@ -30,16 +31,18 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by huxiaomao on 17/5/10.
  */
 
-public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListener {
+public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingViewBack{
     private static final String TAG = ReaderSettingMenuDialog.class.getSimpleName();
     private ReaderSettingMenuBinding binding;
     private ReaderDataHolder readerDataHolder;
     private FunctionBarModel functionBarModel;
     private FunctionBarAdapter functionBarAdapter;
+    private ReaderSettingMenuDialogHandler readerSettingMenuDialogHandler;
 
     public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
+        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(this);
     }
 
     @Override
@@ -52,7 +55,7 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
     }
 
     private void initView() {
-        binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()),R.layout.reader_setting_menu,null,false);
+        binding = DataBindingUtil.inflate(LayoutInflater.from(getContext()), R.layout.reader_setting_menu, null, false);
         setContentView(binding.getRoot());
     }
 
@@ -60,7 +63,7 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
         binding.readerSettingSystemBar.setSystemBarModel(new SystemBarModel());
     }
 
-    private void initReaderTitleBar(){
+    private void initReaderTitleBar() {
         binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel());
     }
 
@@ -73,7 +76,7 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
         setFunctionAdapter(functionBarRecycler);
     }
 
-    private void setFunctionAdapter( PageRecyclerView functionBarRecycler) {
+    private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
         boolean show = PreferenceManager.getBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, false);
         PreferenceManager.setBooleanValue(JDReadApplication.getInstance(), R.string.show_back_tab_key, show);
         int col = getContext().getResources().getInteger(R.integer.function_bar_col);
@@ -83,7 +86,7 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
     }
 
     private void updateFunctionBar() {
-        InitReaderViewFunctionBarAction initReaderViewFunctionBarAction = new InitReaderViewFunctionBarAction(functionBarModel,new RxCallback() {
+        InitReaderViewFunctionBarAction initReaderViewFunctionBarAction = new InitReaderViewFunctionBarAction(functionBarModel, new RxCallback() {
             @Override
             public void onNext(Object o) {
                 updateFunctionBarView();
@@ -111,16 +114,17 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
     }
 
     private void initThirdLibrary() {
-        EventBus.getDefault().register(this);
+        readerSettingMenuDialogHandler.registeredLibrary();
     }
 
     @Override
-    public void onClick(View v) {
-
+    public void dismiss() {
+        readerSettingMenuDialogHandler.unregisteredLibrary();
+        super.dismiss();
     }
 
-    @Subscribe
-    public void onReaderSettingEvent(Object object) {
-
+    @Override
+    public Dialog getContent() {
+        return this;
     }
 }

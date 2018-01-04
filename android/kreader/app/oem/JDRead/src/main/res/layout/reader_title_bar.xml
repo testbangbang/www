@@ -33,9 +33,9 @@
                     style="@style/ReaderTitleBarBuyStyle"
                     android:layout_marginRight="@dimen/reader_title_back_margin_right"
                     android:drawableLeft="@mipmap/ic_read_back"
-                    android:drawablePadding="@dimen/title_bar_drawable_padding"
+                    android:drawablePadding="@dimen/reader_title_bar_drawable_padding"
                     android:gravity="center_vertical"
-                    android:onClick="@{()->readerTitleBarModel.back()}"
+                    android:onClick="@{()->readerTitleBarModel.backClick()}"
                     android:padding="@dimen/reader_title_back_padding" />
 
                 <TextView
@@ -46,6 +46,7 @@
                     android:paddingLeft="@dimen/reader_title_buy_padding_left"
                     android:paddingRight="@dimen/reader_title_buy_padding_right"
                     android:paddingTop="@dimen/reader_title_buy_padding_top"
+                    android:layout_marginLeft="@dimen/reader_title_buy_padding_margin_left"
                     android:text="@string/reader_buy"
                     android:visibility="@{readerTitleBarModel.isBuy?View.VISIBLE:View.GONE}" />
             </LinearLayout>
