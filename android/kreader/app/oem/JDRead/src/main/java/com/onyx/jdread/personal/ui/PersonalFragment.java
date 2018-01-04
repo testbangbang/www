@@ -14,6 +14,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.PersonalBinding;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.GiftCenterEvent;
@@ -24,6 +25,7 @@ import com.onyx.jdread.personal.event.PersonalTaskEvent;
 import com.onyx.jdread.personal.event.ReadPreferenceEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -89,6 +91,14 @@ public class PersonalFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onGiftCenterEvent(GiftCenterEvent event) {
+        if (!Utils.isNetworkConnected(JDReadApplication.getInstance())) {
+            ToastUtil.showToast(JDReadApplication.getInstance().getResources().getString(R.string.wifi_no_connected));
+            return;
+        }
+        if (!JDReadApplication.getInstance().getLogin()) {
+            LoginHelper.showUserLoginDialog(getActivity(), PersonalDataBundle.getInstance().getPersonalViewModel().getUserLoginViewModel());
+            return;
+        }
         viewEventCallBack.gotoView(GiftCenterFragment.class.getName());
     }
 
@@ -103,13 +113,16 @@ public class PersonalFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPersonalNoteEvent(PersonalNoteEvent event) {
+        viewEventCallBack.gotoView(PersonalNoteFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPersonalTaskEvent(PersonalTaskEvent event) {
+        viewEventCallBack.gotoView(PersonalTaskFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReadPreferenceEvent(ReadPreferenceEvent event) {
+        viewEventCallBack.gotoView(ReadPreferenceFragment.class.getName());
     }
 }

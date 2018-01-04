@@ -26,6 +26,7 @@ import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.main.event.ChangeChildViewEvent;
@@ -39,10 +40,18 @@ import com.onyx.jdread.main.model.FunctionBarItem;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
+import com.onyx.jdread.personal.action.UserLoginAction;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.UserLoginEvent;
+import com.onyx.jdread.personal.event.UserLoginResultEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.personal.model.PersonalViewModel;
+import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.LoginFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.request.RxLoadPicByPathRequest;
 import com.onyx.jdread.shop.ui.ShopFragment;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -313,5 +322,34 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onUsbDisconnectedEvent(ShowBackTabEvent event) {
         isShowBackTab(event.isShow());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginResultEvent(UserLoginResultEvent event) {
+        ToastUtil.showToast(this, event.getMessage());
+        if (getResources().getString(R.string.login_success).equals(event.getMessage())) {
+            JDReadApplication.getInstance().setLogin(true);
+            clearInput();
+            LoginHelper.dismissUserLoginDialog();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginEvent(UserLoginEvent event) {
+        Utils.hideSoftWindow(this);
+        UserLoginAction userLoginAction = new UserLoginAction(this,event.account,event.password);
+        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
+    }
+
+    private void clearInput() {
+        getUserLoginViewModel().cleanInput();
+    }
+
+    public UserLoginViewModel getUserLoginViewModel() {
+        return getPersonalViewModel().getUserLoginViewModel();
+    }
+
+    public PersonalViewModel getPersonalViewModel() {
+        return PersonalDataBundle.getInstance().getPersonalViewModel();
     }
 }

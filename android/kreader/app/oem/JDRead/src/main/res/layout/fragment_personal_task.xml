@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="PersonalTaskBinding">
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/personal_task_title"
+            layout="@layout/title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/personal_task_whole_padding">
+
+            <com.onyx.android.sdk.ui.view.PageRecyclerView
+                android:id="@+id/personal_task_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/personal_task_recycler_height" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line_width"
+                android:background="@color/divider_color" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
