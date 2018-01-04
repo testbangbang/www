@@ -20,21 +20,32 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
-                android:layout_weight="3"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:drawableLeft="@mipmap/ic_read_back"
-                android:drawablePadding="@dimen/title_bar_drawable_padding"
                 android:gravity="center_vertical"
-                android:onClick="@{()->readerTitleBarModel.back()}"
-                android:padding="4dp"
-                android:text="@{readerTitleBarModel.title}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/settings_title_text_size" />
+                android:layout_weight="3">
+
+                <TextView
+                    style="@style/ReaderTitleBarBuyStyle"
+                    android:drawableLeft="@mipmap/ic_read_back"
+                    android:drawablePadding="@dimen/title_bar_drawable_padding"
+                    android:gravity="center_vertical"
+                    android:onClick="@{()->readerTitleBarModel.back()}"
+                    android:layout_marginRight="@dimen/reader_title_back_margin_right"
+                    android:padding="@dimen/reader_title_back_padding"
+                    android:text="@{readerTitleBarModel.title}" />
+
+                <TextView
+                    style="@style/ReaderTitleBarBuyStyle"
+                    android:paddingLeft="@dimen/reader_title_buy_padding_left"
+                    android:paddingRight="@dimen/reader_title_buy_padding_right"
+                    android:paddingTop="@dimen/reader_title_buy_padding_top"
+                    android:paddingBottom="@dimen/reader_title_buy_padding_bottom"
+                    android:background="@drawable/rectangle_stroke_corners"
+                    android:text="@string/reader_buy" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -44,11 +55,7 @@
 
                 <ImageView
                     style="@style/ReaderTitleBarStyle"
-                    android:src="@mipmap/ic_search" />
-
-                <ImageView
-                    style="@style/ReaderTitleBarStyle"
-                    android:src="@mipmap/ic_cart" />
+                    android:src="@mipmap/ic_read_search" />
 
                 <ImageView
                     style="@style/ReaderTitleBarStyle"

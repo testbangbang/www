@@ -27,43 +27,32 @@
             android:background="@android:color/transparent" />
 
         <include
-            android:id="@+id/reader_page_info_bar"
             layout="@layout/reader_page_info_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/reader_setting_menu_item_margin_bottom"
-            android:visibility="visible" />
+            android:layout_height="wrap_content" />
 
         <include
-            android:id="@+id/reader_page_info_bar"
             layout="@layout/reader_brightness_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/reader_setting_menu_item_margin_bottom"
             android:visibility="gone" />
 
         <include
-            android:id="@+id/reader_page_info_bar"
             layout="@layout/reader_text_setting_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/reader_setting_menu_item_margin_bottom"
             android:visibility="gone" />
 
         <include
-            android:id="@+id/reader_page_info_bar"
             layout="@layout/reader_image_setting_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/reader_setting_menu_item_margin_bottom"
             android:visibility="gone" />
 
         <include
-            android:id="@+id/reader_page_info_bar"
             layout="@layout/reader_customize_format_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/reader_setting_menu_item_margin_bottom"
             android:visibility="gone" />
 
         <include

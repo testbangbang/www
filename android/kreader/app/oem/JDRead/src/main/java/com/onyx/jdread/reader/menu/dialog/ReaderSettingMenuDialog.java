@@ -57,7 +57,6 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
 
     private void initSystemBar() {
         SystemBarModel systemBarModel = new SystemBarModel();
-        systemBarModel.setShow(false);
         binding.readerSettingSystemBar.setSystemBarModel(systemBarModel);
     }
 
@@ -72,7 +71,6 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
         functionBarRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         functionBarAdapter = new FunctionBarAdapter();
         setFunctionAdapter(functionBarRecycler);
-        functionBarModel.setIsShow(false);
     }
 
     private void setFunctionAdapter( PageRecyclerView functionBarRecycler) {
