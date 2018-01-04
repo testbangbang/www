@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.facebook.common.references.CloseableReference;
-import com.liulishuo.filedownloader.i.IFileDownloadIPCCallback;
 import com.onyx.android.sdk.data.cache.BitmapReferenceLruCache;
 import com.onyx.android.sdk.data.compatability.OnyxThumbnail;
 import com.onyx.android.sdk.data.db.ContentDatabase;
@@ -43,7 +42,7 @@ import java.util.Map;
 public class DataManagerHelper {
 
     private static DataProviderBase getDataProviderBase() {
-        if (DataManager.useDefault) {
+        if (DataManager.useLocalDataProvider) {
             return DataProviderManager.getLocalDataProvider();
         }else {
             return DataProviderManager.getRemoteDataProvider();

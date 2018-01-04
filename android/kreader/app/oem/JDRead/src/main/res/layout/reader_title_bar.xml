@@ -3,6 +3,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="readerTitleBarModel"
             type="com.onyx.jdread.reader.menu.model.ReaderTitleBarModel" />
@@ -20,21 +22,34 @@
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <TextView
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="4dp"
                 android:layout_weight="3"
-                android:background="@drawable/imagebtn_bg"
-                android:clickable="true"
-                android:drawableLeft="@mipmap/ic_read_back"
-                android:drawablePadding="@dimen/title_bar_drawable_padding"
-                android:gravity="center_vertical"
-                android:onClick="@{()->readerTitleBarModel.back()}"
-                android:padding="4dp"
-                android:text="@{readerTitleBarModel.title}"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/settings_title_text_size" />
+                android:gravity="center_vertical">
+
+                <TextView
+                    style="@style/ReaderTitleBarBuyStyle"
+                    android:layout_marginRight="@dimen/reader_title_back_margin_right"
+                    android:drawableLeft="@mipmap/ic_read_back"
+                    android:drawablePadding="@dimen/reader_title_bar_drawable_padding"
+                    android:gravity="center_vertical"
+                    android:onClick="@{()->readerTitleBarModel.backClick()}"
+                    android:padding="@dimen/reader_title_back_padding" />
+
+                <TextView
+                    style="@style/ReaderTitleBarBuyStyle"
+                    android:background="@drawable/rectangle_stroke_corners"
+                    android:onClick="@{()->readerTitleBarModel.buyBookClick()}"
+                    android:paddingBottom="@dimen/reader_title_buy_padding_bottom"
+                    android:paddingLeft="@dimen/reader_title_buy_padding_left"
+                    android:paddingRight="@dimen/reader_title_buy_padding_right"
+                    android:paddingTop="@dimen/reader_title_buy_padding_top"
+                    android:layout_marginLeft="@dimen/reader_title_buy_padding_margin_left"
+                    android:text="@string/reader_buy"
+                    android:visibility="@{readerTitleBarModel.isBuy?View.VISIBLE:View.GONE}" />
+            </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -44,15 +59,14 @@
 
                 <ImageView
                     style="@style/ReaderTitleBarStyle"
-                    android:src="@mipmap/ic_search" />
+                    android:src="@mipmap/ic_read_search"
+                    android:onClick="@{()->readerTitleBarModel.searchContextClick()}"
+                    android:visibility="@{readerTitleBarModel.isSearchContext?View.VISIBLE:View.GONE}" />
 
                 <ImageView
                     style="@style/ReaderTitleBarStyle"
-                    android:src="@mipmap/ic_cart" />
-
-                <ImageView
-                    style="@style/ReaderTitleBarStyle"
-                    android:src="@mipmap/ic_read_bm_normal" />
+                    android:onClick="@{()->readerTitleBarModel.bookmarkCLick()}"
+                    android:src="@{readerTitleBarModel.bookMarkImageId}" />
             </LinearLayout>
 
         </LinearLayout>

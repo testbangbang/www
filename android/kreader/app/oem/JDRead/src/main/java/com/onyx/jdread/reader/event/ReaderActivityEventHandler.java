@@ -28,13 +28,13 @@ public class ReaderActivityEventHandler {
         this.readerViewBack = readerViewBack;
     }
 
-    public void registeredLibrary() {
+    public void registerListener() {
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this);
         }
     }
 
-    public void unregisteredLibrary() {
+    public void unregisterListener() {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this);
         }
