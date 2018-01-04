@@ -1,5 +1,6 @@
 package com.onyx.edu.homework.ui;
 
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ import com.onyx.edu.homework.DataBundle;
 import com.onyx.edu.homework.R;
 import com.onyx.edu.homework.action.DoAnswerAction;
 import com.onyx.edu.homework.base.BaseFragment;
+import com.onyx.edu.homework.data.Constant;
 import com.onyx.edu.homework.data.SaveDocumentOption;
 import com.onyx.edu.homework.databinding.FragmentQuestionBinding;
 import com.onyx.edu.homework.event.DoneAnswerEvent;
@@ -95,12 +97,25 @@ public class QuestionFragment extends BaseFragment {
         Spanned content = question.isChoiceQuestion() ? TextUtils.fromHtml(question.content, new Base64ImageParser(getActivity()), null)
                 : null;
         binding.content.setText(content);
+        binding.draft.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gotoDraft();
+            }
+        });
         bindQuestionOption(binding.option, question);
+    }
+
+    private void gotoDraft() {
+        Intent intent = new Intent(getActivity(), DraftActivity.class);
+        intent.putExtra(Constant.TAG_QUESTION, question);
+        startActivity(intent);
     }
 
     private void initViewVisibility() {
         binding.content.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
         binding.questionType.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
+        binding.draft.setVisibility(question.isChoiceQuestion() ? View.VISIBLE : View.GONE);
 
         boolean showScribble = !question.isChoiceQuestion();
         binding.scribble.setVisibility(showScribble ? View.VISIBLE : View.GONE);
