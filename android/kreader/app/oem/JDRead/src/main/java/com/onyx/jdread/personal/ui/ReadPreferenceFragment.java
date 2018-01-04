@@ -1,10 +1,8 @@
 package com.onyx.jdread.personal.ui;
 
 import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,7 +76,7 @@ public class ReadPreferenceFragment extends BaseFragment {
         titleModel.backEvent.set(new BackToSettingFragmentEvent());
         binding.readPreferenceTitle.setTitleModel(titleModel);
 
-        BookCategoryAction action = new BookCategoryAction(JDReadApplication.getInstance());
+        BookCategoryAction action = new BookCategoryAction(JDReadApplication.getInstance(),false);
         action.execute(ShopDataBundle.getInstance(), new RxCallback() {
             @Override
             public void onNext(Object o) {
