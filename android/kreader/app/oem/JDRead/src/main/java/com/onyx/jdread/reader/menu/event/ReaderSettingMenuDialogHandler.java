@@ -1,10 +1,15 @@
 package com.onyx.jdread.reader.menu.event;
 
+import android.databinding.ObservableBoolean;
+
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
-import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.reader.common.ToastMessage;
+import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
+import com.onyx.jdread.reader.menu.actions.ReaderSettingShowMenuAction;
+import com.onyx.jdread.reader.menu.common.ReaderSettingMenuConfig;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
 
 import org.greenrobot.eventbus.EventBus;
@@ -17,14 +22,16 @@ import org.greenrobot.eventbus.ThreadMode;
 
 public class ReaderSettingMenuDialogHandler {
     private ReaderSettingViewBack readerSettingViewBack;
-    private FunctionBarModel functionBarModel;
+    private ReaderSettingMenuBinding binding;
+    private ReaderDataHolder readerDataHolder;
 
-    public ReaderSettingMenuDialogHandler(ReaderSettingViewBack readerSettingViewBack) {
+    public ReaderSettingMenuDialogHandler(ReaderDataHolder readerDataHolder,ReaderSettingViewBack readerSettingViewBack) {
+        this.readerDataHolder = readerDataHolder;
         this.readerSettingViewBack = readerSettingViewBack;
     }
 
-    public void setFunctionBarModel(FunctionBarModel functionBarModel) {
-        this.functionBarModel = functionBarModel;
+    public void setBinding(ReaderSettingMenuBinding binding) {
+        this.binding = binding;
     }
 
     public void registerListener() {
@@ -59,29 +66,38 @@ public class ReaderSettingMenuDialogHandler {
 
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemCatalogEvent(ReaderFunctionItemCatalogEvent event){
         ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"Catalog");
+        //start activity
     }
 
-    @Subscribe
-    public void onReaderFunctionItemProgressEvent(ReaderFunctionItemProgressEvent event){
-        functionBarModel.changeTabSelection(ViewConfig.FunctionModule.SHOP);
-    }
-
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemBackEvent(ReaderFunctionItemBackEvent event){
         EventBus.getDefault().post(new CloseDocumentEvent());
         readerSettingViewBack.getContent().dismiss();
     }
 
-    @Subscribe
-    public void onReaderFunctionItemBrightnessEvent(ReaderFunctionItemBrightnessEvent event){
-        functionBarModel.changeTabSelection(ViewConfig.FunctionModule.SETTING);
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderFunctionItemProgressEvent(ReaderFunctionItemProgressEvent event){
+        binding.readerSettingFunctionBar.getFunctionBarModel().changeTabSelection(ViewConfig.FunctionModule.SHOP);
+        //show system,title,progress,function, menu
+        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.progressMenuGroup).execute(readerDataHolder);
     }
 
-    @Subscribe
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderFunctionItemBrightnessEvent(ReaderFunctionItemBrightnessEvent event){
+        binding.readerSettingFunctionBar.getFunctionBarModel().changeTabSelection(ViewConfig.FunctionModule.SETTING);
+        //show system,title,brightness,function, menu
+        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.brightnessMenuGroup).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemSettingEvent(ReaderFunctionItemSettingEvent event){
         ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"Setting");
+        //epub show text
+        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.textMenuGroup).execute(readerDataHolder);
+        //pdf show text
+        //new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.imageMenuGroup);
     }
 }

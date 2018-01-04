@@ -3,13 +3,19 @@
 
     <data>
 
+        <import type="android.view.View" />
+
+        <variable
+            name="readerTextModel"
+            type="com.onyx.jdread.reader.menu.model.ReaderTextModel" />
     </data>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@android:color/white"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="@{readerTextModel.isShow?View.VISIBLE:View.GONE}">
 
         <View style="@style/ReaderHorizontalSeparationLine" />
 
@@ -100,7 +106,8 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout style="@style/ReaderTextSettingLayoutStyle"
+        <LinearLayout
+            style="@style/ReaderTextSettingLayoutStyle"
             android:layout_marginBottom="@dimen/reader_page_info_menu_margin_bottom">
 
             <TextView
@@ -153,8 +160,8 @@
                         <TextView
                             style="@style/ReaderTextSettingFormatStyle"
                             android:layout_height="match_parent"
-                            android:gravity="center"
                             android:layout_marginRight="5dp"
+                            android:gravity="center"
                             android:text="@string/reader_reset_pdf" />
                     </LinearLayout>
                 </LinearLayout>

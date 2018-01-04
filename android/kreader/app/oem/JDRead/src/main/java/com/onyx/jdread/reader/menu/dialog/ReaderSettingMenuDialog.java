@@ -20,8 +20,12 @@ import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
+import com.onyx.jdread.reader.menu.model.ReaderBrightnessModel;
+import com.onyx.jdread.reader.menu.model.ReaderCustomizeModel;
+import com.onyx.jdread.reader.menu.model.ReaderImageModel;
 import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
+import com.onyx.jdread.reader.menu.model.ReaderTextModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
 
 
@@ -40,7 +44,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     public ReaderSettingMenuDialog(ReaderDataHolder readerDataHolder, @NonNull Activity activity) {
         super(activity, android.R.style.Theme_Translucent_NoTitleBar);
         this.readerDataHolder = readerDataHolder;
-        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(this);
+        readerSettingMenuDialogHandler = new ReaderSettingMenuDialogHandler(readerDataHolder,this);
     }
 
     @Override
@@ -58,6 +62,12 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         initSystemBar();
         initReaderPageInfoBar();
         initReaderTitleBar();
+        initBrightnessBar();
+        initTextBar();
+        initImageBar();
+        initCustomizeBar();
+
+        readerSettingMenuDialogHandler.setBinding(binding);
     }
 
     private void initView() {
@@ -70,11 +80,27 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
     }
 
     private void initReaderPageInfoBar(){
-        binding.readerPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
+        binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
     }
 
     private void initSystemBar() {
         binding.readerSettingSystemBar.setSystemBarModel(new SystemBarModel());
+    }
+
+    private void initTextBar(){
+        binding.readerSettingTextSettingBar.setReaderTextModel(new ReaderTextModel());
+    }
+
+    private void initImageBar(){
+        binding.readerSettingImageSettingBar.setReaderImageModel(new ReaderImageModel());
+    }
+
+    private void initCustomizeBar(){
+        binding.readerSettingCustomizeFormatBar.setReaderCustomizeModel(new ReaderCustomizeModel());
+    }
+
+    private void initBrightnessBar(){
+        binding.readerSettingBrightnessBar.setReaderBrightnessModel(new ReaderBrightnessModel());
     }
 
     private void initReaderTitleBar() {
@@ -88,7 +114,6 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         functionBarRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         functionBarAdapter = new FunctionBarAdapter();
         setFunctionAdapter(functionBarRecycler);
-        readerSettingMenuDialogHandler.setFunctionBarModel(functionBarModel);
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {

@@ -37,7 +37,7 @@ public class ReaderPageInfoModel {
         return isShow;
     }
 
-    public void setIsShow(ObservableBoolean isShow) {
-        this.isShow = isShow;
+    public void setIsShow(boolean isShow) {
+        this.isShow.set(isShow);
     }
 }
