@@ -20,6 +20,7 @@ import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -56,12 +57,11 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
     }
 
     private void initSystemBar() {
-        SystemBarModel systemBarModel = new SystemBarModel();
-        binding.readerSettingSystemBar.setSystemBarModel(systemBarModel);
+        binding.readerSettingSystemBar.setSystemBarModel(new SystemBarModel());
     }
 
     private void initReaderTitleBar(){
-
+        binding.readerSettingTitleBar.setReaderTitleBarModel(new ReaderTitleBarModel());
     }
 
     private void initFunctionBar() {
