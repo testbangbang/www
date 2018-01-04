@@ -88,6 +88,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         functionBarRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         functionBarAdapter = new FunctionBarAdapter();
         setFunctionAdapter(functionBarRecycler);
+        readerSettingMenuDialogHandler.setFunctionBarModel(functionBarModel);
     }
 
     private void setFunctionAdapter(PageRecyclerView functionBarRecycler) {
