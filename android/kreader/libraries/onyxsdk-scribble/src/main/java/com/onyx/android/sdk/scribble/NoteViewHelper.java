@@ -17,6 +17,7 @@ import com.onyx.android.sdk.common.request.RequestManager;
 import com.onyx.android.sdk.data.ReaderBitmapImpl;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.asyncrequest.ConfigManager;
+import com.onyx.android.sdk.scribble.asyncrequest.EpdPenManager;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
 import com.onyx.android.sdk.scribble.data.NoteDocument;
@@ -173,6 +174,7 @@ public class NoteViewHelper {
         InkUtils.setPressureEntries(mappingConfig.getPressureList());
         EpdController.setStrokeWidth(getNoteDocument().getNoteDrawingArgs().strokeWidth);
         EpdController.setStrokeColor(getNoteDocument().getNoteDrawingArgs().strokeColor);
+        updatePenStateByCurrentShapeType();
     }
 
     public void undo(final Context context) {
@@ -620,6 +622,11 @@ public class NoteViewHelper {
         int type = getCurrentShapeType();
         if (ShapeFactory.isDFBShape(type)) {
             setPenState(NoteDrawingArgs.PenState.PEN_SCREEN_DRAWING);
+            if (type == ShapeFactory.SHAPE_BRUSH_SCRIBBLE) {
+                EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_BRUSH);
+            } else {
+                EpdController.setStrokeStyle(EpdPenManager.STROKE_STYLE_PENCIL);
+            }
             return;
         }
         switch (type) {
