@@ -286,4 +286,5 @@
     <string name="subject_list_sort_type_sales">销量</string>
     <string name="subject_list_sort_type_newest">最新</string>
     <string name="subject_list_all">全部</string>
+    <string name="subject_list_just_vip">只看畅读VIP</string>
 </resources>

@@ -298,4 +298,5 @@
     <string name="subject_list_sort_type_sales">Sales</string>
     <string name="subject_list_sort_type_newest">Newest</string>
     <string name="subject_list_all">All</string>
+    <string name="subject_list_just_vip">Just  look at VIP</string>
 </resources>

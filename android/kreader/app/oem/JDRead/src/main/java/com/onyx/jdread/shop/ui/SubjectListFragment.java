@@ -18,9 +18,12 @@ import com.onyx.jdread.databinding.FragmentSubjectListBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryV2BooksAction;
+import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.OnBookItemClickEvent;
+import com.onyx.jdread.shop.event.OnCategoryItemClickEvent;
 import com.onyx.jdread.shop.event.OnSubjectListSortTypeChangeEvent;
 import com.onyx.jdread.shop.event.OnTopBackEvent;
 import com.onyx.jdread.shop.event.OnTopRight2Event;
@@ -36,6 +39,8 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.List;
+
 /**
  * Created by jackdeng on 2017/12/30.
  */
@@ -45,12 +50,15 @@ public class SubjectListFragment extends BaseFragment {
     private FragmentSubjectListBinding subjectListBinding;
     private int row = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_row);
     private int col = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_recycle_viw_col);
+    private int catRow = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_category_recycle_viw_row);
+    private int catCol = JDReadApplication.getInstance().getResources().getInteger(R.integer.subject_list_category_recycle_viw_col);
     private PageRecyclerView recyclerView;
     private GPaginator paginator;
     private int currentPage = 1;
     private String currentCatName;
     private int catid;
     private int sortType = CloudApiContext.CategoryBookListV2.SORT_TYPE_HOT;
+    private boolean typeFree;
 
     @Nullable
     @Override
@@ -64,6 +72,7 @@ public class SubjectListFragment extends BaseFragment {
     private void initData() {
         catid = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_ID, 0);
         currentCatName = PreferenceManager.getStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, "");
+        typeFree = PreferenceManager.getBooleanValue(getContextJD(), Constants.SP_KEY_CATEGORY_ISFREE, false);
         getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
         getSubjectListViewModel().getTitleBarViewModel().showRightText2 = true;
         getSubjectListViewModel().getTitleBarViewModel().showRightText3 = true;
@@ -73,10 +82,11 @@ public class SubjectListFragment extends BaseFragment {
         setAllCatIsOpen(false);
         setRightText2Icon();
         setRightText3Icon();
-        getCategoryData(catid, currentPage, sortType);
+        getBooksData(catid, currentPage, sortType);
+        setCategoryV2Data();
     }
 
-    private void getCategoryData(int catid, int currentPage, int sortType) {
+    private void getBooksData(int catid, int currentPage, int sortType) {
         BookCategoryV2BooksAction booksAction = new BookCategoryV2BooksAction(catid, currentPage, sortType);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookCategoryV2BooksAction>() {
             @Override
@@ -87,13 +97,19 @@ public class SubjectListFragment extends BaseFragment {
         });
     }
 
+    private void setCategoryV2Data() {
+        List<CategoryListResultBean.CatListBean> allCategoryItems = getAllCategoryViewModel().getAllCategoryItems();
+        getSubjectListViewModel().setCategoryItems(allCategoryItems);
+        getSubjectListViewModel().isFree.set(typeFree);
+    }
+
     private void setBooksData() {
         recyclerView.gotoPage(0);
     }
 
     private void initView() {
         SubjectListAdapter adapter = new SubjectListAdapter(getEventBus());
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContextJD(), DividerItemDecoration.HORIZONTAL_LIST);
+        DividerItemDecoration itemDecoration = new DividerItemDecoration(getContextJD(), DividerItemDecoration.VERTICAL_LIST);
         itemDecoration.setDrawLine(false);
         recyclerView = subjectListBinding.recyclerViewSubjectList;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
@@ -110,6 +126,13 @@ public class SubjectListFragment extends BaseFragment {
             }
         });
         subjectListBinding.setViewModel(getSubjectListViewModel());
+        CategorySubjectAdapter categorySubjectAdapter = new CategorySubjectAdapter(getEventBus(), true);
+        categorySubjectAdapter.setRowAndCol(catRow,catCol);
+        PageRecyclerView recyclerViewCategoryList = subjectListBinding.recyclerViewCategoryList;
+        recyclerViewCategoryList.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
+        recyclerViewCategoryList.setAdapter(categorySubjectAdapter);
+        itemDecoration.setDrawLine(true);
+        recyclerViewCategoryList.addItemDecoration(itemDecoration);
     }
 
     private void initPageIndicator() {
@@ -190,11 +213,26 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCategoryItemClickEvent(OnCategoryItemClickEvent event) {
+        CategoryListResultBean.CatListBean categoryBean = event.getCategoryBean();
+        this.catid = categoryBean.catId;
+        this.currentCatName = categoryBean.catName;
+        this.currentPage = 1;
+        this.sortType = CloudApiContext.CategoryBookListV2.SORT_TYPE_HOT;
+        getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
+        getBooksData(catid, currentPage, sortType);
+        showOrCloseAllCatButton();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onTopRight2Event(OnTopRight2Event event) {
         showOrCloseAllCatButton();
     }
 
     private void showOrCloseAllCatButton() {
+        if (getSubjectListViewModel().sortButtonIsOpen.get()) {
+            showOrCloseSortButton();
+        }
         boolean allCatIsOpen = getSubjectListViewModel().allCatIsOpen.get();
         setAllCatIsOpen(!allCatIsOpen);
         setRightText2Icon();
@@ -206,6 +244,9 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     private void showOrCloseSortButton() {
+        if (getSubjectListViewModel().allCatIsOpen.get()) {
+            showOrCloseAllCatButton();
+        }
         boolean sortButtonIsOpen = getSubjectListViewModel().sortButtonIsOpen.get();
         setSortButtonIsOpen(!sortButtonIsOpen);
         setRightText3Icon();
@@ -231,7 +272,7 @@ public class SubjectListFragment extends BaseFragment {
     public void onSubjectListSortTypeChangeEvent(OnSubjectListSortTypeChangeEvent event) {
         if (sortType != event.type) {
             sortType = event.type;
-            getCategoryData(catid, currentPage, sortType);
+            getBooksData(catid, currentPage, sortType);
         }
         showOrCloseSortButton();
     }

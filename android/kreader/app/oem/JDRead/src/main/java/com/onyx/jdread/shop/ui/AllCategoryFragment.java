@@ -224,6 +224,7 @@ public class AllCategoryFragment extends BaseFragment {
             } else {
                 PreferenceManager.setIntValue(getContextJD(),Constants.SP_KEY_CATEGORY_ID,categoryBean.catId);
                 PreferenceManager.setStringValue(getContextJD(),Constants.SP_KEY_CATEGORY_NAME,categoryBean.catName);
+                PreferenceManager.setBooleanValue(getContextJD(),Constants.SP_KEY_CATEGORY_ISFREE, Constants.CATEGORY_TYPE_FREE == categoryBean.catType);
                 getViewEventCallBack().gotoView(SubjectListFragment.class.getName());
             }
         }

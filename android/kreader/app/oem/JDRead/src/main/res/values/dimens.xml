@@ -278,4 +278,6 @@
     <dimen name="subject_list_sort_button_margin_left">40dp</dimen>
     <dimen name="subject_list_sort_button_padding">10dp</dimen>
     <dimen name="subject_list_sort_button_container_padding">5dp</dimen>
+    <dimen name="subject_list_just_vip_margin">15dp</dimen>
+    <dimen name="subject_list_category_items_container_height">350dp</dimen>
 </resources>

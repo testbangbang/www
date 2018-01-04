@@ -4,6 +4,7 @@ import android.databinding.BaseObservable;
 import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
+import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.OnSubjectListSortTypeChangeEvent;
@@ -25,6 +26,8 @@ public class SubjectListViewModel extends BaseObservable {
     public List<ResultBookBean> bookList;
     public final ObservableBoolean sortButtonIsOpen =new ObservableBoolean();
     public final ObservableBoolean allCatIsOpen =new ObservableBoolean();
+    public final ObservableBoolean isFree =new ObservableBoolean();
+    public List<CategoryListResultBean.CatListBean> categoryItems;
 
     public SubjectListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -64,6 +67,15 @@ public class SubjectListViewModel extends BaseObservable {
 
     public void setBookList(List<ResultBookBean> bookList) {
         this.bookList = bookList;
+        notifyChange();
+    }
+
+    public List<CategoryListResultBean.CatListBean> getCategoryItems() {
+        return categoryItems;
+    }
+
+    public void setCategoryItems(List<CategoryListResultBean.CatListBean> categoryItems) {
+        this.categoryItems = categoryItems;
         notifyChange();
     }
 

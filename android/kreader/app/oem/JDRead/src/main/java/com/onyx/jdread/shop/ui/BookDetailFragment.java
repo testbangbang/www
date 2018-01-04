@@ -415,7 +415,7 @@ public class BookDetailFragment extends BaseFragment {
             openBook(bookDetailBean.getName(), localPath);
             return;
         }
-        if (!bookDetailBean.isTryRead()) {
+        if (!CommonUtils.isCanNowRead(bookDetailBean)) {
             ToastUtil.showToast(getContext(), getResources().getString(R.string.the_book_unsupported_try_read));
             return;
         }
