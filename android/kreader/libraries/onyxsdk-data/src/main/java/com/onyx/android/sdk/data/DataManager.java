@@ -26,7 +26,7 @@ public class DataManager {
     private DataProviderManager dataProviderManager = new DataProviderManager();
     private FileSystemManager fileSystemManager;
     private CacheManager cacheManager;
-    public static boolean useDefault;
+    public static boolean useLocalDataProvider = true;
 
     public DataManager() {
         requestManager = new RequestManager();
