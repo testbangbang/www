@@ -15,7 +15,7 @@ import com.onyx.jdread.databinding.ItemGiftCenterBinding;
  * Created by li on 2017/12/29.
  */
 
-public class GiftCenterAdapter extends PageRecyclerView.PageAdapter {
+public class GiftCenterAdapter extends PageRecyclerView.PageAdapter implements View.OnClickListener {
     @Override
     public int getRowCount() {
         return 4;
@@ -39,7 +39,22 @@ public class GiftCenterAdapter extends PageRecyclerView.PageAdapter {
 
     @Override
     public void onPageBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        GiftCenterViewHolder viewHolder = (GiftCenterViewHolder) holder;
+        viewHolder.itemView.setOnClickListener(this);
+        viewHolder.itemView.setTag(position);
+    }
 
+    @Override
+    public void onClick(View v) {
+        Object tag = v.getTag();
+        if (tag == null) {
+            return;
+        }
+
+        int position = (int) tag;
+        if (onItemClickListener != null) {
+            onItemClickListener.onItemClick(position);
+        }
     }
 
     static class GiftCenterViewHolder extends RecyclerView.ViewHolder {

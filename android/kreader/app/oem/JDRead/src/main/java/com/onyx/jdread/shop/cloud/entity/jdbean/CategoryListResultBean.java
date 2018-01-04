@@ -21,6 +21,7 @@ public class CategoryListResultBean {
         public int isLeaf;
         public String shortName;
         public List<ChildListBean> childList;
+        public boolean isSelect;
 
         public static class ChildListBean {
 

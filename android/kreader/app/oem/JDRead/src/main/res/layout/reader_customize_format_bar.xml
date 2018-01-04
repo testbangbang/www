@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+
+        <LinearLayout
+            style="@style/ReaderCustomizeFormatLayoutStyle"
+            android:layout_marginTop="20dp">
+
+            <TextView
+                style="@style/ReaderCustomizeFormatTitleStyle"
+                android:text="@string/reader_line_spacing" />
+
+            <ImageView
+                style="@style/ReaderCustomizeMinusStyle"
+                android:src="@mipmap/ic_read_minus" />
+
+            <SeekBar style="@style/ReaderCustomizeFormatSeekBarStyle" />
+
+            <ImageView
+                style="@style/ReaderCustomizePlusStyle"
+                android:src="@mipmap/ic_read_plus" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/ReaderCustomizeFormatLayoutStyle">
+
+            <TextView
+                style="@style/ReaderCustomizeFormatTitleStyle"
+                android:text="@string/reader_segment_spacing" />
+
+            <ImageView
+                style="@style/ReaderCustomizeMinusStyle"
+                android:src="@mipmap/ic_read_minus" />
+
+            <SeekBar style="@style/ReaderCustomizeFormatSeekBarStyle" />
+
+            <ImageView
+                style="@style/ReaderCustomizePlusStyle"
+                android:src="@mipmap/ic_read_plus" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/ReaderCustomizeFormatLayoutStyle">
+
+            <TextView
+                style="@style/ReaderCustomizeFormatTitleStyle"
+                android:text="@string/reader_left_and_right_spacing" />
+
+            <ImageView
+                style="@style/ReaderCustomizeMinusStyle"
+                android:src="@mipmap/ic_read_minus" />
+
+            <SeekBar style="@style/ReaderCustomizeFormatSeekBarStyle" />
+
+            <ImageView
+                style="@style/ReaderCustomizePlusStyle"
+                android:src="@mipmap/ic_read_plus" />
+
+        </LinearLayout>
+
+        <LinearLayout style="@style/ReaderCustomizeFormatLayoutStyle">
+
+            <TextView
+                style="@style/ReaderCustomizeFormatTitleStyle"
+                android:text="@string/reader_up_and_down_spacing" />
+
+            <ImageView
+                style="@style/ReaderCustomizeMinusStyle"
+                android:src="@mipmap/ic_read_minus" />
+
+            <SeekBar style="@style/ReaderCustomizeFormatSeekBarStyle" />
+
+            <ImageView
+                style="@style/ReaderCustomizePlusStyle"
+                android:src="@mipmap/ic_read_plus" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

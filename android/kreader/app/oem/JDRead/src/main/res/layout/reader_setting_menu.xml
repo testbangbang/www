@@ -1,27 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <data>
+
+        <variable
+            name="readerSettingModel"
+            type="com.onyx.jdread.reader.menu.model.ReaderSettingModel" />
+    </data>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
 
         <include
-            android:id="@+id/main_system_bar"
+            android:id="@+id/reader_setting_system_bar"
             layout="@layout/system_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true" />
 
+        <include
+            android:id="@+id/reader_setting_title_bar"
+            layout="@layout/reader_title_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <View
-            android:id="@+id/dismiss_zone"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:clickable="true"
+            android:onClick="@{()->readerSettingModel.dismissZoneClick()}"
             android:background="@android:color/transparent" />
-        
+
         <include
-            android:id="@+id/main_function_bar"
+            layout="@layout/reader_page_info_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <include
+            layout="@layout/reader_brightness_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <include
+            layout="@layout/reader_text_setting_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <include
+            layout="@layout/reader_image_setting_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <include
+            layout="@layout/reader_customize_format_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <include
+            android:id="@+id/reader_setting_function_bar"
             layout="@layout/function_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
