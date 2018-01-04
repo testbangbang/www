@@ -505,6 +505,8 @@ public class ScribbleActivity extends BaseScribbleActivity {
         getNoteViewHelper().clearPageUndoRedo(this);
         if (isLineLayoutMode) {
             spanTextHandler.openSpanTextFunc();
+        }else {
+            clearLineLayoutMode();
         }
         updateMenuView(isLineLayoutMode);
         updateWorkView(isLineLayoutMode);
