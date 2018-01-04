@@ -115,7 +115,7 @@ public class PersonalAccountFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPointsForEvent(PointsForEvent event) {
-
+        viewEventCallBack.gotoView(PointsForFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

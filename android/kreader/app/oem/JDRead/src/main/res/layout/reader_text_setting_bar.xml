@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <View style="@style/ReaderHorizontalSeparationLine" />
+
+        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
+
+            <TextView
+                style="@style/ReaderTextSettingStyle"
+                android:text="@string/reader_typeface" />
+
+            <LinearLayout
+                style="@style/ReaderTextSettingItemParentStyle"
+                android:layout_weight="4">
+
+                <TextView
+                    style="@style/ReaderTextSettingFontStyle"
+                    android:text="@string/reader_boldface" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontStyle"
+                    android:text="@string/reader_arial" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontStyle"
+                    android:text="@string/reader_italics" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontStyle"
+                    android:text="@string/reader_round_body" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/ReaderTextSettingFontStyle"
+                android:layout_alignParentRight="true"
+                android:layout_marginLeft="20dp"
+                android:background="@drawable/rectangle_stroke_corners"
+                android:text="@string/reader_traditional" />
+        </LinearLayout>
+
+        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
+
+            <TextView
+                style="@style/ReaderTextSettingStyle"
+                android:text="@string/reader_font_size" />
+
+            <LinearLayout
+                style="@style/ReaderTextSettingItemParentStyle"
+                android:layout_weight="5">
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_one" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_two" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_three" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_four" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_five" />
+
+                <View style="@style/ReaderVerticalSeparationLine" />
+
+                <TextView
+                    style="@style/ReaderTextSettingFontSizeStyle"
+                    android:text="@string/reader_font_size_six" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
+
+            <TextView
+                style="@style/ReaderTextSettingStyle"
+                android:text="@string/reader_format" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="1dp">
+
+                <LinearLayout
+                    style="@style/ReaderTextSettingItemParentStyle"
+                    android:layout_weight="5">
+
+                    <TextView
+                        style="@style/ReaderTextSettingFormatStyle"
+                        android:text="@string/reader_adaptive" />
+
+                    <View style="@style/ReaderVerticalSeparationLine" />
+
+                    <TextView
+                        style="@style/ReaderTextSettingFormatStyle"
+                        android:text="@string/reader_customize" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5">
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:background="@drawable/imagebtn_bg"
+                        android:clickable="true"
+                        android:gravity="right">
+
+                        <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:src="@mipmap/ic_title_back" />
+
+                        <TextView
+                            style="@style/ReaderTextSettingFormatStyle"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:layout_marginRight="5dp"
+                            android:text="返回PDF" />
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

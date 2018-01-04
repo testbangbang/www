@@ -18,9 +18,13 @@ import com.onyx.android.sdk.utils.MimeTypeUtils;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.main.common.AppBaseInfo;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
+import com.onyx.jdread.main.data.database.JDReadDatabase;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.library.action.ModifyLibraryDataAction;
 import com.onyx.jdread.library.model.DataBundle;
+import com.raizlabs.android.dbflow.config.DatabaseHolder;
+import com.raizlabs.android.dbflow.config.FlowConfig;
+import com.raizlabs.android.dbflow.config.FlowManager;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -62,6 +66,7 @@ public class JDReadApplication extends MultiDexApplication {
     private void initConfig() {
         instance = this;
         DataManager.init(instance, null);
+        initContentProvider(this);
         initFrescoLoader();
         PreferenceManager.init(instance);
 
@@ -139,5 +144,16 @@ public class JDReadApplication extends MultiDexApplication {
             }
         }
         return appBaseInfo;
+    }
+
+    static public void initContentProvider(final Context context) {
+        try {
+            FlowConfig.Builder builder = new FlowConfig.Builder(context);
+            FlowManager.init(builder.build());
+        } catch (Exception e) {
+            if (com.onyx.android.sdk.dataprovider.BuildConfig.DEBUG) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -18,23 +18,19 @@ import com.onyx.android.sdk.data.utils.JSONObjectParseUtils;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
-import com.onyx.android.sdk.utils.InputMethodUtils;
 import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.FragmentBookDetailBinding;
+import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
-import com.onyx.jdread.databinding.FragmentBookDetailBinding;
-import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
-import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
-import com.onyx.jdread.personal.event.UserLoginEvent;
-import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
@@ -56,12 +52,12 @@ import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
 import com.onyx.jdread.shop.event.OnBookDetailReadNowEvent;
-import com.onyx.jdread.shop.event.OnTopBackEvent;
 import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
 import com.onyx.jdread.shop.event.OnCopyrightEvent;
 import com.onyx.jdread.shop.event.OnDownloadWholeBookEvent;
 import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
 import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
+import com.onyx.jdread.shop.event.OnTopBackEvent;
 import com.onyx.jdread.shop.event.OnViewCommentEvent;
 import com.onyx.jdread.shop.event.ShopSmoothCardEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
@@ -250,29 +246,8 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUserLoginEvent(UserLoginEvent event) {
-        InputMethodUtils.hideInputKeyboard(getActivity());
-        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
-        userLoginAction.execute(getPersonalDataBundle(),null);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onCancelUserLoginDialogEvent(CancelUserLoginDialogEvent event) {
         LoginHelper.dismissUserLoginDialog();
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUserLoginResultEvent(UserLoginResultEvent event) {
-        ToastUtil.showToast(getContext(), event.getMessage());
-        if (getResources().getString(R.string.login_success).equals(event.getMessage())) {
-            JDReadApplication.getInstance().setLogin(true);
-            clearInput();
-            LoginHelper.dismissUserLoginDialog();
-        }
-    }
-
-    private void clearInput() {
-        getUserLoginViewModel().cleanInput();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

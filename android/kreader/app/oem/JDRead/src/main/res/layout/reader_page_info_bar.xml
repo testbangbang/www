@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+
+        <RelativeLayout
+            style="@style/ReaderPageInfoLayoutStyle"
+            android:layout_marginTop="10dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/reader_page_info_menu_book_name"
+                    style="@style/ReaderPageInfoBookNameStyle"
+                    android:text="xxx" />
+
+                <TextView
+                    android:id="@+id/reader_page_info_menu_page"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="68.80%"
+                    android:textColor="@android:color/black"
+                    android:textSize="@dimen/level_two_heading_font" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            style="@style/ReaderPageInfoLayoutStyle"
+            android:layout_marginBottom="@dimen/reader_page_info_menu_margin_bottom"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                style="@style/ReaderPageInfoChapterStyle"
+                android:gravity="left|center_vertical"
+                android:paddingRight="10dp"
+                android:text="@string/prev_chapter" />
+
+            <SeekBar
+                android:id="@+id/reader_page_info_menu_read_progress"
+                style="@style/ReaderPageInfoChapterSeekBarStyle" />
+
+            <TextView
+                android:id="@+id/reader_page_info_menu_next_chapter"
+                style="@style/ReaderPageInfoChapterStyle"
+                android:gravity="right|center_vertical"
+                android:paddingLeft="10dp"
+                android:text="@string/next_chapter" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</layout>

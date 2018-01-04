@@ -62,6 +62,9 @@ public class LockScreenActivity extends AppCompatActivity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+            return true;
+        }
         return super.dispatchKeyEvent(event);
     }
 }

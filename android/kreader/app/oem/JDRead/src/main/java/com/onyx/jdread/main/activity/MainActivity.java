@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 
+import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
@@ -21,12 +22,15 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
+import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
 import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.main.event.ChangeChildViewEvent;
+import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
@@ -36,9 +40,18 @@ import com.onyx.jdread.main.model.FunctionBarItem;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
+import com.onyx.jdread.personal.action.UserLoginAction;
+import com.onyx.jdread.personal.common.LoginHelper;
+import com.onyx.jdread.personal.event.UserLoginEvent;
+import com.onyx.jdread.personal.event.UserLoginResultEvent;
+import com.onyx.jdread.personal.model.PersonalDataBundle;
+import com.onyx.jdread.personal.model.PersonalViewModel;
+import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.LoginFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
+import com.onyx.jdread.setting.request.RxLoadPicByPathRequest;
 import com.onyx.jdread.shop.ui.ShopFragment;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -144,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void switchCurrentFragment(String childViewName) {
-        if(StringUtils.isNullOrEmpty(childViewName)){
+        if (StringUtils.isNullOrEmpty(childViewName)) {
             return;
         }
         if (StringUtils.isNotBlank(currentChildViewName) && currentChildViewName.equals(childViewName)) {
@@ -160,7 +173,7 @@ public class MainActivity extends AppCompatActivity {
         saveChildViewInfo(childViewName, baseFragment);
     }
 
-    private void changeFunctionItem(String childViewName){
+    private void changeFunctionItem(String childViewName) {
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(childViewName);
         functionBarModel.changeTabSelection(functionModule);
     }
@@ -259,7 +272,7 @@ public class MainActivity extends AppCompatActivity {
         switchCurrentFragment(event.childClassName);
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(event.childClassName);
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
-        if(functionBarItem != null){
+        if (functionBarItem != null) {
             functionBarItem.getStackList().push(event.childClassName);
         }
     }
@@ -268,7 +281,7 @@ public class MainActivity extends AppCompatActivity {
     public void onPopCurrentChildViewEvent(PopCurrentChildViewEvent event) {
         ViewConfig.FunctionModule functionModule = ViewConfig.findChildViewParentId(currentChildViewName);
         FunctionBarItem functionBarItem = functionBarModel.findFunctionGroup(functionModule);
-        if(functionBarItem != null){
+        if (functionBarItem != null) {
             String childClassName = functionBarItem.getStackList().popChildView();
             switchCurrentFragment(childClassName);
         }
@@ -297,10 +310,46 @@ public class MainActivity extends AppCompatActivity {
     @Subscribe
     public void onUsbDisconnectedEvent(UsbDisconnectedEvent event) {
         JDReadApplication.getInstance().dealWithMtpBuffer();
+        RxFileSystemScanAction scanAction = new RxFileSystemScanAction(RxFileSystemScanAction.MMC_STORAGE_ID, true);
+        scanAction.execute(JDReadApplication.getDataBundle(), new RxCallback() {
+            @Override
+            public void onNext(Object o) {
+                JDReadApplication.getDataBundle().getEventBus().post(new ModifyLibraryDataEvent());
+            }
+        });
     }
 
     @Subscribe
     public void onUsbDisconnectedEvent(ShowBackTabEvent event) {
         isShowBackTab(event.isShow());
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginResultEvent(UserLoginResultEvent event) {
+        ToastUtil.showToast(this, event.getMessage());
+        if (getResources().getString(R.string.login_success).equals(event.getMessage())) {
+            JDReadApplication.getInstance().setLogin(true);
+            clearInput();
+            LoginHelper.dismissUserLoginDialog();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginEvent(UserLoginEvent event) {
+        Utils.hideSoftWindow(this);
+        UserLoginAction userLoginAction = new UserLoginAction(this,event.account,event.password);
+        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
+    }
+
+    private void clearInput() {
+        getUserLoginViewModel().cleanInput();
+    }
+
+    public UserLoginViewModel getUserLoginViewModel() {
+        return getPersonalViewModel().getUserLoginViewModel();
+    }
+
+    public PersonalViewModel getPersonalViewModel() {
+        return PersonalDataBundle.getInstance().getPersonalViewModel();
     }
 }

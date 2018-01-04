@@ -15,7 +15,6 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
-import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.SystemBarModel;
@@ -57,16 +56,23 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
     }
 
     private void initSystemBar() {
-        binding.mainSystemBar.setSystemBarModel(new SystemBarModel());
+        SystemBarModel systemBarModel = new SystemBarModel();
+        systemBarModel.setShow(false);
+        binding.readerSettingSystemBar.setSystemBarModel(systemBarModel);
+    }
+
+    private void initReaderTitleBar(){
+
     }
 
     private void initFunctionBar() {
         functionBarModel = new FunctionBarModel();
-        binding.mainFunctionBar.setFunctionBarModel(functionBarModel);
+        binding.readerSettingFunctionBar.setFunctionBarModel(functionBarModel);
         PageRecyclerView functionBarRecycler = getFunctionBarRecycler();
         functionBarRecycler.setLayoutManager(new DisableScrollGridManager(getContext()));
         functionBarAdapter = new FunctionBarAdapter();
         setFunctionAdapter(functionBarRecycler);
+        functionBarModel.setIsShow(false);
     }
 
     private void setFunctionAdapter( PageRecyclerView functionBarRecycler) {
@@ -97,12 +103,13 @@ public class ReaderSettingMenuDialog extends Dialog implements View.OnClickListe
     }
 
     private PageRecyclerView getFunctionBarRecycler() {
-        return binding.mainFunctionBar.functionBarRecycler;
+        return binding.readerSettingFunctionBar.functionBarRecycler;
     }
 
     private void initData() {
         initFunctionBar();
         initSystemBar();
+        initReaderTitleBar();
     }
 
     private void initThirdLibrary() {

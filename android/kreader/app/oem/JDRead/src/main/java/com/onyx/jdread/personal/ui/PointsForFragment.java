@@ -15,6 +15,7 @@ import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.PointsForBinding;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.model.TitleBarModel;
 import com.onyx.jdread.personal.adapter.PointsForAdapter;
@@ -83,8 +84,24 @@ public class PointsForFragment extends BaseFragment {
                 @Override
                 public void onItemClick(int position) {
                     PointsForData pointsForData = pointsForModel.getList().get(position);
-                    // TODO: 2018/1/2
-                    Log.d("+++++", "onItemClick: "+pointsForData.getDays());
+                    LibraryDeleteDialog.DialogModel dialogModel = new LibraryDeleteDialog.DialogModel();
+                    final LibraryDeleteDialog dialog = new LibraryDeleteDialog.Builder(JDReadApplication.getInstance(), dialogModel).create();
+                    String tips = JDReadApplication.getInstance().getResources().getString(R.string.points_for_tips);
+                    dialogModel.message.set(String.format(tips, pointsForData.getDays(), pointsForData.getPoints()));
+                    dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+                        @Override
+                        public void onClicked() {
+                            dialog.dismiss();
+                        }
+                    });
+                    dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+                        @Override
+                        public void onClicked() {
+                            // TODO: 2018/1/3
+                            dialog.dismiss();
+                        }
+                    });
+                    dialog.show();
                 }
             });
         }

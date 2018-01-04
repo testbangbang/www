@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="readerTitleBarModel"
+            type="com.onyx.jdread.reader.menu.model.ReaderTitleBarModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="4dp"
+                android:layout_weight="3"
+                android:background="@drawable/imagebtn_bg"
+                android:clickable="true"
+                android:drawableLeft="@mipmap/ic_read_back"
+                android:drawablePadding="@dimen/title_bar_drawable_padding"
+                android:gravity="center_vertical"
+                android:onClick="@{()->readerTitleBarModel.back()}"
+                android:padding="4dp"
+                android:text="@{readerTitleBarModel.title}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/settings_title_text_size" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center"
+                android:orientation="horizontal">
+
+                <ImageView
+                    style="@style/ReaderTitleBarStyle"
+                    android:src="@mipmap/ic_search" />
+
+                <ImageView
+                    style="@style/ReaderTitleBarStyle"
+                    android:src="@mipmap/ic_cart" />
+
+                <ImageView
+                    style="@style/ReaderTitleBarStyle"
+                    android:src="@mipmap/ic_read_bm_normal" />
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@android:color/black" />
+    </LinearLayout>
+</layout>
