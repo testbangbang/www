@@ -78,6 +78,7 @@
     <dimen name="feedback_content_height">300dp</dimen>
     <dimen name="button_padding">10dp</dimen>
     <dimen name="title_bar_drawable_padding">10dp</dimen>
+    <dimen name="reader_title_bar_drawable_padding">25dp</dimen>
     <dimen name="book_shop_padding_left">22dp</dimen>
     <dimen name="book_shop_padding_right">20dp</dimen>
     <dimen name="book_shop_padding_top">30dp</dimen>
@@ -221,6 +222,13 @@
     <dimen name="reader_customize_plus_style_margin_left">15dp</dimen>
     <dimen name="reader_image_setting_style_change_layout_padding">15dp</dimen>
     <dimen name="reader_image_setting_style_change_layout_drawable_padding">10dp</dimen>
+    <dimen name="reader_title_buy_padding_left">15dp</dimen>
+    <dimen name="reader_title_buy_padding_right">15dp</dimen>
+    <dimen name="reader_title_buy_padding_top">4dp</dimen>
+    <dimen name="reader_title_buy_padding_bottom">4dp</dimen>
+    <dimen name="reader_title_buy_padding_margin_left">10dp</dimen>
+    <dimen name="reader_title_back_margin_right">10dp</dimen>
+    <dimen name="reader_title_back_padding">4dp</dimen>
     <dimen name="user_image_height">74dp</dimen>
     <dimen name="login_whole_padding">20dp</dimen>
     <dimen name="login_account_padding">10dp</dimen>

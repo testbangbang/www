@@ -235,6 +235,8 @@
     <string name="reader_trimming">Trimming</string>
     <string name="reader_rearrange">Rearrange</string>
     <string name="reader_reset">Reset</string>
+    <string name="reader_reset_pdf">Reset PDF</string>
+    <string name="reader_buy">Buy</string>
     <string name="personal_experience">Personal experience</string>
     <string name="fragment_switch_account_login">Login</string>
     <string name="fragment_switch_account_JD_login">Jingdong to login</string>

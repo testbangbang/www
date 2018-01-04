@@ -237,4 +237,13 @@
         <item name="android:padding">@dimen/edit_text_padding</item>
         <item name="android:textSize">@dimen/level_two_heading_font</item>
     </style>
+
+    <style name="ReaderTitleBarBuyStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/level_two_heading_font</item>
+        <item name="android:background">@drawable/imagebtn_bg</item>
+        <item name="android:clickable">true</item>
+    </style>
 </resources>

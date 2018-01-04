@@ -100,7 +100,8 @@
             </LinearLayout>
         </LinearLayout>
 
-        <LinearLayout style="@style/ReaderTextSettingLayoutStyle">
+        <LinearLayout style="@style/ReaderTextSettingLayoutStyle"
+            android:layout_marginBottom="@dimen/reader_page_info_menu_margin_bottom">
 
             <TextView
                 style="@style/ReaderTextSettingStyle"
@@ -154,7 +155,7 @@
                             android:layout_height="match_parent"
                             android:gravity="center"
                             android:layout_marginRight="5dp"
-                            android:text="返回PDF" />
+                            android:text="@string/reader_reset_pdf" />
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>

@@ -219,12 +219,14 @@
     <string name="reader_segment_spacing">段间距</string>
     <string name="reader_left_and_right_spacing">左右间距</string>
     <string name="reader_up_and_down_spacing">上下间距</string>
-    <string name="reader_comic_mode">漫画</string>
+    <string name="reader_comic_mode">双栏</string>
     <string name="reader_default_mode">正常</string>
     <string name="reader_with_black">加黑</string>
     <string name="reader_trimming">裁边</string>
     <string name="reader_rearrange">重排</string>
     <string name="reader_reset">重置</string>
+    <string name="reader_reset_pdf">返回PDF</string>
+    <string name="reader_buy">购买</string>
     <string name="personal_experience">我的阅历</string>
     <string name="fragment_switch_account_login">登录</string>
     <string name="fragment_switch_account_JD_login">京东账号登录</string>
