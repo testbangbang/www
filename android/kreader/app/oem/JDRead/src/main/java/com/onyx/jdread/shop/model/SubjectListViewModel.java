@@ -1,9 +1,12 @@
 package com.onyx.jdread.shop.model;
 
 import android.databinding.BaseObservable;
+import android.databinding.ObservableBoolean;
 import android.databinding.ObservableInt;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
+import com.onyx.jdread.shop.common.CloudApiContext;
+import com.onyx.jdread.shop.event.OnSubjectListSortTypeChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -20,6 +23,8 @@ public class SubjectListViewModel extends BaseObservable {
     public final ObservableInt currentPosition = new ObservableInt();
     public final ObservableInt totalPage = new ObservableInt();
     public List<ResultBookBean> bookList;
+    public final ObservableBoolean sortButtonIsOpen =new ObservableBoolean();
+    public final ObservableBoolean allCatIsOpen =new ObservableBoolean();
 
     public SubjectListViewModel(EventBus eventBus) {
         this.eventBus = eventBus;
@@ -60,5 +65,17 @@ public class SubjectListViewModel extends BaseObservable {
     public void setBookList(List<ResultBookBean> bookList) {
         this.bookList = bookList;
         notifyChange();
+    }
+
+    public void onSortTypeHotClick(){
+        getEventBus().post(new OnSubjectListSortTypeChangeEvent(CloudApiContext.CategoryBookListV2.SORT_TYPE_HOT));
+    }
+
+    public void onSortTypeSalesClick(){
+        getEventBus().post(new OnSubjectListSortTypeChangeEvent(CloudApiContext.CategoryBookListV2.SORT_TYPE_SALES));
+    }
+
+    public void onSortTypeNewestClick(){
+        getEventBus().post(new OnSubjectListSortTypeChangeEvent(CloudApiContext.CategoryBookListV2.SORT_TYPE_NEWEST));
     }
 }

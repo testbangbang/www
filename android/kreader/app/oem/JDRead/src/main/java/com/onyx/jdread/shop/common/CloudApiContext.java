@@ -80,11 +80,13 @@ public class CloudApiContext {
         public static final String CLIENT_PLATFORM = "clientPlatform";
         public static final String ROOT_ID = "rootId";
         public static final String CATEGORY_BOOK_LIST_V2 = "categoryBookListV2";
-        public static final int SORT_TYPE_DEFAULT_VALUES = 1;
-        public static final int PAGE_SIZE_DEFAULT_VALUES = 20;
+        public static final int PAGE_SIZE_DEFAULT_VALUES = 40;
         public static final int SORT_KEY_DEFAULT_VALUES = 1;
         public static final int CLIENT_PLATFORM_DEFAULT_VALUES = 1;
         public static final int ROOT_ID_DEFAULT_VALUES = 2;
+        public static final int SORT_TYPE_HOT = 1;
+        public static final int SORT_TYPE_SALES = 2;
+        public static final int SORT_TYPE_NEWEST = 3;
     }
 
     public static class RecommendList {

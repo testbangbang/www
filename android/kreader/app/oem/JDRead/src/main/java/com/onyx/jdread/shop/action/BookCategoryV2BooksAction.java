@@ -16,14 +16,16 @@ import com.onyx.jdread.shop.request.cloud.RxRequestCategoryV2Books;
 
 public class BookCategoryV2BooksAction extends BaseAction<ShopDataBundle> {
 
+    private int sortType;
     private int currentPage;
     private int catId;
     private BookShopViewModel shopViewModel;
     private CategoryV2BooksResultBean categoryV2BooksResultBean;
 
-    public BookCategoryV2BooksAction(int catId, int currentPage) {
+    public BookCategoryV2BooksAction(int catId, int currentPage, int sortType) {
         this.currentPage = currentPage;
         this.catId = catId;
+        this.sortType = sortType;
     }
 
     @Override
@@ -32,7 +34,7 @@ public class BookCategoryV2BooksAction extends BaseAction<ShopDataBundle> {
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
         JSONObject body = new JSONObject();
-        body.put(CloudApiContext.CategoryBookListV2.SORT_TYPE, CloudApiContext.CategoryBookListV2.SORT_TYPE_DEFAULT_VALUES);
+        body.put(CloudApiContext.CategoryBookListV2.SORT_TYPE, sortType);
         body.put(CloudApiContext.CategoryBookListV2.PAGE_SIZE, CloudApiContext.CategoryBookListV2.PAGE_SIZE_DEFAULT_VALUES);
         body.put(CloudApiContext.CategoryBookListV2.CAT_ID, catId);
         body.put(CloudApiContext.CategoryBookListV2.CURRENT_PAGE, currentPage);

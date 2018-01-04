@@ -19,12 +19,17 @@ import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryV2BooksAction;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
+import com.onyx.jdread.shop.common.CloudApiContext;
 import com.onyx.jdread.shop.event.OnBookItemClickEvent;
+import com.onyx.jdread.shop.event.OnSubjectListSortTypeChangeEvent;
 import com.onyx.jdread.shop.event.OnTopBackEvent;
+import com.onyx.jdread.shop.event.OnTopRight2Event;
+import com.onyx.jdread.shop.event.OnTopRight3Event;
 import com.onyx.jdread.shop.model.AllCategoryViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.model.SubjectListViewModel;
+import com.onyx.jdread.shop.model.TitleBarViewModel;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
 
 import org.greenrobot.eventbus.EventBus;
@@ -45,6 +50,7 @@ public class SubjectListFragment extends BaseFragment {
     private int currentPage = 1;
     private String currentCatName;
     private int catid;
+    private int sortType = CloudApiContext.CategoryBookListV2.SORT_TYPE_HOT;
 
     @Nullable
     @Override
@@ -59,11 +65,19 @@ public class SubjectListFragment extends BaseFragment {
         catid = PreferenceManager.getIntValue(getContextJD(), Constants.SP_KEY_CATEGORY_ID, 0);
         currentCatName = PreferenceManager.getStringValue(getContextJD(), Constants.SP_KEY_CATEGORY_NAME, "");
         getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
-        getCategoryData(catid, currentPage);
+        getSubjectListViewModel().getTitleBarViewModel().showRightText2 = true;
+        getSubjectListViewModel().getTitleBarViewModel().showRightText3 = true;
+        getSubjectListViewModel().getTitleBarViewModel().rightText2 = getString(R.string.subject_list_all);
+        getSubjectListViewModel().getTitleBarViewModel().rightText3 = getString(R.string.subject_list_sort_type_hot);
+        setSortButtonIsOpen(false);
+        setAllCatIsOpen(false);
+        setRightText2Icon();
+        setRightText3Icon();
+        getCategoryData(catid, currentPage, sortType);
     }
 
-    private void getCategoryData(int catid, int currentPage) {
-        BookCategoryV2BooksAction booksAction = new BookCategoryV2BooksAction(catid, currentPage);
+    private void getCategoryData(int catid, int currentPage, int sortType) {
+        BookCategoryV2BooksAction booksAction = new BookCategoryV2BooksAction(catid, currentPage, sortType);
         booksAction.execute(getShopDataBundle(), new RxCallback<BookCategoryV2BooksAction>() {
             @Override
             public void onNext(BookCategoryV2BooksAction categoryV2BooksAction) {
@@ -95,7 +109,7 @@ public class SubjectListFragment extends BaseFragment {
                 }
             }
         });
-        subjectListBinding.setSubjectListViewModel(getSubjectListViewModel());
+        subjectListBinding.setViewModel(getSubjectListViewModel());
     }
 
     private void initPageIndicator() {
@@ -136,6 +150,10 @@ public class SubjectListFragment extends BaseFragment {
         return getAllCategoryViewModel().getSubjectListViewModel();
     }
 
+    private TitleBarViewModel getTitleBarViewModel() {
+        return getSubjectListViewModel().getTitleBarViewModel();
+    }
+
     private EventBus getEventBus() {
         return getShopDataBundle().getEventBus();
     }
@@ -169,5 +187,52 @@ public class SubjectListFragment extends BaseFragment {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTopRight2Event(OnTopRight2Event event) {
+        showOrCloseAllCatButton();
+    }
+
+    private void showOrCloseAllCatButton() {
+        boolean allCatIsOpen = getSubjectListViewModel().allCatIsOpen.get();
+        setAllCatIsOpen(!allCatIsOpen);
+        setRightText2Icon();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onTopRight3Event(OnTopRight3Event event) {
+        showOrCloseSortButton();
+    }
+
+    private void showOrCloseSortButton() {
+        boolean sortButtonIsOpen = getSubjectListViewModel().sortButtonIsOpen.get();
+        setSortButtonIsOpen(!sortButtonIsOpen);
+        setRightText3Icon();
+    }
+
+    private void setAllCatIsOpen(boolean allCatIsOpen) {
+        getSubjectListViewModel().allCatIsOpen.set(allCatIsOpen);
+    }
+
+    private void setSortButtonIsOpen(boolean sortButtonIsOpen) {
+        getSubjectListViewModel().sortButtonIsOpen.set(sortButtonIsOpen);
+    }
+
+    private void setRightText2Icon() {
+        getTitleBarViewModel().rightText2IconId.set(getSubjectListViewModel().allCatIsOpen.get() ? R.mipmap.ic_up : R.mipmap.ic_down);
+    }
+
+    private void setRightText3Icon() {
+        getTitleBarViewModel().rightText3IconId.set(getSubjectListViewModel().sortButtonIsOpen.get() ? R.mipmap.ic_up : R.mipmap.ic_down);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onSubjectListSortTypeChangeEvent(OnSubjectListSortTypeChangeEvent event) {
+        if (sortType != event.type) {
+            sortType = event.type;
+            getCategoryData(catid, currentPage, sortType);
+        }
+        showOrCloseSortButton();
     }
 }
