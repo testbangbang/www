@@ -1,6 +1,7 @@
 package com.onyx.edu.homework.ui;
 
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -140,6 +141,7 @@ public class QuestionFragment extends BaseFragment {
         button.setChecked(option.checked);
         button.setEnabled(enable);
         button.setGravity(Gravity.TOP);
+        button.setTextColor(Color.BLACK);
         button.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
