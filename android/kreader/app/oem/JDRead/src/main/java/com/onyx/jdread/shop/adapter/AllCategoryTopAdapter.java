@@ -11,7 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.AllCategoryImageItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean;
-import com.onyx.jdread.shop.event.OnCategoryItemClickEvent;
+import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -85,7 +85,7 @@ public class AllCategoryTopAdapter extends PageAdapter<PageRecyclerView.ViewHold
         }
         int position = (int) tag;
         if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new OnCategoryItemClickEvent(getItemVMList().get(position)));
+            eventBus.post(new CategoryItemClickEvent(getItemVMList().get(position)));
         }
     }
 

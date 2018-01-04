@@ -71,7 +71,7 @@ public class CloudApiContext {
         public static final String CATEGORY_LIST = "CategoryList";
     }
 
-    public static class CategoryBookListV2 {
+    public static class CategoryLevel2BookList {
         public static final String SORT_TYPE = "sortType";
         public static final String PAGE_SIZE = "pageSize";
         public static final String CAT_ID = "catId";
@@ -79,7 +79,7 @@ public class CloudApiContext {
         public static final String SORT_KEY = "sortKey";
         public static final String CLIENT_PLATFORM = "clientPlatform";
         public static final String ROOT_ID = "rootId";
-        public static final String CATEGORY_BOOK_LIST_V2 = "categoryBookListV2";
+        public static final String CATEGORY_LEVEL2_BOOK_LIST = "categoryBookListV2";
         public static final int PAGE_SIZE_DEFAULT_VALUES = 40;
         public static final int SORT_KEY_DEFAULT_VALUES = 1;
         public static final int CLIENT_PLATFORM_DEFAULT_VALUES = 1;

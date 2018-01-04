@@ -7,7 +7,7 @@ import java.util.List;
  * Created by hehai on 17-3-31.
  */
 
-public class CategoryV2BooksResultBean {
+public class CategoryLevel2BooksResultBean {
 
     public String code;
     public int currentPage;

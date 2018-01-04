@@ -8,10 +8,10 @@ import java.util.List;
  * Created by jackdeng on 2018/1/2.
  */
 
-public class OnCategoryAdapterRawDataChangeEvent {
+public class CategoryAdapterRawDataChangeEvent {
     private List<CategoryListResultBean.CatListBean> data;
 
-    public OnCategoryAdapterRawDataChangeEvent(List<CategoryListResultBean.CatListBean> data) {
+    public CategoryAdapterRawDataChangeEvent(List<CategoryListResultBean.CatListBean> data) {
         this.data = data;
     }
 

@@ -11,7 +11,7 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.RecommendItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
-import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
+import com.onyx.jdread.shop.event.RecommendItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -80,7 +80,7 @@ public class RecommendAdapter extends PageAdapter<PageRecyclerView.ViewHolder, R
         }
         int position = (int) tag;
         if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new OnRecommendItemClickEvent(getItemVMList().get(position)));
+            eventBus.post(new RecommendItemClickEvent(getItemVMList().get(position)));
         }
     }
 

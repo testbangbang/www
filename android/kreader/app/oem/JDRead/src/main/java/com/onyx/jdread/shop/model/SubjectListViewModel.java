@@ -7,7 +7,7 @@ import android.databinding.ObservableInt;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.event.OnSubjectListSortTypeChangeEvent;
+import com.onyx.jdread.shop.event.SubjectListSortTypeChangeEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -80,14 +80,14 @@ public class SubjectListViewModel extends BaseObservable {
     }
 
     public void onSortTypeHotClick(){
-        getEventBus().post(new OnSubjectListSortTypeChangeEvent(CloudApiContext.CategoryBookListV2.SORT_TYPE_HOT));
+        getEventBus().post(new SubjectListSortTypeChangeEvent(CloudApiContext.CategoryLevel2BookList.SORT_TYPE_HOT));
     }
 
     public void onSortTypeSalesClick(){
-        getEventBus().post(new OnSubjectListSortTypeChangeEvent(CloudApiContext.CategoryBookListV2.SORT_TYPE_SALES));
+        getEventBus().post(new SubjectListSortTypeChangeEvent(CloudApiContext.CategoryLevel2BookList.SORT_TYPE_SALES));
     }
 
     public void onSortTypeNewestClick(){
-        getEventBus().post(new OnSubjectListSortTypeChangeEvent(CloudApiContext.CategoryBookListV2.SORT_TYPE_NEWEST));
+        getEventBus().post(new SubjectListSortTypeChangeEvent(CloudApiContext.CategoryLevel2BookList.SORT_TYPE_NEWEST));
     }
 }

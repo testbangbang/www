@@ -3,10 +3,10 @@ package com.onyx.jdread.shop.model;
 import android.databinding.BaseObservable;
 import android.databinding.ObservableInt;
 
-import com.onyx.jdread.shop.event.OnTopBackEvent;
-import com.onyx.jdread.shop.event.OnTopRight2Event;
-import com.onyx.jdread.shop.event.OnTopRight3Event;
-import com.onyx.jdread.shop.event.OnTopRightEvent;
+import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.TopRightTitle2Event;
+import com.onyx.jdread.shop.event.TopRightTitle3Event;
+import com.onyx.jdread.shop.event.TopRightTitleEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -29,11 +29,11 @@ public class TitleBarViewModel extends BaseObservable{
     public int pageTag;
 
     public void onLeftTitleClick() {
-        getEventBus().post(new OnTopBackEvent(pageTag));
+        getEventBus().post(new TopBackEvent(pageTag));
     }
 
     public void onRightTitleClick() {
-        getEventBus().post(new OnTopRightEvent(pageTag));
+        getEventBus().post(new TopRightTitleEvent(pageTag));
     }
 
     public EventBus getEventBus() {
@@ -45,10 +45,10 @@ public class TitleBarViewModel extends BaseObservable{
     }
 
     public void onRightTitle2Click() {
-        getEventBus().post(new OnTopRight2Event());
+        getEventBus().post(new TopRightTitle2Event());
     }
 
     public void onRightTitle3Click() {
-        getEventBus().post(new OnTopRight3Event());
+        getEventBus().post(new TopRightTitle3Event());
     }
 }

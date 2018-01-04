@@ -4,9 +4,9 @@ import android.databinding.BaseObservable;
 import android.databinding.ObservableInt;
 
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.event.OnCategoryBoyClick;
-import com.onyx.jdread.shop.event.OnCategoryGirlClick;
-import com.onyx.jdread.shop.event.OnCategoryPublishClick;
+import com.onyx.jdread.shop.event.CategoryBoyClick;
+import com.onyx.jdread.shop.event.CategoryGirlClick;
+import com.onyx.jdread.shop.event.CategoryPublishClick;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -94,14 +94,14 @@ public class AllCategoryViewModel extends BaseObservable{
     }
 
     public void onPublishClick(){
-        getEventBus().post(new OnCategoryPublishClick());
+        getEventBus().post(new CategoryPublishClick());
     }
 
     public void onBoyClick(){
-        getEventBus().post(new OnCategoryBoyClick());
+        getEventBus().post(new CategoryBoyClick());
     }
 
     public void onGirlClick(){
-        getEventBus().post(new OnCategoryGirlClick());
+        getEventBus().post(new CategoryGirlClick());
     }
 }

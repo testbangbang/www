@@ -17,17 +17,17 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentSubjectListBinding;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
-import com.onyx.jdread.shop.action.BookCategoryV2BooksAction;
+import com.onyx.jdread.shop.action.BookCategoryLevel2BooksAction;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.adapter.SubjectListAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
-import com.onyx.jdread.shop.event.OnBookItemClickEvent;
-import com.onyx.jdread.shop.event.OnCategoryItemClickEvent;
-import com.onyx.jdread.shop.event.OnSubjectListSortTypeChangeEvent;
-import com.onyx.jdread.shop.event.OnTopBackEvent;
-import com.onyx.jdread.shop.event.OnTopRight2Event;
-import com.onyx.jdread.shop.event.OnTopRight3Event;
+import com.onyx.jdread.shop.event.BookItemClickEvent;
+import com.onyx.jdread.shop.event.CategoryItemClickEvent;
+import com.onyx.jdread.shop.event.SubjectListSortTypeChangeEvent;
+import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.TopRightTitle2Event;
+import com.onyx.jdread.shop.event.TopRightTitle3Event;
 import com.onyx.jdread.shop.model.AllCategoryViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -57,7 +57,7 @@ public class SubjectListFragment extends BaseFragment {
     private int currentPage = 1;
     private String currentCatName;
     private int catid;
-    private int sortType = CloudApiContext.CategoryBookListV2.SORT_TYPE_HOT;
+    private int sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_HOT;
     private boolean typeFree;
 
     @Nullable
@@ -87,10 +87,10 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     private void getBooksData(int catid, int currentPage, int sortType) {
-        BookCategoryV2BooksAction booksAction = new BookCategoryV2BooksAction(catid, currentPage, sortType);
-        booksAction.execute(getShopDataBundle(), new RxCallback<BookCategoryV2BooksAction>() {
+        BookCategoryLevel2BooksAction booksAction = new BookCategoryLevel2BooksAction(catid, currentPage, sortType);
+        booksAction.execute(getShopDataBundle(), new RxCallback<BookCategoryLevel2BooksAction>() {
             @Override
-            public void onNext(BookCategoryV2BooksAction categoryV2BooksAction) {
+            public void onNext(BookCategoryLevel2BooksAction categoryBooksAction) {
                 setBooksData();
                 updateContentView();
             }
@@ -198,14 +198,14 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTopBackEvent(OnTopBackEvent event) {
+    public void onTopBackEvent(TopBackEvent event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookItemClickEvent(OnBookItemClickEvent event) {
+    public void onBookItemClickEvent(BookItemClickEvent event) {
         PreferenceManager.setLongValue(JDReadApplication.getInstance(), Constants.SP_KEY_BOOK_ID, event.getBookBean().ebookId);
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(BookDetailFragment.class.getName());
@@ -213,19 +213,19 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryItemClickEvent(OnCategoryItemClickEvent event) {
+    public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         CategoryListResultBean.CatListBean categoryBean = event.getCategoryBean();
         this.catid = categoryBean.catId;
         this.currentCatName = categoryBean.catName;
         this.currentPage = 1;
-        this.sortType = CloudApiContext.CategoryBookListV2.SORT_TYPE_HOT;
+        this.sortType = CloudApiContext.CategoryLevel2BookList.SORT_TYPE_HOT;
         getSubjectListViewModel().getTitleBarViewModel().leftText = currentCatName;
         getBooksData(catid, currentPage, sortType);
         showOrCloseAllCatButton();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTopRight2Event(OnTopRight2Event event) {
+    public void onTopRight2Event(TopRightTitle2Event event) {
         showOrCloseAllCatButton();
     }
 
@@ -239,7 +239,7 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTopRight3Event(OnTopRight3Event event) {
+    public void onTopRight3Event(TopRightTitle3Event event) {
         showOrCloseSortButton();
     }
 
@@ -269,7 +269,7 @@ public class SubjectListFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onSubjectListSortTypeChangeEvent(OnSubjectListSortTypeChangeEvent event) {
+    public void onSubjectListSortTypeChangeEvent(SubjectListSortTypeChangeEvent event) {
         if (sortType != event.type) {
             sortType = event.type;
             getBooksData(catid, currentPage, sortType);

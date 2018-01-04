@@ -51,14 +51,14 @@ import com.onyx.jdread.shop.event.BookShelfEvent;
 import com.onyx.jdread.shop.event.DownloadFinishEvent;
 import com.onyx.jdread.shop.event.DownloadStartEvent;
 import com.onyx.jdread.shop.event.DownloadingEvent;
-import com.onyx.jdread.shop.event.OnBookDetailReadNowEvent;
-import com.onyx.jdread.shop.event.OnCopyrightCancelEvent;
-import com.onyx.jdread.shop.event.OnCopyrightEvent;
-import com.onyx.jdread.shop.event.OnDownloadWholeBookEvent;
-import com.onyx.jdread.shop.event.OnRecommendItemClickEvent;
-import com.onyx.jdread.shop.event.OnRecommendNextPageEvent;
-import com.onyx.jdread.shop.event.OnTopBackEvent;
-import com.onyx.jdread.shop.event.OnViewCommentEvent;
+import com.onyx.jdread.shop.event.BookDetailReadNowEvent;
+import com.onyx.jdread.shop.event.CopyrightCancelEvent;
+import com.onyx.jdread.shop.event.CopyrightEvent;
+import com.onyx.jdread.shop.event.DownloadWholeBookEvent;
+import com.onyx.jdread.shop.event.RecommendItemClickEvent;
+import com.onyx.jdread.shop.event.RecommendNextPageEvent;
+import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.ViewCommentEvent;
 import com.onyx.jdread.shop.event.ShopSmoothCardEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -208,35 +208,35 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN, priority = Integer.MAX_VALUE)
-    public void onRecommendItemClickEvent(OnRecommendItemClickEvent event) {
+    public void onRecommendItemClickEvent(RecommendItemClickEvent event) {
         ResultBookBean bookBean = event.getBookBean();
         cleanData();
         setBookId(bookBean.ebookId);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onRecommendNextPageEvent(OnRecommendNextPageEvent event) {
+    public void onRecommendNextPageEvent(RecommendNextPageEvent event) {
         if (recyclerViewRecommend != null){
             recyclerViewRecommend.nextPage();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailTopBackEvent(OnTopBackEvent event) {
+    public void onBookDetailTopBackEvent(TopBackEvent event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onViewCommentEvent(OnViewCommentEvent event) {
+    public void onViewCommentEvent(ViewCommentEvent event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().gotoView(CommentFragment.class.getName());
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onDownloadWholeBookEvent(OnDownloadWholeBookEvent event) {
+    public void onDownloadWholeBookEvent(DownloadWholeBookEvent event) {
         bookDetailBean = event.getBookDetailBean();
         if (!JDReadApplication.getInstance().getLogin()) {
             LoginHelper.showUserLoginDialog(getActivity(), getUserLoginViewModel());
@@ -251,17 +251,17 @@ public class BookDetailFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCopyrightEvent(OnCopyrightEvent event) {
+    public void onCopyrightEvent(CopyrightEvent event) {
         showCopyRightDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCopyrightCancelEvent(OnCopyrightCancelEvent event) {
+    public void onCopyrightCancelEvent(CopyrightCancelEvent event) {
         dismissCopyRightDialog();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailReadNowEvent(OnBookDetailReadNowEvent event) {
+    public void onBookDetailReadNowEvent(BookDetailReadNowEvent event) {
         bookDetailBean = event.getBookDetailBean();
         BookExtraInfoBean extraInfoBean = new BookExtraInfoBean();
         bookDetailBean.setBookExtraInfoBean(extraInfoBean);

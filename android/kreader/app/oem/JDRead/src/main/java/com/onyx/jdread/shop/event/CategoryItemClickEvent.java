@@ -6,11 +6,11 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBe
  * Created by jackdeng on 2017/12/16.
  */
 
-public class OnCategoryItemClickEvent {
+public class CategoryItemClickEvent {
 
     private CatListBean categoryBean;
 
-    public OnCategoryItemClickEvent(CatListBean categoryBean) {
+    public CategoryItemClickEvent(CatListBean categoryBean) {
         this.categoryBean = categoryBean;
     }
 

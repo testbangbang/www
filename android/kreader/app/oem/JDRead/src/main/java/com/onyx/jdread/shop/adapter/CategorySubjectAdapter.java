@@ -12,8 +12,8 @@ import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.AllCategoryNormalItemBinding;
 import com.onyx.jdread.databinding.CategorySubjectModelItemBinding;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean.CatListBean;
-import com.onyx.jdread.shop.event.OnCategoryAdapterRawDataChangeEvent;
-import com.onyx.jdread.shop.event.OnCategoryItemClickEvent;
+import com.onyx.jdread.shop.event.CategoryAdapterRawDataChangeEvent;
+import com.onyx.jdread.shop.event.CategoryItemClickEvent;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -100,7 +100,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
         setItemVMList(rawData);
         notifyDataSetChanged();
         if (eventBus != null) {
-            eventBus.post(new OnCategoryAdapterRawDataChangeEvent(getItemVMList()));
+            eventBus.post(new CategoryAdapterRawDataChangeEvent(getItemVMList()));
         }
     }
 
@@ -112,7 +112,7 @@ public class CategorySubjectAdapter extends PageAdapter<PageRecyclerView.ViewHol
         }
         int position = (int) tag;
         if (eventBus != null && getItemVMList() != null) {
-            eventBus.post(new OnCategoryItemClickEvent(getItemVMList().get(position)));
+            eventBus.post(new CategoryItemClickEvent(getItemVMList().get(position)));
         }
     }
 

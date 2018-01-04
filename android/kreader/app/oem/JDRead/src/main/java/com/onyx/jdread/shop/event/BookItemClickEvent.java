@@ -6,11 +6,11 @@ import com.onyx.jdread.shop.cloud.entity.jdbean.ResultBookBean;
  * Created by jackdeng on 2017/12/16.
  */
 
-public class OnRecommendItemClickEvent {
+public class BookItemClickEvent {
 
     private ResultBookBean bookBean;
 
-    public OnRecommendItemClickEvent(ResultBookBean bookBean) {
+    public BookItemClickEvent(ResultBookBean bookBean) {
         this.bookBean = bookBean;
     }
 

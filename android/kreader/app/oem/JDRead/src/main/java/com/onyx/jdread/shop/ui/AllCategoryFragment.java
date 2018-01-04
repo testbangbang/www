@@ -21,12 +21,12 @@ import com.onyx.jdread.shop.action.BookCategoryAction;
 import com.onyx.jdread.shop.adapter.AllCategoryTopAdapter;
 import com.onyx.jdread.shop.adapter.CategorySubjectAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
-import com.onyx.jdread.shop.event.OnCategoryAdapterRawDataChangeEvent;
-import com.onyx.jdread.shop.event.OnCategoryBoyClick;
-import com.onyx.jdread.shop.event.OnCategoryGirlClick;
-import com.onyx.jdread.shop.event.OnCategoryItemClickEvent;
-import com.onyx.jdread.shop.event.OnCategoryPublishClick;
-import com.onyx.jdread.shop.event.OnTopBackEvent;
+import com.onyx.jdread.shop.event.CategoryAdapterRawDataChangeEvent;
+import com.onyx.jdread.shop.event.CategoryBoyClick;
+import com.onyx.jdread.shop.event.CategoryGirlClick;
+import com.onyx.jdread.shop.event.CategoryItemClickEvent;
+import com.onyx.jdread.shop.event.CategoryPublishClick;
+import com.onyx.jdread.shop.event.TopBackEvent;
 import com.onyx.jdread.shop.model.AllCategoryViewModel;
 import com.onyx.jdread.shop.model.BookShopViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
@@ -181,14 +181,14 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onTopBackEvent(OnTopBackEvent event) {
+    public void onTopBackEvent(TopBackEvent event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryPublishClick(OnCategoryPublishClick event) {
+    public void onCategoryPublishClick(CategoryPublishClick event) {
         if (currentType != TYPE_PUBLISH) {
             currentType = TYPE_PUBLISH;
             getCategoryData();
@@ -197,7 +197,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryBoyClick(OnCategoryBoyClick event) {
+    public void onCategoryBoyClick(CategoryBoyClick event) {
         if (currentType != TYPE_BOY) {
             currentType = TYPE_BOY;
             getCategoryData();
@@ -206,7 +206,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryGirlClick(OnCategoryGirlClick event) {
+    public void onCategoryGirlClick(CategoryGirlClick event) {
         if (currentType != TYPE_GIRL) {
             currentType = TYPE_GIRL;
             getCategoryData();
@@ -215,7 +215,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryItemClickEvent(OnCategoryItemClickEvent event) {
+    public void onCategoryItemClickEvent(CategoryItemClickEvent event) {
         CategoryListResultBean.CatListBean categoryBean = event.getCategoryBean();
         if (categoryBean != null){
             if (categoryBean.isLeaf == 0){
@@ -231,7 +231,7 @@ public class AllCategoryFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCategoryAdapterRawDataChangeEvent(OnCategoryAdapterRawDataChangeEvent event) {
+    public void onCategoryAdapterRawDataChangeEvent(CategoryAdapterRawDataChangeEvent event) {
         updateContentView(getAllCategoryViewModel().getAllCategoryItems());
     }
 

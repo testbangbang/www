@@ -21,8 +21,8 @@ import com.onyx.jdread.shop.action.BookCommentListAction;
 import com.onyx.jdread.shop.adapter.BookCommentsAdapter;
 import com.onyx.jdread.shop.cloud.entity.jdbean.BookCommentsResultBean;
 import com.onyx.jdread.shop.common.PageTagConstants;
-import com.onyx.jdread.shop.event.OnTopBackEvent;
-import com.onyx.jdread.shop.event.OnTopRightEvent;
+import com.onyx.jdread.shop.event.TopBackEvent;
+import com.onyx.jdread.shop.event.TopRightTitleEvent;
 import com.onyx.jdread.shop.model.BookDetailViewModel;
 import com.onyx.jdread.shop.model.ShopDataBundle;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
@@ -149,14 +149,14 @@ public class CommentFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailTopBackEvent(OnTopBackEvent event) {
+    public void onBookDetailTopBackEvent(TopBackEvent event) {
         if (getViewEventCallBack() != null) {
             getViewEventCallBack().viewBack();
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBookDetailTopRightEvent(OnTopRightEvent event) {
+    public void onBookDetailTopRightEvent(TopRightTitleEvent event) {
 
     }
 }
