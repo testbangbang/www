@@ -141,7 +141,7 @@ public class NoteToolFragment extends BaseFragment {
             hideSubMenu();
             return;
         }
-        if (getDataBundle().isDoing() && MenuId.isSubMenuId(event.getMenuId()) && handleSubMenuEvent(event.getMenuId())) {
+        if (MenuId.isSubMenuId(event.getMenuId()) && handleSubMenuEvent(event.getMenuId())) {
             prepareHideSubMenu();
         }
     }
@@ -231,9 +231,6 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void addPage() {
-        if (!getDataBundle().isDoing()) {
-            return;
-        }
         flushDocument(false, shouldResume(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -251,9 +248,6 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void eraserPage() {
-        if (!getDataBundle().isDoing()) {
-            return;
-        }
         flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -279,9 +273,6 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void deletePage() {
-        if (!getDataBundle().isDoing()) {
-            return;
-        }
         flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -367,15 +358,15 @@ public class NoteToolFragment extends BaseFragment {
     public List<Integer> buildMainMenuIds() {
         List<Integer> functionMenuIds = new ArrayList<>();
         if (getDataBundle().isDoing()) {
-            functionMenuIds.add(MenuId.PEN_STYLE);
-            functionMenuIds.add(MenuId.BG);
-            functionMenuIds.add(MenuId.ERASER);
-            functionMenuIds.add(MenuId.PEN_WIDTH);
-            functionMenuIds.add(MenuId.SAVE);
-
             functionMenuIds.add(MenuId.ADD_PAGE);
             functionMenuIds.add(MenuId.DELETE_PAGE);
         }
+
+        functionMenuIds.add(MenuId.PEN_STYLE);
+        functionMenuIds.add(MenuId.BG);
+        functionMenuIds.add(MenuId.ERASER);
+        functionMenuIds.add(MenuId.PEN_WIDTH);
+        functionMenuIds.add(MenuId.SAVE);
 
         functionMenuIds.add(MenuId.PREV_PAGE);
         functionMenuIds.add(MenuId.NEXT_PAGE);
@@ -396,9 +387,6 @@ public class NoteToolFragment extends BaseFragment {
     }
 
     private void prepareShowSubMenu(final int parentId) {
-        if (!getDataBundle().isDoing()) {
-            return;
-        }
         flushDocument(true, false, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
@@ -550,7 +538,6 @@ public class NoteToolFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && getDataBundle().isDoing()
                 && isRunning();
     }
 }

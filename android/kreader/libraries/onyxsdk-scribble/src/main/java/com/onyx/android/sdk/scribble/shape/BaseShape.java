@@ -8,6 +8,7 @@ import android.graphics.RectF;
 
 import com.onyx.android.sdk.scribble.data.MirrorType;
 import com.onyx.android.sdk.scribble.data.ShapeExtraAttributes;
+import com.onyx.android.sdk.scribble.data.ShapeState;
 import com.onyx.android.sdk.scribble.data.TouchPoint;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.formshape.FormValue;
@@ -47,6 +48,7 @@ public class BaseShape implements Shape {
     private boolean lock;
     private boolean review;
     private int revision;
+    private int shapeState;
 
     private boolean selected = false;
     private float scale = 1.0f;
@@ -302,6 +304,9 @@ public class BaseShape implements Shape {
         if (isReview()) {
             return false;
         }
+        if (getShapeState() == ShapeState.REVIEWED) {
+            return false;
+        }
         final RectF boundingRect = getBoundingRect();
         if (boundingRect == null) {
             return false;
@@ -539,6 +544,16 @@ public class BaseShape implements Shape {
     @Override
     public void setRotationPointYCoordinate(float yCoordinate) {
         rotationCenterPoint.y = yCoordinate;
+    }
+
+    @Override
+    public void setShapeState(int state) {
+        this.shapeState = state;
+    }
+
+    @Override
+    public int getShapeState() {
+        return shapeState;
     }
 
     public static boolean useRawInput() {

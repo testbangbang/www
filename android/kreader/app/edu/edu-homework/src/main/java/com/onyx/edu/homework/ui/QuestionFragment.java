@@ -193,17 +193,9 @@ public class QuestionFragment extends BaseFragment {
         }
         getDataBundle().resetNoteViewHelper();
         getDataBundle().getNoteViewHelper().setDrawText(!question.isChoiceQuestion() ? question.content : null);
-        int initPageCount = 1;
-        boolean hasReview = question.review != null && !CollectionUtils.isNullOrEmpty(question.review.attachmentUrl);
-        if (DataBundle.getInstance().isReview() && hasReview) {
-            initPageCount = question.review.attachmentUrl.size();
-            reviewFragment = ReviewFragment.newInstance(question);
-            getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, reviewFragment).commit();
-        }else {
-            scribbleFragment = ScribbleFragment.newInstance(question);
-            getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
-        }
-        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, initPageCount);
+        scribbleFragment = ScribbleFragment.newInstance(question);
+        getChildFragmentManager().beginTransaction().replace(R.id.scribble_layout, scribbleFragment).commit();
+        toolFragment = NoteToolFragment.newInstance(binding.subMenuLayout, 1);
         getChildFragmentManager().beginTransaction().replace(R.id.tool_layout, toolFragment).commit();
     }
 
@@ -247,7 +239,7 @@ public class QuestionFragment extends BaseFragment {
     }
 
     public void saveQuestion(@NonNull SaveDocumentOption option, BaseCallback callback) {
-        if (question.isChoiceQuestion() || !getDataBundle().isDoing() || scribbleFragment == null) {
+        if (question.isChoiceQuestion() || scribbleFragment == null) {
             BaseCallback.invoke(callback, null, null);
             return;
         }
