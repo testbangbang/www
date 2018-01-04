@@ -35,6 +35,7 @@
             android:background="@android:color/transparent" />
 
         <include
+            android:id="@+id/reader_page_info_bar"
             layout="@layout/reader_page_info_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

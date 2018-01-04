@@ -32,12 +32,22 @@ public class ReaderSettingMenuDialogHandler {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onCloseReaderSettingMenuEvent(CloseReaderSettingMenuEvent event){
+    public void onCloseReaderSettingMenuEvent(CloseReaderSettingMenuEvent event) {
         readerSettingViewBack.getContent().dismiss();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onBuyBookClickEvent(BuyBookClickEvent event){
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"buyBook");
+    public void onBuyBookClickEvent(BuyBookClickEvent event) {
+        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(), "buyBook");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderSettingMenuItemNextChapterEvent(ReaderSettingMenuItemNextChapterEvent event) {
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderSettingMenuItemPreviousChapterEvent(ReaderSettingMenuItemPreviousChapterEvent event) {
+
     }
 }

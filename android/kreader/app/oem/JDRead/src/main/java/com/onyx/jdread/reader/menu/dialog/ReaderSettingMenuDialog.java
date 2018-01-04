@@ -20,6 +20,7 @@ import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
+import com.onyx.jdread.reader.menu.model.ReaderPageInfoModel;
 import com.onyx.jdread.reader.menu.model.ReaderSettingModel;
 import com.onyx.jdread.reader.menu.model.ReaderTitleBarModel;
 
@@ -55,6 +56,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         initReaderSettingMenu();
         initFunctionBar();
         initSystemBar();
+        initReaderPageInfoBar();
         initReaderTitleBar();
     }
 
@@ -65,6 +67,10 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initReaderSettingMenu(){
         binding.setReaderSettingModel(new ReaderSettingModel());
+    }
+
+    private void initReaderPageInfoBar(){
+        binding.readerPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
     }
 
     private void initSystemBar() {
@@ -121,7 +127,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     @Override
     public void dismiss() {
-        readerSettingMenuDialogHandler.registerListener();
+        readerSettingMenuDialogHandler.unregisterListener();
         super.dismiss();
     }
 
