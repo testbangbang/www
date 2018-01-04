@@ -26,6 +26,7 @@ public class DataManager {
     private DataProviderManager dataProviderManager = new DataProviderManager();
     private FileSystemManager fileSystemManager;
     private CacheManager cacheManager;
+    public static boolean useLocalDataProvider = true;
 
     public DataManager() {
         requestManager = new RequestManager();
@@ -85,7 +86,11 @@ public class DataManager {
     }
 
     public DataProviderBase getRemoteContentProvider() {
-        return getDataProviderManager().getRemoteDataProvider();
+        return DataProviderManager.getRemoteDataProvider();
+    }
+
+    public DataProviderBase getLocalContentProvider() {
+        return DataProviderManager.getLocalDataProvider();
     }
 
     public final FileSystemManager getFileSystemManager() {

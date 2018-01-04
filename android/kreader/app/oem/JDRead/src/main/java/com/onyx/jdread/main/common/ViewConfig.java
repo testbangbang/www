@@ -9,6 +9,10 @@ import com.onyx.jdread.personal.ui.LoginFragment;
 import com.onyx.jdread.personal.ui.PersonalAccountFragment;
 import com.onyx.jdread.personal.ui.PersonalExperienceFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
+import com.onyx.jdread.personal.ui.PersonalNoteFragment;
+import com.onyx.jdread.personal.ui.PersonalTaskFragment;
+import com.onyx.jdread.personal.ui.PointsForFragment;
+import com.onyx.jdread.personal.ui.ReadPreferenceFragment;
 import com.onyx.jdread.personal.ui.TopUpRecordFragment;
 import com.onyx.jdread.setting.ui.ContactUsFragment;
 import com.onyx.jdread.setting.ui.DeviceConfigFragment;
@@ -77,6 +81,10 @@ public class ViewConfig {
         childViewInfo.put(LoginFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(ConsumptionRecordFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(TopUpRecordFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(PointsForFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(PersonalTaskFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(ReadPreferenceFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(PersonalNoteFragment.class.getName(), FunctionModule.PERSONAL);
     }
 
     public static FunctionModule findChildViewParentId(String childViewName) {

@@ -29,6 +29,7 @@ public class PersonalDataBundle {
     private ReadTotalInfoBean readTotalInfo;
     private ReadOverInfoBean readOverInfo;
     private PointsForModel pointsForModel;
+    private PersonalTaskModel personalTaskModel;
 
     private PersonalDataBundle() {
 
@@ -134,5 +135,12 @@ public class PersonalDataBundle {
             pointsForModel.loadData();
         }
         return pointsForModel;
+    }
+
+    public PersonalTaskModel getPersonalTaskModel() {
+        if (personalTaskModel == null) {
+            personalTaskModel = new PersonalTaskModel();
+        }
+        return personalTaskModel;
     }
 }

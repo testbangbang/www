@@ -40,7 +40,8 @@ public class RxLibraryMoveToRequest extends RxBaseDBRequest {
         DataProviderBase providerBase = getDataProvider();
         if (StringUtils.isNotBlank(toIdString)) {
             Library library = providerBase.findLibraryByName(getAppContext(), toLibrary.title.get());
-            if (!library.hasValidId()) {
+            if (library == null || !library.hasValidId()) {
+                library = new Library();
                 library.setIdString(toLibrary.idString.get());
                 library.setParentUniqueId(toLibrary.parentId.get());
                 library.setName(toLibrary.title.get());
