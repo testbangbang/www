@@ -99,13 +99,6 @@ public class GiftCenterFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUserLoginEvent(UserLoginEvent event) {
-        Utils.hideSoftWindow(getActivity());
-        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
-        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onBackToSettingFragmentEvent(BackToSettingFragmentEvent event) {
         viewEventCallBack.viewBack();
     }
