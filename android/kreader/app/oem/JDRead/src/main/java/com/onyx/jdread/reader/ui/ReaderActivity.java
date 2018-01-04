@@ -31,7 +31,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initView();
-        initThirdLibrary();
+        registerListener();
         initData();
     }
 
@@ -90,7 +90,7 @@ public class ReaderActivity extends AppCompatActivity implements ReaderViewBack 
         return surfaceHolderCallback;
     }
 
-    private void initThirdLibrary() {
+    private void registerListener() {
         readerActivityEventHandler.registeredListener();
     }
 

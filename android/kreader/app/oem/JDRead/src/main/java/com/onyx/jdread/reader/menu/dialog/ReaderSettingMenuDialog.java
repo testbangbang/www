@@ -47,7 +47,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         super.onCreate(savedInstanceState);
         setCanceledOnTouchOutside(false);
         initView();
-        initThirdLibrary();
+        registerListener();
         initData();
     }
 
@@ -115,7 +115,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
         return binding.readerSettingFunctionBar.functionBarRecycler;
     }
 
-    private void initThirdLibrary() {
+    private void registerListener() {
         readerSettingMenuDialogHandler.registerListener();
     }
 
