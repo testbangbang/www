@@ -82,4 +82,8 @@
     <integer name="personal_note_col">1</integer>
     <integer name="personal_task_row">2</integer>
     <integer name="personal_task_col">1</integer>
+    <integer name="personal_book_filter_x">100</integer>
+    <integer name="personal_book_filter_y">10</integer>
+    <integer name="personal_book_row">5</integer>
+    <integer name="personal_book_col">1</integer>
 </resources>

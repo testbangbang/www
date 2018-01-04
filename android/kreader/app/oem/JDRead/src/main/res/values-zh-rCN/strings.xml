@@ -257,4 +257,9 @@
     <string name="translation">翻译</string>
     <string name="associated_with_the_impression_notes">关联印象笔记</string>
     <string name="associated_with_the_email">关联电子邮箱</string>
+    <string name="all">全部</string>
+    <string name="the_default">全部(默认)</string>
+    <string name="have_bought">已购买</string>
+    <string name="self_import">自导入文档</string>
+    <string name="settlement">去结算</string>
 </resources>

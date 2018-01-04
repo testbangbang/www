@@ -236,4 +236,11 @@
     <dimen name="activity_screen_lock_margin_top">100dp</dimen>
     <dimen name="lock_screen_password_margin_top">30dp</dimen>
     <dimen name="reading_tools_recycler_height">267dp</dimen>
+    <dimen name="dialog_export_close_padding">10dp</dimen>
+    <dimen name="dialog_export_to_margin">20dp</dimen>
+    <dimen name="personal_book_title_padding">10dp</dimen>
+    <dimen name="personal_book_filter_margin_left">20dp</dimen>
+    <dimen name="personal_book_recycler_padding">10dp</dimen>
+    <dimen name="personal_book_page_margin_top">20dp</dimen>
+    <dimen name="item_personal_book_dec_margin_left">10dp</dimen>
 </resources>
