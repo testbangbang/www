@@ -24,6 +24,8 @@ import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookDetailBinding;
 import com.onyx.jdread.databinding.LayoutBookCopyrightBinding;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
@@ -542,5 +544,15 @@ public class BookDetailFragment extends BaseFragment {
         dismissCopyRightDialog();
         LoginHelper.dismissUserLoginDialog();
         copyRightDialog = null;
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        showLoadingDialog(getString(event.getResId()));
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
     }
 }

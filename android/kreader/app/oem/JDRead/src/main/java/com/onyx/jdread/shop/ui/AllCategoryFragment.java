@@ -15,6 +15,8 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentBookAllCategoryBinding;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryAction;
@@ -239,5 +241,15 @@ public class AllCategoryFragment extends BaseFragment {
         allCategoryBinding.titleBoyShadow.setVisibility(currentType == TYPE_BOY ? View.VISIBLE : View.INVISIBLE);
         allCategoryBinding.titleGirlShadow.setVisibility(currentType == TYPE_GIRL ? View.VISIBLE : View.INVISIBLE);
         allCategoryBinding.titlePublisherShadow.setVisibility(currentType == TYPE_PUBLISH ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        showLoadingDialog(getString(event.getResId()));
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
     }
 }

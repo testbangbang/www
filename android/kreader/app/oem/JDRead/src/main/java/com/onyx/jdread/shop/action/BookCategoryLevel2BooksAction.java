@@ -2,6 +2,7 @@ package com.onyx.jdread.shop.action;
 
 import com.onyx.android.sdk.rx.RxCallback;
 import com.onyx.jdread.JDReadApplication;
+import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryLevel2BooksResultBean;
 import com.onyx.jdread.shop.model.BookShopViewModel;
@@ -27,7 +28,8 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
     }
 
     @Override
-    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+    public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        showLoadingDialog(shopDataBundle, R.string.loading);
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(JDReadApplication.getInstance().getAppBaseInfo());
@@ -57,6 +59,7 @@ public class BookCategoryLevel2BooksAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onComplete() {
                 super.onComplete();
+                hideLoadingDialog(shopDataBundle);
                 if (rxCallback != null) {
                     rxCallback.onComplete();
                 }

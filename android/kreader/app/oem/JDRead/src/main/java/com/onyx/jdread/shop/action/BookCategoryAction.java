@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.alibaba.fastjson.JSONObject;
 import com.onyx.android.sdk.rx.RxCallback;
+import com.onyx.jdread.R;
 import com.onyx.jdread.shop.cloud.entity.BaseRequestBean;
 import com.onyx.jdread.shop.cloud.entity.jdbean.CategoryListResultBean;
 import com.onyx.jdread.shop.common.CloudApiContext;
@@ -31,7 +32,8 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
     }
 
     @Override
-    public void execute(ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+    public void execute(final ShopDataBundle shopDataBundle, final RxCallback rxCallback) {
+        showLoadingDialog(shopDataBundle, R.string.loading);
         shopViewModel = shopDataBundle.getShopViewModel();
         BaseRequestBean baseRequestBean = new BaseRequestBean();
         baseRequestBean.setAppBaseInfo(shopDataBundle.getAppBaseInfo());
@@ -67,6 +69,7 @@ public class BookCategoryAction extends BaseAction<ShopDataBundle> {
             @Override
             public void onComplete() {
                 super.onComplete();
+                hideLoadingDialog(shopDataBundle);
                 if (rxCallback != null) {
                     rxCallback.onComplete();
                 }

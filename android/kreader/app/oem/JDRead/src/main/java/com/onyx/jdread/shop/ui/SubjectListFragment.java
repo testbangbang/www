@@ -15,6 +15,8 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
 import com.onyx.jdread.databinding.FragmentSubjectListBinding;
+import com.onyx.jdread.shop.event.HideAllDialogEvent;
+import com.onyx.jdread.shop.event.LoadingDialogEvent;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.shop.action.BookCategoryLevel2BooksAction;
@@ -114,7 +116,6 @@ public class SubjectListFragment extends BaseFragment {
         recyclerView = subjectListBinding.recyclerViewSubjectList;
         recyclerView.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
         recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(itemDecoration);
         paginator = recyclerView.getPaginator();
         recyclerView.setOnPagingListener(new PageRecyclerView.OnPagingListener() {
             @Override
@@ -275,5 +276,15 @@ public class SubjectListFragment extends BaseFragment {
             getBooksData(catid, currentPage, sortType);
         }
         showOrCloseSortButton();
+    }
+
+    @Subscribe
+    public void onLoadingDialogEvent(LoadingDialogEvent event) {
+        showLoadingDialog(getString(event.getResId()));
+    }
+
+    @Subscribe
+    public void onHideAllDialogEvent(HideAllDialogEvent event) {
+        hideLoadingDialog();
     }
 }
