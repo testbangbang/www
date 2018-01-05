@@ -31,8 +31,10 @@ import com.onyx.jdread.main.common.CommonUtils;
 import com.onyx.jdread.main.common.Constants;
 import com.onyx.jdread.main.common.ManagerActivityUtils;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.CancelUserLoginDialogEvent;
+import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
 import com.onyx.jdread.personal.model.UserLoginViewModel;
@@ -68,6 +70,7 @@ import com.onyx.jdread.shop.utils.BookDownloadUtils;
 import com.onyx.jdread.shop.utils.DownLoadHelper;
 import com.onyx.jdread.shop.view.CustomDialog;
 import com.onyx.jdread.shop.view.DividerItemDecoration;
+import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -245,6 +248,13 @@ public class BookDetailFragment extends BaseFragment {
         } else {
             smoothDownload();
         }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginEvent(UserLoginEvent event) {
+        Utils.hideSoftWindow(getActivity());
+        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
+        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

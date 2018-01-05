@@ -8,13 +8,13 @@
             type="com.onyx.jdread.library.model.PageIndicatorModel" />
     </data>
 
-    <com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout
+    <RelativeLayout
         android:id="@+id/page_indicator_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:layout_margin="@dimen/page_indicator_layout_margin"
-        android:gravity="center_vertical">
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/page_indicator_layout_margin"
+        android:paddingRight="@dimen/page_indicator_layout_margin">
 
         <TextView
             android:id="@+id/total_tv"
@@ -22,28 +22,19 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:text="@{@string/book_total(model.total)}"
-            android:textSize="26sp" />
+            android:textSize="@dimen/level_one_heading_font" />
 
-        <LinearLayout
-            android:id="@+id/page_panel"
+        <TextView
+            android:id="@+id/page_indicator"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            android:text="@{@string/page_count(model.currentPage,model.totalPage)}"
+            android:textSize="@dimen/level_one_heading_font" />
 
-            <TextView
-                android:id="@+id/page_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="5dp"
-                android:layout_marginRight="5dp"
-                android:gravity="center_vertical"
-                android:text="@{@string/page_count(model.currentPage,model.totalPage)}"
-                android:textSize="26sp" />
-
-        </LinearLayout>
-
-    </com.onyx.android.sdk.ui.compat.AppCompatRelativeLayout>
+    </RelativeLayout>
 </layout>

@@ -66,6 +66,11 @@ public class ReaderActivityEventHandler {
     }
 
     @Subscribe
+    public void onCloseDocumentEvent(CloseDocumentEvent event) {
+        readerViewBack.getContext().finish();
+    }
+
+    @Subscribe
     public void onShowReaderSettingMenuEvent(ShowReaderSettingMenuEvent event) {
         if(readerViewBack != null){
             Activity activity = readerViewBack.getContext();

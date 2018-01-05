@@ -20,10 +20,11 @@ public class PopMenuAdapter extends PageRecyclerView.PageAdapter<PopMenuAdapter.
     private int col = 1;
     private ItemClickListener ItemListener;
 
-    public PopMenuAdapter(List<PopMenuModel> list, int row, int col) {
+    public void setData(List<PopMenuModel> list, int row, int col) {
         this.list = list;
         this.row = row;
         this.col = col;
+        notifyDataSetChanged();
     }
 
     @Override

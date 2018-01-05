@@ -296,6 +296,15 @@
     <string name="translation">Translation</string>
     <string name="associated_with_the_impression_notes">Associated with_the impression notes</string>
     <string name="associated_with_the_email">Associated with the email</string>
+    <string name="all">All</string>
+    <string name="the_default">All(default)</string>
+    <string name="have_bought">Have bought</string>
+    <string name="self_import">Self-import document</string>
+    <string name="settlement">Settlement</string>
+    <string name="author_format" translatable="false">Author： %s</string>
+    <string name="format_format" translatable="false">Format： %s</string>
+    <string name="size_format" translatable="false">Size： %s</string>
+    <string name="read_format" translatable="false">Read： %s</string>
     <string name="subject_list_sort_type_hot">Hot</string>
     <string name="subject_list_sort_type_sales">Sales</string>
     <string name="subject_list_sort_type_newest">Newest</string>
