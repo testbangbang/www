@@ -256,7 +256,6 @@ public class HomeworkListActivity extends BaseActivity {
                     Toast.makeText(HomeworkListActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     return;
                 }
-                NetworkUtil.enableWiFi(HomeworkListActivity.this, false);
                 hideMessage();
                 updateViewState();
                 showTotalScore();
