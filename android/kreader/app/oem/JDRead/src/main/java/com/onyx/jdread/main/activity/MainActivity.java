@@ -48,6 +48,7 @@ import com.onyx.jdread.personal.model.UserLoginViewModel;
 import com.onyx.jdread.personal.ui.LoginFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.request.RxLoadPicByPathRequest;
+import com.onyx.jdread.shop.ui.ShopCartFragment;
 import com.onyx.jdread.shop.ui.ShopFragment;
 
 import org.greenrobot.eventbus.EventBus;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
         notifyChildViewChangeWindow();
         BaseFragment baseFragment = getPageView(childViewName);
 
-        transaction.replace(R.id.main_content_view, baseFragment);
+        transaction.replace(R.id.main_content_view, new ShopCartFragment());
         transaction.commitAllowingStateLoss();
         changeFunctionItem(childViewName);
         saveChildViewInfo(childViewName, baseFragment);

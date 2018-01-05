@@ -288,9 +288,13 @@
     <string name="the_default">全部(默认)</string>
     <string name="have_bought">已购买</string>
     <string name="self_import">自导入文档</string>
-    <string name="settlement">去结算</string>
+    <string name="settlement">去结算(%s)</string>
     <string name="author_format" translatable="false">作者： %s</string>
     <string name="format_format" translatable="false">格式： %s</string>
     <string name="size_format" translatable="false">大小： %s</string>
     <string name="read_format" translatable="false">已读： %s</string>
+    <string name="braces">(%s)</string>
+    <string name="original_amount">原金额:%s</string>
+    <string name="preferential">优惠:%s</string>
+    <string name="combine">合计:%s</string>
 </resources>

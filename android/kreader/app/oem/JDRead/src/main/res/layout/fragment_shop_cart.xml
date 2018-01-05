@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data class="ShopCartBinding">
+
+        <variable
+            name="model"
+            type="com.onyx.jdread.shop.model.ShopCartModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/shop_cart_whole_padding">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/shop_cart_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imagebtn_bg"
+                android:drawableLeft="@mipmap/ic_read_back"
+                android:drawablePadding="@dimen/title_bar_drawable_padding"
+                android:gravity="center_vertical"
+                android:text="@string/cart"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/shop_cart_title"
+                android:text="@{@string/braces(model.datas.size())}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <CheckBox
+                    android:id="@+id/shop_cart_check"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="@={model.selectedAll}" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/shop_cart_delete_margin_left"
+                    android:src="@mipmap/ic_close" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/shop_cart_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/shop_cart_recycler_margin_top"
+            android:layout_weight="1" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line_width"
+            android:background="@color/divider_color" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/shop_cart_original_amount_margin_top"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/original_amount(model.originalPrice)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/shop_cart_cash_back_margin_left"
+                android:layout_weight="1"
+                android:text="@{@string/preferential(model.cashBack)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{model.pageSize}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_three_heading_font" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/shop_cart_combine_margin_bottom"
+            android:layout_marginTop="@dimen/shop_cart_combine_margin_top"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@{@string/combine(model.totalAmount)}"
+                android:textColor="@android:color/black"
+                android:textSize="@dimen/level_one_heading_font" />
+
+            <TextView
+                android:layout_width="@dimen/shop_cart_settlement_width"
+                android:layout_height="wrap_content"
+                android:background="@drawable/rectangle_stroke"
+                android:gravity="center"
+                android:padding="@dimen/shop_cart_settlement_padding"
+                android:text="@{@string/settlement(model.size)}"
+                android:textSize="@dimen/level_one_heading_font" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
