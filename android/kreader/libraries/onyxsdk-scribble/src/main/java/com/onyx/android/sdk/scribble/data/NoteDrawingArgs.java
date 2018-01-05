@@ -44,7 +44,7 @@ public class NoteDrawingArgs {
     }
 
     public static int defaultShape() {
-        return ShapeFactory.SHAPE_PENCIL_SCRIBBLE;
+        return ShapeFactory.SHAPE_BRUSH_SCRIBBLE;
     }
 
     public static int defaultColor() {
