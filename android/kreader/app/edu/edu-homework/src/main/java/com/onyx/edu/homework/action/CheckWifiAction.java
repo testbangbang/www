@@ -17,22 +17,22 @@ import com.onyx.edu.homework.request.CheckWifiRequest;
 
 public class CheckWifiAction extends BaseAction {
 
+    private boolean isConnected;
+
     @Override
     public void execute(final Context context, final BaseCallback baseCallback) {
-        CheckWifiRequest wifiRequest = new CheckWifiRequest();
+        final CheckWifiRequest wifiRequest = new CheckWifiRequest();
         wifiRequest.setContext(context.getApplicationContext());
         getDataManager().submit(context, wifiRequest, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-
-            }
-
-            @Override
-            public void onChanged(BaseRequest request, boolean state) {
-                if (state) {
-                    BaseCallback.invoke(baseCallback, request, null);
-                }
+                isConnected = wifiRequest.isConnected();
+                BaseCallback.invoke(baseCallback, request, null);
             }
         });
+    }
+
+    public boolean isConnected() {
+        return isConnected;
     }
 }

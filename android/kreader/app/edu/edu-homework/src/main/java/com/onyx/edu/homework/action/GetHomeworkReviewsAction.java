@@ -41,17 +41,12 @@ public class GetHomeworkReviewsAction extends BaseAction {
             if (showLoading) {
                 showLoadingDialog(context, context.getString(R.string.opening_wifi));
             }
-            CheckWifiRequest wifiRequest = new CheckWifiRequest();
+            final CheckWifiRequest wifiRequest = new CheckWifiRequest();
             wifiRequest.setContext(context.getApplicationContext());
             getDataManager().submit(context, wifiRequest, new BaseCallback() {
                 @Override
                 public void done(BaseRequest request, Throwable e) {
-
-                }
-
-                @Override
-                public void onChanged(BaseRequest request, boolean state) {
-                    if (state) {
+                    if (wifiRequest.isConnected()) {
                         getHomeworkReviews(context, baseCallback);
                     }
                 }

@@ -94,10 +94,13 @@ public class SubmitDialog extends OnyxBaseDialog {
             return;
         }
         onWifiConnect();
-        new CheckWifiAction().execute(getContext(), new BaseCallback() {
+        final CheckWifiAction checkWifiAction = new CheckWifiAction();
+        checkWifiAction.execute(getContext(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                submit();
+                if (checkWifiAction.isConnected()) {
+                    submit();
+                }
             }
         });
     }

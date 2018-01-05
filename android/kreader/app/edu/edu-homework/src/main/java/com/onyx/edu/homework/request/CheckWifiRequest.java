@@ -16,17 +16,20 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 public class CheckWifiRequest extends BaseDataRequest {
 
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
+    private boolean isConnected;
 
     @Override
     public void execute(DataManager dataManager) throws Exception {
         if (NetworkUtil.isWiFiConnected(getContext())) {
-            getCallback().onChanged(CheckWifiRequest.this, true);
+            setConnected(true);
+            getCallback().done(CheckWifiRequest.this, null);
             return;
         }
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
             public void onNetworkChanged(boolean connected, int networkType) {
-                getCallback().onChanged(CheckWifiRequest.this, connected);
+                setConnected(connected);
+                getCallback().done(CheckWifiRequest.this, null);
                 if (connected) {
                     unregisterReceiver(getContext());
                 }
@@ -44,5 +47,13 @@ public class CheckWifiRequest extends BaseDataRequest {
         }
         context.unregisterReceiver(networkConnectChangedReceiver);
         networkConnectChangedReceiver = null;
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    private void setConnected(boolean connected) {
+        isConnected = connected;
     }
 }
