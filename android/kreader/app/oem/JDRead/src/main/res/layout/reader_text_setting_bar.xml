@@ -126,12 +126,15 @@
 
                     <TextView
                         style="@style/ReaderTextSettingFormatStyle"
+                        android:background="@drawable/reader_text_item_left_selected"
                         android:text="@string/reader_adaptive" />
 
                     <View style="@style/ReaderVerticalSeparationLine" />
 
                     <TextView
                         style="@style/ReaderTextSettingFormatStyle"
+                        android:clickable="true"
+                        android:onClick="@{()->readerTextModel.onCustomizeItemClick()}"
                         android:text="@string/reader_customize" />
                 </LinearLayout>
 
@@ -150,7 +153,9 @@
                         android:layout_height="match_parent"
                         android:background="@drawable/imagebtn_bg"
                         android:clickable="true"
-                        android:gravity="right">
+                        android:gravity="right"
+                        android:onClick="@{()->readerTextModel.onBackPDFClick()}"
+                        android:visibility="@{readerTextModel.isPdf?View.VISIBLE:View.GONE}">
 
                         <ImageView
                             android:layout_width="wrap_content"

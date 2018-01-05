@@ -99,4 +99,14 @@ public class ReaderSettingMenuDialogHandler {
         //pdf show text
         //new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.imageMenuGroup);
     }
+
+    @Subscribe (threadMode = ThreadMode.MAIN)
+    public void onReaderSettingMenuItemBackPdfEvent(ReaderSettingMenuItemBackPdfEvent event){
+        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"BackPdf");
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReaderSettingMenuItemCustomizeEvent(ReaderSettingMenuItemCustomizeEvent event){
+        new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.customMenuGroup).execute(readerDataHolder);
+    }
 }
