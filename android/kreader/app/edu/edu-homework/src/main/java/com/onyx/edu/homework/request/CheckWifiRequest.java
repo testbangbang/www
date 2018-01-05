@@ -16,7 +16,7 @@ import com.onyx.android.sdk.utils.NetworkUtil;
 public class CheckWifiRequest extends BaseDataRequest {
 
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
-    private boolean isConnected;
+    private volatile boolean isConnected;
 
     @Override
     public void execute(DataManager dataManager) throws Exception {

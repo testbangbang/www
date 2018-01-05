@@ -17,7 +17,7 @@ import com.onyx.edu.homework.request.CheckWifiRequest;
 
 public class CheckWifiAction extends BaseAction {
 
-    private boolean isConnected;
+    private volatile boolean isConnected;
 
     @Override
     public void execute(final Context context, final BaseCallback baseCallback) {
