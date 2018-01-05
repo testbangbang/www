@@ -3,6 +3,7 @@ package com.onyx.android.dr.util;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
@@ -1047,5 +1048,12 @@ public class Utils {
             week_index = 0;
         }
         return week_index;
+    }
+
+    public static void sendUserNameBroadcast(Context context, String account) {
+        Intent intent  = new Intent();
+        intent.setAction(Constants.USER_NAME_ACTION);
+        intent.putExtra(Constants.USER_NAME_TAG, account);
+        context.sendBroadcast(intent);
     }
 }

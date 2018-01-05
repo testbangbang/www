@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
+import android.util.Log;
 import android.util.SparseArray;
 import android.view.KeyEvent;
 import android.view.View;
@@ -51,6 +52,7 @@ import com.onyx.android.dr.util.ApkUtils;
 import com.onyx.android.dr.util.DRPreferenceManager;
 import com.onyx.android.dr.util.SystemUtils;
 import com.onyx.android.dr.util.TimeUtils;
+import com.onyx.android.dr.util.Utils;
 import com.onyx.android.sdk.data.model.ApplicationUpdate;
 import com.onyx.android.sdk.data.model.Firmware;
 import com.onyx.android.sdk.data.request.cloud.FirmwareUpdateRequest;
@@ -69,6 +71,7 @@ import butterknife.Bind;
 import butterknife.OnClick;
 
 public class MainActivity extends BaseActivity implements MainView {
+    private static final String TAG = MainActivity.class.getSimpleName();
     @Bind(R.id.main_view_container)
     FrameLayout mainViewContainer;
     @Bind(R.id.tab_menu)
@@ -89,6 +92,10 @@ public class MainActivity extends BaseActivity implements MainView {
     protected Integer getLayoutId() {
         if (!DRApplication.getInstance().isLoginSuccess()) {
             ActivityManager.startLoginActivity(this);
+        } else {
+            String userAccount = DRPreferenceManager.getUserAccount(this, "");
+            Utils.sendUserNameBroadcast(this, userAccount);
+            Log.i(TAG, userAccount);
         }
         stopBootAnimation();
         return R.layout.activity_main;

@@ -31,6 +31,7 @@ import com.onyx.android.dr.R;
 import com.onyx.android.dr.common.ActivityManager;
 import com.onyx.android.dr.common.CommonNotices;
 import com.onyx.android.dr.common.Constants;
+import com.onyx.android.dr.event.AmendCommentEvent;
 import com.onyx.android.dr.event.WebViewJSEvent;
 import com.onyx.android.dr.interfaces.BookReportView;
 import com.onyx.android.dr.interfaces.OnLongClickTouchListener;
@@ -56,6 +57,7 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -75,6 +77,8 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     TextView titleBarTitle;
     @Bind(R.id.title_bar_right_select_time)
     TextView titleBarRightSelectTime;
+    @Bind(R.id.title_bar_right_amend)
+    TextView titleBarRightAmend;
     @Bind(R.id.title_bar_right_icon_one)
     ImageView titleBarRightIconOne;
     @Bind(R.id.title_bar_right_icon_two)
@@ -119,6 +123,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     private OnLongClickTouchListener listener;
     private String[] childrenId = new String[100];
     private int type;
+    private List<CommentsBean> commentList;
 
     @Override
     protected Integer getLayoutId() {
@@ -166,6 +171,7 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
     protected void initData() {
         screenHeight = Utils.getScreenHeight(this);
         createBookReportResult = new CreateBookReportResult();
+        commentList = new ArrayList<CommentsBean>();
         Intent intent = getIntent();
         type = intent.getIntExtra(Constants.JUMP_SOURCE, -1);
         Serializable serializableExtra = intent.getSerializableExtra(Constants.BOOK_REPORT_DATA);
@@ -176,10 +182,12 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                 data = (GetBookReportListBean) serializableExtra;
                 bookReportDetailContents.setText(data.content);
                 bookReportDetailContents.setSelection(data.content.length());
-                List<CommentsBean> comments = data.comments;
-                if (comments != null && comments.size() > 0) {
+                commentList.clear();
+                commentList = data.comments;
+                if (commentList != null && commentList.size() > 0) {
                     bookReportWebContent.setVisibility(View.VISIBLE);
                     bookReportDetailContents.setVisibility(View.GONE);
+                    amendButtonShow();
                     String newContent = insertJsTag();
                     bookReportWebContent.loadDataWithBaseURL(null, newContent, "text/html", "utf-8", null);
                 }
@@ -193,10 +201,12 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                 informalEssayBean = (CreateInformalEssayBean) serializableExtra;
                 bookReportDetailContents.setText(informalEssayBean.content);
                 bookReportDetailContents.setSelection(informalEssayBean.content.length());
-                List<CommentsBean> comments = informalEssayBean.comments;
-                if (comments != null && comments.size() > 0) {
+                commentList.clear();
+                commentList = informalEssayBean.comments;
+                if (commentList != null && commentList.size() > 0) {
                     bookReportWebContent.setVisibility(View.VISIBLE);
                     bookReportDetailContents.setVisibility(View.GONE);
+                    amendButtonShow();
                     String newContent = insertInformalJsTag();
                     bookReportWebContent.loadDataWithBaseURL(null, newContent, "text/html", "utf-8", null);
                 }
@@ -214,6 +224,14 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         }
         Utils.movingCursor(bookReportDetailTitle);
         initListener();
+    }
+
+    private void amendButtonShow() {
+        titleBarRightIconTwo.setVisibility(View.GONE);
+        if (Constants.ACCOUNT_TYPE_TEACHER.equals(userType)) {
+            titleBarRightAmend.setVisibility(View.VISIBLE);
+            titleBarRightAmend.setText(getResources().getString(R.string.amend));
+        }
     }
 
     private void initListener() {
@@ -335,8 +353,12 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
         notationDialog.show(this.getFragmentManager(), "tag");
     }
 
-    @OnClick({R.id.menu_back, R.id.title_bar_right_select_time,
-            R.id.title_bar_right_icon_one, R.id.title_bar_right_icon_two, R.id.title_bar_right_icon_three})
+    @OnClick({R.id.menu_back,
+            R.id.title_bar_right_select_time,
+            R.id.title_bar_right_icon_one,
+            R.id.title_bar_right_icon_two,
+            R.id.title_bar_right_amend,
+            R.id.title_bar_right_icon_three})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.menu_back:
@@ -353,6 +375,9 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
                 break;
             case R.id.title_bar_right_icon_three:
                 share();
+                break;
+            case R.id.title_bar_right_amend:
+                EventBus.getDefault().post(new AmendCommentEvent());
                 break;
         }
     }
@@ -640,5 +665,18 @@ public class BookReportDetailActivity extends BaseActivity implements BookReport
 
     public void setOnLongClickTouchListener(OnLongClickTouchListener listener) {
         this.listener = listener;
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onAmendCommentEvent(AmendCommentEvent event) {
+        bookReportWebContent.setVisibility(View.GONE);
+        bookReportDetailContents.setVisibility(View.VISIBLE);
+        bookReportDetailContents.setText(data.content);
+        bookReportDetailContents.setSelection(data.content.length());
+        if (commentList.size() > 0) {
+            for (int i = 0; i < commentList.size(); i++) {
+                bookReportPresenter.deleteComment(data._id, commentList.get(i)._id);
+            }
+        }
     }
 }

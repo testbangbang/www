@@ -1,5 +1,6 @@
 package com.onyx.android.dr.activity;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -17,6 +18,7 @@ import butterknife.OnClick;
  * Created by zhouzhiming on 2017/8/28.
  */
 public class GroupHomePageActivity extends BaseActivity {
+    private final String TAG = GroupHomePageActivity.class.getSimpleName();
     @Bind(R.id.group_home_page_activity_create)
     TextView createGroup;
     @Bind(R.id.group_home_page_activity_join)
@@ -57,6 +59,7 @@ public class GroupHomePageActivity extends BaseActivity {
 
     private void setViewByIdentity() {
         String userType = DRPreferenceManager.getUserType(this, "");
+        Log.i(TAG, userType);
         if (userType.equals(Constants.ACCOUNT_TYPE_HIGH_SCHOOL)) {
             createGroup.setVisibility(View.GONE);
         } else {

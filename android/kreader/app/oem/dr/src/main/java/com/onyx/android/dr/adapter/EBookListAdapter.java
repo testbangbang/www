@@ -100,7 +100,6 @@ public class EBookListAdapter extends PageRecyclerView.PageAdapter<EBookListAdap
     @Override
     public void onPageBindViewHolder(LibraryItemViewHolder viewHolder, int position) {
         viewHolder.itemView.setTag(position);
-
         final Metadata eBook = getEBookList().get(position);
         viewHolder.titleView.setVisibility(View.VISIBLE);
         viewHolder.titleView.setText(String.format(DRApplication.getInstance().getResources().getString(R.string.price_format), eBook.getPrice()));

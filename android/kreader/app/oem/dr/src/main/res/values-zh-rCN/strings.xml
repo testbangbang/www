@@ -749,4 +749,6 @@
     <string name="register_date">上架时间:  </string>
     <string name="language_hint">语言:  </string>
     <string name="good_sententce_title">好句内容</string>
+    <string name="has_buy">已购买</string>
+    <string name="amend">修改</string>
 </resources>

@@ -35,6 +35,7 @@ android {
 
     dexOptions {
         preDexLibraries = false
+        javaMaxHeapSize "4g"
     }
 
     lintOptions {
