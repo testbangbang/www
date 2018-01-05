@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="rankViewModel"
+            type="com.onyx.jdread.shop.model.RankViewModel" />
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:layout_marginLeft="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginRight="@dimen/fragment_book_detail_margin_right_and_left"
+        android:layout_marginTop="@dimen/fragment_book_detail_margin_top_and_bottom"
+        android:orientation="vertical">
+
+        <include
+            android:id="@+id/layout_title_bar"
+            layout="@layout/layout_title_bar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            bind:titleBarViewModel="@{rankViewModel.titleBarViewModel}" />
+
+        <com.onyx.android.sdk.ui.view.PageRecyclerView
+            android:id="@+id/recycler_view_ranks"
+            rankItems="@{rankViewModel.rankItems}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/book_detail_margin"
+            android:layout_marginRight="@dimen/book_detail_margin"
+            android:layout_marginTop="@dimen/book_detail_margin" />
+
+    </LinearLayout>
+
+</layout>

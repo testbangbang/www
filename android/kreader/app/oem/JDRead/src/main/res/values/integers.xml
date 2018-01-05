@@ -93,4 +93,6 @@
     <integer name="subject_list_recycle_viw_col">1</integer>
     <integer name="subject_list_category_recycle_viw_row">5</integer>
     <integer name="subject_list_category_recycle_viw_col">4</integer>
+    <integer name="book_rank_subject_row">2</integer>
+    <integer name="book_rank_subject_col">1</integer>
 </resources>

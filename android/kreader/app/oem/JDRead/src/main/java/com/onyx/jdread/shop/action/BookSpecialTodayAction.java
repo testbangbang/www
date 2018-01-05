@@ -20,6 +20,11 @@ public class BookSpecialTodayAction extends BaseAction<ShopDataBundle> {
 
     private Context context;
     private BookShopViewModel shopViewModel;
+    private BookModelResultBean bookModelResultBean;
+
+    public BookModelResultBean getBookModelResultBean() {
+        return bookModelResultBean;
+    }
 
     public BookSpecialTodayAction(Context context) {
         this.context = context;
@@ -39,7 +44,7 @@ public class BookSpecialTodayAction extends BaseAction<ShopDataBundle> {
         request.execute(new RxCallback<RxRequestBookModule>() {
             @Override
             public void onNext(RxRequestBookModule request) {
-                BookModelResultBean bookModelResultBean = request.getBookModelResultBean();
+                bookModelResultBean = request.getBookModelResultBean();
                 SubjectViewModel subjectViewModel = new SubjectViewModel();
                 subjectViewModel.setModelBean(bookModelResultBean);
                 shopViewModel.setCoverSubjectTwoItems(subjectViewModel);

@@ -281,7 +281,9 @@ public class ShopFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onRankViewClick(RankViewClick event) {
-
+        if (getViewEventCallBack() != null) {
+            getViewEventCallBack().gotoView(BookRankFragment.class.getName());
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
