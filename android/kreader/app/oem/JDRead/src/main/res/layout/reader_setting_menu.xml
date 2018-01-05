@@ -44,25 +44,29 @@
             android:id="@+id/reader_setting_brightness_bar"
             layout="@layout/reader_brightness_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <include
             android:id="@+id/reader_setting_text_setting_bar"
             layout="@layout/reader_text_setting_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <include
             android:id="@+id/reader_setting_image_setting_bar"
             layout="@layout/reader_image_setting_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <include
             android:id="@+id/reader_setting_customize_format_bar"
             layout="@layout/reader_customize_format_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone"/>
 
         <include
             android:id="@+id/reader_setting_function_bar"

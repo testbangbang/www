@@ -94,7 +94,6 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderFunctionItemSettingEvent(ReaderFunctionItemSettingEvent event){
-        ToastMessage.showMessage(JDReadApplication.getInstance().getApplicationContext(),"Setting");
         //epub show text
         new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.textMenuGroup).execute(readerDataHolder);
         //pdf show text
