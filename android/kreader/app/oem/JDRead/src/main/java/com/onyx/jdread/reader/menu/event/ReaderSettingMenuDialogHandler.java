@@ -5,10 +5,14 @@ import android.databinding.ObservableBoolean;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.databinding.ReaderSettingMenuBinding;
 import com.onyx.jdread.main.common.ViewConfig;
+import com.onyx.jdread.reader.actions.NextPageAction;
+import com.onyx.jdread.reader.actions.PrevPageAction;
 import com.onyx.jdread.reader.common.ToastMessage;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
 import com.onyx.jdread.reader.event.CloseDocumentEvent;
+import com.onyx.jdread.reader.event.PageViewUpdateEvent;
 import com.onyx.jdread.reader.menu.actions.ReaderSettingShowMenuAction;
+import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.common.ReaderSettingMenuConfig;
 import com.onyx.jdread.reader.menu.dialog.ReaderSettingViewBack;
 
@@ -58,12 +62,12 @@ public class ReaderSettingMenuDialogHandler {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemNextChapterEvent(ReaderSettingMenuItemNextChapterEvent event) {
-
+        new NextPageAction().execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemPreviousChapterEvent(ReaderSettingMenuItemPreviousChapterEvent event) {
-
+        new PrevPageAction().execute(readerDataHolder);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -108,5 +112,10 @@ public class ReaderSettingMenuDialogHandler {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReaderSettingMenuItemCustomizeEvent(ReaderSettingMenuItemCustomizeEvent event){
         new ReaderSettingShowMenuAction(binding, ReaderSettingMenuConfig.customMenuGroup).execute(readerDataHolder);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPageViewUpdateEvent(PageViewUpdateEvent event){
+        new UpdatePageInfoAction(binding).execute(readerDataHolder);
     }
 }

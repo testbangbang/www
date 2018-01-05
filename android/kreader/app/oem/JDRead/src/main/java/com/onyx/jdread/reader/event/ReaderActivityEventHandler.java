@@ -82,4 +82,8 @@ public class ReaderActivityEventHandler {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onPageViewUpdateEvent(PageViewUpdateEvent event){
+
+    }
 }
