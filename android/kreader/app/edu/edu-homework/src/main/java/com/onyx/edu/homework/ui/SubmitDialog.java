@@ -2,6 +2,7 @@ package com.onyx.edu.homework.ui;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
+import android.graphics.Rect;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -115,7 +116,10 @@ public class SubmitDialog extends OnyxBaseDialog {
             }
         }
         onStartSubmit();
-        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
+        int width = (int) getContext().getResources().getDimension(R.dimen.scribble_view_width);
+        int height = (int) getContext().getResources().getDimension(R.dimen.scribble_view_height);
+        Rect size =  new Rect(0, 0, width, height);
+        new MakeHomeworkPagesAnswerActionChain(fillAnswers, questions, size).execute(DataBundle.getInstance().getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
                 if (e == null) {

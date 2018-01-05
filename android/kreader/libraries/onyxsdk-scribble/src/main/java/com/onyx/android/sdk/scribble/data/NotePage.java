@@ -110,7 +110,7 @@ public class NotePage {
     }
 
     public void clearFreeShapes(boolean addToHistory) {
-        List<Shape> freeShapes = getFreeShapes(shapeList);
+        List<Shape> freeShapes = getFreeShapes(shapeList, true);
         if (freeShapes.size() > 0 && addToHistory) {
             removedShapeList.addAll(freeShapes);
             undoRedoManager.addToHistory(ShapeActions.removeShapeListAction(freeShapes), false);
@@ -119,9 +119,12 @@ public class NotePage {
         newAddedShapeList.removeAll(freeShapes);
     }
 
-    private List<Shape> getFreeShapes(List<Shape> shapes) {
+    private List<Shape> getFreeShapes(List<Shape> shapes, boolean filterReviewedShape) {
         List<Shape> freeShapes = new ArrayList<>();
         for (Shape shape : shapes) {
+            if (filterReviewedShape && shape.getShapeState() == ShapeState.REVIEWED) {
+                continue;
+            }
             if (shape.isFreePosition()) {
                 freeShapes.add(shape);
             }

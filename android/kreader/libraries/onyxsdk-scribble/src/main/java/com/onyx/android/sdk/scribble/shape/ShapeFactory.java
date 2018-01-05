@@ -114,6 +114,7 @@ public class ShapeFactory {
         shapeModel.setOrientation(shape.getOrientation());
         shapeModel.setRotationPointXCoordinate(shape.getRotationPointXCoordinate());
         shapeModel.setRotationPointYCoordinate(shape.getRotationPointYCoordinate());
+        shapeModel.setState(shape.getShapeState());
         return shapeModel;
     }
 
@@ -131,6 +132,7 @@ public class ShapeFactory {
         shape.setOrientation(model.getOrientation());
         shape.setRotationPointXCoordinate(model.getRotationPointXCoordinate());
         shape.setRotationPointYCoordinate(model.getRotationPointYCoordinate());
+        shape.setShapeState(model.getState());
     }
 
     public static Map<String, List<Shape>> getSubPageSpanShapeList(List<Shape> subPageShapes) {

@@ -9,6 +9,10 @@ import com.onyx.android.sdk.data.model.Question;
 import com.onyx.android.sdk.data.model.QuestionReview;
 import com.onyx.android.sdk.data.request.cloud.BaseCloudRequest;
 import com.onyx.android.sdk.data.v1.ServiceFactory;
+import com.onyx.android.sdk.scribble.data.ShapeDataProvider;
+import com.onyx.android.sdk.scribble.data.ShapeModel;
+import com.onyx.android.sdk.scribble.data.ShapeState;
+import com.onyx.android.sdk.utils.CollectionUtils;
 import com.onyx.edu.homework.data.Homework;
 import com.onyx.edu.homework.data.HomeworkState;
 import com.onyx.edu.homework.db.DBDataProvider;
@@ -40,6 +44,11 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
         if (model == null) {
             model = HomeworkModel.create(homeworkId);
         }
+        int state = model.getState();
+        currentState = HomeworkState.getHomeworkState(state);
+        if (currentState != HomeworkState.SUBMITTED) {
+            return;
+        }
         Response<HomeworkReviewResult> response = executeCall(ServiceFactory.getHomeworkService(parent.getCloudConf().getApiBase()).getAnwsers(homeworkId));
         if (response.isSuccessful()) {
             HomeworkReviewResult result = response.body();
@@ -48,14 +57,30 @@ public class GetHomeworkReviewsRequest extends BaseCloudRequest {
             }
 
         }
-        int state = model.getState();
+        state = model.getState();
         currentState = HomeworkState.getHomeworkState(state);
     }
 
     private void onReviewed(List<HomeworkSubmitAnswer> reviews, @NonNull HomeworkModel model) {
         saveQuestionReview(questions, reviews);
+        updateShapeState(questions);
         model.setState(HomeworkState.REVIEW.ordinal());
         DBDataProvider.saveHomework(model);
+    }
+
+    private void updateShapeState(List<Question> questions) {
+        if (CollectionUtils.isNullOrEmpty(questions)) {
+            return;
+        }
+        for (Question question : questions) {
+            List<ShapeModel> shapeList = ShapeDataProvider.loadShapeList(getContext(), question.uniqueId);
+            if (!CollectionUtils.isNullOrEmpty(shapeList)) {
+                for (ShapeModel shapeModel : shapeList) {
+                    shapeModel.setState(ShapeState.REVIEWED);
+                }
+                ShapeDataProvider.saveShapeList(getContext(), shapeList);
+            }
+        }
     }
 
     private void saveQuestionReview(List<Question> questions, List<HomeworkSubmitAnswer> reviews) {

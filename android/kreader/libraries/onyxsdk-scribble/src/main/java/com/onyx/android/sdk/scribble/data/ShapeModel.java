@@ -89,6 +89,9 @@ public class ShapeModel extends BaseModel {
     @Column
     float rotationPointYCoordinate = 0f;
 
+    @Column
+    int state;
+
     public ShapeModel() {
     }
 
@@ -297,5 +300,13 @@ public class ShapeModel extends BaseModel {
 
     public void setRotationPointYCoordinate(float rotationPointYCoordinate) {
         this.rotationPointYCoordinate = rotationPointYCoordinate;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }

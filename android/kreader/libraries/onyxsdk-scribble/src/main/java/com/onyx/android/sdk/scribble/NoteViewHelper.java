@@ -106,6 +106,7 @@ public class NoteViewHelper {
     private NoteDocument noteDocument = new NoteDocument();
     private ReaderBitmapImpl renderBitmapWrapper = new ReaderBitmapImpl();
     private ReaderBitmapImpl viewBitmapWrapper = new ReaderBitmapImpl();
+    private ReaderBitmapImpl reviewBitmapWrapper = new ReaderBitmapImpl();
     private Rect softwareLimitRect = null;
     private volatile SurfaceView surfaceView;
     private ViewTreeObserver.OnGlobalLayoutListener globalLayoutListener;
@@ -118,6 +119,7 @@ public class NoteViewHelper {
     private LineLayoutArgs lineLayoutArgs;
     private Shape currentShape = null;
     private Shape cursorShape = null;
+    private int shapeState;
     private String drawText;
     private boolean shortcutErasing = false;
     private int viewPosition[] = {0, 0};
@@ -163,6 +165,10 @@ public class NoteViewHelper {
 
     public void setShapeDataInfo(ShapeDataInfo shapeDataInfo) {
         this.shapeDataInfo = shapeDataInfo;
+    }
+
+    public void updateShapeState(int state) {
+        this.shapeState = state;
     }
 
     public SurfaceView getView() {
@@ -414,6 +420,11 @@ public class NoteViewHelper {
         EpdController.setStrokeColor(color);
     }
 
+    public void updateReviewBitmap(Bitmap src) {
+        reviewBitmapWrapper.recycleBitmap();
+        reviewBitmapWrapper.attach(src);
+    }
+
     public void updateDrawingArgs(final NoteDrawingArgs drawingArgs) {
         setStrokeColor(drawingArgs.strokeColor);
         setStrokeWidth(drawingArgs.strokeWidth);
@@ -493,6 +504,10 @@ public class NoteViewHelper {
         return renderBitmapWrapper.getBitmap();
     }
 
+    public Bitmap getReviewBitmap() {
+        return reviewBitmapWrapper.getBitmap();
+    }
+
     // copy from render bitmap to view bitmap.
     public void copyBitmap() {
         if (renderBitmapWrapper == null) {
@@ -518,6 +533,9 @@ public class NoteViewHelper {
         }
         if (renderBitmapWrapper != null) {
             renderBitmapWrapper.recycleBitmap();
+        }
+        if (reviewBitmapWrapper != null) {
+            reviewBitmapWrapper.recycleBitmap();
         }
     }
 
@@ -611,6 +629,7 @@ public class NoteViewHelper {
         shape.setStrokeWidth(getNoteDocument().getStrokeWidth());
         shape.setColor(getNoteDocument().getStrokeColor());
         shape.setGroupId(getNoteDocument().getGroupId());
+        shape.setShapeState(shapeState);
         shape.setLayoutType(isSpanTextMode ? ShapeFactory.POSITION_LINE_LAYOUT : ShapeFactory.POSITION_FREE);
         return shape;
     }

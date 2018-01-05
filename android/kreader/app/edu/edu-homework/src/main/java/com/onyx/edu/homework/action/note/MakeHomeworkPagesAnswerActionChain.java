@@ -22,10 +22,12 @@ public class MakeHomeworkPagesAnswerActionChain extends BaseNoteAction {
 
     private List<HomeworkSubmitAnswer> answers;
     private List<Question> questions;
+    private Rect size;
 
-    public MakeHomeworkPagesAnswerActionChain(List<HomeworkSubmitAnswer> answers, List<Question> questions) {
+    public MakeHomeworkPagesAnswerActionChain(List<HomeworkSubmitAnswer> answers, List<Question> questions, Rect s) {
         this.answers = answers;
         this.questions = questions;
+        size = s;
     }
 
     @Override
@@ -42,6 +44,7 @@ public class MakeHomeworkPagesAnswerActionChain extends BaseNoteAction {
         GetPageUniqueIdsAction pageUniqueIdsAction = new GetPageUniqueIdsAction(docIds);
         final HomeworkPagesRenderAction listRenderAction = new HomeworkPagesRenderAction(pageUniqueIdsAction.getPageUniqueMap(),
                 questions,
+                size,
                 true);
         chain.addAction(pageUniqueIdsAction);
         chain.addAction(listRenderAction);

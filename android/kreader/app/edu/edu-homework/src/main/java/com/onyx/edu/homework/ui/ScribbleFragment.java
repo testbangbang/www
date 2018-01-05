@@ -17,6 +17,9 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.onyx.android.sdk.api.device.epd.EpdController;
 import com.onyx.android.sdk.api.device.epd.UpdateMode;
 import com.onyx.android.sdk.common.request.BaseCallback;
@@ -127,7 +130,6 @@ public class ScribbleFragment extends BaseFragment {
                 public void surfaceCreated(SurfaceHolder holder) {
                     clearSurfaceView();
                     getNoteViewHelper().setView(getActivity(), getScribbleView(), inputCallback());
-                    getNoteViewHelper().setEnableTouchEvent(getDataBundle().isDoing());
                     String homeworkId = DataBundle.getInstance().getHomeworkId();
                     checkDocument(question.getUniqueId(), homeworkId, question.getQuestionId());
                 }
@@ -146,6 +148,24 @@ public class ScribbleFragment extends BaseFragment {
         binding.scribbleView.getHolder().addCallback(surfaceCallback);
     }
 
+    private void loadPageReview(int page, final BaseCallback callback) {
+        if (!getDataBundle().isReview()
+                || question.isChoiceQuestion()
+                || question.review == null
+                || question.review.attachmentUrl == null) {
+            BaseCallback.invoke(callback, null, null);
+            return;
+        }
+        String url = question.review.attachmentUrl.get(page);
+        Glide.with(this).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+            @Override
+            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+                getNoteViewHelper().updateReviewBitmap(resource);
+                BaseCallback.invoke(callback, null, null);
+            }
+        });
+    }
+
     private void checkDocument(final String uniqueId, final String parentUniqueId, final String groupId) {
         new DocumentCheckAction(uniqueId, parentUniqueId).execute(getNoteViewHelper(), new BaseCallback() {
             @Override
@@ -160,7 +180,12 @@ public class ScribbleFragment extends BaseFragment {
         new DocumentOpenAction(uniqueId, parentUniqueId, groupId, create).execute(getNoteViewHelper(), new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                changePenState(shouldResume(), false, null);
+                loadPageReview(getCurrentPageIndex(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        changePenState(shouldResume(), true, null);
+                    }
+                });
             }
         });
     }
@@ -260,21 +285,37 @@ public class ScribbleFragment extends BaseFragment {
     }
 
     private void nextPage() {
-        flushDocument(false, shouldResume(), new BaseCallback() {
+        int page = Math.min(getCurrentPageIndex() + 1, getNoteViewHelper().getNoteDocument().getPageCount() - 1);
+        loadPageReview(page, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new GotoNextPageAction(shouldResume()).execute(getNoteViewHelper(), null);
+                flushDocument(false, shouldResume(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        new GotoNextPageAction(shouldResume()).execute(getNoteViewHelper(), null);
+                    }
+                });
             }
         });
     }
 
     private void prevPage() {
-        flushDocument(false, shouldResume(), new BaseCallback() {
+        int page = Math.max(getCurrentPageIndex() - 1, 0);
+        loadPageReview(page, new BaseCallback() {
             @Override
             public void done(BaseRequest request, Throwable e) {
-                new GotoPrevPageAction(shouldResume()).execute(getNoteViewHelper(), null);
+                flushDocument(false, shouldResume(), new BaseCallback() {
+                    @Override
+                    public void done(BaseRequest request, Throwable e) {
+                        new GotoPrevPageAction(shouldResume()).execute(getNoteViewHelper(), null);
+                    }
+                });
             }
         });
+    }
+
+    private int getCurrentPageIndex() {
+        return getNoteViewHelper().getNoteDocument().getCurrentPageIndex();
     }
 
     protected void updateDataInfo(final BaseNoteRequest request) {
@@ -473,9 +514,6 @@ public class ScribbleFragment extends BaseFragment {
                              final boolean render,
                              final boolean showLoading,
                              final BaseCallback callback) {
-        if (!getDataBundle().isDoing()) {
-            return;
-        }
         getNoteViewHelper().flushTouchPointList();
         flushDocument(render, resumeDrawing, new BaseCallback() {
             @Override
@@ -520,7 +558,6 @@ public class ScribbleFragment extends BaseFragment {
     public boolean shouldResume() {
         return !getNoteViewHelper().inUserErasing()
                 && ShapeFactory.isDFBShape(getShapeDataInfo().getCurrentShapeType())
-                && getDataBundle().isDoing()
                 && isRunning();
     }
 }
