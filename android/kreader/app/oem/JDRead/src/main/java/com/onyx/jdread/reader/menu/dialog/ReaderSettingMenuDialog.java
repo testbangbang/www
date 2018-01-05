@@ -19,6 +19,7 @@ import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.SystemBarModel;
 import com.onyx.jdread.reader.actions.InitReaderViewFunctionBarAction;
 import com.onyx.jdread.reader.data.ReaderDataHolder;
+import com.onyx.jdread.reader.menu.actions.UpdatePageInfoAction;
 import com.onyx.jdread.reader.menu.event.ReaderSettingMenuDialogHandler;
 import com.onyx.jdread.reader.menu.model.ReaderBrightnessModel;
 import com.onyx.jdread.reader.menu.model.ReaderCustomizeModel;
@@ -81,6 +82,7 @@ public class ReaderSettingMenuDialog extends Dialog implements ReaderSettingView
 
     private void initReaderPageInfoBar(){
         binding.readerSettingPageInfoBar.setReaderPageInfoModel(new ReaderPageInfoModel());
+        new UpdatePageInfoAction(binding).execute(readerDataHolder);
     }
 
     private void initSystemBar() {
