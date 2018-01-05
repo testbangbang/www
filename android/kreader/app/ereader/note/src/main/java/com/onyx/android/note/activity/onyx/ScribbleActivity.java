@@ -65,6 +65,7 @@ import com.onyx.android.sdk.data.GObject;
 import com.onyx.android.sdk.device.Device;
 import com.onyx.android.sdk.scribble.data.LineLayoutArgs;
 import com.onyx.android.sdk.scribble.data.NoteBackgroundType;
+import com.onyx.android.sdk.scribble.data.NoteDrawingArgs;
 import com.onyx.android.sdk.scribble.data.NoteModel;
 import com.onyx.android.sdk.scribble.data.TouchPointList;
 import com.onyx.android.sdk.scribble.request.BaseNoteRequest;
@@ -1164,7 +1165,7 @@ public class ScribbleActivity extends BaseScribbleActivity {
 
     private void onStrokeWidthChanged(float width, BaseCallback callback) {
         if (shapeDataInfo.isInUserErasing()) {
-            setCurrentShapeType(ShapeFactory.SHAPE_PENCIL_SCRIBBLE);
+            setCurrentShapeType(NoteDrawingArgs.defaultShape());
         }
         setStrokeWidth(width);
         syncWithCallback(true, true, callback);
