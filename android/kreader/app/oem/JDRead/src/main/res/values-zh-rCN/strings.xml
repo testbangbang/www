@@ -284,6 +284,11 @@
     <string name="translation">翻译</string>
     <string name="associated_with_the_impression_notes">关联印象笔记</string>
     <string name="associated_with_the_email">关联电子邮箱</string>
+    <string name="all">全部</string>
+    <string name="the_default">全部(默认)</string>
+    <string name="have_bought">已购买</string>
+    <string name="self_import">自导入文档</string>
+    <string name="settlement">去结算</string>
     <string name="author_format" translatable="false">作者： %s</string>
     <string name="format_format" translatable="false">格式： %s</string>
     <string name="size_format" translatable="false">大小： %s</string>

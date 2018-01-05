@@ -22,27 +22,25 @@ import com.onyx.android.sdk.utils.PreferenceManager;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
+import com.onyx.jdread.databinding.ActivityMainBinding;
+import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.library.action.RxFileSystemScanAction;
 import com.onyx.jdread.main.action.InitMainViewFunctionBarAction;
 import com.onyx.jdread.main.adapter.FunctionBarAdapter;
 import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ToastUtil;
 import com.onyx.jdread.main.common.ViewConfig;
-import com.onyx.jdread.databinding.ActivityMainBinding;
 import com.onyx.jdread.main.event.ChangeChildViewEvent;
 import com.onyx.jdread.main.event.ModifyLibraryDataEvent;
 import com.onyx.jdread.main.event.PopCurrentChildViewEvent;
 import com.onyx.jdread.main.event.PushChildViewToStackEvent;
 import com.onyx.jdread.main.event.ShowBackTabEvent;
 import com.onyx.jdread.main.event.UsbDisconnectedEvent;
-import com.onyx.jdread.library.ui.LibraryFragment;
 import com.onyx.jdread.main.model.FunctionBarItem;
 import com.onyx.jdread.main.model.FunctionBarModel;
 import com.onyx.jdread.main.model.MainViewModel;
 import com.onyx.jdread.main.model.SystemBarModel;
-import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.common.LoginHelper;
-import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.event.UserLoginResultEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalViewModel;
@@ -51,7 +49,6 @@ import com.onyx.jdread.personal.ui.LoginFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.setting.request.RxLoadPicByPathRequest;
 import com.onyx.jdread.shop.ui.ShopFragment;
-import com.onyx.jdread.util.Utils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -332,13 +329,6 @@ public class MainActivity extends AppCompatActivity {
             clearInput();
             LoginHelper.dismissUserLoginDialog();
         }
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onUserLoginEvent(UserLoginEvent event) {
-        Utils.hideSoftWindow(this);
-        UserLoginAction userLoginAction = new UserLoginAction(this,event.account,event.password);
-        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
     }
 
     private void clearInput() {

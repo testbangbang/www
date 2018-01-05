@@ -75,4 +75,11 @@
         <item>@string/forty_five_hundred_points</item>
         <item>@string/eighty_one_hundred_points</item>
     </string-array>
+
+    <string-array name="book_filter">
+        <item>@string/the_default</item>
+        <item>@string/have_bought</item>
+        <item>@string/read_vip</item>
+        <item>@string/self_import</item>
+    </string-array>
 </resources>

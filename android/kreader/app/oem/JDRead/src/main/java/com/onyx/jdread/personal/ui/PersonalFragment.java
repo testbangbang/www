@@ -12,9 +12,10 @@ import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.utils.StringUtils;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.PersonalBinding;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.main.common.ToastUtil;
+import com.onyx.jdread.personal.action.UserLoginAction;
 import com.onyx.jdread.personal.adapter.PersonalAdapter;
 import com.onyx.jdread.personal.common.LoginHelper;
 import com.onyx.jdread.personal.event.GiftCenterEvent;
@@ -23,6 +24,7 @@ import com.onyx.jdread.personal.event.PersonalBookEvent;
 import com.onyx.jdread.personal.event.PersonalNoteEvent;
 import com.onyx.jdread.personal.event.PersonalTaskEvent;
 import com.onyx.jdread.personal.event.ReadPreferenceEvent;
+import com.onyx.jdread.personal.event.UserLoginEvent;
 import com.onyx.jdread.personal.model.PersonalDataBundle;
 import com.onyx.jdread.personal.model.PersonalModel;
 import com.onyx.jdread.util.Utils;
@@ -103,12 +105,20 @@ public class PersonalFragment extends BaseFragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUserLoginEvent(UserLoginEvent event) {
+        Utils.hideSoftWindow(getActivity());
+        UserLoginAction userLoginAction = new UserLoginAction(getActivity(),event.account,event.password);
+        userLoginAction.execute(PersonalDataBundle.getInstance(), null);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPersonalAccountEvent(PersonalAccountEvent event) {
         viewEventCallBack.gotoView(PersonalAccountFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onPersonalBookEvent(PersonalBookEvent event) {
+        viewEventCallBack.gotoView(PersonalBookFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
