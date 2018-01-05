@@ -15,19 +15,21 @@ import com.onyx.android.libsetting.view.dialog.WifiConnectedDialog;
 import com.onyx.android.libsetting.view.dialog.WifiLoginDialog;
 import com.onyx.android.libsetting.view.dialog.WifiSavedDialog;
 import com.onyx.android.sdk.ui.view.DisableScrollGridManager;
-import com.onyx.android.sdk.ui.view.OnyxPageDividerItemDecoration;
 import com.onyx.android.sdk.ui.view.PageRecyclerView;
 import com.onyx.android.sdk.wifi.AccessPoint;
 import com.onyx.android.sdk.wifi.WifiAdmin;
 import com.onyx.android.sdk.wifi.WifiUtil;
 import com.onyx.jdread.JDReadApplication;
 import com.onyx.jdread.R;
-import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.databinding.WifiBinding;
+import com.onyx.jdread.library.view.DashLineItemDivider;
+import com.onyx.jdread.library.view.LibraryDeleteDialog;
+import com.onyx.jdread.main.common.BaseFragment;
 import com.onyx.jdread.setting.adapter.WifiSettingAdapter;
 import com.onyx.jdread.setting.event.BackToSettingFragmentEvent;
 import com.onyx.jdread.setting.model.SettingBundle;
 import com.onyx.jdread.setting.model.SettingTitleModel;
+import com.onyx.jdread.setting.view.AddWIFIConfigurationDialog;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
@@ -86,6 +88,39 @@ public class WifiFragment extends BaseFragment {
                 wifiAdmin.toggleWifi();
             }
         });
+
+        binding.wifiTitleBar.settingTitleAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addWifi();
+            }
+        });
+    }
+
+    private void setAddWifiButtonVisibility() {
+        binding.wifiTitleBar.settingTitleAdd.setVisibility(wifiAdmin.isWifiEnabled() ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    private void addWifi() {
+        final AddWIFIConfigurationDialog.DialogModel dialogModel = new AddWIFIConfigurationDialog.DialogModel();
+        AddWIFIConfigurationDialog.Builder builder = new AddWIFIConfigurationDialog.Builder(JDReadApplication.getInstance(), dialogModel);
+        final AddWIFIConfigurationDialog dialog = builder.create();
+        dialogModel.setNegativeClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                dialog.dismiss();
+            }
+        });
+        dialogModel.setPositiveClickLister(new LibraryDeleteDialog.DialogModel.OnClickListener() {
+            @Override
+            public void onClicked() {
+                WifiConfiguration wifiConfiguration = wifiAdmin.createWifiConfiguration(dialogModel.ssid.get(), dialogModel.password.get(), dialogModel.type.get());
+                wifiAdmin.addNetwork(wifiConfiguration);
+                updateUI(true);
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
     }
 
     private void showSaveDialog(final AccessPoint accessPoint) {
@@ -193,10 +228,11 @@ public class WifiFragment extends BaseFragment {
                 wifiSettingAdapter.notifyDataSetChanged();
             }
         });
+        setAddWifiButtonVisibility();
     }
 
     private void updateAccessPointDetailedState(NetworkInfo.DetailedState state) {
-        if(wifiSettingAdapter.getScanResult() != null) {
+        if (wifiSettingAdapter.getScanResult() != null) {
             for (AccessPoint accessPoint : wifiSettingAdapter.getScanResult()) {
                 WifiConfiguration config = accessPoint.getWifiConfiguration();
                 if (config == null) {
@@ -224,6 +260,7 @@ public class WifiFragment extends BaseFragment {
             wifiSettingAdapter.getScanResult().clear();
             wifiSettingAdapter.notifyDataSetChanged();
         }
+        setAddWifiButtonVisibility();
     }
 
     private void initData() {
@@ -236,7 +273,7 @@ public class WifiFragment extends BaseFragment {
 
     private void initView() {
         binding.wifiRecycler.setLayoutManager(new DisableScrollGridManager(JDReadApplication.getInstance()));
-        OnyxPageDividerItemDecoration dividerItemDecoration = new OnyxPageDividerItemDecoration(JDReadApplication.getInstance(), OnyxPageDividerItemDecoration.VERTICAL);
+        DashLineItemDivider dividerItemDecoration = new DashLineItemDivider();
         binding.wifiRecycler.addItemDecoration(dividerItemDecoration);
         wifiSettingAdapter = new WifiSettingAdapter();
         binding.wifiRecycler.setAdapter(wifiSettingAdapter);

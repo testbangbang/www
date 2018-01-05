@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.onyx.android.sdk.wifi.WifiAdmin" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="dialogModel"
+            type="com.onyx.jdread.setting.view.AddWIFIConfigurationDialog.DialogModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.onyx.jdread.setting.view.AddWIFIConfigurationDialog">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/dialog_single_manage_close_padding"
+            android:text="@string/add_wifi_configuration" />
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:background="@android:color/darker_gray" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/add_wifi_dialog_edit_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/network_ssid" />
+
+            <EditText
+                android:layout_width="@dimen/dialog_build_edit_width"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/add_wifi_dialog_edit_margin_left"
+                android:text="@={dialogModel.ssid}" />
+        </LinearLayout>
+
+        <View style="@style/DottedLineStyle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/add_wifi_dialog_edit_padding">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/network_ssid" />
+
+            <Spinner
+                android:id="@+id/security_spinner"
+                android:layout_width="@dimen/dialog_build_edit_width"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/add_wifi_dialog_edit_margin_left"
+                android:entries="@array/wifi_access_security" />
+        </LinearLayout>
+
+        <View style="@style/DottedLineStyle" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="@dimen/add_wifi_dialog_edit_padding"
+            android:visibility="@{dialogModel.type==WifiAdmin.SECURITY_NONE?View.GONE:View.VISIBLE}">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/network_password" />
+
+            <EditText
+                android:layout_width="@dimen/dialog_build_edit_width"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/add_wifi_dialog_edit_margin_left"
+                android:entries="@array/wifi_access_security"
+                android:inputType="textPassword"
+                android:text="@{dialogModel.password}" />
+        </LinearLayout>
+
+        <View
+            style="@style/DottedLineStyle"
+            android:visibility="@{dialogModel.type==WifiAdmin.SECURITY_NONE?View.GONE:View.VISIBLE}" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dialog_button_height"
+            android:layout_gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selected_background"
+                android:gravity="center"
+                android:onClick="@{()->dialogModel.onPositiveClick()}"
+                android:text="@{dialogModel.positiveText}"
+                android:textSize="@dimen/level_two_heading_font" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/selected_background"
+                android:gravity="center"
+                android:onClick="@{()->dialogModel.onNegativeClick()}"
+                android:text="@{dialogModel.negativeText}" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
