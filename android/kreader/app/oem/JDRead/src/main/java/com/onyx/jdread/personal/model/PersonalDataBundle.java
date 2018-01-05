@@ -30,6 +30,7 @@ public class PersonalDataBundle {
     private ReadOverInfoBean readOverInfo;
     private PointsForModel pointsForModel;
     private PersonalTaskModel personalTaskModel;
+    private PersonalBookModel personalBookModel;
 
     private PersonalDataBundle() {
 
@@ -142,5 +143,13 @@ public class PersonalDataBundle {
             personalTaskModel = new PersonalTaskModel();
         }
         return personalTaskModel;
+    }
+
+    public PersonalBookModel getPersonalBookModel() {
+        if (personalBookModel == null) {
+            personalBookModel = new PersonalBookModel();
+            personalBookModel.loadPopupData();
+        }
+        return personalBookModel;
     }
 }

@@ -7,6 +7,7 @@ import com.onyx.jdread.personal.ui.ConsumptionRecordFragment;
 import com.onyx.jdread.personal.ui.GiftCenterFragment;
 import com.onyx.jdread.personal.ui.LoginFragment;
 import com.onyx.jdread.personal.ui.PersonalAccountFragment;
+import com.onyx.jdread.personal.ui.PersonalBookFragment;
 import com.onyx.jdread.personal.ui.PersonalExperienceFragment;
 import com.onyx.jdread.personal.ui.PersonalFragment;
 import com.onyx.jdread.personal.ui.PersonalNoteFragment;
@@ -87,6 +88,7 @@ public class ViewConfig {
         childViewInfo.put(PersonalTaskFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(ReadPreferenceFragment.class.getName(), FunctionModule.PERSONAL);
         childViewInfo.put(PersonalNoteFragment.class.getName(), FunctionModule.PERSONAL);
+        childViewInfo.put(PersonalBookFragment.class.getName(), FunctionModule.PERSONAL);
     }
 
     public static FunctionModule findChildViewParentId(String childViewName) {

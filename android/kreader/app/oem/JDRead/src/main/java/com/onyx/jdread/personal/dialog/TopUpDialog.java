@@ -84,5 +84,12 @@ public class TopUpDialog extends DialogFragment {
                 }
             });
         }
+
+        binding.dialogTopUpClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
     }
 }
