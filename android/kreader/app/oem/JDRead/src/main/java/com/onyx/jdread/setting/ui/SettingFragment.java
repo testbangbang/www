@@ -81,7 +81,7 @@ public class SettingFragment extends BaseFragment {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onIntensityEvent(IntensityEvent event) {
-
+        viewEventCallBack.gotoView(BrightnessFragment.class.getName());
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)

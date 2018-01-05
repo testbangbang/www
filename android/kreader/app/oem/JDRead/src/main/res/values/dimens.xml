@@ -290,4 +290,6 @@
     <dimen name="dialog_button_height">55dp</dimen>
     <dimen name="dialog_build_edit_height">60dp</dimen>
     <dimen name="dialog_build_edit_width">250dp</dimen>
+    <dimen name="ratingbar_light_settings_margin">30dp</dimen>
+    <dimen name="brightness_rating_ba_margin_top">130dp</dimen>
 </resources>

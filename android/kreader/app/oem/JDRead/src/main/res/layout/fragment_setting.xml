@@ -38,6 +38,7 @@
                     android:layout_height="wrap_content"
                     android:text="@{settingModel.deviceModel}"
                     android:textColor="@android:color/black"
+                    android:lines="1"
                     android:textSize="@dimen/level_one_heading_font" />
 
                 <TextView
@@ -46,6 +47,7 @@
                     android:layout_marginTop="@dimen/setting_device_detail_describe_margin_top"
                     android:text="@{settingModel.deviceVersion}"
                     android:textColor="@android:color/black"
+                    android:lines="1"
                     android:textSize="@dimen/level_three_heading_font" />
 
                 <TextView
@@ -53,6 +55,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/setting_device_detail_describe_margin_top"
                     android:textColor="@android:color/black"
+                    android:lines="1"
+                    android:text="@{settingModel.deviceSerial}"
                     android:textSize="@dimen/level_three_heading_font" />
             </LinearLayout>
 

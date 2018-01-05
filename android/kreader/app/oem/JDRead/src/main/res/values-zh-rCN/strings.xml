@@ -10,7 +10,7 @@
     <string name="intensity_control">亮度调节</string>
     <string name="page_refresh">翻页刷新</string>
     <string name="interest_rates_screen_time">熄屏时间</string>
-    <string name="laboratory">实验室</string>
+    <string name="laboratory">孵化器</string>
     <string name="help_and_feedback">帮助与反馈</string>
     <string name="device_setting_ten_pages">10 页</string>
     <string name="device_setting_twenty_pages">20 页</string>
@@ -289,4 +289,5 @@
     <string name="size_format" translatable="false">大小： %s</string>
     <string name="read_format" translatable="false">已读： %s</string>
     <string name="book_total_format">共%s本图书</string>
+    <string name="brightness_control">亮度调节</string>
 </resources>
