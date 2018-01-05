@@ -31,24 +31,32 @@
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:onClick="@{()->readerTextModel.onBoldfaceTypefaceClick()}"
+                    android:background="@{readerTextModel.boldfaceTypefaceBackground}"
                     android:text="@string/reader_boldface" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:onClick="@{()->readerTextModel.onArialTypefaceClick()}"
+                    android:background="@{readerTextModel.arialTypefaceBackground}"
                     android:text="@string/reader_arial" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:onClick="@{()->readerTextModel.onItalicsTypefaceClick()}"
+                    android:background="@{readerTextModel.italicsTypefaceBackground}"
                     android:text="@string/reader_italics" />
 
                 <View style="@style/ReaderVerticalSeparationLine" />
 
                 <TextView
                     style="@style/ReaderTextSettingFontStyle"
+                    android:onClick="@{()->readerTextModel.onRoundBodyTypefaceClick()}"
+                    android:background="@{readerTextModel.roundBodyTypefaceBackground}"
                     android:text="@string/reader_round_body" />
             </LinearLayout>
 
