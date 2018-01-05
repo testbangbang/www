@@ -1,37 +1,41 @@
-package com.onyx.edu.homework.action;
+package com.onyx.edu.homework.request;
 
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 
 import com.onyx.android.sdk.common.receiver.NetworkConnectChangedReceiver;
-import com.onyx.android.sdk.common.request.BaseCallback;
+import com.onyx.android.sdk.data.DataManager;
+import com.onyx.android.sdk.data.request.data.BaseDataRequest;
 import com.onyx.android.sdk.utils.NetworkUtil;
-import com.onyx.edu.homework.base.BaseAction;
 
 /**
- * Created by lxm on 2018/1/3.
+ * Created by lxm on 2018/1/5.
  */
 
-public class WifiConnectAction extends BaseAction {
+public class CheckWifiRequest extends BaseDataRequest {
 
     private NetworkConnectChangedReceiver networkConnectChangedReceiver;
 
     @Override
-    public void execute(final Context context, final BaseCallback baseCallback) {
+    public void execute(DataManager dataManager) throws Exception {
+        if (NetworkUtil.isWiFiConnected(getContext())) {
+            getCallback().onChanged(CheckWifiRequest.this, true);
+            return;
+        }
         networkConnectChangedReceiver = new NetworkConnectChangedReceiver(new NetworkConnectChangedReceiver.NetworkChangedListener() {
             @Override
             public void onNetworkChanged(boolean connected, int networkType) {
+                getCallback().onChanged(CheckWifiRequest.this, connected);
                 if (connected) {
-                    unregisterReceiver(context);
-                    BaseCallback.invoke(baseCallback, null, null);
+                    unregisterReceiver(getContext());
                 }
             }
         });
         IntentFilter filter = new IntentFilter();
         filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-        context.registerReceiver(networkConnectChangedReceiver, filter);
-        NetworkUtil.enableWiFi(context, true);
+        getContext().registerReceiver(networkConnectChangedReceiver, filter);
+        NetworkUtil.enableWiFi(getContext(), true);
     }
 
     private void unregisterReceiver(Context context) {

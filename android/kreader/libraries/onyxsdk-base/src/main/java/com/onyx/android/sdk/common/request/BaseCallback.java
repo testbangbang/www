@@ -23,6 +23,9 @@ public abstract class BaseCallback {
     public void beforeDone(final BaseRequest request, final Throwable e) {
     }
 
+    public void onChanged(final BaseRequest request, boolean state){
+    }
+
     public abstract void done(final BaseRequest request, final Throwable e);
 
     public static void invokeProgress(final BaseCallback callback, final BaseRequest request, final ProgressInfo progressInfo) {
